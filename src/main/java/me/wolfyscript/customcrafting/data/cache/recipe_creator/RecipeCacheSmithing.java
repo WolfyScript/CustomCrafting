@@ -31,10 +31,14 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
     private Ingredient addition;
 
     private boolean preserveEnchants;
+    private boolean preserveDamage;
     private boolean onlyChangeMaterial;
 
     RecipeCacheSmithing() {
         super();
+        this.preserveEnchants = true;
+        this.preserveDamage = true;
+        this.onlyChangeMaterial = false;
     }
 
     RecipeCacheSmithing(CustomRecipeSmithing recipe) {
@@ -42,6 +46,7 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
         this.base = recipe.getBase().clone();
         this.addition = recipe.getAddition().clone();
         this.preserveEnchants = recipe.isPreserveEnchants();
+        this.preserveDamage = recipe.isPreserveDamage();
     }
 
     @Override
@@ -70,6 +75,7 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
         recipeSmithing.setAddition(addition);
 
         recipeSmithing.setPreserveEnchants(preserveEnchants);
+        recipeSmithing.setPreserveDamage(preserveDamage);
         recipeSmithing.setOnlyChangeMaterial(onlyChangeMaterial);
         return recipeSmithing;
     }
@@ -96,6 +102,14 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 
     public void setPreserveEnchants(boolean preserveEnchants) {
         this.preserveEnchants = preserveEnchants;
+    }
+
+    public boolean isPreserveDamage() {
+        return preserveDamage;
+    }
+
+    public void setPreserveDamage(boolean preserveDamage) {
+        this.preserveDamage = preserveDamage;
     }
 
     public void setOnlyChangeMaterial(boolean onlyChangeMaterial) {

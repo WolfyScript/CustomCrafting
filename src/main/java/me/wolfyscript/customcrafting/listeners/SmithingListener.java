@@ -34,6 +34,8 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -45,6 +47,7 @@ import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.SmithingRecipe;
+import org.bukkit.inventory.meta.Damageable;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -98,6 +101,13 @@ public class SmithingListener implements Listener {
                             if(recipe.isPreserveEnchants()) {
                                 endResult.addUnsafeEnchantments(base.getEnchantments());
                             }
+                            if (recipe.isPreserveDamage() && endResult.getItemMeta() instanceof Damageable resultDamageable) {
+                                //Copy damage from base item to result
+                                if (base.hasItemMeta() && base.getItemMeta() instanceof Damageable damageable) {
+                                    resultDamageable.setDamage(damageable.getDamage());
+                                }
+                                endResult.setItemMeta(resultDamageable);
+                            }
                             event.setResult(endResult);
                         }
                         break;
@@ -137,6 +147,9 @@ public class SmithingListener implements Listener {
             smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
             smithingData.getBase().remove(baseItem, 1, inventory);
             smithingData.getAddition().remove(additionItem, 1, inventory);
+            if (inventory.getLocation() != null) {
+                inventory.getLocation().getWorld().playSound(inventory.getLocation(), Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.BLOCKS, 1, 1);
+            }
             inventory.setItem(0, baseItem);
             inventory.setItem(1, additionItem);
             preCraftedRecipes.remove(player.getUniqueId());

@@ -2766,6 +2766,48 @@
                 "&8[&aClick&8] &eMaterial Only"
               ]
             }
+          },
+          "preserve_enchants": {
+            "enabled": {
+              "name": "&6&lPreserve Enchants",
+              "lore": [
+                "&eCopies the enchantments from",
+                "&ethe base to the result item.",
+                "",
+                "&8[&aClick&8] &eDiscard Enchants"
+              ]
+            },
+            "disabled": {
+              "name": "&4&lDiscard Enchants",
+              "lore": [
+                "&eLeaves the enchants of the",
+                "&eresult as is and discards",
+                "&ethe base ingredient enchants.",
+                "",
+                "&8[&aClick&8] &ePreserve Enchants"
+              ]
+            }
+          },
+          "preserve_damage": {
+            "enabled": {
+              "name": "&6&lPreserve Damage",
+              "lore": [
+                "&eCopies the damage from",
+                "&ethe base to the result item.",
+                "",
+                "&8[&aClick&8] &eDiscard Damage"
+              ]
+            },
+            "disabled": {
+              "name": "&4&lDiscard Damage",
+              "lore": [
+                "&eLeaves the damage of the",
+                "&eresult as is and discards",
+                "&ethe base ingredient damage.",
+                "",
+                "&8[&aClick&8] &ePreserve Damage"
+              ]
+            }
           }
         }
       },
