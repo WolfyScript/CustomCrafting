@@ -462,11 +462,19 @@
             "delete": "&7[&cShift-Right Click&7] &cDelete Recipe"
           },
           "namespace": {
-            "name": "&7%namespace%",
+            "name": "&6&l%namespace%",
             "lore": [
-              "&7[&aClick&7] Open namespace",
-              "&7[&aShift Left Click&7] Disable all recipes",
-              "&7[&aShift Right Click&7] Enable all recipes"
+              "&7[&aClick&7] &eOpen namespace",
+              "&7[&aShift Left Click&7] &cDisable all recipes",
+              "&7[&aShift Right Click&7] &eEnable all recipes"
+            ]
+          },
+          "folder": {
+            "name": "&6&l%folder%",
+            "lore": [
+              "&7[&aClick&7] &eOpen folder",
+              "&7[&aShift Left Click&7] &cDisable all recipes",
+              "&7[&aShift Right Click&7] &eEnable all recipes"
             ]
           },
           "previous_page": {

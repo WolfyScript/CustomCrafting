@@ -27,13 +27,10 @@ import me.wolfyscript.customcrafting.recipes.data.AnvilData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-
-import java.util.Map;
 
 public class RepairTaskDefault extends RepairTask {
 
@@ -50,18 +47,14 @@ public class RepairTaskDefault extends RepairTask {
     @Override
     public CustomItem computeResult(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight) {
         CustomItem resultItem = new CustomItem(event.getResult());
-        ItemStack resultStack = resultItem.getItemStack();
         if (resultItem.hasItemMeta()) {
+            ItemStack resultStack = resultItem.getItemStack();
             //Further recipe options to block features.
             if (recipe.isBlockEnchant() && resultStack.hasItemMeta() && resultItem.getItemMeta().hasEnchants()) {
                 //Block Enchants
-                for (Enchantment enchantment : resultStack.getEnchantments().keySet()) {
-                    resultItem.removeEnchantment(enchantment);
-                }
+                resultStack.getEnchantments().keySet().forEach(resultItem::removeEnchantment);
                 if (inputLeft != null) {
-                    for (Map.Entry<Enchantment, Integer> entry : inputLeft.getEnchantments().entrySet()) {
-                        resultItem.addUnsafeEnchantment(entry.getKey(), entry.getValue());
-                    }
+                    inputLeft.getEnchantments().forEach(resultItem::addUnsafeEnchantment);
                 }
             }
             if (recipe.isBlockRename()) {
