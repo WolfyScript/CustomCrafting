@@ -58,8 +58,8 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     public CustomRecipeSmithing(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.type = RecipeType.SMITHING;
-        base = ItemLoader.loadIngredient(node.path(KEY_BASE));
-        addition = ItemLoader.loadIngredient(node.path(KEY_ADDITION));
+        setBase(ItemLoader.loadIngredient(node.path(KEY_BASE)));
+        setAddition(ItemLoader.loadIngredient(node.path(KEY_ADDITION)));
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
         onlyChangeMaterial = node.path("onlyChangeMaterial").asBoolean(false);
     }
