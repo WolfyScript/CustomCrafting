@@ -297,7 +297,7 @@ public class LocalStorageLoader extends ResourceLoader {
             for (File file : files) {
                 var name = file.getName();
                 var namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
-                if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
+                if (!customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     try {
                         customCrafting.getRegistries().getRecipes().register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
                         loaded.add(namespacedKey);
