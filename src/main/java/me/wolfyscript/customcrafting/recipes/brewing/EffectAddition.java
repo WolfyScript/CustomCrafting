@@ -22,12 +22,19 @@
 
 package me.wolfyscript.customcrafting.recipes.brewing;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import org.bukkit.potion.PotionEffect;
 
 public class EffectAddition {
 
     private PotionEffect effect;
     private boolean replace;
+
+    @JsonCreator
+    private EffectAddition() {
+        this.effect = null;
+        this.replace = false;
+    }
 
     public EffectAddition(PotionEffect effect, boolean replace) {
         this.effect = effect;
