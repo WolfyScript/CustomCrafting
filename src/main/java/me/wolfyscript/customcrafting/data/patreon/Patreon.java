@@ -45,10 +45,9 @@ public class Patreon {
         addPatron(new Patron("Mithran", Tier.WOLFRAM));
         addPatron(new Patron("Jack Bruton", Tier.WOLFRAM));
         addPatron(new Patron("랜디", Tier.WOLFRAM));
-        addPatron(new Patron("AkkLive", Tier.WOLFRAM));
         addPatron(new Patron("Jaden Bautista", Tier.WOLFRAM));
-        addPatron(new Patron("Tong Teerasak", Tier.SUPPORTER));
         addPatron(new Patron("Илья Nalurione", Tier.SUPPORTER));
+        addPatron(new Patron("Qsycho", Tier.WOLFRAM));
     }
 
     private void addPatron(Patron patron) {
