@@ -35,6 +35,7 @@ import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -93,7 +94,11 @@ public class MenuItemCreator extends CCWindow {
         })));
         registerButton(new ItemInputButton<>(ITEM_INPUT, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> false, (cache, guiHandler, player, inventory, item, slot, event) -> {
             var items = cache.getItems();
-            items.setItem(CustomItem.getReferenceByItemStack(item != null ? item : ItemUtils.AIR));
+            CustomItem reference = CustomItem.getReferenceByItemStack(item != null ? item : ItemUtils.AIR);
+            if (ItemUtils.isAirOrNull(reference.getItemStack())) {
+                reference = new CustomItem(item != null ? item : ItemUtils.AIR);
+            }
+            items.setItem(reference);
         }, null, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().getItemStack())));
 
         registerButton(new ActionButton<>(SAVE_ITEM, Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
