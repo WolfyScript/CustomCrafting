@@ -27,10 +27,14 @@ import me.wolfyscript.customcrafting.recipes.data.AnvilData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+
+import java.util.Map;
 
 public class RepairTaskDefault extends RepairTask {
 
@@ -46,31 +50,40 @@ public class RepairTaskDefault extends RepairTask {
 
     @Override
     public CustomItem computeResult(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight) {
-        CustomItem resultItem = new CustomItem(event.getResult());
-        if (resultItem.hasItemMeta()) {
+        AnvilInventory inventory = event.getInventory();
+        CustomItem resultItem;
+        if (ItemUtils.isAirOrNull(event.getResult())) {
+            resultItem = new CustomItem(inputLeft).clone();
+            if (!recipe.isBlockRename() && inventory.getRenameText() != null && !inventory.getRenameText().isEmpty()) {
+                resultItem.setDisplayName(inventory.getRenameText());
+            }
+        } else {
+            resultItem = new CustomItem(event.getResult());
             ItemStack resultStack = resultItem.getItemStack();
-            //Further recipe options to block features.
-            if (recipe.isBlockEnchant() && resultStack.hasItemMeta() && resultItem.getItemMeta().hasEnchants()) {
-                //Block Enchants
-                resultStack.getEnchantments().keySet().forEach(resultItem::removeEnchantment);
-                if (inputLeft != null) {
-                    inputLeft.getEnchantments().forEach(resultItem::addUnsafeEnchantment);
+            if (resultItem.hasItemMeta()) {
+                //Further recipe options to block features.
+                if (recipe.isBlockEnchant() && resultStack.hasItemMeta() && resultItem.getItemMeta().hasEnchants()) {
+                    //Block Enchants
+                    resultStack.getEnchantments().keySet().forEach(resultItem::removeEnchantment);
+                    if (inputLeft != null) {
+                        inputLeft.getEnchantments().forEach(resultItem::addUnsafeEnchantment);
+                    }
                 }
-            }
-            if (recipe.isBlockRename()) {
-                //Block Renaming
-                if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasDisplayName()) {
-                    resultItem.setDisplayName(inputLeft.getItemMeta().getDisplayName());
-                } else {
-                    resultItem.setDisplayName(null);
+                if (recipe.isBlockRename()) {
+                    //Block Renaming
+                    if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasDisplayName()) {
+                        resultItem.setDisplayName(inputLeft.getItemMeta().getDisplayName());
+                    } else {
+                        resultItem.setDisplayName(null);
+                    }
                 }
-            }
-            if (recipe.isBlockRepair() && resultItem.getItemMeta() instanceof Damageable resultDamageable) {
-                //Block Repairing
-                if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta() instanceof Damageable damageable) {
-                    resultDamageable.setDamage(damageable.getDamage());
+                if (recipe.isBlockRepair() && resultItem.getItemMeta() instanceof Damageable resultDamageable) {
+                    //Block Repairing
+                    if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta() instanceof Damageable damageable) {
+                        resultDamageable.setDamage(damageable.getDamage());
+                    }
+                    resultItem.setItemMeta(resultDamageable);
                 }
-                resultItem.setItemMeta(resultDamageable);
             }
         }
         return resultItem;
