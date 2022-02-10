@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.recipes;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
@@ -175,6 +176,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.handItem = handItem;
     }
 
+    @JsonIgnore
     public Ingredient getIngredient() {
         return getIngredient(0);
     }
@@ -184,6 +186,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         return this.ingredients;
     }
 
+    @JsonIgnore
     public void setIngredient(Ingredient ingredients) {
         setIngredient(0, ingredients);
     }
