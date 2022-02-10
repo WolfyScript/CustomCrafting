@@ -103,20 +103,20 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
         return materials.isEmpty() || cachedRecipes.stream().anyMatch(recipe1 -> recipe1.getResult().getChoices().stream().anyMatch(customItem -> materials.contains(customItem.getItemStack().getType())));
     }
 
-    public boolean isValid(EliteWorkbench cache) {
-        var data = cache.getEliteWorkbenchData();
+    public boolean isValid(EliteWorkbench eliteWorkbench) {
+        var data = eliteWorkbench.getData();
         return cachedRecipes.parallelStream().anyMatch(cachedRecipe -> {
             if (cachedRecipe instanceof CraftingRecipe<?, ?> && (RecipeType.Container.ELITE_CRAFTING.isInstance(cachedRecipe) || data.isAdvancedRecipes())) {
                 if (RecipeType.Container.ELITE_CRAFTING.isInstance(cachedRecipe)) {
-                    EliteWorkbenchCondition condition = cachedRecipe.getConditions().getEliteCraftingTableCondition();
-                    if (condition != null && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
+                    Conditions conditions = cachedRecipe.getConditions();
+                    if (conditions.has(EliteWorkbenchCondition.KEY) && !conditions.getByType(EliteWorkbenchCondition.class).getEliteWorkbenches().contains(eliteWorkbench.getCustomItem().getNamespacedKey())) {
                         return false;
                     }
                     if (cachedRecipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
-                        return shapeless.getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
+                        return shapeless.getIngredients().size() <= eliteWorkbench.getCurrentGridSize() * eliteWorkbench.getCurrentGridSize();
                     } else {
                         CraftingRecipeEliteShaped recipe1 = (CraftingRecipeEliteShaped) cachedRecipe;
-                        return recipe1.getShape().length <= cache.getCurrentGridSize() && recipe1.getShape()[0].length() <= cache.getCurrentGridSize();
+                        return recipe1.getShape().length <= eliteWorkbench.getCurrentGridSize() && recipe1.getShape()[0].length() <= eliteWorkbench.getCurrentGridSize();
                     }
                 }
                 return true;
