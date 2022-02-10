@@ -39,7 +39,7 @@ class ButtonSlotCrafting extends ItemInputButton<CCCache> {
                 (cache, guiHandler, player, inventory, itemStack, slot, b) -> {
                     EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
                     eliteWorkbench.getContents()[recipeSlot] = inventory.getItem(slot);
-                    ItemStack result = customCrafting.getCraftManager().preCheckRecipe(eliteWorkbench.getContents(), player, inventory, true, eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes());
+                    ItemStack result = customCrafting.getCraftManager().preCheckRecipe(eliteWorkbench.getContents(), player, inventory, true, eliteWorkbench.getData().isAdvancedRecipes());
                     eliteWorkbench.setResult(result);
                 }, null,
                 (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {

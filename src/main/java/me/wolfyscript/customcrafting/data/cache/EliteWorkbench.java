@@ -23,13 +23,15 @@
 package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class EliteWorkbench {
 
     private byte currentGridSize;
-    private EliteWorkbenchData eliteWorkbench;
+    private EliteWorkbenchData data;
+    private CustomItem customItem;
     private ItemStack result;
     private ItemStack[] contents;
 
@@ -63,11 +65,16 @@ public class EliteWorkbench {
         this.result = result;
     }
 
-    public EliteWorkbenchData getEliteWorkbenchData() {
-        return eliteWorkbench;
+    public EliteWorkbenchData getData() {
+        return data;
     }
 
-    public void setEliteWorkbenchData(EliteWorkbenchData eliteWorkbench) {
-        this.eliteWorkbench = eliteWorkbench;
+    public CustomItem getCustomItem() {
+        return customItem;
+    }
+
+    public void setCustomItemAndData(CustomItem customItem, EliteWorkbenchData eliteWorkbench) {
+        this.customItem = customItem;
+        this.data = eliteWorkbench;
     }
 }
