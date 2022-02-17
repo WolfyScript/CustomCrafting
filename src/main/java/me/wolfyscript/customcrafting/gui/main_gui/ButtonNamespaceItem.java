@@ -31,7 +31,7 @@ import org.bukkit.Material;
 class ButtonNamespaceItem extends ActionButton<CCCache> {
 
     ButtonNamespaceItem(String namespace) {
-        super("namespace_" + namespace, new ButtonState<>("namespace", Material.CHEST, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        super("namespace_" + namespace, new ButtonState<>("namespace", Material.ENDER_CHEST, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             items.setListNamespace(namespace);
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {

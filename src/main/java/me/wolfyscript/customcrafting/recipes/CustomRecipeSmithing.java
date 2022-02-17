@@ -53,14 +53,16 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     private Ingredient addition;
 
     private boolean preserveEnchants;
+    private boolean preserveDamage;
     private boolean onlyChangeMaterial; //Only changes the material of the item. Useful to make vanilla style recipes.
 
     public CustomRecipeSmithing(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.type = RecipeType.SMITHING;
-        base = ItemLoader.loadIngredient(node.path(KEY_BASE));
-        addition = ItemLoader.loadIngredient(node.path(KEY_ADDITION));
+        setBase(ItemLoader.loadIngredient(node.path(KEY_BASE)));
+        setAddition(ItemLoader.loadIngredient(node.path(KEY_ADDITION)));
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
+        preserveDamage = node.path("preserveDamage").asBoolean(true);
         onlyChangeMaterial = node.path("onlyChangeMaterial").asBoolean(false);
     }
 
@@ -71,6 +73,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         this.addition = new Ingredient();
         this.result = new Result();
         this.preserveEnchants = true;
+        this.preserveDamage = true;
         this.onlyChangeMaterial = false;
     }
 
@@ -80,6 +83,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         this.base = customRecipeSmithing.getBase();
         this.addition = customRecipeSmithing.getAddition();
         this.preserveEnchants = customRecipeSmithing.isPreserveEnchants();
+        this.preserveDamage = customRecipeSmithing.isPreserveDamage();
         this.onlyChangeMaterial = customRecipeSmithing.isOnlyChangeMaterial();
     }
 
@@ -112,6 +116,14 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     public void setPreserveEnchants(boolean preserveEnchants) {
         this.preserveEnchants = preserveEnchants;
+    }
+
+    public boolean isPreserveDamage() {
+        return preserveDamage;
+    }
+
+    public void setPreserveDamage(boolean preserveDamage) {
+        this.preserveDamage = preserveDamage;
     }
 
     public boolean isOnlyChangeMaterial() {
@@ -147,6 +159,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
         gen.writeBooleanField("preserve_enchants", preserveEnchants);
+        gen.writeBooleanField("preserveDamage", preserveDamage);
         gen.writeBooleanField("onlyChangeMaterial", onlyChangeMaterial);
         gen.writeObjectField(KEY_RESULT, result);
         gen.writeObjectField(KEY_BASE, base);

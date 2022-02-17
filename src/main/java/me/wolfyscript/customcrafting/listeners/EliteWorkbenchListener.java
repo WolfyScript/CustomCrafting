@@ -27,6 +27,7 @@ import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.event.Event;
@@ -50,11 +51,12 @@ public class EliteWorkbenchListener implements Listener {
             if (block != null && WorldUtils.getWorldCustomItemStore().isStored(block.getLocation())) {
                 var customItem = NamespacedKeyUtils.getCustomItem(block);
                 if (customItem != null) {
-                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA);
-                    if (eliteWorkbench != null && eliteWorkbench.isEnabled()) {
+                    var eliteCraftingTableData = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA);
+                    if (eliteCraftingTableData != null && eliteCraftingTableData.isEnabled()) {
                         event.setCancelled(true);
-                        ((CCCache) api.getInventoryAPI().getGuiHandler(event.getPlayer()).getCustomCache()).getEliteWorkbench().setEliteWorkbenchData(eliteWorkbench.clone());
-                        api.getInventoryAPI().getGuiHandler(event.getPlayer()).openWindow(new NamespacedKey("crafting", "crafting_grid" + eliteWorkbench.getGridSize()));
+                        GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(event.getPlayer());
+                        guiHandler.getCustomCache().getEliteWorkbench().setCustomItemAndData(customItem, eliteCraftingTableData.clone());
+                        guiHandler.openWindow(new NamespacedKey("crafting", "crafting_grid" + eliteCraftingTableData.getGridSize()));
                     }
                 }
             }

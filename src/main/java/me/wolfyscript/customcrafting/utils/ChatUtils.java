@@ -216,27 +216,14 @@ public class ChatUtils {
         }, true));
     }
 
-    public static void sendRecipeItemLoadingError(String namespace, String key, String type, Exception ex) {
-        api.getConsole().severe("-------------------------------------------------");
-        api.getConsole().severe("Error loading Contents for: " + namespace + ":" + key);
-        api.getConsole().severe("    Type: " + type);
-        if (ex.getMessage() != null) {
-            api.getConsole().severe("    Message: " + ex.getMessage());
-        }
+    public static void sendRecipeItemLoadingError(String prefix, String namespace, String key, Exception ex) {
+        api.getConsole().warn(prefix + "[Error] Invalid Recipe: \"" + namespace + ":" + key + "\": " + (ex.getMessage() != null ? ex.getMessage() : ""));
         if (ex.getCause() != null) {
-            api.getConsole().severe("    Cause: " + ex.getCause().getMessage());
+            api.getConsole().warn(prefix + "[Error]   Caused by: " + ex.getCause().getMessage());
         }
-        api.getConsole().severe("Please check the config of the recipe.");
         if (CustomCrafting.inst().getConfigHandler().getConfig().isPrintingStacktrace()) {
-            api.getConsole().severe("------------------[StackTrace]-------------------");
+            api.getConsole().warn("------------------[StackTrace]-------------------");
             ex.printStackTrace();
-            if (ex.getCause() != null) {
-                api.getConsole().severe("Caused StackTrace: ");
-                ex.getCause().printStackTrace();
-            }
-        } else {
-            api.getConsole().severe("For more info enable stacktraces in the config ('data.print_stacktrace')");
         }
-        api.getConsole().severe("-------------------------------------------------");
     }
 }

@@ -467,11 +467,19 @@
             "delete": "&7[&cShift-Right Click&7] &cDelete Recipe"
           },
           "namespace": {
-            "name": "&7%namespace%",
+            "name": "&6&l%namespace%",
             "lore": [
-              "&7[&aClick&7] Open namespace",
-              "&7[&aShift Left Click&7] Disable all recipes",
-              "&7[&aShift Right Click&7] Enable all recipes"
+              "&7[&aClick&7] &eOpen namespace",
+              "&7[&aShift Left Click&7] &cDisable all recipes",
+              "&7[&aShift Right Click&7] &eEnable all recipes"
+            ]
+          },
+          "folder": {
+            "name": "&6&l%folder%",
+            "lore": [
+              "&7[&aClick&7] &eOpen folder",
+              "&7[&aShift Left Click&7] &cDisable all recipes",
+              "&7[&aShift Right Click&7] &eEnable all recipes"
             ]
           },
           "previous_page": {
@@ -2769,6 +2777,48 @@
                 "&ewith all their NBT data.",
                 "",
                 "&8[&aClick&8] &eMaterial Only"
+              ]
+            }
+          },
+          "preserve_enchants": {
+            "enabled": {
+              "name": "&6&lPreserve Enchants",
+              "lore": [
+                "&eCopies the enchantments from",
+                "&ethe base to the result item.",
+                "",
+                "&8[&aClick&8] &eDiscard Enchants"
+              ]
+            },
+            "disabled": {
+              "name": "&4&lDiscard Enchants",
+              "lore": [
+                "&eLeaves the enchants of the",
+                "&eresult as is and discards",
+                "&ethe base ingredient enchants.",
+                "",
+                "&8[&aClick&8] &ePreserve Enchants"
+              ]
+            }
+          },
+          "preserve_damage": {
+            "enabled": {
+              "name": "&6&lPreserve Damage",
+              "lore": [
+                "&eCopies the damage from",
+                "&ethe base to the result item.",
+                "",
+                "&8[&aClick&8] &eDiscard Damage"
+              ]
+            },
+            "disabled": {
+              "name": "&4&lDiscard Damage",
+              "lore": [
+                "&eLeaves the damage of the",
+                "&eresult as is and discards",
+                "&ethe base ingredient damage.",
+                "",
+                "&8[&aClick&8] &ePreserve Damage"
               ]
             }
           }

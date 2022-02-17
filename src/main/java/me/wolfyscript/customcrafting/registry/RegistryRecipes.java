@@ -32,6 +32,7 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.registry.Registries;
 import me.wolfyscript.utilities.registry.RegistrySimple;

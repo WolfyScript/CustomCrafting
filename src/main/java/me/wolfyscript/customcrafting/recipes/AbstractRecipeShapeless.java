@@ -22,8 +22,10 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -93,8 +95,15 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         addIngredient(1, ingredient);
     }
 
+    @JsonSetter("ingredients")
     public void setIngredients(List<Ingredient> ingredients) {
         setIngredients(ingredients.stream());
+    }
+
+    @JsonGetter("ingredients")
+    @Override
+    public List<Ingredient> getIngredients() {
+        return super.getIngredients();
     }
 
     @JsonIgnore

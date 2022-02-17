@@ -158,6 +158,7 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         return slot == 0 ? this.ingredients : this.allowedItems;
     }
 
+    @JsonIgnore
     public Ingredient getIngredient() {
         return getIngredient(0);
     }
@@ -170,6 +171,7 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         }
     }
 
+    @JsonIgnore
     public void setIngredient(Ingredient ingredient) {
         setIngredient(0, ingredient);
     }

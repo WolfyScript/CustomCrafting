@@ -22,9 +22,15 @@
 
 package me.wolfyscript.customcrafting.recipes.brewing;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import org.bukkit.potion.PotionEffectType;
 
 public class EffectSettingsUpgrade extends EffectSettings {
+
+    @JsonCreator
+    private EffectSettingsUpgrade() {
+        super(null, 0, 0);
+    }
 
     public EffectSettingsUpgrade(PotionEffectType effectType, int amplifier, int duration) {
         super(effectType, amplifier, duration);

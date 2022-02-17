@@ -50,6 +50,7 @@ import java.util.stream.Collectors;
 
 public class LocalStorageLoader extends ResourceLoader {
 
+    private static final String PREFIX = "[LOCAL] ";
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     private static final String ITEMS_FOLDER = "items";
     private static final String RECIPES_FOLDER = "recipes";
@@ -65,23 +66,21 @@ public class LocalStorageLoader extends ResourceLoader {
          *   items/<folder>/<item_name>
          */
         api.getConsole().info("- - - - [Local Storage] - - - -");
-        api.getConsole().info("Searching for namespaces...");
+        api.getConsole().info(PREFIX + "Looking through data folder...");
         String[] dirs = DATA_FOLDER.list();
         if (dirs != null) {
-            api.getConsole().info("Namespaces: [" + String.join(", ", dirs) + "]");
-            api.getConsole().info(" - ");
-            api.getConsole().info("Loading items...");
+            api.getConsole().info(PREFIX + "$msg.startup.recipes.items$");
             for (String dir : dirs) {
                 loadItemsInNamespace(dir);
             }
-            api.getConsole().info("Loading recipes...");
+            api.getConsole().info(PREFIX + "$msg.startup.recipes.recipes$");
             new NewDataLoader(dirs).load();
             //Loading old & legacy recipes
             //The recipes are only loaded if they are not already loaded in previous stages! So if a new version of a recipe exists, then the older ones are ignored.
             new OldDataLoader(dirs).load();
             new LegacyDataLoader(dirs).load();
 
-            api.getConsole().info("Loaded " + customCrafting.getRegistries().getRecipes().values().size() + " recipes");
+            api.getConsole().info(PREFIX + "Loaded " + customCrafting.getRegistries().getRecipes().values().size() + " recipes");
             api.getConsole().info("");
         }
     }
@@ -213,7 +212,7 @@ public class LocalStorageLoader extends ResourceLoader {
             for (String dir : dirs) {
                 loadRecipesInNamespace(dir); //Load new recipe format files
             }
-            api.getConsole().getLogger().info(String.format("[DEFAULT] Loaded %d recipes; skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
+            api.getConsole().getLogger().info(String.format("[LOCAL] Loaded %d recipes; Skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
         }
 
         private void loadRecipesInNamespace(String namespace) {
@@ -226,7 +225,7 @@ public class LocalStorageLoader extends ResourceLoader {
                         customCrafting.getRegistries().getRecipes().register(objectMapper.reader(injectableValues).readValue(file.toFile(), CustomRecipe.class));
                         loaded.add(namespacedKey);
                     } catch (IOException e) {
-                        ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), "", e);
+                        ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
                         skippedError.add(namespacedKey);
                     }
                 } else {
@@ -253,7 +252,7 @@ public class LocalStorageLoader extends ResourceLoader {
                     loadAndRegisterOldOrLegacyRecipe(RecipeType.Container.ELITE_CRAFTING, dir);
                 }
             }
-            api.getConsole().getLogger().info(String.format("[LEGACY] Loaded %d recipes; skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
+            api.getConsole().getLogger().info(String.format("[LOCAL_LEGACY] Loaded %d recipes; Skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
         }
     }
 
@@ -272,7 +271,7 @@ public class LocalStorageLoader extends ResourceLoader {
                     }
                 }
             }
-            api.getConsole().getLogger().info(String.format("[OLD] Loaded %d recipes; skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
+            api.getConsole().getLogger().info(String.format("[LOCAL_OLD] Loaded %d recipes; Skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
         }
 
         protected List<File> getOldOrLegacyFiles(String subFolder, String type) {
@@ -298,12 +297,12 @@ public class LocalStorageLoader extends ResourceLoader {
             for (File file : files) {
                 var name = file.getName();
                 var namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
-                if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
+                if (!customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     try {
                         customCrafting.getRegistries().getRecipes().register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
                         loaded.add(namespacedKey);
                     } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-                        ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), loader.getId(), e);
+                        ChatUtils.sendRecipeItemLoadingError("[LOCAL] ", namespacedKey.getNamespace(), namespacedKey.getKey(), e);
                         skippedError.add(namespacedKey);
                     }
                 } else {

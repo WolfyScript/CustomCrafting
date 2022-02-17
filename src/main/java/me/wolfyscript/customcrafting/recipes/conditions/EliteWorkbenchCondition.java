@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -74,8 +75,11 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
         if (RecipeType.Container.ELITE_CRAFTING.isInstance(recipe)) {
             if (data.getBlock() != null) {
                 CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
-                if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef wolfyUtilsRef) {
-                    return eliteWorkbenches.contains(wolfyUtilsRef.getNamespacedKey()) && ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isEnabled();
+                if (customItem != null) {
+                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA);
+                    if (eliteWorkbench != null && eliteWorkbench.isEnabled()) {
+                        return eliteWorkbenches.contains(customItem.getNamespacedKey()) && ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isEnabled();
+                    }
                 }
             }
             return false;
