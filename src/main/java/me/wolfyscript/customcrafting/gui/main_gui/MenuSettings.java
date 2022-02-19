@@ -57,49 +57,55 @@ public class MenuSettings extends CCWindow {
     public void onInit() {
         registerButton(new ButtonSettingsLockdown(api, customCrafting));
         registerButton(new ButtonSettingsLanguage(availableLangs, api, customCrafting));
-        registerButton(new ToggleButton<>(DARK_MODE, (ccCache, guiHandler, player, guiInventory, i) -> !PlayerUtil.getStore(player).isDarkMode(), new ButtonState<>(DARK_MODE + ".disabled", Material.WHITE_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
-            PlayerUtil.getStore(player).setDarkMode(true);
-            return true;
-        }), new ButtonState<>(DARK_MODE + ".enabled", Material.BLACK_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
-            PlayerUtil.getStore(player).setDarkMode(false);
-            return true;
-        })));
-        registerButton(new ToggleButton<>(PRETTY_PRINTING, (ccCache, guiHandler, player, guiInventory, i) -> !customCrafting.getConfigHandler().getConfig().isPrettyPrinting(), new ButtonState<>(PRETTY_PRINTING + ".disabled", Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
-            customCrafting.getConfigHandler().getConfig().setPrettyPrinting(true);
-            customCrafting.getConfigHandler().getConfig().save();
-            return true;
-        }), new ButtonState<>(PRETTY_PRINTING + ".enabled", Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
-            customCrafting.getConfigHandler().getConfig().setPrettyPrinting(false);
-            customCrafting.getConfigHandler().getConfig().save();
-            return true;
-        })));
-        registerButton(new ToggleButton<>(ADVANCED_CRAFTING_TABLE, (ccCache, guiHandler, player, guiInventory, i) -> !customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled(), new ButtonState<>("advanced_workbench.disabled", Material.CRAFTING_TABLE, (cache, guiHandler, player, inventory, slot, event) -> {
-            customCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(true);
-            customCrafting.getConfigHandler().getConfig().save();
-            return true;
-        }), new ButtonState<>("advanced_workbench.enabled", Material.CRAFTING_TABLE, (cache, guiHandler, player, inventory, slot, event) -> {
-            customCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(false);
-            customCrafting.getConfigHandler().getConfig().save();
-            return true;
-        })));
-        registerButton(new ToggleButton<>(DEBUG, (ccCache, guiHandler, player, guiInventory, i) -> !api.hasDebuggingMode(), new ButtonState<>("debug.disabled", Material.REDSTONE, (cache, guiHandler, player, inventory, slot, event) -> {
-            customCrafting.getConfigHandler().getConfig().set("debug", true);
-            customCrafting.getConfigHandler().getConfig().save();
-            return true;
-        }), new ButtonState<>("debug.enabled", Material.REDSTONE, (cache, guiHandler, player, inventory, slot, event) -> {
-            customCrafting.getConfigHandler().getConfig().set("debug", false);
-            customCrafting.getConfigHandler().getConfig().save();
-            return true;
-        })));
-        registerButton(new ToggleButton<>("creator.reset_after_save", (ccCache, guiHandler, player, guiInventory, i) -> !customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave(), new ButtonState<>("creator.reset_after_save.disabled", PlayerHeadUtils.getViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (cache, guiHandler, player, inventory, slot, event) -> {
-            customCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(true);
-            customCrafting.getConfigHandler().getConfig().save();
-            return true;
-        }), new ButtonState<>("creator.reset_after_save.enabled", PlayerHeadUtils.getViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a"), (cache, guiHandler, player, inventory, slot, event) -> {
-            customCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(false);
-            customCrafting.getConfigHandler().getConfig().save();
-            return true;
-        })));
+        ButtonBuilder<CCCache> bb = getButtonBuilder();
+        bb.toggle(DARK_MODE).stateFunction((cache, guiHandler, player, guiInventory, i) -> PlayerUtil.getStore(player).isDarkMode())
+                .enabledState(state -> state.subKey("enabled").icon(Material.BLACK_CONCRETE).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                    PlayerUtil.getStore(player).setDarkMode(false);
+                    return true;
+                })).disabledState(state -> state.subKey("disabled").icon(Material.WHITE_CONCRETE).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                    PlayerUtil.getStore(player).setDarkMode(true);
+                    return true;
+                })).register();
+        bb.toggle(PRETTY_PRINTING).stateFunction((ccCache, guiHandler, player, guiInventory, i) -> customCrafting.getConfigHandler().getConfig().isPrettyPrinting())
+                .enabledState(state -> state.subKey("enabled").icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().setPrettyPrinting(false);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).disabledState(state -> state.subKey("disabled").icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().setPrettyPrinting(true);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).register();
+        bb.toggle(ADVANCED_CRAFTING_TABLE).stateFunction((ccCache, guiHandler, player, guiInventory, i) -> customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled())
+                .enabledState(state -> state.subKey("enabled").icon(Material.CRAFTING_TABLE).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(false);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).disabledState(state -> state.subKey("disabled").icon(Material.CRAFTING_TABLE).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(true);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).register();
+        bb.toggle(DEBUG).stateFunction((ccCache, guiHandler, player, guiInventory, i) -> api.hasDebuggingMode())
+                .enabledState(state -> state.subKey("enabled").icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().set("debug", false);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).disabledState(state -> state.subKey("disabled").icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().set("debug", true);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).register();
+        bb.toggle("creator.reset_after_save").stateFunction((ccCache, guiHandler, player, guiInventory, i) -> customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave())
+                .enabledState(state -> state.subKey("enabled").icon(PlayerHeadUtils.getViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a")).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(false);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).disabledState(state -> state.subKey("disabled").icon(PlayerHeadUtils.getViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835")).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(true);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).register();
     }
 
     @Override
