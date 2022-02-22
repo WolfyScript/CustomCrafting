@@ -238,49 +238,32 @@
           "name": "&4"
         },
         "back": {
-          "name": "&5Back",
-          "help": []
+          "name": "&5Back"
         },
         "back_bottom": {
-          "name": "&c&lBack",
-          "lore": []
+          "name": "&c&lBack"
         },
         "close": {
-          "name": "&4Close",
-          "help": []
+          "name": "&4Close"
         },
         "gui_help_on": {
-          "name": "&3&lHelp",
+          "name": "&f&l&n[?] Information",
           "lore": [
-            "%wolfyutilities.help%",
-            "",
-            "&7[&aEnabled&7] &eClick to disable Button descriptions."
-          ],
-          "help": []
+            "%wolfyutilities.help%"
+          ]
         },
         "gui_help_off": {
-          "name": "&3&lHelp",
+          "name": "&f&l&n[?] Information",
           "lore": [
-            "%wolfyutilities.help%",
-            "",
-            "&7[&cDisabled&7] &eClick to view Button descriptions."
-          ],
-          "help": []
+            "%wolfyutilities.help%"
+          ]
         },
         "patreon": {
           "name": "&6&ktt   &r&6&lPatreon   &6&ktt",
           "lore": [
-            "&eBecome a Patron and get early acces to ",
-            "&ereleases and development builds.",
-            "&eTake part in Patreon only polls and",
-            "&ehelp shape and improve the plugin",
+            "&eBecome a Patron and get access to ",
+            "&elatest updates.",
             "&7[&aClick&7] View current Patrons Credits"
-          ]
-        },
-        "instagram": {
-          "name": "&5&lInstagram",
-          "lore": [
-            "&eCheck out my Instgram"
           ]
         },
         "youtube": {
@@ -1775,7 +1758,7 @@
           ]
         },
         "save_as": {
-          "name": "&6Save As...",
+          "name": "&7\u270E &6&lSave As...",
           "lore": [
             "&7Save the recipe with a new namespaced key!",
             "&7Input: &e&lfolder recipe_key",
@@ -1784,7 +1767,7 @@
           ]
         },
         "priority": {
-          "name": "&3Priority:&7 %PRI%",
+          "name": "&7&l\u274F &6&lPriority:&a %PRI%",
           "lore": [
             "&7Sets the priority of this recipe!",
             "&7Priorities: ",
@@ -1796,10 +1779,11 @@
           ]
         },
         "conditions": {
-          "name": "&3Conditions",
+          "name": "&7\u27A5 &6&lConditions",
           "lore": [
             "&eSet conditions to further customize your recipe.",
             "&eSuch as World Time, Weather, etc.",
+            "",
             "&7[&aClick&7] Configure conditons"
           ]
         },
@@ -1847,21 +1831,26 @@
         },
         "exact_meta": {
           "enabled": {
-            "name": "&aExact Meta",
+            "name": "&a\u2714 &6&lCheck NBT",
             "help": [],
             "lore": [
-              "&7Items need to be exactly the same!",
-              "&7That means if you put in a IronSword with no damage ",
-              "&7then IronSwords with damage won't be allowed!"
+              "&eItems need to be exactly the same!",
+              "&eI.e. the NBT of the ingredient &lmust",
+              "&ematch the NBT of item put into slot!",
+              "",
+              "&7[&aClick&7] &7Ignore NBT"
             ]
           },
           "disabled": {
-            "name": "&3Ignore Meta",
+            "name": "&a\u2714 &6&lIgnore NBT",
             "help": [],
             "lore": [
-              "&7Items without Meta will only",
-              "&7be checked for their type!",
-              "&7Items with Meta still need to be exact!"
+              "&eItems without NBT will only",
+              "&ebe checked for their type!",
+              "&cWarning: Ingredients that have NBT",
+              "&care still checked for their NBT!",
+              "",
+              "&7[&aClick&7] &7Check NBT"
             ]
           }
         },
@@ -1930,7 +1919,7 @@
           }
         },
         "tags": {
-          "name": "&6&lTags",
+          "name": "&7\u27A5 &6&lTags",
           "lore": [
             "&7Allows you to configure Tags.",
             "&7Tags are a collection of Items,",
@@ -1938,11 +1927,12 @@
           ]
         },
         "group": {
-          "name": "&6&lRecipe Group",
+          "name": "&7\u270E &6&lRecipe Group",
           "lore": [
             "&7Group: &e%group%",
-            "&7Recipes with the same group are",
-            "&7grouped together in the recipe book.",
+            "&eRecipes with the same group are",
+            "&egrouped together in the recipe book.",
+            "",
             "&7[&aLeft-Click&7] &eInput Group",
             "&7[&aRight-Click&7] &eReset Group"
           ],
@@ -2308,80 +2298,115 @@
       "anvil": {
         "gui_name": "&4&lRecipe Creator &7[&8Anvil&7]",
         "gui_help": [
-          "&7Tip:",
-          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
-          "&7allow you to edit the item/s"
+          "&6&lResult/Ingredient slot&7:",
+          "  &aShift&7+&aRight-Click &7\u27A0",
+          "    &eopens the Result/Ingredient editor!",
+          ""
         ],
         "items": {
           "mode": {
-            "name": "&7Mode:&6 %MODE%",
-            "help": [
-              ""
+            "name": "&7\u274F &6&lMode:&a %MODE%",
+            "lore": [
+              "&eThe mode of the result.",
+              "&7&l–––––––––––––––––",
+              "&aResult &7- Applies the specified result item.",
+              "&aNone &7- Acts the same as vanilla recipes.",
+              "          &7(Block features see bottom left)",
+              "&aDurability &7- Same as None, plus you can modify",
+              "                &7the amount of damage to repair."
             ]
           },
           "repair_cost": {
-            "name": "&7Repair Cost:&6 %VAR%",
+            "name": "&7\u270E &6&lRepair Cost:&e %VAR%",
             "lore": [
               "&eThe Repair Cost for this recipe.",
-              "&eMust be greater than 0, else the recipe won't work!",
-              "&7[&aClick&7] Input Repair Cost"
+              "&cMust be greater than 0!",
+              "",
+              "&7[&aClick&7] Change Repair Cost"
             ],
-            "message": "&3Type in the amount of repair_cost. &cMust be greater than 0!"
+            "message": "&eType in the amount of the repair cost (in levels). &cMust be greater than 0!"
           },
           "block_repair": {
             "true": {
-              "name": "&aRepairing blocked"
+              "name": "&c\u274C &6&lRepairing blocked",
+              "lore": [
+                "&eThe left ingredient cannot be repaired."
+              ]
             },
             "false": {
-              "name": "&cRepairing allowed"
+              "name": "&a\u2714 &6&lRepairing allowed",
+              "lore": [
+                "&eThe left ingredient can be repaired.",
+                "&e(If possible in vanilla!)"
+              ]
             }
           },
           "block_rename": {
             "true": {
-              "name": "&aRenaming blocked"
+              "name": "&c\u274C &6&lRenaming blocked",
+              "lore": [
+                "&eThe left ingredient cannot be renamed."
+              ]
             },
             "false": {
-              "name": "&cRenaming allowed"
+              "name": "&a\u2714 &6&lRenaming allowed",
+              "lore": [
+                "&eThe left ingredient can be renamed.",
+                "&e(If possible in vanilla!)"
+              ]
             }
           },
           "block_enchant": {
             "true": {
-              "name": "&aEnchanting blocked"
+              "name": "&c\u274C &6&lEnchanting blocked",
+              "lore": [
+                "&eThe left ingredient cannot be enchanted."
+              ]
             },
             "false": {
-              "name": "&cEnchanting allowed"
+              "name": "&a\u2714 &6&lEnchanting allowed",
+              "lore": [
+                "&eThe left ingredient can be enchanted.",
+                "&e(If possible in vanilla!)"
+              ]
             }
           },
           "durability": {
-            "name": "&7Durability:&6 %VAR%",
+            "name": "&7\u270E &6&lDamage Repair:&a %VAR%",
             "lore": [
-              ""
+              "&eThe amount of damage to repair."
             ],
             "message": "&3Type in the amount of durability. &6>0 increase&7, <0 decrease"
           },
           "repair_apply": {
             "true": {
-              "name": "&aApply to Result",
+              "name": "&a\u2714 &6&lApply Repair Cost",
               "lore": [
-                "&7Applies the repair cost",
-                "&7to the result's MetaData!"
+                "&eApplies the repair cost",
+                "&eto the result item!",
+                "",
+                "&7[&aClick&7] Do not apply repair cost"
               ]
             },
             "false": {
-              "name": "&cNot Applied!",
+              "name": "&c\u274C &6&lDon't Apply Repair Cost",
               "lore": [
-                "&7The result's MetaData stays the same!"
+                "&eDoesn't apply the repair cost.",
+                "",
+                "&7[&aClick&7] Apply repair cost"
               ]
             }
           },
           "repair_mode": {
-            "name": "&7RepairCost mode: &3%VAR%",
+            "name": "&7\u274F &6&lRepair Cost Mode: &a%VAR%",
             "lore": [
-              "&eThe mode how the repaircost should be ",
-              "&eaffected by the left input!",
-              "&3NONE &7- Not affected at all",
-              "&3ADD &7- Gets added to recipe repaircost!",
-              "&3MULTIPLY &7- Gets multiplied with recipe repaircost",
+              "&eThis mode specifies how the repair cost",
+              "&eshould be affected by the left ingredient!",
+              "&7&l–––––––––––––––––",
+              "&aNONE &7- Not affected at all",
+              "&aADD &7- Gets added to recipe repaircost!",
+              "&aMULTIPLY &7- Gets multiplied with recipe repaircost",
+              "",
               "&7[&aClick&7] Toggle Mode"
             ]
           }
