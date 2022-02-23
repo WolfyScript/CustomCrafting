@@ -1,9 +1,9 @@
 {
   "author": "WolfyScript",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "info": [
-    "YouTube:",
-    "   https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"
+    "YouTube: https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g",
+    "GitHub:  https://github.com/WolfyScript"
   ],
   "crafting": {
     "workbench": {
@@ -238,13 +238,13 @@
           "name": "&4"
         },
         "back": {
-          "name": "&5Back"
+          "name": "&7\u27A6 &6&lBack"
         },
         "back_bottom": {
-          "name": "&c&lBack"
+          "name": "&7\u27A6 &c&lBack"
         },
         "close": {
-          "name": "&4Close"
+          "name": "&4&lClose"
         },
         "gui_help_on": {
           "name": "&f&l&n[?] Information",
@@ -275,29 +275,29 @@
         "github": {
           "name": "&7&lGitHub",
           "lore": [
-            "&eNeed a Wiki, tutorials, or would like to contribute?",
-            "&eHave a look at my GitHub repositories."
+            "&eNeed a Wiki, tutorials, or wanna contribute?",
+            "&eHave a look at the GitHub repository."
           ]
         },
         "discord": {
           "name": "&9&lDiscord",
           "lore": [
-            "&eNeed support? Found a bug? Have an suggestion or idea?",
-            "&eJoin the discord and join the awesome community!"
+            "&eNeed support? Found a bug?",
+            "&eFeel free to join the Discord server!"
           ]
         },
         "recipe_list": {
-          "name": "&6Recipe List",
+          "name": "&7\u27A5 &6&lRecipe List",
           "lore": [
-            "&7List of all recipes ",
-            "&8(&7including minecraft recipes&8)",
-            "&7Toggle any Recipe on/off"
+            "&eList of custom & vanilla recipes ",
+            "&eDisable&7/&eEnable any recipe."
           ]
         },
         "item_list": {
-          "name": "&6Item List",
+          "name": "&7\u27A5 &6&lItem List",
           "lore": [
-            "&eGet or edit custom items just by one click.",
+            "&eLists all your Custom Items.",
+            "&eEasily Get, Edit, or Delete them.",
             "",
             "&7[&aClick&7]&e Open Item List"
           ]
@@ -306,21 +306,25 @@
       "main_menu": {
         "gui_name": "&3&lCustomCrafting &7[&8%plugin.version%&7]",
         "gui_help": [
-          "&7Options:",
-          "&7- Click on the type of the Recipe you want to create.",
-          "&7- ItemCreator bottom left or RecipeList bottom right.",
-          "&7- Go to the Settings in the top left."
+          "&6&lOptions:",
+          "&7- &eClick the Recipe type for that you ",
+          "   &ewould like to create a new recipe.",
+          "&7- &eCreate Custom Items via the ItemCreator",
+          "   &e(Bottom left)",
+          "&7- &eView your recipes in the RecipeList",
+          "   &e(Bottom right)",
+          "&7- &eSettings in the top left."
         ],
         "items": {
           "settings": {
-            "name": "&7&lSettings",
+            "name": "&7\u27A5 &6&lSettings",
             "lore": [
               "&eConfigure the main settings ",
               "&ewithout stopping the server!"
             ]
           },
           "recipe_book_editor": {
-            "name": "&6Recipe Book &8[&7Beta&8]",
+            "name": "&7\u27A5 &6&lRecipe Book &8[&7Beta&8]",
             "lore": [
               "&eConfigure the Recipe Book.",
               "&eCreate Categories and set up which",
@@ -403,12 +407,12 @@
             ]
           },
           "item_editor": {
-            "name": "&6Item Creator",
+            "name": "&7\u27A5 &6&lItem Creator",
             "lore": [
-              "&7Create&8/&7Edit custom Items",
-              "&7with special features e.g.",
-              "&7Custom Durability&8, Furnace Fuel&8, ",
-              "&7Custom Equipment and more."
+              "&eCreate&7/&eEdit Custom Items.",
+              "&ewith special features e.g.",
+              "&eCustom Durability&7,&e Furnace Fuel&7, ",
+              "&eCustom Equipment and more."
             ]
           }
         }
@@ -433,9 +437,8 @@
       "recipe_list": {
         "gui_name": "&8&lRecipe List",
         "gui_help": [
-          "&7Toggle recipes.",
-          "&7if a recipe is disabled it won't be craftable to anyone!",
-          "&7Not even for players with permissions"
+          "&eToggle custom & vanilla recipes.",
+          "&eIf a recipe is disabled it can't be crafted by anyone!"
         ],
         "items": {
           "lores": {
@@ -1752,9 +1755,10 @@
     "recipe_creator": {
       "global_items": {
         "save": {
-          "name": "&3Save",
+          "name": "&7\u25B7 &6&lSave",
           "lore": [
-            "&7Saves the recipe with the existing namespaced key!"
+            "&eSaves the recipe under the",
+            "&eexisting namespaced key."
           ]
         },
         "save_as": {
@@ -1781,10 +1785,11 @@
         "conditions": {
           "name": "&7\u27A5 &6&lConditions",
           "lore": [
-            "&eSet conditions to further customize your recipe.",
-            "&eSuch as World Time, Weather, etc.",
+            "&eAdd conditions to your recipe.",
+            "&eto further customize it. e.g.: ",
+            "&eWorld, Time, Weather, Biomes, etc.",
             "",
-            "&7[&aClick&7] Configure conditons"
+            "&7[&aClick&7] Configure conditions"
           ]
         },
         "hidden": {
@@ -1800,8 +1805,7 @@
           "disabled": {
             "name": "&a✔ &6&lShow Recipe",
             "lore": [
-              "&eRecipe is shown in the plugin recipe book,",
-              "&eand, if enabled, inside the vanilla recipe book.",
+              "&eRecipe is shown in the recipe book.",
               "",
               "&7[&aClick&7] Hide in plugin recipe book"
             ]
@@ -1857,15 +1861,19 @@
         "crafting": {
           "shapeless": {
             "enabled": {
-              "name": "&3Shapeless Recipe",
-              "help": [
-                "&7Recipe is shapeless!"
+              "name": "&7\u25A1 &l&6Shapeless Recipe",
+              "lore": [
+                "&eThe ingredients have no shape.",
+                "&ei.e. They can be placed into",
+                "&ethe grid without any specific order."
               ]
             },
             "disabled": {
-              "name": "&3Shaped Recipe",
-              "help": [
-                "&7Recipe has a shape!"
+              "name": "&7\u25A0 &l&6Shaped Recipe",
+              "lore": [
+                "&eThe ingredients have a shape.",
+                "&ei.e. They must to be placed, into",
+                "&ethe grid, in this exact shape."
               ]
             }
           },
@@ -2209,28 +2217,11 @@
       "crafting": {
         "gui_name": "&4&lCreator &7[&8Workbench&7]",
         "gui_help": [
-          "&7Tip:",
-          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
-          "&7allow you to edit the item/s"
-        ],
-        "items": {
-          "adv_workbench": {
-            "enabled": {
-              "name": "&3Advanced Workbench",
-              "help": [
-                "&7Can only be crafted in",
-                "&7Advanced Workbenches",
-                ""
-              ]
-            },
-            "disabled": {
-              "name": "&4Every Workbench",
-              "help": [
-                "&7Can be crafted in every Workbench"
-              ]
-            }
-          }
-        }
+          "&6&lResult/Ingredient slot&7:",
+          " &aShift&7+&aRight-Click",
+          " &7\u27A0&e Open the Result/Ingredient Editor",
+          ""
+        ]
       },
       "elite_crafting": {
         "gui_name": "&4&lCreator &7[&8Elite Workbench&7]",
