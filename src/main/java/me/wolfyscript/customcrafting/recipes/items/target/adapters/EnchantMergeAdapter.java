@@ -83,15 +83,9 @@ public class EnchantMergeAdapter extends MergeAdapter {
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
         Map<Enchantment, Integer> enchants = new HashMap<>();
         for (IngredientData data : recipeData.getBySlots(slots)) {
-            var item = data.itemStack();
-            item.getEnchantments().forEach((enchantment, level) -> {
+            data.itemStack().getEnchantments().forEach((enchantment, level) -> {
                 if (!blackListedEnchants.contains(enchantment)) {
-                    enchants.merge(enchantment, level, (currentLevel, otherLevel) -> {
-                        if (!increaseLevels) {
-                            return Math.max(currentLevel, otherLevel);
-                        }
-                        return currentLevel.equals(otherLevel) ? ++currentLevel : Math.max(currentLevel, otherLevel);
-                    });
+                    enchants.merge(enchantment, level, (currentLevel, otherLevel) -> increaseLevels && currentLevel.equals(otherLevel) ? ++currentLevel : Math.max(currentLevel, otherLevel));
                 }
             });
         }
