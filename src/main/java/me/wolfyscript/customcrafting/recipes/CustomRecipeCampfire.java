@@ -49,7 +49,7 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
     @Override
     public CampfireRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            var recipe = new CampfireRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+            var recipe = new CampfireRecipe(org.bukkit.NamespacedKey.fromString(getNamespacedKey().toString()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
             recipe.setGroup(group);
             return recipe;
         }
