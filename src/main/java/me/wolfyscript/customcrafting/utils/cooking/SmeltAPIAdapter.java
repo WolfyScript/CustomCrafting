@@ -123,7 +123,7 @@ public abstract class SmeltAPIAdapter {
                 container.set(FurnaceListener.ACTIVE_RECIPE_KEY, PersistentDataType.STRING, recipe.getNamespacedKey().toString());
                 //Increase recipe used counter
                 var usedRecipesContainer = container.getOrDefault(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, container.getAdapterContext().newPersistentDataContainer());
-                var bukkitKey = NamespacedKeyUtils.toInternal(recipe.getNamespacedKey()).toBukkit(customCrafting);
+                var bukkitKey = org.bukkit.NamespacedKey.fromString(recipe.getNamespacedKey().toString());
                 int amount = usedRecipesContainer.getOrDefault(bukkitKey, PersistentDataType.INTEGER, 0);
                 usedRecipesContainer.set(bukkitKey, PersistentDataType.INTEGER, ++amount);
                 //Update data

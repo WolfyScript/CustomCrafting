@@ -154,14 +154,14 @@ public class FurnaceListener implements Listener {
         Bukkit.getScheduler().runTask(customCrafting, () -> {
             Furnace blockState = (Furnace) location.getBlock().getState();
             PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
-            me.wolfyscript.utilities.util.NamespacedKey activeRecipeKey = NamespacedKeyUtils.toInternal(me.wolfyscript.utilities.util.NamespacedKey.of(rootContainer.getOrDefault(FurnaceListener.ACTIVE_RECIPE_KEY, PersistentDataType.STRING, "")));
+            me.wolfyscript.utilities.util.NamespacedKey activeRecipeKey = me.wolfyscript.utilities.util.NamespacedKey.of(rootContainer.getOrDefault(FurnaceListener.ACTIVE_RECIPE_KEY, PersistentDataType.STRING, ""));
             if (activeRecipeKey != null) {
                 CustomRecipe<?> recipeFurnace = customCrafting.getRegistries().getRecipes().get(activeRecipeKey);
                 if (recipeFurnace instanceof CustomRecipeCooking<?, ?> furnaceRecipe) {
                     if (furnaceRecipe.getExp() > 0) {
                         PersistentDataContainer usedRecipes = rootContainer.get(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER);
                         if (usedRecipes != null) {
-                            NamespacedKey bukkitRecipeKey = activeRecipeKey.toBukkit(customCrafting);
+                            NamespacedKey bukkitRecipeKey = org.bukkit.NamespacedKey.fromString(activeRecipeKey.toString());
                             float recipeXP = furnaceRecipe.getExp();
                             int amount = usedRecipes.getOrDefault(bukkitRecipeKey, PersistentDataType.INTEGER, 0);
 

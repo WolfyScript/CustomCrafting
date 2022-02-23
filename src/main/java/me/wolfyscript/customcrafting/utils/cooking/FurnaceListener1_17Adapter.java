@@ -48,7 +48,7 @@ public class FurnaceListener1_17Adapter implements Listener {
     public void onStartSmelt(FurnaceStartSmeltEvent event) {
         var recipe = event.getRecipe();
         if (recipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            var data = manager.getAdapter().processRecipe(event.getSource(), NamespacedKeyUtils.toInternal(NamespacedKey.fromBukkit(recipe.getKey())), event.getBlock());
+            var data = manager.getAdapter().processRecipe(event.getSource(), NamespacedKey.fromBukkit(recipe.getKey()), event.getBlock());
             if(data.getKey() == null) { //"Cancel" the process when no custom recipe is valid.
                 event.setTotalCookTime(0);
             }
