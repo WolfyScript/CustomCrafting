@@ -44,6 +44,7 @@ public class EnchantMergeAdapter extends MergeAdapter {
 
     private final boolean ignoreEnchantLimit;
     private final boolean ignoreConflicts;
+    private final boolean ignoreItemLimit;
     private final boolean increaseLevels;
     private List<Enchantment> blackListedEnchants = new ArrayList<>();
 
@@ -52,6 +53,7 @@ public class EnchantMergeAdapter extends MergeAdapter {
         this.ignoreEnchantLimit = false;
         this.ignoreConflicts = true;
         this.increaseLevels = false;
+        this.ignoreItemLimit = true;
     }
 
     public EnchantMergeAdapter(EnchantMergeAdapter adapter) {
@@ -59,6 +61,7 @@ public class EnchantMergeAdapter extends MergeAdapter {
         this.ignoreEnchantLimit = adapter.ignoreEnchantLimit;
         this.ignoreConflicts = adapter.ignoreConflicts;
         this.increaseLevels = adapter.increaseLevels;
+        this.ignoreItemLimit = adapter.ignoreItemLimit;
         this.blackListedEnchants = List.copyOf(blackListedEnchants);
     }
 
@@ -95,7 +98,7 @@ public class EnchantMergeAdapter extends MergeAdapter {
         var meta = result.getItemMeta();
         enchants.forEach((enchantment, level) -> {
             if ((!result.containsEnchantment(enchantment) || result.getEnchantmentLevel(enchantment) < level) && meta != null) {
-                if (ignoreConflicts || !meta.hasConflictingEnchant(enchantment)) {
+                if ((ignoreConflicts || !meta.hasConflictingEnchant(enchantment)) && (ignoreItemLimit || enchantment.canEnchantItem(result))) {
                     meta.addEnchant(enchantment, level, ignoreEnchantLimit);
                 }
             }
