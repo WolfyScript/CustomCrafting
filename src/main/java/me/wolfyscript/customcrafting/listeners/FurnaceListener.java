@@ -115,8 +115,14 @@ public class FurnaceListener implements Listener {
             manager.getAdapter().applyResult(event);
             return;
         }
+        //Similar to the check in the FurnaceStartSmeltEvent.
+        //This is needed in 1.16 as the FurnaceStartSmeltEvent doesn't exist.
+        //Check if the CustomItem is allowed in Vanilla recipes
+        if (CustomItem.getByItemStack(event.getSource()) != null) {
+            event.setCancelled(true); //Cancel the process if it is.
+        }
         Bukkit.getScheduler().runTask(customCrafting, () -> {
-            //Reset the active recipe
+            //make sure to reset the active custom recipe when the new recipe is a vanilla recipe.
             var state = ((Furnace) event.getBlock().getState());
             PersistentDataContainer container = state.getPersistentDataContainer();
             container.remove(FurnaceListener.ACTIVE_RECIPE_KEY);
