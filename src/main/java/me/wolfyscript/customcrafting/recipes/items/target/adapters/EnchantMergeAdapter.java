@@ -50,7 +50,7 @@ public class EnchantMergeAdapter extends MergeAdapter {
     public EnchantMergeAdapter() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "enchant"));
         this.ignoreEnchantLimit = false;
-        this.ignoreConflicts = false;
+        this.ignoreConflicts = true;
         this.increaseLevels = false;
     }
 
