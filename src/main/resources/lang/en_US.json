@@ -93,9 +93,9 @@
         "link": " &7[&3Click Here&7]"
       },
       "invalid_namespacedkey": [
-        "&cThe namespace and key must be lowercase and must only",
+        "&cThe folder and key must be lowercase and must only",
         "&ccontain the following characters [a-z 0-9 _ -]!",
-        "&ePlease retype the namespace and key!"
+        "&ePlease retype the folder and key!"
       ]
     }
   },
@@ -762,13 +762,13 @@
           "save_item": {
             "name": "&3Save Item",
             "lore": [
-              "&7Saves the item with the existing namespaced key!"
+              "&7Saves the item under the existing folder and key!"
             ]
           },
           "save_item_as": {
             "name": "&6Save As...",
             "lore": [
-              "&7Save the item with a new namespaced key.",
+              "&7Save the item with a new folder and key.",
               "&7Input: &e&lfolder item_key",
               "&cThe folder and key must be lowercase and",
               "&conly contain letters, numbers, '_', '-', or '/'!"
@@ -1758,13 +1758,13 @@
           "name": "&7\u25B7 &6&lSave",
           "lore": [
             "&eSaves the recipe under the",
-            "&eexisting namespaced key."
+            "&eexisting folder and key."
           ]
         },
         "save_as": {
           "name": "&7\u270E &6&lSave As...",
           "lore": [
-            "&7Save the recipe with a new namespaced key!",
+            "&7Save the recipe under a new folder and key!",
             "&7Input: &e&lfolder recipe_key",
             "&cThe folder and key must be lowercase and",
             "&conly contain letters, numbers, '_', '-', or '/'!"
@@ -1951,9 +1951,9 @@
         "override": "&3type the namespace and key from the recipe!",
         "valid_number": "&cType in a valid number!",
         "save": {
-          "input": "&eType in the namespaced key! Use &6/wui &efor better input!",
+          "input": "&eType in the folder and key! Use &6/wui &efor better input!",
           "key": {
-            "invalid": "&cThe input is not a valid namespaced key! \nMake sure it only contains: \n - lowercase letters,\n - numbers,\n - underscores, \n - or dashes!\n - You cannot use the minecraft namespace!\n&cUse &e/wui &cto get input assistance, like tab completion!"
+            "invalid": "&cThe input is not a valid folder or key! \nMake sure it only contains: \n - lowercase letters,\n - numbers,\n - underscores, \n - or dashes!\n - You cannot use the minecraft namespace!\n&cUse &e/wui &cto get input assistance, like tab completion!"
           },
           "empty": "&cCannot save a empty recipe! Check the Result and the source/ingredients",
           "success": "&aRecipe successfully saved to:"
@@ -2104,7 +2104,7 @@
                 "lore": [
                   "&8[&aClick&8] &7Add Elite Workbenches"
                 ],
-                "message": "&eType in the namespaced key of the elite crafting table item! Usage: &e&lfolder item_key"
+                "message": "&eType in the folder and key of the elite crafting table item! Usage: &e&lfolder item_key"
               },
               "list": {
                 "name": "&6&lValues",
