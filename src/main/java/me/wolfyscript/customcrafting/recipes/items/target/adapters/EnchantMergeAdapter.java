@@ -93,7 +93,11 @@ public class EnchantMergeAdapter extends MergeAdapter {
         enchants.forEach((enchantment, level) -> {
             if ((!result.containsEnchantment(enchantment) || result.getEnchantmentLevel(enchantment) < level) && meta != null) {
                 if ((ignoreConflicts || !meta.hasConflictingEnchant(enchantment)) && (ignoreItemLimit || enchantment.canEnchantItem(result))) {
-                    meta.addEnchant(enchantment, level, ignoreEnchantLimit);
+                    if (ignoreEnchantLimit) {
+                        meta.addEnchant(enchantment, level, true);
+                    } else {
+                        meta.addEnchant(enchantment, Math.min(level, enchantment.getMaxLevel()), false);
+                    }
                 }
             }
         });
