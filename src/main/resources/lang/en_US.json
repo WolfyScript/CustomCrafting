@@ -259,7 +259,7 @@
           ]
         },
         "patreon": {
-          "name": "&6&ktt   &r&6&lPatreon   &6&ktt",
+          "name": "&7\u27A5 &6&l&ktt   &r&6&lPatreon   &6&ktt",
           "lore": [
             "&eBecome a Patron and get access to ",
             "&elatest updates.",
@@ -267,20 +267,20 @@
           ]
         },
         "youtube": {
-          "name": "&c&lYouTube",
+          "name": "&7\u2756 &c&lYouTube",
           "lore": [
             "&eSubscribe to me on YouTube"
           ]
         },
         "github": {
-          "name": "&7&lGitHub",
+          "name": "&7\u2756 &7&lGitHub",
           "lore": [
             "&eNeed a Wiki, tutorials, or wanna contribute?",
             "&eHave a look at the GitHub repository."
           ]
         },
         "discord": {
-          "name": "&9&lDiscord",
+          "name": "&7\u2756 &9&lDiscord",
           "lore": [
             "&eNeed support? Found a bug?",
             "&eFeel free to join the Discord server!"
@@ -332,76 +332,76 @@
             ]
           },
           "crafting": {
-            "name": "&6Crafting Table Recipe",
+            "name": "&7\u27A5 &6&lCrafting Table Recipe",
             "lore": [
               "&7Create Normal and Advanced",
               "&7Crafting Table Recipes."
             ]
           },
           "elite_crafting": {
-            "name": "&6Elite Crafting Table &8[&7Beta&8]",
+            "name": "&7\u27A5 &6&lElite Crafting Table &8[&7Beta&8]",
             "lore": [
               "&7Create Elite Crafting Table Recipes",
               "&7with a up to 6x6 crafting grid."
             ]
           },
           "anvil": {
-            "name": "&6Anvil Recipe",
+            "name": "&7\u27A5 &6&lAnvil Recipe",
             "help": [
               ""
             ]
           },
           "furnace": {
-            "name": "&6Furnace Recipe",
+            "name": "&7\u27A5 &6&lFurnace Recipe",
             "help": [
               ""
             ]
           },
           "blast_furnace": {
-            "name": "&6Blasting Recipe",
+            "name": "&7\u27A5 &6&lBlasting Recipe",
             "help": [
               ""
             ]
           },
           "smoker": {
-            "name": "&6Smoking Recipe",
+            "name": "&7\u27A5 &6&lSmoking Recipe",
             "help": [
               ""
             ]
           },
           "campfire": {
-            "name": "&6Campfire Recipe",
+            "name": "&7\u27A5 &6&lCampfire Recipe",
             "help": [
               ""
             ]
           },
           "cauldron": {
-            "name": "&6Cauldron",
+            "name": "&7\u27A5 &6&lCauldron",
             "lore": [
               "&7Create cauldron recipes to brew/cook",
               "&7items inside of the cauldron!"
             ]
           },
           "stonecutter": {
-            "name": "&6Stonecutter Recipe",
+            "name": "&7\u27A5 &6&lStonecutter Recipe",
             "help": [
               ""
             ]
           },
           "grindstone": {
-            "name": "&6Grindstone Recipe",
+            "name": "&7\u27A5 &6&lGrindstone Recipe",
             "help": [
               ""
             ]
           },
           "brewing_stand": {
-            "name": "&6Brewing Stand Recipe",
+            "name": "&7\u27A5 &6&lBrewing Stand Recipe",
             "lore": [
               ""
             ]
           },
           "smithing": {
-            "name": "&6Smithing Recipe",
+            "name": "&7\u27A5 &6&lSmithing Recipe",
             "lore": [
               ""
             ]
