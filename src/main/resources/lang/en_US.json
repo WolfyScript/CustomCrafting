@@ -2282,7 +2282,7 @@
             "lore": [
               "&6%TIME% ticks"
             ],
-            "message": "&3Type in the cooking time in ticks. e.g. 20"
+            "message": "&eType in the cooking time in ticks. e.g. 20. &cMax value: 32767"
           }
         }
       },

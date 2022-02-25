@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 
@@ -85,6 +86,7 @@ public abstract class RecipeCacheCooking<R extends CustomRecipeCooking<R, ?>> ex
     }
 
     public void setCookingTime(int cookingTime) {
+        Preconditions.checkArgument(cookingTime <= Short.MAX_VALUE, "The cooking time cannot be higher than 32767.");
         this.cookingTime = cookingTime;
     }
 }
