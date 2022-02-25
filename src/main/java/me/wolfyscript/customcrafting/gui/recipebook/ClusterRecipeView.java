@@ -54,11 +54,11 @@ public class ClusterRecipeView extends CCCluster {
         setEntry(RECIPE_SINGLE);
 
         //We change the behaviour of the buttons without a new language entry. Instead, it uses the lang keys from the recipe book cluster.
-        registerButton(new DummyButton<>("cooking.icon", new ButtonState<>(new NamespacedKey(ClusterRecipeBook.KEY, "cooking.icon"), Material.FURNACE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        registerButton(new DummyButton<>(ClusterRecipeBook.COOKING_ICON.getKey(), new ButtonState<>(ClusterRecipeBook.COOKING_ICON, Material.FURNACE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             cache.getCacheRecipeView().getRecipe().ifPresent(customRecipe -> {
                 RecipeType<?> recipeType = customRecipe.getRecipeType();
                 itemStack.setType(Material.matchMaterial(recipeType.name()));
-                hashMap.put("%type%", "&7" + StringUtils.capitalize(recipeType.getId().replace("_", " ")));
+                hashMap.put("%type%", StringUtils.capitalize(recipeType.getId().replace("_", " ")));
                 if (customRecipe instanceof CustomRecipeCooking<?,?> cookingRecipe) {
                     hashMap.put("%time%", cookingRecipe.getCookingTime());
                     hashMap.put("%xp%", cookingRecipe.getExp());

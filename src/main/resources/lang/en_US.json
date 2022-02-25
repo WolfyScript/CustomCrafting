@@ -34,34 +34,34 @@
     },
     "filter": {
       "brewing": {
-        "name": "&6&lBrewing"
+        "name": "&7❏ &6&lBrewing"
       },
       "building_blocks": {
-        "name": "&6&lBuilding Blocks"
+        "name": "&7\u274F &6&lBuilding Blocks"
       },
       "decorations": {
-        "name": "&6&lDecorations"
+        "name": "&7\u274F &6&lDecorations"
       },
       "combat": {
-        "name": "&6&lCombat"
+        "name": "&7\u274F &6&lCombat"
       },
       "tools": {
-        "name": "&6&lTools"
+        "name": "&7\u274F &6&lTools"
       },
       "redstone": {
-        "name": "&6&lRedstone"
+        "name": "&7\u274F &6&lRedstone"
       },
       "food": {
-        "name": "&6&lFood"
+        "name": "&7\u274F &6&lFood"
       },
       "transportation": {
-        "name": "&6&lTransportation"
+        "name": "&7\u274F &6&lTransportation"
       },
       "misc": {
-        "name": "&6&lMisc"
+        "name": "&7\u274F &6&lMisc"
       },
       "search": {
-        "name": "&6&lBrowse"
+        "name": "&7\u274F &6&lBrowse"
       }
     }
   },
@@ -2983,18 +2983,18 @@
           }
         },
         "previous_page": {
-          "name": "&2Previous Page",
+          "name": "&7⏪ &6&lPrevious Page",
           "help": []
         },
         "next_page": {
-          "name": "&2Next Page",
+          "name": "&7⏩ &6&lNext Page",
           "help": []
         },
         "lores": {
           "click": "&7[&aClick&7] View Recipe"
         },
         "stonecutter": {
-          "name": "&6Stonecutter"
+          "name": "&6&lStonecutter"
         },
         "anvil": {
           "durability": {
@@ -3048,19 +3048,19 @@
             ]
           },
           "shapeless_off": {
-            "name": "&6Shaped Recipe",
+            "name": "&6&lShaped Recipe",
             "lore": [
               "&7This Recipe has a shape!",
-              "&7The ingredients need to be arranged",
-              "&7in that exact shape"
+              "&7The ingredients need to be",
+              "&7arranged in that exact shape"
             ]
           },
           "shapeless_on": {
-            "name": "&6Shapeless Recipe",
+            "name": "&6&lShapeless Recipe",
             "lore": [
               "&7This Recipe is shapeless!",
               "&7The items have no order and",
-              "&7can be arranged in any shape and order."
+              "&7can be arranged in any shape."
             ]
           }
         },
@@ -3076,32 +3076,34 @@
         "cauldron": {
           "water": {
             "enabled": {
-              "name": "&6Cauldron",
+              "name": "&6&lCauldron",
               "lore": [
-                "&7Water is required!",
-                "&7At least a water level of &e%lvl%&7!"
+                "&eCauldron must be filled with Water!",
+                "&7Minimum water level: &e%lvl%",
+                "&7Cooking Time: &e%time%"
               ]
             },
             "disabled": {
-              "name": "&6Cauldron",
+              "name": "&6&lCauldron",
               "lore": [
-                "&7No water is required!"
+                "&eCauldron must be empty!",
+                "&eCooking Time: &e%time%"
               ]
             }
           },
           "fire": {
             "enabled": {
-              "name": "&6Fire",
+              "name": "&6&lLit Campfire",
               "lore": [
-                "&eFire is required!",
-                "&eMake sure that you have a lit",
-                "&ecampfire under your cauldron!"
+                "&eRequires a lit &eCampfire",
+                "&ebelow the cauldron"
               ]
             },
             "disabled": {
-              "name": "&6Fire",
+              "name": "&6&lUnlit Campfire",
               "lore": [
-                "&eNo Fire is required!"
+                "&eRequires an unlit Campfire",
+                "&ebelow the cauldron"
               ]
             }
           }
@@ -3110,7 +3112,6 @@
           "icon": {
             "name": "&6&lBrewing",
             "lore": [
-              "",
               "&7Fuel cost: &e%cost%"
             ]
           }
@@ -3122,10 +3123,12 @@
           "name": "&6&lSmithing Table"
         },
         "back_to_list": {
-          "name": "&7&lReturn",
+          "name": "&6&lReturn",
           "lore": [
-            "&7Left Click &l»&r &eReturn to previous Recipe",
-            "&7Right Click &l»&r &eReturn to Recipe List"
+            "&aLeft-Click",
+            "  &7»&r &eReturn to previous Recipe",
+            "&aRight-Click ",
+            "  &7»&r &eReturn to Recipe List"
           ]
         }
       },
