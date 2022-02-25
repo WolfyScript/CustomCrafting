@@ -31,6 +31,8 @@ import me.wolfyscript.utilities.api.language.LanguageAPI;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class ConfigHandler {
 
@@ -118,8 +120,7 @@ public class ConfigHandler {
         languageAPI.registerLanguage(fallBackLanguage);
         customCrafting.getLogger().info(() -> "Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join(", ", fallBackLanguage.getAuthors()));
         //Load the chosen language
-        var file = new File(customCrafting.getDataFolder(), "lang/" + chosenLang + ".json");
-        if (file.exists()) {
+        if (Files.exists(Path.of(customCrafting.getDataFolder().getPath(), "lang", chosenLang + ".json"))) {
             var language = new Language(customCrafting, chosenLang);
             languageAPI.registerLanguage(language);
             languageAPI.setActiveLanguage(language);

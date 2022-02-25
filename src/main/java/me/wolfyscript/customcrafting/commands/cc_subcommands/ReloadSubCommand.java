@@ -27,8 +27,11 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.MenuRecipeBook;
+import me.wolfyscript.customcrafting.registry.RegistryRecipes;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.registry.RegistryCustomItem;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -39,8 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReloadSubCommand extends AbstractSubCommand {
-
-    private static final String COMPLETE_MSG = "  - " + ChatColor.GREEN + "Complete";
 
     public ReloadSubCommand(CustomCrafting customCrafting) {
         super("reload", new ArrayList<>(), customCrafting);
@@ -53,11 +54,20 @@ public class ReloadSubCommand extends AbstractSubCommand {
             var invAPI = api.getInventoryAPI(CCCache.class);
             var configHandler = customCrafting.getConfigHandler();
             var dataHandler = customCrafting.getDataHandler();
-
-            api.getChat().sendMessage(p, ChatColor.YELLOW + "Reloading Config!");
-            configHandler.load();
-            api.getChat().sendMessage(p, ChatColor.YELLOW + "Reloading Languages!");
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Unloading Languages...");
             customCrafting.getApi().getLanguageAPI().unregisterLanguages();
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Unloading Recipes...");
+            //Unregister recipes
+            RegistryRecipes registryRecipes = customCrafting.getRegistries().getRecipes();
+            registryRecipes.get(NamespacedKeyUtils.NAMESPACE).forEach(customRecipe -> registryRecipes.remove(customRecipe.getNamespacedKey()));
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Unloading Items...");
+            //Unregister items
+            RegistryCustomItem registryCustomItem = customCrafting.getApi().getRegistries().getCustomItems();
+            registryCustomItem.get(NamespacedKeyUtils.NAMESPACE).forEach(customItem -> registryCustomItem.remove(customItem.getNamespacedKey()));
+            //Load new data
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Reloading Config...");
+            configHandler.load();
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Loading Recipe & Items...");
             dataHandler.initCategories();
             dataHandler.load();
             dataHandler.getCategories().index(customCrafting);
