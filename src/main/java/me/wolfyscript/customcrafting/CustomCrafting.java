@@ -46,7 +46,6 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
-import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDefault;
@@ -66,7 +65,6 @@ import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
@@ -87,6 +85,7 @@ import java.util.logging.Level;
 
 public class CustomCrafting extends JavaPlugin {
 
+    private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
     //Only used for displaying which version it is.
     private static final boolean PREMIUM = true;
     //CustomData keys
@@ -98,14 +97,12 @@ public class CustomCrafting extends JavaPlugin {
     public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "customcrafting/recipe_book");
     //Used for backwards compatibility
     public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
-
-    private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
-
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
     public static final int CONFIG_VERSION = 5;
 
     //Instance Object to use when no Object was passed!
     private static CustomCrafting instance;
+
     //Utils
     private final String currentVersion;
     private final WUVersion version;
@@ -113,23 +110,19 @@ public class CustomCrafting extends JavaPlugin {
     private final ChatUtils chatUtils;
     //The main WolfyUtilities instance
     private final WolfyUtilities api;
-    private final Chat chat;
     private final CCRegistries registries;
-
     //Recipe Managers / API
     private final CraftManager craftManager;
     private final CookingManager cookingManager;
-
+    private DisableRecipesHandler disableRecipesHandler;
     //File Handlers to load, save or edit data
     private ConfigHandler configHandler;
     private DataHandler dataHandler;
     private Cauldrons cauldrons = null;
-
+    //Network
     private final UpdateChecker updateChecker;
     private final NetworkHandler networkHandler;
-
-    private DisableRecipesHandler disableRecipesHandler;
-
+    //Compatibility
     private final OtherPlugins otherPlugins;
     private final boolean isPaper;
 
@@ -145,8 +138,7 @@ public class CustomCrafting extends JavaPlugin {
 
         this.registries = new CCRegistries(this, api.getCore());
 
-        this.chat = api.getChat();
-        this.chat.setInGamePrefix("§7[§3CC§7] ");
+        api.getChat().setInGamePrefix("§7[§3CC§7] ");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
         this.chatUtils = new ChatUtils(this);
         this.patreon = new Patreon();
@@ -245,33 +237,27 @@ public class CustomCrafting extends JavaPlugin {
         writeBanner();
         writePatreonCredits();
         writeSeparator();
-
         this.otherPlugins.init();
 
         configHandler = new ConfigHandler(this);
-        configHandler.loadRecipeBookConfig();
-        configHandler.renameOldRecipesFolder();
+        configHandler.load();
         dataHandler = new DataHandler(this);
-        configHandler.loadDefaults();
         disableRecipesHandler = new DisableRecipesHandler(this);
 
         registerListeners();
         registerCommands();
         registerInventories();
+
+        //Used for testing purposes, might be available for production in the future
         if (WolfyUtilities.isDevEnv()) {
             this.networkHandler.registerPackets();
         }
-
         cauldrons = new Cauldrons(this);
-        if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
-            api.getConsole().info("$msg.startup.placeholder$");
-            new PlaceHolder(this).register();
-        }
         if (api.getCore().getCompatibilityManager().getPlugins().isDoneLoading()) {
             dataHandler.loadRecipesAndItems();
         }
+        //All data is loaded. Now test for updates.
         updateChecker.run(null);
-
         //Load Metrics
         var metrics = new Metrics(this, 3211);
         metrics.addCustomChart(new SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));

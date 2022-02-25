@@ -63,7 +63,6 @@ public class DataHandler implements Listener {
         this.api = customCrafting.getApi();
         this.config = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
-        initCategories();
 
         if (customCrafting.getConfigHandler().getConfig().isDatabaseEnabled()) {
             setSaveDestination(SaveDestination.DATABASE);
@@ -91,6 +90,7 @@ public class DataHandler implements Listener {
         }
         this.extensionPackLoader = null; //No extension pack implementation yet. TODO
         initLoaders();
+        initCategories();
     }
 
     private void initLoaders() {
@@ -108,6 +108,27 @@ public class DataHandler implements Listener {
 
     public void initCategories() {
         this.categories = customCrafting.getConfigHandler().getRecipeBookConfig().getCategories();
+    }
+
+    public void load() {
+        api.getConsole().info("$msg.startup.recipes.title$");
+        var lastBukkitVersion = config.getInt("data.bukkit_version");
+        var lastVersion = config.getInt("data.version");
+        boolean upgrade = lastBukkitVersion < CustomCrafting.BUKKIT_VERSION || lastVersion < CustomCrafting.CONFIG_VERSION;
+        for (ResourceLoader loader : loaders) {
+            loader.load(upgrade);
+        }
+        if (upgrade) {
+            config.set("data.version", CustomCrafting.CONFIG_VERSION);
+            config.set("data.bukkit_version", CustomCrafting.BUKKIT_VERSION);
+            config.save();
+        }
+    }
+
+    public void loadRecipesAndItems() {
+        load();
+        categories.index(customCrafting);
+        WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
 
     public DatabaseLoader getDatabaseLoader() {
@@ -132,27 +153,6 @@ public class DataHandler implements Listener {
         customCrafting.writeSeparator();
         loadRecipesAndItems();
         customCrafting.writeSeparator();
-    }
-
-    public void load() {
-        api.getConsole().info("$msg.startup.recipes.title$");
-        var lastBukkitVersion = config.getInt("data.bukkit_version");
-        var lastVersion = config.getInt("data.version");
-        boolean upgrade = lastBukkitVersion < CustomCrafting.BUKKIT_VERSION || lastVersion < CustomCrafting.CONFIG_VERSION;
-        for (ResourceLoader loader : loaders) {
-            loader.load(upgrade);
-        }
-        if (upgrade) {
-            config.set("data.version", CustomCrafting.CONFIG_VERSION);
-            config.set("data.bukkit_version", CustomCrafting.BUKKIT_VERSION);
-            config.save();
-        }
-    }
-
-    public void loadRecipesAndItems() {
-        load();
-        categories.index(customCrafting);
-        WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
 
     public ResourceLoader getActiveLoader() {

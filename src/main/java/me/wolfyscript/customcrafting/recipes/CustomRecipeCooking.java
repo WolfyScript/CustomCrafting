@@ -113,6 +113,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     }
 
     public void setCookingTime(int cookingTime) {
+        Preconditions.checkArgument(cookingTime <= Short.MAX_VALUE, "The cooking time cannot be higher than 32767.");
         this.cookingTime = cookingTime;
     }
 

@@ -59,7 +59,7 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
     @Override
     public SmokingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            var recipe = new SmokingRecipe(org.bukkit.NamespacedKey.fromString(getNamespacedKey().toString()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+            var recipe = new SmokingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
             recipe.setGroup(group);
             return recipe;
         }

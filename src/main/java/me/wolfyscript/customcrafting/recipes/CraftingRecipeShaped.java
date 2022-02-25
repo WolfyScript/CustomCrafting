@@ -59,7 +59,7 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
     @Override
     public org.bukkit.inventory.ShapedRecipe getVanillaRecipe() {
         if (!getResult().isEmpty() && !ingredients.isEmpty()) {
-            var recipe = new org.bukkit.inventory.ShapedRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
+            var recipe = new org.bukkit.inventory.ShapedRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack());
             recipe.shape(getShape());
             mappedIngredients.forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().stream().map(CustomItem::getItemStack).distinct().toList())));
             recipe.setGroup(getGroup());

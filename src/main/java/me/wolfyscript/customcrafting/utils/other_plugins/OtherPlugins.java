@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.utils.other_plugins;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 
 public class OtherPlugins {
@@ -40,5 +42,10 @@ public class OtherPlugins {
             plugin.getLogger().info("Detected ProtocolLib... initiating additional features.");
             this.protocolLib = new ProtocolLib(plugin);
         }
+        if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
+            plugin.getApi().getConsole().info("$msg.startup.placeholder$");
+            new PlaceHolder(plugin).register();
+        }
+
     }
 }

@@ -331,6 +331,6 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     }
 
     private void removeBukkitRecipe(NamespacedKey namespacedKey) {
-        Bukkit.removeRecipe(namespacedKey.toBukkit(CustomCrafting.inst()));
+        Bukkit.removeRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()));
     }
 }
