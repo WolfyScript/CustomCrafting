@@ -37,13 +37,12 @@ import java.nio.file.Path;
 public class ConfigHandler {
 
     private final CustomCrafting customCrafting;
-    private final WolfyUtilities api;
     private final LanguageAPI languageAPI;
     private final MainConfig mainConfig;
     private RecipeBookConfig recipeBookConfig;
 
     public ConfigHandler(CustomCrafting customCrafting) {
-        this.api = customCrafting.getApi();
+        WolfyUtilities api = customCrafting.getApi();
         this.customCrafting = customCrafting;
         var configAPI = api.getConfigAPI();
         this.languageAPI = api.getLanguageAPI();
