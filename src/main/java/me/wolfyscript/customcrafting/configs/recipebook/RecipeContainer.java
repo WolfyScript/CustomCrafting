@@ -40,7 +40,6 @@ import java.util.*;
 
 public class RecipeContainer implements Comparable<RecipeContainer> {
 
-    private final CustomCrafting customCrafting;
     private final RegistryRecipes recipes;
     private final List<CustomRecipe<?>> cachedRecipes;
     //private final Map<UUID, List<ICustomRecipe<?, ?>>> cachedPlayerRecipes = new HashMap<>();
@@ -50,7 +49,6 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     private final NamespacedKey recipe;
 
     public RecipeContainer(CustomCrafting customCrafting, String group) {
-        this.customCrafting = customCrafting;
         this.recipes = customCrafting.getRegistries().getRecipes();
         this.group = group;
         this.recipe = null;
@@ -58,7 +56,6 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public RecipeContainer(CustomCrafting customCrafting, NamespacedKey recipe) {
-        this.customCrafting = customCrafting;
         this.recipes = customCrafting.getRegistries().getRecipes();
         this.group = null;
         this.recipe = recipe;
@@ -66,7 +63,6 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public RecipeContainer(CustomCrafting customCrafting, CustomRecipe<?> recipe) {
-        this.customCrafting = customCrafting;
         this.recipes = customCrafting.getRegistries().getRecipes();
         this.group = null;
         this.recipe = recipe.getNamespacedKey();

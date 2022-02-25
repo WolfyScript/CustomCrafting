@@ -27,9 +27,11 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.MenuRecipeBook;
+import me.wolfyscript.customcrafting.registry.RegistryRecipes;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
+import me.wolfyscript.utilities.registry.RegistryCustomItem;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,8 +43,6 @@ import java.util.List;
 
 public class ReloadSubCommand extends AbstractSubCommand {
 
-    private static final String COMPLETE_MSG = "  - " + ChatColor.GREEN + "Complete";
-
     public ReloadSubCommand(CustomCrafting customCrafting) {
         super("reload", new ArrayList<>(), customCrafting);
     }
@@ -51,25 +51,29 @@ public class ReloadSubCommand extends AbstractSubCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] var4) {
         WolfyUtilities api = customCrafting.getApi();
         if (sender instanceof Player p && ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
-            InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
-            api.getChat().sendMessage(p, ChatColor.YELLOW + "Reloading Config!");
-            customCrafting.getConfigHandler().getConfig().load();
-            api.getChat().sendMessage(p, COMPLETE_MSG);
-            api.getChat().sendMessage(p, ChatColor.YELLOW + "Reloading Languages!");
-            customCrafting.getApi().getLanguageAPI().unregisterLanguages();
-            customCrafting.getConfigHandler().loadLang();
-            api.getChat().sendMessage(p, COMPLETE_MSG);
-            api.getChat().sendMessage(p, ChatColor.YELLOW + "Reloading Recipes/Items!");
-            customCrafting.getConfigHandler().loadRecipeBookConfig();
+            var invAPI = api.getInventoryAPI(CCCache.class);
+            var configHandler = customCrafting.getConfigHandler();
             var dataHandler = customCrafting.getDataHandler();
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Unloading Languages...");
+            customCrafting.getApi().getLanguageAPI().unregisterLanguages();
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Unloading Recipes...");
+            //Unregister recipes
+            RegistryRecipes registryRecipes = customCrafting.getRegistries().getRecipes();
+            registryRecipes.get(NamespacedKeyUtils.NAMESPACE).forEach(customRecipe -> registryRecipes.remove(customRecipe.getNamespacedKey()));
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Unloading Items...");
+            //Unregister items
+            RegistryCustomItem registryCustomItem = customCrafting.getApi().getRegistries().getCustomItems();
+            registryCustomItem.get(NamespacedKeyUtils.NAMESPACE).forEach(customItem -> registryCustomItem.remove(customItem.getNamespacedKey()));
+            //Load new data
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Reloading Config...");
+            configHandler.load();
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Loading Recipe & Items...");
             dataHandler.initCategories();
             dataHandler.load();
             dataHandler.getCategories().index(customCrafting);
-            api.getChat().sendMessage(p, COMPLETE_MSG);
             api.getChat().sendMessage(p, "&eReloading GUIs");
             ((MenuRecipeBook) invAPI.getGuiWindow(ClusterRecipeBook.RECIPE_BOOK)).reset();
             invAPI.reset();
-            api.getChat().sendMessage(p, COMPLETE_MSG);
             api.getChat().sendMessage(p, ChatColor.GREEN + "Reload done!");
         }
         return true;
