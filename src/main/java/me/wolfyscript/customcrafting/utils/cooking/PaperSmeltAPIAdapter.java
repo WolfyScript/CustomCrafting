@@ -41,7 +41,7 @@ public class PaperSmeltAPIAdapter extends SmeltAPIAdapter {
     public Pair<CookingRecipeData<?>, Boolean> process(FurnaceSmeltEvent event, Block block, Furnace furnace) {
         var recipe = event.getRecipe();
         if (recipe != null && recipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            return processRecipe(event.getSource(), NamespacedKeyUtils.toInternal(NamespacedKey.fromBukkit(recipe.getKey())), block);
+            return processRecipe(event.getSource(), NamespacedKey.fromBukkit(recipe.getKey()), block);
         }
         return new Pair<>(null, false);
     }

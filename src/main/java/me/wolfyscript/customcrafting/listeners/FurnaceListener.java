@@ -115,8 +115,14 @@ public class FurnaceListener implements Listener {
             manager.getAdapter().applyResult(event);
             return;
         }
+        //Similar to the check in the FurnaceStartSmeltEvent.
+        //This is needed in 1.16 as the FurnaceStartSmeltEvent doesn't exist.
+        //Check if the CustomItem is allowed in Vanilla recipes
+        if (CustomItem.getByItemStack(event.getSource()) != null) {
+            event.setCancelled(true); //Cancel the process if it is.
+        }
         Bukkit.getScheduler().runTask(customCrafting, () -> {
-            //Reset the active recipe
+            //make sure to reset the active custom recipe when the new recipe is a vanilla recipe.
             var state = ((Furnace) event.getBlock().getState());
             PersistentDataContainer container = state.getPersistentDataContainer();
             container.remove(FurnaceListener.ACTIVE_RECIPE_KEY);
@@ -148,37 +154,35 @@ public class FurnaceListener implements Listener {
         Bukkit.getScheduler().runTask(customCrafting, () -> {
             Furnace blockState = (Furnace) location.getBlock().getState();
             PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
-            me.wolfyscript.utilities.util.NamespacedKey activeRecipeKey = NamespacedKeyUtils.toInternal(me.wolfyscript.utilities.util.NamespacedKey.of(rootContainer.getOrDefault(FurnaceListener.ACTIVE_RECIPE_KEY, PersistentDataType.STRING, "")));
-            if (activeRecipeKey != null) {
-                CustomRecipe<?> recipeFurnace = customCrafting.getRegistries().getRecipes().get(activeRecipeKey);
-                if (recipeFurnace instanceof CustomRecipeCooking<?, ?> furnaceRecipe) {
-                    if (furnaceRecipe.getExp() > 0) {
-                        PersistentDataContainer usedRecipes = rootContainer.get(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER);
-                        if (usedRecipes != null) {
-                            NamespacedKey bukkitRecipeKey = activeRecipeKey.toBukkit(customCrafting);
-                            float recipeXP = furnaceRecipe.getExp();
-                            int amount = usedRecipes.getOrDefault(bukkitRecipeKey, PersistentDataType.INTEGER, 0);
+            PersistentDataContainer usedRecipes = rootContainer.get(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER);
+            if (usedRecipes != null) {
+                //Remove active recipe from the NBT.
+                rootContainer.remove(FurnaceListener.ACTIVE_RECIPE_KEY);
+                //Award the experience of all the stored recipes.
+                usedRecipes.getKeys().forEach(bukkitRecipeKey -> awardRecipeExperience(usedRecipes, bukkitRecipeKey, location));
+                rootContainer.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, rootContainer.getAdapterContext().newPersistentDataContainer());
+                //Update the furnace state, so the NBT is updated.
+                blockState.update();
+            }
+        });
+    }
 
-                            //Calculates the amount of xp levels the Exp Orbs will get. (See net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity#createExperience)
-                            double totalXp = (double) amount * recipeXP;
-                            int levels = (int) Math.floor(totalXp);
-                            if (levels < Integer.MAX_VALUE) {
-                                double xpLeft = totalXp - levels;
-                                if (xpLeft != 0.0F && Math.random() < xpLeft) {
-                                    ++levels;
-                                }
-                            }
-                            awardExp(location, levels);
-                            // Remove the recipe from the used list
-                            usedRecipes.remove(bukkitRecipeKey);
-                            rootContainer.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, usedRecipes);
-                        }
+    private void awardRecipeExperience(PersistentDataContainer usedRecipes, NamespacedKey bukkitRecipeKey, Location location) {
+        CustomRecipe<?> recipeFurnace = customCrafting.getRegistries().getRecipes().get(me.wolfyscript.utilities.util.NamespacedKey.fromBukkit(bukkitRecipeKey));
+        if (recipeFurnace instanceof CustomRecipeCooking<?, ?> furnaceRecipe) {
+            if (furnaceRecipe.getExp() > 0) {
+                //Calculates the amount of xp levels the Exp Orbs will get. (See net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity#createExperience)
+                double totalXp = (double) usedRecipes.getOrDefault(bukkitRecipeKey, PersistentDataType.INTEGER, 0) * furnaceRecipe.getExp();
+                int levels = (int) Math.floor(totalXp);
+                if (levels < Integer.MAX_VALUE) {
+                    double xpLeft = totalXp - levels;
+                    if (xpLeft != 0.0F && Math.random() < xpLeft) {
+                        ++levels;
                     }
                 }
+                awardExp(location, levels);
             }
-            rootContainer.remove(FurnaceListener.ACTIVE_RECIPE_KEY); //Remove active recipe from the NBT.
-            blockState.update();
-        });
+        }
     }
 
     public static void awardExp(Location loc, int expLevels) {
