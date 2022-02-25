@@ -35,7 +35,7 @@ import java.util.Set;
 public class MainConfig extends YamlConfiguration {
 
     public MainConfig(ConfigAPI configAPI, CustomCrafting customCrafting) {
-        super(configAPI, customCrafting.getDataFolder().getPath(), "config", "me/wolfyscript/customcrafting/configs", "config", false);
+        super(configAPI, customCrafting.getDataFolder().getPath(), "config", "", "config", false);
     }
 
     @Override
