@@ -1835,7 +1835,7 @@
         },
         "exact_meta": {
           "enabled": {
-            "name": "&a\u2714 &6&lCheck NBT",
+            "name": "&a\u25A0 &6&lCheck NBT",
             "help": [],
             "lore": [
               "&eItems need to be exactly the same!",
@@ -1846,7 +1846,7 @@
             ]
           },
           "disabled": {
-            "name": "&a\u2714 &6&lIgnore NBT",
+            "name": "&a\u25A1 &6&lIgnore NBT",
             "help": [],
             "lore": [
               "&eItems without NBT will only",
@@ -2983,11 +2983,11 @@
           }
         },
         "previous_page": {
-          "name": "&7⏪ &6&lPrevious Page",
+          "name": "&7\u23EA &6&lPrevious Page",
           "help": []
         },
         "next_page": {
-          "name": "&7⏩ &6&lNext Page",
+          "name": "&7\u23E9 &6&lNext Page",
           "help": []
         },
         "lores": {
@@ -3123,7 +3123,7 @@
           "name": "&6&lSmithing Table"
         },
         "back_to_list": {
-          "name": "&6&lReturn",
+          "name": "&7\u27A6 &6&lReturn",
           "lore": [
             "&aLeft-Click",
             "  &7»&r &eReturn to previous Recipe",
