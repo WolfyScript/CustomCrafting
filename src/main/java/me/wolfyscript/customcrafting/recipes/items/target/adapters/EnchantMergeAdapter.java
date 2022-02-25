@@ -22,11 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.block.Block;
@@ -36,19 +36,33 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EnchantMergeAdapter extends MergeAdapter {
 
-    private final boolean ignoreEnchantLimit = false;
+    private final boolean ignoreEnchantLimit;
+    private final boolean ignoreConflicts;
+    private final boolean ignoreItemLimit;
+    private final boolean increaseLevels;
     private List<Enchantment> blackListedEnchants = new ArrayList<>();
 
     public EnchantMergeAdapter() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "enchant"));
+        this.ignoreEnchantLimit = false;
+        this.ignoreConflicts = true;
+        this.increaseLevels = false;
+        this.ignoreItemLimit = true;
     }
 
     public EnchantMergeAdapter(EnchantMergeAdapter adapter) {
         super(adapter);
+        this.ignoreEnchantLimit = adapter.ignoreEnchantLimit;
+        this.ignoreConflicts = adapter.ignoreConflicts;
+        this.increaseLevels = adapter.increaseLevels;
+        this.ignoreItemLimit = adapter.ignoreItemLimit;
+        this.blackListedEnchants = List.copyOf(blackListedEnchants);
     }
 
     public boolean isIgnoreEnchantLimit() {
@@ -67,22 +81,27 @@ public class EnchantMergeAdapter extends MergeAdapter {
 
     @Override
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
         for (IngredientData data : recipeData.getBySlots(slots)) {
-            var item = data.itemStack();
-            item.getEnchantments().forEach((enchantment, level) -> {
-                if (
-                    !blackListedEnchants.contains(enchantment) && (
-                        !result.containsEnchantment(enchantment) ||
-                        result.getEnchantmentLevel(enchantment) < level
-                    )
-                ) {
-                    var meta = result.getItemMeta();
-                    if (meta != null && meta.addEnchant(enchantment, level, ignoreEnchantLimit)) {
-                        result.setItemMeta(meta);
-                    }
+            data.itemStack().getEnchantments().forEach((enchantment, level) -> {
+                if (!blackListedEnchants.contains(enchantment)) {
+                    enchants.merge(enchantment, level, (currentLevel, otherLevel) -> increaseLevels && currentLevel.equals(otherLevel) ? ++currentLevel : Math.max(currentLevel, otherLevel));
                 }
             });
         }
+        var meta = result.getItemMeta();
+        enchants.forEach((enchantment, level) -> {
+            if ((!result.containsEnchantment(enchantment) || result.getEnchantmentLevel(enchantment) < level) && meta != null) {
+                if ((ignoreConflicts || !meta.hasConflictingEnchant(enchantment)) && (ignoreItemLimit || enchantment.canEnchantItem(result))) {
+                    if (ignoreEnchantLimit) {
+                        meta.addEnchant(enchantment, level, true);
+                    } else {
+                        meta.addEnchant(enchantment, Math.min(level, enchantment.getMaxLevel()), false);
+                    }
+                }
+            }
+        });
+        result.setItemMeta(meta);
         return result;
     }
 
