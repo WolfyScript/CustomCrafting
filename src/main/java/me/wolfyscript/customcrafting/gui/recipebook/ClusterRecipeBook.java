@@ -57,6 +57,7 @@ public class ClusterRecipeBook extends CCCluster {
     public static final NamespacedKey ITEM_CATEGORY = new NamespacedKey(KEY, "item_category");
     public static final NamespacedKey PERMISSION = new NamespacedKey(KEY, "permission");
 
+    public static final NamespacedKey COOKING_ICON = new NamespacedKey(ClusterRecipeBook.KEY, "cooking.icon");
     public static final NamespacedKey STONECUTTER = new NamespacedKey(ClusterRecipeBook.KEY, "stonecutter");
     public static final NamespacedKey FURNACE = new NamespacedKey(ClusterRecipeBook.KEY, "furnace");
     public static final NamespacedKey BLAST_FURNACE = new NamespacedKey(ClusterRecipeBook.KEY, "blast_furnace");
@@ -133,12 +134,12 @@ public class ClusterRecipeBook extends CCCluster {
         }));
         registerButton(new DummyButton<>("anvil.result", Material.ANVIL));
         registerButton(new DummyButton<>("anvil.none", Material.ANVIL));
-        registerButton(new DummyButton<>("cooking.icon", Material.FURNACE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        registerButton(new DummyButton<>(COOKING_ICON.getKey(), Material.FURNACE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             var knowledgeBook = cache.getKnowledgeBook();
             RecipeType<?> recipeType = knowledgeBook.getCurrentRecipe().getRecipeType();
             CustomRecipeCooking<?, ?> cookingRecipe = ((CustomRecipeCooking<?, ?>) knowledgeBook.getCurrentRecipe());
             itemStack.setType(Material.matchMaterial(recipeType.name()));
-            hashMap.put("%type%", "&7" + StringUtils.capitalize(recipeType.getId().replace("_", " ")));
+            hashMap.put("%type%", StringUtils.capitalize(recipeType.getId().replace("_", " ")));
             hashMap.put("%time%", cookingRecipe.getCookingTime());
             hashMap.put("%xp%", cookingRecipe.getExp());
             return itemStack;
@@ -154,11 +155,12 @@ public class ClusterRecipeBook extends CCCluster {
         registerButton(new DummyButton<>("cauldron.water.disabled", Material.CAULDRON));
         registerButton(new DummyButton<>("cauldron.water.enabled", new ButtonState<>("cauldron.water.enabled", PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             var knowledgeBook = cache.getKnowledgeBook();
+            hashMap.put("%time%", ((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getCookingTime());
             hashMap.put("%lvl%", ((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getWaterLevel());
             return itemStack;
         })));
-        registerButton(new DummyButton<>("cauldron.fire.disabled", Material.FLINT));
-        registerButton(new DummyButton<>("cauldron.fire.enabled", Material.FLINT_AND_STEEL));
+        registerButton(new DummyButton<>("cauldron.fire.disabled", Material.CAMPFIRE));
+        registerButton(new DummyButton<>("cauldron.fire.enabled", Material.CAMPFIRE));
         registerButton(new DummyButton<>("brewing.icon", Material.BREWING_STAND, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             CustomRecipeBrewing cookingRecipe = (CustomRecipeBrewing) (guiHandler.getCustomCache().getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%time%", cookingRecipe.getBrewTime());
