@@ -235,7 +235,7 @@
     "none": {
       "global_items": {
         "background": {
-          "name": "&4"
+          "name": " "
         },
         "back": {
           "name": "&7\u27A6 &6&lBack"
@@ -464,12 +464,10 @@
             ]
           },
           "previous_page": {
-            "name": "&2Previous Page",
-            "help": []
+            "name": "&7\u23EA &6&lPrevious Page"
           },
           "next_page": {
-            "name": "&2Next Page",
-            "help": []
+            "name": "&7\u23E9 &6&lNext Page"
           },
           "workstation_filter": {
             "name": "&6&lType: &e%type%",
@@ -748,25 +746,19 @@
             ]
           },
           "page_next": {
-            "name": "&7Next Page",
-            "lore": [
-              ""
-            ]
+            "name": "&7\u23E9 &6&lNext Page"
           },
           "page_previous": {
-            "name": "&7Previous Page",
-            "lore": [
-              ""
-            ]
+            "name": "&7\u23EA &6&lPrevious Page"
           },
           "save_item": {
-            "name": "&3Save Item",
+            "name": "&7\u25B7 &6&lSave Item",
             "lore": [
-              "&7Saves the item under the existing folder and key!"
+              "&eSaves the item under the existing folder and key!"
             ]
           },
           "save_item_as": {
-            "name": "&6Save As...",
+            "name": "&7\u270E &6&lSave As...",
             "lore": [
               "&7Save the item with a new folder and key.",
               "&7Input: &e&lfolder item_key",
@@ -775,9 +767,9 @@
             ]
           },
           "apply_item": {
-            "name": "&aApply Item",
+            "name": "&7\u25B7 &6&a&lApply Item",
             "help": [
-              "&7Applies the Item to the recipe"
+              "&eApplies the Item to the recipe"
             ]
           },
           "reference": {
@@ -1879,49 +1871,65 @@
           },
           "mirror_horizontal": {
             "enabled": {
-              "name": "&aMirror Horizontal",
+              "name": "&7\u21C4 &6&lHorizontal Symmetry",
               "lore": [
-                "&7Recipe can be crafted mirrored horizontally",
-                "&7[&aClick&7] Toggle"
+                "&eThe shape is mirrored horizontally.",
+                "&eLike it is in vanilla recipes",
+                "&ee.g. axe, other tools, etc.",
+                "",
+                "&7[&aClick&7] Fixed Horizontally"
               ]
             },
             "disabled": {
-              "name": "&cMirror Horizontal",
+              "name": "&7\u274C &6&lFixed Horizontally",
               "lore": [
-                "&7Recipe is fixed!",
-                "&7[&aClick&7] Toggle"
+                "&eThe shape is fixed horizontally.",
+                "&ei.e. the recipe cannot be crafted",
+                "&emirrored horizontally, unlike",
+                "&evanilla recipes like tools, etc.",
+                "",
+                "&7[&aClick&7] Horizontal Symmetry"
               ]
             }
           },
           "mirror_vertical": {
             "enabled": {
-              "name": "&aMirror Vertical",
+              "name": "&7\u21F5 &6&lVertical Symmetry",
               "lore": [
-                "&eRecipe can be crafted mirrored vertically",
-                "&7[&aClick&7] Toggle"
+                "&eThe shape is mirrored vertically.",
+                "",
+                "&7[&aClick&7] Fixed Vertically"
               ]
             },
             "disabled": {
-              "name": "&cMirror Vertical",
+              "name": "&7\u274C &6&lFixed Vertically",
               "lore": [
-                "&eRecipe is fixed!",
-                "&7[&aClick&7] Toggle"
+                "&eThe shape is fixed vertically.",
+                "&ei.e. the recipe cannot be crafted",
+                "&emirrored vertically",
+                "",
+                "&7[&aClick&7] Vertical Symmetry"
               ]
             }
           },
           "mirror_rotation": {
             "disabled": {
-              "name": "&cRotate Recipe",
+              "name": "&7\u274C &6&lNo Recipe Rotation",
               "lore": [
-                "&eRecipe cannot be rotated.",
-                "&7[&aClick&7] Toggle"
+                "&eThe recipe can be mirrored",
+                "&ehorizontally &lor &evertically!",
+                "",
+                "&7[&aClick&7] Rotate Recipe"
               ]
             },
             "enabled": {
-              "name": "&aRotate Recipe",
+              "name": "&7\u2190\u2193 &6&lRotate Recipe",
               "lore": [
-                "&eRecipe can be rotated.",
-                "&7[&aClick&7] Toggle"
+                "&eThe recipe can be mirrored",
+                "&ehorizontally &land &evertically,",
+                "&ewhich results in a full rotation.",
+                "",
+                "&7[&aClick&7] No Recipe Rotation"
               ]
             }
           }
@@ -2232,7 +2240,7 @@
         ],
         "items": {
           "settings": {
-            "name": "&6&lSettings",
+            "name": "&7\u27A5 &6&lSettings",
             "lore": [
               "&7Open the settings like priority,",
               "&7conditions, meta, and more"
@@ -2265,22 +2273,18 @@
         ],
         "items": {
           "xp": {
-            "name": "&3Experience",
-            "help": [],
+            "name": "&7\u270E &6&lExperience",
             "lore": [
-              "&6%XP% Exp"
+              "&7Experience: &e%XP%"
             ],
             "message": "&3Type in the amount of experience. e.g. 0.5"
           },
           "cooking_time": {
-            "name": "&6Cooking Time",
-            "help": [
-              "&7Set the time how long the item",
-              "&7needs to cook in ticks",
-              "&3Tip: 20ticks = 1sec"
-            ],
+            "name": "&7\u270E &6&lCooking Time",
             "lore": [
-              "&6%TIME% ticks"
+              "&7Cooking Time: &e%TIME% ticks",
+              "&eThe cooking time in ticks.",
+              "&e(20 ticks = 1 sec)"
             ],
             "message": "&eType in the cooking time in ticks. e.g. 20. &cMax value: 32767"
           }
@@ -2410,84 +2414,85 @@
         },
         "items": {
           "cauldron": {
-            "name": "&c"
+            "name": " "
           },
           "dropItems": {
             "enabled": {
-              "name": "&6Drop Items",
+              "name": "&6&lDrop Items",
               "lore": [
-                "&eItems drop out of the cauldron when done.",
+                "&eDrops the items when done.",
                 "",
-                "&7[&aClick&7] toggle to keep items"
+                "&7[&aClick&7] Keep items in cauldron"
               ]
             },
             "disabled": {
-              "name": "&6Keep Items",
+              "name": "&6&lKeep Items",
               "lore": [
-                "&eItems stay in the cauldron when recipe is done.",
-                "&ePlayer right click replaces the item in their hand.",
-                "&e« Set the required item for the player to hold on right click!",
-                "     &eLeave blank to require empty hand!",
-                "&7[&aClick&7] toggle to drop items"
+                "&eKeeps the items in the cauldron when done.",
+                "&eRight-click replaces players hand item.",
+                "&7« &eRequired item for the player to ",
+                "   &ehold on right click!",
+                "   &eLeave blank to require empty hand!",
+                "",
+                "&7[&aClick&7] Drop Items"
               ]
             }
           },
           "fire": {
             "enabled": {
-              "name": "&6Fire required",
+              "name": "&a\u2714 &6&lFire required",
               "lore": [
-                "&eLit Campfire is required for this recipe"
+                "&eRecipe requires a lit Campfire",
+                "&ebelow the cauldron!"
               ]
             },
             "disabled": {
-              "name": "&6No Fire required",
+              "name": "&c\u274C &6&lNo Fire required",
               "lore": [
-                "&eThis recipe will only work if the Campfire",
-                "&eunder the cauldron is unlit!"
+                "&eRecipe requires an unlit Campfire",
+                "&ebelow the cauldron!"
               ]
             }
           },
           "water": {
-            "disabled": {
-              "name": "&3No Water required!",
-              "lore": [
-                "&eRecipe will only work if cauldron is empty!"
-              ]
-            },
             "enabled": {
-              "name": "&3Water required!",
+              "name": "&a\u2714 &6&lWater required!",
               "lore": [
                 "&eRecipe will only work with water in it!",
                 "&eExcept water level is set to 0!"
               ]
+            },
+            "disabled": {
+              "name": "&c\u274C &6&lNo Water required!",
+              "lore": [
+                "&eRecipe will only work if cauldron is empty!"
+              ]
             }
           },
           "xp": {
-            "name": "&6Experience",
+            "name": "&7\u270E &6&lExperience",
             "lore": [
-              "&7Experience: &e%xp%",
-              "",
-              "&eThe amount xp you get when the recipe is done."
+              "&7Experience: &e%xp%"
             ],
             "message": "&3Type in the amount of experience. e.g. 2"
           },
           "cookingTime": {
-            "name": "&6Cooking Time",
+            "name": "&7\u270E &6&lCooking Time",
             "lore": [
               "&7Time: &e%time% ticks",
-              "",
-              "&eThe time in ticks for the recipe to be done!"
+              "&eThe cooking time in ticks.",
+              "&e(20 ticks = 1 sec)"
             ],
             "message": "&eType in the cooking time in ticks. e.g. 20"
           },
           "waterLevel": {
-            "name": "&3Water Level",
+            "name": "&7\u270E &6&lWater Level",
             "lore": [
               "&7Required: &e%level%",
               "",
-              "&eDefines the lowest cauldron water level",
-              "&ethis recipe should be able to be made with.",
-              "&eThe Water is consumed when the recipe is done!"
+              "&eThe required cauldron water level.",
+              "&eWhen the recipe is done, ",
+              "&eit consumes the water level."
             ],
             "message": "&eType in the amount of water the cauldron needs to have! &cMax: &43"
           },
@@ -2519,11 +2524,10 @@
             "name": "&c"
           },
           "xp": {
-            "name": "&6Experience",
+            "name": "&7\u270E &6&lExperience",
             "lore": [
               "&7Experience: &e%xp%",
-              "",
-              "&eThe amount xp you get when using the grindstone"
+              "&eThe amount xp of the recipe"
             ],
             "message": "&eType in the amount of experience. e.g. 0.5"
           }
@@ -2793,7 +2797,7 @@
           },
           "preserve_enchants": {
             "enabled": {
-              "name": "&6&lPreserve Enchants",
+              "name": "&a\u2714 &6&lPreserve Enchants",
               "lore": [
                 "&eCopies the enchantments from",
                 "&ethe base to the result item.",
@@ -2802,7 +2806,7 @@
               ]
             },
             "disabled": {
-              "name": "&4&lDiscard Enchants",
+              "name": "&c\u274C &6&lDiscard Enchants",
               "lore": [
                 "&eLeaves the enchants of the",
                 "&eresult as is and discards",
@@ -2814,7 +2818,7 @@
           },
           "preserve_damage": {
             "enabled": {
-              "name": "&6&lPreserve Damage",
+              "name": "&a\u2714 &6&lPreserve Damage",
               "lore": [
                 "&eCopies the damage from",
                 "&ethe base to the result item.",
@@ -2823,7 +2827,7 @@
               ]
             },
             "disabled": {
-              "name": "&4&lDiscard Damage",
+              "name": "&c\u274C &6&lDiscard Damage",
               "lore": [
                 "&eLeaves the damage of the",
                 "&eresult as is and discards",
