@@ -204,6 +204,8 @@ public class CustomCrafting extends JavaPlugin {
         recipeConditions.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
         recipeConditions.register(ConditionAdvancement.KEY, ConditionAdvancement.class, new ConditionAdvancement.GUIComponent());
 
+        recipeConditions.register(ConditionScoreboard.KEY, ConditionScoreboard.class);
+
         var recipeTypes = getRegistries().getRecipeTypes();
         recipeTypes.register(RecipeType.CRAFTING_SHAPED);
         recipeTypes.register(RecipeType.CRAFTING_SHAPELESS);
