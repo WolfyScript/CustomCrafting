@@ -229,6 +229,15 @@
         "&7Set the advancements a player",
         "&7requires to craft the recipe."
       ]
+    },
+    "player_scoreboard": {
+      "name": "Player Scoreboard",
+      "description": [
+        "&7Evaluate scoreboard values",
+        "&7required to craft the recipe.",
+        "&cMust be configured in the ",
+        "&crecipe JSON Config!"
+      ]
     }
   },
   "inventories": {

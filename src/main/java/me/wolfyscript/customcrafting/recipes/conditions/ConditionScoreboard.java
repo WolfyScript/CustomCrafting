@@ -26,14 +26,12 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.context.EvalContext;
-import me.wolfyscript.utilities.util.operators.BoolOperator;
+import me.wolfyscript.utilities.util.eval.context.EvalContext;
+import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.advancement.Advancement;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.HashMap;
@@ -42,13 +40,17 @@ import java.util.Map;
 
 public class ConditionScoreboard extends Condition<ConditionScoreboard> {
 
-    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "scoreboard");
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_scoreboard");
 
-    private BoolOperator check;
+    private final Map<String, BoolOperator> objectiveChecks;
+    private final boolean failOnMissingObjective;
+    private final BoolOperator check;
 
     public ConditionScoreboard() {
         super(KEY);
         this.check = null;
+        this.failOnMissingObjective = true;
+        this.objectiveChecks = new HashMap<>();
         setAvailableOptions(Conditions.Option.EXACT);
     }
 
@@ -62,25 +64,33 @@ public class ConditionScoreboard extends Condition<ConditionScoreboard> {
 
     @Override
     public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
-        EvalContext context = new EvalContext();
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         Player player = data.getPlayer();
         if (player != null) {
+            Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+            //Create the eval context for the optional check
+            EvalContext context = new EvalContext();
             for (Objective objective : scoreboard.getObjectives()) {
                 String varName = objective.getName();
                 context.setVariable(varName, objective.getScore(player));
             }
-            if (check != null) {
-                return check.evaluate(context);
+            if (check != null && !check.evaluate(context)) {
+                //Directly return if the check fails.
+                return false;
             }
-        } else {
-            for (String entry : scoreboard.getEntries()) {
-                for (Score score : scoreboard.getScores(entry)) {
-                    context.setVariable(entry + "_" + score.getObjective().getName(), score.getScore());
+            for (Map.Entry<String, BoolOperator> entry : objectiveChecks.entrySet()) {
+                String key = entry.getKey();
+                Objective objective = scoreboard.getObjective(key);
+                if (objective != null) {
+                    //Set an eval context with just the specified value of this objective
+                    EvalContext valueContext = new EvalContext();
+                    valueContext.setVariable("value", objective.getScore(player));
+                    if (!entry.getValue().evaluate(context)) {
+                        return false;
+                    }
+                } else if (failOnMissingObjective) {
+                    //Return and cancel any further checks if the objective is missing
+                    return false;
                 }
-            }
-            if (check != null) {
-                return check.evaluate(context);
             }
         }
         return true;
@@ -89,7 +99,7 @@ public class ConditionScoreboard extends Condition<ConditionScoreboard> {
     public static class GUIComponent extends FunctionalGUIComponent<ConditionScoreboard> {
 
         public GUIComponent() {
-            super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.COMMAND_BLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {},
                     (update, cache, condition, recipe) -> {});
         }
