@@ -71,6 +71,7 @@ import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -204,7 +205,10 @@ public class CustomCrafting extends JavaPlugin {
         recipeConditions.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
         recipeConditions.register(ConditionAdvancement.KEY, ConditionAdvancement.class, new ConditionAdvancement.GUIComponent());
 
-        recipeConditions.register(ConditionScoreboard.KEY, ConditionScoreboard.class);
+        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(3, 16, 3, 0))) {
+            //Only register it when the features are available
+            recipeConditions.register(ConditionScoreboard.KEY, ConditionScoreboard.class, new ConditionScoreboard.GUIComponent());
+        }
 
         var recipeTypes = getRegistries().getRecipeTypes();
         recipeTypes.register(RecipeType.CRAFTING_SHAPED);
@@ -239,17 +243,14 @@ public class CustomCrafting extends JavaPlugin {
         writeBanner();
         writePatreonCredits();
         writeSeparator();
+        this.configHandler = new ConfigHandler(this);
+        this.configHandler.load();
         this.otherPlugins.init();
-
-        configHandler = new ConfigHandler(this);
-        configHandler.load();
-        dataHandler = new DataHandler(this);
-        disableRecipesHandler = new DisableRecipesHandler(this);
-
+        this.dataHandler = new DataHandler(this);
+        this.disableRecipesHandler = new DisableRecipesHandler(this);
         registerListeners();
         registerCommands();
         registerInventories();
-
         //Used for testing purposes, might be available for production in the future
         if (WolfyUtilities.isDevEnv()) {
             this.networkHandler.registerPackets();
