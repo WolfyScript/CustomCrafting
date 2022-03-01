@@ -110,7 +110,7 @@ public class CraftListener implements Listener {
             //Vanilla Recipe is available.
             //Check for custom recipe that overrides the vanilla recipe
             var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
-            if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey) || customCrafting.getRegistries().getRecipes().getAdvancedCrafting(NamespacedKeyUtils.toInternal(namespacedKey)) != null) {
+            if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey) || customCrafting.getRegistries().getRecipes().getAdvancedCrafting(namespacedKey) != null) {
                 //Recipe is disabled or it is a custom recipe!
                 e.getInventory().setResult(ItemUtils.AIR);
                 Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
@@ -136,7 +136,7 @@ public class CraftListener implements Listener {
     public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
         org.bukkit.NamespacedKey key = event.getRecipe();
         if (key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(NamespacedKeyUtils.toInternal(NamespacedKey.fromBukkit(key)));
+            CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(NamespacedKey.fromBukkit(key));
             if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
                 event.setCancelled(recipe.isHidden() || recipe.isDisabled());
             } else {
@@ -155,7 +155,7 @@ public class CraftListener implements Listener {
         List<org.bukkit.NamespacedKey> discoveredCustomRecipes = player.getDiscoveredRecipes().stream().filter(namespacedKey -> namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).toList();
         customCrafting.getRegistries().getRecipes().getAvailable(player).stream()
                 .filter(recipe -> recipe instanceof ICustomVanillaRecipe<?>)
-                .map(recipe -> recipe.getNamespacedKey().toBukkit(customCrafting))
+                .map(recipe -> new org.bukkit.NamespacedKey(recipe.getNamespacedKey().getNamespace(), recipe.getNamespacedKey().getKey()))
                 .filter(namespacedKey -> !discoveredCustomRecipes.contains(namespacedKey))
                 .forEach(player::discoverRecipe);
     }
