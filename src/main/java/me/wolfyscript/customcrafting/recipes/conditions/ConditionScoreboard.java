@@ -71,7 +71,7 @@ public class ConditionScoreboard extends Condition<ConditionScoreboard> {
             EvalContext context = new EvalContext();
             for (Objective objective : scoreboard.getObjectives()) {
                 String varName = objective.getName();
-                context.setVariable(varName, objective.getScore(player));
+                context.setVariable(varName, objective.getScore(player).getScore());
             }
             if (check != null && !check.evaluate(context)) {
                 //Directly return if the check fails.
@@ -83,8 +83,8 @@ public class ConditionScoreboard extends Condition<ConditionScoreboard> {
                 if (objective != null) {
                     //Set an eval context with just the specified value of this objective
                     EvalContext valueContext = new EvalContext();
-                    valueContext.setVariable("value", objective.getScore(player));
-                    if (!entry.getValue().evaluate(context)) {
+                    valueContext.setVariable("value", objective.getScore(player).getScore());
+                    if (!entry.getValue().evaluate(valueContext)) {
                         return false;
                     }
                 } else if (failOnMissingObjective) {
