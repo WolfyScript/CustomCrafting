@@ -133,7 +133,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
                         var namespacedKey = NamespacedKey.of(args[0]);
                         CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(namespacedKey);
                         if (recipe == null) {
-                            wolfyUtilities.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
+                            wolfyUtilities.getChat().sendKey(player, this, "not_existing", new Pair<>("%recipe%", args[0]));
                             return true;
                         }
                         if (remove) {

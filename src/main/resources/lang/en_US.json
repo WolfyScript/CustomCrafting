@@ -3285,6 +3285,7 @@
         }
       },
       "global_messages": {
+        "not_existing": "&cThe recipe&4 %recipe% &cdoesn't exist!",
         "save": {
           "input": "&eType in the key! Must be alphanumeric lowercase! [a-z0-9/._-]",
           "error": "&cCheck for missing icon!",
