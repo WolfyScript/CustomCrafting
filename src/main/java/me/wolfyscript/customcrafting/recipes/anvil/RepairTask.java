@@ -47,6 +47,7 @@ import org.bukkit.inventory.ItemStack;
 public abstract class RepairTask implements Keyed {
 
     private final NamespacedKey key;
+    @JsonIgnore
     private final CustomRecipeAnvil.Mode mode;
 
     protected RepairTask(NamespacedKey key, CustomRecipeAnvil.Mode mode) {
@@ -54,6 +55,7 @@ public abstract class RepairTask implements Keyed {
         this.key = key;
     }
 
+    @JsonIgnore
     public CustomRecipeAnvil.Mode getMode() {
         return mode;
     }
