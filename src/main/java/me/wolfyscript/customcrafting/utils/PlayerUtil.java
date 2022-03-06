@@ -55,7 +55,7 @@ public class PlayerUtil {
 
         // Open directly to the category if we only have one
         if (categories.getSortedCategories().size() == 1) {
-            invAPI.getGuiHandler(player).getCustomCache().getKnowledgeBook().setCategory(categories.getCategory(0));
+            invAPI.getGuiHandler(player).getCustomCache().getRecipeBookCache().setCategory(categories.getCategory(0));
             invAPI.openGui(player, ClusterRecipeBook.RECIPE_BOOK);
 
             return;

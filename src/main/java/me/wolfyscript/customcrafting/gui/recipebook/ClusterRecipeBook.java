@@ -79,19 +79,19 @@ public class ClusterRecipeBook extends CCCluster {
         registerButton(new ButtonCategoryItem(customCrafting));
         registerButton(new ActionButton<>(NEXT_PAGE.getKey(), PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
             ButtonContainerRecipeBook.resetButtons(guiHandler);
-            var book = guiHandler.getCustomCache().getKnowledgeBook();
+            var book = guiHandler.getCustomCache().getRecipeBookCache();
             book.setPage(book.getPage() + 1);
             return true;
         }));
         registerButton(new ActionButton<>(PREVIOUS_PAGE.getKey(), PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (cache, guiHandler, player, inventory, slot, event) -> {
             ButtonContainerRecipeBook.resetButtons(guiHandler);
-            var book = guiHandler.getCustomCache().getKnowledgeBook();
+            var book = guiHandler.getCustomCache().getRecipeBookCache();
             book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
             return true;
         }));
         registerButton(new ActionButton<>(BACK_TO_LIST.getKey(), Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent clickEvent) {
-                var book = cache.getKnowledgeBook();
+                var book = cache.getRecipeBookCache();
                 ButtonContainerIngredient.resetButtons(guiHandler);
                 if (clickEvent.isLeftClick()) {
                     book.removePreviousResearchItem();
@@ -129,13 +129,13 @@ public class ClusterRecipeBook extends CCCluster {
         registerButton(new DummyButton<>("workbench.shapeless_off", Material.CRAFTING_TABLE));
 
         registerButton(new DummyButton<>("anvil.durability", Material.ANVIL, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%var%", ((CustomRecipeAnvil) guiHandler.getCustomCache().getKnowledgeBook().getCurrentRecipe()).getDurability());
+            hashMap.put("%var%", ((CustomRecipeAnvil) guiHandler.getCustomCache().getRecipeBookCache().getCurrentRecipe()).getDurability());
             return itemStack;
         }));
         registerButton(new DummyButton<>("anvil.result", Material.ANVIL));
         registerButton(new DummyButton<>("anvil.none", Material.ANVIL));
         registerButton(new DummyButton<>(COOKING_ICON.getKey(), Material.FURNACE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            var knowledgeBook = cache.getKnowledgeBook();
+            var knowledgeBook = cache.getRecipeBookCache();
             RecipeType<?> recipeType = knowledgeBook.getCurrentRecipe().getRecipeType();
             CustomRecipeCooking<?, ?> cookingRecipe = ((CustomRecipeCooking<?, ?>) knowledgeBook.getCurrentRecipe());
             itemStack.setType(Material.matchMaterial(recipeType.name()));
@@ -154,7 +154,7 @@ public class ClusterRecipeBook extends CCCluster {
 
         registerButton(new DummyButton<>("cauldron.water.disabled", Material.CAULDRON));
         registerButton(new DummyButton<>("cauldron.water.enabled", new ButtonState<>("cauldron.water.enabled", PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            var knowledgeBook = cache.getKnowledgeBook();
+            var knowledgeBook = cache.getRecipeBookCache();
             hashMap.put("%time%", ((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getCookingTime());
             hashMap.put("%lvl%", ((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getWaterLevel());
             return itemStack;
@@ -162,18 +162,18 @@ public class ClusterRecipeBook extends CCCluster {
         registerButton(new DummyButton<>("cauldron.fire.disabled", Material.CAMPFIRE));
         registerButton(new DummyButton<>("cauldron.fire.enabled", Material.CAMPFIRE));
         registerButton(new DummyButton<>("brewing.icon", Material.BREWING_STAND, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            CustomRecipeBrewing cookingRecipe = (CustomRecipeBrewing) (guiHandler.getCustomCache().getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipeBrewing cookingRecipe = (CustomRecipeBrewing) (guiHandler.getCustomCache().getRecipeBookCache()).getCurrentRecipe();
             hashMap.put("%time%", cookingRecipe.getBrewTime());
             hashMap.put("%cost%", cookingRecipe.getFuelCost());
             return itemStack;
         }));
         registerButton(new DummyButton<>("brewing.potion_duration", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            CustomRecipeBrewing cookingRecipe = (CustomRecipeBrewing) (cache.getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipeBrewing cookingRecipe = (CustomRecipeBrewing) (cache.getRecipeBookCache()).getCurrentRecipe();
             hashMap.put("%value%", cookingRecipe.getDurationChange());
             return itemStack;
         }));
         registerButton(new DummyButton<>("brewing.potion_amplifier", Material.IRON_SWORD, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            CustomRecipeBrewing cookingRecipe = (CustomRecipeBrewing) (cache.getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipeBrewing cookingRecipe = (CustomRecipeBrewing) (cache.getRecipeBookCache()).getCurrentRecipe();
             hashMap.put("%value%", cookingRecipe.getAmplifierChange());
             return itemStack;
         }));
@@ -181,19 +181,19 @@ public class ClusterRecipeBook extends CCCluster {
 
     private void registerConditionDisplays() {
         registerButton(new DummyButton<>("conditions.world_time", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            CustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipe<?> recipe = (cache.getRecipeBookCache()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(WorldTimeCondition.class).getTime());
             var option = recipe.getConditions().getByType(WorldTimeCondition.class).getOption();
             hashMap.put("%mode%", option.equals(Conditions.Option.EXACT) ? "" : option.getDisplayString(wolfyUtilities));
             return itemStack;
         }));
         registerButton(new ActionButton<>("conditions.weather", Material.WATER_BUCKET, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            CustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipe<?> recipe = (cache.getRecipeBookCache()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(wolfyUtilities));
             return itemStack;
         }));
         registerButton(new ActionButton<>("conditions.permission", Material.REDSTONE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            CustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipe<?> recipe = (cache.getRecipeBookCache()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(PermissionCondition.class).getPermission());
             return itemStack;
         }));

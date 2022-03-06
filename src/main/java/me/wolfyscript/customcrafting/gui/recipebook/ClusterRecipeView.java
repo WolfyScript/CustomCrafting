@@ -67,7 +67,7 @@ public class ClusterRecipeView extends CCCluster {
             return itemStack;
         })));
         registerButton(new DummyButton<>("anvil.durability", new ButtonState<>(new NamespacedKey(ClusterRecipeBook.KEY, "cooking.icon"), Material.ANVIL, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%var%", ((CustomRecipeAnvil) guiHandler.getCustomCache().getKnowledgeBook().getCurrentRecipe()).getDurability());
+            hashMap.put("%var%", ((CustomRecipeAnvil) guiHandler.getCustomCache().getRecipeBookCache().getCurrentRecipe()).getDurability());
             return itemStack;
         })));
         registerButton(new DummyButton<>("cauldron.water.enabled", new ButtonState<>(new NamespacedKey(ClusterRecipeBook.KEY, "cauldron.water.enabled"), PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {

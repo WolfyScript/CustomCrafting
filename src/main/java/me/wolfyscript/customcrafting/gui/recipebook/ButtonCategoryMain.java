@@ -55,7 +55,7 @@ class ButtonCategoryMain extends Button<CCCache> {
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         if (category != null) {
-            var knowledgeBook = guiHandler.getCustomCache().getKnowledgeBook();
+            var knowledgeBook = guiHandler.getCustomCache().getRecipeBookCache();
             knowledgeBook.setCategory(category);
             guiHandler.openWindow("recipe_book");
         }

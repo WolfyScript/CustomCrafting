@@ -35,7 +35,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonType;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -43,7 +42,13 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class ButtonContainerIngredient extends Button<CCCache> {
 
@@ -57,7 +62,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
 
     private final Map<GuiHandler<CCCache>, List<CustomItem>> variantsMap = new HashMap<>();
     private final Map<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
-    private final Map<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
+    private final Map<GuiHandler<CCCache>, Supplier<Boolean>> tasks = new HashMap<>();
 
     public static NamespacedKey namespacedKey(int slot) {
         return new NamespacedKey(ClusterRecipeBook.KEY, key(slot));
@@ -123,7 +128,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
-        var book = cache.getKnowledgeBook();
+        var book = cache.getRecipeBookCache();
         if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             var customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
             if (!customItem.equals(book.getResearchItem())) {
@@ -145,23 +150,23 @@ public class ButtonContainerIngredient extends Button<CCCache> {
         List<CustomItem> variants = getVariantsMap(guiHandler);
         inventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).create());
         if (variants.size() > 1) {
-            final int openPage = guiHandler.getCustomCache().getKnowledgeBook().getSubFolderPage();
-            final var openRecipe = guiHandler.getCustomCache().getKnowledgeBook().getCurrentRecipe().getNamespacedKey();
-            Bukkit.getScheduler().runTaskLater(CustomCrafting.inst(), () -> {
-                var recipeBook = guiHandler.getCustomCache().getKnowledgeBook();
-                if (recipeBook.getSubFolder() != 0 && openPage == recipeBook.getSubFolderPage() && openRecipe.equals(recipeBook.getCurrentRecipe().getNamespacedKey())) {
-                    synchronized (tasks) {
-                        tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
-                            if (player != null && slot < inventory.getSize() && !variants.isEmpty()) {
-                                int variant = getTiming(guiHandler);
-                                variant = ++variant < variants.size() ? variant : 0;
-                                guiInventory.setItem(slot, variants.get(variant).create());
-                                setTiming(guiHandler, variant);
-                            }
-                        });
+            //Only use tasks if there are multiple display items
+            final int openPage = guiHandler.getCustomCache().getRecipeBookCache().getSubFolderPage();
+            final var openRecipe = guiHandler.getCustomCache().getRecipeBookCache().getCurrentRecipe().getNamespacedKey();
+            synchronized (tasks) {
+                tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
+                    var recipeBook = guiHandler.getCustomCache().getRecipeBookCache();
+                    if (player != null && slot < inventory.getSize() && !variants.isEmpty() && recipeBook.getSubFolder() != 0 && openPage == recipeBook.getSubFolderPage() && openRecipe.equals(recipeBook.getCurrentRecipe().getNamespacedKey())) {
+                        int variant = getTiming(guiHandler);
+                        variant = ++variant < variants.size() ? variant : 0;
+                        guiInventory.setItem(slot, variants.get(variant).create());
+                        setTiming(guiHandler, variant);
+                        return false;
                     }
-                }
-            }, 30);
+                    //Cancel & Remove invalid task
+                    return true;
+                });
+            }
         }
     }
 
@@ -208,7 +213,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
         }
     }
 
-    public Collection<Runnable> getTasks() {
+    public Collection<Supplier<Boolean>> getTasks() {
         synchronized (tasks) {
             return tasks.values();
         }

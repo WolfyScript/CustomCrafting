@@ -52,12 +52,12 @@ class MenuMain extends CCWindow {
         }
         registerButton(new ActionButton<>(BACK_BOTTOM, new ButtonState<>(ClusterMain.BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
-                if (cache.getKnowledgeBook().hasEliteCraftingTable()) {
+                if (cache.getRecipeBookCache().hasEliteCraftingTable()) {
                     guiHandler.openCluster(EliteCraftingCluster.KEY);
                 } else {
                     guiHandler.close();
                 }
-                cache.getKnowledgeBook().setEliteCraftingTable(null);
+                cache.getRecipeBookCache().setEliteCraftingTable(null);
             });
             return true;
         })));
