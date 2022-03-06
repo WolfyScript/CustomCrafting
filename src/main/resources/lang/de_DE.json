@@ -2925,7 +2925,7 @@
             "name": "&7Dauer: &3%duration%",
             "lore": [
               "&eSetzt die Dauer des ",
-              "&Trankeffektes in Ticks.",
+              "&eTrankeffektes in Ticks.",
               "&7[&aKlicke&7] Eingabe-Dauer"
             ],
             "message": "&eGebe die Dauer als Zahl in Ticks ein! 20 Ticks = 1 sec"
