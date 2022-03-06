@@ -115,7 +115,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         if (this.conditions == null) {
             this.conditions = new Conditions();
         }
-        this.vanillaBook = node.path(KEY_VANILLA_BOOK).asBoolean(false);
+        this.vanillaBook = node.path(KEY_VANILLA_BOOK).asBoolean(true);
         this.hidden = node.path(KEY_HIDDEN).asBoolean(false);
         //Sets the result of the recipe if one exists in the config
         if (node.has(KEY_RESULT) && !(this instanceof CustomRecipeStonecutter)) {
@@ -139,7 +139,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.group = "";
         this.priority = RecipePriority.NORMAL;
         this.checkNBT = true;
-        this.vanillaBook = false;
+        this.vanillaBook = true;
         this.conditions = new Conditions();
         this.hidden = false;
     }
