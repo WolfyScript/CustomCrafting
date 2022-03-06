@@ -24,11 +24,13 @@ package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
+import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +42,7 @@ public class RecipeBookCache {
     private final CustomCrafting customCrafting;
     private EliteWorkbench eliteCraftingTable;
     private Category category;
+    private CategoryFilter categoryFilter;
 
     private int page;
     private int subFolderPage;
@@ -47,10 +50,11 @@ public class RecipeBookCache {
     private List<CustomItem> researchItems;
 
     public RecipeBookCache() {
-        this.customCrafting = (CustomCrafting) Bukkit.getPluginManager().getPlugin("CustomCrafting");
+        this.customCrafting = CustomCrafting.inst();
         this.page = 0;
         this.subFolderPage = 0;
         this.category = null;
+        this.categoryFilter = null;
         this.researchItems = new ArrayList<>();
         this.cachedSubFolderRecipes = new HashMap<>();
         this.eliteCraftingTable = null;
@@ -89,6 +93,15 @@ public class RecipeBookCache {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    @NotNull
+    public CategoryFilter getCategoryFilter() {
+        return categoryFilter != null ? categoryFilter : customCrafting.getConfigHandler().getRecipeBookConfig().getFilter(0);
+    }
+
+    public void setCategoryFilter(CategoryFilter categoryFilter) {
+        this.categoryFilter = categoryFilter;
     }
 
     public Map<Character, ArrayList<CustomItem>> getIngredients() {

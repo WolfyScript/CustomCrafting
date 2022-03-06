@@ -39,7 +39,7 @@ class ButtonCategory extends ActionButton<CCCache> {
                 var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
                 if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
                     //Delete Category
-                    recipeBook.getCategories().removeCategory(category.getId());
+                    recipeBook.removeCategory(category.getId());
                     return true;
                 } else if (clickEvent.isLeftClick()) {
                     //Edit Category

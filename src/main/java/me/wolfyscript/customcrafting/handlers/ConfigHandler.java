@@ -28,6 +28,7 @@ import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,24 +68,16 @@ public class ConfigHandler {
     }
 
     public void loadRecipeBookConfig() {
-        var oldRecipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book_old.json");
         var recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.json");
-        if (!oldRecipeBookFile.exists() && recipeBookFile.exists() && !recipeBookFile.renameTo(oldRecipeBookFile)) {
-            customCrafting.getLogger().severe("Couldn't backup old recipe_book.json! Trying to load and migrate old data!");
-            customCrafting.getLogger().severe("If that fails, delete the recipe_book.json and restart the server!");
-        }
         if (!recipeBookFile.exists()) {
-            customCrafting.saveResource("recipe_book.json", false);
-        }
-        this.recipeBookConfig = new RecipeBookConfig(customCrafting);
-        //Fix recipe book config if broken!
-        if (recipeBookConfig.getCategories() == null) {
             customCrafting.saveResource("recipe_book.json", true);
-            try {
-                this.recipeBookConfig.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        }
+        try {
+            this.recipeBookConfig = JacksonUtil.getObjectMapper().readValue(recipeBookFile, RecipeBookConfig.class);
+        } catch (IOException e) {
+            customCrafting.getLogger().severe("Failed to load recipe_book.json");
+            e.printStackTrace();
+            this.recipeBookConfig = new RecipeBookConfig();
         }
     }
 
@@ -128,7 +121,9 @@ public class ConfigHandler {
     }
 
     public void save() throws IOException {
-        recipeBookConfig.save(getConfig().isPrettyPrinting());
+        if (this.recipeBookConfig != null) {
+            JacksonUtil.getObjectWriter(getConfig().isPrettyPrinting()).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.json"), this.recipeBookConfig);
+        }
         getConfig().save();
     }
 

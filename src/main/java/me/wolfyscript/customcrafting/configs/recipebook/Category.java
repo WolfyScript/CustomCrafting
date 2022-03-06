@@ -43,7 +43,7 @@ public class Category extends CategorySettings {
     public Category() {
         super();
         this.containers = new ArrayList<>();
-        this.auto = recipes.isEmpty() && namespaces.isEmpty();
+        this.auto = recipes.isEmpty() && folders.isEmpty();
     }
 
     public Category(Category category) {
@@ -55,16 +55,16 @@ public class Category extends CategorySettings {
     void index(CustomCrafting customCrafting, Collection<CategoryFilter> filters) {
         var registry = customCrafting.getRegistries().getRecipes();
         if (auto) {
-            this.namespaces.clear();
+            this.folders.clear();
             this.groups.clear();
-            this.namespaces.addAll(registry.namespaces());
+            this.folders.addAll(registry.folders("customcrafting"));
             this.groups.addAll(registry.groups());
         }
         containers.clear();
         //Construct containers based on settings
         List<RecipeContainer> recipeContainers = new ArrayList<>();
         recipeContainers.addAll(this.groups.stream().map(s -> new RecipeContainer(customCrafting, s)).toList());
-        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> registry.get(s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(customRecipe -> new RecipeContainer(customCrafting, customRecipe))).toList());
+        recipeContainers.addAll(this.folders.stream().flatMap(s -> registry.get("customcrafting", s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(customRecipe -> new RecipeContainer(customCrafting, customRecipe))).toList());
         recipeContainers.addAll(this.recipes.stream().map(namespacedKey -> {
             CustomRecipe<?> recipe = registry.get(namespacedKey);
             return recipe == null ? null : new RecipeContainer(customCrafting, recipe);

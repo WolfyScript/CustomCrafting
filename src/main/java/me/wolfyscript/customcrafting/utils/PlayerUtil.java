@@ -51,11 +51,11 @@ public class PlayerUtil {
     public static void openRecipeBook(Player player) {
         CustomCrafting customCrafting = CustomCrafting.inst();
         InventoryAPI<CCCache> invAPI = customCrafting.getApi().getInventoryAPI(CCCache.class);
-        var categories = customCrafting.getDataHandler().getCategories();
+        var categories = customCrafting.getConfigHandler().getRecipeBookConfig();
 
         // Open directly to the category if we only have one
         if (categories.getSortedCategories().size() == 1) {
-            invAPI.getGuiHandler(player).getCustomCache().getKnowledgeBook().setCategory(categories.getCategory(0));
+            invAPI.getGuiHandler(player).getCustomCache().getRecipeBookCache().setCategory(categories.getCategory(0));
             invAPI.openGui(player, ClusterRecipeBook.RECIPE_BOOK);
 
             return;

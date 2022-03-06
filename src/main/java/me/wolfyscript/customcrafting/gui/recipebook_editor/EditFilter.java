@@ -37,7 +37,7 @@ public class EditFilter extends EditCategorySetting {
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(29, ClusterRecipeBookEditor.RECIPES);
-        update.setButton(33, ClusterRecipeBookEditor.NAMESPACES);
+        update.setButton(33, ClusterRecipeBookEditor.FOLDERS);
         update.setButton(40, ClusterRecipeBookEditor.GROUPS);
     }
 }

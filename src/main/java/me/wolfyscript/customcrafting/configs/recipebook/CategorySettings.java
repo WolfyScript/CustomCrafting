@@ -22,13 +22,13 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -37,35 +37,36 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CategorySettings {
+public abstract class CategorySettings {
 
     protected Set<String> groups;
-    protected Set<String> namespaces;
+    protected Set<String> folders;
     protected Set<NamespacedKey> recipes;
     private String id = "";
     private Material icon;
     private String name;
     private List<String> description;
 
-    public CategorySettings() {
+    protected CategorySettings() {
         this.name = "";
         this.icon = Material.CHEST;
         this.groups = new HashSet<>();
-        this.namespaces = new HashSet<>();
+        this.folders = new HashSet<>();
         this.description = new ArrayList<>();
         this.recipes = new HashSet<>();
     }
 
-    public CategorySettings(CategorySettings category) {
+    protected CategorySettings(CategorySettings category) {
         this.id = category.id;
         this.name = category.name;
         this.icon = category.getIcon();
         this.groups = new HashSet<>(category.groups);
-        this.namespaces = new HashSet<>(category.namespaces);
+        this.folders = new HashSet<>(category.folders);
         this.description = new ArrayList<>(category.getDescription());
         this.recipes = new HashSet<>(category.getRecipes());
     }
@@ -118,12 +119,16 @@ public class CategorySettings {
         this.groups = groups;
     }
 
-    public Set<String> getNamespaces() {
-        return namespaces;
+    @JsonAlias("namespaces")
+    @JsonGetter
+    public Set<String> getFolders() {
+        return folders;
     }
 
-    public void setNamespaces(Set<String> namespaces) {
-        this.namespaces = namespaces;
+    @JsonAlias("namespaces")
+    @JsonSetter
+    public void setFolders(Set<String> folders) {
+        this.folders = folders;
     }
 
     @JsonGetter
@@ -156,9 +161,22 @@ public class CategorySettings {
         return "CategorySettings{" +
                 "id='" + id + '\'' +
                 ", groups=" + groups +
-                ", namespaces=" + namespaces +
+                ", namespaces=" + folders +
                 ", recipes=" + recipes +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CategorySettings that = (CategorySettings) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public void writeToByteBuf(MCByteBuf byteBuf) {
@@ -168,7 +186,7 @@ public class CategorySettings {
 
     protected void writeData(MCByteBuf byteBuf) {
         writeStringArray(new ArrayList<>(this.groups), byteBuf);
-        writeStringArray(new ArrayList<>(this.namespaces), byteBuf);
+        writeStringArray(new ArrayList<>(this.folders), byteBuf);
         writeStringArray(this.recipes.stream().map(NamespacedKey::toString).toList(), byteBuf);
     }
 

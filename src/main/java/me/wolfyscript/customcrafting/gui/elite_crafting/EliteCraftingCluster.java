@@ -50,7 +50,7 @@ public class EliteCraftingCluster extends CCCluster {
 
         registerButton(new ActionButton<>(RECIPE_BOOK.getKey(), Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             ButtonContainerIngredient.resetButtons(guiHandler);
-            cache.getKnowledgeBook().setEliteCraftingTable(cache.getEliteWorkbench());
+            cache.getRecipeBookCache().setEliteCraftingTable(cache.getEliteWorkbench());
             guiHandler.openCluster("recipe_book");
             return true;
         }));

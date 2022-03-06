@@ -60,6 +60,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
     public static final NamespacedKey DESCRIPTION_REMOVE = new NamespacedKey(KEY, "description.remove");
     public static final NamespacedKey RECIPES = new NamespacedKey(KEY, "recipes");
     public static final NamespacedKey NAMESPACES = new NamespacedKey(KEY, "namespaces");
+    public static final NamespacedKey FOLDERS = new NamespacedKey(KEY, "folders");
     public static final NamespacedKey GROUPS = new NamespacedKey(KEY, "groups");
 
     public ClusterRecipeBookEditor(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
@@ -133,7 +134,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
                         var namespacedKey = NamespacedKey.of(args[0]);
                         CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(namespacedKey);
                         if (recipe == null) {
-                            wolfyUtilities.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
+                            wolfyUtilities.getChat().sendKey(player, this, "not_existing", new Pair<>("%recipe%", args[0]));
                             return true;
                         }
                         if (remove) {
@@ -152,7 +153,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
             return itemStack;
         }));
 
-        registerButton(new ActionButton<>(NAMESPACES.getKey(), Material.ENDER_CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(FOLDERS.getKey(), Material.ENDER_CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
             if (event instanceof InventoryClickEvent clickEvent) {
                 boolean remove = clickEvent.isRightClick();
@@ -169,9 +170,9 @@ public class ClusterRecipeBookEditor extends CCCluster {
                             return true;
                         }
                         if (remove) {
-                            cache.getRecipeBookEditor().getCategorySetting().getNamespaces().remove(namespace);
+                            cache.getRecipeBookEditor().getCategorySetting().getFolders().remove(namespace);
                         } else {
-                            cache.getRecipeBookEditor().getCategorySetting().getNamespaces().add(namespace);
+                            cache.getRecipeBookEditor().getCategorySetting().getFolders().add(namespace);
                         }
                     }
                     return false;
@@ -180,7 +181,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%namespaces%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getNamespaces().stream().map(namespacedKey -> "&7 - " + namespacedKey).toList());
+            values.put("%folders%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getFolders().stream().map(namespacedKey -> "&7 - " + namespacedKey).toList());
             return itemStack;
         }));
 

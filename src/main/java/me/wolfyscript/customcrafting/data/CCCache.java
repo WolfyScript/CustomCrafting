@@ -87,6 +87,11 @@ public class CCCache extends CustomCache {
         return chatLists;
     }
 
+    public RecipeBookCache getRecipeBookCache() {
+        return recipeBookCache;
+    }
+
+    @Deprecated
     public RecipeBookCache getKnowledgeBook() {
         return recipeBookCache;
     }

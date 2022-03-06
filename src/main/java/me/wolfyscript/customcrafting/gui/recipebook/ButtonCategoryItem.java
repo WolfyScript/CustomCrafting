@@ -23,9 +23,10 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.recipebook.Categories;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.cache.RecipeBookCache;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
@@ -41,31 +42,33 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 class ButtonCategoryItem extends Button<CCCache> {
 
     private final CustomCrafting customCrafting;
-    private final Categories categories;
-    private final HashMap<GuiHandler<CCCache>, Integer> categoryMap;
+    private final RecipeBookConfig recipeBookConfig;
 
     ButtonCategoryItem(CustomCrafting customCrafting) {
         super(ClusterRecipeBook.ITEM_CATEGORY.getKey(), ButtonType.NORMAL);
         this.customCrafting = customCrafting;
-        this.categories = customCrafting.getDataHandler().getCategories();
-        this.categoryMap = new HashMap<>();
+        this.recipeBookConfig = customCrafting.getConfigHandler().getRecipeBookConfig();
     }
 
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         if (event instanceof InventoryClickEvent clickEvent) {
             ButtonContainerRecipeBook.resetButtons(guiHandler);
-            if (!categories.getSortedFilters().isEmpty()) {
-                int currentIndex = categoryMap.getOrDefault(guiHandler, 0);
+            if (!recipeBookConfig.getSortedFilters().isEmpty()) {
+                RecipeBookCache bookCache = guiHandler.getCustomCache().getRecipeBookCache();
+                int currentIndex = recipeBookConfig.getSortedFilters().indexOf(bookCache.getCategoryFilter().getId());
+                int nextIndex;
                 if (clickEvent.isLeftClick()) {
-                    categoryMap.put(guiHandler, currentIndex < categories.getSortedFilters().size() - 1 ? currentIndex + 1 : 0);
+                    nextIndex = currentIndex < recipeBookConfig.getSortedFilters().size() - 1 ? currentIndex + 1 : 0;
                 } else {
-                    categoryMap.put(guiHandler, currentIndex > 0 ? currentIndex - 1 : categories.getSortedFilters().size() - 1);
+                    nextIndex = currentIndex > 0 ? currentIndex - 1 : recipeBookConfig.getSortedFilters().size() - 1;
                 }
+                bookCache.setCategoryFilter(recipeBookConfig.getFilter(nextIndex));
             }
         }
         return true;
@@ -73,10 +76,7 @@ class ButtonCategoryItem extends Button<CCCache> {
 
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
-        CategoryFilter category = categories.getFilter(categoryMap.getOrDefault(guiHandler, 0));
-        if (category != null) {
-            inventory.setItem(slot, category.createItemStack(customCrafting));
-        }
+        inventory.setItem(slot, guiHandler.getCustomCache().getRecipeBookCache().getCategoryFilter().createItemStack(customCrafting));
     }
 
     @Override
@@ -97,10 +97,5 @@ class ButtonCategoryItem extends Button<CCCache> {
     @Override
     public void preRender(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, ItemStack itemStack, int slot, boolean help) {
 
-    }
-
-    @Nullable
-    public CategoryFilter getFilter(GuiHandler<CCCache> guiHandler) {
-        return categories.getFilter(categoryMap.getOrDefault(guiHandler, 0));
     }
 }
