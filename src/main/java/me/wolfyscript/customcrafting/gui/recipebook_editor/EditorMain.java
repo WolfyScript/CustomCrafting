@@ -29,9 +29,14 @@ import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Material;
+import org.bukkit.util.FileUtil;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 public class EditorMain extends CCWindow {
 
@@ -53,6 +58,9 @@ public class EditorMain extends CCWindow {
         }));
         registerButton(new ActionButton<>(SAVE, Material.WRITTEN_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             try {
+                if (!new File(customCrafting.getDataFolder(), "recipe_book.json").renameTo(new File(customCrafting.getDataFolder(), "recipe_book_backup.json"))) {
+                    api.getChat().sendKey(player, "recipe_book_editor", "save.failed_backup");
+                }
                 customCrafting.getConfigHandler().save();
                 api.getChat().sendKey(player, "recipe_book_editor", "save.success");
             } catch (IOException e) {

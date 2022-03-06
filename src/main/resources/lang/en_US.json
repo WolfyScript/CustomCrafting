@@ -3289,6 +3289,7 @@
         "save": {
           "input": "&eType in the key! Must be alphanumeric lowercase! [a-z0-9/._-]",
           "error": "&cCheck for missing icon!",
+          "fail_backup": "&cFailed to create backup of recipe_book.json!",
           "success": "&aSaved successfully!"
         }
       },
