@@ -55,55 +55,13 @@
       "allowEmpty" : false
     }
   },
-  "settings" : {
-    "allowVanillaRecipe" : true
-  },
+  "settings" : { },
   "result" : {
     "items" : [ {
       "custom_amount" : 1,
       "wolfyutilities" : "customcrafting:customcrafting/advanced_crafting_table"
     } ],
     "tags" : [ ],
-    "extensions" : [ {
-      "key" : "customcrafting:command",
-      "outerRadius" : [ 0.0, 0.0, 0.0 ],
-      "innerRadius" : [ 0.0, 0.0, 0.0 ],
-      "executionType" : "BULK",
-      "consoleCommands" : [ "say hi %player%", "effect give %player% minecraft:strength 100 100" ],
-      "playerCommands" : [ ],
-      "nearPlayer" : true,
-      "nearWorkstation" : true
-    }, {
-      "key" : "customcrafting:sound",
-      "outerRadius" : [ 0.0, 0.0, 0.0 ],
-      "innerRadius" : [ 0.0, 0.0, 0.0 ],
-      "executionType" : "ONCE",
-      "sound" : "BLOCK_ANVIL_USE",
-      "volume" : 1.0,
-      "pitch" : 1.0,
-      "soundCategory" : "BLOCKS",
-      "forPlayer" : false,
-      "nearPlayer" : false,
-      "nearWorkstation" : false,
-      "onBlock" : true
-    }, {
-      "key" : "customcrafting:mythicmobs/mob_spawn",
-      "outerRadius" : [ 0.0, 0.0, 0.0 ],
-      "innerRadius" : [ 0.0, 0.0, 0.0 ],
-      "executionType" : "ONCE",
-      "mobName" : "SkeletalKnight",
-      "mobLevel" : 1,
-      "offset" : [ 0.5, 1.0, 0.5 ]
-    }, {
-      "key" : "customcrafting:advancement",
-      "outerRadius" : [ 0.0, 0.0, 0.0 ],
-      "innerRadius" : [ 0.0, 0.0, 0.0 ],
-      "executionType" : "ONCE",
-      "advancement" : "minecraft:husbandry/tactical_fishing",
-      "revoke" : false,
-      "criteria" : null,
-      "nearPlayer" : false,
-      "nearWorkstation" : false
-    } ]
+    "extensions" : [ ]
   }
 }
