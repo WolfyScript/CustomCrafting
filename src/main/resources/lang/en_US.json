@@ -3265,13 +3265,13 @@
             "%recipes%"
           ]
         },
-        "namespaces": {
-          "name": "&6&lNamespaces",
+        "folders": {
+          "name": "&6&lFolders",
           "lore": [
-            "&7[&aLeft Click&7] Add Namespace",
-            "&7[&aRight Click&7] Remove Namespace",
-            "&eConfigured Namespaces:",
-            "%namespaces%"
+            "&7[&aLeft Click&7] Add Folder",
+            "&7[&aRight Click&7] Remove Folder",
+            "&eConfigured Folders:",
+            "%folders%"
           ]
         },
         "groups": {
@@ -3289,7 +3289,7 @@
         "save": {
           "input": "&eType in the key! Must be alphanumeric lowercase! [a-z0-9/._-]",
           "error": "&cCheck for missing icon!",
-          "fail_backup": "&cFailed to create backup of recipe_book.json!",
+          "failed_backup": "&cFailed to create backup of recipe_book.json!",
           "success": "&aSaved successfully!"
         }
       },

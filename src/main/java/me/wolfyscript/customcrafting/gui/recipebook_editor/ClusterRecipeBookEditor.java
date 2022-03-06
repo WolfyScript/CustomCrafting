@@ -60,6 +60,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
     public static final NamespacedKey DESCRIPTION_REMOVE = new NamespacedKey(KEY, "description.remove");
     public static final NamespacedKey RECIPES = new NamespacedKey(KEY, "recipes");
     public static final NamespacedKey NAMESPACES = new NamespacedKey(KEY, "namespaces");
+    public static final NamespacedKey FOLDERS = new NamespacedKey(KEY, "folders");
     public static final NamespacedKey GROUPS = new NamespacedKey(KEY, "groups");
 
     public ClusterRecipeBookEditor(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
@@ -152,7 +153,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
             return itemStack;
         }));
 
-        registerButton(new ActionButton<>(NAMESPACES.getKey(), Material.ENDER_CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(FOLDERS.getKey(), Material.ENDER_CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
             if (event instanceof InventoryClickEvent clickEvent) {
                 boolean remove = clickEvent.isRightClick();
@@ -180,7 +181,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%namespaces%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getFolders().stream().map(namespacedKey -> "&7 - " + namespacedKey).toList());
+            values.put("%folders%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getFolders().stream().map(namespacedKey -> "&7 - " + namespacedKey).toList());
             return itemStack;
         }));
 
