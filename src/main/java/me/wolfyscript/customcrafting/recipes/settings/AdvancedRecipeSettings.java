@@ -22,8 +22,12 @@
 
 package me.wolfyscript.customcrafting.recipes.settings;
 
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class AdvancedRecipeSettings implements CraftingRecipeSettings<AdvancedRecipeSettings> {
 
+    @JsonIgnore
     private boolean allowVanillaRecipe;
 
     public AdvancedRecipeSettings() {
@@ -34,10 +38,20 @@ public class AdvancedRecipeSettings implements CraftingRecipeSettings<AdvancedRe
         this.allowVanillaRecipe = settings.allowVanillaRecipe;
     }
 
+    /**
+     * @deprecated Replaced by {@link ICustomVanillaRecipe#isVisibleVanillaBook()}
+     */
+    @JsonIgnore
+    @Deprecated
     public boolean isAllowVanillaRecipe() {
         return allowVanillaRecipe;
     }
 
+    /**
+     * @deprecated Replaced by {@link ICustomVanillaRecipe#setVisibleVanillaBook(boolean)}
+     */
+    @JsonIgnore
+    @Deprecated
     public void setAllowVanillaRecipe(boolean allowVanillaRecipe) {
         this.allowVanillaRecipe = allowVanillaRecipe;
     }
