@@ -45,8 +45,7 @@ class MenuMain extends CCWindow {
 
     @Override
     public void onInit() {
-        var dataHandler = customCrafting.getDataHandler();
-        var categories = dataHandler.getCategories();
+        var categories = customCrafting.getConfigHandler().getRecipeBookConfig();
 
         for (String categoryId : categories.getSortedCategories()) {
             registerButton(new ButtonCategoryMain(categoryId, customCrafting));
@@ -70,8 +69,7 @@ class MenuMain extends CCWindow {
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         event.setButton(8, data.getLightBackground());
 
-        var dataHandler = customCrafting.getDataHandler();
-        var categories = dataHandler.getCategories();
+        var categories = customCrafting.getConfigHandler().getRecipeBookConfig();
         var sorted = categories.getSortedCategories();
 
         for (int i = 0; i < sorted.size() && i < getSize(); i++) {

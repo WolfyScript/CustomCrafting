@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.recipebook.Categories;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -45,13 +45,13 @@ import java.util.HashMap;
 class ButtonCategoryItem extends Button<CCCache> {
 
     private final CustomCrafting customCrafting;
-    private final Categories categories;
+    private final RecipeBookConfig recipeBookConfig;
     private final HashMap<GuiHandler<CCCache>, Integer> categoryMap;
 
     ButtonCategoryItem(CustomCrafting customCrafting) {
         super(ClusterRecipeBook.ITEM_CATEGORY.getKey(), ButtonType.NORMAL);
         this.customCrafting = customCrafting;
-        this.categories = customCrafting.getDataHandler().getCategories();
+        this.recipeBookConfig = customCrafting.getConfigHandler().getRecipeBookConfig();
         this.categoryMap = new HashMap<>();
     }
 
@@ -59,12 +59,12 @@ class ButtonCategoryItem extends Button<CCCache> {
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         if (event instanceof InventoryClickEvent clickEvent) {
             ButtonContainerRecipeBook.resetButtons(guiHandler);
-            if (!categories.getSortedFilters().isEmpty()) {
+            if (!recipeBookConfig.getSortedFilters().isEmpty()) {
                 int currentIndex = categoryMap.getOrDefault(guiHandler, 0);
                 if (clickEvent.isLeftClick()) {
-                    categoryMap.put(guiHandler, currentIndex < categories.getSortedFilters().size() - 1 ? currentIndex + 1 : 0);
+                    categoryMap.put(guiHandler, currentIndex < recipeBookConfig.getSortedFilters().size() - 1 ? currentIndex + 1 : 0);
                 } else {
-                    categoryMap.put(guiHandler, currentIndex > 0 ? currentIndex - 1 : categories.getSortedFilters().size() - 1);
+                    categoryMap.put(guiHandler, currentIndex > 0 ? currentIndex - 1 : recipeBookConfig.getSortedFilters().size() - 1);
                 }
             }
         }
@@ -73,7 +73,7 @@ class ButtonCategoryItem extends Button<CCCache> {
 
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
-        CategoryFilter category = categories.getFilter(categoryMap.getOrDefault(guiHandler, 0));
+        CategoryFilter category = recipeBookConfig.getFilter(categoryMap.getOrDefault(guiHandler, 0));
         if (category != null) {
             inventory.setItem(slot, category.createItemStack(customCrafting));
         }
@@ -101,6 +101,6 @@ class ButtonCategoryItem extends Button<CCCache> {
 
     @Nullable
     public CategoryFilter getFilter(GuiHandler<CCCache> guiHandler) {
-        return categories.getFilter(categoryMap.getOrDefault(guiHandler, 0));
+        return recipeBookConfig.getFilter(categoryMap.getOrDefault(guiHandler, 0));
     }
 }

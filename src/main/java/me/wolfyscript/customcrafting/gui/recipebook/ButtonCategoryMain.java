@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.recipebook.Categories;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -42,14 +42,14 @@ import java.io.IOException;
 class ButtonCategoryMain extends Button<CCCache> {
 
     private final CustomCrafting customCrafting;
-    private final Categories categories;
+    private final RecipeBookConfig recipeBookConfig;
     private final Category category;
 
     ButtonCategoryMain(String categoryId, CustomCrafting customCrafting) {
         super("main_category." + categoryId, ButtonType.NORMAL);
         this.customCrafting = customCrafting;
-        this.categories = customCrafting.getDataHandler().getCategories();
-        this.category = categories.getCategory(categoryId);
+        this.recipeBookConfig = customCrafting.getConfigHandler().getRecipeBookConfig();
+        this.category = recipeBookConfig.getCategory(categoryId);
     }
 
     @Override

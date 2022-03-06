@@ -132,7 +132,7 @@ public class MenuRecipeBook extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
-        var dataHandler = customCrafting.getDataHandler();
+        var configHandler = customCrafting.getConfigHandler();
         var player = event.getPlayer();
         CCPlayerData playerStore = PlayerUtil.getStore(player);
         NamespacedKey grayBtnKey = playerStore.getLightBackground();
@@ -154,7 +154,7 @@ public class MenuRecipeBook extends CCWindow {
                     event.setButton(item, ButtonContainerRecipeBook.namespacedKey(item));
                 }
             }
-            if (dataHandler.getCategories().getSortedCategories().size() > 1) {
+            if (configHandler.getRecipeBookConfig().getSortedCategories().size() > 1) {
                 event.setButton(45, BACK);
             }
             if (knowledgeBook.getPage() != 0) {

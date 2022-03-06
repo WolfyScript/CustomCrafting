@@ -169,9 +169,9 @@ public class ClusterRecipeBookEditor extends CCCluster {
                             return true;
                         }
                         if (remove) {
-                            cache.getRecipeBookEditor().getCategorySetting().getNamespaces().remove(namespace);
+                            cache.getRecipeBookEditor().getCategorySetting().getFolders().remove(namespace);
                         } else {
-                            cache.getRecipeBookEditor().getCategorySetting().getNamespaces().add(namespace);
+                            cache.getRecipeBookEditor().getCategorySetting().getFolders().add(namespace);
                         }
                     }
                     return false;
@@ -180,7 +180,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%namespaces%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getNamespaces().stream().map(namespacedKey -> "&7 - " + namespacedKey).toList());
+            values.put("%namespaces%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getFolders().stream().map(namespacedKey -> "&7 - " + namespacedKey).toList());
             return itemStack;
         }));
 
