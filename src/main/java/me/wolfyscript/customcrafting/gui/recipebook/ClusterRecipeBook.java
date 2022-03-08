@@ -102,7 +102,17 @@ public class ClusterRecipeBook extends CCCluster {
             if (event instanceof InventoryClickEvent clickEvent) {
                 var book = cache.getRecipeBookCache();
                 ButtonContainerIngredient.resetButtons(guiHandler);
-                if (clickEvent.isLeftClick()) {
+                if (clickEvent.getClick().equals(ClickType.MIDDLE)) {
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
+                        if (cache.getRecipeBookCache().hasEliteCraftingTable()) {
+                            guiHandler.openCluster(EliteCraftingCluster.KEY);
+                        } else {
+                            guiHandler.close();
+                        }
+                        cache.getRecipeBookCache().setEliteCraftingTable(null);
+                    });
+                    return true;
+                } else if (clickEvent.isLeftClick()) {
                     book.removePreviousResearchItem();
                     if (book.getSubFolder() > 0) {
                         CustomItem item = book.getResearchItem();
