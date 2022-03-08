@@ -26,7 +26,11 @@ import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
+import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
+import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -59,18 +63,31 @@ public class DamageMergeAdapter extends MergeAdapter {
 
     @Override
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
+        if (customResult.getApiReference() instanceof ItemsAdderRef) {
+            ItemsAdderIntegration iAIntegration =  WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
+            if (iAIntegration != null) {
+                CustomStack customStack = iAIntegration.getByItemStack(result);
+                if (customStack != null) {
+                    final int maxDur = customStack.getMaxDurability();
+                    customStack.setDurability(maxDur - calculateDamage(recipeData, maxDur));
+                    return result;
+                }
+            }
+        }
+        var meta = result.getItemMeta();
+        ((Damageable) meta).setDamage(calculateDamage(recipeData, result.getType().getMaxDurability()));
+        result.setItemMeta(meta);
+        return result;
+    }
+
+    private int calculateDamage(RecipeData<?> recipeData, final int maxDur) {
         int totalDurability = 0;
-        int maxDur = result.getType().getMaxDurability();
         for (IngredientData data : recipeData.getBySlots(slots)) {
             if (data.itemStack().getItemMeta() instanceof Damageable damageable) {
                 totalDurability += maxDur - damageable.getDamage();
             }
         }
-        var meta = result.getItemMeta();
-        int totalDamage = Math.max((maxDur - totalDurability) + additionalDamage - (repairBonus ? (int) Math.floor(maxDur / 20d) : 0), 0);
-        ((Damageable) meta).setDamage(Math.min(totalDamage, maxDur));
-        result.setItemMeta(meta);
-        return result;
+        return Math.min(Math.max((maxDur - totalDurability) + additionalDamage - (repairBonus ? (int) Math.floor(maxDur / 20d) : 0), 0), maxDur);
     }
 
     @Override
