@@ -29,7 +29,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ import java.util.Map;
 public class RecipeBookCache {
 
     private final CustomCrafting customCrafting;
-    private EliteWorkbench eliteCraftingTable;
+    private CacheEliteCraftingTable eliteCraftingTable;
     private Category category;
     private CategoryFilter categoryFilter;
 
@@ -48,6 +47,8 @@ public class RecipeBookCache {
     private int subFolderPage;
     private Map<CustomItem, List<CustomRecipe<?>>> cachedSubFolderRecipes;
     private List<CustomItem> researchItems;
+
+    private boolean prepareRecipe;
 
     public RecipeBookCache() {
         this.customCrafting = CustomCrafting.inst();
@@ -58,6 +59,7 @@ public class RecipeBookCache {
         this.researchItems = new ArrayList<>();
         this.cachedSubFolderRecipes = new HashMap<>();
         this.eliteCraftingTable = null;
+        this.prepareRecipe = true;
     }
 
     public CustomRecipe<?> getCurrentRecipe() {
@@ -67,11 +69,19 @@ public class RecipeBookCache {
         return null;
     }
 
-    public EliteWorkbench getEliteCraftingTable() {
+    public void setPrepareRecipe(boolean prepareRecipe) {
+        this.prepareRecipe = prepareRecipe;
+    }
+
+    public boolean isPrepareRecipe() {
+        return prepareRecipe;
+    }
+
+    public CacheEliteCraftingTable getEliteCraftingTable() {
         return eliteCraftingTable;
     }
 
-    public void setEliteCraftingTable(EliteWorkbench eliteCraftingTable) {
+    public void setEliteCraftingTable(CacheEliteCraftingTable eliteCraftingTable) {
         this.eliteCraftingTable = eliteCraftingTable;
     }
 

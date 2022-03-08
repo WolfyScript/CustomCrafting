@@ -26,7 +26,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
+import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import org.bukkit.entity.Player;
@@ -82,9 +82,9 @@ public class Category extends CategorySettings {
         return getRecipeList(player, filter, null);
     }
 
-    public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter, EliteWorkbench eliteWorkbench) {
-        if (eliteWorkbench != null) {
-            return getContainers(filter).stream().filter(container -> container.canView(player) && container.isValid(eliteWorkbench)).toList();
+    public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter, CacheEliteCraftingTable cacheEliteCraftingTable) {
+        if (cacheEliteCraftingTable != null) {
+            return getContainers(filter).stream().filter(container -> container.canView(player) && container.isValid(cacheEliteCraftingTable)).toList();
         }
         return getContainers(filter).stream().filter(container -> container.canView(player)).toList();
     }

@@ -138,7 +138,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
                     book.setSubFolderPage(0);
                     book.addResearchItem(customItem);
                     book.setSubFolderRecipes(customItem, recipes);
-                    book.applyRecipeToButtons(guiHandler, recipes.get(0));
+                    book.setPrepareRecipe(true);
                 }
             }
         }

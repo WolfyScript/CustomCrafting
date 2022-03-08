@@ -24,7 +24,7 @@ package me.wolfyscript.customcrafting.gui.elite_crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
+import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -73,10 +73,10 @@ abstract class CraftingWindow extends CCWindow {
             event.setButton(i, ClusterMain.GLASS_BLACK);
         }
         CCCache cache = event.getGuiHandler().getCustomCache();
-        EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
-        if (eliteWorkbench.getContents() == null || eliteWorkbench.getCurrentGridSize() <= 0) {
-            eliteWorkbench.setCurrentGridSize((byte) gridSize);
-            eliteWorkbench.setContents(new ItemStack[gridSize * gridSize]);
+        CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
+        if (cacheEliteCraftingTable.getContents() == null || cacheEliteCraftingTable.getCurrentGridSize() <= 0) {
+            cacheEliteCraftingTable.setCurrentGridSize((byte) gridSize);
+            cacheEliteCraftingTable.setContents(new ItemStack[gridSize * gridSize]);
         }
         int slot;
         for (int i = 0; i < gridSize * gridSize; i++) {
@@ -91,18 +91,18 @@ abstract class CraftingWindow extends CCWindow {
     public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
         Player player = guiHandler.getPlayer();
         CCCache cache = guiHandler.getCustomCache();
-        EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
-        if (eliteWorkbench.getContents() != null) {
-            for (ItemStack itemStack : eliteWorkbench.getContents()) {
+        CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
+        if (cacheEliteCraftingTable.getContents() != null) {
+            for (ItemStack itemStack : cacheEliteCraftingTable.getContents()) {
                 if (itemStack != null && !itemStack.getType().equals(Material.AIR)) {
                     player.getInventory().addItem(itemStack);
                 }
             }
         }
-        eliteWorkbench.setCustomItemAndData(null, null);
-        eliteWorkbench.setResult(new ItemStack(Material.AIR));
-        eliteWorkbench.setContents(null);
-        eliteWorkbench.setCurrentGridSize((byte) 0);
+        cacheEliteCraftingTable.setCustomItemAndData(null, null);
+        cacheEliteCraftingTable.setResult(new ItemStack(Material.AIR));
+        cacheEliteCraftingTable.setContents(null);
+        cacheEliteCraftingTable.setCurrentGridSize((byte) 0);
         return false;
     }
 
