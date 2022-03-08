@@ -30,7 +30,6 @@ import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
-import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -63,15 +62,13 @@ public class DamageMergeAdapter extends MergeAdapter {
 
     @Override
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
-        if (customResult.getApiReference() instanceof ItemsAdderRef) {
-            ItemsAdderIntegration iAIntegration =  WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
-            if (iAIntegration != null) {
-                CustomStack customStack = iAIntegration.getByItemStack(result);
-                if (customStack != null) {
-                    final int maxDur = customStack.getMaxDurability();
-                    customStack.setDurability(maxDur - calculateDamage(recipeData, maxDur));
-                    return result;
-                }
+        ItemsAdderIntegration iAIntegration = WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
+        if (iAIntegration != null) {
+            CustomStack customStack = iAIntegration.getByItemStack(result);
+            if (customStack != null) {
+                final int maxDur = customStack.getMaxDurability();
+                customStack.setDurability(maxDur - calculateDamage(recipeData, maxDur));
+                return result;
             }
         }
         var meta = result.getItemMeta();
