@@ -3138,10 +3138,9 @@
         "back_to_list": {
           "name": "&7\u27A6 &6&lReturn",
           "lore": [
-            "&aLeft-Click",
-            "  &7»&r &eReturn to previous Recipe",
-            "&aRight-Click ",
-            "  &7»&r &eReturn to Recipe List"
+            "&aLeft-Click &7»&e Previous Recipe",
+            "&aRight-Click &7»&e Recipe List",
+            "&aMiddle-Click &7»&e &eClose Book"
           ]
         }
       },
