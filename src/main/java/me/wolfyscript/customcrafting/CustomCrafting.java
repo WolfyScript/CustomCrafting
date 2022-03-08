@@ -34,27 +34,78 @@ import me.wolfyscript.customcrafting.data.patreon.Patreon;
 import me.wolfyscript.customcrafting.data.patreon.Patron;
 import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
-import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabArmorSlots;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabAttributes;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabConsume;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabCustomDurability;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabCustomModelData;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabDamage;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabDisplayName;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEliteCraftingTable;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEnchants;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFlags;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFuel;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLocalizedName;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLore;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabParticleEffects;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPermission;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPlayerHead;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPotion;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabRarity;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabRecipeBook;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabRepairCost;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabUnbreakable;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabVanilla;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.potion_creator.ClusterPotionCreator;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
-import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeView;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeView;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.ClusterRecipeBookEditor;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
-import me.wolfyscript.customcrafting.listeners.*;
+import me.wolfyscript.customcrafting.listeners.AnvilListener;
+import me.wolfyscript.customcrafting.listeners.BrewingStandListener;
+import me.wolfyscript.customcrafting.listeners.CauldronListener;
+import me.wolfyscript.customcrafting.listeners.CraftListener;
+import me.wolfyscript.customcrafting.listeners.EliteWorkbenchListener;
+import me.wolfyscript.customcrafting.listeners.FurnaceListener;
+import me.wolfyscript.customcrafting.listeners.GrindStoneListener;
+import me.wolfyscript.customcrafting.listeners.PlayerListener;
+import me.wolfyscript.customcrafting.listeners.RecipeBookListener;
+import me.wolfyscript.customcrafting.listeners.SmithingListener;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDefault;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDurability;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
-import me.wolfyscript.customcrafting.recipes.conditions.*;
-import me.wolfyscript.customcrafting.recipes.items.extension.*;
+import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.Condition;
+import me.wolfyscript.customcrafting.recipes.conditions.ConditionAdvancement;
+import me.wolfyscript.customcrafting.recipes.conditions.ConditionScoreboard;
+import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.CraftLimitCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.ExperienceCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.WorldBiomeCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.WorldNameCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
+import me.wolfyscript.customcrafting.recipes.items.extension.CommandResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.MythicMobResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtensionAdvancement;
+import me.wolfyscript.customcrafting.recipes.items.extension.SoundResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.*;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.DisplayNameMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantedBookMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.FireworkRocketMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.PlaceholderAPIMergeAdapter;
 import me.wolfyscript.customcrafting.registry.CCRegistries;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.CraftManager;
@@ -87,8 +138,6 @@ import java.util.logging.Level;
 public class CustomCrafting extends JavaPlugin {
 
     private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
-    //Only used for displaying which version it is.
-    private static final boolean PREMIUM = true;
     //CustomData keys
     public static final NamespacedKey ELITE_CRAFTING_TABLE_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
     public static final NamespacedKey RECIPE_BOOK_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe_book");
@@ -283,7 +332,7 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         getLogger().info("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         getLogger().info("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        getLogger().info(() -> "    v" + currentVersion + " " + (PREMIUM ? "Premium" : "Free"));
+        getLogger().info(() -> "    v" + currentVersion);
     }
 
     public void writeSeparator() {
@@ -295,18 +344,18 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("");
         getLogger().info("Special thanks to my Patrons for supporting this project: ");
         List<Patron> patronList = patreon.getPatronList();
-        int lengthColumn = 20;
-        int size = patronList.size();
-        for (int i = 0; i <= size; i += 2) {
-            if (i < size) {
-                var sB = new StringBuilder();
-                String name = patronList.get(i).getName();
-                sB.append("| ").append(name);
-                sB.append(" ".repeat(Math.max(0, lengthColumn - name.length())));
-                if (i + 1 < patronList.size()) {
-                    sB.append("| ").append(patronList.get(i + 1).getName());
-                }
-                getLogger().log(Level.INFO, "     {0}", sB);
+        int linePos = 0;
+        StringBuilder sB = new StringBuilder();
+        for (Patron patron : patronList) {
+            String name = patron.getName();
+            sB.append(name);
+            if (linePos == 5) {
+                getLogger().log(Level.INFO, sB.toString());
+                sB = new StringBuilder();
+                linePos = 0;
+            } else {
+                sB.append(", ");
+                linePos++;
             }
         }
     }
