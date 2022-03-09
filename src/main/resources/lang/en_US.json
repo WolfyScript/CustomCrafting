@@ -839,17 +839,17 @@
               ]
             },
             "set": {
-              "name": "&6Set Display Name",
+              "name": "&7✎ &6&lSet Display Name",
               "lore": [
-                "&7Change Display Name"
+                "&eChange the display name"
               ],
               "message": "&eType in the name! Use &6&& &efor formatting codes!"
             },
             "remove": {
-              "name": "&3Remove Display Name",
+              "name": "&c❌ &6&lRemove Display Name",
               "lore": [
-                "&7Removes Display Name and",
-                "&7reset it to default"
+                "&eRemoves Display Name and",
+                "&eresets it to the default."
               ]
             }
           },
@@ -861,14 +861,14 @@
               ]
             },
             "add": {
-              "name": "&6Add Enchantment",
-              "help": [],
-              "message": "&eType in the enchantment and level! &6unbreaking 5"
+              "name": "&7✎ &6&lAdd Enchantment",
+              "lore": [],
+              "message": "&eType in the enchantment and level! e.g: &6/wui unbreaking 5"
             },
             "remove": {
-              "name": "&4Remove Enchantment",
-              "help": [],
-              "message": "&eType in the enchantment! &6unbreaking"
+              "name": "&c- &6&lRemove Enchantment",
+              "lore": [],
+              "message": "&eType in the enchantment! e.g: &6/wui unbreaking"
             }
           },
           "lore": {
@@ -879,12 +879,12 @@
               ]
             },
             "add": {
-              "name": "&6Add Lore",
+              "name": "&7✎ &6&lAdd Lore",
               "help": [],
               "message": "&eType in the lore! Use &6& &efor formatting codes!"
             },
             "remove": {
-              "name": "&4Remove Lore",
+              "name": "&c- &6&lRemove Lore",
               "help": [],
               "message": "&eType in the line of the lore you want to remove!"
             }
@@ -899,58 +899,58 @@
             },
             "enchants": {
               "enabled": {
-                "name": "&a&lHide Enchants"
+                "name": "&a✔ &6&lHide Enchants"
               },
               "disabled": {
-                "name": "&c&lHide Enchants"
+                "name": "&c❌ &6&lHide Enchants"
               }
             },
             "attributes": {
               "enabled": {
-                "name": "&a&lHide Attributes"
+                "name": "&a✔ &6&lHide Attributes"
               },
               "disabled": {
-                "name": "&c&lHide Attributes"
+                "name": "&c❌ &6&lHide Attributes"
               }
             },
             "unbreakable": {
               "enabled": {
-                "name": "&a&lHide Unbreakable"
+                "name": "&a✔ &6&lHide Unbreakable"
               },
               "disabled": {
-                "name": "&c&lHide Unbreakable"
+                "name": "&c❌ &6&lHide Unbreakable"
               }
             },
             "destroys": {
               "enabled": {
-                "name": "&a&lHide Destroys"
+                "name": "&a✔ &6&lHide Destroys"
               },
               "disabled": {
-                "name": "&c&lHide Destroys"
+                "name": "&c❌ &6&lHide Destroys"
               }
             },
             "placed_on": {
               "enabled": {
-                "name": "&a&lHide Placed On"
+                "name": "&a✔ &6&lHide Placed On"
               },
               "disabled": {
-                "name": "&c&lHide Placed On"
+                "name": "&c❌ &6&lHide Placed On"
               }
             },
             "potion_effects": {
               "enabled": {
-                "name": "&a&lHide Potions"
+                "name": "&a✔ &6&lHide Potions"
               },
               "disabled": {
-                "name": "&c&lHide Potions"
+                "name": "&c❌ &6&lHide Potions"
               }
             },
             "dye": {
               "enabled": {
-                "name": "&a&lHide Dye"
+                "name": "&a✔ &6&lHide Dye"
               },
               "disabled": {
-                "name": "&c&lHide Dye"
+                "name": "&c❌ &6&lHide Dye"
               }
             }
           },
