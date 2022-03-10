@@ -31,7 +31,9 @@ import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.customcrafting.utils.cooking.FurnaceListener1_17Adapter;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.registry.RegistryCustomItem;
 import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.events.EventFactory;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
@@ -40,6 +42,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.EventHandler;
@@ -54,6 +58,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FurnaceListener implements Listener {
 
@@ -63,21 +68,25 @@ public class FurnaceListener implements Listener {
     protected final CustomCrafting customCrafting;
     protected final WolfyUtilities api;
     protected final CookingManager manager;
+    protected final RegistryCustomItem registryCustomItem;
 
     public FurnaceListener(CustomCrafting customCrafting, CookingManager manager) {
         this.manager = manager;
         this.customCrafting = customCrafting;
         this.api = customCrafting.getApi();
+        this.registryCustomItem = api.getRegistries().getCustomItems();
         if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_17)) {
             Bukkit.getPluginManager().registerEvents(new FurnaceListener1_17Adapter(customCrafting, manager), customCrafting);
         }
     }
 
     @EventHandler
-    public void onInvClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() != null && event.getClickedInventory() instanceof FurnaceInventory && event.getSlotType().equals(InventoryType.SlotType.FUEL)) {
+    public void placeItemIntoFurnace(InventoryClickEvent event) {
+        if (!(event.getClickedInventory() instanceof FurnaceInventory furnaceInventory)) return;
+        var slotType = event.getSlotType();
+        if (slotType.equals(InventoryType.SlotType.FUEL)) {
             if (event.getCursor() == null) return;
-            Optional<CustomItem> fuelItem = api.getRegistries().getCustomItems().values().stream().filter(customItem -> customItem.getFuelSettings().getBurnTime() > 0 && customItem.isSimilar(event.getCursor())).findFirst();
+            Optional<CustomItem> fuelItem = registryCustomItem.values().stream().filter(customItem -> customItem.getFuelSettings().getBurnTime() > 0 && customItem.isSimilar(event.getCursor())).findFirst();
             if (fuelItem.isPresent()) {
                 var location = event.getInventory().getLocation();
                 if (fuelItem.get().getFuelSettings().getAllowedBlocks().contains(location != null ? location.getBlock().getType() : Material.FURNACE)) {
@@ -86,13 +95,54 @@ public class FurnaceListener implements Listener {
                     event.setCancelled(true);
                 }
             }
+        } else if (slotType.equals(InventoryType.SlotType.CRAFTING)) {
+            Furnace furnace = furnaceInventory.getHolder();
+            if (furnace != null) {
+                Location location = furnace.getBlock().getLocation();
+                AtomicInteger cookTime = new AtomicInteger(-1);
+                Bukkit.getScheduler().runTaskTimer(customCrafting, task -> {
+                    if (cookTime.get() <= 300) {
+                        if (location.getWorld().isChunkLoaded(location.getBlockX() >> 4, location.getBlockZ() >> 4)) {
+                            Block block = location.getBlock();
+                            if (block.getState() instanceof Furnace currentFurnace) {
+                                FurnaceInventory currentInv = currentFurnace.getInventory();
+                                if (currentInv.getSmelting() != null && currentInv.getSmelting().getType().equals(Material.FURNACE)) {
+
+                                    if (cookTime.get() == -1) {
+                                        currentFurnace.setCookTimeTotal(300);
+                                    }
+                                    if (currentFurnace.getBurnTime() > 0) {
+                                        currentFurnace.setCookTime((short) (cookTime.incrementAndGet()));
+                                        currentFurnace.update();
+                                        if (cookTime.get() == 300) {
+                                            currentInv.setResult(new ItemStack(Material.STRING));
+                                        }
+                                        return;
+                                    } else if (!ItemUtils.isAirOrNull(currentInv.getFuel())) {
+                                        ItemStack fuel = currentInv.getFuel();
+                                        FurnaceBurnEvent burnEvent = new FurnaceBurnEvent(block, fuel, 800);
+                                        Bukkit.getPluginManager().callEvent(burnEvent);
+                                        if (!burnEvent.isCancelled()) {
+                                            currentFurnace.setBurnTime((short) burnEvent.getBurnTime());
+                                            currentFurnace.update();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    task.cancel();
+                }, 2, 1);
+            }
         }
+
     }
 
     @EventHandler
     public void onBurn(FurnaceBurnEvent event) {
         ItemStack input = event.getFuel();
-        for (CustomItem customItem : api.getRegistries().getCustomItems().values()) {
+        for (CustomItem customItem : registryCustomItem.values()) {
             var fuelSettings = customItem.getFuelSettings();
             if (fuelSettings.getBurnTime() > 0 && customItem.isSimilar(input) && fuelSettings.getAllowedBlocks().contains(event.getBlock().getType())) {
                 event.setCancelled(false);

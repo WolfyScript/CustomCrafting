@@ -127,8 +127,12 @@ import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -297,6 +301,9 @@ public class CustomCrafting extends JavaPlugin {
         this.otherPlugins.init();
         this.dataHandler = new DataHandler(this);
         this.disableRecipesHandler = new DisableRecipesHandler(this);
+
+        //Bukkit.addRecipe(new FurnaceRecipe(new org.bukkit.NamespacedKey(this, "id_recipe"), new ItemStack(Material.STONE), new RecipeChoice.MaterialChoice(Material.FURNACE), 5f, 80));
+
         registerListeners();
         registerCommands();
         registerInventories();
