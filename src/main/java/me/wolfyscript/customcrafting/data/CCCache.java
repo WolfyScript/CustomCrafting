@@ -49,7 +49,7 @@ public class CCCache extends CustomCache {
     private final PotionEffects potionEffectCache = new PotionEffects();
     private final RecipeBookCache recipeBookCache = new RecipeBookCache();
     private final CacheRecipeView cacheRecipeView = new CacheRecipeView();
-    private EliteWorkbench eliteWorkbench = new EliteWorkbench();
+    private CacheEliteCraftingTable cacheEliteCraftingTable = new CacheEliteCraftingTable();
     private final ChatLists chatLists = new ChatLists();
     private final ParticleCache particleCache = new ParticleCache();
     private final BrewingGUICache brewingGUICache = new BrewingGUICache();
@@ -137,12 +137,12 @@ public class CCCache extends CustomCache {
         return particleCache;
     }
 
-    public EliteWorkbench getEliteWorkbench() {
-        return eliteWorkbench;
+    public CacheEliteCraftingTable getEliteWorkbench() {
+        return cacheEliteCraftingTable;
     }
 
-    public void setEliteWorkbench(EliteWorkbench eliteWorkbench) {
-        this.eliteWorkbench = eliteWorkbench;
+    public void setEliteWorkbench(CacheEliteCraftingTable cacheEliteCraftingTable) {
+        this.cacheEliteCraftingTable = cacheEliteCraftingTable;
     }
 
     public BrewingGUICache getBrewingGUICache() {

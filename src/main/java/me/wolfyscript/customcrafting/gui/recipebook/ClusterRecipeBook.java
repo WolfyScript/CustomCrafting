@@ -25,7 +25,13 @@ package me.wolfyscript.customcrafting.gui.recipebook;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
-import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
@@ -39,7 +45,10 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.ArrayList;
@@ -93,7 +102,17 @@ public class ClusterRecipeBook extends CCCluster {
             if (event instanceof InventoryClickEvent clickEvent) {
                 var book = cache.getRecipeBookCache();
                 ButtonContainerIngredient.resetButtons(guiHandler);
-                if (clickEvent.isLeftClick()) {
+                if (clickEvent.getClick().equals(ClickType.MIDDLE)) {
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
+                        if (cache.getRecipeBookCache().hasEliteCraftingTable()) {
+                            guiHandler.openCluster(EliteCraftingCluster.KEY);
+                        } else {
+                            guiHandler.close();
+                        }
+                        cache.getRecipeBookCache().setEliteCraftingTable(null);
+                    });
+                    return true;
+                } else if (clickEvent.isLeftClick()) {
                     book.removePreviousResearchItem();
                     if (book.getSubFolder() > 0) {
                         CustomItem item = book.getResearchItem();
@@ -101,7 +120,7 @@ public class ClusterRecipeBook extends CCCluster {
                             book.setSubFolderRecipes(item, customCrafting.getRegistries().getRecipes().get(item));
                         }
                         if (!book.getSubFolderRecipes().isEmpty()) {
-                            book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
+                            book.setPrepareRecipe(true);
                         }
                         return true;
                     }

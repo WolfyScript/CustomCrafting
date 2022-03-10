@@ -95,7 +95,7 @@ public class MenuRecipeBook extends CCWindow {
             int nextPage = book.getSubFolderPage() + 1;
             if (nextPage < book.getSubFolderRecipes().size()) {
                 book.setSubFolderPage(nextPage);
-                book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(nextPage));
+                book.setPrepareRecipe(true);
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
@@ -109,7 +109,7 @@ public class MenuRecipeBook extends CCWindow {
             ButtonContainerIngredient.resetButtons(guiHandler);
             if (book.getSubFolderPage() > 0) {
                 book.setSubFolderPage(book.getSubFolderPage() - 1);
-                book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(book.getSubFolderPage()));
+                book.setPrepareRecipe(true);
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
@@ -171,6 +171,11 @@ public class MenuRecipeBook extends CCWindow {
             }
             if (recipeBookCache.getSubFolderPage() < recipes.size()) {
                 CustomRecipe<?> customRecipe = recipes.get(recipeBookCache.getSubFolderPage());
+                if (recipeBookCache.isPrepareRecipe()) { //This makes sure we only prepare the recipe once
+                    //A new prepare can be queued by using book.setPrepareRecipe(true)
+                    recipeBookCache.applyRecipeToButtons(event.getGuiHandler(), customRecipe);
+                    recipeBookCache.setPrepareRecipe(false);
+                }
                 customRecipe.renderMenu(this, event);
                 boolean elite = RecipeType.Container.ELITE_CRAFTING.isInstance(customRecipe);
                 if (recipeBookCache.getSubFolderPage() > 0) {

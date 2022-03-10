@@ -24,7 +24,7 @@ package me.wolfyscript.customcrafting.gui.elite_crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
+import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
 import org.bukkit.Material;
@@ -37,15 +37,15 @@ class ButtonSlotCrafting extends ItemInputButton<CCCache> {
         super("crafting.slot_" + recipeSlot, new ButtonState<>("", Material.AIR,
                 (cache, guiHandler, player, inventory, slot, event) -> event instanceof InventoryClickEvent clickEvent && CraftingWindow.RESULT_SLOTS.contains(clickEvent.getSlot()),
                 (cache, guiHandler, player, inventory, itemStack, slot, b) -> {
-                    EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
-                    eliteWorkbench.getContents()[recipeSlot] = inventory.getItem(slot);
-                    ItemStack result = customCrafting.getCraftManager().preCheckRecipe(eliteWorkbench.getContents(), player, inventory, true, eliteWorkbench.getData().isAdvancedRecipes());
-                    eliteWorkbench.setResult(result);
+                    CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
+                    cacheEliteCraftingTable.getContents()[recipeSlot] = inventory.getItem(slot);
+                    ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), player, inventory, true, cacheEliteCraftingTable.getData().isAdvancedRecipes());
+                    cacheEliteCraftingTable.setResult(result);
                 }, null,
                 (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-                    EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
-                    if (eliteWorkbench.getContents() != null) {
-                        ItemStack slotItem = eliteWorkbench.getContents()[recipeSlot];
+                    CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
+                    if (cacheEliteCraftingTable.getContents() != null) {
+                        ItemStack slotItem = cacheEliteCraftingTable.getContents()[recipeSlot];
                         return slotItem == null ? new ItemStack(Material.AIR) : slotItem;
                     }
                     return new ItemStack(Material.AIR);

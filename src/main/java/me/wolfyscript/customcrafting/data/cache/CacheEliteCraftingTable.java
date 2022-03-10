@@ -23,11 +23,13 @@
 package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.configs.recipebook.Category;
+import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class EliteWorkbench {
+public class CacheEliteCraftingTable {
 
     private byte currentGridSize;
     private EliteWorkbenchData data;
@@ -35,7 +37,7 @@ public class EliteWorkbench {
     private ItemStack result;
     private ItemStack[] contents;
 
-    public EliteWorkbench() {
+    public CacheEliteCraftingTable() {
         this.contents = null;
         this.currentGridSize = 3;
         this.result = new ItemStack(Material.AIR);

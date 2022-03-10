@@ -25,7 +25,7 @@ package me.wolfyscript.customcrafting.gui.elite_crafting;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
+import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -40,35 +40,35 @@ class ButtonSlotResult extends ItemInputButton<CCCache> {
 
     ButtonSlotResult(CustomCrafting customCrafting) {
         super("result_slot", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
-            EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
+            CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
             if (event instanceof InventoryClickEvent clickEvent && inventory.getWindow() instanceof CraftingWindow) {
                 if (!CraftingWindow.RESULT_SLOTS.contains(slot)) {
                     return true;
                 }
                 if (clickEvent.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getView().getBottomInventory().equals(clickEvent.getClickedInventory())) {
                     ItemStack itemStack = clickEvent.getCurrentItem() != null ? clickEvent.getCurrentItem().clone() : new ItemStack(Material.AIR);
-                    if (!InventoryUtils.hasInventorySpace(eliteWorkbench.getContents(), itemStack)) {
+                    if (!InventoryUtils.hasInventorySpace(cacheEliteCraftingTable.getContents(), itemStack)) {
                         return true;
                     }
-                    for (int i = 0; i < eliteWorkbench.getCurrentGridSize() * eliteWorkbench.getCurrentGridSize(); i++) {
-                        ItemStack item = eliteWorkbench.getContents()[i];
+                    for (int i = 0; i < cacheEliteCraftingTable.getCurrentGridSize() * cacheEliteCraftingTable.getCurrentGridSize(); i++) {
+                        ItemStack item = cacheEliteCraftingTable.getContents()[i];
                         if (item == null) {
-                            eliteWorkbench.getContents()[i] = itemStack;
+                            cacheEliteCraftingTable.getContents()[i] = itemStack;
                             break;
                         } else if ((item.isSimilar(itemStack) || itemStack.isSimilar(item)) && item.getAmount() + itemStack.getAmount() <= itemStack.getMaxStackSize()) {
-                            eliteWorkbench.getContents()[i].setAmount(item.getAmount() + itemStack.getAmount());
+                            cacheEliteCraftingTable.getContents()[i].setAmount(item.getAmount() + itemStack.getAmount());
                             break;
                         }
                     }
                     return false;
-                } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK) && eliteWorkbench.getResult() != null && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
-                    if (inventory.getWindow() instanceof CraftingWindow craftingWindow && (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(eliteWorkbench.getResult()))) {
-                        customCrafting.getCraftManager().consumeRecipe(eliteWorkbench.getResult(), clickEvent);
-                        eliteWorkbench.setResult(null);
+                } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK) && cacheEliteCraftingTable.getResult() != null && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
+                    if (inventory.getWindow() instanceof CraftingWindow craftingWindow && (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(cacheEliteCraftingTable.getResult()))) {
+                        customCrafting.getCraftManager().consumeRecipe(cacheEliteCraftingTable.getResult(), clickEvent);
+                        cacheEliteCraftingTable.setResult(null);
                         int invSlot;
                         for (int i = 0; i < craftingWindow.gridSize * craftingWindow.gridSize; i++) {
                             invSlot = craftingWindow.getGridX() + i + (i / craftingWindow.gridSize) * (9 - craftingWindow.gridSize);
-                            inventory.setItem(invSlot, eliteWorkbench.getContents()[i]);
+                            inventory.setItem(invSlot, cacheEliteCraftingTable.getContents()[i]);
                         }
                         customCrafting.getCraftManager().remove(event.getWhoClicked().getUniqueId());
                     }
@@ -76,18 +76,18 @@ class ButtonSlotResult extends ItemInputButton<CCCache> {
             }
             return true;
         }, (cache, guiHandler, player, inventory, itemStack, slot, event) -> {
-            EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
+            CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
             if (inventory.getWindow() instanceof CraftingWindow) {
-                eliteWorkbench.setResult(null);
+                cacheEliteCraftingTable.setResult(null);
             }
         }, (cache, guiHandler, player, inventory, itemStack, slot, b) -> {
-            EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
-            EliteWorkbenchData eliteWorkbenchData = eliteWorkbench.getData();
-            ItemStack result = customCrafting.getCraftManager().preCheckRecipe(eliteWorkbench.getContents(), player, inventory, true, eliteWorkbenchData.isAdvancedRecipes());
-            eliteWorkbench.setResult(result);
+            CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
+            EliteWorkbenchData eliteWorkbenchData = cacheEliteCraftingTable.getData();
+            ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), player, inventory, true, eliteWorkbenchData.isAdvancedRecipes());
+            cacheEliteCraftingTable.setResult(result);
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
-            return eliteWorkbench.getResult() != null ? eliteWorkbench.getResult() : new ItemStack(Material.AIR);
+            CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
+            return cacheEliteCraftingTable.getResult() != null ? cacheEliteCraftingTable.getResult() : new ItemStack(Material.AIR);
         }));
     }
 }

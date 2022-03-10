@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
+import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.recipes.*;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
@@ -99,20 +99,20 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
         return materials.isEmpty() || cachedRecipes.stream().anyMatch(recipe1 -> recipe1.getResult().getChoices().stream().anyMatch(customItem -> materials.contains(customItem.getItemStack().getType())));
     }
 
-    public boolean isValid(EliteWorkbench eliteWorkbench) {
-        var data = eliteWorkbench.getData();
+    public boolean isValid(CacheEliteCraftingTable cacheEliteCraftingTable) {
+        var data = cacheEliteCraftingTable.getData();
         return cachedRecipes.parallelStream().anyMatch(cachedRecipe -> {
             if (cachedRecipe instanceof CraftingRecipe<?, ?> && (RecipeType.Container.ELITE_CRAFTING.isInstance(cachedRecipe) || data.isAdvancedRecipes())) {
                 if (RecipeType.Container.ELITE_CRAFTING.isInstance(cachedRecipe)) {
                     Conditions conditions = cachedRecipe.getConditions();
-                    if (conditions.has(EliteWorkbenchCondition.KEY) && !conditions.getByType(EliteWorkbenchCondition.class).getEliteWorkbenches().contains(eliteWorkbench.getCustomItem().getNamespacedKey())) {
+                    if (conditions.has(EliteWorkbenchCondition.KEY) && !conditions.getByType(EliteWorkbenchCondition.class).getEliteWorkbenches().contains(cacheEliteCraftingTable.getCustomItem().getNamespacedKey())) {
                         return false;
                     }
                     if (cachedRecipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
-                        return shapeless.getIngredients().size() <= eliteWorkbench.getCurrentGridSize() * eliteWorkbench.getCurrentGridSize();
+                        return shapeless.getIngredients().size() <= cacheEliteCraftingTable.getCurrentGridSize() * cacheEliteCraftingTable.getCurrentGridSize();
                     } else {
                         CraftingRecipeEliteShaped recipe1 = (CraftingRecipeEliteShaped) cachedRecipe;
-                        return recipe1.getShape().length <= eliteWorkbench.getCurrentGridSize() && recipe1.getShape()[0].length() <= eliteWorkbench.getCurrentGridSize();
+                        return recipe1.getShape().length <= cacheEliteCraftingTable.getCurrentGridSize() && recipe1.getShape()[0].length() <= cacheEliteCraftingTable.getCurrentGridSize();
                     }
                 }
                 return true;
