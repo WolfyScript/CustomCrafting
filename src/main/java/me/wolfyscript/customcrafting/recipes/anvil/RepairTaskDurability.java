@@ -25,7 +25,10 @@ package me.wolfyscript.customcrafting.recipes.anvil;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.data.AnvilData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
+import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
@@ -54,6 +57,15 @@ public class RepairTaskDurability extends RepairTaskDefault {
     public CustomItem computeResult(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight) {
         CustomItem resultItem = super.computeResult(recipe, event, anvilData, player, inputLeft, inputRight);
         //Durability mode is set.
+        ItemsAdderIntegration iAIntegration = WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
+        if (iAIntegration != null) {
+            //Set the new durability using the ItemsAdder method.
+            CustomStack customStack = iAIntegration.getByItemStack(resultItem.getItemStack());
+            if (customStack != null) {
+                customStack.setDurability(Math.min(customStack.getMaxDurability(), customStack.getDurability() + durability));
+                return resultItem;
+            }
+        }
         if (resultItem.hasCustomDurability()) {
             resultItem.setCustomDamage(Math.max(0, resultItem.getCustomDamage() - durability));
         } else if (resultItem.getItemMeta() instanceof Damageable damageable) {
