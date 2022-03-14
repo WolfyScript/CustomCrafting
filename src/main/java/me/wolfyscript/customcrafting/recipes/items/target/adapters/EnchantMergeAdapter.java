@@ -26,7 +26,9 @@ import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.block.Block;
@@ -39,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class EnchantMergeAdapter extends MergeAdapter {
 
@@ -47,6 +50,10 @@ public class EnchantMergeAdapter extends MergeAdapter {
     private final boolean ignoreItemLimit;
     private final boolean increaseLevels;
     private List<Enchantment> blackListedEnchants = new ArrayList<>();
+    @JsonProperty("addEnchants")
+    private Map<Enchantment, Integer> enchantsToAdd = new HashMap<>();
+    @JsonProperty("upgradeEnchants")
+    private Map<Enchantment, Integer> enchantsToUpgrade = new HashMap<>();
 
     public EnchantMergeAdapter() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "enchant"));
@@ -62,7 +69,9 @@ public class EnchantMergeAdapter extends MergeAdapter {
         this.ignoreConflicts = adapter.ignoreConflicts;
         this.increaseLevels = adapter.increaseLevels;
         this.ignoreItemLimit = adapter.ignoreItemLimit;
-        this.blackListedEnchants = List.copyOf(blackListedEnchants);
+        this.blackListedEnchants = List.copyOf(adapter.blackListedEnchants);
+        this.enchantsToAdd = Map.copyOf(adapter.enchantsToAdd);
+        this.enchantsToUpgrade = Map.copyOf(adapter.enchantsToUpgrade);
     }
 
     public boolean isIgnoreEnchantLimit() {
@@ -79,16 +88,45 @@ public class EnchantMergeAdapter extends MergeAdapter {
         this.blackListedEnchants = blackListedEnchants.stream().map(s -> Enchantment.getByKey(org.bukkit.NamespacedKey.fromString(s))).toList();
     }
 
+    @JsonSetter("addEnchants")
+    public void setEnchantsToAdd(Map<String, Integer> enchantsToAdd) {
+        this.enchantsToAdd = enchantsToAdd.entrySet().stream().collect(Collectors.toMap(entry -> Enchantment.getByKey(org.bukkit.NamespacedKey.fromString(entry.getKey())), Map.Entry::getValue));
+    }
+
+    @JsonGetter("addEnchants")
+    public Map<String, Integer> getEnchantsToAdd() {
+        return enchantsToAdd.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().getKey().toString(), Map.Entry::getValue));
+    }
+
+    @JsonSetter("upgradeEnchants")
+    public void setEnchantsToUpgrade(Map<String, Integer> enchantsToAdd) {
+        this.enchantsToUpgrade = enchantsToAdd.entrySet().stream().collect(Collectors.toMap(entry -> Enchantment.getByKey(org.bukkit.NamespacedKey.fromString(entry.getKey())), Map.Entry::getValue));
+    }
+
+    @JsonGetter("upgradeEnchants")
+    public Map<String, Integer> getEnchantsToUpgrade() {
+        return enchantsToUpgrade.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().getKey().toString(), Map.Entry::getValue));
+    }
+
     @Override
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
         Map<Enchantment, Integer> enchants = new HashMap<>();
         for (IngredientData data : recipeData.getBySlots(slots)) {
             data.itemStack().getEnchantments().forEach((enchantment, level) -> {
                 if (!blackListedEnchants.contains(enchantment)) {
-                    enchants.merge(enchantment, level, (currentLevel, otherLevel) -> increaseLevels && currentLevel.equals(otherLevel) ? ++currentLevel : Math.max(currentLevel, otherLevel));
+                    mergeEnchant(enchants, enchantment, level);
                 }
             });
         }
+        if (!enchantsToUpgrade.isEmpty()) {
+            //Upgrades existing enchantments by the specified level
+            enchantsToUpgrade.forEach((enchantment, lvlUpgrade) -> enchants.computeIfPresent(enchantment, (currentEnchant, level) -> level + lvlUpgrade));
+        }
+        if (!enchantsToAdd.isEmpty()) {
+            //Adds the configured enchantments to the result, it doesn't exist already.
+            enchantsToAdd.forEach(enchants::putIfAbsent);
+        }
+        //Applying the enchants to the result
         var meta = result.getItemMeta();
         enchants.forEach((enchantment, level) -> {
             if ((!result.containsEnchantment(enchantment) || result.getEnchantmentLevel(enchantment) < level) && meta != null) {
@@ -103,6 +141,10 @@ public class EnchantMergeAdapter extends MergeAdapter {
         });
         result.setItemMeta(meta);
         return result;
+    }
+
+    protected void mergeEnchant(Map<Enchantment, Integer> enchants, Enchantment enchantment, int level) {
+        enchants.merge(enchantment, level, (currentLevel, otherLevel) -> increaseLevels && currentLevel.equals(otherLevel) ? ++currentLevel : Math.max(currentLevel, otherLevel));
     }
 
     @Override
