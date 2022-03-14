@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
@@ -88,7 +89,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     @JsonIgnore protected final WolfyUtilities api;
     @JsonIgnore protected final ObjectMapper mapper;
 
-    protected boolean checkNBT;
+    @JsonAlias("checkNBT") protected boolean checkAllNBT;
     protected boolean hidden;
     protected boolean vanillaBook;
     protected RecipePriority priority;
@@ -110,7 +111,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         //Get fields from JsonNode
         this.group = node.path(KEY_GROUP).asText("");
         this.priority = mapper.convertValue(node.path(KEY_PRIORITY).asText("NORMAL"), RecipePriority.class);
-        this.checkNBT = node.path(KEY_EXACT_META).asBoolean(true);
+        this.checkAllNBT = node.path(KEY_EXACT_META).asBoolean(false);
         this.conditions = mapper.convertValue(node.path(KEY_CONDITIONS), Conditions.class);
         if (this.conditions == null) {
             this.conditions = new Conditions();
@@ -138,7 +139,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
         this.group = "";
         this.priority = RecipePriority.NORMAL;
-        this.checkNBT = true;
+        this.checkAllNBT = false;
         this.vanillaBook = true;
         this.conditions = new Conditions();
         this.hidden = false;
@@ -159,7 +160,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.vanillaBook = customRecipe.vanillaBook;
         this.group = customRecipe.group;
         this.priority = customRecipe.priority;
-        this.checkNBT = customRecipe.checkNBT;
+        this.checkAllNBT = customRecipe.checkAllNBT;
         this.conditions = customRecipe.conditions;
         this.hidden = customRecipe.hidden;
         this.result = customRecipe.result.clone();
@@ -192,21 +193,21 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     @JsonIgnore
     @Deprecated
     public boolean isExactMeta() {
-        return checkNBT;
+        return checkAllNBT;
     }
 
     @JsonIgnore
     @Deprecated
     public void setExactMeta(boolean exactMeta) {
-        this.checkNBT = exactMeta;
+        this.checkAllNBT = exactMeta;
     }
 
-    public void setCheckNBT(boolean checkNBT) {
-        this.checkNBT = checkNBT;
+    public void setCheckNBT(boolean checkAllNBT) {
+        this.checkAllNBT = checkAllNBT;
     }
 
     public boolean isCheckNBT() {
-        return checkNBT;
+        return checkAllNBT;
     }
 
     public boolean isHidden() {
@@ -365,14 +366,14 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
             gen.writeBooleanField(KEY_VANILLA_BOOK, true);
         }
         gen.writeStringField(KEY_PRIORITY, priority.toString());
-        gen.writeBooleanField(KEY_EXACT_META, checkNBT);
+        gen.writeBooleanField(KEY_EXACT_META, checkAllNBT);
         gen.writeObjectField(KEY_CONDITIONS, conditions);
     }
 
     public void writeToBuf(MCByteBuf byteBuf) {
         byteBuf.writeUtf(getRecipeType().name());
         byteBuf.writeUtf(namespacedKey.toString());
-        byteBuf.writeBoolean(checkNBT);
+        byteBuf.writeBoolean(checkAllNBT);
         byteBuf.writeUtf(group);
         byteBuf.writeCollection(result.getChoices(), (mcByteBuf, customItem) -> mcByteBuf.writeItemStack(customItem.create()));
     }
