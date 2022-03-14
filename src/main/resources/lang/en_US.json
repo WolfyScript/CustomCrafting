@@ -97,6 +97,17 @@
         "&ccontain the following characters [a-z 0-9 _ -]!",
         "&ePlease retype the folder and key!"
       ]
+    },
+    "chat_editor": {
+      "lore": {
+        "title": "<grey>-------------------[<green>Modify Lore</green>]------------------</grey>",
+        "line": {
+          "number": "<lore_line>. ",
+          "remove": "<hover:show_text:'<red><b>Remove line <lore_line></b></red>'><grey>[<red>-</red>]</grey></hover> ",
+          "edit": "<hover:show_text:'Edit line <lore_line>'><grey>[<yellow>✎</yellow>]</grey></hover> "
+        },
+        "input_new_lore": "<grey>[<gold>Line <lore_line></gold>] </grey><yellow>Input the new lore line <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey></yellow>"
+      }
     }
   },
   "commands": {
@@ -833,23 +844,23 @@
           },
           "display_name": {
             "option": {
-              "name": "&6Change name",
+              "name": "<gold>Change name",
               "lore": [
-                "&7Edit Display Name"
+                "<grey>Edit Display Name"
               ]
             },
             "set": {
-              "name": "&6Set Display Name",
+              "name": "<grey>✎ <gold><b>Set Display Name",
               "lore": [
-                "&7Change Display Name"
+                "<yellow>Change Display Name"
               ],
-              "message": "&eType in the name! Use &6&& &efor formatting codes!"
+              "message": "<yellow>Type in the new item name! <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
             },
             "remove": {
-              "name": "&3Remove Display Name",
+              "name": "<grey>\u25B7 <gold><b>Remove Display Name",
               "lore": [
-                "&7Removes Display Name and",
-                "&7reset it to default"
+                "<yellow>Removes Display Name and",
+                "<yellow>reset it to default"
               ]
             }
           },
@@ -873,20 +884,18 @@
           },
           "lore": {
             "option": {
-              "name": "&6Edit Lore",
+              "name": "<gold>Edit Lore",
               "lore": [
-                "&7Add or Remove Lore lines"
+                "<yellow>Add or Remove Lore lines"
               ]
             },
             "add": {
-              "name": "&6Add Lore",
-              "help": [],
-              "message": "&eType in the lore! Use &6& &efor formatting codes!"
+              "name": "<grey>✎ <gold><b>Add Lore",
+              "message": "<yellow>Type in a new lore line </yellow><grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
             },
-            "remove": {
-              "name": "&4Remove Lore",
-              "help": [],
-              "message": "&eType in the line of the lore you want to remove!"
+            "edit": {
+              "name": "<grey>✎ <gold><b>Edit Lore",
+              "message": "<yellow>Remove & Edit specific lore lines"
             }
           },
           "flags": {
