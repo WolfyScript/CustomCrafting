@@ -1765,10 +1765,12 @@
     "recipe_creator": {
       "global_items": {
         "save": {
-          "name": "&7\u25B7 &6&lSave",
+          "name": "<grey>\u25B7</grey> <gold><b>Save</b></gold>",
           "lore": [
-            "&eSaves the recipe under the",
-            "&eexisting folder and key."
+            "<yellow>Saves the recipe under the</yellow>",
+            "<yellow>existing folder and key.</yellow>",
+            "<grey>Folder: </grey><yellow><recipe_folder></yellow>",
+            "<grey>Key: </grey><yellow><recipe_key></yellow>"
           ]
         },
         "save_as": {
@@ -1845,26 +1847,28 @@
         },
         "exact_meta": {
           "enabled": {
-            "name": "&a\u25A0 &6&lCheck NBT",
+            "name": "&7\u25A0 &6&lFull NBT Check",
             "help": [],
             "lore": [
-              "&eItems need to be exactly the same!",
-              "&eI.e. the NBT of the ingredient &lmust",
-              "&ematch the NBT of item put into slot!",
+              "&eChecks the NBT of every",
+              "&eingredient.",
+              "&eIf the ingredient has no",
+              "&eNBT, then it only matches",
+              "&eitems without any NBT.",
               "",
-              "&7[&aClick&7] &7Ignore NBT"
+              "&7[&aClick&7] &7Default NBT Check"
             ]
           },
           "disabled": {
-            "name": "&a\u25A1 &6&lIgnore NBT",
+            "name": "&7\u25A1 &6&lDefault Item Check",
             "help": [],
             "lore": [
-              "&eItems without NBT will only",
-              "&ebe checked for their type!",
-              "&cWarning: Ingredients that have NBT",
-              "&care still checked for their NBT!",
+              "&eIngredients without NBT only",
+              "&eneed to match in type!",
+              "&cIngredients with NBT still",
+              "&cneed to match the input!",
               "",
-              "&7[&aClick&7] &7Check NBT"
+              "&7[&aClick&7] &7Full NBT Check"
             ]
           }
         },

@@ -30,12 +30,14 @@ import org.bukkit.Material;
 class ButtonExactMeta extends ToggleButton<CCCache> {
 
     ButtonExactMeta() {
-        super(ClusterRecipeCreator.EXACT_META.getKey(), (cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getRecipeCache().isExactMeta(), new ButtonState<>(ClusterRecipeCreator.EXACT_META_ENABLED, Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeCreatorCache().getRecipeCache().setExactMeta(false);
-            return true;
-        }), new ButtonState<>(ClusterRecipeCreator.EXACT_META_DISABLED, Material.RED_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeCreatorCache().getRecipeCache().setExactMeta(true);
-            return true;
-        }));
+        super(ClusterRecipeCreator.EXACT_META.getKey(), (cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getRecipeCache().isCheckNBT(),
+                new ButtonState<>(ClusterRecipeCreator.EXACT_META_ENABLED, Material.ITEM_FRAME, (cache, guiHandler, player, inventory, slot, event) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setCheckNBT(false);
+                    return true;
+                }), new ButtonState<>(ClusterRecipeCreator.EXACT_META_DISABLED, Material.PAPER, (cache, guiHandler, player, inventory, slot, event) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setCheckNBT(true);
+                    return true;
+                })
+        );
     }
 }
