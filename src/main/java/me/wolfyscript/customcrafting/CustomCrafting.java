@@ -190,9 +190,9 @@ public class CustomCrafting extends JavaPlugin {
 
         this.registries = new CCRegistries(this, api.getCore());
 
-        this.chat = api.getChat();
-        this.chat.setChatPrefix(chat.getMiniMessage().parse("<gray>[<gradient:dark_aqua:aqua>CC</gradient>]</gray>"));
-        this.coloredTitle = chat.getMiniMessage().parse("**<gradient:dark_aqua:aqua>CustomCrafting</gradient>**");
+        var chat = api.getChat();
+        chat.setChatPrefix(chat.getMiniMessage().deserialize("<gray>[<gradient:dark_aqua:aqua>CC</gradient>]</gray>"));
+        this.coloredTitle = chat.getMiniMessage().deserialize("<gradient:dark_aqua:aqua><b>CustomCrafting</b></gradient>");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
         this.chatUtils = new ChatUtils(this);
         this.patreon = new Patreon();

@@ -66,9 +66,9 @@ public class ClusterMain extends CCCluster {
 
     public ClusterMain(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
-        githubLink = getChat().getMiniMessage().parse("<gray>[<aqua>Click here to go to GitHub</aqua>]</gray>").clickEvent(ClickEvent.openUrl("https://www.github.com/WolfyScript/"));
-        youtubeLink = getChat().getMiniMessage().parse("<gray>[<aqua>Click here to go to YouTube</aqua>]</gray>").clickEvent(ClickEvent.openUrl("https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"));
-        discordLink = getChat().getMiniMessage().parse("<gray>[<aqua>Click here to join Discord</aqua>]</gray>").clickEvent(ClickEvent.openUrl("https://discord.gg/qGhDTSr"));
+        githubLink = getChat().getMiniMessage().deserialize("<gray>[<aqua>Click here to go to GitHub</aqua>]</gray>").clickEvent(ClickEvent.openUrl("https://www.github.com/WolfyScript/"));
+        youtubeLink = getChat().getMiniMessage().deserialize("<gray>[<aqua>Click here to go to YouTube</aqua>]</gray>").clickEvent(ClickEvent.openUrl("https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"));
+        discordLink = getChat().getMiniMessage().deserialize("<gray>[<aqua>Click here to join Discord</aqua>]</gray>").clickEvent(ClickEvent.openUrl("https://discord.gg/qGhDTSr"));
     }
 
     @Override
