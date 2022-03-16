@@ -58,7 +58,7 @@ public class EditCategory extends EditCategorySetting {
         update.setButton(22, AUTO);
         if (!update.getGuiHandler().getCustomCache().getRecipeBookEditor().getCategory().isAuto()) {
             update.setButton(29, ClusterRecipeBookEditor.RECIPES);
-            update.setButton(33, ClusterRecipeBookEditor.NAMESPACES);
+            update.setButton(33, ClusterRecipeBookEditor.FOLDERS);
             update.setButton(40, ClusterRecipeBookEditor.GROUPS);
         }
     }

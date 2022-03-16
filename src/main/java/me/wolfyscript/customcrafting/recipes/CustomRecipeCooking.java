@@ -113,6 +113,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     }
 
     public void setCookingTime(int cookingTime) {
+        Preconditions.checkArgument(cookingTime <= Short.MAX_VALUE, "The cooking time cannot be higher than 32767.");
         this.cookingTime = cookingTime;
     }
 
@@ -150,7 +151,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
             event.setButton(36 + startSlot + slot, new NamespacedKey(ClusterRecipeBook.KEY, "conditions." + condition.getNamespacedKey().toString("_")));
             slot += 2;
         }
-        event.setButton(13, new NamespacedKey(cluster.getId(), "cooking.icon"));
+        event.setButton(22, cluster.getButton(ClusterRecipeBook.COOKING_ICON.getKey()));
         event.setButton(20, data.getLightBackground());
         event.setButton(11, ButtonContainerIngredient.key(cluster, 11));
         event.setButton(24, ButtonContainerIngredient.key(cluster, 24));

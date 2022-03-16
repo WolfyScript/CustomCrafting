@@ -39,7 +39,7 @@ class ButtonFilter extends ActionButton<CCCache> {
                 var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
                 if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
                     //Delete Filter
-                    recipeBook.getCategories().removeFilter(filter.getId());
+                    recipeBook.removeFilter(filter.getId());
                     return true;
                 } else if (clickEvent.isLeftClick()) {
                     //Edit Category

@@ -67,7 +67,7 @@ public class RecipeCreatorCooking extends RecipeCreator {
         }, (guiHandler, player, s, args) -> {
             int time;
             try {
-                time = Integer.parseInt(args[0]);
+                time = Short.parseShort(args[0]);
             } catch (NumberFormatException e) {
                 api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;

@@ -40,14 +40,13 @@ public class Patreon {
         addPatron(new Patron("Apprehentice", "db61eab0-7fb1-48db-986f-125e73787976", Tier.WOLFRAM));
         addPatron(new Patron("Alex", "af1ef7e4-acc3-44a1-8323-8f50b92be2c9", Tier.WOLFRAM));
         addPatron(new Patron("PwassonDoDouce", Tier.WOLFRAM));
-        addPatron(new Patron("Alexander", Tier.WOLFRAM));
         addPatron(new Patron("Mr_Mint_", Tier.WOLFRAM));
         addPatron(new Patron("Mithran", Tier.WOLFRAM));
         addPatron(new Patron("Jack Bruton", Tier.WOLFRAM));
         addPatron(new Patron("랜디", Tier.WOLFRAM));
+        addPatron(new Patron("AkkLive", Tier.WOLFRAM));
         addPatron(new Patron("Jaden Bautista", Tier.WOLFRAM));
         addPatron(new Patron("Илья Nalurione", Tier.SUPPORTER));
-        addPatron(new Patron("Qsycho", Tier.WOLFRAM));
     }
 
     private void addPatron(Patron patron) {

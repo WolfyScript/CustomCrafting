@@ -24,53 +24,29 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
-import me.wolfyscript.customcrafting.recipes.CraftingRecipeShaped;
-import me.wolfyscript.customcrafting.recipes.CraftingRecipeShapeless;
-import me.wolfyscript.customcrafting.recipes.items.Ingredient;
-import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.customcrafting.recipes.items.extension.*;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.ParticleContent;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
-import me.wolfyscript.utilities.util.particles.ParticleAnimation;
-import me.wolfyscript.utilities.util.particles.ParticleEffect;
-import me.wolfyscript.utilities.util.particles.animators.AnimatorBasic;
-import me.wolfyscript.utilities.util.particles.timer.TimerLinear;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.util.Vector;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class ConfigHandler {
 
     private final CustomCrafting customCrafting;
-    private final WolfyUtilities api;
     private final LanguageAPI languageAPI;
     private final MainConfig mainConfig;
     private RecipeBookConfig recipeBookConfig;
 
     public ConfigHandler(CustomCrafting customCrafting) {
-        this.api = customCrafting.getApi();
+        WolfyUtilities api = customCrafting.getApi();
         this.customCrafting = customCrafting;
         var configAPI = api.getConfigAPI();
         this.languageAPI = api.getLanguageAPI();
-
         var oldConfigFile = new File(customCrafting.getDataFolder().getPath(), "main_config.yml");//Makes sure that if a config with the old name already exists, it's renamed to the new config name.
         if (oldConfigFile.exists() && !oldConfigFile.renameTo(new File(customCrafting.getDataFolder().getPath(), "config.yml"))) {
             customCrafting.getLogger().severe("Couldn't rename 'main_config.yml' to 'config.yml'!");
@@ -78,113 +54,65 @@ public class ConfigHandler {
         this.mainConfig = new MainConfig(configAPI, customCrafting);
         mainConfig.loadDefaults();
         configAPI.registerConfig(mainConfig);
-        loadLang();
         api.getConfigAPI().setPrettyPrinting(mainConfig.isPrettyPrinting());
+    }
+
+    public void load() {
+        if (mainConfig != null) {
+            mainConfig.load();
+        }
+        loadLang();
+        loadRecipeBookConfig();
+        renameOldRecipesFolder();
+        loadDefaults();
+    }
+
+    public void loadRecipeBookConfig() {
+        var recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.json");
+        if (!recipeBookFile.exists()) {
+            customCrafting.saveResource("recipe_book.json", true);
+        }
+        try {
+            this.recipeBookConfig = JacksonUtil.getObjectMapper().readValue(recipeBookFile, RecipeBookConfig.class);
+        } catch (IOException e) {
+            customCrafting.getLogger().severe("Failed to load recipe_book.json");
+            e.printStackTrace();
+            this.recipeBookConfig = new RecipeBookConfig();
+        }
     }
 
     public void renameOldRecipesFolder() {
         if (!DataHandler.DATA_FOLDER.exists()) { //Check for the old recipes folder and rename it to the new data folder.
             var old = new File(customCrafting.getDataFolder() + File.separator + "recipes");
-            if (!old.renameTo(DataHandler.DATA_FOLDER)) {
+            if (old.exists() && !old.renameTo(DataHandler.DATA_FOLDER)) {
                 customCrafting.getLogger().severe("Couldn't rename folder to the new required names!");
             }
         }
     }
 
     public void loadDefaults() {
-        var enchantTableEffect = new ParticleEffect(Particle.ENCHANTMENT_TABLE, 2, new Vector(0,0,0), 0.75, null, new TimerLinear(1, 1), new AnimatorBasic());
-        //Registry.PARTICLE_EFFECTS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantTableEffect);
-
-        var enchantAnimation = new ParticleAnimation(
-                Material.ENCHANTING_TABLE,
-                "Advanced Crafting Table",
-                Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 5, -1,
-                new ParticleAnimation.ParticleEffectSettings(enchantTableEffect, new Vector(0.5,1.25,0.5), 0)
-        );
-        //Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
-
         if (mainConfig.resetRecipeBook()) {
-            var knowledgeBook = new CustomItem(Material.KNOWLEDGE_BOOK);
-            knowledgeBook.setDisplayName(me.wolfyscript.utilities.util.chat.ChatColor.convert("&6Recipe Book"));
-            knowledgeBook.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Contains some interesting recipes..."));
-            knowledgeBook.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
-            knowledgeBook.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            ((RecipeBookData) knowledgeBook.getCustomData(CustomCrafting.RECIPE_BOOK_DATA)).setEnabled(true);
-            ItemLoader.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
-
-            var knowledgeBookCraft = new CraftingRecipeShapeless(CustomCrafting.RECIPE_BOOK);
-            knowledgeBookCraft.addIngredient(new Ingredient(Material.BOOK));
-            knowledgeBookCraft.addIngredient(new Ingredient(Material.CRAFTING_TABLE));
-            knowledgeBookCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.RECIPE_BOOK)));
-            knowledgeBookCraft.save();
+            customCrafting.saveResource("data/customcrafting/items/recipe_book.json", true);
+            customCrafting.saveResource("data/customcrafting/recipes/recipe_book.json", true);
         }
-
         if (mainConfig.resetAdvancedWorkbench()) {
-            var advancedWorkbench = new CustomItem(Material.CRAFTING_TABLE);
-            advancedWorkbench.setDisplayName(ChatColor.GOLD + "Advanced Crafting Table");
-            advancedWorkbench.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Crafting Table for advanced recipes"));
-            advancedWorkbench.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
-            advancedWorkbench.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-            //advancedWorkbench.getParticleContent().setBlock(new ParticleContent.Settings(CustomCrafting.ADVANCED_CRAFTING_TABLE));
-            advancedWorkbench.getParticleContent().setBlock(new ParticleContent.Settings(enchantAnimation));
-
-            ItemLoader.saveItem(CustomCrafting.ADVANCED_CRAFTING_TABLE, advancedWorkbench);
-
-            var workbenchCraft = new CraftingRecipeShaped(CustomCrafting.ADVANCED_CRAFTING_TABLE);
-            workbenchCraft.setMirrorHorizontal(false);
-            workbenchCraft.setShape("G", "C", "D");
-            workbenchCraft.setIngredient('G', new Ingredient(Material.GOLD_INGOT));
-            workbenchCraft.setIngredient('C', new Ingredient(Material.CRAFTING_TABLE));
-            workbenchCraft.setIngredient('D', new Ingredient(Material.GLOWSTONE_DUST));
-            Result result = workbenchCraft.getResult();
-            result.put(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.ADVANCED_CRAFTING_TABLE)));
-            if (WolfyUtilities.isDevEnv()) {
-                var commandExecution = new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true);
-                commandExecution.setExecutionType(ExecutionType.BULK);
-                result.addExtension(commandExecution);
-                result.addExtension(new SoundResultExtension(Sound.BLOCK_ANVIL_USE));
-                result.addExtension(new MythicMobResultExtension("SkeletalKnight", 1));
-                result.addExtension(new ResultExtensionAdvancement(NamespacedKey.minecraft("husbandry/tactical_fishing"), false, null, false, false));
-            }
-            workbenchCraft.save();
-        }
-    }
-
-    public void loadRecipeBookConfig() {
-        var oldRecipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book_old.json");
-        var recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.json");
-        if (!oldRecipeBookFile.exists() && recipeBookFile.exists() && !recipeBookFile.renameTo(oldRecipeBookFile)) {
-            customCrafting.getLogger().severe("Couldn't backup old recipe_book.json! Trying to load and migrate old data!");
-            customCrafting.getLogger().severe("If that fails, delete the recipe_book.json and restart the server!");
-        }
-        if (!recipeBookFile.exists()) {
-            customCrafting.saveResource("recipe_book.json", false);
-        }
-        this.recipeBookConfig = new RecipeBookConfig(customCrafting);
-        //Fix recipe book config if broken!
-        if (recipeBookConfig.getCategories() == null) {
-            customCrafting.saveResource("recipe_book.json", true);
-            try {
-                this.recipeBookConfig.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            customCrafting.saveResource("data/customcrafting/items/advanced_crafting_table.json", true);
+            customCrafting.saveResource("data/customcrafting/recipes/advanced_crafting_table.json", true);
         }
     }
 
     public void loadLang() {
         var chosenLang = mainConfig.getString("language");
+        //Export all the available languages
         customCrafting.saveResource("lang/en_US.json", true);
         customCrafting.saveResource("lang/de_DE.json", true);
         customCrafting.saveResource("lang/zh_CN.json", true);
-
+        //The default language to use and to which it falls back if a key is not found in the active language
         var fallBackLanguage = new Language(customCrafting, "en_US");
         languageAPI.registerLanguage(fallBackLanguage);
         customCrafting.getLogger().info(() -> "Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join(", ", fallBackLanguage.getAuthors()));
-
-        var file = new File(customCrafting.getDataFolder(), "lang/" + chosenLang + ".json");
-        if (file.exists()) {
+        //Load the chosen language
+        if (Files.exists(Path.of(customCrafting.getDataFolder().getPath(), "lang", chosenLang + ".json"))) {
             var language = new Language(customCrafting, chosenLang);
             languageAPI.registerLanguage(language);
             languageAPI.setActiveLanguage(language);
@@ -193,7 +121,10 @@ public class ConfigHandler {
     }
 
     public void save() throws IOException {
-        recipeBookConfig.save(getConfig().isPrettyPrinting());
+        if (this.recipeBookConfig != null) {
+            JacksonUtil.getObjectWriter(getConfig().isPrettyPrinting()).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.json"), this.recipeBookConfig);
+        }
+        getConfig().save();
     }
 
     public MainConfig getConfig() {

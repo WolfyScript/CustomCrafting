@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
+import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.recipes.*;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
@@ -40,7 +40,6 @@ import java.util.*;
 
 public class RecipeContainer implements Comparable<RecipeContainer> {
 
-    private final CustomCrafting customCrafting;
     private final RegistryRecipes recipes;
     private final List<CustomRecipe<?>> cachedRecipes;
     //private final Map<UUID, List<ICustomRecipe<?, ?>>> cachedPlayerRecipes = new HashMap<>();
@@ -50,7 +49,6 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     private final NamespacedKey recipe;
 
     public RecipeContainer(CustomCrafting customCrafting, String group) {
-        this.customCrafting = customCrafting;
         this.recipes = customCrafting.getRegistries().getRecipes();
         this.group = group;
         this.recipe = null;
@@ -58,7 +56,6 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public RecipeContainer(CustomCrafting customCrafting, NamespacedKey recipe) {
-        this.customCrafting = customCrafting;
         this.recipes = customCrafting.getRegistries().getRecipes();
         this.group = null;
         this.recipe = recipe;
@@ -66,7 +63,6 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public RecipeContainer(CustomCrafting customCrafting, CustomRecipe<?> recipe) {
-        this.customCrafting = customCrafting;
         this.recipes = customCrafting.getRegistries().getRecipes();
         this.group = null;
         this.recipe = recipe.getNamespacedKey();
@@ -103,20 +99,20 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
         return materials.isEmpty() || cachedRecipes.stream().anyMatch(recipe1 -> recipe1.getResult().getChoices().stream().anyMatch(customItem -> materials.contains(customItem.getItemStack().getType())));
     }
 
-    public boolean isValid(EliteWorkbench eliteWorkbench) {
-        var data = eliteWorkbench.getData();
+    public boolean isValid(CacheEliteCraftingTable cacheEliteCraftingTable) {
+        var data = cacheEliteCraftingTable.getData();
         return cachedRecipes.parallelStream().anyMatch(cachedRecipe -> {
             if (cachedRecipe instanceof CraftingRecipe<?, ?> && (RecipeType.Container.ELITE_CRAFTING.isInstance(cachedRecipe) || data.isAdvancedRecipes())) {
                 if (RecipeType.Container.ELITE_CRAFTING.isInstance(cachedRecipe)) {
                     Conditions conditions = cachedRecipe.getConditions();
-                    if (conditions.has(EliteWorkbenchCondition.KEY) && !conditions.getByType(EliteWorkbenchCondition.class).getEliteWorkbenches().contains(eliteWorkbench.getCustomItem().getNamespacedKey())) {
+                    if (conditions.has(EliteWorkbenchCondition.KEY) && !conditions.getByType(EliteWorkbenchCondition.class).getEliteWorkbenches().contains(cacheEliteCraftingTable.getCustomItem().getNamespacedKey())) {
                         return false;
                     }
                     if (cachedRecipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
-                        return shapeless.getIngredients().size() <= eliteWorkbench.getCurrentGridSize() * eliteWorkbench.getCurrentGridSize();
+                        return shapeless.getIngredients().size() <= cacheEliteCraftingTable.getCurrentGridSize() * cacheEliteCraftingTable.getCurrentGridSize();
                     } else {
                         CraftingRecipeEliteShaped recipe1 = (CraftingRecipeEliteShaped) cachedRecipe;
-                        return recipe1.getShape().length <= eliteWorkbench.getCurrentGridSize() && recipe1.getShape()[0].length() <= eliteWorkbench.getCurrentGridSize();
+                        return recipe1.getShape().length <= cacheEliteCraftingTable.getCurrentGridSize() && recipe1.getShape()[0].length() <= cacheEliteCraftingTable.getCurrentGridSize();
                     }
                 }
                 return true;

@@ -37,7 +37,6 @@ import java.util.*;
 public class DisableRecipesHandler {
 
     private final CustomCrafting customCrafting;
-    private final ConfigHandler configHandler;
     private final MainConfig config;
 
     private final Set<NamespacedKey> recipes = new HashSet<>();
@@ -45,8 +44,7 @@ public class DisableRecipesHandler {
 
     public DisableRecipesHandler(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
-        this.configHandler = customCrafting.getConfigHandler();
-        this.config = configHandler.getConfig();
+        this.config = customCrafting.getConfigHandler().getConfig();
 
         if (!config.getDisabledRecipes().isEmpty()) {
             recipes.addAll(config.getDisabledRecipes().parallelStream().map(NamespacedKey::of).toList());
@@ -92,7 +90,7 @@ public class DisableRecipesHandler {
         var namespacedKey = recipe.getNamespacedKey();
         recipes.add(namespacedKey);
         if (recipe instanceof ICustomVanillaRecipe<?>) {
-            Bukkit.removeRecipe(namespacedKey.toBukkit(customCrafting));
+            Bukkit.removeRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()));
         }
         saveDisabledRecipes();
     }

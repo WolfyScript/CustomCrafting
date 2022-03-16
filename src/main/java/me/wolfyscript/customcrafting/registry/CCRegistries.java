@@ -39,11 +39,11 @@ public class CCRegistries {
 
     private final RegistryRecipes recipes;
     private final Registry<ItemCreatorTab> itemCreatorTabs;
+    private final Registry<RecipeType<?>> recipeTypes;
     private final TypeRegistryRecipeConditions recipeConditions;
     private final TypeRegistry<MergeAdapter> recipeMergeAdapters;
     private final TypeRegistry<ResultExtension> recipeResultExtensions;
     private final TypeRegistry<RepairTask> anvilRecipeRepairTasks;
-    private final Registry<RecipeType<?>> recipeTypes;
 
     public CCRegistries(CustomCrafting customCrafting, WolfyUtilCore core) {
         var registries = core.getRegistries();

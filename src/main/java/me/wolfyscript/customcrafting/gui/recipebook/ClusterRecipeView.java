@@ -54,11 +54,11 @@ public class ClusterRecipeView extends CCCluster {
         setEntry(RECIPE_SINGLE);
 
         //We change the behaviour of the buttons without a new language entry. Instead, it uses the lang keys from the recipe book cluster.
-        registerButton(new DummyButton<>("cooking.icon", new ButtonState<>(new NamespacedKey(ClusterRecipeBook.KEY, "cooking.icon"), Material.FURNACE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        registerButton(new DummyButton<>(ClusterRecipeBook.COOKING_ICON.getKey(), new ButtonState<>(ClusterRecipeBook.COOKING_ICON, Material.FURNACE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             cache.getCacheRecipeView().getRecipe().ifPresent(customRecipe -> {
                 RecipeType<?> recipeType = customRecipe.getRecipeType();
                 itemStack.setType(Material.matchMaterial(recipeType.name()));
-                hashMap.put("%type%", "&7" + StringUtils.capitalize(recipeType.getId().replace("_", " ")));
+                hashMap.put("%type%", StringUtils.capitalize(recipeType.getId().replace("_", " ")));
                 if (customRecipe instanceof CustomRecipeCooking<?,?> cookingRecipe) {
                     hashMap.put("%time%", cookingRecipe.getCookingTime());
                     hashMap.put("%xp%", cookingRecipe.getExp());
@@ -67,7 +67,7 @@ public class ClusterRecipeView extends CCCluster {
             return itemStack;
         })));
         registerButton(new DummyButton<>("anvil.durability", new ButtonState<>(new NamespacedKey(ClusterRecipeBook.KEY, "cooking.icon"), Material.ANVIL, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%var%", ((CustomRecipeAnvil) guiHandler.getCustomCache().getKnowledgeBook().getCurrentRecipe()).getDurability());
+            hashMap.put("%var%", ((CustomRecipeAnvil) guiHandler.getCustomCache().getRecipeBookCache().getCurrentRecipe()).getDurability());
             return itemStack;
         })));
         registerButton(new DummyButton<>("cauldron.water.enabled", new ButtonState<>(new NamespacedKey(ClusterRecipeBook.KEY, "cauldron.water.enabled"), PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {

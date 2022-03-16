@@ -149,7 +149,7 @@ public class NetworkHandler {
     }
 
     public void sendRecipeBookSettings(Player player) {
-        var categories = customCrafting.getConfigHandler().getRecipeBookConfig().getCategories();
+        var categories = customCrafting.getConfigHandler().getRecipeBookConfig();
         Map<String, CategoryFilter> filtersMap = categories.getFilters();
         Map<String, Category> categoryMap = categories.getCategories();
 

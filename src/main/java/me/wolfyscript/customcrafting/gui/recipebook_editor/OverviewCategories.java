@@ -52,12 +52,12 @@ public class OverviewCategories extends Overview {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
+        var recipeBookConfig = customCrafting.getConfigHandler().getRecipeBookConfig();
         update.setButton(49, ADD);
 
-        List<String> categories = recipeBook.getCategories().getSortedCategories();
+        List<String> categories = recipeBookConfig.getSortedCategories();
         for (int i = 0; i < categories.size() && i + 9 < 45; i++) {
-            var category = recipeBook.getCategories().getCategory(categories.get(i));
+            var category = recipeBookConfig.getCategory(categories.get(i));
             if(category != null) {
                 registerButton(new ButtonCategory(category, customCrafting));
                 update.setButton(i + 9, "category_" + category.getId());

@@ -34,28 +34,78 @@ import me.wolfyscript.customcrafting.data.patreon.Patreon;
 import me.wolfyscript.customcrafting.data.patreon.Patron;
 import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
-import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabArmorSlots;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabAttributes;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabConsume;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabCustomDurability;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabCustomModelData;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabDamage;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabDisplayName;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEliteCraftingTable;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEnchants;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFlags;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFuel;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLocalizedName;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLore;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabParticleEffects;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPermission;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPlayerHead;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPotion;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabRarity;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabRecipeBook;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabRepairCost;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabUnbreakable;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabVanilla;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.potion_creator.ClusterPotionCreator;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
-import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeView;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeView;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.ClusterRecipeBookEditor;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
-import me.wolfyscript.customcrafting.listeners.*;
+import me.wolfyscript.customcrafting.listeners.AnvilListener;
+import me.wolfyscript.customcrafting.listeners.BrewingStandListener;
+import me.wolfyscript.customcrafting.listeners.CauldronListener;
+import me.wolfyscript.customcrafting.listeners.CraftListener;
+import me.wolfyscript.customcrafting.listeners.EliteWorkbenchListener;
+import me.wolfyscript.customcrafting.listeners.FurnaceListener;
+import me.wolfyscript.customcrafting.listeners.GrindStoneListener;
+import me.wolfyscript.customcrafting.listeners.PlayerListener;
+import me.wolfyscript.customcrafting.listeners.RecipeBookListener;
+import me.wolfyscript.customcrafting.listeners.SmithingListener;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
-import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDefault;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDurability;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
-import me.wolfyscript.customcrafting.recipes.conditions.*;
-import me.wolfyscript.customcrafting.recipes.items.extension.*;
+import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.Condition;
+import me.wolfyscript.customcrafting.recipes.conditions.ConditionAdvancement;
+import me.wolfyscript.customcrafting.recipes.conditions.ConditionScoreboard;
+import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.CraftLimitCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.ExperienceCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.WorldBiomeCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.WorldNameCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
+import me.wolfyscript.customcrafting.recipes.items.extension.CommandResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.MythicMobResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtensionAdvancement;
+import me.wolfyscript.customcrafting.recipes.items.extension.SoundResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.*;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.DisplayNameMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantedBookMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.FireworkRocketMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.PlaceholderAPIMergeAdapter;
 import me.wolfyscript.customcrafting.registry.CCRegistries;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.CraftManager;
@@ -67,13 +117,13 @@ import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -88,8 +138,7 @@ import java.util.logging.Level;
 
 public class CustomCrafting extends JavaPlugin {
 
-    //Only used for displaying which version it is.
-    private static final boolean PREMIUM = true;
+    private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
     //CustomData keys
     public static final NamespacedKey ELITE_CRAFTING_TABLE_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
     public static final NamespacedKey RECIPE_BOOK_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe_book");
@@ -99,15 +148,13 @@ public class CustomCrafting extends JavaPlugin {
     public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "customcrafting/recipe_book");
     //Used for backwards compatibility
     public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
-
-    private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
-
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
     public static final int CONFIG_VERSION = 5;
     private final Component coloredTitle;
 
     //Instance Object to use when no Object was passed!
     private static CustomCrafting instance;
+
     //Utils
     private final String currentVersion;
     private final WUVersion version;
@@ -115,23 +162,19 @@ public class CustomCrafting extends JavaPlugin {
     private final ChatUtils chatUtils;
     //The main WolfyUtilities instance
     private final WolfyUtilities api;
-    private final Chat chat;
     private final CCRegistries registries;
-
     //Recipe Managers / API
     private final CraftManager craftManager;
     private final CookingManager cookingManager;
-
+    private DisableRecipesHandler disableRecipesHandler;
     //File Handlers to load, save or edit data
     private ConfigHandler configHandler;
     private DataHandler dataHandler;
     private Cauldrons cauldrons = null;
-
+    //Network
     private final UpdateChecker updateChecker;
     private final NetworkHandler networkHandler;
-
-    private DisableRecipesHandler disableRecipesHandler;
-
+    //Compatibility
     private final OtherPlugins otherPlugins;
     private final boolean isPaper;
 
@@ -215,6 +258,11 @@ public class CustomCrafting extends JavaPlugin {
         recipeConditions.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
         recipeConditions.register(ConditionAdvancement.KEY, ConditionAdvancement.class, new ConditionAdvancement.GUIComponent());
 
+        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(3, 16, 3, 0))) {
+            //Only register it when the features are available
+            recipeConditions.register(ConditionScoreboard.KEY, ConditionScoreboard.class, new ConditionScoreboard.GUIComponent());
+        }
+
         var recipeTypes = getRegistries().getRecipeTypes();
         recipeTypes.register(RecipeType.CRAFTING_SHAPED);
         recipeTypes.register(RecipeType.CRAFTING_SHAPELESS);
@@ -248,33 +296,24 @@ public class CustomCrafting extends JavaPlugin {
         writeBanner();
         writePatreonCredits();
         writeSeparator();
-
+        this.configHandler = new ConfigHandler(this);
+        this.configHandler.load();
         this.otherPlugins.init();
-
-        configHandler = new ConfigHandler(this);
-        configHandler.loadRecipeBookConfig();
-        configHandler.renameOldRecipesFolder();
-        dataHandler = new DataHandler(this);
-        configHandler.loadDefaults();
-        disableRecipesHandler = new DisableRecipesHandler(this);
-
+        this.dataHandler = new DataHandler(this);
+        this.disableRecipesHandler = new DisableRecipesHandler(this);
         registerListeners();
         registerCommands();
         registerInventories();
+        //Used for testing purposes, might be available for production in the future
         if (WolfyUtilities.isDevEnv()) {
             this.networkHandler.registerPackets();
         }
-
         cauldrons = new Cauldrons(this);
-        if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
-            api.getConsole().info("$msg.startup.placeholder$");
-            new PlaceHolder(this).register();
-        }
         if (api.getCore().getCompatibilityManager().getPlugins().isDoneLoading()) {
             dataHandler.loadRecipesAndItems();
         }
+        //All data is loaded. Now test for updates.
         updateChecker.run(null);
-
         //Load Metrics
         var metrics = new Metrics(this, 3211);
         metrics.addCustomChart(new SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
@@ -297,7 +336,7 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         getLogger().info("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         getLogger().info("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        getLogger().info(() -> "    v" + currentVersion + " " + (PREMIUM ? "Premium" : "Free"));
+        getLogger().info(() -> "    v" + currentVersion);
     }
 
     public void writeSeparator() {
@@ -309,18 +348,18 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("");
         getLogger().info("Special thanks to my Patrons for supporting this project: ");
         List<Patron> patronList = patreon.getPatronList();
-        int lengthColumn = 20;
-        int size = patronList.size();
-        for (int i = 0; i <= size; i += 2) {
-            if (i < size) {
-                var sB = new StringBuilder();
-                String name = patronList.get(i).getName();
-                sB.append("| ").append(name);
-                sB.append(" ".repeat(Math.max(0, lengthColumn - name.length())));
-                if (i + 1 < patronList.size()) {
-                    sB.append("| ").append(patronList.get(i + 1).getName());
-                }
-                getLogger().log(Level.INFO, "     {0}", sB);
+        int linePos = 0;
+        StringBuilder sB = new StringBuilder();
+        for (Patron patron : patronList) {
+            String name = patron.getName();
+            sB.append(name);
+            if (linePos == 5) {
+                getLogger().log(Level.INFO, sB.toString());
+                sB = new StringBuilder();
+                linePos = 0;
+            } else {
+                sB.append(", ");
+                linePos++;
             }
         }
     }

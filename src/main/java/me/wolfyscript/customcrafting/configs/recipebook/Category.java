@@ -26,7 +26,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
+import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import org.bukkit.entity.Player;
@@ -43,7 +43,7 @@ public class Category extends CategorySettings {
     public Category() {
         super();
         this.containers = new ArrayList<>();
-        this.auto = recipes.isEmpty() && namespaces.isEmpty();
+        this.auto = recipes.isEmpty() && folders.isEmpty();
     }
 
     public Category(Category category) {
@@ -55,16 +55,16 @@ public class Category extends CategorySettings {
     void index(CustomCrafting customCrafting, Collection<CategoryFilter> filters) {
         var registry = customCrafting.getRegistries().getRecipes();
         if (auto) {
-            this.namespaces.clear();
+            this.folders.clear();
             this.groups.clear();
-            this.namespaces.addAll(registry.namespaces());
+            this.folders.addAll(registry.folders("customcrafting"));
             this.groups.addAll(registry.groups());
         }
         containers.clear();
         //Construct containers based on settings
         List<RecipeContainer> recipeContainers = new ArrayList<>();
         recipeContainers.addAll(this.groups.stream().map(s -> new RecipeContainer(customCrafting, s)).toList());
-        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> registry.get(s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(customRecipe -> new RecipeContainer(customCrafting, customRecipe))).toList());
+        recipeContainers.addAll(this.folders.stream().flatMap(s -> registry.get("customcrafting", s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(customRecipe -> new RecipeContainer(customCrafting, customRecipe))).toList());
         recipeContainers.addAll(this.recipes.stream().map(namespacedKey -> {
             CustomRecipe<?> recipe = registry.get(namespacedKey);
             return recipe == null ? null : new RecipeContainer(customCrafting, recipe);
@@ -82,9 +82,9 @@ public class Category extends CategorySettings {
         return getRecipeList(player, filter, null);
     }
 
-    public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter, EliteWorkbench eliteWorkbench) {
-        if (eliteWorkbench != null) {
-            return getContainers(filter).stream().filter(container -> container.canView(player) && container.isValid(eliteWorkbench)).toList();
+    public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter, CacheEliteCraftingTable cacheEliteCraftingTable) {
+        if (cacheEliteCraftingTable != null) {
+            return getContainers(filter).stream().filter(container -> container.canView(player) && container.isValid(cacheEliteCraftingTable)).toList();
         }
         return getContainers(filter).stream().filter(container -> container.canView(player)).toList();
     }

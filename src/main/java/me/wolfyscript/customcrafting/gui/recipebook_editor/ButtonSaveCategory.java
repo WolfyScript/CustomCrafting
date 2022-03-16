@@ -50,7 +50,7 @@ class ButtonSaveCategory extends ActionButton<CCCache> {
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();
                     if (args.length == 1) {
-                        StringUtil.copyPartialMatches(args[0], customCrafting.getConfigHandler().getRecipeBookConfig().getCategories().getCategories().keySet(), results);
+                        StringUtil.copyPartialMatches(args[0], customCrafting.getConfigHandler().getRecipeBookConfig().getCategories().keySet(), results);
                     }
                     Collections.sort(results);
                     return results;
@@ -84,10 +84,10 @@ class ButtonSaveCategory extends ActionButton<CCCache> {
             return false;
         }
         if (category instanceof CategoryFilter filter) {
-            recipeBook.getCategories().registerFilter(recipeBookEditor.getCategoryID(), filter);
+            recipeBook.registerFilter(recipeBookEditor.getCategoryID(), filter);
             recipeBookEditor.setFilter(null);
         } else {
-            recipeBook.getCategories().registerCategory(recipeBookEditor.getCategoryID(), (Category) category);
+            recipeBook.registerCategory(recipeBookEditor.getCategoryID(), (Category) category);
             recipeBookEditor.setCategory(null);
         }
         recipeBookEditor.setCategoryID("");

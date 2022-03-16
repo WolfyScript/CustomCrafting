@@ -52,12 +52,12 @@ public class OverviewFilters extends Overview {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
+        var recipeBookConfig = customCrafting.getConfigHandler().getRecipeBookConfig();
         update.setButton(49, ADD);
 
-        List<String> categories = recipeBook.getCategories().getSortedFilters();
+        List<String> categories = recipeBookConfig.getSortedFilters();
         for (int i = 0; i < categories.size() && i + 9 < 45; i++) {
-            var filter = recipeBook.getCategories().getFilter(categories.get(i));
+            var filter = recipeBookConfig.getFilter(categories.get(i));
             registerButton(new ButtonFilter(filter, customCrafting));
             update.setButton(i + 9, "filter_" + filter.getId());
         }

@@ -53,7 +53,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         this.key = null;
         this.checkNBT = true;
         this.hidden = false;
-        this.vanillaBook = false;
+        this.vanillaBook = true;
         this.priority = RecipePriority.NORMAL;
         this.conditions = new Conditions();
         this.group = "";

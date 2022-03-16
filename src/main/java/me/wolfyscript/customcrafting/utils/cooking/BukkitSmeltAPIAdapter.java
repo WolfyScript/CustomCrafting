@@ -53,7 +53,7 @@ public class BukkitSmeltAPIAdapter extends SmeltAPIAdapter {
         while (recipeIterator.hasNext()) {
             if (recipeIterator.next() instanceof CookingRecipe<?> recipe && recipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) && recipe.getResult().isSimilar(event.getResult())) {
                 customRecipe = true;
-                Pair<CookingRecipeData<?>, Boolean> data = processRecipe(event.getSource(), NamespacedKeyUtils.toInternal(NamespacedKey.fromBukkit(recipe.getKey())), block);
+                Pair<CookingRecipeData<?>, Boolean> data = processRecipe(event.getSource(), NamespacedKey.fromBukkit(recipe.getKey()), block);
                 if (data.getKey() != null) {
                     return data;
                 }
