@@ -1765,10 +1765,12 @@
     "recipe_creator": {
       "global_items": {
         "save": {
-          "name": "&7\u25B7 &6&lSave",
+          "name": "<grey>\u25B7</grey> <gold><b>Save</b></gold>",
           "lore": [
-            "&eSaves the recipe under the",
-            "&eexisting folder and key."
+            "<yellow>Saves the recipe under the</yellow>",
+            "<yellow>existing folder and key.</yellow>",
+            "<grey>Folder: </grey><yellow><recipe_folder></yellow>",
+            "<grey>Key: </grey><yellow><recipe_key></yellow>"
           ]
         },
         "save_as": {
