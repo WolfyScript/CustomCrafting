@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.recipes;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
@@ -60,11 +61,10 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
     }
 
     @JsonCreator
-    public CustomRecipeGrindstone(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
+    public CustomRecipeGrindstone(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JsonProperty("inputTop") Ingredient inputTop, @JsonProperty("inputBottom") Ingredient inputBottom) {
         super(key, RecipeType.GRINDSTONE);
+        setInput(inputTop, inputBottom);
         this.result = new Result();
-        this.inputTop = new Ingredient();
-        this.inputBottom = new Ingredient();
         this.xp = 0;
     }
 
@@ -89,17 +89,25 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
         return inputTop;
     }
 
-    public void setInputTop(@NotNull Ingredient inputTop) {
-        Preconditions.checkArgument(!inputTop.isEmpty() || !inputBottom.isEmpty(), "Recipe must have at least one non-air top or bottom ingredient!");
-        this.inputTop = inputTop;
-    }
-
     public Ingredient getInputBottom() {
         return inputBottom;
     }
 
+    public void setInput(@NotNull Ingredient inputTop, @NotNull Ingredient inputBottom) {
+        Preconditions.checkArgument(!inputTop.isEmpty() || !inputBottom.isEmpty(), "Recipe must have at least one non-air top or bottom ingredient!");
+        this.inputTop = inputTop;
+        this.inputBottom = inputBottom;
+    }
+
+    @JsonIgnore
+    @Deprecated
+    public void setInputTop(@NotNull Ingredient inputTop) {
+        this.inputTop = inputTop;
+    }
+
+    @JsonIgnore
+    @Deprecated
     public void setInputBottom(@NotNull Ingredient inputBottom) {
-        Preconditions.checkArgument(!inputBottom.isEmpty() || !inputTop.isEmpty(), "Recipe must have at least one non-air top or bottom ingredient!");
         this.inputBottom = inputBottom;
     }
 

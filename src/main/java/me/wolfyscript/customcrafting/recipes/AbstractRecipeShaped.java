@@ -24,7 +24,6 @@ package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
@@ -270,7 +269,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                 if (recipeSlot >= 0) {
                     var ingredient = ingredients.get(recipeSlot);
                     if (ingredient != null) {
-                        Optional<CustomItem> item = ingredient.check(invItem, this.checkNBT);
+                        Optional<CustomItem> item = ingredient.check(invItem, this.checkAllNBT);
                         if (item.isPresent()) {
                             dataMap.put(recipeSlot, new IngredientData(recipeSlot, ingredient, item.get(), invItem));
                             i++;
