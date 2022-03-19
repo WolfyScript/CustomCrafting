@@ -62,6 +62,20 @@ database:
   # The users password
   password: ""
 
+data:
+  # Toggle if the stacktrace should be printed out if a recipe or item fails to load.
+  print_stacktrace: false
+  # Do not change this number! It is used for internal conversion of items between Bukkit versions to make sure they are up-to-date.
+  bukkit_version: 0
+  # Do not change this number! It is used to update configs of recipes and items to new formats!
+  version: 0
+  auto_save:
+    # Interval in minutes to save data.
+    # Currently, used to save the data of the placed cauldrons with campfires underneath and the contained items and recipes.
+    interval: 30
+    # Save message that is printed into the console.
+    message: true
+
 crafting_table:
   # If the advanced crafting table is enabled or not.
   enable: true
@@ -85,17 +99,3 @@ recipes:
   pretty_printing: true
   # The vanilla or custom recipes that are blocked from crafting.
   disabled_recipes: [ ]
-
-data:
-  # Toggle if the stacktrace should be printed out if a recipe or item fails to load.
-  print_stacktrace: false
-  # Do not change this number! It is used for internal conversion of items between Bukkit versions to make sure they are up-to-date.
-  bukkit_version: 0
-  # Do not change this number! It is used to update configs of recipes and items to new formats!
-  version: 0
-  auto_save:
-    # Interval in minutes to save data.
-    # Currently, used to save the data of the placed cauldrons with campfires underneath and the contained items and recipes.
-    interval: 30
-    # Save message that is printed into the console.
-    message: true
