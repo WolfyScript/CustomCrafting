@@ -97,6 +97,17 @@
         "&ccontain the following characters [a-z 0-9 _ -]!",
         "&ePlease retype the folder and key!"
       ]
+    },
+    "chat_editor": {
+      "lore": {
+        "title": "<grey>-------------------[<green>Modify Lore</green>]------------------</grey>",
+        "line": {
+          "number": "<lore_line>. ",
+          "remove": "<hover:show_text:'<red><b>Remove line <lore_line></b></red>'><grey>[<red>-</red>]</grey></hover> ",
+          "edit": "<hover:show_text:'Edit line <lore_line>'><grey>[<yellow>✎</yellow>]</grey></hover> "
+        },
+        "input_new_lore": "<grey>[<gold>Line <lore_line></gold>] </grey><yellow>Input the new lore line <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey></yellow>"
+      }
     }
   },
   "commands": {
@@ -833,23 +844,23 @@
           },
           "display_name": {
             "option": {
-              "name": "&6Change name",
+              "name": "<gold>Change name",
               "lore": [
-                "&7Edit Display Name"
+                "<grey>Edit Display Name"
               ]
             },
             "set": {
-              "name": "&6Set Display Name",
+              "name": "<grey>✎ <gold><b>Set Display Name",
               "lore": [
-                "&7Change Display Name"
+                "<yellow>Change Display Name"
               ],
-              "message": "&eType in the name! Use &6&& &efor formatting codes!"
+              "message": "<yellow>Type in the new item name! <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
             },
             "remove": {
-              "name": "&3Remove Display Name",
+              "name": "<grey>\u25B7 <gold><b>Remove Display Name",
               "lore": [
-                "&7Removes Display Name and",
-                "&7reset it to default"
+                "<yellow>Removes Display Name and",
+                "<yellow>reset it to default"
               ]
             }
           },
@@ -873,20 +884,18 @@
           },
           "lore": {
             "option": {
-              "name": "&6Edit Lore",
+              "name": "<gold>Edit Lore",
               "lore": [
-                "&7Add or Remove Lore lines"
+                "<yellow>Add or Remove Lore lines"
               ]
             },
             "add": {
-              "name": "&6Add Lore",
-              "help": [],
-              "message": "&eType in the lore! Use &6& &efor formatting codes!"
+              "name": "<grey>✎ <gold><b>Add Lore",
+              "message": "<yellow>Type in a new lore line </yellow><grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
             },
-            "remove": {
-              "name": "&4Remove Lore",
-              "help": [],
-              "message": "&eType in the line of the lore you want to remove!"
+            "edit": {
+              "name": "<grey>✎ <gold><b>Edit Lore",
+              "message": "<yellow>Remove & Edit specific lore lines"
             }
           },
           "flags": {
@@ -1756,10 +1765,12 @@
     "recipe_creator": {
       "global_items": {
         "save": {
-          "name": "&7\u25B7 &6&lSave",
+          "name": "<grey>\u25B7</grey> <gold><b>Save</b></gold>",
           "lore": [
-            "&eSaves the recipe under the",
-            "&eexisting folder and key."
+            "<yellow>Saves the recipe under the</yellow>",
+            "<yellow>existing folder and key.</yellow>",
+            "<grey>Folder: </grey><yellow><recipe_folder></yellow>",
+            "<grey>Key: </grey><yellow><recipe_key></yellow>"
           ]
         },
         "save_as": {
@@ -1836,26 +1847,28 @@
         },
         "exact_meta": {
           "enabled": {
-            "name": "&a\u25A0 &6&lCheck NBT",
+            "name": "&7\u25A0 &6&lFull NBT Check",
             "help": [],
             "lore": [
-              "&eItems need to be exactly the same!",
-              "&eI.e. the NBT of the ingredient &lmust",
-              "&ematch the NBT of item put into slot!",
+              "&eChecks the NBT of every",
+              "&eingredient.",
+              "&eIf the ingredient has no",
+              "&eNBT, then it only matches",
+              "&eitems without any NBT.",
               "",
-              "&7[&aClick&7] &7Ignore NBT"
+              "&7[&aClick&7] &7Default NBT Check"
             ]
           },
           "disabled": {
-            "name": "&a\u25A1 &6&lIgnore NBT",
+            "name": "&7\u25A1 &6&lDefault Item Check",
             "help": [],
             "lore": [
-              "&eItems without NBT will only",
-              "&ebe checked for their type!",
-              "&cWarning: Ingredients that have NBT",
-              "&care still checked for their NBT!",
+              "&eIngredients without NBT only",
+              "&eneed to match in type!",
+              "&cIngredients with NBT still",
+              "&cneed to match the input!",
               "",
-              "&7[&aClick&7] &7Check NBT"
+              "&7[&aClick&7] &7Full NBT Check"
             ]
           }
         },

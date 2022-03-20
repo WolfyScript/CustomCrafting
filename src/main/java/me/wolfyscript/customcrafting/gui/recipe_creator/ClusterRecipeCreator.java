@@ -154,6 +154,13 @@ public class ClusterRecipeCreator extends CCCluster {
                 guiHandler.getApi().getChat().sendKey(player, KEY, "save.empty");
             }
             return true;
+        }, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+            NamespacedKey namespacedKey = cache.getRecipeCreatorCache().getRecipeCache().getKey();
+            if (namespacedKey != null) {
+                values.put("<recipe_folder>", namespacedKey.getKeyComponent().getFolder());
+                values.put("<recipe_key>", namespacedKey.getKeyComponent().getObject());
+            }
+            return itemStack;
         }));
         registerButton(new ActionButton<>(SAVE_AS.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             if (guiHandler.getWindow() instanceof RecipeCreator recipeCreator) {

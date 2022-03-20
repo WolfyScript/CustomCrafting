@@ -28,13 +28,15 @@ import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.chat.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -50,11 +52,11 @@ public class TabLore extends ItemCreatorTabVanilla {
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ButtonOption(Material.WRITABLE_BOOK, this));
         creator.registerButton(new ChatInputButton<>(KEY + ".add", Material.WRITABLE_BOOK, (guiHandler, player, s, strings) -> {
-            guiHandler.getCustomCache().getItems().getItem().addLoreLine(s.equals("&empty") ? "" : ChatColor.convert(s));
+            guiHandler.getCustomCache().getItems().getItem().addLoreLine(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s, Placeholder.component("emtpy", Component.empty()))));
             return false;
         }));
-        creator.registerButton(new ActionButton<>(KEY + ".remove", Material.WRITTEN_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
-            ChatUtils.sendLoreManager(player);
+        creator.registerButton(new ActionButton<>(KEY + ".edit", Material.WRITTEN_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
+            ChatUtils.sendLoreEditor(player);
             guiHandler.close();
             return true;
         }));
@@ -63,6 +65,6 @@ public class TabLore extends ItemCreatorTabVanilla {
     @Override
     public void render(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
         update.setButton(30, KEY + ".add");
-        update.setButton(32, KEY + ".remove");
+        update.setButton(32, KEY + ".edit");
     }
 }

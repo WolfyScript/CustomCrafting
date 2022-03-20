@@ -29,7 +29,10 @@ import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.SmithingData;
 import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
+import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -49,7 +52,11 @@ import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.inventory.meta.Damageable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 public class SmithingListener implements Listener {
@@ -98,15 +105,27 @@ public class SmithingListener implements Listener {
                             event.setResult(baseCopy);
                         } else {
                             //Manual result processing & transferring data.
-                            if(recipe.isPreserveEnchants()) {
+                            if (recipe.isPreserveEnchants()) {
                                 endResult.addUnsafeEnchantments(base.getEnchantments());
                             }
                             if (recipe.isPreserveDamage() && endResult.getItemMeta() instanceof Damageable resultDamageable) {
                                 //Copy damage from base item to result
                                 if (base.hasItemMeta() && base.getItemMeta() instanceof Damageable damageable) {
-                                    resultDamageable.setDamage(damageable.getDamage());
+                                    int damage = damageable.getDamage();
+                                    apply_damage: {
+                                        ItemsAdderIntegration iAIntegration = WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
+                                        if (iAIntegration != null) {
+                                            CustomStack customStack = iAIntegration.getByItemStack(endResult);
+                                            if (customStack != null) {
+                                                final int maxDur = customStack.getMaxDurability();
+                                                customStack.setDurability(maxDur - damage);
+                                                break apply_damage;
+                                            }
+                                        }
+                                        resultDamageable.setDamage(damage);
+                                        endResult.setItemMeta(resultDamageable);
+                                    }
                                 }
-                                endResult.setItemMeta(resultDamageable);
                             }
                             event.setResult(endResult);
                         }

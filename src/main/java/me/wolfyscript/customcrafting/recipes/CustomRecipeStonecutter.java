@@ -30,7 +30,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import com.google.common.base.Preconditions;
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;

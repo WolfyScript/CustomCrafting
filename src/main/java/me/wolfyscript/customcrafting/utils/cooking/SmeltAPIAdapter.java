@@ -34,7 +34,6 @@ import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
 import me.wolfyscript.customcrafting.recipes.data.FurnaceRecipeData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.SmokerRecipeData;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
