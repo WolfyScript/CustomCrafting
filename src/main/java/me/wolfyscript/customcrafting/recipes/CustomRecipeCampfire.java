@@ -27,9 +27,13 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.utilities.api.nms.NMSUtil;
+import me.wolfyscript.utilities.api.nms.RecipeUtil;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.CampfireRecipe;
+import org.bukkit.inventory.ItemStack;
 
 public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfire, CampfireRecipe> {
 
@@ -49,9 +53,18 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
     @Override
     public CampfireRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            var recipe = new CampfireRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
-            recipe.setGroup(group);
-            return recipe;
+            RecipeUtil recipeUtil = api.getNmsUtil().getRecipeUtil();
+            recipeUtil.registerCookingRecipe(recipeUtil.campfireRecipe(
+                    getNamespacedKey(),
+                    getResult().getItemStack(),
+                    getSource().getItemStack(),
+                    getExp(),
+                    getCookingTime(),
+                    (inventory, world) -> {
+                        if (ItemUtils.isAirOrNull(inventory.getItem(0))) return false;
+                        return getSource().test(inventory.getItem(0), isCheckNBT());
+                    }
+            ));
         }
         return null;
     }

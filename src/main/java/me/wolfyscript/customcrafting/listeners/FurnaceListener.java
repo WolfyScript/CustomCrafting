@@ -82,7 +82,7 @@ public class FurnaceListener implements Listener {
 
     @EventHandler
     public void placeItemIntoFurnace(InventoryClickEvent event) {
-        if (!(event.getClickedInventory() instanceof FurnaceInventory furnaceInventory)) return;
+        if (!(event.getClickedInventory() instanceof FurnaceInventory)) return;
         var slotType = event.getSlotType();
         if (slotType.equals(InventoryType.SlotType.FUEL)) {
             if (event.getCursor() == null) return;
@@ -95,48 +95,7 @@ public class FurnaceListener implements Listener {
                     event.setCancelled(true);
                 }
             }
-        } else if (slotType.equals(InventoryType.SlotType.CRAFTING)) {
-            Furnace furnace = furnaceInventory.getHolder();
-            if (furnace != null) {
-                Location location = furnace.getBlock().getLocation();
-                AtomicInteger cookTime = new AtomicInteger(-1);
-                Bukkit.getScheduler().runTaskTimer(customCrafting, task -> {
-                    if (cookTime.get() <= 300) {
-                        if (location.getWorld().isChunkLoaded(location.getBlockX() >> 4, location.getBlockZ() >> 4)) {
-                            Block block = location.getBlock();
-                            if (block.getState() instanceof Furnace currentFurnace) {
-                                FurnaceInventory currentInv = currentFurnace.getInventory();
-                                if (currentInv.getSmelting() != null && currentInv.getSmelting().getType().equals(Material.FURNACE)) {
-
-                                    if (cookTime.get() == -1) {
-                                        currentFurnace.setCookTimeTotal(300);
-                                    }
-                                    if (currentFurnace.getBurnTime() > 0) {
-                                        currentFurnace.setCookTime((short) (cookTime.incrementAndGet()));
-                                        currentFurnace.update();
-                                        if (cookTime.get() == 300) {
-                                            currentInv.setResult(new ItemStack(Material.STRING));
-                                        }
-                                        return;
-                                    } else if (!ItemUtils.isAirOrNull(currentInv.getFuel())) {
-                                        ItemStack fuel = currentInv.getFuel();
-                                        FurnaceBurnEvent burnEvent = new FurnaceBurnEvent(block, fuel, 800);
-                                        Bukkit.getPluginManager().callEvent(burnEvent);
-                                        if (!burnEvent.isCancelled()) {
-                                            currentFurnace.setBurnTime((short) burnEvent.getBurnTime());
-                                            currentFurnace.update();
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    task.cancel();
-                }, 2, 1);
-            }
         }
-
     }
 
     @EventHandler

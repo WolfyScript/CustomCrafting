@@ -26,13 +26,16 @@ import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.events.DependenciesLoadedEvent;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
 import java.io.File;
@@ -92,7 +95,7 @@ public class DataHandler implements Listener {
     }
 
     private void initLoaders() {
-        if(localStorageLoader != null) {
+        if (localStorageLoader != null) {
             loaders.add(localStorageLoader);
         }
         if (databaseLoader != null) {
@@ -124,6 +127,21 @@ public class DataHandler implements Listener {
         load();
         configHandler.getRecipeBookConfig().index(customCrafting);
         WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
+
+        CustomItem item = api.getRegistries().getCustomItems().get(CustomCrafting.RECIPE_BOOK);
+
+        api.getNmsUtil().getRecipeUtil().furnaceRecipe(
+                new NamespacedKey("customcrafting2", "id_recipe"),
+                new ItemStack(Material.STONE),
+                new ItemStack(Material.FURNACE),
+                5f,
+                80,
+                (inventory, world) -> {
+                    boolean check = item.isSimilar(inventory.getItem(0));
+                    System.out.println("Is recipe valid: " + check);
+                    return check;
+                }
+        );
     }
 
     public DatabaseLoader getDatabaseLoader() {
