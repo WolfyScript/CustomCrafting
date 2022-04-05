@@ -130,7 +130,7 @@ public class PlaceHolder extends PlaceholderExpansion {
                         case "available":
                             if (recipe instanceof CraftingRecipe) {
                                 if (p.isOnline()) {
-                                    return String.valueOf(recipe.checkCondition("permission", new Conditions.Data(Bukkit.getPlayer(p.getUniqueId()))));
+                                    return String.valueOf(recipe.checkCondition("permission", Conditions.Data.of(Bukkit.getPlayer(p.getUniqueId()))));
                                 }
                             }
                             break;
