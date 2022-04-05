@@ -102,14 +102,18 @@ public class GrindStoneListener implements Listener {
             //Custom Recipe
             CustomItem inputTop = grindstoneData.getInputTop();
             CustomItem inputBottom = grindstoneData.getInputBottom();
-            ItemStack itemTop = inventory.getItem(0);
-            ItemStack itemBottom = inventory.getItem(1);
 
-            if (!ItemUtils.isAirOrNull(inputTop) && !ItemUtils.isAirOrNull(itemTop)) {
-                inputTop.remove(itemTop, 1, inventory);
+            if (!ItemUtils.isAirOrNull(inputTop)) {
+                ItemStack itemTop = inventory.getItem(0);
+                if (!ItemUtils.isAirOrNull(itemTop)) {
+                    inputTop.remove(itemTop, 1, inventory);
+                }
             }
-            if (!ItemUtils.isAirOrNull(inputBottom) && !ItemUtils.isAirOrNull(itemBottom)) {
-                inputBottom.remove(itemBottom, 1, inventory);
+            if (!ItemUtils.isAirOrNull(inputBottom)) {
+                ItemStack itemBottom = inventory.getItem(1);
+                if (!ItemUtils.isAirOrNull(itemBottom)) {
+                    inputBottom.remove(itemBottom, 1, inventory);
+                }
             }
             //Remove crafted recipe.
             preCraftedRecipes.remove(player.getUniqueId());
@@ -174,11 +178,9 @@ public class GrindStoneListener implements Listener {
                         calculatedCurrentItem.setAmount(currentItem.getAmount() + (Math.min(cursor.getAmount(), possibleAmount)));
                         calculatedCursor = cursor.clone();
                         calculatedCursor.setAmount(cursor.getAmount() - possibleAmount);
-                    } else {
-                        if (!ItemUtils.isAirOrNull(cursor)) {
-                            calculatedCursor = currentItem.clone();
-                            calculatedCurrentItem = cursor.clone();
-                        }
+                    } else if (!ItemUtils.isAirOrNull(cursor)) {
+                        calculatedCursor = currentItem.clone();
+                        calculatedCurrentItem = cursor.clone();
                     }
                 } else {
                     calculatedCursor = null;
