@@ -69,7 +69,8 @@ public class CraftManager {
             return null;
         }
         var matrixData = getIngredients(matrix);
-        var targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getTargetBlockExact(5);
+        //Previously the player#getTargetedBlock method was used. But this performs better (no raytracing)
+        var targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getLocation().getBlock();
         return customCrafting.getRegistries().getRecipes().getSimilarCraftingRecipes(matrixData, elite, advanced).map(recipe -> checkRecipe(recipe, matrixData, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().orElse(null);
     }
 
@@ -84,7 +85,7 @@ public class CraftManager {
      */
     @Nullable
     public ItemStack checkRecipe(CraftingRecipe<?, ?> recipe, MatrixData flatMatrix, Player player, Block block, Inventory inventory) {
-        if (!recipe.isDisabled() && recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory()))) {
+        if (!recipe.isDisabled() && recipe.checkConditions(Conditions.Data.of(player, block, player.getOpenInventory()))) {
             var craftingData = recipe.check(flatMatrix);
             if (craftingData != null) {
                 var customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, flatMatrix);
