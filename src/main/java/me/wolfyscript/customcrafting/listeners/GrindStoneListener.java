@@ -136,7 +136,7 @@ public class GrindStoneListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() == null || event.getAction().equals(InventoryAction.NOTHING) || !event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE))
+        if (event.getClickedInventory() == null || !event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE))
             return;
         var player = (Player) event.getWhoClicked();
         var action = event.getAction();
@@ -189,22 +189,36 @@ public class GrindStoneListener implements Listener {
             }
             Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(calculatedCurrentItem, inventory.getItem(event.getSlot() == 0 ? 1 : 0), event.getSlot(), player, event.getView());
             GrindstoneData data = null;
-            if (checkResult != null) {
+            if (checkResult != null) { //There exists a valid recipe with that ingredient
                 data = checkResult.getValue();
-                event.setCurrentItem(calculatedCurrentItem);
-                event.getWhoClicked().setItemOnCursor(calculatedCursor);
-                if (data == null) {
-                    if (ItemUtils.isAirOrNull(cursor) || ItemUtils.isAllowedInGrindStone(cursor.getType())) {
-                        event.setCancelled(false);
-                    }
+
+                if (!canBePlacedIntoGrindstone(calculatedCurrentItem)) {
+                    event.setCurrentItem(calculatedCurrentItem);
+                    event.getWhoClicked().setItemOnCursor(calculatedCursor);
+                } else {
+                    event.setCancelled(false);
+                }
+
+                if (data == null) { //The recipe isn't completed yet!
+                    inventory.setItem(2, null);
                     return; //Returns and uses Vanilla recipe instead
                 }
                 inventory.setItem(2, checkResult.getKey().create());
+                player.updateInventory();
+                Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
+            } else {
+                event.setCancelled(false);
             }
             preCraftedRecipes.put(player.getUniqueId(), data);
-            player.updateInventory();
-            Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
         }
+    }
+
+    private boolean canBePlacedIntoGrindstone(ItemStack itemStack) {
+        return !itemStack.getEnchantments().isEmpty();
+    }
+
+    private boolean hasVanillaResult(ItemStack itemStack) {
+        return itemStack.getAmount() == 1;
     }
 
     @EventHandler
