@@ -220,10 +220,6 @@ public class GrindStoneListener implements Listener {
         return !itemStack.getEnchantments().isEmpty() && (ItemUtils.isAirOrNull(other) || itemStack.isSimilar(other));
     }
 
-    private boolean hasVanillaResult(ItemStack itemStack) {
-        return itemStack.getAmount() == 1;
-    }
-
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
         if (!event.getInventory().getType().equals(InventoryType.GRINDSTONE) || event.getInventorySlots().isEmpty())
