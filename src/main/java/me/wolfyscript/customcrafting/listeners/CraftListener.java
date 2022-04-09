@@ -124,9 +124,9 @@ public class CraftListener implements Listener {
             //At this point the vanilla recipe is valid and can be crafted
             Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
         } catch (Exception ex) {
-            CustomCrafting.inst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
+            customCrafting.getLogger().severe("-------- [Error occurred while crafting Recipe!] --------");
             ex.printStackTrace();
-            CustomCrafting.inst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
+            customCrafting.getLogger().severe("-------- [Error occurred while crafting Recipe!] --------");
             craftManager.remove(player.getUniqueId());
             e.getInventory().setResult(new ItemStack(Material.AIR));
         }

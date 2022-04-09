@@ -23,41 +23,26 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
-import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
+import java.util.Map;
 
-public class GrindstoneData {
+public class GrindstoneData extends RecipeData<CustomRecipeGrindstone> {
 
-    private final CustomRecipeGrindstone recipe;
-    private final Result result;
-    private final CustomItem inputTop;
-    private final CustomItem inputBottom;
     private final boolean validItem;
 
-    public GrindstoneData(CustomRecipeGrindstone recipe, Result result, boolean validItem, CustomItem inputTop, CustomItem inputBottom) {
-        this.recipe = recipe;
-        this.result = result;
+    public GrindstoneData(@NotNull CustomRecipeGrindstone recipe, boolean validItem, IngredientData inputTop, IngredientData inputBottom) {
+        super(recipe, Map.of(0, inputTop, 1, inputBottom));
         this.validItem = validItem;
-        this.inputTop = inputTop;
-        this.inputBottom = inputBottom;
-    }
-
-    public CustomItem getInputBottom() {
-        return inputBottom;
     }
 
     public CustomItem getInputTop() {
-        return inputTop;
+        return getBySlot(0).customItem();
     }
 
-    public CustomRecipeGrindstone getRecipe() {
-        return recipe;
-    }
-
-    public Optional<Result> getResult() {
-        return Optional.ofNullable(result);
+    public CustomItem getInputBottom() {
+        return getBySlot(1).customItem();
     }
 
     public boolean isValidItem() {

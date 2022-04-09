@@ -301,7 +301,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     }
 
     public synchronized <T extends CustomRecipe<?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
-        return getAvailable(recipes.stream().filter(recipe -> recipe.checkCondition("permission", new Conditions.Data(player))));
+        return getAvailable(recipes.stream().filter(recipe -> recipe.checkCondition("permission", Conditions.Data.of(player))));
     }
 
     /**
