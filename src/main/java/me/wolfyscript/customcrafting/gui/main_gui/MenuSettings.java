@@ -29,8 +29,6 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -49,6 +47,9 @@ public class MenuSettings extends CCWindow {
     private static final String ADVANCED_CRAFTING_TABLE = "advanced_workbench";
     private static final String DEBUG = "debug";
 
+    private static final String ENABLED = "enabled";
+    private static final String DISABLED = "disabled";
+
     public MenuSettings(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "settings", 45, customCrafting);
     }
@@ -59,49 +60,49 @@ public class MenuSettings extends CCWindow {
         registerButton(new ButtonSettingsLanguage(availableLangs, api, customCrafting));
         ButtonBuilder<CCCache> bb = getButtonBuilder();
         bb.toggle(DARK_MODE).stateFunction((cache, guiHandler, player, guiInventory, i) -> PlayerUtil.getStore(player).isDarkMode())
-                .enabledState(state -> state.subKey("enabled").icon(Material.BLACK_CONCRETE).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                .enabledState(state -> state.subKey(ENABLED).icon(Material.BLACK_CONCRETE).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
                     PlayerUtil.getStore(player).setDarkMode(false);
                     return true;
-                })).disabledState(state -> state.subKey("disabled").icon(Material.WHITE_CONCRETE).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                })).disabledState(state -> state.subKey(DISABLED).icon(Material.WHITE_CONCRETE).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
                     PlayerUtil.getStore(player).setDarkMode(true);
                     return true;
                 })).register();
         bb.toggle(PRETTY_PRINTING).stateFunction((ccCache, guiHandler, player, guiInventory, i) -> customCrafting.getConfigHandler().getConfig().isPrettyPrinting())
-                .enabledState(state -> state.subKey("enabled").icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
+                .enabledState(state -> state.subKey(ENABLED).icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
                     customCrafting.getConfigHandler().getConfig().setPrettyPrinting(false);
                     customCrafting.getConfigHandler().getConfig().save();
                     return true;
-                })).disabledState(state -> state.subKey("disabled").icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
+                })).disabledState(state -> state.subKey(DISABLED).icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
                     customCrafting.getConfigHandler().getConfig().setPrettyPrinting(true);
                     customCrafting.getConfigHandler().getConfig().save();
                     return true;
                 })).register();
         bb.toggle(ADVANCED_CRAFTING_TABLE).stateFunction((ccCache, guiHandler, player, guiInventory, i) -> customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled())
-                .enabledState(state -> state.subKey("enabled").icon(Material.CRAFTING_TABLE).action((cache, guiHandler, player, inventory, slot, event) -> {
+                .enabledState(state -> state.subKey(ENABLED).icon(Material.CRAFTING_TABLE).action((cache, guiHandler, player, inventory, slot, event) -> {
                     customCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(false);
                     customCrafting.getConfigHandler().getConfig().save();
                     return true;
-                })).disabledState(state -> state.subKey("disabled").icon(Material.CRAFTING_TABLE).action((cache, guiHandler, player, inventory, slot, event) -> {
+                })).disabledState(state -> state.subKey(DISABLED).icon(Material.CRAFTING_TABLE).action((cache, guiHandler, player, inventory, slot, event) -> {
                     customCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(true);
                     customCrafting.getConfigHandler().getConfig().save();
                     return true;
                 })).register();
         bb.toggle(DEBUG).stateFunction((ccCache, guiHandler, player, guiInventory, i) -> api.hasDebuggingMode())
-                .enabledState(state -> state.subKey("enabled").icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, slot, event) -> {
+                .enabledState(state -> state.subKey(ENABLED).icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, slot, event) -> {
                     customCrafting.getConfigHandler().getConfig().set("debug", false);
                     customCrafting.getConfigHandler().getConfig().save();
                     return true;
-                })).disabledState(state -> state.subKey("disabled").icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, slot, event) -> {
+                })).disabledState(state -> state.subKey(DISABLED).icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, slot, event) -> {
                     customCrafting.getConfigHandler().getConfig().set("debug", true);
                     customCrafting.getConfigHandler().getConfig().save();
                     return true;
                 })).register();
         bb.toggle("creator.reset_after_save").stateFunction((ccCache, guiHandler, player, guiInventory, i) -> customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave())
-                .enabledState(state -> state.subKey("enabled").icon(PlayerHeadUtils.getViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a")).action((cache, guiHandler, player, inventory, slot, event) -> {
+                .enabledState(state -> state.subKey(ENABLED).icon(PlayerHeadUtils.getViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a")).action((cache, guiHandler, player, inventory, slot, event) -> {
                     customCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(false);
                     customCrafting.getConfigHandler().getConfig().save();
                     return true;
-                })).disabledState(state -> state.subKey("disabled").icon(PlayerHeadUtils.getViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835")).action((cache, guiHandler, player, inventory, slot, event) -> {
+                })).disabledState(state -> state.subKey(DISABLED).icon(PlayerHeadUtils.getViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835")).action((cache, guiHandler, player, inventory, slot, event) -> {
                     customCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(true);
                     customCrafting.getConfigHandler().getConfig().save();
                     return true;

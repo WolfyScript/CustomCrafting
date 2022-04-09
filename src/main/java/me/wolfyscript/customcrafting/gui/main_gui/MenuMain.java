@@ -128,11 +128,9 @@ public class MenuMain extends CCWindow {
             event.setButton(31, ELITE_CRAFTING);
             event.setButton(33, SMITHING);
         }
-
         for (int i = 37; i < 44; i++) {
             event.setButton(i, data.getLightBackground());
         }
-
         event.setButton(36, ITEM_EDITOR);
         event.setButton(44, ClusterMain.RECIPE_LIST);
         event.setButton(45, ClusterMain.ITEM_LIST);
