@@ -149,47 +149,52 @@ public class ClusterRecipeCreator extends CCCluster {
     }
 
     private void registerSaveButtons() {
-        getButtonBuilder().action(SAVE.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        registerButton(new ActionButton<>(SAVE.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             if (guiHandler.getWindow() instanceof RecipeCreator && !cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, player, guiHandler)) {
-                getChat().sendMessage(player, translatedMsgKey("save.empty"));
+                guiHandler.getApi().getChat().sendKey(player, KEY, "save.empty");
             }
             return true;
-        }).render((values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+        }, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
             NamespacedKey namespacedKey = cache.getRecipeCreatorCache().getRecipeCache().getKey();
             if (namespacedKey != null) {
                 values.put("<recipe_folder>", namespacedKey.getKeyComponent().getFolder());
                 values.put("<recipe_key>", namespacedKey.getKeyComponent().getObject());
             }
             return itemStack;
-        })).register();
-        getButtonBuilder().chatInput(SAVE_AS.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK)).message(translatedMsgKey("save.input")).tabComplete((guiHandler, player, args) -> {
-            List<String> results = new ArrayList<>();
-            if (args.length > 0) {
-                var registryRecipes = customCrafting.getRegistries().getRecipes();
-                if (args.length == 1) {
-                    results.add("<folder>");
-                    StringUtil.copyPartialMatches(args[0], registryRecipes.folders(NamespacedKeyUtils.NAMESPACE), results);
-                } else if (args.length == 2) {
-                    results.add("<recipe_name>");
-                    StringUtil.copyPartialMatches(args[1], registryRecipes.get(NamespacedKeyUtils.NAMESPACE, args[0]).stream().filter(recipe -> guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeType().isInstance(recipe)).map(recipe -> NamespacedKeyUtils.getRelativeKeyObjPath(recipe.getNamespacedKey())).toList(), results);
-                }
-            }
-            Collections.sort(results);
-            return results;
-        }).inputAction((guiHandler, player, s, args) -> {
-            CCCache cache = guiHandler.getCustomCache();
-            var namespacedKey = ChatUtils.getNamespacedKey(player, s, args);
-            if (namespacedKey != null && !namespacedKey.getNamespace().equalsIgnoreCase("minecraft")) {
-                cache.getRecipeCreatorCache().getRecipeCache().setKey(namespacedKey);
-                if (!cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, player, guiHandler)) {
-                    getChat().sendMessage(player, translatedMsgKey("save.empty"));
-                    return false;
-                }
-            } else {
-                getChat().sendMessage(player, translatedMsgKey("save.key.invalid"));
-                return false;
+        }));
+        registerButton(new ActionButton<>(SAVE_AS.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            if (guiHandler.getWindow() instanceof RecipeCreator recipeCreator) {
+                guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
+                    List<String> results = new ArrayList<>();
+                    if (args.length > 0) {
+                        var registryRecipes = customCrafting.getRegistries().getRecipes();
+                        if (args.length == 1) {
+                            results.add("<folder>");
+                            StringUtil.copyPartialMatches(args[0], registryRecipes.folders(NamespacedKeyUtils.NAMESPACE), results);
+                        } else if (args.length == 2) {
+                            results.add("<recipe_name>");
+                            StringUtil.copyPartialMatches(args[1], registryRecipes.get(NamespacedKeyUtils.NAMESPACE, args[0]).stream().filter(recipe -> cache.getRecipeCreatorCache().getRecipeType().isInstance(recipe)).map(recipe -> NamespacedKeyUtils.getRelativeKeyObjPath(recipe.getNamespacedKey())).toList(), results);
+                        }
+                    }
+                    Collections.sort(results);
+                    return results;
+                });
+                recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster(KEY), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
+                    var namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
+                    if (namespacedKey != null && !namespacedKey.getNamespace().equalsIgnoreCase("minecraft")) {
+                        cache.getRecipeCreatorCache().getRecipeCache().setKey(namespacedKey);
+                        if (!cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, player, guiHandler)) {
+                            guiHandler.getApi().getChat().sendKey(player, KEY, "save.empty");
+                            return false;
+                        }
+                    } else {
+                        guiHandler.getApi().getChat().sendKey(player, KEY, "save.key.invalid");
+                        return false;
+                    }
+                    return true;
+                });
             }
             return true;
-        }).register();
+        }));
     }
 }

@@ -63,7 +63,7 @@ public class RecipeLookupCommand extends AbstractSubCommand {
                 if (key != null) {
                     CustomRecipe<?> customRecipe = registryRecipes.get(key);
                     if (customRecipe != null) {
-                        if (customRecipe.checkCondition("permission", new Conditions.Data(player))) { //Make sure the player has access to the recipe
+                        if (customRecipe.checkCondition("permission", Conditions.Data.of(player))) { //Make sure the player has access to the recipe
                             GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
                             CCCache cache = guiHandler.getCustomCache();
                             cache.getCacheRecipeView().setRecipe(customRecipe);
