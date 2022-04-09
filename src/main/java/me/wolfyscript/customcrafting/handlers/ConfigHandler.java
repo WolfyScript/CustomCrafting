@@ -26,11 +26,8 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
-import me.wolfyscript.utilities.util.version.ServerVersion;
-import me.wolfyscript.utilities.util.version.WUVersion;
 
 import java.io.File;
 import java.io.IOException;
@@ -109,23 +106,13 @@ public class ConfigHandler {
         customCrafting.saveResource("lang/en_US.json", true);
         customCrafting.saveResource("lang/de_DE.json", true);
         customCrafting.saveResource("lang/zh_CN.json", true);
-        //The default language to use and to which it falls back to if a key is not found in the active language
-        Language fallBackLanguage;
-        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 0, 0))) {
-            fallBackLanguage = languageAPI.loadLangFile("en_US");
-        } else {
-            fallBackLanguage = new Language(customCrafting, "en_US");
-        }
+        //The default language to use and to which it falls back if a key is not found in the active language
+        var fallBackLanguage = languageAPI.loadLangFile("en_US");
         languageAPI.registerLanguage(fallBackLanguage);
         customCrafting.getLogger().info(() -> "Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join(", ", fallBackLanguage.getAuthors()));
         //Load the chosen language
         if (Files.exists(Path.of(customCrafting.getDataFolder().getPath(), "lang", chosenLang + ".json"))) {
-            Language language;
-            if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 0, 0))) {
-                language = languageAPI.loadLangFile(chosenLang);
-            } else {
-                language = new Language(customCrafting, chosenLang);
-            }
+            var language = languageAPI.loadLangFile(chosenLang);
             languageAPI.registerLanguage(language);
             languageAPI.setActiveLanguage(language);
             customCrafting.getLogger().info(() -> "Loaded active language \"" + chosenLang + "\" v" + language.getVersion() + " translated by " + String.join(", ", language.getAuthors()));
