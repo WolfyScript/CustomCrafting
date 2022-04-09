@@ -191,30 +191,33 @@ public class GrindStoneListener implements Listener {
             GrindstoneData data = null;
             if (checkResult != null) { //There exists a valid recipe with that ingredient
                 data = checkResult.getValue();
-
-                if (!canBePlacedIntoGrindstone(calculatedCurrentItem)) {
+                if (!canBePlacedIntoGrindstone(calculatedCurrentItem, inventory.getItem(event.getSlot() == 0 ? 1 : 0))) {
+                    //Item cannot be placed into the inventory in vanilla. Using custom calculation.
                     event.setCurrentItem(calculatedCurrentItem);
                     event.getWhoClicked().setItemOnCursor(calculatedCursor);
-                } else {
+                } else { //Use the vanilla item calculation instead.
                     event.setCancelled(false);
                 }
-
-                if (data == null) { //The recipe isn't completed yet!
+                if (data == null) {
+                    //The recipe isn't completed yet!
                     inventory.setItem(2, null);
-                    return; //Returns and uses Vanilla recipe instead
+                    return;
                 }
                 inventory.setItem(2, checkResult.getKey().create());
                 player.updateInventory();
                 Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
             } else {
-                event.setCancelled(false);
+                //No Recipe found! Using the vanilla behaviour
+                customCrafting.getApi().getRegistries().getCustomItems().getByItemStack(calculatedCurrentItem).ifPresentOrElse(customItem -> {
+                    if (customItem.isBlockVanillaRecipes()) event.setCancelled(true);
+                }, () -> event.setCancelled(false));
             }
             preCraftedRecipes.put(player.getUniqueId(), data);
         }
     }
 
-    private boolean canBePlacedIntoGrindstone(ItemStack itemStack) {
-        return !itemStack.getEnchantments().isEmpty();
+    private boolean canBePlacedIntoGrindstone(ItemStack itemStack, ItemStack other) {
+        return !itemStack.getEnchantments().isEmpty() && (ItemUtils.isAirOrNull(other) || itemStack.isSimilar(other));
     }
 
     private boolean hasVanillaResult(ItemStack itemStack) {
