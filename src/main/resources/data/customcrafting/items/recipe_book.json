@@ -36,7 +36,7 @@
   "consumed" : true,
   "blockVanillaEquip" : false,
   "blockPlacement" : false,
-  "blockVanillaRecipes" : false,
+  "blockVanillaRecipes" : true,
   "rarityPercentage" : 1.0,
   "permission" : "",
   "nbtChecks" : {
