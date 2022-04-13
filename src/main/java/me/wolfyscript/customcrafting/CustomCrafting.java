@@ -129,8 +129,12 @@ import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -178,6 +182,32 @@ public class CustomCrafting extends JavaPlugin {
 
     public CustomCrafting() {
         super();
+        instance = this;
+        currentVersion = getDescription().getVersion();
+        this.version = WUVersion.parse(currentVersion.split("-")[0]);
+        this.otherPlugins = new OtherPlugins(this);
+        isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
+        api = WolfyUtilCore.getInstance().getAPI(this, false);
+        JacksonUtil.getObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+
+        this.registries = new CCRegistries(this, api.getCore());
+
+        api.getChat().setInGamePrefix("§7[§3CC§7] ");
+        api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
+        this.chatUtils = new ChatUtils(this);
+        this.patreon = new Patreon();
+        this.updateChecker = new UpdateChecker(this, 55883);
+        this.networkHandler = new NetworkHandler(this, api);
+
+        this.craftManager = new CraftManager(this);
+        this.cookingManager = new CookingManager(this);
+    }
+
+    public CustomCrafting(@NotNull JavaPluginLoader loader,
+                          @NotNull PluginDescriptionFile description,
+                          @NotNull File dataFolder,
+                          @NotNull File file) {
+        super(loader, description, dataFolder, file);
         instance = this;
         currentVersion = getDescription().getVersion();
         this.version = WUVersion.parse(currentVersion.split("-")[0]);
