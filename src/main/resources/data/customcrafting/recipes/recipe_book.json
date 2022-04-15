@@ -24,7 +24,7 @@
       "custom_amount" : 1,
       "item" : {
         "==" : "org.bukkit.inventory.ItemStack",
-        "v" : 2865,
+        "v" : 2566,
         "type" : "BOOK"
       }
     } ],
@@ -36,7 +36,7 @@
       "custom_amount" : 1,
       "item" : {
         "==" : "org.bukkit.inventory.ItemStack",
-        "v" : 2865,
+        "v" : 2566,
         "type" : "CRAFTING_TABLE"
       }
     } ],

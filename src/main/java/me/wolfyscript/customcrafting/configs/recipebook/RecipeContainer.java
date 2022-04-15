@@ -84,7 +84,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
      * @return True if the player can view the container.
      */
     public boolean canView(Player player) {
-        return cachedRecipes.stream().anyMatch(recipe1 -> !recipe1.isHidden() && !recipe1.isDisabled() && recipe1.checkCondition("permission", new Conditions.Data(player)));
+        return cachedRecipes.stream().anyMatch(recipe1 -> !recipe1.isHidden() && !recipe1.isDisabled() && recipe1.checkCondition("permission", Conditions.Data.of(player)));
     }
 
     public @Nullable String getGroup() {

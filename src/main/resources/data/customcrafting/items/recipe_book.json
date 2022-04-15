@@ -3,7 +3,7 @@
     "custom_amount" : 1,
     "item" : {
       "==" : "org.bukkit.inventory.ItemStack",
-      "v" : 2865,
+      "v" : 2566,
       "type" : "KNOWLEDGE_BOOK",
       "meta" : {
         "==" : "ItemMeta",
@@ -36,7 +36,7 @@
   "consumed" : true,
   "blockVanillaEquip" : false,
   "blockPlacement" : false,
-  "blockVanillaRecipes" : false,
+  "blockVanillaRecipes" : true,
   "rarityPercentage" : 1.0,
   "permission" : "",
   "nbtChecks" : {

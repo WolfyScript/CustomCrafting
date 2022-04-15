@@ -42,7 +42,10 @@ import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class AnvilListener implements Listener {
 
@@ -68,14 +71,17 @@ public class AnvilListener implements Listener {
         for (CustomRecipeAnvil recipe : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.ANVIL, player)) {
             Optional<CustomItem> finalInputLeft = Optional.empty();
             Optional<CustomItem> finalInputRight = Optional.empty();
-            if ((recipe.hasInputLeft() && (inputLeft == null || (finalInputLeft = recipe.getInputLeft().check(inputLeft, recipe.isCheckNBT())).isEmpty())) || (recipe.hasInputRight() && (inputRight == null || (finalInputRight = recipe.getInputRight().check(inputRight, recipe.isCheckNBT())).isEmpty()))) {
+            if ((recipe.hasInputLeft() && (inputLeft == null || (finalInputLeft = recipe.getInputLeft().check(inputLeft, recipe.isCheckNBT())).isEmpty()))
+                    || (recipe.hasInputRight() && (inputRight == null || (finalInputRight = recipe.getInputRight().check(inputRight, recipe.isCheckNBT())).isEmpty()))) {
                 continue;
             }
             //Recipe is valid at this point!
-            AnvilData anvilData = new AnvilData(recipe, Map.of(0, new IngredientData(0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft), 1, new IngredientData(1, recipe.getInputRight(), finalInputRight.orElse(null), inputRight)));
+            AnvilData anvilData = new AnvilData(recipe, Map.of(
+                    0, new IngredientData(0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft),
+                    1, new IngredientData(1, recipe.getInputRight(), finalInputRight.orElse(null), inputRight))
+            );
             //Set the result depending on what is configured!
             final CustomItem resultItem = recipe.getRepairTask().computeResult(recipe, event, anvilData, player, inputLeft, inputRight);
-
             int repairCost = Math.max(1, recipe.getRepairCost());
             if (inputLeft != null) {
                 var inputMeta = inputLeft.getItemMeta();
@@ -97,11 +103,9 @@ public class AnvilListener implements Listener {
                     }
                 }
             }
-
             //Save current active recipe to consume correct item inputs!
             preCraftedRecipes.put(player.getUniqueId(), anvilData);
             final ItemStack finalResult = recipe.getResult().getItem(anvilData, resultItem, player, null);
-
             inventory.setRepairCost(repairCost);
             event.setResult(repairCost > 0 ? finalResult : null);
             player.updateInventory();

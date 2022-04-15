@@ -81,7 +81,7 @@ public class SmithingListener implements Listener {
         }
         preCraftedRecipes.put(player.getUniqueId(), null);
         for (CustomRecipeSmithing recipe : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.SMITHING, player)) {
-            if (recipe.checkConditions(new Conditions.Data(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null, event.getView()))) {
+            if (recipe.checkConditions(Conditions.Data.of(player, event.getView()))) {
                 Optional<CustomItem> optionalBase = recipe.getBase().check(base, recipe.isCheckNBT());
                 if (optionalBase.isPresent()) {
                     Optional<CustomItem> optionalAddition = recipe.getAddition().check(addition, recipe.isCheckNBT());
@@ -112,19 +112,7 @@ public class SmithingListener implements Listener {
                                 //Copy damage from base item to result
                                 if (base.hasItemMeta() && base.getItemMeta() instanceof Damageable damageable) {
                                     int damage = damageable.getDamage();
-                                    apply_damage: {
-                                        ItemsAdderIntegration iAIntegration = WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
-                                        if (iAIntegration != null) {
-                                            CustomStack customStack = iAIntegration.getByItemStack(endResult);
-                                            if (customStack != null) {
-                                                final int maxDur = customStack.getMaxDurability();
-                                                customStack.setDurability(maxDur - damage);
-                                                break apply_damage;
-                                            }
-                                        }
-                                        resultDamageable.setDamage(damage);
-                                        endResult.setItemMeta(resultDamageable);
-                                    }
+                                    applyDamageToItem(damage, endResult, resultDamageable);
                                 }
                             }
                             event.setResult(endResult);
@@ -134,6 +122,20 @@ public class SmithingListener implements Listener {
                 }
             }
         }
+    }
+
+    private void applyDamageToItem(int damage, ItemStack endResult, Damageable resultDamageable) {
+        ItemsAdderIntegration iAIntegration = WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
+        if (iAIntegration != null) {
+            CustomStack customStack = iAIntegration.getByItemStack(endResult);
+            if (customStack != null) {
+                final int maxDur = customStack.getMaxDurability();
+                customStack.setDurability(maxDur - damage);
+                return;
+            }
+        }
+        resultDamageable.setDamage(damage);
+        endResult.setItemMeta(resultDamageable);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

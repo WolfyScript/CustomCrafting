@@ -32,11 +32,12 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -149,18 +150,47 @@ public class Conditions {
         private Block block;
         private InventoryView inventoryView;
 
+        @Deprecated
         public Data(@Nullable Player player, Block block, @Nullable InventoryView inventoryView) {
             this.player = player;
             this.block = block;
             this.inventoryView = inventoryView;
         }
 
+        @Deprecated
         public Data(Player player, Block block) {
             this(player, block, null);
         }
 
+        @Deprecated
         public Data(Player player) {
             this(player, null, null);
+        }
+
+        public static Data of(@Nullable Player player, Block block, @Nullable InventoryView inventoryView) {
+            return new Data(player, block, inventoryView);
+        }
+
+        public static Data of(Block block, @Nullable InventoryView inventoryView) {
+            return new Data(null, block, inventoryView);
+        }
+
+        public static Data of(Player player) {
+            return new Data(player);
+        }
+
+        public static Data of(@Nullable Player player, @Nullable InventoryView inventoryView) {
+            Block block = null;
+            if (inventoryView != null) {
+                Location topInvLoc = inventoryView.getTopInventory().getLocation();
+                if (topInvLoc != null) {
+                    block = topInvLoc.getBlock();
+                }
+            } else if (player != null) {
+                //Previously the player#getTargetedBlock method was used. But this performs better (no raytracing)
+                block = player.getLocation().getBlock();
+            }
+            return new Data(player, block, inventoryView);
         }
 
         @Nullable

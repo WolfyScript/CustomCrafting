@@ -213,8 +213,9 @@ public class CustomCrafting extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
-        getLogger().info("Environment: " + WolfyUtilities.getENVIRONMENT());
+        getLogger().info("WolfyUtils API: v" + ServerVersion.getWUVersion().getVersion());
+        getLogger().info("CustomCrafting: v" + getVersion().getVersion());
+        getLogger().info("Environment   : " + WolfyUtilities.getENVIRONMENT());
 
         getLogger().info("Registering custom data");
         var customItemData = api.getRegistries().getCustomItemData();
@@ -333,7 +334,9 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         getLogger().info("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         getLogger().info("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        getLogger().info(() -> "    v" + currentVersion);
+        getLogger().info(() -> "    Version    | v" + version.getVersion());
+        getLogger().info(() -> "    WolfyUtils | v" + ServerVersion.getWUVersion().getVersion());
+        getLogger().info(() -> "    Bukkit     | " + Bukkit.getVersion() + "(API: " + Bukkit.getBukkitVersion() + ")");
     }
 
     public void writeSeparator() {
