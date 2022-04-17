@@ -99,15 +99,15 @@ public class ClusterMain extends CCCluster {
             return true;
         })).register();
         bb.action(GITHUB.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("26e27da12819a8b053da0cc2b62dec4cda91de6eeec21ccf3bfe6dd8d4436a7")).action((cache, guiHandler, player, guiInventory, i, event) -> {
-            wolfyUtilities.getChat().sendMessage(player, githubLink);
+            getChat().sendMessage(player, githubLink);
             return true;
         })).register();
         bb.action(YOUTUBE.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed")).action((cache, guiHandler, player, guiInventory, i, event) -> {
-            wolfyUtilities.getChat().sendMessage(player, youtubeLink);
+            getChat().sendMessage(player, youtubeLink);
             return true;
         })).register();
         bb.action(DISCORD.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53")).action((cache, guiHandler, player, guiInventory, i, event) -> {
-            wolfyUtilities.getChat().sendMessage(player, discordLink);
+            getChat().sendMessage(player, discordLink);
             return true;
         })).register();
         bb.action(RECIPE_LIST.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
