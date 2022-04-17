@@ -28,7 +28,7 @@
 
     <groupId>com.wolfyscript.customcrafting</groupId>
     <artifactId>customcrafting-spigot</artifactId>
-    <version>3.16.3.2</version>
+    <version>3.16.3.3</version>
 
     <properties>
         <!-- Generic properties -->
@@ -112,13 +112,6 @@
         </dependency>
     </dependencies>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>apache.snapshots</id>
-            <url>https://repository.apache.org/snapshots/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <build>
         <plugins>
             <plugin>
@@ -132,7 +125,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0-SNAPSHOT</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -172,6 +165,16 @@
             </resource>
         </resources>
     </build>
-
-
+    <distributionManagement>
+        <repository>
+            <id>wolfyscript-admin</id>
+            <name>Releases</name>
+            <url>https://maven.wolfyscript.com/repository/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>wolfyscript-admin</id>
+            <name>Snapshot</name>
+            <url>https://maven.wolfyscript.com/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

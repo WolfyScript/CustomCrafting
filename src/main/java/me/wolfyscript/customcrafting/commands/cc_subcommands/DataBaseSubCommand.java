@@ -39,7 +39,7 @@ import java.util.List;
 
 public class DataBaseSubCommand extends AbstractSubCommand {
 
-    private final List<String> DATABASE = Arrays.asList("export");
+    private final List<String> DATABASE = Arrays.asList("export_recipes", "export_items");
 
     public DataBaseSubCommand(CustomCrafting customCrafting) {
         super("database", new ArrayList<>(), customCrafting);
