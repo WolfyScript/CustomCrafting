@@ -324,7 +324,7 @@
         }
       },
       "main_menu": {
-        "gui_name": "<dark_aqua><b>CustomCrafting</b></dark_aqua> <grey>[<dark_grey>%plugin.version%</dark_grey>]</grey>",
+        "gui_name": "<dark_aqua><b>CustomCrafting</b></dark_aqua> <grey>[<dark_grey><plugin_version></dark_grey>]</grey>",
         "gui_help": [
           "<gold><b>Options:</b></gold>",
           "<grey>- </grey><yellow>Click the Recipe type for that you </yellow>",
