@@ -26,14 +26,11 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.utilities.api.nms.NMSUtil;
 import me.wolfyscript.utilities.api.nms.RecipeUtil;
+import me.wolfyscript.utilities.api.nms.inventory.FunctionalCampfireRecipe;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.CampfireRecipe;
-import org.bukkit.inventory.ItemStack;
 
 public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfire, CampfireRecipe> {
 
@@ -54,17 +51,16 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
     public CampfireRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
             RecipeUtil recipeUtil = api.getNmsUtil().getRecipeUtil();
-            recipeUtil.registerCookingRecipe(recipeUtil.campfireRecipe(
+            FunctionalCampfireRecipe campfireRecipe = recipeUtil.campfireRecipe(
                     getNamespacedKey(),
                     getResult().getItemStack(),
                     getSource().getItemStack(),
                     getExp(),
                     getCookingTime(),
-                    (inventory, world) -> {
-                        if (ItemUtils.isAirOrNull(inventory.getItem(0))) return false;
-                        return getSource().test(inventory.getItem(0), isCheckNBT());
-                    }
-            ));
+                    (inventory, world) -> getSource().test(inventory.getItem(0), isCheckNBT())
+            );
+            campfireRecipe.setAssembler(inventory -> java.util.Optional.ofNullable(getResult().getItemStack()));
+            recipeUtil.registerCookingRecipe(campfireRecipe);
         }
         return null;
     }
