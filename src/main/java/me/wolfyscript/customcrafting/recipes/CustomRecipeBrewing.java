@@ -288,8 +288,14 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
      */
     @JsonIgnore
     @Deprecated
-    public void setEffectUpgrades(Map<PotionEffectType, Pair<Integer, Integer>> effectUpgradesByEffectType) {
-        this.effectUpgradesByEffectType = effectUpgradesByEffectType.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new EffectSettingsUpgrade(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue())));
+    public void setEffectUpgrades(Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades) {
+        this.effectUpgradesByEffectType = new HashMap<>();
+        this.effectUpgrades = new ArrayList<>();
+        for (var entry : effectUpgrades.entrySet()) {
+            var upgrade = new EffectSettingsUpgrade(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue());
+            this.effectUpgrades.add(upgrade);
+            this.effectUpgradesByEffectType.put(entry.getKey(), upgrade);
+        }
     }
 
     /**
@@ -322,7 +328,13 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     @JsonIgnore
     @Deprecated
     public void setRequiredEffects(Map<PotionEffectType, Pair<Integer, Integer>> requiredEffects) {
-        this.requiredEffectsByEffectType = requiredEffects.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new EffectSettingsRequired(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue())));
+        this.requiredEffectsByEffectType = new HashMap<>();
+        this.requiredEffects = new ArrayList<>();
+        for (var entry : requiredEffects.entrySet()) {
+            var required = new EffectSettingsRequired(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue());
+            this.requiredEffects.add(required);
+            this.requiredEffectsByEffectType.put(entry.getKey(), required);
+        }
     }
 
     /**
