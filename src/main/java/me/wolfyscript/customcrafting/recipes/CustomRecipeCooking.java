@@ -130,7 +130,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     }
 
     protected RecipeChoice getRecipeChoice() {
-        return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().getChoices().parallelStream().map(CustomItem::create).toList()) : new RecipeChoice.MaterialChoice(getSource().getChoices().parallelStream().map(i -> i.create().getType()).toList());
+        return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().getChoices().stream().map(CustomItem::create).toList()) : new RecipeChoice.MaterialChoice(getSource().getChoices().stream().map(i -> i.create().getType()).toList());
     }
 
     @Override
