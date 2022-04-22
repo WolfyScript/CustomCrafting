@@ -305,8 +305,8 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
      */
     @JsonSetter("effectUpgrades")
     public void setEffectUpgrades(List<EffectSettingsUpgrade> effectUpgrades) {
-        this.effectUpgrades = effectUpgrades;
-        this.effectUpgradesByEffectType = effectUpgrades.stream().collect(Collectors.toMap(EffectSettingsUpgrade::getEffectType, settings -> settings));
+        this.effectUpgrades = Objects.requireNonNullElseGet(effectUpgrades, ArrayList::new);
+        this.effectUpgradesByEffectType = this.effectUpgrades.stream().collect(Collectors.toMap(EffectSettingsUpgrade::getEffectType, settings -> settings));
     }
 
     /**
@@ -344,8 +344,8 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
      */
     @JsonSetter("requiredEffects")
     public void setRequiredEffects(List<EffectSettingsRequired> requiredEffects) {
-        this.requiredEffects = requiredEffects;
-        this.requiredEffectsByEffectType = requiredEffects.stream().collect(Collectors.toMap(EffectSettingsRequired::getEffectType, settings -> settings));
+        this.requiredEffects = Objects.requireNonNullElseGet(requiredEffects, ArrayList::new);
+        this.requiredEffectsByEffectType = this.requiredEffects.stream().collect(Collectors.toMap(EffectSettingsRequired::getEffectType, settings -> settings));
     }
 
     /**
