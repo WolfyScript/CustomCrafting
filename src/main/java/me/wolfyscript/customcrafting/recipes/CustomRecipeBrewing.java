@@ -288,8 +288,14 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
      */
     @JsonIgnore
     @Deprecated
-    public void setEffectUpgrades(Map<PotionEffectType, Pair<Integer, Integer>> effectUpgradesByEffectType) {
-        this.effectUpgradesByEffectType = effectUpgradesByEffectType.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new EffectSettingsUpgrade(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue())));
+    public void setEffectUpgrades(Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades) {
+        this.effectUpgradesByEffectType = new HashMap<>();
+        this.effectUpgrades = new ArrayList<>();
+        for (var entry : effectUpgrades.entrySet()) {
+            var upgrade = new EffectSettingsUpgrade(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue());
+            this.effectUpgrades.add(upgrade);
+            this.effectUpgradesByEffectType.put(entry.getKey(), upgrade);
+        }
     }
 
     /**
@@ -299,8 +305,8 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
      */
     @JsonSetter("effectUpgrades")
     public void setEffectUpgrades(List<EffectSettingsUpgrade> effectUpgrades) {
-        this.effectUpgrades = effectUpgrades;
-        this.effectUpgradesByEffectType = effectUpgrades.stream().collect(Collectors.toMap(EffectSettingsUpgrade::getEffectType, settings -> settings));
+        this.effectUpgrades = Objects.requireNonNullElseGet(effectUpgrades, ArrayList::new);
+        this.effectUpgradesByEffectType = this.effectUpgrades.stream().collect(Collectors.toMap(EffectSettingsUpgrade::getEffectType, settings -> settings));
     }
 
     /**
@@ -322,7 +328,13 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     @JsonIgnore
     @Deprecated
     public void setRequiredEffects(Map<PotionEffectType, Pair<Integer, Integer>> requiredEffects) {
-        this.requiredEffectsByEffectType = requiredEffects.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new EffectSettingsRequired(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue())));
+        this.requiredEffectsByEffectType = new HashMap<>();
+        this.requiredEffects = new ArrayList<>();
+        for (var entry : requiredEffects.entrySet()) {
+            var required = new EffectSettingsRequired(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue());
+            this.requiredEffects.add(required);
+            this.requiredEffectsByEffectType.put(entry.getKey(), required);
+        }
     }
 
     /**
@@ -332,8 +344,8 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
      */
     @JsonSetter("requiredEffects")
     public void setRequiredEffects(List<EffectSettingsRequired> requiredEffects) {
-        this.requiredEffects = requiredEffects;
-        this.requiredEffectsByEffectType = requiredEffects.stream().collect(Collectors.toMap(EffectSettingsRequired::getEffectType, settings -> settings));
+        this.requiredEffects = Objects.requireNonNullElseGet(requiredEffects, ArrayList::new);
+        this.requiredEffectsByEffectType = this.requiredEffects.stream().collect(Collectors.toMap(EffectSettingsRequired::getEffectType, settings -> settings));
     }
 
     /**
