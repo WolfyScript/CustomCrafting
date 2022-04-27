@@ -110,22 +110,12 @@ public class ConfigHandler {
         customCrafting.saveResource("lang/de_DE.json", true);
         customCrafting.saveResource("lang/zh_CN.json", true);
         //The default language to use and to which it falls back to if a key is not found in the active language
-        Language fallBackLanguage;
-        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 0, 0))) {
-            fallBackLanguage = languageAPI.loadLangFile("en_US");
-        } else {
-            fallBackLanguage = new Language(customCrafting, "en_US");
-        }
+        Language fallBackLanguage = languageAPI.loadLangFile("en_US");
         languageAPI.registerLanguage(fallBackLanguage);
         customCrafting.getLogger().info(() -> "Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join(", ", fallBackLanguage.getAuthors()));
         //Load the chosen language
         if (Files.exists(Path.of(customCrafting.getDataFolder().getPath(), "lang", chosenLang + ".json"))) {
-            Language language;
-            if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 0, 0))) {
-                language = languageAPI.loadLangFile(chosenLang);
-            } else {
-                language = new Language(customCrafting, chosenLang);
-            }
+            Language language = languageAPI.loadLangFile(chosenLang);
             languageAPI.registerLanguage(language);
             languageAPI.setActiveLanguage(language);
             customCrafting.getLogger().info(() -> "Loaded active language \"" + chosenLang + "\" v" + language.getVersion() + " translated by " + String.join(", ", language.getAuthors()));

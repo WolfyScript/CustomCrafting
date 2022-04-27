@@ -26,10 +26,15 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.utilities.api.nms.RecipeUtil;
+import me.wolfyscript.utilities.api.nms.item.crafting.FunctionalFurnaceRecipe;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+import java.util.Optional;
 
 public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace, FurnaceRecipe> {
 
@@ -49,9 +54,11 @@ public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace
     @Override
     public FurnaceRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            var recipe = new FurnaceRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
-            recipe.setGroup(group);
-            return recipe;
+            RecipeUtil recipeUtil = api.getNmsUtil().getRecipeUtil();
+            FunctionalFurnaceRecipe recipe = recipeUtil.furnaceRecipe(getNamespacedKey(), getGroup(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime(), (inventory, world) -> getSource().test(inventory.getItem(0), isCheckNBT()));
+            recipe.setAssembler(inventory -> java.util.Optional.ofNullable(getResult().getItemStack()));
+            recipeUtil.registerCookingRecipe(recipe);
+            return null;
         }
         return null;
     }
