@@ -2,7 +2,7 @@
   "@type" : "customcrafting:crafting_shapeless",
   "group" : "",
   "hidden" : false,
-  "vanillaBook" : false,
+  "vanillaBook" : true,
   "priority" : "NORMAL",
   "checkNBT" : true,
   "conditions" : {

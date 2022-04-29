@@ -83,7 +83,7 @@ public class TabCustomDurability extends ItemCreatorTab {
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
             try {
-                guiHandler.getCustomCache().getItems().getItem().setCustomDurabilityTag("&r" + s);
+                guiHandler.getCustomCache().getItems().getItem().setCustomDurabilityTag(s);
             } catch (NumberFormatException ex) {
                 return true;
             }

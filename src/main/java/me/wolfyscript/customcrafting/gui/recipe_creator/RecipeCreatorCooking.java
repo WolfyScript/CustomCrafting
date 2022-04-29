@@ -88,6 +88,7 @@ public class RecipeCreatorCooking extends RecipeCreator {
         update.setButton(1, ClusterRecipeCreator.VANILLA_BOOK);
         update.setButton(3, ClusterRecipeCreator.HIDDEN);
         update.setButton(5, ClusterRecipeCreator.CONDITIONS);
+        update.setButton(7, ClusterRecipeCreator.EXACT_META);
         update.setButton(20, data.getLightBackground());
         update.setButton(11, "recipe.ingredient_0");
         update.setButton(24, "recipe.result");
