@@ -61,9 +61,9 @@ class ButtonSlotResult extends ItemInputButton<CCCache> {
                         }
                     }
                     return false;
-                } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK) && cacheEliteCraftingTable.getResult() != null && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
+                } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK) && !ItemUtils.isAirOrNull(cacheEliteCraftingTable.getResult()) && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
                     if (inventory.getWindow() instanceof CraftingWindow craftingWindow && (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(cacheEliteCraftingTable.getResult()))) {
-                        customCrafting.getCraftManager().consumeRecipe(cacheEliteCraftingTable.getResult(), clickEvent);
+                        customCrafting.getCraftManager().consumeRecipe(clickEvent);
                         cacheEliteCraftingTable.setResult(null);
                         int invSlot;
                         for (int i = 0; i < craftingWindow.gridSize * craftingWindow.gridSize; i++) {
