@@ -182,7 +182,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
                 var ingredient = ingredients.get(key);
                 Optional<CustomItem> validItem = ingredient.check(item, isCheckNBT());
                 if (validItem.isPresent()) {
-                    dataMap.put(pos, new IngredientData(key, ingredient, validItem.get(), item));
+                    dataMap.put(pos, new IngredientData(key, ingredient, validItem.get(), new ItemStack(item)));
                     return key;
                 }
                 //Check failed. Let's add the key back into the queue. (To the end, so we don't check it again and again...)
