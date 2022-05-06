@@ -204,6 +204,10 @@ public class CraftManager {
         return preCraftedRecipes.containsKey(uuid);
     }
 
+    public Optional<CraftingData> get(UUID uuid) {
+        return Optional.ofNullable(preCraftedRecipes.get(uuid));
+    }
+
     private int gridSize(ItemStack[] ingredients) {
         return switch (ingredients.length) {
             case 4 -> 2;
