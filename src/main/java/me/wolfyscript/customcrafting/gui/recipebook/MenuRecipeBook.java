@@ -31,11 +31,11 @@ import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
@@ -83,13 +83,13 @@ public class MenuRecipeBook extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>(BACK, new ButtonState<>(ClusterMain.BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(BACK).state(state -> state.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             ButtonContainerIngredient.resetButtons(guiHandler);
             ButtonContainerRecipeBook.resetButtons(guiHandler);
             guiHandler.openPreviousWindow();
             return true;
-        })));
-        registerButton(new ActionButton<>(NEXT_RECIPE, PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        getButtonBuilder().action(NEXT_RECIPE).state(state -> state.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             var book = cache.getRecipeBookCache();
             ButtonContainerIngredient.resetButtons(guiHandler);
             int nextPage = book.getSubFolderPage() + 1;
@@ -98,13 +98,11 @@ public class MenuRecipeBook extends CCWindow {
                 book.setPrepareRecipe(true);
             }
             return true;
-        }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
             var book = guiHandler.getCustomCache().getRecipeBookCache();
-            values.put("%page%", book.getSubFolderPage() + 1);
-            values.put("%max_pages%", book.getSubFolderRecipes().size());
-            return itemStack;
-        }));
-        registerButton(new ActionButton<>(PREVIOUS_RECIPE, PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (cache, guiHandler, player, inventory, slot, event) -> {
+            return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("page", String.valueOf(book.getSubFolderPage() + 1)), Placeholder.unparsed("max_pages", String.valueOf(book.getSubFolderRecipes().size())));
+        })).register();
+        getButtonBuilder().action(PREVIOUS_RECIPE).state(state -> state.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             var book = cache.getRecipeBookCache();
             ButtonContainerIngredient.resetButtons(guiHandler);
             if (book.getSubFolderPage() > 0) {
@@ -112,12 +110,10 @@ public class MenuRecipeBook extends CCWindow {
                 book.setPrepareRecipe(true);
             }
             return true;
-        }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
             var book = guiHandler.getCustomCache().getRecipeBookCache();
-            values.put("%page%", book.getSubFolderPage() + 1);
-            values.put("%max_pages%", book.getSubFolderRecipes().size());
-            return itemStack;
-        }));
+            return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("page", String.valueOf(book.getSubFolderPage() + 1)), Placeholder.unparsed("max_pages", String.valueOf(book.getSubFolderRecipes().size())));
+        })).register();
     }
 
     @Override

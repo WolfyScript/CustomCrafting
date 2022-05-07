@@ -126,7 +126,7 @@ public class ClusterRecipeCreator extends CCCluster {
                         return false;
                     }
                     return true;
-                }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(itemStack, Placeholder.unparsed("group", cache.getRecipeCreatorCache().getRecipeCache().getGroup()))))
+                }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("group", cache.getRecipeCreatorCache().getRecipeCache().getGroup()))))
                 .inputAction((guiHandler, player, s, args) -> {
                     if (args.length > 0) {
                         guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().setGroup(args[0]);
