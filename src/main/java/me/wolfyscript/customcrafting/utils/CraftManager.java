@@ -38,6 +38,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -104,16 +105,14 @@ public class CraftManager {
     /**
      * Consumes the active Recipe from the matrix and sets the correct item to the cursor.
      *
-     * @param result The result {@link ItemStack} from the inventory.
      * @param event  The {@link InventoryClickEvent} that caused this click.
      */
-    public void consumeRecipe(ItemStack result, InventoryClickEvent event) {
-        var inventory = event.getClickedInventory();
+    public void consumeRecipe(InventoryClickEvent event) {
         var player = (Player) event.getWhoClicked();
-        if (inventory != null && !ItemUtils.isAirOrNull(result) && has(player.getUniqueId())) {
+        if (event.getClickedInventory() instanceof CraftingInventory inventory && has(player.getUniqueId())) {
             var craftingData = preCraftedRecipes.get(player.getUniqueId());
             CraftingRecipe<?, ?> recipe = craftingData.getRecipe();
-            if (recipe != null && !ItemUtils.isAirOrNull(result)) {
+            if (recipe != null) {
                 Result recipeResult = craftingData.getResult();
                 editStatistics(player, inventory, recipe);
                 setPlayerCraftTime(player, recipe);
@@ -146,7 +145,7 @@ public class CraftManager {
         var result = recipeResult.getItem(craftingData, player, null);
         var inventory = event.getClickedInventory();
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(craftingData)) : 1;
-        recipe.removeMatrix(player, event.getClickedInventory(), possible, craftingData);
+        recipe.removeMatrix(player, inventory, possible, craftingData);
         recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked(), possible);
         if (event.isShiftClick()) {
             if (possible > 0) {
@@ -202,6 +201,10 @@ public class CraftManager {
      */
     public boolean has(UUID uuid) {
         return preCraftedRecipes.containsKey(uuid);
+    }
+
+    public Optional<CraftingData> get(UUID uuid) {
+        return Optional.ofNullable(preCraftedRecipes.get(uuid));
     }
 
     private int gridSize(ItemStack[] ingredients) {

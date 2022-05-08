@@ -76,22 +76,32 @@ public class CraftListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            if (craftManager.has(event.getWhoClicked().getUniqueId())) {
+            craftManager.get(event.getWhoClicked().getUniqueId()).ifPresent(craftingData -> {
                 event.setCancelled(true);
+                var player = (Player) event.getWhoClicked();
                 if (event.isShiftClick() || ItemUtils.isAirOrNull(cursor) || cursor.getAmount() + resultItem.getAmount() <= cursor.getMaxStackSize()) {
-                    craftManager.consumeRecipe(resultItem, event);
-                    ((Player) event.getWhoClicked()).updateInventory();
-                    inventory.setResult(new ItemStack(Material.AIR));
-                    callPreCraftEvent(inventory, event);
+                    //Clear Matrix to prevent duplication and buggy behaviour.
+                    //This must not update the inventory yet, as that would call the PrepareItemCraftEvent, invalidating the recipe and preventing consumption of the recipe!
+                    //But clearing it later can cause other issues too!
+                    //So lets just set the items to AIR...
+                    for (int i = 1; i < 10; i++) {
+                        ItemStack item = inventory.getItem(i);
+                        if (item != null) {
+                            item.setType(Material.AIR);
+                        }
+                    }
+                    //...do all the calculations & item replacements...
+                    craftManager.consumeRecipe(event);
+                    //...and finally update the inventory.
+                    player.updateInventory();
+                    //Reset Matrix with the re-calculated items. (1 tick later, to not cause duplication!)
+                    Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                        craftingData.getIndexedBySlot().forEach((integer, ingredientData) -> inventory.setItem(integer + 1, ingredientData.itemStack()));
+                        player.updateInventory();
+                    }, 1);
                 }
-            }
-        } else if ((event.getAction().equals(InventoryAction.PLACE_ALL) || event.getAction().equals(InventoryAction.PLACE_ONE) || event.getAction().equals(InventoryAction.PLACE_SOME)) && inventory.getItem(event.getSlot()) != null) {
-            callPreCraftEvent(inventory, event);
+            });
         }
-    }
-
-    public void callPreCraftEvent(CraftingInventory inventory, InventoryClickEvent event) {
-        Bukkit.getScheduler().runTask(customCrafting, () -> Bukkit.getPluginManager().callEvent(new PrepareItemCraftEvent(inventory, event.getView(), false)));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

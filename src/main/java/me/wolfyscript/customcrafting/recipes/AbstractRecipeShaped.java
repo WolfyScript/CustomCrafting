@@ -271,7 +271,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                     if (ingredient != null) {
                         Optional<CustomItem> item = ingredient.check(invItem, this.checkAllNBT);
                         if (item.isPresent()) {
-                            dataMap.put(recipeSlot, new IngredientData(recipeSlot, ingredient, item.get(), invItem));
+                            dataMap.put(i, new IngredientData(recipeSlot, ingredient, item.get(), new ItemStack(invItem)));
                             i++;
                             continue;
                         }
