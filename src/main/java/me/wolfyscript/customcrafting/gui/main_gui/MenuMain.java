@@ -85,7 +85,6 @@ public class MenuMain extends CCWindow {
         registerButton(new ButtonRecipeType(ELITE_CRAFTING, RecipeType.ELITE_CRAFTING_SHAPED, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
         registerButton(new ButtonRecipeType(CAULDRON, RecipeType.CAULDRON, Material.CAULDRON));
         registerButton(new ButtonRecipeType(SMITHING, RecipeType.SMITHING, Material.SMITHING_TABLE));
-
         builder.action(ITEM_EDITOR).state(s -> s.icon(Material.CHEST).action((cache, guiHandler, player, guiInventory, i, event) -> {
             cache.setSetting(Setting.ITEMS);
             cache.getItems().setRecipeItem(false);

@@ -85,7 +85,6 @@ public class MenuListCustomItem extends CCWindow {
             List<String> namespaceList = registry.keySet().parallelStream().filter(key -> key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).map(NamespacedKeyUtils::getInternalNamespace).distinct().filter(Objects::nonNull).sorted(String::compareToIgnoreCase).toList();
             maxPages = namespaceList.size() / 45 + (namespaceList.size() % 45 > 0 ? 1 : 0);
             page = items.getListPage(maxPages);
-
             for (int i = 45 * page, item = 9; item < 54 && i < namespaceList.size(); i++, item++) {
                 String btnID = "namespace_" + namespaceList.get(i);
                 if (!hasButton("namespace_" + namespaceList.get(i))) {

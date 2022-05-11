@@ -30,15 +30,13 @@ import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
 public class MenuItemEditor extends CCWindow {
 
     public MenuItemEditor(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "item_editor", 45, customCrafting);
+        super(cluster, ClusterRecipeCreator.ITEM_EDITOR.getKey(), 45, customCrafting);
     }
 
     @Override

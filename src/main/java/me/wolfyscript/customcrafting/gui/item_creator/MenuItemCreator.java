@@ -34,6 +34,8 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
@@ -47,7 +49,6 @@ import me.wolfyscript.utilities.compatibility.plugins.oraxen.OraxenRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -83,11 +84,7 @@ public class MenuItemCreator extends CCWindow {
     public void onInit() {
         var btnB = getButtonBuilder();
         btnB.action(BACK).state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, i, event) -> {
-            if (cache.getItems().isRecipeItem()) {
-                guiHandler.openCluster("recipe_creator");
-            } else {
-                guiHandler.openCluster("none");
-            }
+            guiHandler.openCluster(cache.getItems().isRecipeItem() ? "recipe_creator" : "none");
             return true;
         })).register();
         btnB.itemInput(ITEM_INPUT).state(s -> s.icon(Material.AIR).postAction((cache, guiHandler, player, guiInventory, stack, slot, event) -> {
@@ -146,7 +143,7 @@ public class MenuItemCreator extends CCWindow {
                 items.setPage(items.getPage() - 1);
             }
             return true;
-        }));
+        })).register();
         registerReferences(btnB);
         tabs.clear();
         customCrafting.getRegistries().getItemCreatorTabs().forEach(tab -> tab.register(this, api));
@@ -194,15 +191,15 @@ public class MenuItemCreator extends CCWindow {
         if (namespacedKey != null && !namespacedKey.getNamespace().equalsIgnoreCase("minecraft")) {
             var customItem = items.getItem();
             if (customItem.getApiReference() instanceof WolfyUtilitiesRef wolfyUtilitiesRef && wolfyUtilitiesRef.getNamespacedKey().equals(namespacedKey)) {
-                api.getChat().sendMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
+                getChat().sendMessage(player, Component.text("Error saving item! Cannot override original CustomItem ", NamedTextColor.RED).append(Component.text(namespacedKey.toString(), NamedTextColor.DARK_RED)).append(Component.text("! Save it under another NamespacedKey or Edit the original!", NamedTextColor.RED)));
                 return false;
             }
             ItemLoader.saveItem(namespacedKey, items.getItem());
             items.setSaved(true);
             items.setNamespacedKey(namespacedKey);
-            sendMessage(player, "save.success");
+            getChat().sendMessage(player, translatedMsgKey("save.success"));
             var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
-            api.getChat().sendMessage(player, ChatColor.YELLOW + internalKey.getNamespace() + "/items/" + internalKey.getKey());
+            getChat().sendMessage(player, Component.text(internalKey.getNamespace() + "/items/" + internalKey.getKey(), NamedTextColor.YELLOW));
         }
         return true;
     }

@@ -96,18 +96,18 @@ public class ConditionAdvancement extends Condition<ConditionAdvancement> {
                                 if (key != null) {
                                     var condition = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ConditionAdvancement.class);
                                     if (condition.advancements.contains(key)) {
-                                        menu.sendMessage(player, "already_existing");
+                                        menu.sendMessage(guiHandler, menu.translatedMsgKey("already_existing"));
                                         return true;
                                     }
                                     if (Bukkit.getAdvancement(new org.bukkit.NamespacedKey(key.getNamespace(), key.getKey())) == null) {
-                                        menu.sendMessage(player, "advancement_not_found");
+                                        menu.sendMessage(guiHandler, menu.translatedMsgKey("advancement_not_found"));
                                         return true;
                                     }
                                     condition.advancements.add(key);
                                     return false;
                                 }
                             }
-                            menu.sendMessage(player, "no_name");
+                            menu.sendMessage(guiHandler, menu.translatedMsgKey("no_name"));
                             return true;
                         }, (guiHandler, player, args) -> {
                             Set<NamespacedKey> entries = Streams.stream(Bukkit.advancementIterator()).map(advancement -> NamespacedKey.fromBukkit(advancement.getKey())).collect(Collectors.toSet());

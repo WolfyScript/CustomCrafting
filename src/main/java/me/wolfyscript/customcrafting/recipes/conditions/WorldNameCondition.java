@@ -35,6 +35,7 @@ import org.bukkit.World;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class WorldNameCondition extends Condition<WorldNameCondition> {
@@ -109,13 +110,13 @@ public class WorldNameCondition extends Condition<WorldNameCondition> {
                             if (!s.isEmpty()) {
                                 var world = Bukkit.getWorld(s);
                                 if (world == null) {
-                                    menu.sendMessage(player, "missing_world");
+                                    menu.sendMessage(guiHandler, menu.translatedMsgKey("missing_world"));
                                     return true;
                                 }
                                 var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
                                 var condition = conditions.getByType(WorldNameCondition.class);
                                 if (condition.getWorldNames().contains(s)) {
-                                    menu.sendMessage(player, "already_existing");
+                                    menu.sendMessage(guiHandler, menu.translatedMsgKey("already_existing"));
                                     return true;
                                 }
                                 conditions.getByType(WorldNameCondition.class).addWorldName(s);
@@ -123,11 +124,10 @@ public class WorldNameCondition extends Condition<WorldNameCondition> {
                             }
                             return true;
                         }, (guiHandler, player, args) -> {
-                            List<String> results = new ArrayList<>();
                             if (args.length > 0) {
-                                StringUtil.copyPartialMatches(args[0], Bukkit.getWorlds().stream().map(World::getName).toList(), results);
+                                return StringUtil.copyPartialMatches(args[0], Bukkit.getWorlds().stream().map(World::getName).toList(), Collections.emptyList());
                             }
-                            return results;
+                            return Collections.emptyList();
                         }));
                     },
                     (update, cache, condition, recipe) -> {
