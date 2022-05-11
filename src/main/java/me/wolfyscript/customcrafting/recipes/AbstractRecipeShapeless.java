@@ -137,17 +137,17 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @Override
     public CraftingData check(CraftManager.MatrixData matrixData) {
-        Map<Integer, IngredientData> dataMap = new HashMap<>();
-        List<Integer> selectedSlots = new ArrayList<>();
-        Multimap<Integer, Integer> checkedSlots = HashMultimap.create(ingredients.size(), ingredients.size());
-        ItemStack[] matrix = matrixData.getItems();
+        final Map<Integer, IngredientData> dataMap = new HashMap<>();
+        final List<Integer> selectedSlots = new ArrayList<>();
+        final Multimap<Integer, Integer> checkedSlots = HashMultimap.create(ingredients.size(), ingredients.size());
+        final ItemStack[] matrix = matrixData.getItems();
         /*
         Previous implementation had the issue that it didn't go through all possible variations and therefore failed to verify the recipe if the items weren't arranged correctly.
         The new implementation should fix that. Of course at the cost of more calculation time... For 9 ingredients not that big of a deal, but for 36, well... that's why 3x3 recipe grids should be the max size possible.
          */
         for (int i = 0; i < matrix.length; i++) { //First we go through all the items in the grid.
             var checked = checkedSlots.get(i);
-            var recipeSlot = checkIngredientNew(i, selectedSlots, checked, dataMap, matrix[i]); //Get the slot of the ingredient or -1 if non is found.
+            var recipeSlot = checkIngredientNew(i, matrixData, selectedSlots, checked, dataMap, matrix[i]); //Get the slot of the ingredient or -1 if non is found.
             if (recipeSlot == -1) {
                 if (i == 0 || checked.size() == indexes.size()) { //We can directly end the check if it fails for the first slot.
                     return null;
@@ -172,17 +172,18 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
                 return new CraftingData(this, dataMap);
             }
         }
-
         return null;
     }
 
-    protected Integer checkIngredientNew(int pos, List<Integer> selectedSlots, Collection<Integer> checkedSlots, Map<Integer, IngredientData> dataMap, ItemStack item) {
+    protected Integer checkIngredientNew(int pos, CraftManager.MatrixData matrixData, List<Integer> selectedSlots, Collection<Integer> checkedSlots, Map<Integer, IngredientData> dataMap, ItemStack item) {
         for (int key : indexes) {
             if (!selectedSlots.contains(key) && !checkedSlots.contains(key)) {
                 var ingredient = ingredients.get(key);
                 Optional<CustomItem> validItem = ingredient.check(item, isCheckNBT());
                 if (validItem.isPresent()) {
-                    dataMap.put(pos, new IngredientData(key, ingredient, validItem.get(), new ItemStack(item)));
+                    //For shapeless we can't actually determine the exact inventory slot of the ingredient (without massively increasing complexity), but we can make an estimate using the same tactic as with shaped recipes.
+                    //Though, Items will still be slightly rearranged in the matrix.
+                    dataMap.put(pos + matrixData.getOffsetX() + (matrixData.getOffsetY() * 3), new IngredientData(key, ingredient, validItem.get(), new ItemStack(item)));
                     return key;
                 }
                 //Check failed. Let's add the key back into the queue. (To the end, so we don't check it again and again...)
