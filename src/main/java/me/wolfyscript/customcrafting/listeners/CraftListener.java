@@ -83,10 +83,11 @@ public class CraftListener implements Listener {
                     //Clear Matrix to prevent duplication and buggy behaviour.
                     //This must not update the inventory yet, as that would call the PrepareItemCraftEvent, invalidating the recipe and preventing consumption of the recipe!
                     //But clearing it later can cause other issues too!
-                    //So lets just set the items to AIR...
-                    for (int i = 1; i < 10; i++) {
+                    //So lets just set the items to AIR and amount to 0...
+                    for (int i = 0; i < 10; i++) {
                         ItemStack item = inventory.getItem(i);
                         if (item != null) {
+                            item.setAmount(0);
                             item.setType(Material.AIR);
                         }
                     }
@@ -95,6 +96,7 @@ public class CraftListener implements Listener {
                     //...and finally update the inventory.
                     player.updateInventory();
                     //Reset Matrix with the re-calculated items. (1 tick later, to not cause duplication!)
+                    //This will result in a short flicker of the items in the inventory... still better than duplications, so the flickering won't be fixed!
                     Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                         craftingData.getIndexedBySlot().forEach((integer, ingredientData) -> inventory.setItem(integer + 1, ingredientData.itemStack()));
                         player.updateInventory();
