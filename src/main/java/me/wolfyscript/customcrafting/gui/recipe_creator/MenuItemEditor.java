@@ -43,7 +43,7 @@ public class MenuItemEditor extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("back", new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inv, i, event) -> {
             if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                 cache.getItems().setRecipeItem(false);
                 cache.setApplyItem(null);
@@ -52,15 +52,15 @@ public class MenuItemEditor extends CCWindow {
                 guiHandler.openCluster(ClusterMain.KEY);
             }
             return true;
-        })));
-        registerButton(new ActionButton<>("create_item", Material.ITEM_FRAME, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        getButtonBuilder().action("create_item").state(s -> s.icon(Material.ITEM_FRAME).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             guiHandler.openWindow(ClusterItemCreator.MAIN_MENU);
             return true;
-        }));
-        registerButton(new ActionButton<>(ClusterMain.ITEM_LIST.getKey(), new ButtonState<>(ClusterMain.ITEM_LIST, Material.BOOKSHELF, (cache, guiHandler, player, guiInventory, i, event) -> {
+        })).register();
+        getButtonBuilder().action(ClusterMain.ITEM_LIST.getKey()).state(s -> s.key(ClusterMain.ITEM_LIST).icon(Material.BOOKSHELF).action((cache, guiHandler, player, inv, i, event) -> {
             guiHandler.openWindow(ClusterMain.ITEM_LIST);
             return true;
-        })));
+        })).register();
     }
 
     @Override

@@ -26,13 +26,11 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.chat.ChatColor;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
@@ -74,14 +72,15 @@ public class ClusterRecipeBookEditor extends CCCluster {
 
         registerButton(new ButtonSaveCategory(false, customCrafting));
         registerButton(new ButtonSaveCategory(true, customCrafting));
-        getButtonBuilder().action(BACK.getKey()).state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        var btnBld = getButtonBuilder();
+        btnBld.action(BACK.getKey()).state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             cache.getRecipeBookEditor().setFilter(null);
             cache.getRecipeBookEditor().setCategory(null);
             cache.getRecipeBookEditor().setCategoryID("");
             guiHandler.openPreviousWindow();
             return true;
         })).register();
-        getButtonBuilder().itemInput(ICON.getKey()).state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, slot, event) -> {
+        btnBld.itemInput(ICON.getKey()).state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, slot, event) -> {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 if (!ItemUtils.isAirOrNull(inventory.getItem(slot))) {
                     cache.getRecipeBookEditor().getCategorySetting().setIcon(inventory.getItem(slot).getType());
@@ -91,41 +90,33 @@ public class ClusterRecipeBookEditor extends CCCluster {
             });
             return false;
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
-            var recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
-            if (recipeBookEditor.getCategorySetting() != null && recipeBookEditor.getCategorySetting().getIcon() != null) {
-                return CallbackButtonRender.UpdateResult.of(new ItemStack(guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getIcon()));
-            }
-            return CallbackButtonRender.UpdateResult.of(new ItemStack(Material.AIR));
+            var categorySettings = guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting();
+            return CallbackButtonRender.UpdateResult.of(categorySettings != null && categorySettings.getIcon() != null ? new ItemStack(categorySettings.getIcon()) : new ItemStack(Material.AIR));
         })).register();
-        getButtonBuilder().chatInput(NAME.getKey()).state(state -> state.icon(Material.NAME_TAG).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("name", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getName())))).inputAction((guiHandler, player, s, strings) -> {
+        btnBld.chatInput(NAME.getKey()).state(state -> state.icon(Material.NAME_TAG).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("name", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getName())))).inputAction((guiHandler, player, s, strings) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().setName(s);
             return false;
         }).register();
-        getButtonBuilder().chatInput(DESCRIPTION_ADD.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("description", String.join("<newline> ", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getDescription()))))).inputAction((guiHandler, player, s, strings) -> {
+        btnBld.chatInput(DESCRIPTION_ADD.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("description", String.join("<newline> ", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getDescription()))))).inputAction((guiHandler, player, s, strings) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getDescription().add(s.equals("&empty") ? "" : ChatColor.convert(s));
             return false;
         }).register();
-        getButtonBuilder().action(DESCRIPTION_REMOVE.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        btnBld.action(DESCRIPTION_REMOVE.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             ChatUtils.sendCategoryDescription(player);
             guiHandler.close();
             return true;
         })).register();
-        getButtonBuilder().action(RECIPES.getKey()).state(state -> state.icon(Material.CRAFTING_TABLE).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        btnBld.action(RECIPES.getKey()).state(state -> state.icon(Material.CRAFTING_TABLE).action((cache, guiHandler, player, guiInventory, i, event) -> {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
             if (event instanceof InventoryClickEvent clickEvent) {
                 boolean remove = clickEvent.isRightClick();
                 List<String> recipeKeys = customCrafting.getRegistries().getRecipes().keySet().stream().map(NamespacedKey::toString).toList();
-                guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
-                    List<String> results = new ArrayList<>();
-                    StringUtil.copyPartialMatches(args[0], recipeKeys, results);
-                    return results;
-                });
+                guiHandler.setChatTabComplete((guiHandler1, player1, args) -> StringUtil.copyPartialMatches(args[0], recipeKeys, new ArrayList<>()));
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 0) {
                         var namespacedKey = NamespacedKey.of(args[0]);
-                        CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(namespacedKey);
-                        if (recipe == null) {
-                            wolfyUtilities.getChat().sendKey(player, this, "not_existing", new Pair<>("%recipe%", args[0]));
+                        if (customCrafting.getRegistries().getRecipes().get(namespacedKey) == null) {
+                            getChat().sendMessage(player, translatedMsgKey("not_existing", Placeholder.unparsed("recipe", args[0])));
                             return true;
                         }
                         if (remove) {
@@ -140,16 +131,12 @@ public class ClusterRecipeBookEditor extends CCCluster {
             }
             return true;
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("recipes", String.join("<newline>", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getRecipes().stream().map(recipe -> "<grey> - </grey><yellow>" + recipe + "</yellow>").toList()))))).register();
-        getButtonBuilder().action(FOLDERS.getKey()).state(state -> state.icon(Material.ENDER_CHEST).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        btnBld.action(FOLDERS.getKey()).state(state -> state.icon(Material.ENDER_CHEST).action((cache, guiHandler, player, guiInventory, i, event) -> {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
             if (event instanceof InventoryClickEvent clickEvent) {
                 boolean remove = clickEvent.isRightClick();
                 List<String> namespaces = customCrafting.getRegistries().getRecipes().namespaces();
-                guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
-                    List<String> results = new ArrayList<>();
-                    StringUtil.copyPartialMatches(args[0], namespaces, results);
-                    return results;
-                });
+                guiHandler.setChatTabComplete((guiHandler1, player1, args) -> StringUtil.copyPartialMatches(args[0], namespaces, new ArrayList<>()));
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 0) {
                         String namespace = args[0];
@@ -168,16 +155,12 @@ public class ClusterRecipeBookEditor extends CCCluster {
             }
             return true;
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("folders", String.join("<newline>", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getFolders().stream().map(namespacedKey -> "<grey> - </grey><yellow>" + namespacedKey + "</yellow>").toList()))))).register();
-        getButtonBuilder().action(GROUPS.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        btnBld.action(GROUPS.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, guiInventory, i, event) -> {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
             if (event instanceof InventoryClickEvent clickEvent) {
                 boolean remove = clickEvent.isRightClick();
                 List<String> groups = customCrafting.getRegistries().getRecipes().groups();
-                guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
-                    List<String> results = new ArrayList<>();
-                    StringUtil.copyPartialMatches(args[0], groups, results);
-                    return results;
-                });
+                guiHandler.setChatTabComplete((guiHandler1, player1, args) -> StringUtil.copyPartialMatches(args[0], groups, new ArrayList<>()));
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 0) {
                         String group = args[0];

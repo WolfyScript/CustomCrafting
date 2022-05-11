@@ -47,32 +47,29 @@ public class MenuListCustomItem extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action("back").state(state ->
-                state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                    if (items.getListNamespace() != null) {
-                        items.setListNamespace(null);
-                    } else if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
-                        List<? extends GuiWindow<?>> history = guiHandler.getClusterHistory().get(guiHandler.getCluster());
-                        history.remove(history.size() - 1);
-                        guiHandler.openCluster(ClusterRecipeCreator.KEY);
-                    } else {
-                        guiHandler.openPreviousWindow();
-                    }
-                    return true;
-                })).register();
-        getButtonBuilder().action("next_page").state(state ->
-                state.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                    items.setListPage(cache.getItems().getListPage() + 1);
-                    return true;
-                })).register();
-        getButtonBuilder().action("previous_page").state(state ->
-                state.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                    int page = cache.getItems().getListPage();
-                    if (page > 0) {
-                        items.setListPage(--page);
-                    }
-                    return true;
-                })).register();
+        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+            if (items.getListNamespace() != null) {
+                items.setListNamespace(null);
+            } else if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
+                List<? extends GuiWindow<?>> history = guiHandler.getClusterHistory().get(guiHandler.getCluster());
+                history.remove(history.size() - 1);
+                guiHandler.openCluster(ClusterRecipeCreator.KEY);
+            } else {
+                guiHandler.openPreviousWindow();
+            }
+            return true;
+        })).register();
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+            items.setListPage(cache.getItems().getListPage() + 1);
+            return true;
+        })).register();
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+            int page = cache.getItems().getListPage();
+            if (page > 0) {
+                items.setListPage(--page);
+            }
+            return true;
+        })).register();
     }
 
     @Override

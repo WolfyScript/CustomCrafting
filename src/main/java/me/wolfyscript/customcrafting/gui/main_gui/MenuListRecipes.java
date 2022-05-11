@@ -69,11 +69,11 @@ public class MenuListRecipes extends CCWindow {
                     }
                     return true;
                 })).register();
-        getButtonBuilder().action("next_page").state(state -> state.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, guiInv, i, event) -> {
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, guiInv, i, event) -> {
             cache.getRecipeList().setPage(cache.getRecipeList().getPage() + 1);
             return true;
         })).register();
-        getButtonBuilder().action("previous_page").state(state -> state.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, guiInv, i, event) -> {
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, guiInv, i, event) -> {
             int page = cache.getRecipeList().getPage();
             if (page > 0) {
                 cache.getRecipeList().setPage(--page);
