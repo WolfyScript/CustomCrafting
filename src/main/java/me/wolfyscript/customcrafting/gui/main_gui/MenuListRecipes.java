@@ -125,6 +125,7 @@ public class MenuListRecipes extends CCWindow {
             }
         } else if (folder == null) {
             List<String> folders = customRecipes.folders(namespace);
+            folders.remove("");
             maxPages = recipeListCache.getMaxPages(folders.size());
             page = recipeListCache.getPage(maxPages);
             for (int i = 45 * page, slot = 0; slot < 45 && i < folders.size(); i++, slot++) {
