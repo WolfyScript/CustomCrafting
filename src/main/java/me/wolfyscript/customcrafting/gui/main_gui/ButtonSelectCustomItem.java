@@ -30,6 +30,7 @@ import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
@@ -101,18 +102,19 @@ class ButtonSelectCustomItem extends ActionButton<CCCache> {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            var customItem = guiHandler.getApi().getRegistries().getCustomItems().get(namespacedKey);
+            var api = guiHandler.getApi();
+            var customItem = api.getRegistries().getCustomItems().get(namespacedKey);
             if (!ItemUtils.isAirOrNull(customItem)) {
                 var itemB = new ItemBuilder(customItem.create());
                 itemB.addLoreLine("");
-                itemB.addLoreLine("§8" + namespacedKey);
-                CustomCrafting.inst().getApi().getLanguageAPI().replaceKey("inventories.none.item_list.items.custom_item.lore").forEach(s -> itemB.addLoreLine(ChatColor.convert(s)));
+                itemB.addLoreLine(org.bukkit.ChatColor.DARK_GRAY.toString() + namespacedKey);
+                api.getLanguageAPI().getComponents("inventories.none.item_list.items.custom_item.lore").forEach(c -> itemB.addLoreLine(BukkitComponentSerializer.legacy().serialize(c)));
                 return itemB.create();
             }
             var itemB = new ItemBuilder(itemStack);
             itemB.addLoreLine("");
-            itemB.addLoreLine("§8" + namespacedKey);
-            itemB.addLoreLine("§c");
+            itemB.addLoreLine(org.bukkit.ChatColor.DARK_GRAY.toString() + namespacedKey);
+            itemB.addLoreLine("");
             return itemB.create();
         }));
     }
