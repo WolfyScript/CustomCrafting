@@ -30,8 +30,6 @@ import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
@@ -46,11 +44,10 @@ class MenuMain extends CCWindow {
     @Override
     public void onInit() {
         var categories = customCrafting.getConfigHandler().getRecipeBookConfig();
-
         for (String categoryId : categories.getSortedCategories()) {
             registerButton(new ButtonCategoryMain(categoryId, customCrafting));
         }
-        registerButton(new ActionButton<>(BACK_BOTTOM, new ButtonState<>(ClusterMain.BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(BACK_BOTTOM).state(s -> s.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((cache, guiHandler, player, guiInventory, i, event) -> {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 if (cache.getRecipeBookCache().hasEliteCraftingTable()) {
                     guiHandler.openCluster(EliteCraftingCluster.KEY);
@@ -60,7 +57,7 @@ class MenuMain extends CCWindow {
                 cache.getRecipeBookCache().setEliteCraftingTable(null);
             });
             return true;
-        })));
+        })).register();
     }
 
     @Override
