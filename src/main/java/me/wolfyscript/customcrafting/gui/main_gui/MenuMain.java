@@ -93,11 +93,11 @@ public class MenuMain extends CCWindow {
             guiHandler.openCluster(ClusterItemCreator.KEY);
             return true;
         })).register();
-        builder.action(SETTINGS).state(s -> s.icon(PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164")).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        builder.action(SETTINGS).state(s -> s.icon(PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164")).action((cache, guiHandler, player, inv, i, event) -> {
             guiHandler.openWindow(SETTINGS);
             return true;
         })).register();
-        builder.action(RECIPE_BOOK_EDITOR).state(s -> s.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        builder.action(RECIPE_BOOK_EDITOR).state(s -> s.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inv, i, inventoryInteractEvent) -> {
             guiHandler.openCluster(ClusterRecipeBookEditor.KEY);
             return true;
         })).register();

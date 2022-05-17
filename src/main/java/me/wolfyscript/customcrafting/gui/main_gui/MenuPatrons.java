@@ -26,9 +26,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.patreon.Patron;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.utilities.api.chat.ClickData;
-import me.wolfyscript.utilities.api.chat.ClickEvent;
-import me.wolfyscript.utilities.api.chat.HoverEvent;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
@@ -43,12 +40,10 @@ public class MenuPatrons extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action("back").state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"))
-                .action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-                    guiHandler.openPreviousWindow();
-                    return true;
-                })
-        ).register();
+        getButtonBuilder().action("back").state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inv, i, event) -> {
+            guiHandler.openPreviousWindow();
+            return true;
+        })).register();
     }
 
     @Override
