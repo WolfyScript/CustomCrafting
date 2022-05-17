@@ -24,10 +24,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import org.bukkit.Material;
 
 public class RecipeCreatorGrindstone extends RecipeCreator {
@@ -39,27 +39,21 @@ public class RecipeCreatorGrindstone extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeIngredient(1));
         registerButton(new ButtonRecipeResult());
-
-        registerButton(new DummyButton<>("grindstone", Material.GRINDSTONE));
-
-        registerButton(new ChatInputButton<>("xp", Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%xp%", cache.getRecipeCreatorCache().getGrindingCache().getXp());
-            return itemStack;
-        }, (guiHandler, player, s, args) -> {
+        getButtonBuilder().dummy("grindstone").state(s -> s.icon(Material.GRINDSTONE)).register();
+        getButtonBuilder().chatInput("xp").state(s -> s.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getGrindingCache().getXp()))))).inputAction((guiHandler, player, msg, args) -> {
             int xp;
             try {
                 xp = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendKey(player, "recipe_creator", "valid_number");
+                sendMessage(guiHandler, getCluster().translatedMsgKey("valid_number"));
                 return true;
             }
             guiHandler.getCustomCache().getRecipeCreatorCache().getGrindingCache().setXp(xp);
             return false;
-        }));
+        }).register();
     }
 
     @Override
