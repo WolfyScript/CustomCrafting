@@ -44,10 +44,8 @@ public class RecipeCreatorCooking extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeResult());
-
         getButtonBuilder().chatInput(XP).state(state -> state.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getCookingCache().getExp()))))).inputAction((guiHandler, player, s, args) -> {
             float xp;
             try {
