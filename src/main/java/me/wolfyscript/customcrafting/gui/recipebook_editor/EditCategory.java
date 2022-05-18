@@ -41,10 +41,10 @@ public class EditCategory extends EditCategorySetting {
     @Override
     public void onInit() {
         super.onInit();
-        getButtonBuilder().toggle(AUTO).enabledState(s -> s.subKey("enabled").action((cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().toggle(AUTO).enabledState(s -> s.subKey("enabled").icon(Material.COMMAND_BLOCK).action((cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeBookEditor().getCategory().setAuto(false);
             return true;
-        })).disabledState(s -> s.subKey("disabled").action((cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.subKey("disabled").icon(Material.PLAYER_HEAD).action((cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeBookEditor().getCategory().setAuto(true);
             return true;
         })).register();
