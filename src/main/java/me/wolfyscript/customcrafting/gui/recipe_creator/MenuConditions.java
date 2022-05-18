@@ -29,10 +29,10 @@ import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
@@ -54,41 +54,36 @@ public class MenuConditions extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>(BACK, new ButtonState<>(ClusterMain.BACK_BOTTOM, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(BACK).state(s -> s.key(ClusterMain.BACK_BOTTOM).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openPreviousWindow();
             return true;
-        })));
-        registerButton(new ActionButton<>(ADD, PlayerHeadUtils.getViaURL("10c97e4b68aaaae8472e341b1d872b93b36d4eb6ea89ecec26a66e6c4e178"), (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        getButtonBuilder().action(ADD).state(s -> s.icon(PlayerHeadUtils.getViaURL("10c97e4b68aaaae8472e341b1d872b93b36d4eb6ea89ecec26a66e6c4e178")).action((cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openWindow(MenuConditionsAdd.KEY);
             return true;
-        }));
-        registerButton(new ActionButton<>(PAGE_UP, PlayerHeadUtils.getViaURL("3f46abad924b22372bc966a6d517d2f1b8b57fdd262b4e04f48352e683fff92"), (cache, guiHandler, player, inventory, slot, event) -> {
-            return true;
-        }));
-        registerButton(new ActionButton<>(PAGE_DOWN, PlayerHeadUtils.getViaURL("be9ae7a4be65fcbaee65181389a2f7d47e2e326db59ea3eb789a92c85ea46"), (cache, guiHandler, player, inventory, slot, event) -> {
-            return true;
-        }));
-        registerButton(new ActionButton<>(TOGGLE_MODE, Material.LEVER, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        getButtonBuilder().action(PAGE_UP).state(s -> s.icon(PlayerHeadUtils.getViaURL("3f46abad924b22372bc966a6d517d2f1b8b57fdd262b4e04f48352e683fff92")).action((cache, guiHandler, player, inventory, slot, event) -> true)).register();
+        getButtonBuilder().action(PAGE_DOWN).state(s -> s.icon(PlayerHeadUtils.getViaURL("be9ae7a4be65fcbaee65181389a2f7d47e2e326db59ea3eb789a92c85ea46")).action((cache, guiHandler, player, inventory, slot, event) -> true)).register();
+        getButtonBuilder().action(TOGGLE_MODE).state(s -> s.icon(Material.LEVER).action((cache, guiHandler, player, inventory, slot, event) -> {
             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByKey(cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition());
             if (condition != null) {
                 condition.toggleOption();
             }
             return true;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        }).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> {
             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByKey(cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition());
             if (condition != null) {
-                hashMap.put("%mode%", condition.getOption().getDisplayString(api));
+                return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("mode", condition.getOption().getDisplayString(api)));
             }
-            return itemStack;
-        }));
-
-        registerButton(new ActionButton<>(REMOVE, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+            return CallbackButtonRender.UpdateResult.of();
+        })).register();
+        getButtonBuilder().action(REMOVE).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, inventory, slot, event) -> {
             var condition = cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition();
             if (condition != null) {
                 cache.getRecipeCreatorCache().getRecipeCache().getConditions().removeCondition(condition);
             }
             return true;
-        }));
+        })).register();
         Condition.getGuiComponents().forEach((key, abstractGUIComponent) -> abstractGUIComponent.init(this, api));
     }
 
