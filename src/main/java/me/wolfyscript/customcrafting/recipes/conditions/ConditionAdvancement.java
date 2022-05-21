@@ -88,7 +88,7 @@ public class ConditionAdvancement extends Condition<ConditionAdvancement> {
     public static class GUIComponent extends FunctionalGUIComponent<ConditionAdvancement> {
 
         public GUIComponent() {
-            super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, args) -> {
                             if (args.length > 1) {

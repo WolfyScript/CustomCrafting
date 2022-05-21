@@ -554,11 +554,11 @@
           "language": {
             "name": "<gold>Language</gold>",
             "lore": [
-              "<yellow>» <b>%lang0%</b></yellow>",
-              "<grey>%lang1%</grey>",
-              "<grey>%lang2%</grey>",
-              "<grey>%lang3%</grey>",
-              "<grey>%lang4%</grey>",
+              "<yellow>» <b><list_entry:0></b></yellow>",
+              "<grey><list_entry:1></grey>",
+              "<grey><list_entry:2></grey>",
+              "<grey><list_entry:3></grey>",
+              "<grey><list_entry:4></grey>",
               "<grey>[<green>Left Click</green>] Next language</grey>",
               "<grey>[<green>Right Click</green>] Previous language</grey>",
               "<grey>[<green>Shift Click</green>] Reload Language & GUIs</grey>"
@@ -1978,7 +1978,9 @@
           "select": {
             "name": "<gold><b>%name%</b></gold>",
             "lore": [
-              "%description%",
+              "<list_entry:0>",
+              "<list_entry:1>",
+              "<list_entry:2>",
               "",
               "<dark_grey>[<green>Click</green>]</dark_grey> <grey>Open Settings</grey>"
             ]
@@ -2206,7 +2208,9 @@
           "icon": {
             "name": "<gold><b>%name%</b></gold>",
             "lore": [
-              "%description%",
+              "<list_entry:0>",
+              "<list_entry:1>",
+              "<list_entry:2>",
               "",
               "<dark_grey>[<green>Click</green>]</dark_grey> <yellow>Add to recipe</yellow>"
             ]
