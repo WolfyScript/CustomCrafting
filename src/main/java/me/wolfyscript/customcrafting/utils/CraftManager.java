@@ -224,18 +224,22 @@ public class CraftManager {
         for (int y = 0; y < gridSize; y++) {
             items.add(new ArrayList<>(Arrays.asList(ingredients).subList(y * gridSize, gridSize + y * gridSize)));
         }
+        //Go through each row beginning from the top, removing empty rows, until you hit a non-empty row.
+        int yPosOfFirstOccurrence = 0;
         ListIterator<List<ItemStack>> iterator = items.listIterator();
         while (iterator.hasNext()) {
             if (!iterator.next().stream().allMatch(Objects::isNull)) break;
+            yPosOfFirstOccurrence++;
             iterator.remove();
         }
+        //Go through each row beginning from the bottom, removing empty rows, until you hit a non-empty row.
         iterator = items.listIterator(items.size());
         while (iterator.hasPrevious()) {
             if (!iterator.previous().stream().allMatch(Objects::isNull)) break;
             iterator.remove();
         }
+        //Check for the first empty column from the left.
         var leftPos = gridSize;
-        var rightPos = 0;
         for (List<ItemStack> itemsY : items) {
             var size = itemsY.size();
             for (int i = 0; i < size; i++) {
@@ -246,6 +250,8 @@ public class CraftManager {
             }
             if (leftPos == 0) break;
         }
+        //Check for the first empty column from the right.
+        var rightPos = 0;
         for (List<ItemStack> itemsY : items) {
             var size = itemsY.size();
             for (int i = size - 1; i > 0; i--) {
@@ -258,7 +264,7 @@ public class CraftManager {
         }
         var finalLeftPos = leftPos;
         var finalRightPos = rightPos + 1;
-        return new MatrixData(items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).toArray(ItemStack[]::new), items.size(), finalRightPos - finalLeftPos);
+        return new MatrixData(items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).toArray(ItemStack[]::new), items.size(), finalRightPos - finalLeftPos, finalLeftPos, yPosOfFirstOccurrence);
     }
 
     /**
@@ -272,13 +278,22 @@ public class CraftManager {
         private final ItemStack[] matrix;
         private final int height;
         private final int width;
+        private final int offsetY;
+        private final int offsetX;
         private final long strippedSize;
         private final ItemStack[] items;
 
+        @Deprecated
         public MatrixData(ItemStack[] matrix, int height, int width) {
+            this(matrix, height, width, 0, 0);
+        }
+
+        public MatrixData(ItemStack[] matrix, int height, int width, int offsetX, int offsetY) {
             this.matrix = matrix;
             this.height = height;
             this.width = width;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
             this.items = Arrays.stream(matrix).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).toArray(ItemStack[]::new);
             this.strippedSize = this.items.length;
         }
@@ -298,12 +313,37 @@ public class CraftManager {
         }
 
         /**
+         * The offset specifies by how much the shape is shifted in the recipe.<br>
+         * This is used to place the items into the correct inventory for shaped recipes.<br>
+         * Shapeless recipes ignore these.
+         *
+         * @return The x offset (from the left) of the shape in the matrix.
+         */
+        public int getOffsetX() {
+            return offsetX;
+        }
+
+        /**
+         * The offset specifies by how much the shape is shifted in the recipe.<br>
+         * This is used to place the items into the correct inventory for shaped recipes.<br>
+         * Shapeless recipes ignore these.
+         *
+         * @return The y offset (from the top) of the shape in the matrix.
+         */
+        public int getOffsetY() {
+            return offsetY;
+        }
+
+        /**
          * @return The matrix size with all empty air/null values removed.
          */
         public long getStrippedSize() {
             return strippedSize;
         }
 
+        /**
+         * @return The non-null/air items from the matrix in order of appearance.
+         */
         public ItemStack[] getItems() {
             return items;
         }
