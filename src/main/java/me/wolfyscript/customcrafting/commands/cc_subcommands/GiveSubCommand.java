@@ -61,13 +61,11 @@ public class GiveSubCommand extends AbstractSubCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         if(ChatUtils.checkPerm(sender, "customcrafting.cmd.give")) {
             if (args.length >= 2) {
-
                 String giveTarget = args[0];
                 Player target = switch (giveTarget) {
                     case "@s" -> sender instanceof Player player ? player : null;
                     default -> Bukkit.getPlayer(giveTarget);
                 };
-
                 if (target == null) {
                     Pair<String, String> playerValue = new Pair<>("%target%", giveTarget);
                     if (sender instanceof Player) {

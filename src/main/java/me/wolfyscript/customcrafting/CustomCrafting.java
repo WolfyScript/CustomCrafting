@@ -113,6 +113,7 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.UpdateChecker;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -149,6 +150,7 @@ public class CustomCrafting extends JavaPlugin {
     public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
     public static final int CONFIG_VERSION = 5;
+    private final Component coloredTitle;
 
     //Instance Object to use when no Object was passed!
     private static CustomCrafting instance;
@@ -188,7 +190,9 @@ public class CustomCrafting extends JavaPlugin {
 
         this.registries = new CCRegistries(this, api.getCore());
 
-        api.getChat().setInGamePrefix("§7[§3CC§7] ");
+        var chat = api.getChat();
+        chat.setChatPrefix(chat.getMiniMessage().deserialize("<gray>[<gradient:dark_aqua:aqua>CC</gradient>]</gray>"));
+        this.coloredTitle = chat.getMiniMessage().deserialize("<gradient:dark_aqua:aqua><b>CustomCrafting</b></gradient>");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
         this.chatUtils = new ChatUtils(this);
         this.patreon = new Patreon();
@@ -429,6 +433,10 @@ public class CustomCrafting extends JavaPlugin {
 
     public ConfigHandler getConfigHandler() {
         return configHandler;
+    }
+
+    public Component getColoredTitle() {
+        return coloredTitle;
     }
 
     public WolfyUtilities getApi() {

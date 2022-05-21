@@ -32,7 +32,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
-import java.util.List;
 import java.util.Map;
 
 public class MenuConditionsAdd extends CCWindow {
@@ -57,20 +56,19 @@ public class MenuConditionsAdd extends CCWindow {
         var recipe = cache.getRecipeCreatorCache().getRecipeCache();
         update.setButton(8, PlayerUtil.getStore(update.getPlayer()).getLightBackground());
         var recipeType = cache.getRecipeCreatorCache().getRecipeType();
-        List<Map.Entry<NamespacedKey, Condition.AbstractGUIComponent<?>>> conditions = Condition.getGuiComponents().entrySet().stream().filter(entry -> entry.getValue().shouldRender(recipeType) && !recipe.getConditions().has(entry.getKey())).toList();
+        var conditions = Condition.getGuiComponents().entrySet().stream().filter(entry -> entry.getValue().shouldRender(recipeType) && !recipe.getConditions().has(entry.getKey())).toList();
         if (!conditions.isEmpty()) {
             int size = conditions.size();
             int page = cache.getRecipeCreatorCache().getConditionsCache().getSelectNewPage();
-            for (int i = page * CONDITIONS_PER_PAGE, slot = 0; i < size && slot < CONDITIONS_PER_PAGE; i++, slot++) {
-                Map.Entry<NamespacedKey, Condition.AbstractGUIComponent<?>> entry = conditions.get(i);
+            conditions = conditions.subList(page * CONDITIONS_PER_PAGE, size);
+            for (int slot = 0; slot < conditions.size(); slot++) {
+                Map.Entry<NamespacedKey, Condition.AbstractGUIComponent<?>> entry = conditions.get(slot);
                 var button = new ButtonConditionAdd(customCrafting, entry.getKey(), entry.getValue());
                 registerButton(button);
                 update.setButton(slot, button);
             }
-
             int maxPages = (int) Math.floor(size / (double) CONDITIONS_PER_PAGE);
         }
-
         update.setButton(49, ClusterMain.BACK_BOTTOM);
     }
 }

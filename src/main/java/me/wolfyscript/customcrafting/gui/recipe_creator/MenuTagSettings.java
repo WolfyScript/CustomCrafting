@@ -42,22 +42,22 @@ public class MenuTagSettings extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("add_tag_list", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        getButtonBuilder().action("add_tag_list").state(s -> s.icon(Material.NAME_TAG).action((cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openWindow("tag_list");
             return true;
-        }));
-        registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        })).register();
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, inventory, slot, event) -> {
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getListPage();
             cache.getRecipeCreatorCache().getTagSettingsCache().setListPage(++page);
             return true;
-        }));
-        registerButton(new ActionButton<>("previous_page", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        })).register();
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, inventory, slot, event) -> {
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getListPage();
             if (page > 0) {
                 cache.getRecipeCreatorCache().getTagSettingsCache().setListPage(--page);
             }
             return true;
-        }));
+        })).register();
     }
 
     @Override

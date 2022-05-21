@@ -26,8 +26,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import org.bukkit.Material;
 
 public class RecipeCreatorSmithing extends RecipeCreator {
@@ -43,31 +41,31 @@ public class RecipeCreatorSmithing extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-
+        var btnB = getButtonBuilder();
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeIngredient(1));
         registerButton(new ButtonRecipeResult());
-        registerButton(new ToggleButton<>(CHANGE_MATERIAL, (cache, guiHandler, player, guiInv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isOnlyChangeMaterial(), new ButtonState<>(CHANGE_MATERIAL + ".enabled", Material.PAPER, (customCache, guiHandler, player, guiInv, i, event) -> {
-            customCache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(false);
+        btnB.toggle(CHANGE_MATERIAL).enabledState(s -> s.subKey("enabled").icon(Material.PAPER).action((cache, handler, player, inv, i, e) -> {
+            cache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(false);
             return true;
-        }), new ButtonState<>(CHANGE_MATERIAL + ".disabled", Material.WRITABLE_BOOK, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            customCache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(true);
+        })).disabledState(s -> s.subKey("disabled").icon(Material.WRITABLE_BOOK).action((cache, handler, player, inv, i, e) -> {
+            cache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(true);
             return true;
-        })));
-        registerButton(new ToggleButton<>(PRESERVE_ENCHANTS, (cache, guiHandler, player, guiInv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveEnchants(), new ButtonState<>(PRESERVE_ENCHANTS + ".enabled", Material.ENCHANTED_BOOK, (customCache, guiHandler, player, guiInv, i, event) -> {
-            customCache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(false);
+        })).register();
+        btnB.toggle(PRESERVE_ENCHANTS).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveEnchants()).enabledState(s -> s.subKey("enabled").icon(Material.ENCHANTED_BOOK).action((cache, handler, player, inv, i, e) -> {
+            cache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(false);
             return true;
-        }), new ButtonState<>(PRESERVE_ENCHANTS + ".disabled", Material.BOOK, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            customCache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(true);
+        })).disabledState(s -> s.subKey("disabled").icon(Material.BOOK).action((cache, handler, player, inv, i, e) -> {
+            cache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(true);
             return true;
-        })));
-        registerButton(new ToggleButton<>(PRESERVE_DAMAGE, (cache, guiHandler, player, guiInv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveDamage(), new ButtonState<>(PRESERVE_DAMAGE + ".enabled", Material.LIME_CONCRETE, (customCache, guiHandler, player, guiInv, i, event) -> {
-            customCache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(false);
+        })).register();
+        btnB.toggle(PRESERVE_DAMAGE).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveDamage()).enabledState(s -> s.subKey("enabled").icon(Material.LIME_CONCRETE).action((cache, handler, player, inv, i, e) -> {
+            cache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(false);
             return true;
-        }), new ButtonState<>(PRESERVE_DAMAGE + ".disabled", Material.RED_CONCRETE, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            customCache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(true);
+        })).disabledState(s -> s.subKey("disabled").icon(Material.RED_CONCRETE).action((cache, handler, player, inv, i, e) -> {
+            cache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(true);
             return true;
-        })));
+        })).register();
     }
 
     @Override

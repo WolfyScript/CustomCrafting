@@ -37,7 +37,6 @@ public abstract class EditCategorySetting extends CCWindow {
     @Override
     public void onInit() {
 
-
     }
 
     @Override

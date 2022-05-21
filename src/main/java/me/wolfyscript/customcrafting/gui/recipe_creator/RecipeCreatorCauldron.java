@@ -24,19 +24,20 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+
+import java.util.function.BiConsumer;
 
 public class RecipeCreatorCauldron extends RecipeCreator {
 
@@ -47,12 +48,12 @@ public class RecipeCreatorCauldron extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-
-        registerButton(new DummyButton<>("cauldron", Material.CAULDRON));
-
+        var btnB = getButtonBuilder();
+        btnB.dummy("cauldron").state(s -> s.icon(Material.CAULDRON)).register();
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeResult());
-        registerButton(new ItemInputButton<>("handItem_container", new ButtonState<>("handItem_container", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
+
+        btnB.itemInput("handItem_container").state(s -> s.icon(Material.AIR).action((cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
                 Bukkit.getScheduler().runTask(customCrafting, () -> {
                     if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
@@ -64,85 +65,59 @@ public class RecipeCreatorCauldron extends RecipeCreator {
                 return true;
             }
             return false;
-        }, (cache, guiHandler, player, inventory, itemStack, slot, event) -> {
+        }).postAction((cache, guiHandler, player, inventory, itemStack, slot, event) -> {
             if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
                 return;
             }
             cache.getRecipeCreatorCache().getCauldronCache().setHandItem(!ItemUtils.isAirOrNull(inventory.getItem(slot)) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
-        }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        }).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> {
             var customItem = cache.getRecipeCreatorCache().getCauldronCache().getHandItem();
             if (customItem != null) {
-                return customItem.getItemStack();
+                return CallbackButtonRender.UpdateResult.of(customItem.getItemStack());
             }
-            return itemStack;
-        })));
-
-        registerButton(new ToggleButton<>("dropItems", new ButtonState<>("dropItems.enabled", Material.DROPPER, (cache, guiHandler, player, inventory, slot, event) -> {
+            return CallbackButtonRender.UpdateResult.of(itemStack);
+        })).register();
+        btnB.toggle("dropItems").enabledState(s -> s.subKey("enabled").icon(Material.DROPPER).action((cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeCreatorCache().getCauldronCache().setDropItems(false);
             return true;
-        }), new ButtonState<>("dropItems.disabled", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.subKey("disabled").icon(Material.CHEST).action((cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeCreatorCache().getCauldronCache().setDropItems(true);
             return true;
-        })));
-        registerButton(new ToggleButton<>("fire", new ButtonState<>("fire.enabled", Material.FLINT_AND_STEEL, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        btnB.toggle("fire").enabledState(s -> s.subKey("enabled").icon(Material.FLINT_AND_STEEL).action((cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeCreatorCache().getCauldronCache().setNeedsFire(false);
             return true;
-        }), new ButtonState<>("fire.disabled", Material.FLINT, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.subKey("disabled").icon(Material.FLINT).action((cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeCreatorCache().getCauldronCache().setNeedsFire(true);
             return true;
-        })));
-        registerButton(new ToggleButton<>("water", new ButtonState<>("water.enabled", Material.WATER_BUCKET, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        btnB.toggle("water").enabledState(s -> s.subKey("enabled").icon(Material.WATER_BUCKET).action((cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeCreatorCache().getCauldronCache().setNeedsWater(false);
             return true;
-        }), new ButtonState<>("water.disabled", Material.BUCKET, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.subKey("disabled").icon(Material.BUCKET).action((cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeCreatorCache().getCauldronCache().setNeedsWater(true);
             return true;
-        })));
-        registerButton(new ChatInputButton<>("xp", Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%xp%", cache.getRecipeCreatorCache().getCauldronCache().getXp());
-            return itemStack;
-        }, (guiHandler, player, s, args) -> {
-            int xp;
-            try {
-                xp = Integer.parseInt(args[0]);
-            } catch (NumberFormatException e) {
-                api.getChat().sendKey(player, getCluster(), "valid_number");
-                return true;
-            }
-            guiHandler.getCustomCache().getRecipeCreatorCache().getCauldronCache().setXp(xp);
-            return false;
-        }));
-        registerButton(new ChatInputButton<>("cookingTime", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%time%", cache.getRecipeCreatorCache().getCauldronCache().getCookingTime());
-            return itemStack;
-        }, (guiHandler, player, s, args) -> {
-            int time;
-            try {
-                time = Integer.parseInt(args[0]);
-            } catch (NumberFormatException e) {
-                api.getChat().sendKey(player, getCluster(), "valid_number");
-                return true;
-            }
-            guiHandler.getCustomCache().getRecipeCreatorCache().getCauldronCache().setCookingTime(time);
-            return false;
-        }));
-        registerButton(new ChatInputButton<>("waterLevel", Material.GLASS_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%level%", cache.getRecipeCreatorCache().getCauldronCache().getWaterLevel());
-            return itemStack;
-        }, (guiHandler, player, s, args) -> {
-            int waterLvl;
-            try {
-                waterLvl = Integer.parseInt(args[0]);
-            } catch (NumberFormatException e) {
-                api.getChat().sendKey(player, getCluster(), "valid_number");
-                return true;
-            }
+        })).register();
+        btnB.chatInput("xp").state(s -> s.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getCauldronCache().getXp()))))).inputAction((guiHandler, player, msg, args) -> readNumberFromArgs(args[0], guiHandler, (xp, cache) -> cache.getRecipeCreatorCache().getCauldronCache().setXp(xp))).register();
+        btnB.chatInput("cookingTime").state(s -> s.icon(Material.CLOCK).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(cache.getRecipeCreatorCache().getCauldronCache().getCookingTime()))))).inputAction((guiHandler, player, msg, args) -> readNumberFromArgs(args[0], guiHandler, (time, cache) -> cache.getRecipeCreatorCache().getCauldronCache().setCookingTime(time))).register();
+        btnB.chatInput("waterLevel").state(s -> s.icon(Material.GLASS_BOTTLE).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("level", String.valueOf(cache.getRecipeCreatorCache().getCauldronCache().getWaterLevel()))))).inputAction((guiHandler, player, msg, args) -> readNumberFromArgs(args[0], guiHandler, (waterLvl, cache) -> {
             if (waterLvl > 3) {
                 waterLvl = 3;
             }
-            guiHandler.getCustomCache().getRecipeCreatorCache().getCauldronCache().setWaterLevel(waterLvl);
-            return false;
-        }));
+            cache.getRecipeCreatorCache().getCauldronCache().setWaterLevel(waterLvl);
+        })).register();
+    }
+
+    private boolean readNumberFromArgs(String arg, GuiHandler<CCCache> guiHandler, BiConsumer<Integer, CCCache> action) {
+        int value;
+        try {
+            value = Integer.parseInt(arg);
+        } catch (NumberFormatException e) {
+            sendMessage(guiHandler, getCluster().translatedMsgKey("valid_number"));
+            return true;
+        }
+        action.accept(value, guiHandler.getCustomCache());
+        return false;
     }
 
     @Override

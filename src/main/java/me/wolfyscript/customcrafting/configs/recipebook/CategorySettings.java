@@ -29,6 +29,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -145,8 +146,9 @@ public abstract class CategorySettings {
         var categoryItem = new ItemStack(getIcon());
         var itemMeta = categoryItem.getItemMeta();
         var languageAPI = customCrafting.getApi().getLanguageAPI();
-        itemMeta.setDisplayName(languageAPI.replaceColoredKeys(getName()));
-        itemMeta.setLore(languageAPI.replaceColoredKeys(getDescription()));
+        var miniMsg = customCrafting.getApi().getChat().getMiniMessage();
+        itemMeta.setDisplayName(BukkitComponentSerializer.legacy().serialize(miniMsg.deserialize(languageAPI.replaceKeys(getName()))));
+        itemMeta.setLore(languageAPI.replaceKeys(getDescription()).stream().map(s -> BukkitComponentSerializer.legacy().serialize(miniMsg.deserialize(languageAPI.convertLegacyToMiniMessage(s)))).toList());
         categoryItem.setItemMeta(itemMeta);
         return categoryItem;
     }

@@ -51,34 +51,34 @@ public class EditorMain extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>(CANCEL, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(CANCEL).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, inventory, slot, event) -> {
             customCrafting.getConfigHandler().loadRecipeBookConfig();
             guiHandler.openCluster("none");
             return true;
-        }));
-        registerButton(new ActionButton<>(SAVE, Material.WRITTEN_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        getButtonBuilder().action(SAVE).state(s -> s.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
             try {
                 if (!new File(customCrafting.getDataFolder(), "recipe_book.json").renameTo(new File(customCrafting.getDataFolder(), "recipe_book_backup.json"))) {
-                    api.getChat().sendKey(player, "recipe_book_editor", "save.failed_backup");
+                    sendMessage(guiHandler, getCluster().translatedMsgKey("save.failed_backup"));
                 }
                 customCrafting.getConfigHandler().save();
-                api.getChat().sendKey(player, "recipe_book_editor", "save.success");
+                sendMessage(guiHandler, getCluster().translatedMsgKey("save.success"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
             guiHandler.openCluster("none");
             return true;
-        }));
-        registerButton(new ActionButton<>(FILTERS, Material.COMPASS, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        getButtonBuilder().action(FILTERS).state(s -> s.icon(Material.COMPASS).action((cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().setFilters(true);
             guiHandler.openWindow(FILTERS);
             return true;
-        }));
-        registerButton(new ActionButton<>(CATEGORIES, Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        getButtonBuilder().action(CATEGORIES).state(s -> s.icon(Material.CHEST).action((cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().setFilters(false);
             guiHandler.openWindow(CATEGORIES);
             return true;
-        }));
+        })).register();
     }
 
     @Override

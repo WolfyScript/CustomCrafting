@@ -22,9 +22,12 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
@@ -34,14 +37,9 @@ class ButtonConditionSelect extends ActionButton<CCCache> {
         super("icon_" + key.toString("_"), new ButtonState<>("select", Condition.getGuiComponent(key).getIcon(), (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeCreatorCache().getConditionsCache().setSelectedCondition(key);
             return true;
-        }, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-            var langAPI = guiHandler.getApi().getLanguageAPI();
-            Condition.AbstractGUIComponent<?> guiComponent = Condition.getGuiComponent(key);
-            if (guiComponent != null) {
-                values.put("%name%", langAPI.replaceColoredKeys(guiComponent.getName()));
-                values.put("%description%", langAPI.replaceColoredKeys(guiComponent.getDescription()));
-            }
-            return itemStack;
+        }, (CallbackButtonRender<CCCache>) (cache, guiHandler, player, guiInventory, itemStack, i) -> {
+            Condition.AbstractGUIComponent<?> condition = Condition.getGuiComponent(key);
+            return CallbackButtonRender.UpdateResult.of(Placeholder.component("name", condition.getDisplayName()), TagResolverUtil.entries(condition.getDescriptionComponents()));
         }));
     }
 }
