@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -37,6 +38,9 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.MultipleChoiceButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
+import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
+import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
@@ -89,7 +93,7 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
 
     @Override
     public boolean shouldRender(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
-        return item.getType().isBlock();
+        return item.getType().isBlock() || (customItem.getApiReference() instanceof ItemsAdderRef iaRef && WolfyCoreBukkit.getInstance().getCompatibilityManager().getPlugins().evaluateIfAvailable("ItemsAdder", ItemsAdderIntegration.class, ia -> ia.getStackInstance(iaRef.getItemID()).map(CustomStack::isBlock).orElse(false)));
     }
 
     @Override

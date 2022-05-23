@@ -52,7 +52,6 @@ public class CommandRecipe extends IndexCommand {
         if (args.length == 0 && sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes")) {
             PlayerUtil.openRecipeBook(player);
         }
-
         return super.execute(sender, s, args);
     }
 }
