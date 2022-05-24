@@ -33,6 +33,7 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -111,9 +112,7 @@ public class AnvilListener implements Listener {
             player.updateInventory();
             int finalRepairCost = repairCost;
             Bukkit.getScheduler().runTask(customCrafting, () -> {
-                if (inventory.getRepairCost() == 0) {
-                    inventory.setRepairCost(finalRepairCost);
-                }
+                inventory.setRepairCost(finalRepairCost);
                 player.updateInventory();
             });
             break;
