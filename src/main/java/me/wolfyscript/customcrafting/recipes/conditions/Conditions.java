@@ -22,9 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.node.ObjectNode;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -38,29 +40,41 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Conditions {
 
     @JsonIgnore
     private final Map<NamespacedKey, Condition<?>> valuesMap;
+    private final CustomCrafting customCrafting;
 
     //Conditions initialization
     public Conditions() {
         this.valuesMap = new HashMap<>();
+        this.customCrafting = CustomCrafting.inst();
     }
 
     @JsonCreator
     private Conditions(JsonNode node) {
+        this.customCrafting = CustomCrafting.inst();
         if (node.isArray()) {
             //Required for backwards compatibility with previous configs.
             this.valuesMap = new HashMap<>();
             node.elements().forEachRemaining(element -> {
                 ((ObjectNode) element).put("key", String.valueOf(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, element.path("id").asText())));
-                var condition = JacksonUtil.getObjectMapper().convertValue(element, Condition.class);
-                if (!condition.getOption().equals(Option.IGNORE)) {
-                    valuesMap.put(condition.getNamespacedKey(), condition);
+                var injectableValues = new InjectableValues.Std();
+                injectableValues.addValue("customcrafting", this.customCrafting);
+                try {
+                    var condition = JacksonUtil.getObjectMapper().reader(injectableValues).readValue(element, Condition.class);
+                    if (!condition.getOption().equals(Option.IGNORE)) {
+                        valuesMap.put(condition.getNamespacedKey(), condition);
+                    }
+                } catch (IOException ex) {
+                    this.customCrafting.getApi().getConsole().getLogger().log(Level.SEVERE, "Couldn't load language \"" + element + "\"!");
+                    ex.printStackTrace();
                 }
             });
         } else {
