@@ -26,7 +26,7 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.eval.context.EvalContext;
+import me.wolfyscript.utilities.util.eval.context.EvalContextPlayer;
 import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -67,7 +67,7 @@ public class ConditionScoreboard extends Condition<ConditionScoreboard> {
         if (player != null) {
             Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
             //Create the eval context for the optional check
-            EvalContext context = new EvalContext();
+            EvalContextPlayer context = new EvalContextPlayer(player);
             for (Objective objective : scoreboard.getObjectives()) {
                 String varName = objective.getName();
                 context.setVariable(varName, objective.getScore(player).getScore());
@@ -81,7 +81,7 @@ public class ConditionScoreboard extends Condition<ConditionScoreboard> {
                 Objective objective = scoreboard.getObjective(key);
                 if (objective != null) {
                     //Set an eval context with just the specified value of this objective
-                    EvalContext valueContext = new EvalContext();
+                    EvalContextPlayer valueContext = new EvalContextPlayer(player);
                     valueContext.setVariable("value", objective.getScore(player).getScore());
                     if (!entry.getValue().evaluate(valueContext)) {
                         return false;
