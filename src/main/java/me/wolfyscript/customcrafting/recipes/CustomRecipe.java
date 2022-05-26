@@ -87,6 +87,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     @JsonProperty("@type") protected RecipeType<C> type;
     @JsonIgnore protected final NamespacedKey namespacedKey;
     @JsonIgnore protected final WolfyUtilities api;
+    @JsonIgnore protected final CustomCrafting customCrafting;
     @JsonIgnore protected final ObjectMapper mapper;
 
     @JsonAlias("checkNBT") protected boolean checkAllNBT;
@@ -107,14 +108,15 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.type = RecipeType.valueOfRecipe(this);
         this.namespacedKey = Objects.requireNonNull(namespacedKey, ERROR_MSG_KEY);
         this.mapper = JacksonUtil.getObjectMapper();
-        this.api = CustomCrafting.inst().getApi();
+        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection
+        this.api = this.customCrafting.getApi();
         //Get fields from JsonNode
         this.group = node.path(KEY_GROUP).asText("");
         this.priority = mapper.convertValue(node.path(KEY_PRIORITY).asText("NORMAL"), RecipePriority.class);
         this.checkAllNBT = node.path(KEY_EXACT_META).asBoolean(false);
         this.conditions = mapper.convertValue(node.path(KEY_CONDITIONS), Conditions.class);
         if (this.conditions == null) {
-            this.conditions = new Conditions();
+            this.conditions = new Conditions(customCrafting);
         }
         this.vanillaBook = node.path(KEY_VANILLA_BOOK).asBoolean(true);
         this.hidden = node.path(KEY_HIDDEN).asBoolean(false);
@@ -134,14 +136,15 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         Preconditions.checkArgument(this.type != null, "Error constructing Recipe Object \"" + getClass().getName() + "\": Missing RecipeType!");
         this.namespacedKey = Objects.requireNonNull(key, ERROR_MSG_KEY);
         this.mapper = JacksonUtil.getObjectMapper();
-        this.api = CustomCrafting.inst().getApi();
+        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection
+        this.api = customCrafting.getApi();
         this.result = new Result();
 
         this.group = "";
         this.priority = RecipePriority.NORMAL;
         this.checkAllNBT = false;
         this.vanillaBook = true;
-        this.conditions = new Conditions();
+        this.conditions = new Conditions(customCrafting);
         this.hidden = false;
     }
 
@@ -154,7 +157,8 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected CustomRecipe(CustomRecipe<C> customRecipe) {
         this.type = customRecipe.type;
         this.mapper = JacksonUtil.getObjectMapper();
-        this.api = CustomCrafting.inst().getApi();
+        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection
+        this.api = customCrafting.getApi();
         this.namespacedKey = Objects.requireNonNull(customRecipe.namespacedKey, ERROR_MSG_KEY);
 
         this.vanillaBook = customRecipe.vanillaBook;
@@ -290,7 +294,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     @JsonIgnore
     public boolean isDisabled() {
-        return CustomCrafting.inst().getDisableRecipesHandler().getRecipes().contains(getNamespacedKey());
+        return customCrafting.getDisableRecipesHandler().getRecipes().contains(getNamespacedKey());
     }
 
     public boolean findResultItem(ItemStack result) {
@@ -302,7 +306,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
      * It can also send a confirmation message to the player if the player is not null.
      */
     public boolean save(@Nullable Player player) {
-        return save(CustomCrafting.inst().getDataHandler().getActiveLoader(), player);
+        return save(customCrafting.getDataHandler().getActiveLoader(), player);
     }
 
     /**
@@ -333,8 +337,8 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     }
 
     public boolean delete(@Nullable Player player) {
-        Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> CustomCrafting.inst().getRegistries().getRecipes().remove(getNamespacedKey()));
-        if (CustomCrafting.inst().getDataHandler().getActiveLoader().delete(this)) {
+        Bukkit.getScheduler().runTask(customCrafting, () -> customCrafting.getRegistries().getRecipes().remove(getNamespacedKey()));
+        if (customCrafting.getDataHandler().getActiveLoader().delete(this)) {
             getAPI().getChat().sendMessage(player, ChatColor.GREEN + "Recipe deleted!");
             return true;
         }
