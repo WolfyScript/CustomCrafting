@@ -25,24 +25,21 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.compatibility.plugins.PlaceholderAPIIntegration;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.eval.context.EvalContext;
+import me.wolfyscript.utilities.util.eval.context.EvalContextPlayer;
 import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class ConditionPlaceholderAPI extends Condition<ConditionPlaceholderAPI> {
+public class ConditionCustomPlayerCheck extends Condition<ConditionCustomPlayerCheck> {
 
-    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_placeholderapi");
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player/custom_check");
 
-    private final String placeholder;
     private final BoolOperator check;
 
-    public ConditionPlaceholderAPI() {
+    public ConditionCustomPlayerCheck() {
         super(KEY);
         this.check = null;
-        this.placeholder = "";
         setAvailableOptions(Conditions.Option.EXACT);
     }
 
@@ -58,21 +55,13 @@ public class ConditionPlaceholderAPI extends Condition<ConditionPlaceholderAPI> 
     public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
         Player player = data.getPlayer();
         if (player != null) {
-            var papi = customCrafting.getApi().getCore().getCompatibilityManager().getPlugins().getIntegration("PlaceholderAPI", PlaceholderAPIIntegration.class);
-            if (papi == null) return false;
-            String value = papi.setPlaceholders(player, placeholder);
-            //Create the eval context for the check
-            EvalContext context = new EvalContext();
-            context.setVariable("value", value);
-
-            //TODO: Maybe add options to check multiple different placeholders?
-
+            EvalContextPlayer context = new EvalContextPlayer(player);
             return check == null || check.evaluate(context);
         }
         return true;
     }
 
-    public static class GUIComponent extends FunctionalGUIComponent<ConditionPlaceholderAPI> {
+    public static class GUIComponent extends FunctionalGUIComponent<ConditionCustomPlayerCheck> {
 
         public GUIComponent() {
             super(Material.COMMAND_BLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
@@ -82,7 +71,7 @@ public class ConditionPlaceholderAPI extends Condition<ConditionPlaceholderAPI> 
 
         @Override
         public boolean shouldRender(RecipeType<?> type) {
-            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.BREWING_STAND || type == RecipeType.GRINDSTONE;
+            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.GRINDSTONE;
         }
     }
 }

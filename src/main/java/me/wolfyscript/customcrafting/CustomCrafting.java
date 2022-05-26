@@ -84,7 +84,7 @@ import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
 import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.conditions.ConditionAdvancement;
-import me.wolfyscript.customcrafting.recipes.conditions.ConditionPlaceholderAPI;
+import me.wolfyscript.customcrafting.recipes.conditions.ConditionCustomPlayerCheck;
 import me.wolfyscript.customcrafting.recipes.conditions.ConditionScoreboard;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftLimitCondition;
@@ -260,6 +260,7 @@ public class CustomCrafting extends JavaPlugin {
         recipeConditions.register(WorldNameCondition.KEY, WorldNameCondition.class, new WorldNameCondition.GUIComponent());
         recipeConditions.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
         recipeConditions.register(ConditionAdvancement.KEY, ConditionAdvancement.class, new ConditionAdvancement.GUIComponent());
+        recipeConditions.register(ConditionCustomPlayerCheck.KEY, ConditionCustomPlayerCheck.class, new ConditionCustomPlayerCheck.GUIComponent());
 
         if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(3, 16, 3, 0))) {
             //Only register it when the features are available
@@ -299,12 +300,6 @@ public class CustomCrafting extends JavaPlugin {
         writeBanner();
         writePatreonCredits();
         writeSeparator();
-
-        //Load plugin dependent conditions
-        var recipeConditions = getRegistries().getRecipeConditions();
-        if (getApi().getCore().getCompatibilityManager().getPlugins().getIntegration("PlaceholderAPI", PlaceholderAPIIntegration.class) != null) {
-            recipeConditions.register(ConditionPlaceholderAPI.KEY, ConditionPlaceholderAPI.class, new ConditionPlaceholderAPI.GUIComponent());
-        }
 
         this.configHandler = new ConfigHandler(this);
         this.configHandler.load();

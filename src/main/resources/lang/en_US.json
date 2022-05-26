@@ -249,10 +249,10 @@
         "<red>Must be configured in the recipes JSON Config!</red>"
       ]
     },
-    "player_placeholderapi": {
-      "name": "PlaceholderAPI",
+    "player/custom_check": {
+      "name": "Custom Player Check",
       "description": [
-        "<grey>Evaluate placeholder values</grey>",
+        "<grey>Evaluates a custom check that is</grey>",
         "<grey>required to craft the recipe.</grey>",
         "<red>Must be configured in the recipes JSON Config!</red>"
       ]
