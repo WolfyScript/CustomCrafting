@@ -84,6 +84,7 @@ import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
 import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.conditions.ConditionAdvancement;
+import me.wolfyscript.customcrafting.recipes.conditions.ConditionPlaceholderAPI;
 import me.wolfyscript.customcrafting.recipes.conditions.ConditionScoreboard;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftLimitCondition;
@@ -118,6 +119,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
+import me.wolfyscript.utilities.compatibility.plugins.PlaceholderAPIIntegration;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
@@ -297,6 +299,13 @@ public class CustomCrafting extends JavaPlugin {
         writeBanner();
         writePatreonCredits();
         writeSeparator();
+
+        //Load plugin dependent conditions
+        var recipeConditions = getRegistries().getRecipeConditions();
+        if (getApi().getCore().getCompatibilityManager().getPlugins().getIntegration("PlaceholderAPI", PlaceholderAPIIntegration.class) != null) {
+            recipeConditions.register(ConditionPlaceholderAPI.KEY, ConditionPlaceholderAPI.class, new ConditionPlaceholderAPI.GUIComponent());
+        }
+
         this.configHandler = new ConfigHandler(this);
         this.configHandler.load();
         this.otherPlugins.init();
