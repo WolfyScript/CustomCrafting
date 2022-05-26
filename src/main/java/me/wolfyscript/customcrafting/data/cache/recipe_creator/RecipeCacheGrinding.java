@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 
@@ -31,14 +32,14 @@ public class RecipeCacheGrinding extends RecipeCache<CustomRecipeGrindstone> {
     private Ingredient inputBottom;
     private int xp;
 
-    RecipeCacheGrinding() {
-        super();
+    RecipeCacheGrinding(CustomCrafting customCrafting) {
+        super(customCrafting);
         this.inputTop = new Ingredient();
         this.inputBottom = new Ingredient();
     }
 
-    RecipeCacheGrinding(CustomRecipeGrindstone recipe) {
-        super(recipe);
+    RecipeCacheGrinding(CustomCrafting customCrafting, CustomRecipeGrindstone recipe) {
+        super(customCrafting, recipe);
         this.inputTop = recipe.getInputTop().clone();
         this.inputBottom = recipe.getInputBottom().clone();
         this.xp = recipe.getXp();

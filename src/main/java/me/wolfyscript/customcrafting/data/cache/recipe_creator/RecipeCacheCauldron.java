@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -37,8 +38,8 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
     private boolean needsFire;
     private boolean needsWater;
 
-    RecipeCacheCauldron() {
-        super();
+    RecipeCacheCauldron(CustomCrafting customCrafting) {
+        super(customCrafting);
         this.xp = 0;
         this.cookingTime = 60;
         this.waterLevel = 1;
@@ -49,8 +50,8 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.ingredients = new Ingredient();
     }
 
-    RecipeCacheCauldron(CustomRecipeCauldron recipe) {
-        super(recipe);
+    RecipeCacheCauldron(CustomCrafting customCrafting, CustomRecipeCauldron recipe) {
+        super(customCrafting, recipe);
         this.cookingTime = recipe.getCookingTime();
         this.waterLevel = recipe.getWaterLevel();
         this.xp = recipe.getXp();

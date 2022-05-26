@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 
@@ -40,8 +41,8 @@ public class RecipeCacheAnvil extends RecipeCache<CustomRecipeAnvil> {
     private Ingredient base;
     private Ingredient addition;
 
-    RecipeCacheAnvil() {
-        super();
+    RecipeCacheAnvil(CustomCrafting customCrafting) {
+        super(customCrafting);
         this.blockRepair = false;
         this.blockRename = false;
         this.blockEnchant = false;
@@ -55,8 +56,8 @@ public class RecipeCacheAnvil extends RecipeCache<CustomRecipeAnvil> {
         this.addition = new Ingredient();
     }
 
-    RecipeCacheAnvil(CustomRecipeAnvil recipe) {
-        super(recipe);
+    RecipeCacheAnvil(CustomCrafting customCrafting, CustomRecipeAnvil recipe) {
+        super(customCrafting, recipe);
         this.blockRepair = recipe.isBlockRepair();
         this.blockRename = recipe.isBlockRename();
         this.blockEnchant = recipe.isBlockEnchant();

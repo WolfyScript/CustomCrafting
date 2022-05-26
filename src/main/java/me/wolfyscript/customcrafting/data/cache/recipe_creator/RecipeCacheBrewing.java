@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.utilities.util.Pair;
@@ -56,8 +57,8 @@ public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
     //Conditions for the Potions inside the 3 slots at the bottom
     private Map<PotionEffectType, Pair<Integer, Integer>> requiredEffects; //The effects that are required with the current Duration and amplitude. Integer values == 0 will be ignored and any value will be allowed.
 
-    RecipeCacheBrewing() {
-        super();
+    RecipeCacheBrewing(CustomCrafting customCrafting) {
+        super(customCrafting);
         allowedItems = new Ingredient();
         ingredients = new Ingredient();
         fuelCost = 1;
@@ -72,8 +73,8 @@ public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
         requiredEffects = new HashMap<>();
     }
 
-    RecipeCacheBrewing(CustomRecipeBrewing recipe) {
-        super(recipe);
+    RecipeCacheBrewing(CustomCrafting customCrafting, CustomRecipeBrewing recipe) {
+        super(customCrafting, recipe);
         this.allowedItems = recipe.getAllowedItems().clone();
         this.ingredients = recipe.getIngredient().clone();
         this.fuelCost = recipe.getFuelCost();
