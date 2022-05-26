@@ -22,9 +22,6 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -32,15 +29,8 @@ import me.wolfyscript.utilities.compatibility.plugins.PlaceholderAPIIntegration;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.eval.context.EvalContext;
 import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ConditionPlaceholderAPI extends Condition<ConditionPlaceholderAPI> {
 
@@ -48,12 +38,9 @@ public class ConditionPlaceholderAPI extends Condition<ConditionPlaceholderAPI> 
 
     private final String placeholder;
     private final BoolOperator check;
-    @JsonIgnore
-    private final CustomCrafting customCrafting;
 
-    public ConditionPlaceholderAPI(@JacksonInject("customcrafting") CustomCrafting customCrafting) {
+    public ConditionPlaceholderAPI() {
         super(KEY);
-        this.customCrafting = customCrafting;
         this.check = null;
         this.placeholder = "";
         setAvailableOptions(Conditions.Option.EXACT);
@@ -88,7 +75,7 @@ public class ConditionPlaceholderAPI extends Condition<ConditionPlaceholderAPI> 
     public static class GUIComponent extends FunctionalGUIComponent<ConditionPlaceholderAPI> {
 
         public GUIComponent() {
-            super(Material.COMMAND_BLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.COMMAND_BLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {},
                     (update, cache, condition, recipe) -> {});
         }
