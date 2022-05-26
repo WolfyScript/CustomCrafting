@@ -52,6 +52,8 @@ import java.util.stream.Stream;
  */
 public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
+    private final CustomCrafting customCrafting;
+
     private final Map<String, List<CustomRecipe<?>>> BY_NAMESPACE = new HashMap<>();
     private final Map<String, List<CustomRecipe<?>>> BY_GROUP = new HashMap<>();
     private final Map<CustomItem, List<CustomRecipe<?>>> BY_RESULT = new HashMap<>();
@@ -65,6 +67,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
     RegistryRecipes(CustomCrafting customCrafting, Registries registries) {
         super(new NamespacedKey(customCrafting, "recipe/recipes"), registries);
+        this.customCrafting = customCrafting;
     }
 
     public boolean has(NamespacedKey namespacedKey) {
@@ -111,7 +114,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
             try {
                 Bukkit.addRecipe(vanillaRecipe.getVanillaRecipe());
             } catch (IllegalArgumentException | IllegalStateException ex) {
-                CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
+                customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
             }
         }
         clearCache(namespacedKey);

@@ -65,13 +65,13 @@ public class CauldronListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         var block = event.getBlock();
         if (Cauldrons.isCauldron(block.getType())) {
-            if (CustomCrafting.inst().getCauldrons().isCauldron(block.getLocation())) {
-                CustomCrafting.inst().getCauldrons().removeCauldron(block.getLocation());
+            if (customCrafting.getCauldrons().isCauldron(block.getLocation())) {
+                customCrafting.getCauldrons().removeCauldron(block.getLocation());
             }
         } else if (block.getType().equals(Material.CAMPFIRE)) {
             var location = block.getLocation().add(0, 1, 0);
-            if (CustomCrafting.inst().getCauldrons().isCauldron(location)) {
-                CustomCrafting.inst().getCauldrons().removeCauldron(location);
+            if (customCrafting.getCauldrons().isCauldron(location)) {
+                customCrafting.getCauldrons().removeCauldron(location);
             }
         }
     }
@@ -81,12 +81,12 @@ public class CauldronListener implements Listener {
         var block = event.getBlock();
         if (Cauldrons.isCauldron(block.getType())) {
             if (block.getLocation().subtract(0, 1, 0).getBlock().getType().equals(Material.CAMPFIRE)) {
-                CustomCrafting.inst().getCauldrons().addCauldron(block.getLocation());
+                customCrafting.getCauldrons().addCauldron(block.getLocation());
             }
         } else if (block.getType().equals(Material.CAMPFIRE)) {
             var location = block.getLocation().add(0, 1, 0);
             if (Cauldrons.isCauldron(location.getBlock().getType())) {
-                CustomCrafting.inst().getCauldrons().addCauldron(location);
+                customCrafting.getCauldrons().addCauldron(location);
             }
         }
     }
@@ -96,7 +96,7 @@ public class CauldronListener implements Listener {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND) && event.getClickedBlock() != null && Cauldrons.isCauldron(event.getClickedBlock().getType())) {
             var player = event.getPlayer();
             var block = event.getClickedBlock();
-            var cauldrons = CustomCrafting.inst().getCauldrons();
+            var cauldrons = customCrafting.getCauldrons();
             if (cauldrons.isCauldron(block.getLocation())) {
                 for (Cauldron cauldron : cauldrons.getCauldrons().get(block.getLocation())) {
                     if (cauldron.isDone() && !cauldron.dropItems()) {
@@ -134,7 +134,7 @@ public class CauldronListener implements Listener {
     public void onDrop(PlayerDropItemEvent event) {
         var player = event.getPlayer();
         var itemDrop = event.getItemDrop();
-        var cauldrons = CustomCrafting.inst().getCauldrons();
+        var cauldrons = customCrafting.getCauldrons();
         Bukkit.getScheduler().runTaskLater(api.getPlugin(),
                 () -> {
                     if (cauldrons != null && cauldrons.getCauldrons() != null) {
