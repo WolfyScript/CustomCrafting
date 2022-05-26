@@ -35,7 +35,6 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ConditionScoreboard extends Condition<ConditionScoreboard> {
@@ -99,7 +98,7 @@ public class ConditionScoreboard extends Condition<ConditionScoreboard> {
     public static class GUIComponent extends FunctionalGUIComponent<ConditionScoreboard> {
 
         public GUIComponent() {
-            super(Material.COMMAND_BLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.COMMAND_BLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {},
                     (update, cache, condition, recipe) -> {});
         }

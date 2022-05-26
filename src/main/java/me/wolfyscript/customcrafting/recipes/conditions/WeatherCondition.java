@@ -31,7 +31,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import java.util.List;
 import java.util.Locale;
 
 public class WeatherCondition extends Condition<WeatherCondition> {
@@ -92,7 +91,7 @@ public class WeatherCondition extends Condition<WeatherCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<WeatherCondition> {
 
         public GUIComponent() {
-            super(Material.WATER_BUCKET, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.WATER_BUCKET, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         menu.registerButton(new ActionButton<>("conditions.weather.set", Material.WATER_BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
                             cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).toggleWeather();

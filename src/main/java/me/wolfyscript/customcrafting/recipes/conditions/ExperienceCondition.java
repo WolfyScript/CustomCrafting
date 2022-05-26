@@ -32,8 +32,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 
-import java.util.List;
-
 public class ExperienceCondition extends Condition<ExperienceCondition> {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_experience");
@@ -88,7 +86,7 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<ExperienceCondition> {
 
         public GUIComponent() {
-            super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.player_experience.set", Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ExperienceCondition.class).getExpLevel());
