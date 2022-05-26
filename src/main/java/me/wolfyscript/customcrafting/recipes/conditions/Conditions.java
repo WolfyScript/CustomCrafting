@@ -52,14 +52,14 @@ public class Conditions {
     private final CustomCrafting customCrafting;
 
     //Conditions initialization
-    public Conditions() {
+    public Conditions(CustomCrafting customCrafting) {
         this.valuesMap = new HashMap<>();
-        this.customCrafting = CustomCrafting.inst();
+        this.customCrafting = customCrafting;
     }
 
     @JsonCreator
     private Conditions(JsonNode node) {
-        this.customCrafting = CustomCrafting.inst();
+        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection
         if (node.isArray()) {
             //Required for backwards compatibility with previous configs.
             this.valuesMap = new HashMap<>();
