@@ -50,8 +50,8 @@ public class RecipeBookCache {
 
     private boolean prepareRecipe;
 
-    public RecipeBookCache() {
-        this.customCrafting = CustomCrafting.inst();
+    public RecipeBookCache(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
         this.page = 0;
         this.subFolderPage = 0;
         this.category = null;
