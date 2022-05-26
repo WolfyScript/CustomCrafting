@@ -67,7 +67,7 @@ class ButtonContainerRecipeList extends Button<CCCache> {
     ButtonContainerRecipeList(int slot, CustomCrafting customCrafting) {
         super(key(slot), null);
         this.customCrafting = customCrafting;
-        this.api = CustomCrafting.inst().getApi();
+        this.api = customCrafting.getApi();
     }
 
     /**
