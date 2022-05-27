@@ -38,25 +38,28 @@ import java.util.List;
 
 public class CommandResultExtension extends ResultExtension {
 
+    private final CustomCrafting customCrafting;
     private List<String> consoleCommands = new ArrayList<>();
     private List<String> playerCommands = new ArrayList<>();
     private boolean nearPlayer = false;
     private boolean nearWorkstation = false;
 
-    public CommandResultExtension() {
-        super(new NamespacedKey(CustomCrafting.inst(), "command"));
+    public CommandResultExtension(CustomCrafting customCrafting) {
+        super(new NamespacedKey(customCrafting, "command"));
+        this.customCrafting = customCrafting;
     }
 
     public CommandResultExtension(CommandResultExtension extension) {
         super(extension);
+        this.customCrafting = extension.customCrafting;
         this.consoleCommands = extension.consoleCommands;
         this.playerCommands = extension.playerCommands;
         this.nearPlayer = extension.nearPlayer;
         this.nearWorkstation = extension.nearWorkstation;
     }
 
-    public CommandResultExtension(List<String> consoleCommands, List<String> playerCommands, boolean nearPlayer, boolean nearWorkstation) {
-        this();
+    public CommandResultExtension(CustomCrafting customCrafting, List<String> consoleCommands, List<String> playerCommands, boolean nearPlayer, boolean nearWorkstation) {
+        this(customCrafting);
         this.consoleCommands = consoleCommands;
         this.playerCommands = playerCommands;
         this.nearPlayer = nearPlayer;

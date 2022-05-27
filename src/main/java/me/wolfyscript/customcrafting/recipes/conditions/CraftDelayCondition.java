@@ -36,7 +36,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class CraftDelayCondition extends Condition<CraftDelayCondition> {
@@ -92,7 +91,7 @@ public class CraftDelayCondition extends Condition<CraftDelayCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<CraftDelayCondition> {
 
         public GUIComponent() {
-            super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.craft_delay.set", Material.CLOCK, (CallbackButtonRender<CCCache>) (cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftDelayCondition.class).getDelay()))), (guiHandler, player, s, strings) -> {
                             var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();

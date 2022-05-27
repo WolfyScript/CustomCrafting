@@ -28,28 +28,18 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.eval.context.EvalContextPlayer;
 import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
 
-import java.util.HashMap;
-import java.util.Map;
+public class ConditionCustomPlayerCheck extends Condition<ConditionCustomPlayerCheck> {
 
-public class ConditionScoreboard extends Condition<ConditionScoreboard> {
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player/custom_check");
 
-    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_scoreboard");
-
-    private final Map<String, BoolOperator> objectiveChecks;
-    private final boolean failOnMissingObjective;
     private final BoolOperator check;
 
-    public ConditionScoreboard() {
+    public ConditionCustomPlayerCheck() {
         super(KEY);
         this.check = null;
-        this.failOnMissingObjective = true;
-        this.objectiveChecks = new HashMap<>();
         setAvailableOptions(Conditions.Option.EXACT);
     }
 
@@ -65,37 +55,13 @@ public class ConditionScoreboard extends Condition<ConditionScoreboard> {
     public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
         Player player = data.getPlayer();
         if (player != null) {
-            Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-            //Create the eval context for the optional check
             EvalContextPlayer context = new EvalContextPlayer(player);
-            for (Objective objective : scoreboard.getObjectives()) {
-                String varName = objective.getName();
-                context.setVariable(varName, objective.getScore(player).getScore());
-            }
-            if (check != null && !check.evaluate(context)) {
-                //Directly return if the check fails.
-                return false;
-            }
-            for (Map.Entry<String, BoolOperator> entry : objectiveChecks.entrySet()) {
-                String key = entry.getKey();
-                Objective objective = scoreboard.getObjective(key);
-                if (objective != null) {
-                    //Set an eval context with just the specified value of this objective
-                    EvalContextPlayer valueContext = new EvalContextPlayer(player);
-                    valueContext.setVariable("value", objective.getScore(player).getScore());
-                    if (!entry.getValue().evaluate(valueContext)) {
-                        return false;
-                    }
-                } else if (failOnMissingObjective) {
-                    //Return and cancel any further checks if the objective is missing
-                    return false;
-                }
-            }
+            return check == null || check.evaluate(context);
         }
         return true;
     }
 
-    public static class GUIComponent extends FunctionalGUIComponent<ConditionScoreboard> {
+    public static class GUIComponent extends FunctionalGUIComponent<ConditionCustomPlayerCheck> {
 
         public GUIComponent() {
             super(Material.COMMAND_BLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
@@ -105,7 +71,7 @@ public class ConditionScoreboard extends Condition<ConditionScoreboard> {
 
         @Override
         public boolean shouldRender(RecipeType<?> type) {
-            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.BREWING_STAND || type == RecipeType.GRINDSTONE;
+            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.GRINDSTONE;
         }
     }
 }

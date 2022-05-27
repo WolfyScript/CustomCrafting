@@ -162,7 +162,7 @@ public class LocalStorageLoader extends ResourceLoader {
                 if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
                     try {
                         if (file.exists() || file.createNewFile()) {
-                            JacksonUtil.getObjectWriter(CustomCrafting.inst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, item);
+                            JacksonUtil.getObjectWriter(customCrafting.getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, item);
                             return true;
                         }
                     } catch (IOException e) {

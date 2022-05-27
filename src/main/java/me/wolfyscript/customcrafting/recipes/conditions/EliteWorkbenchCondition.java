@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -111,7 +110,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
     public static class GUIComponent extends FunctionalGUIComponent<EliteWorkbenchCondition> {
 
         public GUIComponent() {
-            super(Material.CRAFTING_TABLE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.CRAFTING_TABLE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, args) -> {
                             if (args.length > 1) {

@@ -239,7 +239,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         boolean saveSuccessful = super.save(player);
         if (saveSuccessful) {
             //We need to delete the old recipe when the type changes between shapeless and shaped, because else it is present in two different folders!
-            CustomRecipe<?> oldRecipe = CustomCrafting.inst().getRegistries().getRecipes().get(getNamespacedKey());
+            CustomRecipe<?> oldRecipe = customCrafting.getRegistries().getRecipes().get(getNamespacedKey());
             if (oldRecipe instanceof CraftingRecipe<?,?> oldCraftingRecipe && oldCraftingRecipe.isShapeless() != isShapeless()) {
                 getAPI().getChat().sendMessage(player, ChatColor.YELLOW + "Recipe Type changed... deleting old recipe!");
                 oldCraftingRecipe.delete(player);

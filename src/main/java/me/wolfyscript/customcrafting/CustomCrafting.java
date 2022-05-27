@@ -84,6 +84,7 @@ import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
 import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.conditions.ConditionAdvancement;
+import me.wolfyscript.customcrafting.recipes.conditions.ConditionCustomPlayerCheck;
 import me.wolfyscript.customcrafting.recipes.conditions.ConditionScoreboard;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftLimitCondition;
@@ -118,6 +119,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
+import me.wolfyscript.utilities.compatibility.plugins.PlaceholderAPIIntegration;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
@@ -229,7 +231,7 @@ public class CustomCrafting extends JavaPlugin {
 
         getLogger().info("Registering Result Extensions");
         var resultExtensions = getRegistries().getRecipeResultExtensions();
-        resultExtensions.register(new CommandResultExtension());
+        resultExtensions.register(new  CommandResultExtension(this));
         resultExtensions.register(new MythicMobResultExtension());
         resultExtensions.register(new SoundResultExtension());
         resultExtensions.register(new ResultExtensionAdvancement());
@@ -258,6 +260,7 @@ public class CustomCrafting extends JavaPlugin {
         recipeConditions.register(WorldNameCondition.KEY, WorldNameCondition.class, new WorldNameCondition.GUIComponent());
         recipeConditions.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
         recipeConditions.register(ConditionAdvancement.KEY, ConditionAdvancement.class, new ConditionAdvancement.GUIComponent());
+        recipeConditions.register(ConditionCustomPlayerCheck.KEY, ConditionCustomPlayerCheck.class, new ConditionCustomPlayerCheck.GUIComponent());
 
         if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(3, 16, 3, 0))) {
             //Only register it when the features are available
@@ -297,6 +300,7 @@ public class CustomCrafting extends JavaPlugin {
         writeBanner();
         writePatreonCredits();
         writeSeparator();
+
         this.configHandler = new ConfigHandler(this);
         this.configHandler.load();
         this.otherPlugins.init();
