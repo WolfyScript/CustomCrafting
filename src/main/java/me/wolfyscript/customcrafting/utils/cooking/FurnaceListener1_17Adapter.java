@@ -50,7 +50,7 @@ public class FurnaceListener1_17Adapter implements Listener {
         if (recipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
             var data = manager.getAdapter().processRecipe(event.getSource(), NamespacedKey.fromBukkit(recipe.getKey()), event.getBlock());
             if(data.getKey() == null) { //"Cancel" the process when no custom recipe is valid.
-                event.setTotalCookTime(0);
+                //event.setTotalCookTime(0);
             }
             //Update the cache to the new Custom Recipe.
             manager.cacheRecipeData(event.getBlock(), data);
