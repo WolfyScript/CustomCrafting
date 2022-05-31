@@ -246,8 +246,15 @@
       "description": [
         "<grey>Evaluate scoreboard values</grey>",
         "<grey>required to craft the recipe.</grey>",
-        "<red>Must be configured in the </red>",
-        "<red>recipe JSON Config!</red>"
+        "<red>Must be configured in the recipes JSON Config!</red>"
+      ]
+    },
+    "player/custom_check": {
+      "name": "Custom Player Check",
+      "description": [
+        "<grey>Evaluates a custom check that is</grey>",
+        "<grey>required to craft the recipe.</grey>",
+        "<red>Must be configured in the recipes JSON Config!</red>"
       ]
     }
   },

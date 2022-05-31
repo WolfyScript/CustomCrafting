@@ -33,6 +33,7 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -111,9 +112,7 @@ public class AnvilListener implements Listener {
             player.updateInventory();
             int finalRepairCost = repairCost;
             Bukkit.getScheduler().runTask(customCrafting, () -> {
-                if (inventory.getRepairCost() == 0) {
-                    inventory.setRepairCost(finalRepairCost);
-                }
+                inventory.setRepairCost(finalRepairCost);
                 player.updateInventory();
             });
             break;
@@ -127,7 +126,7 @@ public class AnvilListener implements Listener {
             if (event.getSlot() == 2 && !ItemUtils.isAirOrNull(event.getCurrentItem()) && preCraftedRecipes.get(player.getUniqueId()) != null) {
                 event.setCancelled(true);
                 var anvilData = preCraftedRecipes.get(player.getUniqueId());
-                if (inventory.getRepairCost() > 0 && player.getLevel() >= inventory.getRepairCost()) {
+                if (inventory.getRepairCost() > 0 && (player.getLevel() >= inventory.getRepairCost() || player.getGameMode() == GameMode.CREATIVE)) {
                     ItemStack result = event.getCurrentItem();
                     ItemStack cursor = event.getCursor();
                     if (event.isShiftClick()) {
@@ -154,7 +153,9 @@ public class AnvilListener implements Listener {
                         var location = inventory.getLocation();
                         location.getWorld().playEffect(location, Effect.ANVIL_USE, 0);
                     }
-                    player.setLevel(player.getLevel() - inventory.getRepairCost());
+                    if (player.getLevel() >= inventory.getRepairCost()) {
+                        player.setLevel(player.getLevel() - inventory.getRepairCost());
+                    }
                     event.setCurrentItem(null);
                     player.updateInventory();
 

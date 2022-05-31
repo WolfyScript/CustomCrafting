@@ -81,7 +81,7 @@ public class WorldBiomeCondition extends Condition<WorldBiomeCondition> {
         private static final String REMOVE = PARENT_LANG + ".remove";
 
         public GUIComponent() {
-            super(Material.SAND, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.SAND, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         menu.registerButton(new ActionButton<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
                             var conditions = cache.getRecipeCreatorCache().getRecipeCache().getConditions();

@@ -36,9 +36,9 @@ import org.bukkit.potion.PotionEffect;
 
 public class CCCache extends CustomCache {
 
-    private Setting setting;
-
     private final CustomCrafting customCrafting;
+
+    private Setting setting;
     private String subSetting;
 
     private final RecipeBookEditor recipeBookEditor = new RecipeBookEditor();
@@ -47,7 +47,7 @@ public class CCCache extends CustomCache {
     private final RecipeList recipeList = new RecipeList();
 
     private final PotionEffects potionEffectCache = new PotionEffects();
-    private final RecipeBookCache recipeBookCache = new RecipeBookCache();
+    private final RecipeBookCache recipeBookCache;
     private final CacheRecipeView cacheRecipeView = new CacheRecipeView();
     private CacheEliteCraftingTable cacheEliteCraftingTable = new CacheEliteCraftingTable();
     private final ChatLists chatLists = new ChatLists();
@@ -57,14 +57,18 @@ public class CCCache extends CustomCache {
     private ApplyItem applyItem;
     private ApplyPotionEffect applyPotionEffect;
 
-    private final RecipeCreatorCache recipeCreatorCache = new RecipeCreatorCache();
+    private final RecipeCreatorCache recipeCreatorCache;
 
     public CCCache() {
         super();
-        this.customCrafting = CustomCrafting.inst();
+        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
         this.applyItem = null;
+
+        this.recipeBookCache = new RecipeBookCache(customCrafting);
+
+        this.recipeCreatorCache = new RecipeCreatorCache(customCrafting);
     }
 
     public Setting getSetting() {

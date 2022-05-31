@@ -39,6 +39,8 @@ import org.bukkit.entity.Player;
 
 public abstract class RecipeCache<R extends CustomRecipe<?>> {
 
+    protected final CustomCrafting customCrafting;
+
     protected NamespacedKey key;
     protected boolean checkAllNBT;
     protected boolean hidden;
@@ -49,18 +51,20 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
     protected String group;
     protected Result result;
 
-    protected RecipeCache() {
+    protected RecipeCache(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
         this.key = null;
         this.checkAllNBT = false;
         this.hidden = false;
         this.vanillaBook = true;
         this.priority = RecipePriority.NORMAL;
-        this.conditions = new Conditions();
+        this.conditions = new Conditions(this.customCrafting);
         this.group = "";
         this.result = new Result();
     }
 
-    protected RecipeCache(R customRecipe) {
+    protected RecipeCache(CustomCrafting customCrafting, R customRecipe) {
+        this.customCrafting = customCrafting;
         this.key = customRecipe.getNamespacedKey();
         this.checkAllNBT = customRecipe.isCheckNBT();
         this.hidden = customRecipe.isHidden();

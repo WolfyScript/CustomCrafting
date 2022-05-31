@@ -87,9 +87,12 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
 
     @JsonProperty("key")
     private final NamespacedKey key;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     protected Conditions.Option option = Conditions.Option.EXACT;
     @JsonIgnore
     private List<Conditions.Option> availableOptions;
+    @JsonIgnore @JacksonInject("customcrafting")
+    protected CustomCrafting customCrafting;
 
     protected Condition(NamespacedKey key) {
         this.key = key;

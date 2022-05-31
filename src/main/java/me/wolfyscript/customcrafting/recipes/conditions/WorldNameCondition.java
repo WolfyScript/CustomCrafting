@@ -85,7 +85,7 @@ public class WorldNameCondition extends Condition<WorldNameCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<WorldNameCondition> {
 
         public GUIComponent() {
-            super(Material.GRASS_BLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.GRASS_BLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         menu.registerButton(new ActionButton<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
                             var conditions = cache.getRecipeCreatorCache().getRecipeCache().getConditions();

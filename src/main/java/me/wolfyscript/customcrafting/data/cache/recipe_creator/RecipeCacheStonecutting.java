@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeStonecutter;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 
@@ -29,13 +30,13 @@ public class RecipeCacheStonecutting extends RecipeCache<CustomRecipeStonecutter
 
     private Ingredient source;
 
-    RecipeCacheStonecutting() {
-        super();
+    RecipeCacheStonecutting(CustomCrafting customCrafting) {
+        super(customCrafting);
         this.source = new Ingredient();
     }
 
-    RecipeCacheStonecutting(CustomRecipeStonecutter recipe) {
-        super(recipe);
+    RecipeCacheStonecutting(CustomCrafting customCrafting, CustomRecipeStonecutter recipe) {
+        super(customCrafting, recipe);
         this.source = recipe.getSource().clone();
     }
 
