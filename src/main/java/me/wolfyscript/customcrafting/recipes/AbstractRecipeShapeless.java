@@ -138,7 +138,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
     @Override
     public CraftingData check(CraftManager.MatrixData matrixData) {
         final Map<Integer, IngredientData> dataMap = new HashMap<>();
-        final List<Integer> selectedSlots = new ArrayList<>();
+        final List<Integer> selectedSlots = new LinkedList<>();
         final Multimap<Integer, Integer> checkedSlots = HashMultimap.create(ingredients.size(), ingredients.size());
         final ItemStack[] matrix = matrixData.getItems();
         /*
