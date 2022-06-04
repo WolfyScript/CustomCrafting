@@ -113,9 +113,8 @@ public class MenuMain extends CCWindow {
         super.onUpdateAsync(event);
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         event.setButton(0, SETTINGS);
-        event.setButton(8, ClusterMain.GUI_HELP);
+        event.setButton(8, ClusterMain.PATREON);
 
-        event.setButton(4, ClusterMain.PATREON);
         event.setButton(48, ClusterMain.GITHUB);
         event.setButton(49, ClusterMain.YOUTUBE);
         event.setButton(50, ClusterMain.DISCORD);
@@ -139,8 +138,10 @@ public class MenuMain extends CCWindow {
             event.setButton(31, ELITE_CRAFTING);
             event.setButton(33, SMITHING);
         }
-        for (int i = 37; i < 44; i++) {
-            event.setButton(i, data.getLightBackground());
+        if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
+            for (int i = 37; i < 44; i++) {
+                event.setButton(i, data.getLightBackground());
+            }
         }
         event.setButton(36, ITEM_EDITOR);
         event.setButton(44, ClusterMain.RECIPE_LIST);
