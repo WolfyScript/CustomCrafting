@@ -38,6 +38,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -125,8 +126,14 @@ public class MenuRecipeBook extends CCWindow {
         NamespacedKey grayBtnKey = playerStore.getLightBackground();
         var recipeBookCache = event.getGuiHandler().getCustomCache().getRecipeBookCache();
         if (recipeBookCache.getSubFolder() == 0) {
-            for (int i = 0; i < 9; i++) {
-                event.setButton(i, playerStore.getDarkBackground());
+            if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
+                for (int i = 0; i < 9; i++) {
+                    event.setButton(i, playerStore.getDarkBackground());
+                }
+            } else {
+                for (int i = 0; i < 45; i++) {
+                    event.setButton(i, ClusterMain.EMPTY);
+                }
             }
             List<RecipeContainer> containers = recipeBookCache.getCategory() != null ? recipeBookCache.getCategory().getRecipeList(player, recipeBookCache.getCategoryFilter(), recipeBookCache.getEliteCraftingTable()) : new ArrayList<>();
             int maxPages = containers.size() / 45 + (containers.size() % 45 > 0 ? 1 : 0);
@@ -151,16 +158,18 @@ public class MenuRecipeBook extends CCWindow {
                 event.setButton(51, ClusterRecipeBook.NEXT_PAGE);
             }
         } else {
-            for (int i = 1; i < 9; i++) {
-                event.setButton(i, grayBtnKey);
+            if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
+                for (int i = 1; i < 9; i++) {
+                    event.setButton(i, grayBtnKey);
+                }
+                for (int i = 1; i < 9; i++) {
+                    event.setButton(i, grayBtnKey);
+                }
+                for (int i = 36; i < 45; i++) {
+                    event.setButton(i, grayBtnKey);
+                }
             }
             List<CustomRecipe<?>> recipes = recipeBookCache.getSubFolderRecipes();
-            for (int i = 1; i < 9; i++) {
-                event.setButton(i, grayBtnKey);
-            }
-            for (int i = 36; i < 45; i++) {
-                event.setButton(i, grayBtnKey);
-            }
             int maxPages = recipes.size();
             if (recipeBookCache.getSubFolderPage() >= maxPages) {
                 recipeBookCache.setSubFolderPage(0);

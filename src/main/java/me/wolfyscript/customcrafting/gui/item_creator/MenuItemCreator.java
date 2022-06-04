@@ -217,7 +217,7 @@ public class MenuItemCreator extends CCWindow {
         event.setButton(4, ITEM_INPUT);
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         var gray = data.getLightBackground();
-        event.setButton(13, gray);
+        if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) event.setButton(13, gray);
         if (items.isRecipeItem()) {
             event.setButton(51, APPLY_ITEM);
         }
@@ -263,7 +263,7 @@ public class MenuItemCreator extends CCWindow {
                     i--;
                 }
                 j++;
-            } else {
+            } else if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
                 event.setButton(slot + i, gray);
             }
         }

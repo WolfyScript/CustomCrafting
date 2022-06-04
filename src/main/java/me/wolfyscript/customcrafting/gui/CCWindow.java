@@ -68,12 +68,11 @@ public abstract class CCWindow extends GuiWindow<CCCache> {
                 for (int i = getSize() - 9; i < getSize(); i++) {
                     update.setButton(i, white);
                 }
-                update.setButton(8, ClusterMain.GUI_HELP);
             } else {
                 for (int i = 0; i < 9; i++) {
                     update.setButton(i, gray);
                 }
             }
-        } else if (getSize() > 9) update.setButton(8, ClusterMain.GUI_HELP);
+        }
     }
 }

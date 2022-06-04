@@ -42,6 +42,7 @@ public class ClusterMain extends CCCluster {
 
     //Button keys
     public static final NamespacedKey BACK = new NamespacedKey(KEY, "back");
+    public static final NamespacedKey EMPTY = new NamespacedKey(KEY, "empty");
     public static final NamespacedKey BACK_BOTTOM = new NamespacedKey(KEY, "back_bottom");
     public static final NamespacedKey GUI_HELP = new NamespacedKey(KEY, "gui_help");
     public static final NamespacedKey GLASS_GRAY = new NamespacedKey(KEY, "glass_gray");
@@ -76,6 +77,7 @@ public class ClusterMain extends CCCluster {
     @Override
     public void onInit() {
         ButtonBuilder<CCCache> bb = getButtonBuilder();
+        bb.dummy(EMPTY.getKey()).state(s -> s.icon(Material.AIR)).register();
         bb.dummy(GLASS_GRAY.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.GRAY_STAINED_GLASS_PANE)).register();
         bb.dummy(GLASS_BLACK.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.BLACK_STAINED_GLASS_PANE)).register();
         bb.dummy(GLASS_RED.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.RED_STAINED_GLASS_PANE)).register();

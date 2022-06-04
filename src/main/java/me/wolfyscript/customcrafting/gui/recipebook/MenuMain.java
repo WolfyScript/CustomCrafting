@@ -30,8 +30,10 @@ import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 class MenuMain extends CCWindow {
 
@@ -64,7 +66,11 @@ class MenuMain extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
-        event.setButton(8, data.getLightBackground());
+        if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
+            event.setButton(8, data.getLightBackground());
+        } else {
+            event.setItem(8, new ItemStack(Material.AIR));
+        }
 
         var categories = customCrafting.getConfigHandler().getRecipeBookConfig();
         var sorted = categories.getSortedCategories();

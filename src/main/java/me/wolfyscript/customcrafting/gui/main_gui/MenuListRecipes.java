@@ -92,6 +92,7 @@ public class MenuListRecipes extends CCWindow {
         super.onUpdateAsync(event);
         GuiHandler<CCCache> guiHandler = event.getGuiHandler();
         event.setButton(0, "back");
+        event.setButton(8, ClusterMain.GUI_HELP);
 
         RegistryRecipes customRecipes = customCrafting.getRegistries().getRecipes();
         RecipeList recipeListCache = event.getGuiHandler().getCustomCache().getRecipeList();

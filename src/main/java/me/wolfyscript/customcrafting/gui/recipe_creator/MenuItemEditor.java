@@ -65,6 +65,7 @@ public class MenuItemEditor extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         event.setButton(0, "back");
+        event.setButton(8, ClusterMain.GUI_HELP);
         event.setButton(21, ClusterMain.ITEM_LIST.getKey());
         event.setButton(23, "create_item");
     }

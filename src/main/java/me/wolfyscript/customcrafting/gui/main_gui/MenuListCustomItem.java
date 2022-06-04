@@ -76,6 +76,7 @@ public class MenuListCustomItem extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, "back");
+        update.setButton(8, ClusterMain.GUI_HELP);
         var items = update.getGuiHandler().getCustomCache().getItems();
         int maxPages;
         int page;
