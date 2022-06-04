@@ -497,37 +497,37 @@
         "items": {
           "lockdown": {
             "enabled": {
-              "name": "<dark_red><b>LockDown!</b></dark_red>",
+              "name": "<green>✔ </green><gold><b>LockDown</b></gold>",
               "lore": [
-                "<grey>[<dark_aqua>Enabled</dark_aqua>]</grey>",
-                "<dark_red>Recipes are being blocked!</dark_red>"
+                "<grey>»» [<green><b>Enabled</b></green>]</grey>",
+                "<yellow>Recipes are being blocked!</yellow>"
               ]
             },
             "disabled": {
-              "name": "<dark_red>LockDown</dark_red>",
+              "name": "<red>❌ </red><gold><b>LockDown</b></gold>",
               "lore": [
-                "<grey>[<dark_grey>Disabled]</dark_grey></grey>",
-                "<grey>Recipes are not blocked!</grey>"
+                "<grey>»» [<red><b>Disabled</b></red>]</grey>",
+                "<yellow>Recipes are not blocked!</yellow>"
               ]
             }
           },
           "darkMode": {
             "enabled": {
-              "name": "<grey>Dark Mode</grey>",
+              "name": "<grey>\u25A0 </grey><gold><b>Dark Mode</b></gold>",
               "lore": [
-                "<grey>[<green>Click</green>]</grey> Switch to Light Mode"
+                "<grey>[<green>Click</green>] Switch to Light Mode"
               ]
             },
             "disabled": {
-              "name": "<grey>Light Mode</grey>",
+              "name": "<grey>\u25A1 </grey><gold><b>Light Mode</b></gold>",
               "lore": [
-                "<grey>[<green>Click</green>]</grey> Switch to Dark Mode"
+                "<grey>[<green>Click</green>] Switch to Dark Mode"
               ]
             }
           },
           "pretty_printing": {
             "enabled": {
-              "name": "<gold>Pretty Printing</gold>",
+              "name": "<grey>\u25A0 </grey><gold><b>Pretty Printing</b></gold>",
               "lore": [
                 "<grey>Json configs are saved with </grey>",
                 "<grey>correct formatting!</grey>",
@@ -535,7 +535,7 @@
               ]
             },
             "disabled": {
-              "name": "<gold>One-Line Printing</gold>",
+              "name": "<grey>\u25A1 </grey><gold><b>One-Line Printing</b></gold>",
               "lore": [
                 "<grey>Json configs are saved in one line!</grey>",
                 "<grey>[<green>Click</green>] Toggle pretty printing</grey>"
@@ -544,14 +544,14 @@
           },
           "advanced_workbench": {
             "enabled": {
-              "name": "<green>Advanced Workbench</green>",
+              "name": "<green>✔ </green><gold><b>Advanced Workbench</b></gold>",
               "lore": [
                 "<grey>Advanced Workbench is enabled!</grey>",
                 "<grey>[<green>Click</green>] Toggle advanced workbench</grey>"
               ]
             },
             "disabled": {
-              "name": "<red>Advanced Workbench</red>",
+              "name": "<red>❌ </red><gold><b>Advanced Workbench</b></gold>",
               "lore": [
                 "<grey>Advanced Workbench is disabled!</grey>",
                 "<grey>[<green>Click</green>] Toggle advanced workbench</grey>"
@@ -559,7 +559,7 @@
             }
           },
           "language": {
-            "name": "<gold>Language</gold>",
+            "name": "<gold><b>Language</b></gold>",
             "lore": [
               "<yellow>» <b><list_entry:0></b></yellow>",
               "<grey><list_entry:1></grey>",
@@ -573,7 +573,7 @@
           },
           "debug": {
             "enabled": {
-              "name": "<green>Debug</green>",
+              "name": "<gold><b>Debug</b></gold>",
               "lore": [
                 "<grey>Debug is enabled!</grey>",
                 "<grey>You may get a lot of messages from now on!</grey>",
@@ -591,7 +591,7 @@
           "creator": {
             "reset_after_save": {
               "enabled": {
-                "name": "<gold>Reset Recipe Creator</gold>",
+                "name": "<gold><b>Reset Recipe Creator</b></gold>",
                 "lore": [
                   "<grey>Resets the Recipe Creator contents</grey>",
                   "<grey>after they are saved.</grey>",
@@ -599,31 +599,11 @@
                 ]
               },
               "disabled": {
-                "name": "<gold>Keep Recipe Creator</gold>",
+                "name": "<gold><b>Keep Recipe Creator</b></gold>",
                 "lore": [
                   "<grey>Keep the Recipe Creator contents</grey>",
                   "<grey>after they are saved.</grey>",
                   "<grey>[<green>Click</green>] Reset contents after saving</grey>"
-                ]
-              }
-            }
-          },
-          "knowledgebook": {
-            "workbench_filter_button": {
-              "enabled": {
-                "name": "<gold>Show Workbench Filter</gold>",
-                "lore": [
-                  "<grey>Shows the workbench filter button</grey>",
-                  "<grey>inside of the knowledgebook</grey>",
-                  "<grey>[<green>Click</green>] Hide Workbench Filter</grey>"
-                ]
-              },
-              "disabled": {
-                "name": "<gold>Hide Workbench Filter</gold>",
-                "lore": [
-                  "<grey>Hides the workbench filter button</grey>",
-                  "<grey>inside of the knowledgebook</grey>",
-                  "<grey>[<green>Click</green>] Show Workbench Filter</grey>"
                 ]
               }
             }
