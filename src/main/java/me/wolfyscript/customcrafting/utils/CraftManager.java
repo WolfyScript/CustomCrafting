@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.utils;
 
+import com.google.common.collect.Lists;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
@@ -219,10 +220,11 @@ public class CraftManager {
     }
 
     public MatrixData getIngredients(ItemStack[] ingredients) {
-        List<List<ItemStack>> items = new ArrayList<>();
+        List<List<ItemStack>> items = new LinkedList<>();
+        List<ItemStack> ingredList = Lists.newArrayList(ingredients);
         int gridSize = gridSize(ingredients);
         for (int y = 0; y < gridSize; y++) {
-            items.add(new ArrayList<>(Arrays.asList(ingredients).subList(y * gridSize, gridSize + y * gridSize)));
+            items.add(ingredList.subList(y * gridSize, gridSize + y * gridSize));
         }
         //Go through each row beginning from the top, removing empty rows, until you hit a non-empty row.
         int yPosOfFirstOccurrence = 0;
