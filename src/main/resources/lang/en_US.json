@@ -530,7 +530,7 @@
               "name": "<gold>Pretty Printing</gold>",
               "lore": [
                 "<grey>Json configs are saved with </grey>",
-                "correct formatting!",
+                "<grey>correct formatting!</grey>",
                 "<grey>[<green>Click</green>] Toggle one-line printing</grey>"
               ]
             },
