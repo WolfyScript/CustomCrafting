@@ -3137,7 +3137,7 @@
         }
       },
       "main_menu": {
-        "gui_name": "<grey><b>Recipe Book</b></grey>",
+        "gui_name": "<dark_grey><b>Recipe Book</b></dark_grey>",
         "items": {
           "elite_workbench": {
             "name": "<gold>Elite Crafting Table Recipes</gold>"
