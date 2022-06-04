@@ -133,8 +133,5 @@ public class MenuSettings extends CCWindow {
             event.setButton(14, "creator.reset_after_save");
             event.setButton(15, "knowledgebook.workbench_filter_button");
         }
-        if (ChatUtils.checkPerm(player, "customcrafting.cmd.debug")) {
-            event.setButton(35, DEBUG);
-        }
     }
 }
