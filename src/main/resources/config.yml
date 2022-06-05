@@ -24,6 +24,10 @@ debug: false
 # If you have any language file you would like to add to this plugin, then feel free to contact me.
 language: en_US
 
+gui:
+  # Specifies if the background glass panes should be placed into the gui. If disabled things like crafting grids/slots won't be apparent anymore! Best in combination with custom gui textures!
+  draw_background: true
+
 creator:
   # Configure if the stored values and items you put or configured in the GUI should be cleared after saving a recipe.
   reset_after_save: true

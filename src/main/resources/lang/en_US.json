@@ -276,13 +276,14 @@
         "gui_help_on": {
           "name": "<white><b><u>[?] Information</u></b></white>",
           "lore": [
-            "%wolfyutilities.help%"
-          ]
-        },
-        "gui_help_off": {
-          "name": "<white><b><u>[?] Information</u></b></white>",
-          "lore": [
-            "%wolfyutilities.help%"
+            "<grey><list_entry:0></grey>",
+            "<grey><list_entry:1></grey>",
+            "<grey><list_entry:2></grey>",
+            "<grey><list_entry:3></grey>",
+            "<grey><list_entry:4></grey>",
+            "<grey><list_entry:5></grey>",
+            "<grey><list_entry:6></grey>",
+            "<grey><list_entry:7></grey>"
           ]
         },
         "patreon": {
@@ -606,6 +607,26 @@
                   "<grey>[<green>Click</green>] Reset contents after saving</grey>"
                 ]
               }
+            }
+          },
+          "draw_background": {
+            "enabled": {
+              "name": "<grey>\u25A0 </grey><gold><b>Background</b></gold>",
+              "lore": [
+                "<grey>Each GUI Menu has a Glass Pane Background</grey>",
+                "",
+                "<grey>[<green>Click</green>] Disable Glass Pane Background"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>\u25A1 </grey><gold><b>Background</b></gold>",
+              "lore": [
+                "<grey>GUIs don't have any Glass Pane Background!</grey>",
+                "<red>This makes crafting grids and other input slots</red>",
+                "<red>invisible. A Custom Texture Menu should be used!</red>",
+                "",
+                "<grey>[<green>Click</green>] Enable Glass Pane Background"
+              ]
             }
           }
         }
@@ -3116,7 +3137,7 @@
         }
       },
       "main_menu": {
-        "gui_name": "<grey><b>Recipe Book</b></grey>",
+        "gui_name": "<dark_grey><b>Recipe Book</b></dark_grey>",
         "items": {
           "elite_workbench": {
             "name": "<gold>Elite Crafting Table Recipes</gold>"

@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
@@ -30,6 +31,7 @@ import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.event.ClickEvent;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonAction;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
@@ -40,6 +42,7 @@ public class ClusterMain extends CCCluster {
 
     //Button keys
     public static final NamespacedKey BACK = new NamespacedKey(KEY, "back");
+    public static final NamespacedKey EMPTY = new NamespacedKey(KEY, "empty");
     public static final NamespacedKey BACK_BOTTOM = new NamespacedKey(KEY, "back_bottom");
     public static final NamespacedKey GUI_HELP = new NamespacedKey(KEY, "gui_help");
     public static final NamespacedKey GLASS_GRAY = new NamespacedKey(KEY, "glass_gray");
@@ -74,6 +77,7 @@ public class ClusterMain extends CCCluster {
     @Override
     public void onInit() {
         ButtonBuilder<CCCache> bb = getButtonBuilder();
+        bb.dummy(EMPTY.getKey()).state(s -> s.icon(Material.AIR)).register();
         bb.dummy(GLASS_GRAY.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.GRAY_STAINED_GLASS_PANE)).register();
         bb.dummy(GLASS_BLACK.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.BLACK_STAINED_GLASS_PANE)).register();
         bb.dummy(GLASS_RED.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.RED_STAINED_GLASS_PANE)).register();
@@ -81,13 +85,12 @@ public class ClusterMain extends CCCluster {
         bb.dummy(GLASS_GREEN.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.GREEN_STAINED_GLASS_PANE)).register();
         bb.dummy(GLASS_PURPLE.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.PURPLE_STAINED_GLASS_PANE)).register();
         bb.dummy(GLASS_PINK.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.PINK_STAINED_GLASS_PANE)).register();
-        bb.toggle(GUI_HELP.getKey()).enabledState(state -> state.subKey("enabled").icon(PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19")).action((cache, guiHandler, player, guiInventory, i, event) -> {
-            guiHandler.setHelpEnabled(false);
-            return true;
-        })).disabledState(state -> state.subKey("disabled").icon(PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19")).action((cache, guiHandler, player, guiInventory, i, event) -> {
-            guiHandler.setHelpEnabled(true);
-            return true;
-        })).register();
+        bb.dummy(GUI_HELP.getKey()).state(state -> state.key(GUI_HELP.getKey() + "_on").icon(PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19"))
+                .render((cache, guiHandler, player, guiInv, stack, slot) -> {
+                    guiInv.getWindow().getHelpInformation();
+                    var window = guiInv.getWindow();
+                    return CallbackButtonRender.UpdateResult.of(TagResolverUtil.entries(guiHandler.getApi().getLanguageAPI().getComponents("inventories." + window.getCluster().getId() + "." + window.getNamespacedKey().getKey() + ".gui_help")));
+                })).register();
         final ButtonAction<CCCache> backAction = (cache, guiHandler, player, guiInventory, i, event) -> {
             guiHandler.openPreviousWindow();
             return true;

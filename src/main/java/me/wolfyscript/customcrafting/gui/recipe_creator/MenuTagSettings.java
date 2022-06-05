@@ -66,6 +66,7 @@ public class MenuTagSettings extends CCWindow {
         var tagsCache = update.getGuiHandler().getCustomCache().getRecipeCreatorCache().getTagSettingsCache();
         var recipeItemStack = tagsCache.getRecipeItemStack();
         update.setButton(0, ClusterMain.BACK);
+        update.setButton(8, ClusterMain.GUI_HELP);
         if (recipeItemStack != null) {
             NamespacedKey[] tags = recipeItemStack.getTags().toArray(new NamespacedKey[0]);
             int page = tagsCache.getListPage();

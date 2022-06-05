@@ -25,18 +25,14 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Material;
-import org.bukkit.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public class EditorMain extends CCWindow {
 
@@ -84,7 +80,7 @@ public class EditorMain extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        update.setButton(0, PlayerUtil.getStore(update.getPlayer()).getLightBackground());
+        update.setButton(0, customCrafting.getConfigHandler().getConfig().isGUIDrawBackground() ? PlayerUtil.getStore(update.getPlayer()).getLightBackground() : ClusterMain.EMPTY);
         update.setButton(20, CATEGORIES);
         update.setButton(24, FILTERS);
 

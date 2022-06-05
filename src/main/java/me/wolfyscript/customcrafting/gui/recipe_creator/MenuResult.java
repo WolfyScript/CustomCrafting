@@ -64,6 +64,7 @@ public class MenuResult extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, "back");
+        update.setButton(8, ClusterMain.GUI_HELP);
         for (int i = 0; i < 36; i++) {
             update.setButton(9 + i, "variant_container_" + i);
         }

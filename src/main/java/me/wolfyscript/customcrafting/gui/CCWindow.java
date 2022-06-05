@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -53,23 +54,24 @@ public abstract class CCWindow extends GuiWindow<CCCache> {
 
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
-        CCPlayerData store = PlayerUtil.getStore(update.getPlayer());
-        NamespacedKey gray = store.getDarkBackground();
-        if (getSize() > 9) {
-            NamespacedKey white = store.getLightBackground();
-            for (int i = 0; i < 9; i++) {
-                update.setButton(i, white);
-            }
-            for (int i = 9; i < getSize() - 9; i++) {
-                update.setButton(i, gray);
-            }
-            for (int i = getSize() - 9; i < getSize(); i++) {
-                update.setButton(i, white);
-            }
-            update.setButton(8, new NamespacedKey("none", "gui_help"));
-        } else {
-            for (int i = 0; i < 9; i++) {
-                update.setButton(i, gray);
+        if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
+            CCPlayerData store = PlayerUtil.getStore(update.getPlayer());
+            NamespacedKey gray = store.getDarkBackground();
+            if (getSize() > 9) {
+                NamespacedKey white = store.getLightBackground();
+                for (int i = 0; i < 9; i++) {
+                    update.setButton(i, white);
+                }
+                for (int i = 9; i < getSize() - 9; i++) {
+                    update.setButton(i, gray);
+                }
+                for (int i = getSize() - 9; i < getSize(); i++) {
+                    update.setButton(i, white);
+                }
+            } else {
+                for (int i = 0; i < 9; i++) {
+                    update.setButton(i, gray);
+                }
             }
         }
     }

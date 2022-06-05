@@ -46,6 +46,7 @@ public class MenuSettings extends CCWindow {
     private static final String PRETTY_PRINTING = "pretty_printing";
     private static final String ADVANCED_CRAFTING_TABLE = "advanced_workbench";
     private static final String DEBUG = "debug";
+    private static final String DRAW_BACKGROUND = "draw_background";
 
     private static final String ENABLED = "enabled";
     private static final String DISABLED = "disabled";
@@ -107,6 +108,16 @@ public class MenuSettings extends CCWindow {
                     customCrafting.getConfigHandler().getConfig().save();
                     return true;
                 })).register();
+        bb.toggle(DRAW_BACKGROUND).stateFunction((ccCache, guiHandler, player, guiInventory, i) -> customCrafting.getConfigHandler().getConfig().isGUIDrawBackground())
+                .enabledState(state -> state.subKey(ENABLED).icon(Material.BLACK_STAINED_GLASS).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().setGUIDrawBackground(false);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).disabledState(state -> state.subKey(DISABLED).icon(Material.BLACK_STAINED_GLASS).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().setGUIDrawBackground(true);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).register();
     }
 
     @Override
@@ -131,7 +142,7 @@ public class MenuSettings extends CCWindow {
             event.setButton(12, ADVANCED_CRAFTING_TABLE);
             event.setButton(13, ButtonSettingsLanguage.KEY);
             event.setButton(14, "creator.reset_after_save");
-            event.setButton(15, "knowledgebook.workbench_filter_button");
+            event.setButton(15, DRAW_BACKGROUND);
         }
     }
 }

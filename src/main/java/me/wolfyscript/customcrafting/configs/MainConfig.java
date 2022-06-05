@@ -42,6 +42,14 @@ public class MainConfig extends YamlConfiguration {
     public void init() {
     }
 
+    public boolean isGUIDrawBackground() {
+        return getBoolean("gui.draw_background", true);
+    }
+
+    public void setGUIDrawBackground(boolean drawBackground) {
+        set("gui.draw_background", drawBackground);
+    }
+
     public List<String> getCustomCraftingAlias() {
         return getStringList("commands.alias");
     }
