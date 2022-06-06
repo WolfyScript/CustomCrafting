@@ -9,3 +9,32 @@ loadbefore:
   - EpicWorldGenerator
 softdepend: [ ProtocolLib, MythicMobs, Oraxen, ItemsAdder, PlaceholderAPI ]
 description: Create your own custom recipes for workbenches and furnaces. Disable Vanilla recipes and more.
+permissions:
+  customcrafting.*:
+    default: op
+    children:
+      customcrafting.update_check:
+        default: op
+      customcrafting.cmd.*:
+        default: op
+        children:
+          customcrafting.cmd.info:
+            default: op
+          customcrafting.cmd.help:
+            default: op
+          customcrafting.cmd.studio:
+            default: op
+          customcrafting.cmd.reload:
+            default: op
+          customcrafting.cmd.give:
+            default: op
+          customcrafting.cmd.database:
+            default: op
+          customcrafting.cmd.lockdown:
+            default: op
+          customcrafting.cmd.debug:
+            default: op
+          customcrafting.cmd.darkmode:
+            default: op
+          customcrafting.cmd.recipes:
+            default: true
