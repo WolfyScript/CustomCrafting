@@ -55,7 +55,7 @@ public class PlayerListener implements Listener {
                 }
             }
         }
-        if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
+        if (player.hasPermission("customcrafting.update_check")) {
             customCrafting.getUpdateChecker().run(player);
         }
     }
