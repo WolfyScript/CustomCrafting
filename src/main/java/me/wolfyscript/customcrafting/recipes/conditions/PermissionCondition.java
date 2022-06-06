@@ -60,7 +60,8 @@ public class PermissionCondition extends Condition<PermissionCondition> {
             return true;
         }
         if (data.getPlayer() == null) return false;
-        return customCrafting.getApi().getPermissions().hasPermission(data.getPlayer(), permission.replace("%namespace%", recipe.getNamespacedKey().getNamespace()).replace("%recipe_name%", recipe.getNamespacedKey().getKey()));
+        var keyComponent = recipe.getNamespacedKey().getKeyComponent();
+        return data.getPlayer().hasPermission(permission.replace("%namespace%", keyComponent.getFolder().replace("/", ".")).replace("%recipe_name%", keyComponent.getObject()));
     }
 
     public static class GUIComponent extends FunctionalGUIComponent<PermissionCondition> {
