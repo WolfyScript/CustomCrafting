@@ -36,7 +36,7 @@ permissions:
           customcrafting.inv.recipe_book.*:
             description: Permission to open the overview and all the other sub menus of the custom recipe book.
             default: true
-            children: 
+            children:
               customcrafting.inv.recipe_book.main_menu:
                 default: true
               customcrafting.inv.recipe_book.recipe_book:
@@ -145,5 +145,5 @@ permissions:
           customcrafting.cmd.darkmode:
             default: op
           customcrafting.cmd.recipes:
-            description: Permission to open the custom recipe book. Might 
+            description: Permission to open the custom recipe book. Needs customcrafting.inv.recipe_book.* to allow players to open the GUI!
             default: true
