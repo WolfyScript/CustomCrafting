@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator;
 
+import com.google.common.collect.Lists;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -55,6 +56,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -111,10 +113,10 @@ public class MenuItemCreator extends CCWindow {
                 List<String> keys = namespacedKeys.stream().filter(strings -> strings.length > 1).map(strings -> strings[1]).toList();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     if (args.length == 2) {
-                        return StringUtil.copyPartialMatches(args[1], keys, Collections.singletonList("<key>"));
+                        return StringUtil.copyPartialMatches(args[1], keys, Lists.newArrayList("<key>"));
                     }
                     if (args.length >= 1) {
-                        return StringUtil.copyPartialMatches(args[0], namespaces, Collections.singletonList("<namespace>"));
+                        return StringUtil.copyPartialMatches(args[0], namespaces, Lists.newArrayList("<namespace>"));
                     }
                     return Collections.emptyList();
                 });
