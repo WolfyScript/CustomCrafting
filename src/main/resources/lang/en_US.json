@@ -628,6 +628,26 @@
                 "<grey>[<green>Click</green>] Enable Glass Pane Background"
               ]
             }
+          },
+          "recipe_book_keep_last_open": {
+            "enabled": {
+              "name": "<green>✔ </green><gold><b>Keep Last Open</b></gold>",
+              "lore": [
+                "<grey>When reopening the recipe book it opens</grey>",
+                "<grey>the menu the player last left on.</grey>",
+                "",
+                "<grey>[<green>Click</green>] Disable Keep Last Open"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌ </red><gold><b>Keep last Open</b></gold>",
+              "lore": [
+                "<grey>When reopening the recipe book it</grey>",
+                "<grey>always opens the recipe overview.</grey>",
+                "",
+                "<grey>[<green>Click</green>] Enable Keep Last Open"
+              ]
+            }
           }
         }
       },
