@@ -90,6 +90,14 @@ public class MainConfig extends YamlConfiguration {
         set("recipe_book.reset", reset);
     }
 
+    public boolean isRecipeBookKeepLastOpen() {
+        return getBoolean("recipe_book.keep_last_open");
+    }
+
+    public void setRecipeBookKeepLastOpen(boolean keepLastOpen) {
+        set("recipe_book.keep_last_open", keepLastOpen);
+    }
+
     public boolean isAdvancedWorkbenchEnabled() {
         return getBoolean("crafting_table.enable");
     }
