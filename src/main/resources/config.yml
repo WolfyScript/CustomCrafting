@@ -89,6 +89,8 @@ crafting_table:
 recipe_book:
   # If the recipe book item should be reset on each server start. This means the config is replaced with a new version.
   reset: true
+  # If closed and opened again, it'll open up the recipe and menu the player last left on.
+  keep_last_open: true
 
 custom_items:
   # Use this option if you have saved CustomItems and your players got them in their inventory. Each time a Player joins the server it will try to update the CustomItems.

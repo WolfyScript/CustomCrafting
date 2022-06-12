@@ -47,6 +47,7 @@ public class MenuSettings extends CCWindow {
     private static final String ADVANCED_CRAFTING_TABLE = "advanced_workbench";
     private static final String DEBUG = "debug";
     private static final String DRAW_BACKGROUND = "draw_background";
+    private static final String RECIPE_BOOK_KEEP_LAST = "recipe_book_keep_last_open";
 
     private static final String ENABLED = "enabled";
     private static final String DISABLED = "disabled";
@@ -118,6 +119,16 @@ public class MenuSettings extends CCWindow {
                     customCrafting.getConfigHandler().getConfig().save();
                     return true;
                 })).register();
+        bb.toggle(RECIPE_BOOK_KEEP_LAST).stateFunction((ccCache, guiHandler, player, guiInventory, i) -> customCrafting.getConfigHandler().getConfig().isRecipeBookKeepLastOpen())
+                .enabledState(state -> state.subKey(ENABLED).icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().setRecipeBookKeepLastOpen(false);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).disabledState(state -> state.subKey(DISABLED).icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    customCrafting.getConfigHandler().getConfig().setRecipeBookKeepLastOpen(true);
+                    customCrafting.getConfigHandler().getConfig().save();
+                    return true;
+                })).register();
     }
 
     @Override
@@ -143,6 +154,7 @@ public class MenuSettings extends CCWindow {
             event.setButton(13, ButtonSettingsLanguage.KEY);
             event.setButton(14, "creator.reset_after_save");
             event.setButton(15, DRAW_BACKGROUND);
+            event.setButton(16, RECIPE_BOOK_KEEP_LAST);
         }
     }
 }
