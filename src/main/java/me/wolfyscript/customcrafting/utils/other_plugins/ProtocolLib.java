@@ -131,7 +131,13 @@ public class ProtocolLib {
                     if (customCrafting.getRegistries().getRecipes().has(recipeId)) {
                         Player player = event.getPlayer();
                         if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory craftingInventory) {
-                            Bukkit.getPluginManager().callEvent(new PrepareItemCraftEvent(craftingInventory, event.getPlayer().getOpenInventory(), false));
+                            Runnable callPreEvent = () -> Bukkit.getPluginManager().callEvent(new PrepareItemCraftEvent(craftingInventory, event.getPlayer().getOpenInventory(), false));
+                            if (event.isAsync()) {
+                                Bukkit.getScheduler().runTask(customCrafting, callPreEvent);
+                            } else {
+                                callPreEvent.run();
+                            }
+
                         }
                     }
                 }
