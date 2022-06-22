@@ -183,7 +183,9 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
                 if (validItem.isPresent()) {
                     //For shapeless we can't actually determine the exact inventory slot of the ingredient (without massively increasing complexity), but we can make an estimate using the same tactic as with shaped recipes.
                     //Though, Items will still be slightly rearranged in the matrix.
-                    dataMap.put(pos + matrixData.getOffsetX() + (matrixData.getOffsetY() * 3), new IngredientData(key, ingredient, validItem.get(), new ItemStack(item)));
+                    int row = pos / maxGridDimension;
+                    int offset = matrixData.getOffsetX() + (matrixData.getOffsetY() * matrixData.getGridSize());
+                    dataMap.put(pos + offset + (row * (matrixData.getGridSize() - matrixData.getWidth())), new IngredientData(key, ingredient, validItem.get(), new ItemStack(item)));
                     return key;
                 }
                 //Check failed. Let's add the key back into the queue. (To the end, so we don't check it again and again...)

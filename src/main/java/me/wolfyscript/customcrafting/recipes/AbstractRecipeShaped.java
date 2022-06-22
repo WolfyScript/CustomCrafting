@@ -272,7 +272,9 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                         Optional<CustomItem> item = ingredient.check(invItem, this.checkAllNBT);
                         if (item.isPresent()) {
                             //In order to index the ingredients for the correct inventory slot we need to reverse the shape offset.
-                            dataMap.put(i + matrixData.getOffsetX() + (matrixData.getOffsetY() * 3), new IngredientData(recipeSlot, ingredient, item.get(), new ItemStack(invItem)));
+                            int row = i / getInternalShape().getWidth();
+                            int offset = matrixData.getOffsetX() + (matrixData.getOffsetY() * matrixData.getGridSize());
+                            dataMap.put(i + offset + (row * (matrixData.getGridSize() - matrixData.getWidth())), new IngredientData(recipeSlot, ingredient, item.get(), new ItemStack(invItem)));
                             i++;
                             continue;
                         }
