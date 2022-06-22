@@ -246,7 +246,7 @@ public class CustomCrafting extends JavaPlugin {
         resultMergeAdapters.register(new DamageMergeAdapter());
         resultMergeAdapters.register(new PlaceholderAPIMergeAdapter());
         resultMergeAdapters.register(new FireworkRocketMergeAdapter());
-        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(3, 16, 4, 0))) {
+        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 4, 0))) {
             resultMergeAdapters.register(new NBTMergeAdapter());
         }
 
