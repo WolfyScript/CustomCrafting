@@ -110,12 +110,12 @@ public class CraftManager {
      */
     public void consumeRecipe(InventoryClickEvent event) {
         var player = (Player) event.getWhoClicked();
-        if (event.getClickedInventory() instanceof CraftingInventory inventory && has(player.getUniqueId())) {
+        if (event.getClickedInventory() != null && has(player.getUniqueId())) {
             var craftingData = preCraftedRecipes.get(player.getUniqueId());
             CraftingRecipe<?, ?> recipe = craftingData.getRecipe();
             if (recipe != null) {
                 Result recipeResult = craftingData.getResult();
-                editStatistics(player, inventory, recipe);
+                editStatistics(player, event.getClickedInventory(), recipe);
                 setPlayerCraftTime(player, recipe);
                 calculateClick(player, event, craftingData, recipe, recipeResult);
             }
@@ -266,7 +266,7 @@ public class CraftManager {
         }
         var finalLeftPos = leftPos;
         var finalRightPos = rightPos + 1;
-        return new MatrixData(items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).toArray(ItemStack[]::new), items.size(), finalRightPos - finalLeftPos, finalLeftPos, yPosOfFirstOccurrence);
+        return new MatrixData(items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).toArray(ItemStack[]::new), items.size(), finalRightPos - finalLeftPos, gridSize, finalLeftPos, yPosOfFirstOccurrence);
     }
 
     /**
@@ -278,6 +278,7 @@ public class CraftManager {
     public static class MatrixData {
 
         private final ItemStack[] matrix;
+        private final int gridSize;
         private final int height;
         private final int width;
         private final int offsetY;
@@ -287,13 +288,14 @@ public class CraftManager {
 
         @Deprecated
         public MatrixData(ItemStack[] matrix, int height, int width) {
-            this(matrix, height, width, 0, 0);
+            this(matrix, height, width, 3, 0, 0);
         }
 
-        public MatrixData(ItemStack[] matrix, int height, int width, int offsetX, int offsetY) {
+        public MatrixData(ItemStack[] matrix, int height, int width, int gridSize, int offsetX, int offsetY) {
             this.matrix = matrix;
             this.height = height;
             this.width = width;
+            this.gridSize = gridSize;
             this.offsetX = offsetX;
             this.offsetY = offsetY;
             this.items = Arrays.stream(matrix).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).toArray(ItemStack[]::new);
@@ -312,6 +314,14 @@ public class CraftManager {
          */
         public int getWidth() {
             return width;
+        }
+
+        /**
+         * The original grid size of the matrix.
+         * @return The grid dimension.
+         */
+        public int getGridSize() {
+            return gridSize;
         }
 
         /**
