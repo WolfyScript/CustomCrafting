@@ -48,7 +48,7 @@ public class NBTMergeAdapter extends MergeAdapter {
 
     protected NBTMergeAdapter(NBTMergeAdapter adapter) {
         super(adapter);
-        this.query = adapter.query; //TODO: Copy query!
+        this.query = adapter.query.copy();
     }
 
     @Override
