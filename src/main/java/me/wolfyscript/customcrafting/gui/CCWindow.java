@@ -41,6 +41,7 @@ public abstract class CCWindow extends GuiWindow<CCCache> {
     protected CCWindow(GuiCluster<CCCache> guiCluster, String namespace, int size, CustomCrafting customCrafting) {
         super(guiCluster, namespace, size);
         this.customCrafting = customCrafting;
+        setForceSyncUpdate(true);
     }
 
     public CustomCrafting getCustomCrafting() {
