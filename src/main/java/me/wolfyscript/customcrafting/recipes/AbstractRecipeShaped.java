@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
@@ -83,14 +84,14 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         setIngredients(loadedIngredients);
     }
 
-    protected AbstractRecipeShaped(NamespacedKey key, String[] shape, int gridSize, S settings) {
-        this(key, gridSize, settings);
+    protected AbstractRecipeShaped(NamespacedKey key, Symmetry symmetry, String[] shape, int gridSize, S settings) {
+        this(key, symmetry, gridSize, settings);
         setShape(shape);
     }
 
-    protected AbstractRecipeShaped(NamespacedKey key, int gridSize, S settings) {
+    protected AbstractRecipeShaped(NamespacedKey key, Symmetry symmetry, int gridSize, S settings) {
         super(key, gridSize, settings);
-        this.symmetry = new Symmetry();
+        this.symmetry = symmetry;
         this.mappedIngredients = new HashMap<>();
     }
 
@@ -436,7 +437,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         private boolean vertical;
         private boolean rotate;
 
-        private Symmetry() {
+        Symmetry() {
             this.horizontal = false;
             this.vertical = false;
             this.rotate = false;
