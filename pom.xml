@@ -28,7 +28,7 @@
 
     <groupId>com.wolfyscript.customcrafting</groupId>
     <artifactId>customcrafting-spigot</artifactId>
-    <version>3.16.5.0</version>
+    <version>3.16.6.0</version>
 
     <properties>
         <!-- Generic properties -->
