@@ -106,6 +106,7 @@ import me.wolfyscript.customcrafting.recipes.items.target.adapters.DisplayNameMe
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantedBookMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.FireworkRocketMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.NBTMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.PlaceholderAPIMergeAdapter;
 import me.wolfyscript.customcrafting.registry.CCRegistries;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -119,7 +120,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.compatibility.plugins.PlaceholderAPIIntegration;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
@@ -246,6 +246,9 @@ public class CustomCrafting extends JavaPlugin {
         resultMergeAdapters.register(new DamageMergeAdapter());
         resultMergeAdapters.register(new PlaceholderAPIMergeAdapter());
         resultMergeAdapters.register(new FireworkRocketMergeAdapter());
+        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 4, 0))) {
+            resultMergeAdapters.register(new NBTMergeAdapter());
+        }
 
         getLogger().info("Registering Recipe Conditions");
         var recipeConditions = getRegistries().getRecipeConditions();
