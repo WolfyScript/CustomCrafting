@@ -39,6 +39,7 @@ import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -50,6 +51,12 @@ public class ItemLoader {
     private ItemLoader() {
     }
 
+    /**
+     * Loads the {@link Ingredient} from the specified node.
+     *
+     * @param node The JsonNode to read from.
+     * @return The Ingredient if available; otherwise a new Ingredient instance.
+     */
     public static Ingredient loadIngredient(JsonNode node) {
         final Ingredient ingredient;
         if (node.isArray()) {
@@ -70,11 +77,27 @@ public class ItemLoader {
         return new Ingredient();
     }
 
+    /**
+     * Loads the result from the specified node
+     *
+     * @deprecated {@link #loadResult(JsonNode, CustomCrafting)} should be used instead if possible!
+     * @param node The JsonNode to read the result from.
+     * @return The loaded result or a new Result instance.
+     */
+    @NotNull
     @Deprecated
     public static Result loadResult(JsonNode node) {
         return loadResult(node, CustomCrafting.inst());
     }
 
+    /**
+     * Loads the {@link Result} from the specified node.
+     *
+     * @param node The JsonNode to read from.
+     * @param customCrafting The instance of the plugin.
+     * @return The loaded Result if available; otherwise a new Result instance.
+     */
+    @NotNull
     public static Result loadResult(JsonNode node, CustomCrafting customCrafting) {
         final Result result;
         if (node.isArray()) {
@@ -104,6 +127,13 @@ public class ItemLoader {
         return new Result();
     }
 
+    /**
+     * Fixes an {@link APIReference} that was possibly corrupted by an older version of CustomCrafting, that had a bug, that serialized them incorrectly.
+     *
+     * @param itemNode The JsonNode to load and fix the reference from.
+     * @return The loaded and fixed APIReference or null.
+     */
+    @Nullable
     private static APIReference loadAndConvertCorruptReference(JsonNode itemNode) {
         APIReference reference = JacksonUtil.getObjectMapper().convertValue(itemNode, APIReference.class);
         if (CustomCrafting.inst().getConfigHandler().getConfig().getDataVersion() < CustomCrafting.CONFIG_VERSION && reference != null) {
