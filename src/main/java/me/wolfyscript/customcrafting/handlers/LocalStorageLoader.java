@@ -45,8 +45,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class LocalStorageLoader extends ResourceLoader {
 
@@ -222,6 +220,7 @@ public class LocalStorageLoader extends ResourceLoader {
                 if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     try {
                         injectableValues.addValue("key", namespacedKey);
+                        injectableValues.addValue("customcrafting", customCrafting);
                         customCrafting.getRegistries().getRecipes().register(objectMapper.reader(injectableValues).readValue(file.toFile(), CustomRecipe.class));
                         loaded.add(namespacedKey);
                     } catch (IOException e) {
