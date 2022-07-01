@@ -22,11 +22,11 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.Keyed;

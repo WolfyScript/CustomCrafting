@@ -23,7 +23,14 @@
 package me.wolfyscript.customcrafting.commands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.commands.cc_subcommands.*;
+import me.wolfyscript.customcrafting.commands.cc_subcommands.DarkModeSubCommand;
+import me.wolfyscript.customcrafting.commands.cc_subcommands.DataBaseSubCommand;
+import me.wolfyscript.customcrafting.commands.cc_subcommands.DebugSubCommand;
+import me.wolfyscript.customcrafting.commands.cc_subcommands.GiveSubCommand;
+import me.wolfyscript.customcrafting.commands.cc_subcommands.HelpSubCommand;
+import me.wolfyscript.customcrafting.commands.cc_subcommands.InfoSubCommand;
+import me.wolfyscript.customcrafting.commands.cc_subcommands.LockDownSubCommand;
+import me.wolfyscript.customcrafting.commands.cc_subcommands.ReloadSubCommand;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;

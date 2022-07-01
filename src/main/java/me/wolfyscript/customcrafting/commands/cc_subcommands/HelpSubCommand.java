@@ -28,7 +28,6 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import net.kyori.adventure.text.minimessage.fancy.Gradient;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

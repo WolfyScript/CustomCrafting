@@ -23,7 +23,6 @@
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Location;
 import org.bukkit.Sound;

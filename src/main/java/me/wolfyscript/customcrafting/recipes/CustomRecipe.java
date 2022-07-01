@@ -22,6 +22,14 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.google.common.base.Preconditions;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.handlers.ResourceLoader;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
@@ -39,14 +47,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
-import com.google.common.base.Preconditions;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.handlers.ResourceLoader;
-import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
-import me.wolfyscript.customcrafting.recipes.items.Ingredient;
-import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;

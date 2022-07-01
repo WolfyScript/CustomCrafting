@@ -31,7 +31,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.patreon.Patreon;
-import me.wolfyscript.customcrafting.data.patreon.Patron;
 import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabArmorSlots;
@@ -116,8 +115,8 @@ import me.wolfyscript.customcrafting.utils.UpdateChecker;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
@@ -136,8 +135,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.logging.Level;
 
 @JsonIncludeProperties //Do not include properties because it is injected and there is no need to serialize it.
 public class CustomCrafting extends JavaPlugin {
@@ -199,7 +196,7 @@ public class CustomCrafting extends JavaPlugin {
         this.coloredTitle = chat.getMiniMessage().deserialize("<gradient:dark_aqua:aqua><b>CustomCrafting</b></gradient>");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
         this.chatUtils = new ChatUtils(this);
-        this.patreon = new Patreon();
+        this.patreon = new Patreon(this);
         this.updateChecker = new UpdateChecker(this, 55883);
         this.networkHandler = new NetworkHandler(this, api);
 
@@ -207,6 +204,11 @@ public class CustomCrafting extends JavaPlugin {
         this.cookingManager = new CookingManager(this);
     }
 
+    /**
+     * Gets the instance of the CustomCrafting plugin.<br>
+     *
+     * @return The instance of this plugin.
+     */
     public static CustomCrafting inst() {
         return instance;
     }
@@ -303,7 +305,8 @@ public class CustomCrafting extends JavaPlugin {
     public void onEnable() {
         this.api.initialize();
         writeBanner();
-        writePatreonCredits();
+        this.patreon.initialize();
+        this.patreon.printPatreonCredits();
         writeSeparator();
 
         this.configHandler = new ConfigHandler(this);
@@ -353,27 +356,6 @@ public class CustomCrafting extends JavaPlugin {
 
     public void writeSeparator() {
         getLogger().info(CONSOLE_SEPARATOR);
-    }
-
-    private void writePatreonCredits() {
-        patreon.initialize();
-        getLogger().info("");
-        getLogger().info("Special thanks to my Patrons for supporting this project: ");
-        List<Patron> patronList = patreon.getPatronList();
-        int linePos = 0;
-        StringBuilder sB = new StringBuilder();
-        for (Patron patron : patronList) {
-            String name = patron.getName();
-            sB.append(name);
-            if (linePos == 5) {
-                getLogger().log(Level.INFO, sB.toString());
-                sB = new StringBuilder();
-                linePos = 0;
-            } else {
-                sB.append(", ");
-                linePos++;
-            }
-        }
     }
 
     private void registerListeners() {

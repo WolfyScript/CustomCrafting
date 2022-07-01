@@ -29,8 +29,8 @@ import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
-import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDurability;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDefault;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDurability;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
@@ -345,8 +345,23 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         event.setButton(34, ButtonContainerIngredient.key(cluster, 34));
     }
 
+    /**
+     * The mode of the anvil recipe result computation.
+     */
     public enum Mode {
-        DURABILITY(1), RESULT(2), NONE(0);
+        /**
+         * Same as {@link #NONE} plus it provides an option to specify the durability that the
+         * left item gets repaired with.
+         */
+        DURABILITY(1),
+        /**
+         * Always uses the specified result as the result, no matter what input.
+         */
+        RESULT(2),
+        /**
+         * Processes Rename, Repair, and Enchant Blocks of the recipe, but no further computations/settings.
+         */
+        NONE(0);
 
         private final int id;
 
@@ -367,6 +382,9 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         }
     }
 
+    /**
+     * The mode how the repair cost of the current recipe is applied to the result item.
+     */
     public enum RepairCostMode {
         ADD(), MULTIPLY(), NONE();
 

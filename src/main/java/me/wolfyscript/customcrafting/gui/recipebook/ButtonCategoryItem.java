@@ -24,7 +24,6 @@ package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
-import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookCache;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -38,11 +37,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 class ButtonCategoryItem extends Button<CCCache> {
 

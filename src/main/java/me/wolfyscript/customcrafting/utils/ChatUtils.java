@@ -38,7 +38,6 @@ import me.wolfyscript.utilities.api.chat.ClickEvent;
 import me.wolfyscript.utilities.api.chat.HoverEvent;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;

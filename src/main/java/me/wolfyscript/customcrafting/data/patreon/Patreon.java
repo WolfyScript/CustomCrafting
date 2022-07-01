@@ -22,16 +22,20 @@
 
 package me.wolfyscript.customcrafting.data.patreon;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import net.md_5.bungee.api.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class Patreon {
 
     final List<Patron> patronList = new ArrayList<>();
+    private final CustomCrafting customCrafting;
 
-    public Patreon() {
+    public Patreon(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
     }
 
     public void initialize() {
@@ -45,6 +49,26 @@ public class Patreon {
         addPatron(new Patron("Jaden Bautista", Tier.WOLFRAM));
         addPatron(new Patron("Kyle Kangas", Tier.WOLFRAM));
         addPatron(new Patron("Jacob Folkerts", Tier.WOLFRAM));
+    }
+
+    public void printPatreonCredits() {
+        var logger = customCrafting.getLogger();
+        logger.info("");
+        logger.info("Special thanks to my Patrons for supporting this project: ");
+        int linePos = 0;
+        StringBuilder sB = new StringBuilder();
+        for (Patron patron : patronList) {
+            String name = patron.getName();
+            sB.append(name);
+            if (linePos == 5) {
+                logger.log(Level.INFO, sB.toString());
+                sB = new StringBuilder();
+                linePos = 0;
+            } else {
+                sB.append(", ");
+                linePos++;
+            }
+        }
     }
 
     private void addPatron(Patron patron) {

@@ -22,14 +22,13 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonProcessingException;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonProcessingException;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.network.database.sql.SQLDataBase;
@@ -38,7 +37,6 @@ import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

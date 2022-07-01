@@ -39,12 +39,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 public class CraftManager {
 
@@ -204,6 +211,12 @@ public class CraftManager {
         return preCraftedRecipes.containsKey(uuid);
     }
 
+    /**
+     * Gets the current data that is available under the specified uuid.
+     *
+     * @param uuid The uuid to get the data for.
+     * @return An Optional of the available data for the specified uuid.
+     */
     public Optional<CraftingData> get(UUID uuid) {
         return Optional.ofNullable(preCraftedRecipes.get(uuid));
     }
@@ -219,6 +232,15 @@ public class CraftManager {
         };
     }
 
+    /**
+     * Generates the {@link MatrixData} from the specified ingredient array.
+     * This is quite resource intensive and should not be called too much.
+     *
+     * Run it once for each inventory change and then use the generated value, till the next inventory update.
+     *
+     * @param ingredients The ingredients to generate the data for.
+     * @return The newly generated MatrixData representing the shape and stripped ingredients.
+     */
     public MatrixData getIngredients(ItemStack[] ingredients) {
         List<List<ItemStack>> items = new LinkedList<>();
         List<ItemStack> ingredList = Lists.newArrayList(ingredients);
@@ -326,7 +348,7 @@ public class CraftManager {
 
         /**
          * The offset specifies by how much the shape is shifted in the recipe.<br>
-         * This is used to place the items into the correct inventory for shaped recipes.<br>
+         * This is used to place the items into the correct inventory slot for shaped recipes.<br>
          * Shapeless recipes ignore these.
          *
          * @return The x offset (from the left) of the shape in the matrix.
@@ -337,7 +359,7 @@ public class CraftManager {
 
         /**
          * The offset specifies by how much the shape is shifted in the recipe.<br>
-         * This is used to place the items into the correct inventory for shaped recipes.<br>
+         * This is used to place the items into the correct inventory slot for shaped recipes.<br>
          * Shapeless recipes ignore these.
          *
          * @return The y offset (from the top) of the shape in the matrix.

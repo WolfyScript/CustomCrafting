@@ -22,12 +22,12 @@
 
 package me.wolfyscript.customcrafting.utils;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
