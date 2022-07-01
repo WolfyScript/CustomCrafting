@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.utils;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
@@ -39,6 +40,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
 
 public class ItemLoader {
 
@@ -78,7 +81,16 @@ public class ItemLoader {
                 }
             });
         } else {
-            result = JacksonUtil.getObjectMapper().convertValue(node, Result.class);
+            var injects = new InjectableValues.Std();
+            injects.addValue("customcrafting", CustomCrafting.inst());
+            Result desResult = null;
+            try {
+                desResult = JacksonUtil.getObjectMapper().reader(injects).readValue(node, Result.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                result = desResult;
+            }
         }
         if (result != null) {
             result.buildChoices();
