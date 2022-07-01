@@ -132,10 +132,10 @@ public class NamespacedKeyUtils {
      * In case the key has no folders then it returns an empty String.
      * <p>
      * <code>
-     *     "namespace:root_folder/sub_folder/object" -> "sub_folder/object"<br>
-     *     "namespace:root_folder/first/another/object" -> "first/another/object"<br>
-     *     "namespace:root_folder/object" -> "object"<br>
-     *     "namespace:object" -> ""<br>
+     * "namespace:root_folder/sub_folder/object" -> "sub_folder/object"<br>
+     * "namespace:root_folder/first/another/object" -> "first/another/object"<br>
+     * "namespace:root_folder/object" -> "object"<br>
+     * "namespace:object" -> ""<br>
      * </code>
      * </p>
      *

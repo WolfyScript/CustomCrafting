@@ -63,7 +63,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-@JsonPropertyOrder(value = { "@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions", "symmetry", "shape", "ingredients" })
+@JsonPropertyOrder(value = {"@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions", "symmetry", "shape", "ingredients"})
 public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
     private static final String SHAPE_KEY = "shape";
@@ -73,7 +73,8 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private static final String ROTATION_KEY = "rotation";
 
     protected Map<Character, Ingredient> mappedIngredients;
-    @JsonIgnore private Shape internalShape;
+    @JsonIgnore
+    private Shape internalShape;
     private String[] shape;
     private final Symmetry symmetry;
 

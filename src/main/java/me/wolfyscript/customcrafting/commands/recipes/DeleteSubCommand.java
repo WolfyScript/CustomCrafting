@@ -64,7 +64,8 @@ public class DeleteSubCommand extends AbstractSubCommand {
                             ),
                             new ClickData(
                                     "$commands.recipes.delete.cancel$",
-                                    (wolfyUtilities, player1) -> {},
+                                    (wolfyUtilities, player1) -> {
+                                    },
                                     true,
                                     new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/recipes delete ")
                             )

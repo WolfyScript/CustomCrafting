@@ -235,7 +235,7 @@ public class CustomCrafting extends JavaPlugin {
 
         getLogger().info("Registering Result Extensions");
         var resultExtensions = getRegistries().getRecipeResultExtensions();
-        resultExtensions.register(new  CommandResultExtension(this));
+        resultExtensions.register(new CommandResultExtension(this));
         resultExtensions.register(new MythicMobResultExtension());
         resultExtensions.register(new SoundResultExtension());
         resultExtensions.register(new ResultExtensionAdvancement());

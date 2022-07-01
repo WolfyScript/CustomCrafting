@@ -80,9 +80,9 @@ public class ItemLoader {
     /**
      * Loads the result from the specified node
      *
-     * @deprecated {@link #loadResult(JsonNode, CustomCrafting)} should be used instead if possible!
      * @param node The JsonNode to read the result from.
      * @return The loaded result or a new Result instance.
+     * @deprecated {@link #loadResult(JsonNode, CustomCrafting)} should be used instead if possible!
      */
     @NotNull
     @Deprecated
@@ -93,7 +93,7 @@ public class ItemLoader {
     /**
      * Loads the {@link Result} from the specified node.
      *
-     * @param node The JsonNode to read from.
+     * @param node           The JsonNode to read from.
      * @param customCrafting The instance of the plugin.
      * @return The loaded Result if available; otherwise a new Result instance.
      */

@@ -135,7 +135,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * @return A list of all available namespaces.
      */
     public List<String> namespaces() {
-        if(NAMESPACES.isEmpty()) {
+        if (NAMESPACES.isEmpty()) {
             NAMESPACES.addAll(keySet().stream().map(NamespacedKey::getNamespace).distinct().toList());
         }
         return new ArrayList<>(NAMESPACES);
@@ -195,7 +195,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * Gets all recipes from the specified namespace and folder.
      *
      * @param namespace The namespace of the recipes.
-     * @param folder The folder of the recipes.
+     * @param folder    The folder of the recipes.
      * @return A list of all recipes in the folder inside the namespace.
      */
     public List<CustomRecipe<?>> get(String namespace, String folder) {

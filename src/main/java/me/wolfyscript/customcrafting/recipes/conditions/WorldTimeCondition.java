@@ -42,7 +42,7 @@ public class WorldTimeCondition extends Condition<WorldTimeCondition> {
 
     @Override
     public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
-        if(data.getBlock() != null) {
+        if (data.getBlock() != null) {
             long currentTime = data.getBlock().getWorld().getTime();
             return switch (option) {
                 case EXACT -> currentTime == time;

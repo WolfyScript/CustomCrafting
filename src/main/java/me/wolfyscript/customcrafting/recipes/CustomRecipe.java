@@ -72,7 +72,7 @@ import java.util.Objects;
 @JsonTypeIdResolver(RecipeTypeIdResolver.class)
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "@type")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonPropertyOrder(value = { "@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions" })
+@JsonPropertyOrder(value = {"@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions"})
 public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     protected static final String KEY_RESULT = "result";
@@ -84,13 +84,19 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected static final String KEY_HIDDEN = "hidden";
     protected static final String ERROR_MSG_KEY = "Not a valid key! The key cannot be null!";
 
-    @JsonProperty("@type") protected RecipeType<C> type;
-    @JsonIgnore protected final NamespacedKey namespacedKey;
-    @JsonIgnore protected final WolfyUtilities api;
-    @JsonIgnore protected final CustomCrafting customCrafting;
-    @JsonIgnore protected final ObjectMapper mapper;
+    @JsonProperty("@type")
+    protected RecipeType<C> type;
+    @JsonIgnore
+    protected final NamespacedKey namespacedKey;
+    @JsonIgnore
+    protected final WolfyUtilities api;
+    @JsonIgnore
+    protected final CustomCrafting customCrafting;
+    @JsonIgnore
+    protected final ObjectMapper mapper;
 
-    @JsonAlias("checkNBT") protected boolean checkAllNBT;
+    @JsonAlias("checkNBT")
+    protected boolean checkAllNBT;
     protected boolean hidden;
     protected boolean vanillaBook;
     protected RecipePriority priority;
@@ -99,10 +105,9 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected Result result;
 
     /**
-     *
-     * @deprecated Used only for deserializing recipes from old json files.
      * @param namespacedKey The namespaced key of the recipe.
-     * @param node The json node read from the recipe file.
+     * @param node          The json node read from the recipe file.
+     * @deprecated Used only for deserializing recipes from old json files.
      */
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
         this.type = RecipeType.valueOfRecipe(this);
@@ -357,7 +362,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     /**
      * Writes the recipe to json using the specified generator and provider.
      *
-     * @param gen The JsonGenerator
+     * @param gen      The JsonGenerator
      * @param provider The SerializerProvider
      * @throws IOException Any exception caused when writing it to json.
      * @deprecated This is no longer used. Instead, the recipe object can be written to json directly.

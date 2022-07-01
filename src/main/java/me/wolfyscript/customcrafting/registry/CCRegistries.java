@@ -52,7 +52,7 @@ public class CCRegistries {
         this.recipeConditions = new TypeRegistryRecipeConditions(customCrafting, registries);
         this.recipeMergeAdapters = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/merge_adapters"), registries);
         this.recipeResultExtensions = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/result_extensions"), registries);
-        this.recipeTypes = new RegistrySimple<>(new NamespacedKey(customCrafting, "recipe/types"), registries, (Class<RecipeType<?>>)(Object) RecipeType.class);
+        this.recipeTypes = new RegistrySimple<>(new NamespacedKey(customCrafting, "recipe/types"), registries, (Class<RecipeType<?>>) (Object) RecipeType.class);
         this.anvilRecipeRepairTasks = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/anvil/repair_tasks"), registries);
     }
 

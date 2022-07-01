@@ -158,7 +158,6 @@ public class CraftListener implements Listener {
 
     /**
      * Automatically discovers available custom recipes for players.
-     *
      */
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {

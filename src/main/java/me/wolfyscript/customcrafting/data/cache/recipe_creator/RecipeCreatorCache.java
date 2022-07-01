@@ -113,7 +113,8 @@ public class RecipeCreatorCache {
             case BLAST_FURNACE -> blastingCache;
             case SMOKER -> smokerCache;
             case CAMPFIRE -> campfireCache;
-            default -> throw new IllegalArgumentException("Recipe type \"" + getRecipeType().name() + "\" is not a cooking recipe type!");
+            default ->
+                    throw new IllegalArgumentException("Recipe type \"" + getRecipeType().name() + "\" is not a cooking recipe type!");
         };
     }
 

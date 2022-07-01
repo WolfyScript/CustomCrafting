@@ -86,10 +86,10 @@ public class CraftManager {
     /**
      * Checks one single {@link CraftingRecipe} and returns the {@link CustomItem} if it's valid.
      *
-     * @param recipe      The {@link CraftingRecipe} to check.
-     * @param player      The player that crafts it.
-     * @param block       The block of the workstation or players inventory.
-     * @param inventory   The inventory of the workstation or player.
+     * @param recipe    The {@link CraftingRecipe} to check.
+     * @param player    The player that crafts it.
+     * @param block     The block of the workstation or players inventory.
+     * @param inventory The inventory of the workstation or player.
      * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
      */
     @Nullable
@@ -113,7 +113,7 @@ public class CraftManager {
     /**
      * Consumes the active Recipe from the matrix and sets the correct item to the cursor.
      *
-     * @param event  The {@link InventoryClickEvent} that caused this click.
+     * @param event The {@link InventoryClickEvent} that caused this click.
      */
     public void consumeRecipe(InventoryClickEvent event) {
         var player = (Player) event.getWhoClicked();
@@ -235,7 +235,7 @@ public class CraftManager {
     /**
      * Generates the {@link MatrixData} from the specified ingredient array.
      * This is quite resource intensive and should not be called too much.
-     *
+     * <p>
      * Run it once for each inventory change and then use the generated value, till the next inventory update.
      *
      * @param ingredients The ingredients to generate the data for.
@@ -340,6 +340,7 @@ public class CraftManager {
 
         /**
          * The original grid size of the matrix.
+         *
          * @return The grid dimension.
          */
         public int getGridSize() {

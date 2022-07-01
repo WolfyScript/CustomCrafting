@@ -294,7 +294,6 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     }
 
     /**
-     *
      * @deprecated The upgrades are using their own object now. This method converts it to the new format. Use {@link #setEffectUpgrades(List)} instead!
      */
     @JsonIgnore

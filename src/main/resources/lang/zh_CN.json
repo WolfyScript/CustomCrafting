@@ -176,7 +176,7 @@
     },
     "player_experience": {
       "name": "玩家经验",
-      "description":[
+      "description": [
         "&7设置配方所需要的玩家经验"
       ]
     },
@@ -1867,116 +1867,117 @@
               ]
             }
           }
-        }},
-        "tags": {
-          "name": "&7\u27A5 &6&l标签",
+        }
+      },
+      "tags": {
+        "name": "&7\u27A5 &6&l标签",
+        "lore": [
+          "&7允许你配置标签",
+          "&7标签是一个物品的集合，可以使创建工作更容易。"
+        ]
+      },
+      "group": {
+        "name": "&7\u270E &6&l配方组",
+        "lore": [
+          "&7组: &e%group%",
+          "&e具有相同组别的配方在配方书中被归为一组",
+          "",
+          "&7[&a左键&7] &e输入组 ",
+          "&7[&a右键&7] &e重置组"
+        ],
+        "message": "&e输入组名"
+      }
+    },
+    "global_messages": {
+      "override": "&3输入配方的文件夹和名称!",
+      "valid_number": "&c输入有效数字!",
+      "save": {
+        "input": "&3输入文件夹和名称!&6如: folder recipe_name",
+        "key": {
+          "invalid": "&c输入不是有效的文件夹和key! \n确保他只包含: \n - 小写字母\n - 数字,\n - 下划线, \n - 或连接线!\n - 你不能使用 minecraft 命名空间!\n&c使用 &e/wui &cto 获得输入协助，如标签完成!"
+        },
+        "empty": "&c无法保存空配方!检查结果和来源/成分",
+        "success": "&a配方成功保存到:"
+      },
+      "loading": {
+        "error": "&c加载配方&4%REC%&c时出错",
+        "success": "&a加载并注入配方成功!",
+        "warning": "&c最好在完成后重新启动服务器，以防止配方无法正常工作!"
+      }
+    },
+    "conditions": {
+      "gui_name": "条件",
+      "mode_names": {
+        "exact": "&e精确值",
+        "ignore": "&c禁用",
+        "higher": "&e>",
+        "lower": "&e<",
+        "higher_lower": "&e高还是低",
+        "higher_exact": "&e>=",
+        "lower_exact": "&e<="
+      },
+      "items": {
+        "world_time": {
+          "name": "&7- 世界时间 - ",
           "lore": [
-            "&7允许你配置标签",
-            "&7标签是一个物品的集合，可以使创建工作更容易。"
+            "&7时间:&e %VALUE%",
+            "&7模式:&e %MODE%",
+            "&8[&a右键点击&8]&7切换模式",
+            "&8[&a左键点击&8]&7设置时间"
           ]
         },
-        "group": {
-          "name": "&7\u270E &6&l配方组",
+        "player_experience": {
+          "name": "&7- 玩家经验 - ",
           "lore": [
-            "&7组: &e%group%",
-            "&e具有相同组别的配方在配方书中被归为一组",
+            "&7经验:&e %VALUE%",
+            "&7模式:&e %MODE%",
+            "&8[&a右键点击&8]&7切换模式",
+            "&8[&a左键点击&8]&7设置经验等级"
+          ]
+        },
+        "remove": {
+          "name": "&c&l异常",
+          "lore": [
+            "&e从配方中移除选定的条件",
+            "&8[&aClick&8] &7移除添加"
+          ]
+        },
+        "page_up": {
+          "name": "&7&l上"
+        },
+        "page_down": {
+          "name": "&7&l下"
+        },
+        "toggle_mode": {
+          "name": "&6&l切换模式",
+          "lore": [
+            "&7模式: %mode%",
             "",
-            "&7[&a左键&7] &e输入组 ",
-            "&7[&a右键&7] &e重置组"
-          ],
-          "message": "&e输入组名"
-        }
-      },
-      "global_messages": {
-        "override": "&3输入配方的文件夹和名称!",
-        "valid_number": "&c输入有效数字!",
-        "save": {
-          "input": "&3输入文件夹和名称!&6如: folder recipe_name",
-          "key": {
-            "invalid": "&c输入不是有效的文件夹和key! \n确保他只包含: \n - 小写字母\n - 数字,\n - 下划线, \n - 或连接线!\n - 你不能使用 minecraft 命名空间!\n&c使用 &e/wui &cto 获得输入协助，如标签完成!"
-          },
-          "empty": "&c无法保存空配方!检查结果和来源/成分",
-          "success": "&a配方成功保存到:"
+            "&8[&aClick&8] &7切换模式"
+          ]
         },
-        "loading": {
-          "error": "&c加载配方&4%REC%&c时出错",
-          "success": "&a加载并注入配方成功!",
-          "warning": "&c最好在完成后重新启动服务器，以防止配方无法正常工作!"
-        }
-      },
-      "conditions": {
-        "gui_name": "条件",
-        "mode_names": {
-          "exact": "&e精确值",
-          "ignore": "&c禁用",
-          "higher": "&e>",
-          "lower": "&e<",
-          "higher_lower": "&e高还是低",
-          "higher_exact": "&e>=",
-          "lower_exact": "&e<="
-        },
-        "items": {
+        "conditions": {
           "world_time": {
-            "name": "&7- 世界时间 - ",
-            "lore": [
-              "&7时间:&e %VALUE%",
-              "&7模式:&e %MODE%",
-              "&8[&a右键点击&8]&7切换模式",
-              "&8[&a左键点击&8]&7设置时间"
-            ]
+            "set": {
+              "name": "&a&l设置时间",
+              "lore": [
+                "&7时间:&e %VALUE% ticks",
+                "&8[&aClick&8] &7设置时间"
+              ],
+              "message": "&e键入时间，单位为ticks"
+            }
           },
           "player_experience": {
-            "name": "&7- 玩家经验 - ",
-            "lore": [
-              "&7经验:&e %VALUE%",
-              "&7模式:&e %MODE%",
-              "&8[&a右键点击&8]&7切换模式",
-              "&8[&a左键点击&8]&7设置经验等级"
-            ]
+            "set": {
+              "name": "&a&l设置经验",
+              "lore": [
+                "&7经验:&e %VALUE%",
+                "",
+                "&8[&aClick&8] &7设置经验等级"
+              ],
+              "message": "&e输入经验等级"
+            }
           },
-          "remove": {
-            "name": "&c&l异常",
-            "lore": [
-              "&e从配方中移除选定的条件",
-              "&8[&aClick&8] &7移除添加"
-            ]
-          },
-          "page_up": {
-            "name": "&7&l上"
-          },
-          "page_down": {
-            "name": "&7&l下"
-          },
-          "toggle_mode": {
-            "name": "&6&l切换模式",
-            "lore": [
-              "&7模式: %mode%",
-              "",
-              "&8[&aClick&8] &7切换模式"
-            ]
-          },
-          "conditions": {
-            "world_time": {
-              "set": {
-                "name": "&a&l设置时间",
-                "lore": [
-                  "&7时间:&e %VALUE% ticks",
-                  "&8[&aClick&8] &7设置时间"
-                ],
-                "message": "&e键入时间，单位为ticks"
-              }
-            },
-            "player_experience": {
-              "set": {
-                "name": "&a&l设置经验",
-                "lore": [
-                  "&7经验:&e %VALUE%",
-                  "",
-                  "&8[&aClick&8] &7设置经验等级"
-                ],
-                "message": "&e输入经验等级"
-              }
-            },
           "world_name": {
             "add": {
               "name": "&a&l添加世界 ",
@@ -2066,7 +2067,7 @@
             }
           },
           "permission": {
-            "set":{
+            "set": {
               "name": "&7- Permission - ",
               "lore": [
                 "&7Permission:&e %VALUE%",
@@ -2745,7 +2746,6 @@
           "&7把你想要的东西放进去.",
           "&7提示:",
           "&eShift&7+&e右键点击&7会打开物品编辑器"
-          
         ]
       },
       "ingredient": {
@@ -3350,7 +3350,7 @@
           "duration": {
             "name": "&7持续时间: &3%duration%",
             "lore": [
-              "&e设置药水效果的持续时间，单位为ticks", 
+              "&e设置药水效果的持续时间，单位为ticks",
               "&7[&aClick&7] 输入持续时间"
             ],
             "message": "&e键入以刻度为单位的持续时间数字值! 20 ticks = 1 sec"

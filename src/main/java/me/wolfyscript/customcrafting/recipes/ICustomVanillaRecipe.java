@@ -27,10 +27,13 @@ import org.bukkit.inventory.Recipe;
 
 public interface ICustomVanillaRecipe<T extends Recipe> {
 
-    @JsonIgnore T getVanillaRecipe();
+    @JsonIgnore
+    T getVanillaRecipe();
 
-    @JsonIgnore boolean isVisibleVanillaBook();
+    @JsonIgnore
+    boolean isVisibleVanillaBook();
 
-    @JsonIgnore void setVisibleVanillaBook(boolean vanillaBook);
+    @JsonIgnore
+    void setVisibleVanillaBook(boolean vanillaBook);
 
 }

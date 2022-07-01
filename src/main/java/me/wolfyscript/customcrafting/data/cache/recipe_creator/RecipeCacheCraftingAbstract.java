@@ -85,7 +85,7 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
 
     @Override
     public void setIngredient(int slot, Ingredient ingredients) {
-        if(ingredients != null) {
+        if (ingredients != null) {
             ingredients.buildChoices();
         }
         if (ingredients == null || ingredients.isEmpty()) {

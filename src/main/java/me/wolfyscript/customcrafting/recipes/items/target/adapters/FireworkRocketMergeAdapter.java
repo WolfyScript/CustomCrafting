@@ -58,13 +58,13 @@ public class FireworkRocketMergeAdapter extends MergeAdapter {
 
     @Override
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
-        if(result.getType().equals(Material.FIREWORK_ROCKET)) {
+        if (result.getType().equals(Material.FIREWORK_ROCKET)) {
             if (result.getItemMeta() instanceof FireworkMeta meta) {
                 for (IngredientData bySlot : recipeData.getBySlots(slots)) {
                     var item = bySlot.itemStack();
                     if (item.getType().equals(Material.GUNPOWDER)) {
                         meta.setPower(meta.getPower() + powerIncrement);
-                    } else if(item.getItemMeta() instanceof FireworkEffectMeta effectMeta) {
+                    } else if (item.getItemMeta() instanceof FireworkEffectMeta effectMeta) {
                         if (effectMeta.hasEffect()) {
                             meta.addEffect(effectMeta.getEffect());
                         }

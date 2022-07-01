@@ -65,8 +65,10 @@ public class ConditionCustomPlayerCheck extends Condition<ConditionCustomPlayerC
 
         public GUIComponent() {
             super(Material.COMMAND_BLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
-                    (menu, api) -> {},
-                    (update, cache, condition, recipe) -> {});
+                    (menu, api) -> {
+                    },
+                    (update, cache, condition, recipe) -> {
+                    });
         }
 
         @Override

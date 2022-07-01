@@ -57,10 +57,14 @@ import java.util.stream.Stream;
 
 public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
-    @JsonIgnore private List<Integer> indexes;
-    @JsonIgnore private int combinations = 1;
-    @JsonIgnore private int nonEmptyIngredientSize;
-    @JsonIgnore private boolean hasAllowedEmptyIngredient;
+    @JsonIgnore
+    private List<Integer> indexes;
+    @JsonIgnore
+    private int combinations = 1;
+    @JsonIgnore
+    private int nonEmptyIngredientSize;
+    @JsonIgnore
+    private boolean hasAllowedEmptyIngredient;
 
     protected AbstractRecipeShapeless(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node, gridSize, settingsType);
@@ -127,7 +131,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         indexes.sort((index, index1) -> {
             var ingredient = this.ingredients.get(index);
             var ingredient1 = this.ingredients.get(index1);
-            if(ingredient.getChoices().size() > 1) {
+            if (ingredient.getChoices().size() > 1) {
                 return ingredient1.getChoices().size() > 1 ? 0 : 1;
             }
             return ingredient1.getChoices().size() > 1 ? -1 : 0;
@@ -140,7 +144,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @Override
     public boolean fitsDimensions(CraftManager.MatrixData matrixData) {
-        return hasAllowedEmptyIngredient ? ( matrixData.getStrippedSize() >= nonEmptyIngredientSize && matrixData.getStrippedSize() <= ingredients.size() ) : matrixData.getStrippedSize() == nonEmptyIngredientSize;
+        return hasAllowedEmptyIngredient ? (matrixData.getStrippedSize() >= nonEmptyIngredientSize && matrixData.getStrippedSize() <= ingredients.size()) : matrixData.getStrippedSize() == nonEmptyIngredientSize;
     }
 
     @Override
@@ -175,7 +179,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         if ((selectedSlots.size() == ingredients.size())) {
             return new CraftingData(this, dataMap);
         }
-        if(hasAllowedEmptyIngredient && matrixData.getStrippedSize() == selectedSlots.size()) { //The empty ingredients can be very tricky in shapeless recipes and shouldn't be used... but might as well implement it anyway.
+        if (hasAllowedEmptyIngredient && matrixData.getStrippedSize() == selectedSlots.size()) { //The empty ingredients can be very tricky in shapeless recipes and shouldn't be used... but might as well implement it anyway.
             if (indexes.stream().filter(index -> !selectedSlots.contains(index)).allMatch(index -> ingredients.get(index).isAllowEmpty())) {
                 return new CraftingData(this, dataMap);
             }

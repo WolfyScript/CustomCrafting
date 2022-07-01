@@ -117,7 +117,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         static Collection<Container<? extends CustomRecipe<?>>> values() {
             return ContainerImpl.values.values();
         }
-        
+
         static boolean isLegacy(String id) {
             return !ContainerImpl.values.containsKey(id) && ContainerImpl.legacyValues.containsKey(id);
         }

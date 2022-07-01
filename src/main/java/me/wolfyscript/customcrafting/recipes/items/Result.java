@@ -132,7 +132,7 @@ public class Result extends RecipeItemStack {
     public void addExtension(ResultExtension extension) {
         this.extensions.add(extension);
         if (extension.getExecutionType().equals(ExecutionType.BULK)) {
-           this.bulkExtensions.add(extension);
+            this.bulkExtensions.add(extension);
         }
     }
 

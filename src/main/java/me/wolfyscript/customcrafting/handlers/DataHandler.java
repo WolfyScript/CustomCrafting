@@ -92,7 +92,7 @@ public class DataHandler implements Listener {
     }
 
     private void initLoaders() {
-        if(localStorageLoader != null) {
+        if (localStorageLoader != null) {
             loaders.add(localStorageLoader);
         }
         if (databaseLoader != null) {

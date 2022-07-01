@@ -86,7 +86,7 @@ public class RecipeList {
 
     public void setFilterType(RecipeType<?> filterType) {
         this.filterType = filterType;
-        if(filterType != null) {
+        if (filterType != null) {
             this.filterClass = switch (filterType.getType()) {
                 case CRAFTING_SHAPED -> ShapedRecipe.class;
                 case CRAFTING_SHAPELESS -> ShapelessRecipe.class;

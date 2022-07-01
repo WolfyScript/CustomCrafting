@@ -455,10 +455,7 @@ public class RecipeCreatorBrewing extends RecipeCreator {
 
     private String getOption(BrewingGUICache brewingGUICache, RecipeCacheBrewing brewingRecipe) {
         // Ignore cache and parse option from the saved recipe if we're loading it fresh
-        if (
-            brewingRecipe.isSaved() &&
-            brewingGUICache.getParsedOptionKey() != brewingRecipe.getKey()
-        ) {
+        if (brewingRecipe.isSaved() && brewingGUICache.getParsedOptionKey() != brewingRecipe.getKey()) {
             String option = parseOption(brewingRecipe);
 
             brewingGUICache.setOption(option);

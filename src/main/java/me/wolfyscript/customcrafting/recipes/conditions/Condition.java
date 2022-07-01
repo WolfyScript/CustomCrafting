@@ -98,7 +98,8 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
     protected Conditions.Option option = Conditions.Option.EXACT;
     @JsonIgnore
     private List<Conditions.Option> availableOptions;
-    @JsonIgnore @JacksonInject("customcrafting")
+    @JsonIgnore
+    @JacksonInject("customcrafting")
     protected CustomCrafting customCrafting;
 
     protected Condition(NamespacedKey key) {

@@ -87,7 +87,7 @@ public class LocalStorageLoader extends ResourceLoader {
      * Gets the file at the specific path from the {@link NamespacedKey} and sub-folder.
      *
      * @param namespacedKey The NamespacedKey for the path.
-     * @param typeFolder The sub-folder of the path. Like {@link #ITEMS_FOLDER} or {@link #RECIPES_FOLDER}.
+     * @param typeFolder    The sub-folder of the path. Like {@link #ITEMS_FOLDER} or {@link #RECIPES_FOLDER}.
      * @return The File at the specific path.
      */
     private File getFileAt(NamespacedKey namespacedKey, String typeFolder) {
@@ -98,7 +98,7 @@ public class LocalStorageLoader extends ResourceLoader {
      * Gets the NamespacedKey from the namespace and path.
      *
      * @param namespace The namespace in the data folder.
-     * @param path The rest of the path.
+     * @param path      The rest of the path.
      * @return The NamespacedKey from the namespace and path.
      */
     private NamespacedKey keyFromFile(String namespace, Path path) {
@@ -300,7 +300,8 @@ public class LocalStorageLoader extends ResourceLoader {
                     try {
                         customCrafting.getRegistries().getRecipes().register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
                         loaded.add(namespacedKey);
-                    } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+                    } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException |
+                             IllegalAccessException e) {
                         ChatUtils.sendRecipeItemLoadingError("[LOCAL] ", namespacedKey.getNamespace(), namespacedKey.getKey(), e);
                         skippedError.add(namespacedKey);
                     }
@@ -311,7 +312,7 @@ public class LocalStorageLoader extends ResourceLoader {
         }
 
         protected String[] getOldTypeFolders(String namespace) {
-            return  new File(DATA_FOLDER + "/" + namespace).list((dir1, name) -> !name.equals(ITEMS_FOLDER) && !name.equals(RECIPES_FOLDER));
+            return new File(DATA_FOLDER + "/" + namespace).list((dir1, name) -> !name.equals(ITEMS_FOLDER) && !name.equals(RECIPES_FOLDER));
         }
 
     }
