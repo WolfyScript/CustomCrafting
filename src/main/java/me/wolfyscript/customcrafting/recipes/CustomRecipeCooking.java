@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
@@ -62,8 +63,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         this.source = ItemLoader.loadIngredient(node.path("source"));
     }
 
-    protected CustomRecipeCooking(NamespacedKey key) {
-        super(key);
+    protected CustomRecipeCooking(NamespacedKey key, CustomCrafting customCrafting) {
+        super(key, customCrafting);
         this.source = new Ingredient();
         this.exp = 0;
         this.cookingTime = 80;

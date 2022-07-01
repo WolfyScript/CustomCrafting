@@ -38,11 +38,16 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
     }
 
     @JsonCreator
-    public CustomRecipeCampfire(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
+    public CustomRecipeCampfire(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting);
     }
 
-    public CustomRecipeCampfire(CustomRecipeCampfire customRecipeCampfire) {
+    @Deprecated
+    public CustomRecipeCampfire(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
+    }
+
+    private CustomRecipeCampfire(CustomRecipeCampfire customRecipeCampfire) {
         super(customRecipeCampfire);
     }
 

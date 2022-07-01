@@ -38,8 +38,13 @@ public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace
     }
 
     @JsonCreator
-    public CustomRecipeFurnace(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
+    public CustomRecipeFurnace(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting);
+    }
+
+    @Deprecated
+    public CustomRecipeFurnace(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
     }
 
     public CustomRecipeFurnace(CustomRecipeFurnace customRecipeFurnace) {

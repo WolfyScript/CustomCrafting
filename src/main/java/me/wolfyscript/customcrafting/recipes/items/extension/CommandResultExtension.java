@@ -24,6 +24,9 @@ package me.wolfyscript.customcrafting.recipes.items.extension;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
@@ -38,13 +41,15 @@ import java.util.List;
 
 public class CommandResultExtension extends ResultExtension {
 
+    @JsonIgnore
     private final CustomCrafting customCrafting;
     private List<String> consoleCommands = new ArrayList<>();
     private List<String> playerCommands = new ArrayList<>();
     private boolean nearPlayer = false;
     private boolean nearWorkstation = false;
 
-    public CommandResultExtension(CustomCrafting customCrafting) {
+    @JsonCreator
+    public CommandResultExtension(@JacksonInject("customcrafting") CustomCrafting customCrafting) {
         super(new NamespacedKey(customCrafting, "command"));
         this.customCrafting = customCrafting;
     }

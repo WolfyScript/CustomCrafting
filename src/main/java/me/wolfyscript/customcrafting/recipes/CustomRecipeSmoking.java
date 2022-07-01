@@ -38,11 +38,16 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
     }
 
     @JsonCreator
-    public CustomRecipeSmoking(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
+    public CustomRecipeSmoking(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting);
     }
 
-    public CustomRecipeSmoking(CustomRecipeSmoking customRecipeSmoking) {
+    @Deprecated
+    public CustomRecipeSmoking(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
+    }
+
+    private CustomRecipeSmoking(CustomRecipeSmoking customRecipeSmoking) {
         super(customRecipeSmoking);
     }
 

@@ -38,11 +38,16 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
     }
 
     @JsonCreator
-    public CustomRecipeBlasting(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
+    public CustomRecipeBlasting(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting);
     }
 
-    public CustomRecipeBlasting(CustomRecipeBlasting customRecipeBlasting) {
+    @Deprecated
+    public CustomRecipeBlasting(NamespacedKey key) {
+        super(key, CustomCrafting.inst());
+    }
+
+    private CustomRecipeBlasting(CustomRecipeBlasting customRecipeBlasting) {
         super(customRecipeBlasting);
     }
 

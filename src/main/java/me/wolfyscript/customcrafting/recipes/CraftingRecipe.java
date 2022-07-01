@@ -83,8 +83,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         });
     }
 
-    protected CraftingRecipe(NamespacedKey key, int gridSize, S settings) {
-        super(key);
+    protected CraftingRecipe(NamespacedKey key, CustomCrafting customCrafting, int gridSize, S settings) {
+        super(key, customCrafting);
         this.ingredients = List.of();
         this.maxGridDimension = gridSize;
         this.maxIngredients = maxGridDimension * maxGridDimension;
