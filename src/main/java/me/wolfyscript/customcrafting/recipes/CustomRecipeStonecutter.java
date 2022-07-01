@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -67,13 +68,18 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
     }
 
     @JsonCreator
-    public CustomRecipeStonecutter(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key, RecipeType.STONECUTTER);
+    public CustomRecipeStonecutter(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting, RecipeType.STONECUTTER);
         this.result = new Result();
         this.source = new Ingredient();
     }
 
-    public CustomRecipeStonecutter(CustomRecipeStonecutter customRecipeStonecutter) {
+    @Deprecated
+    public CustomRecipeStonecutter(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
+    }
+
+    private CustomRecipeStonecutter(CustomRecipeStonecutter customRecipeStonecutter) {
         super(customRecipeStonecutter);
         this.result = customRecipeStonecutter.getResult();
         this.source = customRecipeStonecutter.getSource();

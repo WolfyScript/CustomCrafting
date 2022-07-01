@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
@@ -78,8 +79,8 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     }
 
     @JsonCreator
-    public CustomRecipeCauldron(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key, RecipeType.CAULDRON);
+    public CustomRecipeCauldron(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting, RecipeType.CAULDRON);
         this.result = new Result();
         this.ingredients = new Ingredient();
         this.dropItems = true;
@@ -89,6 +90,11 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.waterLevel = 0;
         this.needsWater = true;
         this.handItem = new CustomItem(Material.AIR);
+    }
+
+    @Deprecated
+    public CustomRecipeCauldron(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
     }
 
     public CustomRecipeCauldron(CustomRecipeCauldron customRecipeCauldron) {

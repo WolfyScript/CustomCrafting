@@ -115,6 +115,7 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.UpdateChecker;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
@@ -138,6 +139,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 
+@JsonIncludeProperties //Do not include properties because it is injected and there is no need to serialize it.
 public class CustomCrafting extends JavaPlugin {
 
     private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";

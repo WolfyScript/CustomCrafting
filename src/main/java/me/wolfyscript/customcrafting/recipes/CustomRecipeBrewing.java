@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.brewing.EffectAddition;
 import me.wolfyscript.customcrafting.recipes.brewing.EffectSettingsUpgrade;
 import me.wolfyscript.customcrafting.recipes.brewing.EffectSettingsRequired;
@@ -112,8 +113,8 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     }
 
     @JsonCreator
-    public CustomRecipeBrewing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key, RecipeType.BREWING_STAND);
+    public CustomRecipeBrewing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting, RecipeType.BREWING_STAND);
         this.ingredients = new Ingredient();
         this.fuelCost = 1;
         this.brewTime = 400;
@@ -130,7 +131,12 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         this.requiredEffectsByEffectType = new HashMap<>();
     }
 
-    public CustomRecipeBrewing(CustomRecipeBrewing customRecipeBrewing) {
+    @Deprecated
+    public CustomRecipeBrewing(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
+    }
+
+    private CustomRecipeBrewing(CustomRecipeBrewing customRecipeBrewing) {
         super(customRecipeBrewing);
         this.ingredients = customRecipeBrewing.getIngredient();
         this.fuelCost = customRecipeBrewing.getFuelCost();

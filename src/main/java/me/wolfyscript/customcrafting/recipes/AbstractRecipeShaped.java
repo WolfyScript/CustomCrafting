@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
@@ -84,13 +84,13 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         setIngredients(loadedIngredients);
     }
 
-    protected AbstractRecipeShaped(NamespacedKey key, Symmetry symmetry, String[] shape, int gridSize, S settings) {
-        this(key, symmetry, gridSize, settings);
+    protected AbstractRecipeShaped(NamespacedKey key, CustomCrafting customCrafting, Symmetry symmetry, String[] shape, int gridSize, S settings) {
+        this(key, customCrafting, symmetry, gridSize, settings);
         setShape(shape);
     }
 
-    protected AbstractRecipeShaped(NamespacedKey key, Symmetry symmetry, int gridSize, S settings) {
-        super(key, gridSize, settings);
+    protected AbstractRecipeShaped(NamespacedKey key, CustomCrafting customCrafting, Symmetry symmetry, int gridSize, S settings) {
+        super(key, customCrafting, gridSize, settings);
         this.symmetry = symmetry;
         this.mappedIngredients = new HashMap<>();
     }

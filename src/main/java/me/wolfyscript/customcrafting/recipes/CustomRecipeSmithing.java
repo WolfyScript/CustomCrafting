@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
@@ -67,8 +68,8 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     }
 
     @JsonCreator
-    public CustomRecipeSmithing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key, RecipeType.SMITHING);
+    public CustomRecipeSmithing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting, RecipeType.SMITHING);
         this.base = new Ingredient();
         this.addition = new Ingredient();
         this.result = new Result();
@@ -77,7 +78,12 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         this.onlyChangeMaterial = false;
     }
 
-    public CustomRecipeSmithing(CustomRecipeSmithing customRecipeSmithing) {
+    @Deprecated
+    public CustomRecipeSmithing(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
+    }
+
+    private CustomRecipeSmithing(CustomRecipeSmithing customRecipeSmithing) {
         super(customRecipeSmithing);
         this.result = customRecipeSmithing.getResult();
         this.base = customRecipeSmithing.getBase();

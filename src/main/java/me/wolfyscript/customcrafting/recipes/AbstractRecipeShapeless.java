@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
@@ -62,8 +63,8 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         setIngredients(Streams.stream(node.path(INGREDIENTS_KEY).elements()).map(ItemLoader::loadIngredient).toList());
     }
 
-    protected AbstractRecipeShapeless(NamespacedKey key, int gridSize, S settings) {
-        super(key, gridSize, settings);
+    protected AbstractRecipeShapeless(NamespacedKey key, CustomCrafting customCrafting, int gridSize, S settings) {
+        super(key, customCrafting, gridSize, settings);
     }
 
     protected AbstractRecipeShapeless(CraftingRecipe<C, S> craftingRecipe) {
