@@ -96,7 +96,7 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     public CustomRecipeBrewing(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
-        this.result = ItemLoader.loadResult(node.path("results"));
+        this.result = ItemLoader.loadResult(node.path("results"), this.customCrafting);
         this.fuelCost = node.path("fuel_cost").asInt(1);
         this.brewTime = node.path("brew_time").asInt(80);
         this.allowedItems = ItemLoader.loadIngredient(node.path("allowed_items"));

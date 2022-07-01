@@ -70,7 +70,12 @@ public class ItemLoader {
         return new Ingredient();
     }
 
+    @Deprecated
     public static Result loadResult(JsonNode node) {
+        return loadResult(node, CustomCrafting.inst());
+    }
+
+    public static Result loadResult(JsonNode node, CustomCrafting customCrafting) {
         final Result result;
         if (node.isArray()) {
             result = new Result();
@@ -82,7 +87,7 @@ public class ItemLoader {
             });
         } else {
             var injects = new InjectableValues.Std();
-            injects.addValue("customcrafting", CustomCrafting.inst());
+            injects.addValue("customcrafting", customCrafting);
             Result desResult = null;
             try {
                 desResult = JacksonUtil.getObjectMapper().reader(injects).readValue(node, Result.class);

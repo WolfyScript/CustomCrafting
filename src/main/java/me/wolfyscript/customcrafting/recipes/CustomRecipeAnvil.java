@@ -82,7 +82,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
             case NONE -> new RepairTaskDefault();
             case RESULT -> {
                 var repairModeResult = new RepairTaskResult();
-                repairModeResult.setResult(ItemLoader.loadResult(modeNode.path("result")));
+                repairModeResult.setResult(ItemLoader.loadResult(modeNode.path("result"), this.customCrafting));
                 yield repairModeResult;
             }
             case DURABILITY -> {

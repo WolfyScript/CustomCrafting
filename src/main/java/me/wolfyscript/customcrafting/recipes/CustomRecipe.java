@@ -122,7 +122,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.hidden = node.path(KEY_HIDDEN).asBoolean(false);
         //Sets the result of the recipe if one exists in the config
         if (node.has(KEY_RESULT) && !(this instanceof CustomRecipeStonecutter)) {
-            setResult(ItemLoader.loadResult(node.path(KEY_RESULT)));
+            setResult(ItemLoader.loadResult(node.path(KEY_RESULT), customCrafting));
         }
     }
 
@@ -252,7 +252,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     @JsonSetter("result")
     protected void setResult(JsonNode node) {
-        setResult(ItemLoader.loadResult(node));
+        setResult(ItemLoader.loadResult(node, this.customCrafting));
     }
 
     @JsonIgnore
