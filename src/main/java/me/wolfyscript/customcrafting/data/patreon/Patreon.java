@@ -39,9 +39,9 @@ public class Patreon {
     }
 
     public void initialize() {
-        addPatron(new Patron("Omarlatif", Tier.LEGEND));
+        addPatron(new Patron("Omarlatif", "f24ef68e-5126-414d-9102-54f15c023954", Tier.LEGEND));
         addPatron(new Patron("Nat R", "29e1d027-d8c2-457f-a1a8-e5387b84de31", Tier.ELITE));
-        addPatron(new Patron("Junye Zhou", Tier.DIAMOND));
+        addPatron(new Patron("Junye Zhou", "02fa85c4-97ea-4d1c-a5a9-f3b5e2f85975", Tier.DIAMOND));
         addPatron(new Patron("Apprehentice", "db61eab0-7fb1-48db-986f-125e73787976", Tier.WOLFRAM));
         addPatron(new Patron("PwassonDoDouce", Tier.WOLFRAM));
         addPatron(new Patron("Mr_Mint_", Tier.WOLFRAM));

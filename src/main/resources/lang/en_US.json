@@ -287,11 +287,12 @@
           ]
         },
         "patreon": {
-          "name": "<grey>\u27A5</grey>  <gold><b><obf>tt</obf>   Patreon   <obf>tt</obf></b></gold>",
+          "name": "<grey>\u27A5</grey>  <#FF424D><b><obf>tt</obf>   Patreon   <obf>tt</obf></b>",
           "lore": [
-            "<yellow>Become a Patron and get access to </yellow>",
-            "<yellow>latest updates.</yellow>",
-            "<grey>[<green>Click</green>]</grey> View current Patrons Credits"
+            "<grey>Become a Patron and get access to </grey>",
+            "<grey>latest updates.</grey>",
+            "",
+            "<grey>[<green>Click</green>]</grey> <yellow>View current Patrons Credits"
           ]
         },
         "youtube": {
@@ -419,7 +420,7 @@
         }
       },
       "patrons_menu": {
-        "gui_name": "<gold><b><obf>tt</obf>   Patreon   <obf>tt</obf></b></gold>",
+        "gui_name": "<#FF424D><b><obf>tt</obf>   Patreon   <obf>tt</obf></b>",
         "gui_help": [
           "<grey>Special thanks to my Patrons for supporting</grey>",
           "<grey>the development of this project.</grey>"
