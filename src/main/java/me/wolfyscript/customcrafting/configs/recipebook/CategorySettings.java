@@ -147,8 +147,12 @@ public abstract class CategorySettings {
         var itemMeta = categoryItem.getItemMeta();
         var languageAPI = customCrafting.getApi().getLanguageAPI();
         var miniMsg = customCrafting.getApi().getChat().getMiniMessage();
-        itemMeta.setDisplayName(BukkitComponentSerializer.legacy().serialize(miniMsg.deserialize(languageAPI.replaceKeys(getName()))));
-        itemMeta.setLore(languageAPI.replaceKeys(getDescription()).stream().map(s -> BukkitComponentSerializer.legacy().serialize(miniMsg.deserialize(languageAPI.convertLegacyToMiniMessage(s)))).toList());
+        if (getName().contains("§")) {
+            itemMeta.setDisplayName(getName());
+        } else {
+            itemMeta.setDisplayName(BukkitComponentSerializer.legacy().serialize(miniMsg.deserialize(languageAPI.replaceKeys(getName()))));
+        }
+        itemMeta.setLore(languageAPI.replaceKeys(getDescription()).stream().map(s -> s.contains("§") ? s : BukkitComponentSerializer.legacy().serialize(miniMsg.deserialize(languageAPI.convertLegacyToMiniMessage(s)))).toList());
         categoryItem.setItemMeta(itemMeta);
         return categoryItem;
     }
