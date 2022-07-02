@@ -49,6 +49,7 @@ public class Patreon {
         addPatron(new Patron("Jaden Bautista", Tier.WOLFRAM));
         addPatron(new Patron("Kyle Kangas", Tier.WOLFRAM));
         addPatron(new Patron("Jacob Folkerts", Tier.WOLFRAM));
+        addPatron(new Patron("Isabel Maskrey", Tier.WOLFRAM));
     }
 
     public void printPatreonCredits() {
