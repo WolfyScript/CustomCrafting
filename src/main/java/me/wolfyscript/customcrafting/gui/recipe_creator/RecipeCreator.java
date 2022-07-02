@@ -41,7 +41,7 @@ public abstract class RecipeCreator extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action(BACK).state(state -> state.icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(BACK).state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openCluster("none");
             return true;
         })).register();
