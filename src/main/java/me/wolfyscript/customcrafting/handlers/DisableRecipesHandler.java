@@ -52,7 +52,7 @@ public class DisableRecipesHandler {
         this.config = customCrafting.getConfigHandler().getConfig();
 
         if (!config.getDisabledRecipes().isEmpty()) {
-            recipes.addAll(config.getDisabledRecipes().parallelStream().map(NamespacedKey::of).toList());
+            recipes.addAll(config.getDisabledRecipes().parallelStream().map(NamespacedKey::of).filter(Objects::nonNull).toList());
             recipes.forEach(key -> {
                 if (customCrafting.getRegistries().getRecipes().has(key)) {
                     disableRecipe(Objects.requireNonNull(customCrafting.getRegistries().getRecipes().get(key)));

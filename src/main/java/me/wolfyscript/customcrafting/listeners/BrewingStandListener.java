@@ -60,12 +60,10 @@ public class BrewingStandListener implements Listener {
 
     private final CustomCrafting customCrafting;
     private final WolfyUtilities wolfyUtilities;
-    private final NMSUtil nmsUtil;
     private final Map<Location, Pair<BukkitTask, Map<CustomRecipeBrewing, CustomItem>>> activeBrewingStands = new HashMap<>();
 
     public BrewingStandListener(WolfyUtilities wolfyUtilities, CustomCrafting customCrafting) {
         this.wolfyUtilities = wolfyUtilities;
-        this.nmsUtil = wolfyUtilities.getNmsUtil();
         this.customCrafting = customCrafting;
     }
 

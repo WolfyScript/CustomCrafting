@@ -43,7 +43,6 @@ class ButtonSaveCategory extends ActionButton<CCCache> {
     ButtonSaveCategory(boolean saveAs, CustomCrafting customCrafting) {
         super(saveAs ? ClusterRecipeBookEditor.SAVE_AS.getKey() : ClusterRecipeBookEditor.SAVE.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             var recipeBookEditor = cache.getRecipeBookEditor();
-            GuiWindow<CCCache> guiWindow = inventory.getWindow();
             WolfyUtilities api = guiHandler.getApi();
 
             if (saveAs) {
@@ -55,7 +54,7 @@ class ButtonSaveCategory extends ActionButton<CCCache> {
                     Collections.sort(results);
                     return results;
                 });
-                guiWindow.openChat(guiHandler.getInvAPI().getGuiCluster(ClusterRecipeBookEditor.KEY), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
+                inventory.getWindow().openChat(guiHandler, inventory.getWindow().getCluster().translatedMsgKey("save.input"), (guiHandler1, player1, s, args) -> {
                     if (s != null && !s.isEmpty() && recipeBookEditor.setCategoryID(s)) {
                         if (saveCategorySetting(recipeBookEditor, customCrafting)) {
                             guiHandler1.openPreviousWindow();
