@@ -215,7 +215,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                 String data = resultSet.getString("rData");
                 try {
                     if (typeID == null || typeID.isBlank()) {
-                        return objectMapper.reader(new InjectableValues.Std().addValue("key", namespacedKey)).readValue(data, CustomRecipe.class);
+                        return objectMapper.reader(new InjectableValues.Std().addValue("customcrafting", customCrafting).addValue("key", namespacedKey)).readValue(data, CustomRecipe.class);
                     }
                     RecipeLoader<?> loader = RecipeType.valueOf(typeID);
                     if (loader == null && RecipeType.Container.valueOf(typeID) instanceof RecipeLoader<?> recipeLoader) {
