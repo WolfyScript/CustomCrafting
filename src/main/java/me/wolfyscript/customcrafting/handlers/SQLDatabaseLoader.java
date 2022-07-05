@@ -74,6 +74,9 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         }
     }
 
+    /**
+     * Loads the data from the configured database.
+     */
     @Override
     public void load() {
         api.getConsole().info("- - - - [Database Storage] - - - -");
@@ -82,11 +85,21 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         api.getConsole().info("");
     }
 
+    /**
+     * This does nothing when using the database, since the data is queried and updated
+     * when saving single recipes and items.
+     */
     @Override
     public void save() {
 
     }
 
+    /**
+     * Saves the specified recipe
+     *
+     * @param recipe The recipe to save
+     * @return true if the recipe was saved successfully; otherwise false.
+     */
     @Override
     public boolean save(CustomRecipe<?> recipe) {
         updateRecipe(recipe);

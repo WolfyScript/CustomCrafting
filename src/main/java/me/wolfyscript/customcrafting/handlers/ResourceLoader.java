@@ -66,10 +66,22 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
         }
     }
 
+    /**
+     * Sets the new value for the "replace data" option.<br>
+     * If set to true, this loader overrides already existing recipes that might be loaded by other loaders beforehand.
+     *
+     * @param replaceData The new boolean value for the "replace data" option
+     */
     public void setReplaceData(boolean replaceData) {
         this.replaceData = replaceData;
     }
 
+    /**
+     * Gets the value of the "replace data" option.<br>
+     * If set to true, this loader overrides already existing recipes that might be loaded by other loaders beforehand.
+     *
+     * @return replaceData True if enabled; otherwise false
+     */
     public boolean isReplaceData() {
         return replaceData;
     }
@@ -79,18 +91,54 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
         customCrafting.getRegistries().getRecipes().values().forEach(recipe -> recipe.save(this, null));
     }
 
+    /**
+     * Saves the specified recipe
+     *
+     * @param recipe The recipe to save
+     * @return true if the recipe was saved successfully; otherwise false.
+     */
     public abstract boolean save(CustomRecipe<?> recipe);
 
+    /**
+     * Saves the specified CustomItem
+     *
+     * @param item The recipe to save
+     * @return true if the recipe was saved successfully; otherwise false.
+     */
     public abstract boolean save(CustomItem item);
 
+    /**
+     * Deletes the specified recipe
+     *
+     * @param recipe The recipe to delete
+     * @return true if the recipe was successfully deleted; otherwise false
+     */
     public abstract boolean delete(CustomRecipe<?> recipe);
 
+    /**
+     * Deletes the specified CustomItem
+     *
+     * @param item The item to delete
+     * @return true if the item was successfully deleted; otherwise false
+     */
     public abstract boolean delete(CustomItem item);
 
+    /**
+     * Gets the priority of this loader.<br>
+     * Loaders of higher priority are loaded first, therefor their recipes and items take priority over the once loaded after.
+     *
+     * @return The integer priority of this loader.
+     */
     public int getPriority() {
         return priority;
     }
 
+    /**
+     * Sets the priority of this loader.<br>
+     * Loaders of higher priority are loaded first, therefor their recipes and items take priority over the once loaded after.
+     *
+     * @param priority The new priority of this loader.
+     */
     public void setPriority(int priority) {
         this.priority = priority;
     }

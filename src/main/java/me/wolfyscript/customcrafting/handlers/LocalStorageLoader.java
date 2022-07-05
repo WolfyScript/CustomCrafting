@@ -320,7 +320,7 @@ public class LocalStorageLoader extends ResourceLoader {
     /**
      * Used to load data & cache the loaded, skipped errors & already existing keys.
      */
-    private abstract class DataLoader {
+    private abstract static class DataLoader {
 
         protected List<NamespacedKey> loaded;
         protected List<NamespacedKey> skippedError;

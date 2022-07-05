@@ -136,7 +136,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 
-@JsonIncludeProperties //Do not include properties because it is injected and there is no need to serialize it.
+@JsonIncludeProperties(/* Do not include properties because it is injected and there is no need to serialize this class! */)
 public class CustomCrafting extends JavaPlugin {
 
     private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
@@ -227,7 +227,7 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("CustomCrafting: v" + getVersion().getVersion());
         getLogger().info("Environment   : " + WolfyUtilities.getENVIRONMENT());
 
-        getLogger().info("Registering custom data");
+        getLogger().info("Registering CustomItem Data");
         var customItemData = api.getRegistries().getCustomItemData();
         customItemData.register(new EliteWorkbenchData.Provider());
         customItemData.register(new RecipeBookData.Provider());
@@ -274,6 +274,7 @@ public class CustomCrafting extends JavaPlugin {
             recipeConditions.register(ConditionScoreboard.KEY, ConditionScoreboard.class, new ConditionScoreboard.GUIComponent());
         }
 
+        getLogger().info("Registering Recipe Types");
         var recipeTypes = getRegistries().getRecipeTypes();
         recipeTypes.register(RecipeType.CRAFTING_SHAPED);
         recipeTypes.register(RecipeType.CRAFTING_SHAPELESS);
@@ -290,11 +291,13 @@ public class CustomCrafting extends JavaPlugin {
         recipeTypes.register(RecipeType.BREWING_STAND);
         recipeTypes.register(RecipeType.SMITHING);
 
+        getLogger().info("Registering Anvil Recipe Tasks");
         var anvilRecipeRepairTasks = getRegistries().getAnvilRecipeRepairTasks();
         anvilRecipeRepairTasks.register(RepairTaskDefault.KEY, RepairTaskDefault.class);
         anvilRecipeRepairTasks.register(RepairTaskResult.KEY, RepairTaskResult.class);
         anvilRecipeRepairTasks.register(RepairTaskDurability.KEY, RepairTaskDurability.class);
 
+        getLogger().info("Registering Type Registries");
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, resultExtensions);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, resultMergeAdapters);
         KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) (Object) Condition.class, recipeConditions);
@@ -387,6 +390,7 @@ public class CustomCrafting extends JavaPlugin {
     private void registerInventories() {
         api.getConsole().info("$msg.startup.inventories$");
         InventoryAPI<CCCache> invAPI = this.api.getInventoryAPI(CCCache.class);
+        getLogger().info("Register ItemCreator Tabs");
         var registry = getRegistries().getItemCreatorTabs();
         //Register tabs for the item creator
         registry.register(new TabArmorSlots());
@@ -426,10 +430,20 @@ public class CustomCrafting extends JavaPlugin {
         return configHandler;
     }
 
+    /**
+     * Gets the formatted name of this plugin.
+     *
+     * @return The Component of the formatted plugin name.
+     */
     public Component getColoredTitle() {
         return coloredTitle;
     }
 
+    /**
+     * Gets the WolfyUtilities API instance that is bound to this plugin.
+     *
+     * @return The WolfyUtilities instance of this plugin.
+     */
     public WolfyUtilities getApi() {
         return api;
     }
@@ -438,10 +452,21 @@ public class CustomCrafting extends JavaPlugin {
         this.networkHandler.disconnectPlayer(player);
     }
 
+    /**
+     * Gets the DataHandler that loads and saves recipes and items, that are saved in the data directory.
+     *
+     * @return The DataHandler instance
+     */
     public DataHandler getDataHandler() {
         return dataHandler;
     }
 
+    /**
+     * Gets the CraftManager that manages crafting and caches required data.<br>
+     * This can be used to identify if a player has an active custom recipe for example.
+     *
+     * @return The CraftManager instance
+     */
     public CraftManager getCraftManager() {
         return craftManager;
     }
@@ -470,14 +495,30 @@ public class CustomCrafting extends JavaPlugin {
         return updateChecker;
     }
 
+    /**
+     * Gets the version of CustomCrafting parsed to the {@link WUVersion} object.
+     *
+     * @return The version of CustomCrafting
+     */
     public WUVersion getVersion() {
         return version;
     }
 
+    /**
+     * Gets the DisableRecipesHandler that handles toggling of vanilla and custom recipes.
+     *
+     * @return The DisableRecipeHandler instance
+     */
     public DisableRecipesHandler getDisableRecipesHandler() {
         return disableRecipesHandler;
     }
 
+    /**
+     * Gets the Registries of CustomCrafting.<br>
+     * Registries allow you to add custom content to CustomCrafting, from recipes to JSON configurable objects.
+     *
+     * @return The Registries of CustomCrafting
+     */
     public CCRegistries getRegistries() {
         return registries;
     }
