@@ -189,8 +189,7 @@ public class FurnaceListener implements Listener {
         while (expLevels > 0) {
             int totalXp = getExperienceValue(expLevels);
             expLevels -= totalXp;
-            int finalExp = expLevels;
-            loc.getWorld().spawn(loc, ExperienceOrb.class, orb -> orb.setExperience(finalExp));
+            loc.getWorld().spawn(loc, ExperienceOrb.class, orb -> orb.setExperience(totalXp));
         }
     }
 
