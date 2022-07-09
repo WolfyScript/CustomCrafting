@@ -51,7 +51,7 @@ class ButtonCategory extends ActionButton<CCCache> {
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            itemStack.setType(category.getIcon());
+            itemStack = category.getIconStack();
             values.put("%name%", category.getName());
             values.put("%description%", category.getDescription());
             return itemStack;

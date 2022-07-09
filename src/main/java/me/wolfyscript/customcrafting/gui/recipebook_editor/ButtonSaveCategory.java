@@ -31,6 +31,7 @@ import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.util.StringUtil;
 
@@ -79,7 +80,7 @@ class ButtonSaveCategory extends ActionButton<CCCache> {
     private static boolean saveCategorySetting(RecipeBookEditor recipeBookEditor, CustomCrafting customCrafting) {
         var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
         CategorySettings category = recipeBookEditor.getCategorySetting();
-        if (category.getIcon() == null) {
+        if (ItemUtils.isAirOrNull(category.getIconStack())) {
             return false;
         }
         if (category instanceof CategoryFilter filter) {

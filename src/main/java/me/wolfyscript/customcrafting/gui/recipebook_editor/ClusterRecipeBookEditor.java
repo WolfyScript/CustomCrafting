@@ -83,15 +83,15 @@ public class ClusterRecipeBookEditor extends CCCluster {
         btnBld.itemInput(ICON.getKey()).state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, slot, event) -> {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 if (!ItemUtils.isAirOrNull(inventory.getItem(slot))) {
-                    cache.getRecipeBookEditor().getCategorySetting().setIcon(inventory.getItem(slot).getType());
+                    cache.getRecipeBookEditor().getCategorySetting().setIconStack(inventory.getItem(slot));
                 } else {
-                    cache.getRecipeBookEditor().getCategorySetting().setIcon(Material.AIR);
+                    cache.getRecipeBookEditor().getCategorySetting().setIconStack(new ItemStack(Material.AIR));
                 }
             });
             return false;
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
             var categorySettings = guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting();
-            return CallbackButtonRender.UpdateResult.of(categorySettings != null && categorySettings.getIcon() != null ? new ItemStack(categorySettings.getIcon()) : new ItemStack(Material.AIR));
+            return CallbackButtonRender.UpdateResult.of(categorySettings != null ? categorySettings.getIconStack() : new ItemStack(Material.AIR));
         })).register();
         btnBld.chatInput(NAME.getKey()).state(state -> state.icon(Material.NAME_TAG).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("name", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getName())))).inputAction((guiHandler, player, s, strings) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().setName(s);
