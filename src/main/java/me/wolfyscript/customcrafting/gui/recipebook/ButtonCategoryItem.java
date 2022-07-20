@@ -57,14 +57,16 @@ class ButtonCategoryItem extends Button<CCCache> {
             ButtonContainerRecipeBook.resetButtons(guiHandler);
             if (!recipeBookConfig.getSortedFilters().isEmpty()) {
                 RecipeBookCache bookCache = guiHandler.getCustomCache().getRecipeBookCache();
-                int currentIndex = recipeBookConfig.getSortedFilters().indexOf(bookCache.getCategoryFilter().getId());
-                int nextIndex;
-                if (clickEvent.isLeftClick()) {
-                    nextIndex = currentIndex < recipeBookConfig.getSortedFilters().size() - 1 ? currentIndex + 1 : 0;
-                } else {
-                    nextIndex = currentIndex > 0 ? currentIndex - 1 : recipeBookConfig.getSortedFilters().size() - 1;
-                }
-                bookCache.setCategoryFilter(recipeBookConfig.getFilter(nextIndex));
+                bookCache.getCategoryFilter().ifPresent(categoryFilter -> {
+                    int currentIndex = recipeBookConfig.getSortedFilters().indexOf(categoryFilter.getId());
+                    int nextIndex;
+                    if (clickEvent.isLeftClick()) {
+                        nextIndex = currentIndex < recipeBookConfig.getSortedFilters().size() - 1 ? currentIndex + 1 : 0;
+                    } else {
+                        nextIndex = currentIndex > 0 ? currentIndex - 1 : recipeBookConfig.getSortedFilters().size() - 1;
+                    }
+                    bookCache.setCategoryFilter(recipeBookConfig.getFilter(nextIndex));
+                });
             }
         }
         return true;
@@ -72,7 +74,7 @@ class ButtonCategoryItem extends Button<CCCache> {
 
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
-        inventory.setItem(slot, guiHandler.getCustomCache().getRecipeBookCache().getCategoryFilter().createItemStack(customCrafting));
+        guiHandler.getCustomCache().getRecipeBookCache().getCategoryFilter().ifPresent(filter -> inventory.setItem(slot, filter.createItemStack(customCrafting)));
     }
 
     @Override
