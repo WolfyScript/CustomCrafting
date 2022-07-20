@@ -3208,6 +3208,12 @@
             ]
           }
         }
+      },
+      "category_overview": {
+        "gui_name": "<category_name>",
+        "items": {
+
+        }
       }
     },
     "recipe_view": {
