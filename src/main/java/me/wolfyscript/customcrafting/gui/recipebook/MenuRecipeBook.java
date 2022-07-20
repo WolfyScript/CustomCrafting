@@ -120,43 +120,42 @@ public class MenuRecipeBook extends CCWindow {
         CCPlayerData playerStore = PlayerUtil.getStore(player);
         NamespacedKey grayBtnKey = playerStore.getLightBackground();
         var recipeBookCache = event.getGuiHandler().getCustomCache().getRecipeBookCache();
-        if (recipeBookCache.getSubFolder() == 0) {
-            event.getGuiHandler().openWindow(ClusterRecipeBook.CATEGORY_OVERVIEW);
-            return;
-        }
-        if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
-            for (int i = 1; i < 9; i++) {
-                event.setButton(i, grayBtnKey);
+        if (recipeBookCache.getSubFolder() > 0) {
+            if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
+                for (int i = 1; i < 9; i++) {
+                    event.setButton(i, grayBtnKey);
+                }
+                for (int i = 1; i < 9; i++) {
+                    event.setButton(i, grayBtnKey);
+                }
+                for (int i = 36; i < 45; i++) {
+                    event.setButton(i, grayBtnKey);
+                }
             }
-            for (int i = 1; i < 9; i++) {
-                event.setButton(i, grayBtnKey);
+            List<CustomRecipe<?>> recipes = recipeBookCache.getSubFolderRecipes();
+            int maxPages = recipes.size();
+            if (recipeBookCache.getSubFolderPage() >= maxPages) {
+                recipeBookCache.setSubFolderPage(0);
             }
-            for (int i = 36; i < 45; i++) {
-                event.setButton(i, grayBtnKey);
-            }
-        }
-        List<CustomRecipe<?>> recipes = recipeBookCache.getSubFolderRecipes();
-        int maxPages = recipes.size();
-        if (recipeBookCache.getSubFolderPage() >= maxPages) {
-            recipeBookCache.setSubFolderPage(0);
-        }
-        if (recipeBookCache.getSubFolderPage() < recipes.size()) {
-            CustomRecipe<?> customRecipe = recipes.get(recipeBookCache.getSubFolderPage());
-            if (recipeBookCache.isPrepareRecipe()) { //This makes sure we only prepare the recipe once
-                //A new prepare can be queued by using book.setPrepareRecipe(true)
-                recipeBookCache.applyRecipeToButtons(event.getGuiHandler(), customRecipe);
-                recipeBookCache.setPrepareRecipe(false);
-            }
-            customRecipe.renderMenu(this, event);
-            boolean elite = RecipeType.Container.ELITE_CRAFTING.isInstance(customRecipe);
-            if (recipeBookCache.getSubFolderPage() > 0) {
-                event.setButton(elite ? 51 : 48, PREVIOUS_RECIPE);
-            }
-            event.setButton(elite ? 52 : 49, ClusterRecipeBook.BACK_TO_LIST);
-            if (recipeBookCache.getSubFolderPage() + 1 < recipes.size()) {
-                event.setButton(elite ? 53 : 50, NEXT_RECIPE);
+            if (recipeBookCache.getSubFolderPage() < recipes.size()) {
+                CustomRecipe<?> customRecipe = recipes.get(recipeBookCache.getSubFolderPage());
+                if (recipeBookCache.isPrepareRecipe()) { //This makes sure we only prepare the recipe once
+                    //A new prepare can be queued by using book.setPrepareRecipe(true)
+                    recipeBookCache.applyRecipeToButtons(event.getGuiHandler(), customRecipe);
+                    recipeBookCache.setPrepareRecipe(false);
+                }
+                customRecipe.renderMenu(this, event);
+                boolean elite = RecipeType.Container.ELITE_CRAFTING.isInstance(customRecipe);
+                if (recipeBookCache.getSubFolderPage() > 0) {
+                    event.setButton(elite ? 51 : 48, PREVIOUS_RECIPE);
+                }
+                event.setButton(elite ? 52 : 49, ClusterRecipeBook.BACK_TO_LIST);
+                if (recipeBookCache.getSubFolderPage() + 1 < recipes.size()) {
+                    event.setButton(elite ? 53 : 50, NEXT_RECIPE);
+                }
             }
         }
+
     }
 
     @Override

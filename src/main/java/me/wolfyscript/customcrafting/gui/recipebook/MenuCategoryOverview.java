@@ -106,10 +106,6 @@ public class MenuCategoryOverview extends CCWindow {
         var player = event.getPlayer();
         CCPlayerData playerStore = PlayerUtil.getStore(player);
         var recipeBookCache = event.getGuiHandler().getCustomCache().getRecipeBookCache();
-        if (recipeBookCache.getSubFolder() > 0) {
-            event.getGuiHandler().openWindow(ClusterRecipeBook.RECIPE_BOOK);
-            return;
-        }
         if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
             for (int i = 0; i < 9; i++) {
                 event.setButton(i, playerStore.getDarkBackground());

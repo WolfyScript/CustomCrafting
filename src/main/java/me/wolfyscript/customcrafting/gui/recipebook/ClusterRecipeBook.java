@@ -126,6 +126,7 @@ public class ClusterRecipeBook extends CCCluster {
                 } else {
                     book.setResearchItems(new ArrayList<>());
                 }
+                guiHandler.openPreviousWindow();
             }
             return true;
         })).register();
