@@ -302,11 +302,25 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         if (!ingredients.isEmpty()) {
             ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(maxIngredients))).setVariants(guiHandler, this.getResult());
-            int i = 0;
+            //Center Recipe as best as possible
+            // 3 - 1 = 2 / 2 = 1 -> _x_     4 - 1 = 3 / 2 = 1 -> _x__
+            // 3 - 2 = 1 / 2 = 0 -> xx_     4 - 2 = 2 / 2 = 1 -> _xx_
+            //                              4 - 3 = 1 / 2 = 0 -> xxx_
+            //
+            // 5 - 1 = 4 / 2 = 2 -> __x__   6 - 5 = 1 / 2 = 0 -> xxxxx_
+            // 5 - 2 = 3 / 2 = 1 -> _xx__   6 - 4 = 2 / 2 = 1 -> _xxxx_
+            // 5 - 3 = 2 / 2 = 1 -> _xxx_   6 - 3 = 3 / 2 = 1 -> _xxx__
+            // 5 - 4 = 1 / 2 = 0 -> xxxx_   6 - 2 = 4 / 2 = 2 -> __xx__
+            //                              6 - 1 = 5 / 2 = 2 -> __x___
+            int rowOffset = (maxGridDimension - internalShape.getWidth()) / 2;
+            int columnOffset = (maxGridDimension - internalShape.getHeight()) / 2;
+            int rowLimit = internalShape.width + rowOffset;
+            int columnLimit = internalShape.height + columnOffset;
+            int i = (columnOffset * maxGridDimension) + rowOffset;
             int ingredientIndex = 0;
-            for (int r = 0; r < maxGridDimension; r++) {
-                for (int c = 0; c < maxGridDimension; c++) {
-                    if (c < internalShape.width && r < internalShape.height && ingredientIndex < ingredients.size()) {
+            for (int r = columnOffset; r < maxGridDimension; r++) {
+                for (int c = rowOffset; c < maxGridDimension; c++) {
+                    if (c < rowLimit && r < columnLimit && ingredientIndex < ingredients.size()) {
                         var ingredient = ingredients.get(ingredientIndex);
                         if (ingredient != null) {
                             ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i))).setVariants(guiHandler, ingredient);
@@ -315,6 +329,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                     }
                     i++;
                 }
+                i += rowOffset;
             }
         }
     }
