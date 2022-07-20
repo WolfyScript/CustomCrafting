@@ -134,7 +134,7 @@ public class MenuRecipeBook extends CCWindow {
                     event.setButton(i, ClusterMain.EMPTY);
                 }
             }
-            List<RecipeContainer> containers = recipeBookCache.getCategory() != null ? recipeBookCache.getCategory().getRecipeList(player, recipeBookCache.getCategoryFilter(), recipeBookCache.getEliteCraftingTable()) : new ArrayList<>();
+            List<RecipeContainer> containers = recipeBookCache.getCategory() != null ? recipeBookCache.getCategory().getRecipeList(player, recipeBookCache.getCategoryFilter().orElse(null), recipeBookCache.getEliteCraftingTable()) : new ArrayList<>();
             int maxPages = containers.size() / 45 + (containers.size() % 45 > 0 ? 1 : 0);
             if (recipeBookCache.getPage() >= maxPages) {
                 recipeBookCache.setPage(0);

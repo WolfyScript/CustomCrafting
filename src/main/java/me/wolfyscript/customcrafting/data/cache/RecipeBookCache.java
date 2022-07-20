@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
+import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
@@ -106,8 +107,8 @@ public class RecipeBookCache {
     }
 
     @NotNull
-    public CategoryFilter getCategoryFilter() {
-        return categoryFilter != null ? categoryFilter : customCrafting.getConfigHandler().getRecipeBookConfig().getFilter(0);
+    public Optional<CategoryFilter> getCategoryFilter() {
+        return Optional.ofNullable(categoryFilter != null ? categoryFilter : customCrafting.getConfigHandler().getRecipeBookConfig().getFilter(0));
     }
 
     public void setCategoryFilter(CategoryFilter categoryFilter) {
