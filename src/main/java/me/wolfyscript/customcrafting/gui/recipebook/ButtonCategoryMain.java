@@ -57,7 +57,7 @@ class ButtonCategoryMain extends Button<CCCache> {
         if (category != null) {
             var knowledgeBook = guiHandler.getCustomCache().getRecipeBookCache();
             knowledgeBook.setCategory(category);
-            guiHandler.openWindow("recipe_book");
+            guiHandler.openWindow(ClusterRecipeBook.CATEGORY_OVERVIEW);
         }
         return true;
     }

@@ -56,6 +56,7 @@ public class ClusterRecipeBook extends CCCluster {
 
     public static final NamespacedKey MAIN_MENU = new NamespacedKey(KEY, "main_menu");
     public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(KEY, "recipe_book");
+    public static final NamespacedKey CATEGORY_OVERVIEW = new NamespacedKey(KEY, "category_overview");
 
     public static final NamespacedKey BACK_TO_LIST = new NamespacedKey(KEY, "back_to_list");
     public static final NamespacedKey NEXT_PAGE = new NamespacedKey(KEY, "next_page");
@@ -79,6 +80,7 @@ public class ClusterRecipeBook extends CCCluster {
     @Override
     public void onInit() {
         registerGuiWindow(new MenuRecipeBook(this, customCrafting));
+        registerGuiWindow(new MenuCategoryOverview(this, customCrafting));
         registerGuiWindow(new MenuMain(this, customCrafting));
         setEntry(MAIN_MENU);
         var btnB = getButtonBuilder();
