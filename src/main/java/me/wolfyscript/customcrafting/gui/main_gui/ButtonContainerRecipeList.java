@@ -118,10 +118,12 @@ class ButtonContainerRecipeList extends Button<CCCache> {
                 }
             } else {
                 window.sendMessage(guiHandler, window.translatedMsgKey("delete.confirm", Placeholder.unparsed("recipe", customRecipe.getNamespacedKey().toString())));
-                window.sendMessage(guiHandler, window.translatedMsgKey("inventories.none.recipe_list.messages.delete.confirmed").clickEvent(window.getChat().executable(player, true, (wolfyUtilities, player1) -> {
+                var confirmComp = window.translatedMsgKey("delete.confirmed").style(b -> b.clickEvent(window.getChat().executable(player, true, (wolfyUtilities, player1) -> {
                     guiHandler.openCluster();
-                    Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> customRecipe.delete(player1));
-                })).append(window.translatedMsgKey("inventories.none.recipe_list.messages.delete.declined").clickEvent(window.getChat().executable(player, true, (wolfyUtilities, player1) -> guiHandler.openCluster()))));
+                    Bukkit.getScheduler().runTask(customCrafting, () -> customRecipe.delete(player1));
+                })).hoverEvent(window.translatedMsgKey("delete.confirm_hover")));
+                var declineComp = window.translatedMsgKey("delete.declined").style(b -> b.clickEvent(window.getChat().executable(player, true, (wolfyUtilities, player1) -> guiHandler.openCluster())).hoverEvent(window.translatedMsgKey("delete.decline_hover")));
+                window.sendMessage(guiHandler, confirmComp.append(Component.text(" – ")).append(declineComp));
             }
         } else if (customRecipe != null) {
             customCrafting.getDisableRecipesHandler().toggleRecipe(customRecipe);

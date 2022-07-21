@@ -484,8 +484,10 @@
           "invalid_recipe": "<red>This recipe is not from type %recipe_type%!</red>",
           "delete": {
             "confirm": "<yellow>Do you really want to delete <gold>%recipe%?</gold></yellow>",
-            "confirmed": "<grey>[<green>YES</green>]</grey>  ",
-            "declined": "<grey>[<red>NO</red>]</grey>"
+            "confirmed": "<grey>[<green>YES</green>]</grey>",
+            "confirm_hover": "<green>Yes, delete the recipe!</green>",
+            "declined": "<grey>[<red>NO</red>]</grey>",
+            "decline_hover": "<red>No, do not delete the recipe!</red>"
           }
         }
       },
