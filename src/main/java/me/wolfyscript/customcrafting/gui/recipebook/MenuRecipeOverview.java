@@ -45,7 +45,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.scheduler.BukkitTask;
 
-public class MenuRecipeBook extends CCWindow {
+public class MenuRecipeOverview extends CCWindow {
 
     private static final String BACK = "back";
     private static final String NEXT_RECIPE = "next_recipe";
@@ -53,7 +53,7 @@ public class MenuRecipeBook extends CCWindow {
     private final BukkitTask ingredientTask;
     private final BukkitTask containerTask;
 
-    MenuRecipeBook(ClusterRecipeBook cluster, CustomCrafting customCrafting) {
+    MenuRecipeOverview(ClusterRecipeBook cluster, CustomCrafting customCrafting) {
         super(cluster, ClusterRecipeBook.RECIPE_BOOK.getKey(), 54, customCrafting);
         this.ingredientTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 37; i++) {

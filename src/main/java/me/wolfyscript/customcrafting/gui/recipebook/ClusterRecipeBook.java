@@ -79,7 +79,7 @@ public class ClusterRecipeBook extends CCCluster {
 
     @Override
     public void onInit() {
-        registerGuiWindow(new MenuRecipeBook(this, customCrafting));
+        registerGuiWindow(new MenuRecipeOverview(this, customCrafting));
         registerGuiWindow(new MenuCategoryOverview(this, customCrafting));
         registerGuiWindow(new MenuMain(this, customCrafting));
         setEntry(MAIN_MENU);
