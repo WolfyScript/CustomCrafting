@@ -106,6 +106,7 @@ class ButtonContainerRecipeBook extends Button<CCCache> {
             book.setPrepareRecipe(true);
             resetButtons(guiHandler);
         }
+        guiHandler.openWindow(ClusterRecipeBook.RECIPE_BOOK);
         return true;
     }
 

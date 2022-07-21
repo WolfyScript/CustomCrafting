@@ -56,6 +56,7 @@ public class ClusterRecipeBook extends CCCluster {
 
     public static final NamespacedKey MAIN_MENU = new NamespacedKey(KEY, "main_menu");
     public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(KEY, "recipe_book");
+    public static final NamespacedKey CATEGORY_OVERVIEW = new NamespacedKey(KEY, "category_overview");
 
     public static final NamespacedKey BACK_TO_LIST = new NamespacedKey(KEY, "back_to_list");
     public static final NamespacedKey NEXT_PAGE = new NamespacedKey(KEY, "next_page");
@@ -78,7 +79,8 @@ public class ClusterRecipeBook extends CCCluster {
 
     @Override
     public void onInit() {
-        registerGuiWindow(new MenuRecipeBook(this, customCrafting));
+        registerGuiWindow(new MenuRecipeOverview(this, customCrafting));
+        registerGuiWindow(new MenuCategoryOverview(this, customCrafting));
         registerGuiWindow(new MenuMain(this, customCrafting));
         setEntry(MAIN_MENU);
         var btnB = getButtonBuilder();
@@ -92,7 +94,7 @@ public class ClusterRecipeBook extends CCCluster {
         btnB.action(PREVIOUS_PAGE.getKey()).state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             ButtonContainerRecipeBook.resetButtons(guiHandler);
             var book = guiHandler.getCustomCache().getRecipeBookCache();
-            book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
+            book.setPage(book.getPage() - 1);
             return true;
         })).register();
         btnB.action(BACK_TO_LIST.getKey()).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, guiInventory, i, event) -> {
@@ -124,6 +126,7 @@ public class ClusterRecipeBook extends CCCluster {
                 } else {
                     book.setResearchItems(new ArrayList<>());
                 }
+                guiHandler.openPreviousWindow();
             }
             return true;
         })).register();

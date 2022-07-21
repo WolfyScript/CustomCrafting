@@ -26,7 +26,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
-import me.wolfyscript.customcrafting.gui.recipebook.MenuRecipeBook;
+import me.wolfyscript.customcrafting.gui.recipebook.MenuRecipeOverview;
 import me.wolfyscript.customcrafting.registry.RegistryRecipes;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -75,7 +75,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
         dataHandler.load();
         configHandler.getRecipeBookConfig().index(customCrafting);
         sendMessage(sender, Component.text("Reloading GUIs", NamedTextColor.YELLOW));
-        ((MenuRecipeBook) invAPI.getGuiWindow(ClusterRecipeBook.RECIPE_BOOK)).reset();
+        ((MenuRecipeOverview) invAPI.getGuiWindow(ClusterRecipeBook.RECIPE_BOOK)).reset();
         invAPI.reset();
         sendMessage(sender, Component.text("Reload done!", NamedTextColor.GREEN));
         return true;

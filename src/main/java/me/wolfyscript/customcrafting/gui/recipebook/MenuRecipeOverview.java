@@ -22,8 +22,9 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook;
 
+import java.util.List;
+import java.util.function.Supplier;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -44,11 +45,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
-public class MenuRecipeBook extends CCWindow {
+public class MenuRecipeOverview extends CCWindow {
 
     private static final String BACK = "back";
     private static final String NEXT_RECIPE = "next_recipe";
@@ -56,7 +53,7 @@ public class MenuRecipeBook extends CCWindow {
     private final BukkitTask ingredientTask;
     private final BukkitTask containerTask;
 
-    MenuRecipeBook(ClusterRecipeBook cluster, CustomCrafting customCrafting) {
+    MenuRecipeOverview(ClusterRecipeBook cluster, CustomCrafting customCrafting) {
         super(cluster, ClusterRecipeBook.RECIPE_BOOK.getKey(), 54, customCrafting);
         this.ingredientTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 37; i++) {
@@ -119,44 +116,11 @@ public class MenuRecipeBook extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
-        var configHandler = customCrafting.getConfigHandler();
         var player = event.getPlayer();
         CCPlayerData playerStore = PlayerUtil.getStore(player);
         NamespacedKey grayBtnKey = playerStore.getLightBackground();
         var recipeBookCache = event.getGuiHandler().getCustomCache().getRecipeBookCache();
-        if (recipeBookCache.getSubFolder() == 0) {
-            if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
-                for (int i = 0; i < 9; i++) {
-                    event.setButton(i, playerStore.getDarkBackground());
-                }
-            } else {
-                for (int i = 0; i < 45; i++) {
-                    event.setButton(i, ClusterMain.EMPTY);
-                }
-            }
-            List<RecipeContainer> containers = recipeBookCache.getCategory() != null ? recipeBookCache.getCategory().getRecipeList(player, recipeBookCache.getCategoryFilter().orElse(null), recipeBookCache.getEliteCraftingTable()) : new ArrayList<>();
-            int maxPages = containers.size() / 45 + (containers.size() % 45 > 0 ? 1 : 0);
-            if (recipeBookCache.getPage() >= maxPages) {
-                recipeBookCache.setPage(0);
-            }
-            for (int item = 0, i = 45 * recipeBookCache.getPage(); item < 45 && i < containers.size(); i++, item++) {
-                ButtonContainerRecipeBook button = (ButtonContainerRecipeBook) getCluster().getButton("recipe_book.container_" + item);
-                if (button != null) {
-                    button.setRecipeContainer(event.getGuiHandler(), containers.get(i));
-                    event.setButton(item, ButtonContainerRecipeBook.namespacedKey(item));
-                }
-            }
-            if (configHandler.getRecipeBookConfig().getSortedCategories().size() > 1) {
-                event.setButton(45, BACK);
-            }
-            if (recipeBookCache.getPage() != 0) {
-                event.setButton(47, ClusterRecipeBook.PREVIOUS_PAGE);
-            }
-            event.setButton(49, ClusterRecipeBook.ITEM_CATEGORY);
-            if (recipeBookCache.getPage() + 1 < maxPages) {
-                event.setButton(51, ClusterRecipeBook.NEXT_PAGE);
-            }
-        } else {
+        if (recipeBookCache.getSubFolder() > 0) {
             if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
                 for (int i = 1; i < 9; i++) {
                     event.setButton(i, grayBtnKey);
@@ -191,6 +155,7 @@ public class MenuRecipeBook extends CCWindow {
                 }
             }
         }
+
     }
 
     @Override
