@@ -119,6 +119,8 @@ public class MenuCategoryOverview extends CCWindow {
         int maxPages = containers.size() / 45 + (containers.size() % 45 > 0 ? 1 : 0);
         if (recipeBookCache.getPage() >= maxPages) {
             recipeBookCache.setPage(0);
+        } else if (recipeBookCache.getPage() < 0) {
+            recipeBookCache.setPage(maxPages - 1);
         }
         for (int item = 0, i = 45 * recipeBookCache.getPage(); item < 45 && i < containers.size(); i++, item++) {
             ButtonContainerRecipeBook button = (ButtonContainerRecipeBook) getCluster().getButton("recipe_book.container_" + item);
@@ -130,13 +132,9 @@ public class MenuCategoryOverview extends CCWindow {
         if (configHandler.getRecipeBookConfig().getSortedCategories().size() > 1) {
             event.setButton(45, BACK);
         }
-        if (recipeBookCache.getPage() != 0) {
-            event.setButton(47, ClusterRecipeBook.PREVIOUS_PAGE);
-        }
+        event.setButton(47, ClusterRecipeBook.PREVIOUS_PAGE);
         event.setButton(49, ClusterRecipeBook.ITEM_CATEGORY);
-        if (recipeBookCache.getPage() + 1 < maxPages) {
-            event.setButton(51, ClusterRecipeBook.NEXT_PAGE);
-        }
+        event.setButton(51, ClusterRecipeBook.NEXT_PAGE);
     }
 
     @Override

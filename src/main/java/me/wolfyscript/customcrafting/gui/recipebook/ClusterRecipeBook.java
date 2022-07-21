@@ -94,7 +94,7 @@ public class ClusterRecipeBook extends CCCluster {
         btnB.action(PREVIOUS_PAGE.getKey()).state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             ButtonContainerRecipeBook.resetButtons(guiHandler);
             var book = guiHandler.getCustomCache().getRecipeBookCache();
-            book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
+            book.setPage(book.getPage() - 1);
             return true;
         })).register();
         btnB.action(BACK_TO_LIST.getKey()).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, guiInventory, i, event) -> {
