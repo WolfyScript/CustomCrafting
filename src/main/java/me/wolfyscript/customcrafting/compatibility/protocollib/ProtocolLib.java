@@ -20,7 +20,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.utils.other_plugins;
+package me.wolfyscript.customcrafting.compatibility.protocollib;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -84,6 +84,18 @@ public class ProtocolLib {
             }
             return true;
         };
+        CrossCompFunction<List<MinecraftKey>> filterRecipeKeys = new CrossCompFunction<>() {
+            @Override
+            public List<MinecraftKey> apply(List<MinecraftKey> input) {
+                return filterAndAddMissingRecipes(input);
+            }
+        };
+        CrossCompFunction<List<RecipeWrapper>> filterWrappedRecipes = new CrossCompFunction<>() {
+            @Override
+            public List<RecipeWrapper> apply(List<RecipeWrapper> input) {
+                return input.stream().filter(recipeWrapper -> recipeFilter.apply(recipeWrapper.getKey())).collect(Collectors.toList());
+            }
+        };
         // Recipe packet that sends the discovered recipes to the client.
         protocolManager.addPacketListener(new PacketAdapter(customCrafting, ListenerPriority.HIGH, PacketType.Play.Server.RECIPES) {
             @Override
@@ -91,9 +103,9 @@ public class ProtocolLib {
                 PacketContainer packet = event.getPacket();
                 StructureModifier<List<MinecraftKey>> lists = packet.getLists(MinecraftKey.getConverter());
                 //Modify the recipes
-                lists.modify(0, input -> filterAndAddMissingRecipes(input));
+                lists.modify(0, filterRecipeKeys);
                 //Modify Highlighted recipes
-                lists.modify(1, input -> filterAndAddMissingRecipes(input));
+                lists.modify(1, filterRecipeKeys);
             }
         });
         // Recipe packet that sends the recipe data to the client.
@@ -102,7 +114,7 @@ public class ProtocolLib {
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
                 StructureModifier<List<RecipeWrapper>> lists = packet.getLists(getRecipeKeyConverter());
-                lists.modify(0, input -> input.stream().filter(recipeWrapper -> recipeFilter.apply(recipeWrapper.getKey())).collect(Collectors.toList()));
+                lists.modify(0, filterWrappedRecipes);
             }
         });
 
