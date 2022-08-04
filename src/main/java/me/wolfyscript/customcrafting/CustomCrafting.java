@@ -113,7 +113,7 @@ import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.UpdateChecker;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
-import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
+import me.wolfyscript.customcrafting.compatibility.OtherPlugins;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;

@@ -20,9 +20,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.utils.other_plugins;
+package me.wolfyscript.customcrafting.compatibility;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.compatibility.protocollib.ProtocolLib;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;

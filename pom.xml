@@ -28,7 +28,7 @@
 
     <groupId>com.wolfyscript.customcrafting</groupId>
     <artifactId>customcrafting-spigot</artifactId>
-    <version>3.16.6.2</version>
+    <version>3.16.7.0</version>
 
     <properties>
         <!-- Generic properties -->
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>4.7.0</version>
+            <version>4.8.0</version>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
