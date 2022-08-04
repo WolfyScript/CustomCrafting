@@ -24,8 +24,9 @@ package me.wolfyscript.customcrafting.compatibility.protocollib;
 
 import java.util.function.UnaryOperator;
 
-public abstract class CrossCompFunction<T> implements UnaryOperator<T>, java.util.function.Function<T, T> {
+@FunctionalInterface
+public interface CrossCompFunction<T> extends UnaryOperator<T>, com.google.common.base.Function<T, T> {
 
     @Override
-    public abstract T apply(T s);
+    T apply(T s);
 }

@@ -84,18 +84,8 @@ public class ProtocolLib {
             }
             return true;
         };
-        CrossCompFunction<List<MinecraftKey>> filterRecipeKeys = new CrossCompFunction<>() {
-            @Override
-            public List<MinecraftKey> apply(List<MinecraftKey> input) {
-                return filterAndAddMissingRecipes(input);
-            }
-        };
-        CrossCompFunction<List<RecipeWrapper>> filterWrappedRecipes = new CrossCompFunction<>() {
-            @Override
-            public List<RecipeWrapper> apply(List<RecipeWrapper> input) {
-                return input.stream().filter(recipeWrapper -> recipeFilter.apply(recipeWrapper.getKey())).collect(Collectors.toList());
-            }
-        };
+        CrossCompFunction<List<MinecraftKey>> filterRecipeKeys = this::filterAndAddMissingRecipes;
+        CrossCompFunction<List<RecipeWrapper>> filterWrappedRecipes = input -> input.stream().filter(recipeWrapper -> recipeFilter.apply(recipeWrapper.getKey())).collect(Collectors.toList());
         // Recipe packet that sends the discovered recipes to the client.
         protocolManager.addPacketListener(new PacketAdapter(customCrafting, ListenerPriority.HIGH, PacketType.Play.Server.RECIPES) {
             @Override
