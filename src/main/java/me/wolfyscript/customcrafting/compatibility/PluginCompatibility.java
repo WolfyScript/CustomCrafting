@@ -28,13 +28,13 @@ import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 
-public class OtherPlugins {
+public class PluginCompatibility {
 
     private final CustomCrafting plugin;
 
     private ProtocolLib protocolLib = null;
 
-    public OtherPlugins(CustomCrafting plugin) {
+    public PluginCompatibility(CustomCrafting plugin) {
         this.plugin = plugin;
     }
 

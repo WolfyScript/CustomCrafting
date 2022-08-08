@@ -113,7 +113,7 @@ import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.UpdateChecker;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
-import me.wolfyscript.customcrafting.compatibility.OtherPlugins;
+import me.wolfyscript.customcrafting.compatibility.PluginCompatibility;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
@@ -176,7 +176,7 @@ public class CustomCrafting extends JavaPlugin {
     private final UpdateChecker updateChecker;
     private final NetworkHandler networkHandler;
     //Compatibility
-    private final OtherPlugins otherPlugins;
+    private final PluginCompatibility pluginCompatibility;
     private final boolean isPaper;
 
     public CustomCrafting() {
@@ -184,7 +184,7 @@ public class CustomCrafting extends JavaPlugin {
         instance = this;
         currentVersion = getDescription().getVersion();
         this.version = WUVersion.parse(currentVersion.split("-")[0]);
-        this.otherPlugins = new OtherPlugins(this);
+        this.pluginCompatibility = new PluginCompatibility(this);
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
         api = WolfyUtilCore.getInstance().getAPI(this, false);
         JacksonUtil.getObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
@@ -314,7 +314,7 @@ public class CustomCrafting extends JavaPlugin {
 
         this.configHandler = new ConfigHandler(this);
         this.configHandler.load();
-        this.otherPlugins.init();
+        this.pluginCompatibility.init();
         this.dataHandler = new DataHandler(this);
         this.disableRecipesHandler = new DisableRecipesHandler(this);
         registerListeners();
