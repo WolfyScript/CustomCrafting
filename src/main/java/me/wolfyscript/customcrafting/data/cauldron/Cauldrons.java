@@ -67,8 +67,6 @@ public class Cauldrons {
 
     private final CustomCrafting customCrafting;
     private final WolfyUtilities api;
-    private final int autosaveTask;
-    private final Random random = new Random();
     //Hashmap of all the locations of the valid cauldrons. The Key is the Location. The Value is the current active recipe, which is going to be saved on server shutdown.
     private final Map<Location, List<Cauldron>> cauldrons = new HashMap<>();
 
@@ -76,97 +74,6 @@ public class Cauldrons {
         this.customCrafting = customCrafting;
         this.api = customCrafting.getApi();
         load();
-        autosaveTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), this::save, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L);
-
-        var particleTicker = new AtomicInteger(0);
-
-        Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> {
-            final boolean spawnParticles = particleTicker.incrementAndGet() >= 4;
-            if (spawnParticles) {
-                particleTicker.set(0);
-            }
-            synchronized (cauldrons) {
-                cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null && entry.getKey().getWorld() != null && entry.getKey().getWorld().isChunkLoaded(entry.getKey().getBlockX() >> 4, entry.getKey().getBlockZ() >> 4) && Cauldrons.isCauldron(entry.getKey().getBlock().getType())).forEach(entry -> {
-                    final var loc = entry.getKey();
-                    final var world = loc.getWorld();
-                    final var block = loc.getBlock();
-                    final var level = getLevel(block);
-                    final var isLit = isCustomCauldronLit(block);
-                    if (spawnParticles && isLit && level > 0) {
-                        spawnBubbles(world, loc, level);
-                    }
-                    entry.getValue().removeIf(Cauldron::isForRemoval);
-                    if (entry.getValue().isEmpty()) return;
-                    Iterator<Cauldron> cauldronItr = entry.getValue().iterator();
-                    while (cauldronItr.hasNext()) {
-                        var cauldron = cauldronItr.next();
-                        CustomRecipeCauldron recipe = cauldron.getRecipe();
-                        if (level >= recipe.getWaterLevel() && (block.getType().equals(Material.CAULDRON) || recipe.needsWater()) && (!recipe.needsFire() || isLit)) {
-                            Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
-                                if (cauldron.getPassedTicks() >= cauldron.getCookingTime() && !cauldron.isDone()) {
-                                    cauldron.setDone(true);
-                                    try {
-                                        cauldron.setForRemoval(Bukkit.getScheduler().callSyncMethod(customCrafting, () -> {
-                                            var event = new CauldronCookEvent(cauldron);
-                                            Bukkit.getPluginManager().callEvent(event);
-                                            if (event.isCancelled()) {
-                                                cauldron.setDone(false);
-                                                cauldron.setPassedTicks(0);
-                                            } else {
-                                                if (event.getRecipe().getWaterLevel() > 0 && block.getBlockData() instanceof Levelled levelled) {
-                                                    int newLevel = levelled.getLevel() - event.getRecipe().getWaterLevel();
-                                                    if (newLevel <= 0) {
-                                                        block.setType(Material.CAULDRON);
-                                                    } else {
-                                                        levelled.setLevel(newLevel);
-                                                        block.setBlockData(levelled);
-                                                    }
-                                                }
-                                                recipe.getResult().executeExtensions(loc.clone(), true, null);
-                                                if (event.dropItems()) {
-                                                    var dropLocation = loc.clone().add(0.0, 0.5, 0.0);
-
-                                                    world.dropItemNaturally(dropLocation, event.getResult().create());
-
-                                                    if (recipe.getXp() > 0) {
-                                                        ExperienceOrb orb = (ExperienceOrb) dropLocation.getWorld().spawnEntity(dropLocation, EntityType.EXPERIENCE_ORB);
-                                                        orb.setExperience(recipe.getXp());
-                                                    }
-
-                                                    return true;
-                                                }
-                                            }
-                                            return false;
-                                        }).get());
-                                    } catch (InterruptedException | ExecutionException e) {
-                                        e.printStackTrace();
-                                        Thread.currentThread().interrupt();
-                                    }
-                                } else {
-                                    Bukkit.getScheduler().runTask(customCrafting, () -> {
-                                        spawnBubbles(world, loc, level);
-                                        world.spawnParticle(Particle.REDSTONE, loc.clone().add(particleLevel(level)), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
-                                    });
-                                    if (!cauldron.isDone()) {
-                                        cauldron.increasePassedTicks();
-                                    }
-                                }
-                            });
-                        } else {
-                            //The cauldron doesn't fulfill the requirements of the recipe. Perhaps water level changed or the campfire was extinguished.
-                            cauldron.decreasePassedTicks(2);
-                            if (cauldron.getPassedTicks() <= 0) {
-                                for (CustomItem customItem : recipe.getIngredient().getChoices()) {
-                                    Bukkit.getScheduler().runTask(customCrafting, () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), customItem.getItemStack()));
-                                }
-                                cauldronItr.remove();
-                            }
-                        }
-                    }
-
-                });
-            }
-        }, 20, 1);
     }
 
     private Vector particleLevel(int level) {
@@ -204,10 +111,6 @@ public class Cauldrons {
         return cauldrons.containsKey(location);
     }
 
-    private String locationToString(Location location) {
-        return location == null || location.getWorld() == null ? null : String.format("%s;%s;%s;%s", location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-    }
-
     public static boolean isCauldron(Material type) {
         return type.equals(Material.CAULDRON) || (ServerVersion.isAfterOrEq(MinecraftVersions.v1_17) && type.equals(Material.WATER_CAULDRON));
     }
@@ -216,29 +119,6 @@ public class Cauldrons {
         return block.getBlockData() instanceof Levelled levelled ? levelled.getLevel() : 0;
     }
 
-    public void save() {
-        if (customCrafting.getConfigHandler().getConfig().isAutoSaveMessage()) {
-            api.getConsole().info("Saving Cauldrons");
-        }
-        //Still using String conversion?! This should be updated to use compressed json data, similar to player cache in WolfyUtilities!
-        //TODO: json data with compression
-        Map<String, List<String>> cauldronsSnapshot = new HashMap<>();
-        synchronized (cauldrons) {
-            cauldrons.forEach((key, value) -> {
-                String loc = locationToString(key);
-                if (loc != null && value != null) {
-                    cauldronsSnapshot.put(loc, value.stream().filter(Objects::nonNull).map(Cauldron::toString).toList());
-                }
-            });
-        }
-        Executors.defaultThreadFactory().newThread(() -> {
-            try (var fos = new BufferedOutputStream(new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat")); var oos = new BukkitObjectOutputStream(fos)) {
-                oos.writeObject(cauldronsSnapshot);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
 
     private Location stringToLocation(String loc) {
         String[] args = loc.split(";");
@@ -252,10 +132,6 @@ public class Cauldrons {
             api.getConsole().warn("Couldn't find world " + args[0]);
         }
         return null;
-    }
-
-    public void endAutoSaveTask() {
-        Bukkit.getScheduler().cancelTask(autosaveTask);
     }
 
     public void load() {

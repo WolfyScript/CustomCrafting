@@ -22,9 +22,13 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import com.wolfyscript.utilities.bukkit.persistent.world.BlockStorage;
+import com.wolfyscript.utilities.bukkit.persistent.world.WorldStorage;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldron;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
+import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
@@ -36,6 +40,7 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -59,6 +64,25 @@ public class CauldronListener implements Listener {
     public CauldronListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
         this.api = customCrafting.getApi();
+    }
+
+    @EventHandler
+    public void onInteractWithCauldron(PlayerInteractEvent event) {
+        if (!event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getPlayer().isSneaking()) return;
+
+        Block clicked = event.getClickedBlock();
+        if (clicked != null && Cauldrons.isCauldron(clicked.getType())) {
+            WorldStorage worldStorage = ((WolfyCoreBukkit)api.getCore()).getPersistentStorage().getOrCreateWorldStorage(clicked.getWorld());
+            BlockStorage blockStorage = worldStorage.getOrCreateAndSetBlockStorage(clicked.getLocation());
+
+            if (blockStorage.getData(CauldronBlockData.ID, CauldronBlockData.class).isEmpty()) {
+                var cauldronBlockData = new CauldronBlockData(blockStorage.getPos(), blockStorage.getChunkStorage());
+                blockStorage.addOrSetData(cauldronBlockData);
+                cauldronBlockData.onLoad();
+                blockStorage.getChunkStorage().updateBlock(blockStorage.getPos());
+            }
+            //TODO: Open GUI
+        }
     }
 
     @EventHandler
@@ -154,7 +178,7 @@ public class CauldronListener implements Listener {
                                                     List<Item> validItems = recipe.checkRecipe(items);
                                                     if (!validItems.isEmpty()) {
                                                         //Do something with the items! e.g. consume!
-                                                        var cauldronPreCookEvent = new CauldronPreCookEvent(recipe, player, cauldronBlock);
+                                                        var cauldronPreCookEvent = new CauldronPreCookEvent(customCrafting, recipe, player, cauldronBlock);
                                                         Bukkit.getPluginManager().callEvent(cauldronPreCookEvent);
                                                         if (!cauldronPreCookEvent.isCancelled()) {
                                                             synchronized (cauldrons.getCauldrons()) {
