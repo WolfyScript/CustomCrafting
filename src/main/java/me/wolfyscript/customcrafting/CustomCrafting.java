@@ -31,6 +31,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.patreon.Patreon;
+import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabArmorSlots;
@@ -233,6 +234,10 @@ public class CustomCrafting extends JavaPlugin {
         customItemData.register(new RecipeBookData.Provider());
         customItemData.register(new CauldronData.Provider());
 
+        getLogger().info("Registering Custom Block Data");
+        var customBlockData = api.getRegistries().getCustomBlockData();
+        customBlockData.register(CauldronBlockData.ID, CauldronBlockData.class);
+
         getLogger().info("Registering Result Extensions");
         var resultExtensions = getRegistries().getRecipeResultExtensions();
         resultExtensions.register(new CommandResultExtension(this));
@@ -344,8 +349,6 @@ public class CustomCrafting extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cauldrons.endAutoSaveTask();
-        cauldrons.save();
     }
 
     private void writeBanner() {
