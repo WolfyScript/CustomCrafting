@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Streams;
+import java.util.Arrays;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -35,6 +38,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -54,11 +58,13 @@ import java.util.List;
 
 public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
+    private static final int maxIngredients = 6;
+
     private int cookingTime;
     private int waterLevel;
     private int xp;
     private CustomItem handItem;
-    private Ingredient ingredients;
+    private List<Ingredient> ingredients;
     private boolean dropItems;
     private boolean needsFire;
     private boolean needsWater;
@@ -75,14 +81,19 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
             this.dropItems = dropNode.path("enabled").asBoolean();
             this.handItem = ItemLoader.load(dropNode.path("handItem"));
         }
-        this.ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
+        JsonNode ingredientsNode = node.path("ingredient");
+        if (ingredientsNode.isObject()) {
+            this.ingredients = ItemLoader.loadIngredient(node.path("ingredients")).getChoices().stream().map(customItem -> new Ingredient(customItem.getApiReference())).toList();
+        } else {
+            this.ingredients = Streams.stream(ingredientsNode.elements()).map(ItemLoader::loadIngredient).toList();
+        }
     }
 
     @JsonCreator
     public CustomRecipeCauldron(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
         super(key, customCrafting, RecipeType.CAULDRON);
         this.result = new Result();
-        this.ingredients = new Ingredient();
+        this.ingredients = new ArrayList<>();
         this.dropItems = true;
         this.xp = 0;
         this.cookingTime = 80;
@@ -100,7 +111,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     public CustomRecipeCauldron(CustomRecipeCauldron customRecipeCauldron) {
         super(customRecipeCauldron);
         this.result = customRecipeCauldron.getResult();
-        this.ingredients = customRecipeCauldron.getIngredient();
+        this.ingredients = customRecipeCauldron.ingredients != null ? customRecipeCauldron.ingredients.stream().map(Ingredient::clone).toList() : List.of();
         this.dropItems = customRecipeCauldron.dropItems();
         this.xp = customRecipeCauldron.getXp();
         this.cookingTime = customRecipeCauldron.getCookingTime();
@@ -189,7 +200,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     @Override
     public Ingredient getIngredient(int slot) {
-        return this.ingredients;
+        return this.ingredients.get(slot);
     }
 
     @JsonIgnore
@@ -198,7 +209,47 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     }
 
     private void setIngredient(int slot, Ingredient ingredient) {
-        this.ingredients = ingredient;
+        this.ingredients.set(slot, ingredient);
+    }
+
+    public void addIngredients(Ingredient... ingredients) {
+        addIngredients(Arrays.asList(ingredients));
+    }
+
+    public void addIngredients(List<Ingredient> ingredients) {
+        Preconditions.checkArgument(this.ingredients.size() + ingredients.size() <= maxIngredients, "Recipe cannot have more than " + maxIngredients + " ingredients!");
+        List<Ingredient> currentIngredients = new ArrayList<>(this.ingredients);
+        currentIngredients.addAll(ingredients);
+        setIngredients(currentIngredients);
+    }
+
+    public void addIngredient(int count, Ingredient ingredient) {
+        Preconditions.checkArgument(ingredients.size() + count <= maxIngredients, "Recipe cannot have more than " + maxIngredients + " ingredients!");
+        List<Ingredient> currentIngredients = new ArrayList<>(this.ingredients);
+        for (int i = 0; i < count; i++) {
+            currentIngredients.add(ingredient);
+        }
+        setIngredients(currentIngredients);
+    }
+
+    public void addIngredient(Ingredient ingredient) {
+        addIngredient(1, ingredient);
+    }
+
+    private void setIngredients(List<Ingredient> ingredients) {
+        Preconditions.checkArgument(this.ingredients.size() <= maxIngredients, "Recipe cannot have more than " + maxIngredients + " ingredients!");
+        this.ingredients = ingredients;
+    }
+
+    @JsonSetter
+    private void setIngredients(JsonNode ingredientsNode) {
+        if (ingredientsNode.isObject()) {
+            //Directly set ingredients to bypass max ingredient check, since old recipes might have more ingredients!
+            this.ingredients = ItemLoader.loadIngredient(ingredientsNode).getChoices().stream().map(customItem -> new Ingredient(customItem.getApiReference())).toList();
+        } else {
+            //But disallow it for newly created recipes!
+            setIngredients(Streams.stream(ingredientsNode.elements()).map(ItemLoader::loadIngredient).toList());
+        }
     }
 
     @Override
