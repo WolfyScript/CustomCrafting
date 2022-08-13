@@ -38,6 +38,7 @@ import com.comphenix.protocol.reflect.fuzzy.FuzzyMethodContract;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.Converters;
 import com.comphenix.protocol.wrappers.MinecraftKey;
+import java.util.function.UnaryOperator;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
@@ -84,8 +85,6 @@ public class ProtocolLib {
             }
             return true;
         };
-        CrossCompFunction<List<MinecraftKey>> filterRecipeKeys = this::filterAndAddMissingRecipes;
-        CrossCompFunction<List<RecipeWrapper>> filterWrappedRecipes = input -> input.stream().filter(recipeWrapper -> recipeFilter.apply(recipeWrapper.getKey())).collect(Collectors.toList());
         // Recipe packet that sends the discovered recipes to the client.
         protocolManager.addPacketListener(new PacketAdapter(customCrafting, ListenerPriority.HIGH, PacketType.Play.Server.RECIPES) {
             @Override
@@ -93,9 +92,9 @@ public class ProtocolLib {
                 PacketContainer packet = event.getPacket();
                 StructureModifier<List<MinecraftKey>> lists = packet.getLists(MinecraftKey.getConverter());
                 //Modify the recipes
-                lists.modify(0, filterRecipeKeys);
+                lists.modify(0, input -> filterAndAddMissingRecipes(input));
                 //Modify Highlighted recipes
-                lists.modify(1, filterRecipeKeys);
+                lists.modify(1, input -> filterAndAddMissingRecipes(input));
             }
         });
         // Recipe packet that sends the recipe data to the client.
@@ -104,7 +103,7 @@ public class ProtocolLib {
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
                 StructureModifier<List<RecipeWrapper>> lists = packet.getLists(getRecipeKeyConverter());
-                lists.modify(0, filterWrappedRecipes);
+                lists.modify(0, input -> input.stream().filter(recipeWrapper -> recipeFilter.apply(recipeWrapper.getKey())).collect(Collectors.toList()));
             }
         });
 
