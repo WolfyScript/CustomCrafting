@@ -22,11 +22,11 @@
 
 package me.wolfyscript.customcrafting.gui.cauldron;
 
+import java.util.Map;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
-import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
@@ -37,8 +37,10 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
@@ -135,19 +137,19 @@ public class CauldronWorkstationMenu extends CCWindow {
     @Override
     public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
         Player player = guiHandler.getPlayer();
+        World world = player.getWorld();
         CCCache cache = guiHandler.getCustomCache();
-        CacheCauldronWorkstation cacheCauldronWorkstation = cache.getCauldronWorkstation();
-        //TODO: reset cache of current selected block
-        cacheCauldronWorkstation.setBlockData(null);
 
-        CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
-        if (cacheEliteCraftingTable.getContents() != null) {
-            for (ItemStack itemStack : cacheEliteCraftingTable.getContents()) {
-                if (itemStack != null && !itemStack.getType().equals(Material.AIR)) {
-                    player.getInventory().addItem(itemStack);
-                }
+        //Reset cache
+        CacheCauldronWorkstation cacheCauldronWorkstation = cache.getCauldronWorkstation();
+        cacheCauldronWorkstation.setBlockData(null);
+        for (ItemStack itemStack : cacheCauldronWorkstation.getInput()) {
+            if (itemStack != null && !itemStack.getType().equals(Material.AIR)) {
+                Map<Integer, ItemStack> items = player.getInventory().addItem(itemStack);
+                items.values().forEach(itemStack1 -> world.dropItemNaturally(player.getLocation(), itemStack1));
             }
         }
+        cacheCauldronWorkstation.resetInput();
         return false;
     }
 

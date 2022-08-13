@@ -104,10 +104,12 @@ public abstract class CategorySettings {
         }
     }
 
+    @JsonIgnore
     public ItemStack getIconStack() {
         return icon;
     }
 
+    @JsonIgnore
     public void setIconStack(ItemStack icon) {
         this.icon = icon;
     }
