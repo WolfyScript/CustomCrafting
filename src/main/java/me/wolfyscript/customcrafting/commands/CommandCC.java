@@ -32,6 +32,7 @@ import me.wolfyscript.customcrafting.commands.cc_subcommands.InfoSubCommand;
 import me.wolfyscript.customcrafting.commands.cc_subcommands.LockDownSubCommand;
 import me.wolfyscript.customcrafting.commands.cc_subcommands.ReloadSubCommand;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.cauldron.CauldronWorkstationCluster;
 import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
@@ -85,7 +86,7 @@ public class CommandCC extends IndexCommand {
                 return;
             }
             switch (cluster.getId()) {
-                case ClusterRecipeBook.KEY, ClusterRecipeView.KEY, EliteCraftingCluster.KEY -> invAPI.openCluster(p, ClusterMain.KEY);
+                case ClusterRecipeBook.KEY, ClusterRecipeView.KEY, EliteCraftingCluster.KEY, CauldronWorkstationCluster.KEY -> invAPI.openCluster(p, ClusterMain.KEY);
                 default -> invAPI.getGuiHandler(p).openCluster();
             }
         }

@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.data;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.BrewingGUICache;
+import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.data.cache.CacheRecipeView;
 import me.wolfyscript.customcrafting.data.cache.ChatLists;
@@ -60,6 +61,7 @@ public class CCCache extends CustomCache {
     private final ChatLists chatLists = new ChatLists();
     private final ParticleCache particleCache = new ParticleCache();
     private final BrewingGUICache brewingGUICache = new BrewingGUICache();
+    private final CacheCauldronWorkstation cauldronWorkstation = new CacheCauldronWorkstation();
 
     private ApplyItem applyItem;
     private ApplyPotionEffect applyPotionEffect;
@@ -168,4 +170,7 @@ public class CCCache extends CustomCache {
         return recipeCreatorCache;
     }
 
+    public CacheCauldronWorkstation getCauldronWorkstation() {
+        return cauldronWorkstation;
+    }
 }

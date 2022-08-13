@@ -31,10 +31,16 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronCookEvent;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -73,6 +79,7 @@ public class CauldronBlockData extends CustomBlockData {
         this.chunkStorage = chunkStorage;
         this.customCrafting = CustomCrafting.inst(); //TODO: Somehow use Guice to inject this?! Together with Jackson serialization...
         reset();
+        resetResult();
     }
 
     public void initNewRecipe(CauldronPreCookEvent event) {
@@ -93,12 +100,44 @@ public class CauldronBlockData extends CustomBlockData {
         return cookingTime;
     }
 
+    @JsonGetter("recipe")
+    private String getRecipeKey() {
+        return getRecipe().map(recipe -> recipe.getNamespacedKey().toString()).orElse("");
+    }
+
+    @JsonSetter("recipe")
+    private void setRecipeByKey(String key) {
+        if (key == null || key.isBlank()) {
+            this.recipe = null;
+        } else {
+            CustomRecipe<?> customRecipe = customCrafting.getRegistries().getRecipes().get(NamespacedKey.of(key));
+            if (customRecipe instanceof CustomRecipeCauldron recipeCauldron) {
+                this.recipe = recipeCauldron;
+            } else {
+                this.recipe = null;
+                resetResult();
+            }
+        }
+    }
+
+    @JsonIgnore
     public Optional<CustomRecipeCauldron> getRecipe() {
         return Optional.ofNullable(recipe);
     }
 
-    public CustomItem getResult() {
-        return result;
+    @JsonIgnore
+    public Optional<CustomItem> getResult() {
+        return Optional.ofNullable(result);
+    }
+
+    @JsonGetter("result")
+    private APIReference getResultReference() {
+        return getResult().map(CustomItem::getApiReference).orElse(null);
+    }
+
+    @JsonSetter("result")
+    private void setResultReference(APIReference reference) {
+        this.result = ItemLoader.load(reference);
     }
 
     public boolean isDropItems() {
@@ -167,6 +206,7 @@ public class CauldronBlockData extends CustomBlockData {
                     Bukkit.getScheduler().runTask(customCrafting, () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), customItem.getItemStack()));
                 }
                 reset();
+                resetResult();
             }
         }
 
@@ -185,8 +225,13 @@ public class CauldronBlockData extends CustomBlockData {
         this.cookingTime = 0;
         this.passedTicks = 0;
         this.dropItems = false;
-        this.result = null;
-        this.ticker.cancel();
+        if (ticker != null) {
+            this.ticker.cancel();
+        }
+    }
+
+    public void resetResult() {
+        this.result = new CustomItem(Material.AIR);
     }
 
     @Override
@@ -198,7 +243,9 @@ public class CauldronBlockData extends CustomBlockData {
 
     @Override
     public void onUnload() {
-        this.ticker.cancel();
+        if (ticker != null) {
+            this.ticker.cancel();
+        }
     }
 
     @Override

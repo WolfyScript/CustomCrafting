@@ -112,7 +112,7 @@ public class Cauldrons {
     }
 
     public static boolean isCauldron(Material type) {
-        return type.equals(Material.CAULDRON) || (ServerVersion.isAfterOrEq(MinecraftVersions.v1_17) && type.equals(Material.WATER_CAULDRON));
+        return type.equals(Material.CAULDRON) || (ServerVersion.isAfterOrEq(MinecraftVersions.v1_17) && (type.equals(Material.WATER_CAULDRON) || type.equals(Material.LAVA_CAULDRON)));
     }
 
     public static int getLevel(Block block) {

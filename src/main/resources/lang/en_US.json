@@ -3560,6 +3560,14 @@
           }
         }
       }
+    },
+    "cauldron": {
+      "cauldron": {
+        "gui_name": "<dark_grey>Cauldron</dark_grey>",
+        "items": {
+
+        }
+      }
     }
   }
 }

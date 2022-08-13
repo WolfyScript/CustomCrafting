@@ -26,15 +26,20 @@ import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
 import com.wolfyscript.utilities.bukkit.persistent.world.BlockStorage;
 import com.wolfyscript.utilities.bukkit.persistent.world.WorldStorage;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldron;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
+import me.wolfyscript.customcrafting.gui.cauldron.CauldronWorkstationCluster;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
@@ -68,7 +73,7 @@ public class CauldronListener implements Listener {
 
     @EventHandler
     public void onInteractWithCauldron(PlayerInteractEvent event) {
-        if (!event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getPlayer().isSneaking()) return;
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getPlayer().isSneaking()) return;
 
         Block clicked = event.getClickedBlock();
         if (clicked != null && Cauldrons.isCauldron(clicked.getType())) {
@@ -81,7 +86,12 @@ public class CauldronListener implements Listener {
                 cauldronBlockData.onLoad();
                 blockStorage.getChunkStorage().updateBlock(blockStorage.getPos());
             }
-            //TODO: Open GUI
+            blockStorage.getData(CauldronBlockData.ID, CauldronBlockData.class).ifPresent(cauldronBlockData -> {
+                GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(event.getPlayer());
+                CacheCauldronWorkstation cauldronWorkstation = guiHandler.getCustomCache().getCauldronWorkstation();
+                cauldronWorkstation.setBlockData(cauldronBlockData);
+                guiHandler.openCluster(CauldronWorkstationCluster.KEY);
+            });
         }
     }
 
