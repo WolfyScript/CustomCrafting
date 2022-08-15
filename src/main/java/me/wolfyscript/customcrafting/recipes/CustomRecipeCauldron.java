@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.recipes;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import java.util.Arrays;
+import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -55,6 +56,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.bukkit.inventory.ItemStack;
 
 public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
@@ -169,20 +171,27 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.dropItems = dropItems;
     }
 
-    public List<Item> checkRecipe(List<Item> items) {
-        List<Item> validItems = new ArrayList<>();
-        for (CustomItem customItem : getIngredient().getChoices()) {
-            for (Item item : items) {
-                if (customItem.isSimilar(item.getItemStack(), isCheckNBT()) && customItem.getAmount() == item.getItemStack().getAmount()) {
-                    validItems.add(item);
-                    break;
+    public boolean checkRecipe(List<ItemStack> items) {
+        int ingredientIndex = 0;
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack input = items.get(i);
+            if (i < ingredients.size()) {
+                Ingredient ingredient = ingredients.get(ingredientIndex);
+                Optional<CustomItem> checkResult = ingredient.check(input, isCheckNBT());
+                if (checkResult.isPresent()) {
+                    if (checkResult.get().getAmount() == input.getAmount()) {
+                        ingredientIndex++;
+                        continue;
+                    }
                 }
+                if (!ingredient.isAllowEmpty()) {
+                    return false;
+                }
+                i--;
             }
+            ingredientIndex++;
         }
-        if (validItems.size() >= ingredients.size()) {
-            return validItems;
-        }
-        return new ArrayList<>();
+        return true;
     }
 
     public CustomItem getHandItem() {

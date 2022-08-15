@@ -30,6 +30,11 @@ import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -37,14 +42,15 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class CauldronWorkstationMenu extends CCWindow {
 
@@ -52,7 +58,7 @@ public class CauldronWorkstationMenu extends CCWindow {
     protected static final String RESULT = "result_slot";
 
     protected CauldronWorkstationMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, CauldronWorkstationCluster.CAULDRON_MAIN.getKey(), 45, customCrafting);
+        super(cluster, CauldronWorkstationCluster.CAULDRON_MAIN.getKey(), 54, customCrafting);
         setForceSyncUpdate(true);
     }
 
@@ -64,10 +70,29 @@ public class CauldronWorkstationMenu extends CCWindow {
                     .action((cache, guiHandler, player, guiInventory, i1, event) -> event instanceof InventoryClickEvent clickEvent && clickEvent.getSlot() == 25)
                     .postAction((cache, guiHandler, player, guiInventory, itemStack, i1, event) -> {
                         CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
-                        cauldronWorkstation.getInput()[recipeSlot] = itemStack;
+
+                        if (cauldronWorkstation.getInput().get(recipeSlot) == null) {
+                            // In case the item was put into an empty slot put it into the first empty slot
+                            int nextIndex = cauldronWorkstation.getInput().indexOf(null);
+                            cauldronWorkstation.getInput().set(nextIndex, itemStack);
+                        } else {
+                            cauldronWorkstation.getInput().set(recipeSlot, itemStack);
+                        }
+                        cauldronWorkstation.getBlock().ifPresent(block -> cauldronWorkstation.getBlockData().ifPresent(data -> {
+                            for (CustomRecipeCauldron recipeCauldron : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.CAULDRON, player)) {
+                                if (recipeCauldron.checkRecipe(cauldronWorkstation.getInput())) {
+                                    CauldronPreCookEvent preCookEvent = new CauldronPreCookEvent(customCrafting, recipeCauldron, player, block);
+                                    if (!preCookEvent.isCancelled()) {
+                                        //Cache event results
+                                        cauldronWorkstation.setPreCookEvent(preCookEvent);
+                                    }
+                                    return;
+                                }
+                            }
+                        }));
                     }).render((cache, guiHandler, player, guiInventory, itemStack, i1) -> {
                         CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
-                        ItemStack stack = cauldronWorkstation.getInput()[recipeSlot];
+                        ItemStack stack = cauldronWorkstation.getInput().get(recipeSlot);
                         if (!ItemUtils.isAirOrNull(stack)) {
                             return CallbackButtonRender.UpdateResult.of(stack);
                         }
@@ -77,7 +102,7 @@ public class CauldronWorkstationMenu extends CCWindow {
         getButtonBuilder().action("result").state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
 
             return false;
-        })).register();
+        }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(cache.getCauldronWorkstation().getResult().map(CustomItem::create).orElse(ItemUtils.AIR)))).register();
         getButtonBuilder().action("result_dummy").state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
 
             return true;
@@ -87,14 +112,10 @@ public class CauldronWorkstationMenu extends CCWindow {
         })).register();
         getButtonBuilder().action("start").state(state -> state.icon(Material.LIME_CONCRETE).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
-
-            cauldronWorkstation.getBlockData().ifPresent(cauldronBlockData -> {
-
-
-            });
-
-            return false;
+            cauldronWorkstation.getBlockData().ifPresent(cauldronBlockData -> cauldronBlockData.initNewRecipe(cauldronWorkstation));
+            return true;
         })).register();
+        getButtonBuilder().dummy("start_disabled").state(state -> state.icon(Material.GRAY_CONCRETE)).register();
         getButtonBuilder().dummy("cauldron_icon").state(s -> s.icon(Material.CAULDRON)).register();
         registerButton(new DummyButton<>("texture_dark", new ButtonState<>(ClusterMain.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
         registerButton(new DummyButton<>("texture_light", new ButtonState<>(ClusterMain.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
@@ -106,9 +127,14 @@ public class CauldronWorkstationMenu extends CCWindow {
     }
 
     @Override
+    public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
+        return super.onUpdateTitle(player, inventory, guiHandler);
+    }
+
+    @Override
     public void onUpdateSync(GuiUpdate<CCCache> event) {
         for (int i = 0; i < getSize(); i++) {
-            event.setButton(i, ClusterMain.GLASS_BLACK);
+            event.setButton(i, ClusterMain.GLASS_GRAY);
         }
         CCCache cache = event.getGuiHandler().getCustomCache();
         CacheCauldronWorkstation cacheCauldronWorkstation = cache.getCauldronWorkstation();
@@ -126,12 +152,32 @@ public class CauldronWorkstationMenu extends CCWindow {
             }));
         }
 
+        //event.setButton(1, "crafting.slot_" + 0);
+        event.setButton(11, "crafting.slot_" + 3);
+        event.setButton(12, "crafting.slot_" + 4);
+        event.setButton(13, "crafting.slot_" + 5);
+
+        event.setButton(19, "crafting.slot_" + 2);
+        //event.setButton(19, "crafting.slot_" + 0);
+        event.setButton(29, "crafting.slot_" + 1);
+
+        event.setButton(30, "crafting.slot_" + 0);
+
+        /*
         int slot;
         for (int i = 0; i < INGREDIENT_AMOUNT; i++) {
             slot = 10 + i + (i / 3) * (9 - 3);
             event.setButton(slot, "crafting.slot_" + i);
         }
-        event.setButton(29, "cauldron_icon");
+
+         */
+        event.setButton(39, "cauldron_icon");
+        event.setButton(32, "start");
+
+        event.setButton(25, "result");
+        event.setButton(26, "result");
+        event.setButton(34, "result");
+        event.setButton(35, "result");
     }
 
     @Override
@@ -143,6 +189,7 @@ public class CauldronWorkstationMenu extends CCWindow {
         //Reset cache
         CacheCauldronWorkstation cacheCauldronWorkstation = cache.getCauldronWorkstation();
         cacheCauldronWorkstation.setBlockData(null);
+        cacheCauldronWorkstation.setBlock(null);
         for (ItemStack itemStack : cacheCauldronWorkstation.getInput()) {
             if (itemStack != null && !itemStack.getType().equals(Material.AIR)) {
                 Map<Integer, ItemStack> items = player.getInventory().addItem(itemStack);

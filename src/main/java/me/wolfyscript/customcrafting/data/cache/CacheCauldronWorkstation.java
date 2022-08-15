@@ -22,15 +22,26 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
+import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
+import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class CacheCauldronWorkstation {
 
+    private Block block;
     private CauldronBlockData blockData;
-    private ItemStack[] input;
+    private List<ItemStack> input;
+
+    private CauldronPreCookEvent preCookEvent;
+    private CustomItem result;
 
     public CacheCauldronWorkstation() {
         this.blockData = null;
@@ -41,15 +52,43 @@ public class CacheCauldronWorkstation {
         return Optional.ofNullable(blockData);
     }
 
+    public Optional<Block> getBlock() {
+        return Optional.ofNullable(block);
+    }
+
+    public void setPreCookEvent(CauldronPreCookEvent preCookEvent) {
+        this.preCookEvent = preCookEvent;
+        if (preCookEvent != null) {
+            this.result = preCookEvent.getRecipe().getResult().getItem(preCookEvent.getCauldron()).orElse(new CustomItem(Material.AIR));
+        } else {
+            this.result = null;
+        }
+    }
+
+    public Optional<CauldronPreCookEvent> getPreCookEvent() {
+        return Optional.ofNullable(preCookEvent);
+    }
+
+    public Optional<CustomItem> getResult() {
+        return Optional.ofNullable(result);
+    }
+
+    public void setBlock(@Nullable Block block) {
+        this.block = block;
+    }
+
     public void setBlockData(@Nullable CauldronBlockData blockData) {
         this.blockData = blockData;
     }
 
-    public ItemStack[] getInput() {
+    public List<ItemStack> getInput() {
         return input;
     }
 
     public void resetInput() {
-        this.input = new ItemStack[6];
+        this.input = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            input.add(null);
+        }
     }
 }

@@ -28,9 +28,9 @@ import com.wolfyscript.utilities.bukkit.persistent.world.CustomBlockData;
 import java.util.Optional;
 import java.util.Random;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronCookEvent;
-import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -82,14 +82,15 @@ public class CauldronBlockData extends CustomBlockData {
         resetResult();
     }
 
-    public void initNewRecipe(CauldronPreCookEvent event) {
-        this.recipe = event.getRecipe();
-        this.result = recipe.getResult().getItem(event.getCauldron()).orElse(new CustomItem(Material.AIR));
-        this.recipe.getResult().removeCachedItem(event.getCauldron());
-        this.dropItems = event.dropItems();
-        this.cookingTime = event.getCookingTime();
-        this.passedTicks = 0;
-        this.ticker = Bukkit.getScheduler().runTaskTimer(customCrafting, this::tick, 1, 1);
+    public void initNewRecipe(CacheCauldronWorkstation cache) {
+        cache.getPreCookEvent().ifPresent(event -> cache.getResult().ifPresent(result -> {
+            this.recipe = event.getRecipe();
+            this.result = result;
+            this.dropItems = event.dropItems();
+            this.cookingTime = event.getCookingTime();
+            this.passedTicks = 0;
+            this.ticker = Bukkit.getScheduler().runTaskTimer(customCrafting, this::tick, 1, 1);
+        }));
     }
 
     public int getPassedTicks() {

@@ -90,6 +90,7 @@ public class CauldronListener implements Listener {
                 GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(event.getPlayer());
                 CacheCauldronWorkstation cauldronWorkstation = guiHandler.getCustomCache().getCauldronWorkstation();
                 cauldronWorkstation.setBlockData(cauldronBlockData);
+                cauldronWorkstation.setBlock(clicked);
                 guiHandler.openCluster(CauldronWorkstationCluster.KEY);
             });
         }
@@ -164,6 +165,7 @@ public class CauldronListener implements Listener {
         }
     }
 
+    /*
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
         var player = event.getPlayer();
@@ -211,4 +213,6 @@ public class CauldronListener implements Listener {
                 }, 20
         );
     }
+
+     */
 }
