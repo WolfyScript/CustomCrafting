@@ -39,9 +39,7 @@ import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Plac
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
@@ -117,30 +115,18 @@ public class CauldronWorkstationMenu extends CCWindow {
                     cauldronWorkstation.resetInput();
                     cauldronBlockData.initNewRecipe(cauldronWorkstation);
                     cauldronWorkstation.setPreCookEvent(null);
+                    guiHandler.close();
                 }
             });
             return true;
         })).register();
         getButtonBuilder().dummy("start_disabled").state(state -> state.icon(Material.GRAY_CONCRETE)).register();
         getButtonBuilder().dummy("cauldron_icon").state(s -> s.icon(Material.CAULDRON)).register();
-        registerButton(new DummyButton<>("texture_dark", new ButtonState<>(ClusterMain.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>("texture_light", new ButtonState<>(ClusterMain.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
     }
 
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         //Prevent super class from rendering
-    }
-
-    @Override
-    public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
-        Optional<CauldronBlockData> optionalData = guiHandler.getCustomCache().getCauldronWorkstation().getBlockData();
-        if (optionalData.isPresent()) {
-            CauldronBlockData data = optionalData.get();
-            String progress = data.getPassedTicks() + " / " + data.getCookingTime();
-            return this.wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", TagResolverUtil.papi(player), Placeholder.parsed("progress", progress));
-        }
-        return super.onUpdateTitle(player, inventory, guiHandler);
     }
 
     @Override
@@ -151,14 +137,6 @@ public class CauldronWorkstationMenu extends CCWindow {
         CCCache cache = event.getGuiHandler().getCustomCache();
         CacheCauldronWorkstation cacheCauldronWorkstation = cache.getCauldronWorkstation();
         Optional<CauldronBlockData> optionalCauldronBlockData = cacheCauldronWorkstation.getBlockData();
-        if (optionalCauldronBlockData.isPresent()) {
-            CauldronBlockData data = optionalCauldronBlockData.get();
-            event.setButton(25, "result");
-            data.getRecipe().ifPresent(customRecipeCauldron -> {
-                // Show cooking progress
-
-            });
-        }
 
         event.setButton(11, "crafting.slot_" + 3);
         event.setButton(12, "crafting.slot_" + 4);
@@ -168,6 +146,12 @@ public class CauldronWorkstationMenu extends CCWindow {
         event.setButton(29, "crafting.slot_" + 1);
 
         event.setButton(30, "crafting.slot_" + 0);
+
+        if (optionalCauldronBlockData.isPresent()) {
+            CauldronBlockData data = optionalCauldronBlockData.get();
+
+
+        }
 
         event.setButton(39, "cauldron_icon");
         event.setButton(32, "start");
@@ -186,6 +170,7 @@ public class CauldronWorkstationMenu extends CCWindow {
 
         //Reset cache
         CacheCauldronWorkstation cacheCauldronWorkstation = cache.getCauldronWorkstation();
+        cacheCauldronWorkstation.setPreCookEvent(null);
         cacheCauldronWorkstation.setBlockData(null);
         cacheCauldronWorkstation.setBlock(null);
         for (ItemStack itemStack : cacheCauldronWorkstation.getInput()) {

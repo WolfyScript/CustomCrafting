@@ -77,6 +77,13 @@ public class CauldronListener implements Listener {
 
         Block clicked = event.getClickedBlock();
         if (clicked != null && Cauldrons.isCauldron(clicked.getType())) {
+
+            ItemStack usedItem = event.getItem();
+            if (usedItem != null) {
+                Material type = usedItem.getType();
+                if (type.equals(Material.POTION) || type.equals(Material.GLASS_BOTTLE) || type.equals(Material.WATER_BUCKET) || type.equals(Material.BUCKET) || type.equals(Material.LAVA_BUCKET)) return;
+            }
+
             WorldStorage worldStorage = ((WolfyCoreBukkit)api.getCore()).getPersistentStorage().getOrCreateWorldStorage(clicked.getWorld());
             BlockStorage blockStorage = worldStorage.getOrCreateAndSetBlockStorage(clicked.getLocation());
 
@@ -87,11 +94,14 @@ public class CauldronListener implements Listener {
                 blockStorage.getChunkStorage().updateBlock(blockStorage.getPos());
             }
             blockStorage.getData(CauldronBlockData.ID, CauldronBlockData.class).ifPresent(cauldronBlockData -> {
-                GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(event.getPlayer());
-                CacheCauldronWorkstation cauldronWorkstation = guiHandler.getCustomCache().getCauldronWorkstation();
-                cauldronWorkstation.setBlockData(cauldronBlockData);
-                cauldronWorkstation.setBlock(clicked);
-                guiHandler.openCluster(CauldronWorkstationCluster.KEY);
+                if (cauldronBlockData.getRecipe().isEmpty() && cauldronBlockData.getPassedTicks() <= 0) {
+                    GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(event.getPlayer());
+                    CacheCauldronWorkstation cauldronWorkstation = guiHandler.getCustomCache().getCauldronWorkstation();
+                    cauldronWorkstation.setBlockData(cauldronBlockData);
+                    cauldronWorkstation.setBlock(clicked);
+                    guiHandler.openCluster(CauldronWorkstationCluster.KEY);
+                    event.setCancelled(true);
+                }
             });
         }
     }
