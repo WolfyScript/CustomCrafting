@@ -222,6 +222,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     public void addIngredients(List<Ingredient> ingredients) {
         Preconditions.checkArgument(this.ingredients.size() + ingredients.size() <= maxIngredients, "Recipe cannot have more than " + maxIngredients + " ingredients!");
         ingredients.forEach(ingredient -> {
+            ingredient.buildChoices();
             if (!ingredient.isEmpty()) {
                 this.ingredients.add(ingredient);
             }

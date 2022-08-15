@@ -33,15 +33,14 @@ import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -51,8 +50,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Campfire;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
@@ -69,8 +67,7 @@ public class CauldronBlockData extends CustomBlockData {
     private int cookingTime;
     private int passedTicks;
     private BukkitTask ticker;
-    private boolean dropItems;
-    private CustomItem result;
+    private ItemStack[] result;
 
     @JsonCreator
     public CauldronBlockData(@JacksonInject Vector pos, @JacksonInject ChunkStorage chunkStorage) {
@@ -78,19 +75,18 @@ public class CauldronBlockData extends CustomBlockData {
         this.pos = pos;
         this.chunkStorage = chunkStorage;
         this.customCrafting = CustomCrafting.inst(); //TODO: Somehow use Guice to inject this?! Together with Jackson serialization...
+        this.result = new ItemStack[4];
         reset();
         resetResult();
     }
 
     public void initNewRecipe(CacheCauldronWorkstation cache) {
-        cache.getPreCookEvent().ifPresent(event -> cache.getResult().ifPresent(result -> {
+        cache.getPreCookEvent().ifPresent(event -> {
             this.recipe = event.getRecipe();
-            this.result = result;
-            this.dropItems = event.dropItems();
             this.cookingTime = event.getCookingTime();
             this.passedTicks = 0;
             this.ticker = Bukkit.getScheduler().runTaskTimer(customCrafting, this::tick, 1, 1);
-        }));
+        });
     }
 
     public int getPassedTicks() {
@@ -122,31 +118,28 @@ public class CauldronBlockData extends CustomBlockData {
     }
 
     @JsonIgnore
+    public boolean isResultEmpty() {
+        for (ItemStack stack : result) {
+            if (!ItemUtils.isAirOrNull(stack)) return false;
+        }
+        return true;
+    }
+
+    @JsonIgnore
     public Optional<CustomRecipeCauldron> getRecipe() {
         return Optional.ofNullable(recipe);
     }
 
-    @JsonIgnore
-    public Optional<CustomItem> getResult() {
-        return Optional.ofNullable(result);
-    }
-
-    @JsonGetter("result")
-    private APIReference getResultReference() {
-        return getResult().map(CustomItem::getApiReference).orElse(null);
-    }
-
-    @JsonSetter("result")
-    private void setResultReference(APIReference reference) {
-        this.result = ItemLoader.load(reference);
-    }
-
-    public boolean isDropItems() {
-        return dropItems;
+    public ItemStack[] getResult() {
+        return result;
     }
 
     public void tick() {
-        if (recipe == null) return;
+        if (recipe == null) {
+            reset();
+            resetResult();
+            return;
+        }
         if (chunkStorage.getChunk().isEmpty()) return;
         final Block block = chunkStorage.getChunk().get().getWorld().getBlockAt(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ());
         final Location loc = block.getLocation();
@@ -168,13 +161,8 @@ public class CauldronBlockData extends CustomBlockData {
                     }
                 }
                 recipe.getResult().executeExtensions(loc.clone(), true, null);
-                if (event.dropItems()) {
-                    var dropLocation = loc.clone().add(0.0, 0.5, 0.0);
-                    loc.getWorld().dropItemNaturally(dropLocation, event.getResult().create());
-                    if (recipe.getXp() > 0) {
-                        ExperienceOrb orb = (ExperienceOrb) dropLocation.getWorld().spawnEntity(dropLocation, EntityType.EXPERIENCE_ORB);
-                        orb.setExperience(recipe.getXp());
-                    }
+                for (int i = 0; i < 4; i++) {
+                    this.result[i] = recipe.getResult().getItem(loc.getBlock()).orElse(new CustomItem(ItemUtils.AIR)).create();
                 }
                 reset();
             }
@@ -187,7 +175,7 @@ public class CauldronBlockData extends CustomBlockData {
         boolean isLit = false;
         boolean isSignalFire = false;
         if (hasCampfire || hasSoulCampfire) {
-            Campfire campfire = (Campfire) blockBelow.getState();
+            Campfire campfire = (Campfire) blockBelow.getBlockData();
             isLit = campfire.isLit();
             isSignalFire = campfire.isSignalFire();
         }
@@ -225,14 +213,14 @@ public class CauldronBlockData extends CustomBlockData {
         this.recipe = null;
         this.cookingTime = 0;
         this.passedTicks = 0;
-        this.dropItems = false;
         if (ticker != null) {
             this.ticker.cancel();
+            this.ticker = null;
         }
     }
 
     public void resetResult() {
-        this.result = new CustomItem(Material.AIR);
+        this.result = new ItemStack[4];
     }
 
     @Override

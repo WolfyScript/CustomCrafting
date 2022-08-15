@@ -40,9 +40,9 @@ public class CauldronCookEvent extends Event implements Cancellable {
     private CustomRecipeCauldron recipe;
 
     public CauldronCookEvent(CauldronBlockData cauldron) {
-        this.recipe = cauldron.getRecipe().orElseThrow(() -> new RuntimeException("Cannot call CauldronCookEvent without an recipe!"));
-        this.result = cauldron.getResult().orElse(new CustomItem(Material.AIR));
-        this.dropItems = cauldron.isDropItems();
+        this.recipe = cauldron.getRecipe().orElseThrow(() -> new RuntimeException("Cannot call CauldronCookEvent without a recipe!"));
+        this.result = new CustomItem(Material.AIR);
+        this.dropItems = false;
     }
 
     @Override

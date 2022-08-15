@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.cauldron;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import java.util.Map;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -34,7 +35,7 @@ import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -45,7 +46,6 @@ import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
@@ -99,20 +99,26 @@ public class CauldronWorkstationMenu extends CCWindow {
                         return CallbackButtonRender.UpdateResult.of(new ItemStack(Material.AIR));
                     })).register();
         }
-        getButtonBuilder().action("result").state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
 
-            return false;
-        }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(cache.getCauldronWorkstation().getResult().map(CustomItem::create).orElse(ItemUtils.AIR)))).register();
-        getButtonBuilder().action("result_dummy").state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
-
-            return CallbackButtonRender.UpdateResult.of(itemStack);
-        })).register();
+        for (int resultSlot = 0; resultSlot < 4; resultSlot++) {
+            int finalResultSlot = resultSlot;
+            getButtonBuilder().action("result_" + resultSlot).state(state -> state.icon(Material.AIR)
+                    .action((cache, guiHandler, player, inventory, slot, event) -> false)
+                    .postAction((cache, guiHandler, player, inventory, itemStack, i, event) -> cache.getCauldronWorkstation().getBlockData().ifPresent(cauldronBlockData -> cauldronBlockData.getResult()[finalResultSlot] = itemStack))
+                    .render((cache, guiHandler, player, inventory, itemStack, slot) -> {
+                        ItemStack result = cache.getCauldronWorkstation().getBlockData().map(cauldronBlockData -> cauldronBlockData.getResult()[finalResultSlot]).orElse(ItemUtils.AIR);
+                        return CallbackButtonRender.UpdateResult.of(result);
+                    })).register();
+        }
         getButtonBuilder().action("start").state(state -> state.icon(Material.LIME_CONCRETE).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
-            cauldronWorkstation.getBlockData().ifPresent(cauldronBlockData -> cauldronBlockData.initNewRecipe(cauldronWorkstation));
+            cauldronWorkstation.getBlockData().ifPresent(cauldronBlockData -> {
+                if (cauldronBlockData.isResultEmpty()) {
+                    cauldronWorkstation.resetInput();
+                    cauldronBlockData.initNewRecipe(cauldronWorkstation);
+                    cauldronWorkstation.setPreCookEvent(null);
+                }
+            });
             return true;
         })).register();
         getButtonBuilder().dummy("start_disabled").state(state -> state.icon(Material.GRAY_CONCRETE)).register();
@@ -128,6 +134,12 @@ public class CauldronWorkstationMenu extends CCWindow {
 
     @Override
     public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
+        Optional<CauldronBlockData> optionalData = guiHandler.getCustomCache().getCauldronWorkstation().getBlockData();
+        if (optionalData.isPresent()) {
+            CauldronBlockData data = optionalData.get();
+            String progress = data.getPassedTicks() + " / " + data.getCookingTime();
+            return this.wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", TagResolverUtil.papi(player), Placeholder.parsed("progress", progress));
+        }
         return super.onUpdateTitle(player, inventory, guiHandler);
     }
 
@@ -142,14 +154,10 @@ public class CauldronWorkstationMenu extends CCWindow {
         if (optionalCauldronBlockData.isPresent()) {
             CauldronBlockData data = optionalCauldronBlockData.get();
             event.setButton(25, "result");
-            data.getRecipe().ifPresentOrElse(customRecipeCauldron -> {
+            data.getRecipe().ifPresent(customRecipeCauldron -> {
                 // Show cooking progress
 
-            }, () -> data.getResult().ifPresent(customItem -> {
-                // Allow player to collect the result!
-
-
-            }));
+            });
         }
 
         event.setButton(11, "crafting.slot_" + 3);
@@ -161,21 +169,13 @@ public class CauldronWorkstationMenu extends CCWindow {
 
         event.setButton(30, "crafting.slot_" + 0);
 
-        /*
-        int slot;
-        for (int i = 0; i < INGREDIENT_AMOUNT; i++) {
-            slot = 10 + i + (i / 3) * (9 - 3);
-            event.setButton(slot, "crafting.slot_" + i);
-        }
-
-         */
         event.setButton(39, "cauldron_icon");
         event.setButton(32, "start");
 
-        event.setButton(25, "result");
-        event.setButton(26, "result");
-        event.setButton(34, "result");
-        event.setButton(35, "result");
+        event.setButton(25, "result_0");
+        event.setButton(26, "result_1");
+        event.setButton(34, "result_2");
+        event.setButton(35, "result_3");
     }
 
     @Override

@@ -58,11 +58,6 @@ public class CacheCauldronWorkstation {
 
     public void setPreCookEvent(CauldronPreCookEvent preCookEvent) {
         this.preCookEvent = preCookEvent;
-        if (preCookEvent != null) {
-            this.result = preCookEvent.getRecipe().getResult().getItem(preCookEvent.getCauldron()).orElse(new CustomItem(Material.AIR));
-        } else {
-            this.result = null;
-        }
     }
 
     public Optional<CauldronPreCookEvent> getPreCookEvent() {
