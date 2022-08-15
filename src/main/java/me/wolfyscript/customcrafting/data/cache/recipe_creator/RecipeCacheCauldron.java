@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import java.util.ArrayList;
+import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
@@ -32,9 +34,7 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
     private int cookingTime;
     private int waterLevel;
     private int xp;
-    private CustomItem handItem;
-    private Ingredient ingredients;
-    private boolean dropItems;
+    private List<Ingredient> ingredients;
     private boolean needsFire;
     private boolean needsWater;
 
@@ -45,9 +45,7 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.waterLevel = 1;
         this.needsWater = true;
         this.needsFire = true;
-        this.dropItems = true;
-        this.handItem = null;
-        this.ingredients = new Ingredient();
+        this.ingredients = new ArrayList<>();
     }
 
     RecipeCacheCauldron(CustomCrafting customCrafting, CustomRecipeCauldron recipe) {
@@ -55,21 +53,23 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.cookingTime = recipe.getCookingTime();
         this.waterLevel = recipe.getWaterLevel();
         this.xp = recipe.getXp();
-        this.handItem = recipe.getHandItem() != null ? recipe.getHandItem().clone() : null;
-        this.ingredients = recipe.getIngredient().clone();
-        this.dropItems = recipe.dropItems();
+        this.ingredients = new ArrayList<>(recipe.getIngredients().stream().map(Ingredient::clone).toList());
         this.needsFire = recipe.needsFire();
         this.needsWater = recipe.needsWater();
     }
 
     @Override
     public void setIngredient(int slot, Ingredient ingredient) {
-        setIngredients(ingredient);
+        if (slot < ingredients.size()) {
+            ingredients.set(slot, ingredient);
+        } else if (ingredients.size() < 6){
+            ingredients.add(ingredient);
+        }
     }
 
     @Override
     public Ingredient getIngredient(int slot) {
-        return getIngredients();
+        return slot < ingredients.size() ? ingredients.get(slot) : null;
     }
 
     @Override
@@ -80,12 +80,10 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
     @Override
     protected CustomRecipeCauldron create(CustomRecipeCauldron recipe) {
         CustomRecipeCauldron cauldron = super.create(recipe);
-        cauldron.setIngredient(ingredients);
+        cauldron.addIngredients(ingredients);
         cauldron.setCookingTime(cookingTime);
         cauldron.setWaterLevel(waterLevel);
         cauldron.setXp(xp);
-        cauldron.setHandItem(handItem);
-        cauldron.setDropItems(dropItems);
         cauldron.setNeedsFire(needsFire);
         cauldron.setNeedsWater(needsWater);
         return cauldron;
@@ -115,28 +113,12 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.xp = xp;
     }
 
-    public CustomItem getHandItem() {
-        return handItem;
-    }
-
-    public void setHandItem(CustomItem handItem) {
-        this.handItem = handItem;
-    }
-
-    public Ingredient getIngredients() {
+    public List<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(Ingredient ingredients) {
+    public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
-    }
-
-    public boolean isDropItems() {
-        return dropItems;
-    }
-
-    public void setDropItems(boolean dropItems) {
-        this.dropItems = dropItems;
     }
 
     public boolean isNeedsFire() {

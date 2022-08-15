@@ -152,13 +152,11 @@ public class CauldronWorkstationMenu extends CCWindow {
             }));
         }
 
-        //event.setButton(1, "crafting.slot_" + 0);
         event.setButton(11, "crafting.slot_" + 3);
         event.setButton(12, "crafting.slot_" + 4);
         event.setButton(13, "crafting.slot_" + 5);
 
         event.setButton(19, "crafting.slot_" + 2);
-        //event.setButton(19, "crafting.slot_" + 0);
         event.setButton(29, "crafting.slot_" + 1);
 
         event.setButton(30, "crafting.slot_" + 0);
