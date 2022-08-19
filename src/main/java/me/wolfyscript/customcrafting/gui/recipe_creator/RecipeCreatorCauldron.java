@@ -95,12 +95,12 @@ public class RecipeCreatorCauldron extends RecipeCreator {
         update.setButton(5, ClusterRecipeCreator.PRIORITY);
         update.setButton(7, ClusterRecipeCreator.EXACT_META);
 
-        update.setButton(10, "recipe.ingredient_3");
+        update.setButton(9, "recipe.ingredient_3");
         update.setButton(11, "recipe.ingredient_4");
-        update.setButton(12, "recipe.ingredient_5");
+        update.setButton(13, "recipe.ingredient_5");
 
-        update.setButton(18, "recipe.ingredient_2");
-        update.setButton(28, "recipe.ingredient_1");
+        update.setButton(19, "recipe.ingredient_2");
+        update.setButton(21, "recipe.ingredient_1");
 
         update.setButton(29, "recipe.ingredient_0");
 

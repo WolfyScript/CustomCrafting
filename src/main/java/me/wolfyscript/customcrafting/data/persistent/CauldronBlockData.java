@@ -82,6 +82,7 @@ public class CauldronBlockData extends CustomBlockData {
 
     public void initNewRecipe(CacheCauldronWorkstation cache) {
         cache.getPreCookEvent().ifPresent(event -> {
+            cache.resetInput();
             this.recipe = event.getRecipe();
             this.cookingTime = event.getCookingTime();
             this.passedTicks = 0;
@@ -191,9 +192,6 @@ public class CauldronBlockData extends CustomBlockData {
             //The cauldron doesn't fulfill the requirements of the recipe. Perhaps water level changed or the campfire was extinguished.
             passedTicks -= 2;
             if (passedTicks <= 0) {
-                for (CustomItem customItem : recipe.getIngredient().getChoices()) {
-                    Bukkit.getScheduler().runTask(customCrafting, () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), customItem.getItemStack()));
-                }
                 reset();
                 resetResult();
             }

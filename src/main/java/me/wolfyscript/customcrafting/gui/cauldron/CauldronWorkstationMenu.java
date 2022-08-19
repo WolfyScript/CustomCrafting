@@ -22,33 +22,34 @@
 
 package me.wolfyscript.customcrafting.gui.cauldron;
 
-import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import java.util.Map;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
+import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
-import me.wolfyscript.lib.net.kyori.adventure.text.Component;
-import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Campfire;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 public class CauldronWorkstationMenu extends CCWindow {
 
@@ -68,7 +69,7 @@ public class CauldronWorkstationMenu extends CCWindow {
                     .action((cache, guiHandler, player, guiInventory, i1, event) -> event instanceof InventoryClickEvent clickEvent && clickEvent.getSlot() == 25)
                     .postAction((cache, guiHandler, player, guiInventory, itemStack, i1, event) -> {
                         CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
-
+                        cauldronWorkstation.setPreCookEvent(null);
                         if (cauldronWorkstation.getInput().get(recipeSlot) == null) {
                             // In case the item was put into an empty slot put it into the first empty slot
                             int nextIndex = cauldronWorkstation.getInput().indexOf(null);
@@ -108,18 +109,26 @@ public class CauldronWorkstationMenu extends CCWindow {
                         return CallbackButtonRender.UpdateResult.of(result);
                     })).register();
         }
-        getButtonBuilder().action("start").state(state -> state.icon(Material.LIME_CONCRETE).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
-            cauldronWorkstation.getBlockData().ifPresent(cauldronBlockData -> {
-                if (cauldronBlockData.isResultEmpty()) {
-                    cauldronWorkstation.resetInput();
-                    cauldronBlockData.initNewRecipe(cauldronWorkstation);
-                    cauldronWorkstation.setPreCookEvent(null);
-                    guiHandler.close();
-                }
-            });
-            return true;
-        })).register();
+        getButtonBuilder().toggle("start")
+                .enabledState(state -> state.icon(PlayerHeadUtils.getViaURL("a92e31ffb59c90ab08fc9dc1fe26802035a3a47c42fee63423bcdb4262ecb9b6")).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                    CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
+                    cauldronWorkstation.getBlockData().ifPresent(cauldronBlockData -> {
+                        if (cauldronBlockData.isResultEmpty()) {
+                            cauldronBlockData.initNewRecipe(cauldronWorkstation);
+                            cauldronWorkstation.setPreCookEvent(null);
+
+                            if (cauldronBlockData.getRecipe().isPresent()) {
+                                Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.close());
+                            }
+                        }
+                    });
+                    return true;
+                }))
+                .disabledState(state -> state.icon(PlayerHeadUtils.getViaURL("85a3755a6fe019a173ce3a43070452e767768d57559d04b73e21b903eaa1bd82")))
+                .defaultState(false).stateFunction((cache, guiHandler, player, guiInventory, i) -> {
+                    CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
+                    return cauldronWorkstation.getBlockData().map(CauldronBlockData::isResultEmpty).orElse(true) && cauldronWorkstation.getPreCookEvent().isPresent();
+                }).register();
         getButtonBuilder().dummy("start_disabled").state(state -> state.icon(Material.GRAY_CONCRETE)).register();
         getButtonBuilder().dummy("cauldron_icon").state(s -> s.icon(Material.CAULDRON)).register();
     }
@@ -134,32 +143,71 @@ public class CauldronWorkstationMenu extends CCWindow {
         for (int i = 0; i < getSize(); i++) {
             event.setButton(i, ClusterMain.GLASS_GRAY);
         }
+
         CCCache cache = event.getGuiHandler().getCustomCache();
         CacheCauldronWorkstation cacheCauldronWorkstation = cache.getCauldronWorkstation();
         Optional<CauldronBlockData> optionalCauldronBlockData = cacheCauldronWorkstation.getBlockData();
 
-        event.setButton(11, "crafting.slot_" + 3);
-        event.setButton(12, "crafting.slot_" + 4);
-        event.setButton(13, "crafting.slot_" + 5);
-
-        event.setButton(19, "crafting.slot_" + 2);
-        event.setButton(29, "crafting.slot_" + 1);
-
-        event.setButton(30, "crafting.slot_" + 0);
-
         if (optionalCauldronBlockData.isPresent()) {
-            CauldronBlockData data = optionalCauldronBlockData.get();
-
-
+            CauldronBlockData blockData = optionalCauldronBlockData.get();
+            if (!blockData.isResultEmpty()) {
+                event.setButton(25, "result_0");
+                event.setButton(26, "result_1");
+                event.setButton(34, "result_2");
+                event.setButton(35, "result_3");
+                return;
+            }
         }
 
-        event.setButton(39, "cauldron_icon");
-        event.setButton(32, "start");
+        event.setButton(10, "crafting.slot_" + 3);
+        event.setButton(12, "crafting.slot_" + 4);
+        event.setButton(14, "crafting.slot_" + 5);
 
-        event.setButton(25, "result_0");
-        event.setButton(26, "result_1");
-        event.setButton(34, "result_2");
-        event.setButton(35, "result_3");
+        event.setButton(20, "crafting.slot_" + 2);
+        event.setButton(22, "crafting.slot_" + 1);
+        event.setButton(30, "crafting.slot_" + 0);
+
+        //event.setButton(31, "crafting.slot_" + 0);
+        cacheCauldronWorkstation.getBlock().ifPresent(block -> {
+            final Block blockBelow = block.getLocation().subtract(0, 1, 0).getBlock();
+            final boolean hasCampfire = blockBelow.getType().equals(Material.CAMPFIRE);
+            final boolean hasSoulCampfire = !hasCampfire && blockBelow.getType().equals(Material.SOUL_CAMPFIRE);
+            final boolean lava = block.getType().equals(Material.LAVA_CAULDRON);
+            boolean isLit = false;
+            boolean isSignalFire = false;
+            if (hasCampfire || hasSoulCampfire) {
+                Campfire campfire = (Campfire) blockBelow.getBlockData();
+                isLit = campfire.isLit();
+                isSignalFire = campfire.isSignalFire();
+            }
+            final int level = Cauldrons.getLevel(block);
+            final World world = block.getWorld();
+
+            if (hasCampfire) {
+                event.setItem(38, new ItemStack(Material.CAMPFIRE));
+            } else if (hasSoulCampfire) {
+                event.setItem(38, new ItemStack(Material.SOUL_CAMPFIRE));
+            }
+            if (isSignalFire) {
+                event.setItem(40, new ItemStack(Material.HAY_BLOCK));
+            }
+            event.setButton(39, "cauldron_icon");
+
+            ItemStack levelItem;
+            if (block.getType().equals(Material.LAVA_CAULDRON)) {
+                levelItem = new ItemStack(Material.ORANGE_STAINED_GLASS_PANE);
+            } else {
+                levelItem = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
+            }
+            for (int i = 0; i < 3; i++) {
+                if (i < level || lava) {
+                    event.setItem(45 - i * 9, levelItem);
+                } else {
+                    event.setButton(45 - i * 9, ClusterMain.GLASS_WHITE);
+                }
+            }
+        });
+        event.setButton(34, "start");
     }
 
     @Override
