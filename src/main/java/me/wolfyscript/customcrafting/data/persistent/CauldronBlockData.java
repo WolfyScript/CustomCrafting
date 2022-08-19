@@ -170,33 +170,34 @@ public class CauldronBlockData extends CustomBlockData {
             return;
         }
 
-        final Block blockBelow = block.getLocation().subtract(0, 1, 0).getBlock();
-        final boolean hasCampfire = blockBelow.getType().equals(Material.CAMPFIRE);
-        final boolean hasSoulCampfire = !hasCampfire && blockBelow.getType().equals(Material.SOUL_CAMPFIRE);
-        boolean isLit = false;
-        boolean isSignalFire = false;
-        if (hasCampfire || hasSoulCampfire) {
-            Campfire campfire = (Campfire) blockBelow.getBlockData();
-            isLit = campfire.isLit();
-            isSignalFire = campfire.isSignalFire();
-        }
+        getCauldronStatus(block).ifPresent(status -> {
+            final int level = Cauldrons.getLevel(block);
+            final World world = block.getWorld();
 
-        final int level = Cauldrons.getLevel(block);
-        final World world = block.getWorld();
-
-        if (level >= recipe.getWaterLevel() && (block.getType().equals(Material.CAULDRON) || recipe.needsWater()) && (!recipe.needsFire() || isLit)) {
-            spawnBubbles(world, loc, level);
-            world.spawnParticle(Particle.REDSTONE, loc.add(particleLevel(level)), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
-            passedTicks++;
-        } else {
-            //The cauldron doesn't fulfill the requirements of the recipe. Perhaps water level changed or the campfire was extinguished.
-            passedTicks -= 2;
-            if (passedTicks <= 0) {
-                reset();
-                resetResult();
+            if (level >= recipe.getWaterLevel() && (block.getType().equals(Material.CAULDRON) || recipe.needsWater()) && (!recipe.needsFire() || status.isLit())) {
+                spawnBubbles(world, loc, level);
+                world.spawnParticle(Particle.REDSTONE, loc.add(particleLevel(level)), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
+                passedTicks++;
+            } else {
+                //The cauldron doesn't fulfill the requirements of the recipe. Perhaps water level changed or the campfire was extinguished.
+                passedTicks -= 2;
+                if (passedTicks <= 0) {
+                    reset();
+                    resetResult();
+                }
             }
-        }
+        });
 
+    }
+
+    public Optional<CauldronStatus> getCauldronStatus() {
+        if (chunkStorage.getChunk().isEmpty()) return Optional.empty();
+        final Block block = chunkStorage.getChunk().get().getWorld().getBlockAt(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ());
+        return getCauldronStatus(block);
+    }
+
+    private Optional<CauldronStatus> getCauldronStatus(Block block) {
+        return Optional.of(new CauldronStatus(block));
     }
 
     private Vector particleLevel(int level) {
@@ -243,5 +244,55 @@ public class CauldronBlockData extends CustomBlockData {
     @Override
     public CustomBlockData copyTo(BlockStorage blockStorage) {
         return null;
+    }
+
+    public static class CauldronStatus {
+
+        private final boolean hasCampfire;
+        private final boolean hasSoulCampfire;
+        private final boolean isLit;
+        private final boolean isSignalFire;
+        private final int level;
+        private final Block block;
+
+        public CauldronStatus(Block block) {
+            this.block = block;
+            final Block blockBelow = block.getLocation().subtract(0, 1, 0).getBlock();
+            this.hasCampfire = blockBelow.getType().equals(Material.CAMPFIRE);
+            this.hasSoulCampfire = !hasCampfire && blockBelow.getType().equals(Material.SOUL_CAMPFIRE);
+            if (hasCampfire || hasSoulCampfire) {
+                Campfire campfire = (Campfire) blockBelow.getBlockData();
+                this.isLit = campfire.isLit();
+                this.isSignalFire = campfire.isSignalFire();
+            } else {
+                this.isLit = false;
+                this.isSignalFire = false;
+            }
+            this.level = Cauldrons.getLevel(block);
+        }
+
+        public boolean isHasCampfire() {
+            return hasCampfire;
+        }
+
+        public boolean isHasSoulCampfire() {
+            return hasSoulCampfire;
+        }
+
+        public boolean isLit() {
+            return isLit;
+        }
+
+        public boolean isSignalFire() {
+            return isSignalFire;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+        public Block getBlock() {
+            return block;
+        }
     }
 }

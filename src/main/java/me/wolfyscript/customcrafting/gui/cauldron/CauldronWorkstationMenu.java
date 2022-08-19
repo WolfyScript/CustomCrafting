@@ -41,7 +41,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -68,27 +67,27 @@ public class CauldronWorkstationMenu extends CCWindow {
             getButtonBuilder().action("crafting.slot_" + i).state(state -> state.icon(Material.AIR)
                     .action((cache, guiHandler, player, guiInventory, i1, event) -> event instanceof InventoryClickEvent clickEvent && clickEvent.getSlot() == 25)
                     .postAction((cache, guiHandler, player, guiInventory, itemStack, i1, event) -> {
-                        CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
-                        cauldronWorkstation.setPreCookEvent(null);
-                        if (cauldronWorkstation.getInput().get(recipeSlot) == null) {
+                        CacheCauldronWorkstation cacheCauldron = cache.getCauldronWorkstation();
+                        cacheCauldron.setPreCookEvent(null);
+                        if (cacheCauldron.getInput().get(recipeSlot) == null) {
                             // In case the item was put into an empty slot put it into the first empty slot
-                            int nextIndex = cauldronWorkstation.getInput().indexOf(null);
-                            cauldronWorkstation.getInput().set(nextIndex, itemStack);
+                            int nextIndex = cacheCauldron.getInput().indexOf(null);
+                            cacheCauldron.getInput().set(nextIndex, itemStack);
                         } else {
-                            cauldronWorkstation.getInput().set(recipeSlot, itemStack);
+                            cacheCauldron.getInput().set(recipeSlot, itemStack);
                         }
-                        cauldronWorkstation.getBlock().ifPresent(block -> cauldronWorkstation.getBlockData().ifPresent(data -> {
+                        cacheCauldron.getBlock().flatMap(block -> cacheCauldron.getBlockData().flatMap(CauldronBlockData::getCauldronStatus)).ifPresent(status -> {
                             for (CustomRecipeCauldron recipeCauldron : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.CAULDRON, player)) {
-                                if (recipeCauldron.checkRecipe(cauldronWorkstation.getInput())) {
-                                    CauldronPreCookEvent preCookEvent = new CauldronPreCookEvent(customCrafting, recipeCauldron, player, block);
+                                if (recipeCauldron.checkRecipe(cacheCauldron.getInput(), status)) {
+                                    CauldronPreCookEvent preCookEvent = new CauldronPreCookEvent(customCrafting, recipeCauldron, player, status.getBlock());
                                     if (!preCookEvent.isCancelled()) {
                                         //Cache event results
-                                        cauldronWorkstation.setPreCookEvent(preCookEvent);
+                                        cacheCauldron.setPreCookEvent(preCookEvent);
                                     }
                                     return;
                                 }
                             }
-                        }));
+                        });
                     }).render((cache, guiHandler, player, guiInventory, itemStack, i1) -> {
                         CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
                         ItemStack stack = cauldronWorkstation.getInput().get(recipeSlot);
@@ -116,9 +115,8 @@ public class CauldronWorkstationMenu extends CCWindow {
                         if (cauldronBlockData.isResultEmpty()) {
                             cauldronBlockData.initNewRecipe(cauldronWorkstation);
                             cauldronWorkstation.setPreCookEvent(null);
-
                             if (cauldronBlockData.getRecipe().isPresent()) {
-                                Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.close());
+                                guiHandler.close();
                             }
                         }
                     });
@@ -131,6 +129,7 @@ public class CauldronWorkstationMenu extends CCWindow {
                 }).register();
         getButtonBuilder().dummy("start_disabled").state(state -> state.icon(Material.GRAY_CONCRETE)).register();
         getButtonBuilder().dummy("cauldron_icon").state(s -> s.icon(Material.CAULDRON)).register();
+        getButtonBuilder().dummy("signal_fire").state(s -> s.icon(Material.HAY_BLOCK)).register();
     }
 
     @Override
@@ -189,7 +188,7 @@ public class CauldronWorkstationMenu extends CCWindow {
                 event.setItem(38, new ItemStack(Material.SOUL_CAMPFIRE));
             }
             if (isSignalFire) {
-                event.setItem(40, new ItemStack(Material.HAY_BLOCK));
+                event.setButton(40, "signal_fire");
             }
             event.setButton(39, "cauldron_icon");
 

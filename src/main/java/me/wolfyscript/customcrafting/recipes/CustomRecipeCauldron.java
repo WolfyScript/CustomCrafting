@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
@@ -55,6 +56,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
@@ -157,7 +159,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.xp = xp;
     }
 
-    public boolean checkRecipe(List<ItemStack> items) {
+    public boolean checkRecipe(List<ItemStack> items, CauldronBlockData.CauldronStatus status) {
         int inputI = 0;
         for (Ingredient ingredient : ingredients) {
             ItemStack input = items.get(inputI);
