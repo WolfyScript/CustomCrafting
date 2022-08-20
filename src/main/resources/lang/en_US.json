@@ -1,6 +1,6 @@
 {
   "author": "WolfyScript",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "info": [
     "YouTube: https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g",
     "GitHub:  https://github.com/WolfyScript"
@@ -3565,7 +3565,25 @@
       "cauldron": {
         "gui_name": "<dark_grey>Cauldron</dark_grey>",
         "items": {
-
+          "start": {
+            "enabled": {
+              "name": "<green><b>Start Cooking</b></green>"
+            },
+            "disabled": {
+              "name": "<red><b>Cannot be Cooked</b></red>",
+              "lore": [
+                "<grey>Invalid Recipe or Requirements!",
+                "",
+                "<yellow>Check Requirements:",
+                "<grey>- <gold>Liquid <grey>(<blue>Water</blue>/<red>Lava</red>)</grey>",
+                "<grey>- <gold>Campfire</gold> <grey>(<aqua>Soul</aqua>/<yellow>Normal</yellow>)</grey>",
+                "<grey>- <gold>Signal Fire <grey>(Hay Bale)</grey>"
+              ]
+            }
+          },
+          "signal_fire": {
+            "name": "<gold>Signal Fire</gold>"
+          }
         }
       }
     }

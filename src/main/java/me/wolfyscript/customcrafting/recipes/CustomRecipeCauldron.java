@@ -62,6 +62,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     private static final int maxIngredients = 6;
 
+
     private int cookingTime;
     private int xp;
     private Deque<Ingredient> ingredients;

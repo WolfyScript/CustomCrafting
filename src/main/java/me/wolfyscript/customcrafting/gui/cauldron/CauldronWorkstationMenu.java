@@ -104,7 +104,7 @@ public class CauldronWorkstationMenu extends CCWindow {
                     })).register();
         }
         getButtonBuilder().toggle("start")
-                .enabledState(state -> state.subKey("enabled").icon(PlayerHeadUtils.getViaURL("a92e31ffb59c90ab08fc9dc1fe26802035a3a47c42fee63423bcdb4262ecb9b6")).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                .enabledState(state -> state.subKey("enabled").icon(Material.LIME_CONCRETE).action((cache, guiHandler, player, guiInventory, i, event) -> {
                     CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
                     cauldronWorkstation.getBlockData().ifPresent(cauldronBlockData -> {
                         if (cauldronBlockData.isResultEmpty()) {
@@ -117,7 +117,7 @@ public class CauldronWorkstationMenu extends CCWindow {
                     });
                     return true;
                 }))
-                .disabledState(state -> state.subKey("disabled").icon(PlayerHeadUtils.getViaURL("85a3755a6fe019a173ce3a43070452e767768d57559d04b73e21b903eaa1bd82")))
+                .disabledState(state -> state.subKey("disabled").icon(Material.GRAY_CONCRETE).action((cache, guiHandler, player, guiInventory, i, event) -> true))
                 .defaultState(false).stateFunction((cache, guiHandler, player, guiInventory, i) -> {
                     CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
                     return cauldronWorkstation.getBlockData().map(CauldronBlockData::isResultEmpty).orElse(true) && cauldronWorkstation.getPreCookEvent().isPresent();
