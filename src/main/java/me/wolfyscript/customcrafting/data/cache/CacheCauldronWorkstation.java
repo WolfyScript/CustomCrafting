@@ -27,9 +27,6 @@ import java.util.List;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
-import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +38,6 @@ public class CacheCauldronWorkstation {
     private List<ItemStack> input;
 
     private CauldronPreCookEvent preCookEvent;
-    private CustomItem result;
 
     public CacheCauldronWorkstation() {
         this.blockData = null;
@@ -62,10 +58,6 @@ public class CacheCauldronWorkstation {
 
     public Optional<CauldronPreCookEvent> getPreCookEvent() {
         return Optional.ofNullable(preCookEvent);
-    }
-
-    public Optional<CustomItem> getResult() {
-        return Optional.ofNullable(result);
     }
 
     public void setBlock(@Nullable Block block) {
