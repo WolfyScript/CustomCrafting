@@ -174,7 +174,7 @@ public class CauldronBlockData extends CustomBlockData {
             final int level = Cauldrons.getLevel(block);
             final World world = block.getWorld();
 
-            if (level >= recipe.getWaterLevel() && (block.getType().equals(Material.CAULDRON) || recipe.needsWater()) && (!recipe.needsFire() || status.isLit())) {
+            if (recipe.checkRecipeStatus(status)) {
                 spawnBubbles(world, loc, level);
                 world.spawnParticle(Particle.REDSTONE, loc.add(particleLevel(level)), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
                 passedTicks++;
@@ -253,10 +253,14 @@ public class CauldronBlockData extends CustomBlockData {
         private final boolean isLit;
         private final boolean isSignalFire;
         private final int level;
+        private final boolean hasWater;
+        private final boolean hasLava;
         private final Block block;
 
         public CauldronStatus(Block block) {
             this.block = block;
+            this.hasLava = block.getType().equals(Material.LAVA_CAULDRON);
+            this.hasWater = !hasLava && block.getType().equals(Material.WATER_CAULDRON);
             final Block blockBelow = block.getLocation().subtract(0, 1, 0).getBlock();
             this.hasCampfire = blockBelow.getType().equals(Material.CAMPFIRE);
             this.hasSoulCampfire = !hasCampfire && blockBelow.getType().equals(Material.SOUL_CAMPFIRE);
@@ -271,11 +275,11 @@ public class CauldronBlockData extends CustomBlockData {
             this.level = Cauldrons.getLevel(block);
         }
 
-        public boolean isHasCampfire() {
+        public boolean hasCampfire() {
             return hasCampfire;
         }
 
-        public boolean isHasSoulCampfire() {
+        public boolean hasSoulCampfire() {
             return hasSoulCampfire;
         }
 
@@ -285,6 +289,14 @@ public class CauldronBlockData extends CustomBlockData {
 
         public boolean isSignalFire() {
             return isSignalFire;
+        }
+
+        public boolean hasLava() {
+            return hasLava;
+        }
+
+        public boolean hasWater() {
+            return hasWater;
         }
 
         public int getLevel() {

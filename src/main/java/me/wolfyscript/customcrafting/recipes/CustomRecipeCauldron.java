@@ -56,7 +56,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
@@ -64,25 +63,30 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     private static final int maxIngredients = 6;
 
     private int cookingTime;
-    private int waterLevel;
     private int xp;
     private Deque<Ingredient> ingredients;
-    private boolean needsFire;
-    private boolean needsWater;
+
+    private boolean canCookInLava;
+    private boolean canCookInWater;
+    private int fluidLevel;
+
+    private boolean campfire;
+    private boolean soulCampfire;
+    private boolean requiresLitCampfire;
+    private boolean signalFire;
 
     public CustomRecipeCauldron(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.xp = node.path("exp").asInt(0);
         this.cookingTime = node.path("cookingTime").asInt(60);
-        this.waterLevel = node.path("waterLevel").asInt(1);
-        this.needsWater = node.path("water").asBoolean(true);
-        this.needsFire = node.path("fire").asBoolean(true);
+        this.fluidLevel = node.path("waterLevel").asInt(1);
+        this.canCookInLava = false;
+        this.canCookInWater = node.path("water").asBoolean(true);
+        this.campfire = this.requiresLitCampfire = node.path("fire").asBoolean(true);
         JsonNode ingredientsNode = node.path("ingredient");
         this.ingredients = new ArrayDeque<>();
         if (ingredientsNode.isObject()) {
-            ItemLoader.loadIngredient(node.path("ingredients")).getChoices().stream().map(customItem -> new Ingredient(customItem.getApiReference())).forEach(ingredient -> {
-                ingredients.add(ingredient);
-            });
+            ItemLoader.loadIngredient(node.path("ingredients")).getChoices().stream().map(customItem -> new Ingredient(customItem.getApiReference())).forEach(ingredients::add);
         } else {
             Streams.stream(ingredientsNode.elements()).map(ItemLoader::loadIngredient).forEach(this::addIngredients);
         }
@@ -95,9 +99,8 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.ingredients = new ArrayDeque<>();
         this.xp = 0;
         this.cookingTime = 80;
-        this.needsFire = false;
-        this.waterLevel = 0;
-        this.needsWater = true;
+        this.fluidLevel = 0;
+        this.canCookInWater = true;
     }
 
     @Deprecated
@@ -114,9 +117,14 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         }
         this.xp = customRecipeCauldron.getXp();
         this.cookingTime = customRecipeCauldron.getCookingTime();
-        this.needsFire = customRecipeCauldron.needsFire();
-        this.waterLevel = customRecipeCauldron.getWaterLevel();
-        this.needsWater = customRecipeCauldron.needsWater();
+
+        this.canCookInWater = customRecipeCauldron.isCanCookInWater();
+        this.canCookInLava = customRecipeCauldron.isCanCookInLava();
+        this.fluidLevel = customRecipeCauldron.getWaterLevel();
+
+        this.campfire = customRecipeCauldron.isCampfire();
+        this.soulCampfire = customRecipeCauldron.isSoulCampfire();
+        this.signalFire = customRecipeCauldron.isSignalFire();
     }
 
     public int getCookingTime() {
@@ -127,30 +135,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.cookingTime = cookingTime;
     }
 
-    public boolean needsFire() {
-        return needsFire;
-    }
-
-    public void setNeedsFire(boolean needsFire) {
-        this.needsFire = needsFire;
-    }
-
-    public int getWaterLevel() {
-        return waterLevel;
-    }
-
-    public void setWaterLevel(int waterLevel) {
-        this.waterLevel = waterLevel;
-    }
-
-    public boolean needsWater() {
-        return needsWater;
-    }
-
-    public void setNeedsWater(boolean needsWater) {
-        this.needsWater = needsWater;
-    }
-
     public int getXp() {
         return xp;
     }
@@ -159,7 +143,80 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.xp = xp;
     }
 
+    public boolean isCanCookInLava() {
+        return canCookInLava;
+    }
+
+    public boolean isCanCookInWater() {
+        return canCookInWater;
+    }
+
+    public boolean isRequiresLitCampfire() {
+        return requiresLitCampfire;
+    }
+
+    public boolean isCampfire() {
+        return campfire;
+    }
+
+    public boolean isSoulCampfire() {
+        return soulCampfire;
+    }
+
+    public boolean isSignalFire() {
+        return signalFire;
+    }
+
+    public int getFluidLevel() {
+        return fluidLevel;
+    }
+
+    @Deprecated
+    public boolean needsFire() {
+        return requiresLitCampfire;
+    }
+
+    @Deprecated
+    public void setNeedsFire(boolean needsFire) {
+        this.campfire = this.requiresLitCampfire = needsFire;
+    }
+
+    @Deprecated
+    public int getWaterLevel() {
+        return fluidLevel;
+    }
+
+    @Deprecated
+    public void setWaterLevel(int waterLevel) {
+        this.fluidLevel = waterLevel;
+    }
+
+    @Deprecated
+    public boolean needsWater() {
+        return canCookInWater;
+    }
+
+    @Deprecated
+    public void setNeedsWater(boolean needsWater) {
+        this.canCookInWater = needsWater;
+    }
+
+    public boolean checkRecipeStatus(CauldronBlockData.CauldronStatus status) {
+        if ((status.hasCampfire() && isCampfire()) || (status.hasSoulCampfire() && isSoulCampfire())) {
+            if ((isRequiresLitCampfire() && !status.isLit()) || (isSignalFire() && !status.isSignalFire())) {
+                return false;
+            }
+        } else if (isSoulCampfire() || isCampfire()) {
+            return false;
+        }
+        if ((isCanCookInLava() && status.hasLava()) || (isCanCookInWater() && status.hasWater())) {
+            return status.getLevel() >= fluidLevel;
+        }
+        return !isCanCookInLava() && !isCanCookInWater();
+    }
+
     public boolean checkRecipe(List<ItemStack> items, CauldronBlockData.CauldronStatus status) {
+        if (!checkRecipeStatus(status)) return false;
         int inputI = 0;
         for (Ingredient ingredient : ingredients) {
             ItemStack input = items.get(inputI);
@@ -261,9 +318,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         super.writeToJson(gen, serializerProvider);
         gen.writeNumberField("exp", xp);
         gen.writeNumberField("cookingTime", cookingTime);
-        gen.writeNumberField("waterLevel", waterLevel);
-        gen.writeBooleanField("water", needsWater);
-        gen.writeBooleanField("fire", needsFire);
         gen.writeObjectField("result", this.result);
         gen.writeObjectField("ingredients", ingredients);
     }
@@ -306,4 +360,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         event.setButton(32, new NamespacedKey(ClusterRecipeBook.KEY, needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled"));
         event.setButton(25, ButtonContainerIngredient.key(cluster, 25));
     }
+
+
 }

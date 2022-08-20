@@ -116,7 +116,7 @@ public class Cauldrons {
     }
 
     public static int getLevel(Block block) {
-        return block.getBlockData() instanceof Levelled levelled ? levelled.getLevel() : 0;
+        return block.getBlockData() instanceof Levelled levelled ? levelled.getLevel() : block.getType().equals(Material.LAVA_CAULDRON) ? 3 : 0;
     }
 
 
