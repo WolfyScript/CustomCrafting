@@ -190,6 +190,7 @@ public class CauldronBlockData extends CustomBlockData {
 
     }
 
+    @JsonIgnore
     public Optional<CauldronStatus> getCauldronStatus() {
         if (chunkStorage.getChunk().isEmpty()) return Optional.empty();
         final Block block = chunkStorage.getChunk().get().getWorld().getBlockAt(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ());
