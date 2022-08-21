@@ -35,16 +35,20 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
     private int waterLevel;
     private int xp;
     private List<Ingredient> ingredients;
-    private boolean needsFire;
-    private boolean needsWater;
+
+    private boolean canCookInLava;
+    private boolean canCookInWater;
+    private int fluidLevel;
+
+    private boolean campfire;
+    private boolean soulCampfire;
+    private boolean signalFire;
 
     RecipeCacheCauldron(CustomCrafting customCrafting) {
         super(customCrafting);
         this.xp = 0;
         this.cookingTime = 60;
         this.waterLevel = 1;
-        this.needsWater = true;
-        this.needsFire = true;
         this.ingredients = new ArrayList<>();
     }
 
@@ -54,8 +58,6 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.waterLevel = recipe.getWaterLevel();
         this.xp = recipe.getXp();
         this.ingredients = new ArrayList<>(recipe.getIngredients().stream().map(Ingredient::clone).toList());
-        this.needsFire = recipe.needsFire();
-        this.needsWater = recipe.needsWater();
     }
 
     @Override
@@ -82,10 +84,13 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         CustomRecipeCauldron cauldron = super.create(recipe);
         cauldron.addIngredients(ingredients);
         cauldron.setCookingTime(cookingTime);
-        cauldron.setWaterLevel(waterLevel);
+        cauldron.setCampfire(campfire);
+        cauldron.setSoulCampfire(soulCampfire);
+        cauldron.setSignalFire(signalFire);
+        cauldron.setCanCookInLava(canCookInLava);
+        cauldron.setCanCookInWater(canCookInWater);
+        cauldron.setFluidLevel(fluidLevel);
         cauldron.setXp(xp);
-        cauldron.setNeedsFire(needsFire);
-        cauldron.setNeedsWater(needsWater);
         return cauldron;
     }
 
@@ -121,19 +126,51 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.ingredients = ingredients;
     }
 
-    public boolean isNeedsFire() {
-        return needsFire;
+    public boolean isCanCookInLava() {
+        return canCookInLava;
     }
 
-    public void setNeedsFire(boolean needsFire) {
-        this.needsFire = needsFire;
+    public void setCanCookInLava(boolean canCookInLava) {
+        this.canCookInLava = canCookInLava;
     }
 
-    public boolean isNeedsWater() {
-        return needsWater;
+    public boolean isCanCookInWater() {
+        return canCookInWater;
     }
 
-    public void setNeedsWater(boolean needsWater) {
-        this.needsWater = needsWater;
+    public void setCanCookInWater(boolean canCookInWater) {
+        this.canCookInWater = canCookInWater;
+    }
+
+    public int getFluidLevel() {
+        return fluidLevel;
+    }
+
+    public void setFluidLevel(int fluidLevel) {
+        this.fluidLevel = fluidLevel;
+    }
+
+    public boolean isCampfire() {
+        return campfire;
+    }
+
+    public void setCampfire(boolean campfire) {
+        this.campfire = campfire;
+    }
+
+    public boolean isSoulCampfire() {
+        return soulCampfire;
+    }
+
+    public void setSoulCampfire(boolean soulCampfire) {
+        this.soulCampfire = soulCampfire;
+    }
+
+    public boolean isSignalFire() {
+        return signalFire;
+    }
+
+    public void setSignalFire(boolean signalFire) {
+        this.signalFire = signalFire;
     }
 }

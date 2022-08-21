@@ -62,7 +62,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     private static final int maxIngredients = 6;
 
-
     private int cookingTime;
     private int xp;
     private Deque<Ingredient> ingredients;
@@ -148,8 +147,16 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         return canCookInLava;
     }
 
+    public void setCanCookInLava(boolean canCookInLava) {
+        this.canCookInLava = canCookInLava;
+    }
+
     public boolean isCanCookInWater() {
         return canCookInWater;
+    }
+
+    public void setCanCookInWater(boolean canCookInWater) {
+        this.canCookInWater = canCookInWater;
     }
 
     public boolean isRequiresLitCampfire() {
@@ -160,16 +167,34 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         return campfire;
     }
 
+    public void setCampfire(boolean campfire) {
+        this.campfire = campfire;
+        this.requiresLitCampfire = campfire || soulCampfire;
+    }
+
     public boolean isSoulCampfire() {
         return soulCampfire;
+    }
+
+    public void setSoulCampfire(boolean soulCampfire) {
+        this.soulCampfire = soulCampfire;
+        this.requiresLitCampfire = campfire || soulCampfire;
     }
 
     public boolean isSignalFire() {
         return signalFire;
     }
 
+    public void setSignalFire(boolean signalFire) {
+        this.signalFire = signalFire;
+    }
+
     public int getFluidLevel() {
         return fluidLevel;
+    }
+
+    public void setFluidLevel(int fluidLevel) {
+        this.fluidLevel = fluidLevel;
     }
 
     @Deprecated

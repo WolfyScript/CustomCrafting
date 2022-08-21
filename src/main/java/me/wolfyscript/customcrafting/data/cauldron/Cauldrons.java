@@ -76,21 +76,6 @@ public class Cauldrons {
         load();
     }
 
-    private Vector particleLevel(int level) {
-        return new Vector(0.5, 0.35 + level * 0.2, 0.5);
-    }
-
-    private void spawnBubbles(World world, Location location, int level) {
-        world.spawnParticle(Particle.BUBBLE_POP, location.clone().add(particleLevel(level)), 1, 0.15, 0.1, 0.15, 0.0000000001);
-    }
-
-    public boolean isCustomCauldronLit(Block block) {
-        if (block.getRelative(BlockFace.DOWN).getType().equals(Material.CAMPFIRE)) {
-            return ((Campfire) block.getRelative(BlockFace.DOWN).getBlockData()).isLit();
-        }
-        return false;
-    }
-
     public void addCauldron(Location location) {
         synchronized (cauldrons) {
             cauldrons.computeIfAbsent(location, l -> new ArrayList<>());

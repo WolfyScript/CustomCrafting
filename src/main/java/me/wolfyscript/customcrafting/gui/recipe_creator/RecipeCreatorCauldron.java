@@ -22,8 +22,10 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import java.util.function.BiConsumer;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCacheCauldron;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -31,8 +33,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import org.bukkit.Material;
-
-import java.util.function.BiConsumer;
 
 public class RecipeCreatorCauldron extends RecipeCreator {
 
@@ -49,35 +49,63 @@ public class RecipeCreatorCauldron extends RecipeCreator {
             registerButton(new ButtonRecipeIngredient(i));
         }
         registerButton(new ButtonRecipeResult());
+        btnB.toggle("campfire").enabledState(s -> s.subKey("enabled").icon(Material.CAMPFIRE).action((cache, handler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().getCauldronCache().setCampfire(false);
+            return true;
+        })).disabledState(s -> s.subKey("disabled").icon(Material.CAMPFIRE).action((cache, handler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().getCauldronCache().setCampfire(true);
+            return true;
+        })).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getCauldronCache().isCampfire()).register();
+        btnB.toggle("soul_campfire").enabledState(s -> s.subKey("enabled").icon(Material.SOUL_CAMPFIRE).action((cache, handler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().getCauldronCache().setSoulCampfire(false);
+            return true;
+        })).disabledState(s -> s.subKey("disabled").icon(Material.SOUL_CAMPFIRE).action((cache, handler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().getCauldronCache().setSoulCampfire(true);
+            return true;
+        })).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getCauldronCache().isSoulCampfire()).register();
+        btnB.toggle("signal_fire").enabledState(s -> s.subKey("enabled").icon(Material.HAY_BLOCK).action((cache, handler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().getCauldronCache().setSignalFire(false);
+            return true;
+        })).disabledState(s -> s.subKey("disabled").icon(Material.HAY_BLOCK).action((cache, handler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().getCauldronCache().setSignalFire(true);
+            return true;
+        })).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getCauldronCache().isSignalFire()).register();
 
-        btnB.toggle("fire").enabledState(s -> s.subKey("enabled").icon(Material.CAMPFIRE).action((cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeCreatorCache().getCauldronCache().setNeedsFire(false);
+        btnB.toggle("can_cook_in_water").enabledState(s -> s.subKey("enabled").icon(Material.WATER_BUCKET).action((cache, handler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().getCauldronCache().setCanCookInWater(false);
             return true;
-        })).disabledState(s -> s.subKey("disabled").icon(Material.FLINT).action((cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeCreatorCache().getCauldronCache().setNeedsFire(true);
+        })).disabledState(s -> s.subKey("disabled").icon(Material.BUCKET).action((cache, handler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().getCauldronCache().setCanCookInWater(true);
             return true;
-        })).register();
-        btnB.toggle("water").enabledState(s -> s.subKey("enabled").icon(Material.WATER_BUCKET).action((cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeCreatorCache().getCauldronCache().setNeedsWater(false);
+        })).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getCauldronCache().isCanCookInWater()).register();
+        btnB.toggle("can_cook_in_lava").enabledState(s -> s.subKey("enabled").icon(Material.LAVA_BUCKET).action((cache, handler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().getCauldronCache().setCanCookInLava(false);
             return true;
-        })).disabledState(s -> s.subKey("disabled").icon(Material.BUCKET).action((cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeCreatorCache().getCauldronCache().setNeedsWater(true);
+        })).disabledState(s -> s.subKey("disabled").icon(Material.BUCKET).action((cache, handler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().getCauldronCache().setCanCookInLava(true);
             return true;
-        })).register();
-        btnB.chatInput("xp").state(s -> s.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getCauldronCache().getXp()))))).inputAction((guiHandler, player, msg, args) -> readNumberFromArgs(args[0], guiHandler, (xp, cache) -> cache.getRecipeCreatorCache().getCauldronCache().setXp(xp))).register();
-        btnB.chatInput("cookingTime").state(s -> s.icon(Material.CLOCK).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(cache.getRecipeCreatorCache().getCauldronCache().getCookingTime()))))).inputAction((guiHandler, player, msg, args) -> readNumberFromArgs(args[0], guiHandler, (time, cache) -> cache.getRecipeCreatorCache().getCauldronCache().setCookingTime(time))).register();
-        btnB.chatInput("waterLevel").state(s -> s.icon(Material.GLASS_BOTTLE).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("level", String.valueOf(cache.getRecipeCreatorCache().getCauldronCache().getWaterLevel()))))).inputAction((guiHandler, player, msg, args) -> readNumberFromArgs(args[0], guiHandler, (waterLvl, cache) -> cache.getRecipeCreatorCache().getCauldronCache().setWaterLevel(Math.min(waterLvl, 3)))).register();
+        })).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getCauldronCache().isCanCookInLava()).register();
+        btnB.action("fluid_level").state(s -> s.icon(Material.GLASS_BOTTLE)
+                .render((cache, handler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("level", String.valueOf(cache.getRecipeCreatorCache().getCauldronCache().getFluidLevel()))))
+                .action((cache, handler, player, guiInventory, i, event) -> {
+                    RecipeCacheCauldron cacheCauldron = cache.getRecipeCreatorCache().getCauldronCache();
+                    cacheCauldron.setFluidLevel(cacheCauldron.getFluidLevel() >= 3 ? 0 : cacheCauldron.getFluidLevel() + 1);
+                    return true;
+                })).register();
+
+        btnB.chatInput("xp").state(s -> s.icon(Material.EXPERIENCE_BOTTLE).render((cache, handler, player, inv, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getCauldronCache().getXp()))))).inputAction((handler, player, msg, args) -> readNumberFromArgs(args[0], handler, (xp, cache) -> cache.getRecipeCreatorCache().getCauldronCache().setXp(xp))).register();
+        btnB.chatInput("cookingTime").state(s -> s.icon(Material.CLOCK).render((cache, handler, player, inv, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(cache.getRecipeCreatorCache().getCauldronCache().getCookingTime()))))).inputAction((handler, player, msg, args) -> readNumberFromArgs(args[0], handler, (time, cache) -> cache.getRecipeCreatorCache().getCauldronCache().setCookingTime(time))).register();
     }
 
-    private boolean readNumberFromArgs(String arg, GuiHandler<CCCache> guiHandler, BiConsumer<Integer, CCCache> action) {
+    private boolean readNumberFromArgs(String arg, GuiHandler<CCCache> handler, BiConsumer<Integer, CCCache> action) {
         int value;
         try {
             value = Integer.parseInt(arg);
         } catch (NumberFormatException e) {
-            sendMessage(guiHandler, getCluster().translatedMsgKey("valid_number"));
+            sendMessage(handler, getCluster().translatedMsgKey("valid_number"));
             return true;
         }
-        action.accept(value, guiHandler.getCustomCache());
+        action.accept(value, handler.getCustomCache());
         return false;
     }
 
@@ -87,8 +115,6 @@ public class RecipeCreatorCauldron extends RecipeCreator {
         update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
         var cauldronRecipe = cache.getRecipeCreatorCache().getCauldronCache();
-        ((ToggleButton<CCCache>) getButton("fire")).setState(update.getGuiHandler(), cauldronRecipe.isNeedsFire());
-        ((ToggleButton<CCCache>) getButton("water")).setState(update.getGuiHandler(), cauldronRecipe.isNeedsWater());
 
         update.setButton(1, ClusterRecipeCreator.HIDDEN);
         update.setButton(3, ClusterRecipeCreator.CONDITIONS);
@@ -106,9 +132,12 @@ public class RecipeCreatorCauldron extends RecipeCreator {
 
         update.setButton(38, "cauldron");
 
-        update.setButton(46, "water");
-        update.setButton(47, "waterLevel");
-        update.setButton(48, "fire");
+        update.setButton(45, "can_cook_in_lava");
+        update.setButton(46, "can_cook_in_water");
+        update.setButton(47, "fluid_level");
+        update.setButton(48, "campfire");
+        update.setButton(49, "soul_campfire");
+        update.setButton(50, "signal_fire");
 
         update.setButton(23, "cookingTime");
         update.setButton(32, "xp");
