@@ -26,13 +26,19 @@ import java.util.function.BiConsumer;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCacheCauldron;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class RecipeCreatorCauldron extends RecipeCreator {
 
@@ -49,6 +55,25 @@ public class RecipeCreatorCauldron extends RecipeCreator {
             registerButton(new ButtonRecipeIngredient(i));
         }
         registerButton(new ButtonRecipeResult());
+        for (int i = 0; i < 3; i++) {
+            final int resultSlot = i;
+            getButtonBuilder().itemInput("additional_result_" + resultSlot).state(state -> state.icon(Material.AIR)
+                    .action((cache, guiHandler, player, inventory, slot, event) -> false)
+                    .postAction((cache, guiHandler, player, inventory, itemStack, slot, event) -> {
+                        Result result = cache.getRecipeCreatorCache().getCauldronCache().getAdditionalResults()[resultSlot];
+                        if ((result.getItems().isEmpty() && !result.getTags().isEmpty()) || event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
+                            return;
+                        }
+                        result.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
+                        result.buildChoices();
+                    })
+                    .render((cache, guiHandler, player, inventory, itemStack, slot) -> {
+                        Result result = cache.getRecipeCreatorCache().getCauldronCache().getAdditionalResults()[resultSlot];
+                        return CallbackButtonRender.UpdateResult.of(result == null ? new ItemStack(Material.AIR) : result.getItemStack());
+                    })).register();
+        }
+
+
         btnB.toggle("campfire").enabledState(s -> s.subKey("enabled").icon(Material.CAMPFIRE).action((cache, handler, player, inventory, slot, event) -> {
             cache.getRecipeCreatorCache().getCauldronCache().setCampfire(false);
             return true;
@@ -143,6 +168,9 @@ public class RecipeCreatorCauldron extends RecipeCreator {
         update.setButton(32, "xp");
 
         update.setButton(25, "recipe.result");
+        update.setButton(26, "additional_result_0");
+        update.setButton(34, "additional_result_1");
+        update.setButton(35, "additional_result_2");
 
         update.setButton(51, ClusterRecipeCreator.GROUP);
         if (cauldronRecipe.isSaved()) {

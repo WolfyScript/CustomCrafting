@@ -146,14 +146,14 @@ public class CauldronBlockData extends CustomBlockData {
         final Location loc = block.getLocation();
 
         if (passedTicks >= cookingTime) {
-            // TODO: Output Result & reset data!
+            // Output Result & reset data!
             var event = new CauldronCookEvent(this);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 passedTicks = 0;
             } else {
-                if (event.getRecipe().getWaterLevel() > 0 && block.getBlockData() instanceof Levelled levelled) {
-                    int newLevel = levelled.getLevel() - event.getRecipe().getWaterLevel();
+                if (event.getRecipe().getFluidLevel() > 0 && block.getBlockData() instanceof Levelled levelled) {
+                    int newLevel = levelled.getLevel() - event.getRecipe().getFluidLevel();
                     if (newLevel <= 0) {
                         block.setType(Material.CAULDRON);
                     } else {

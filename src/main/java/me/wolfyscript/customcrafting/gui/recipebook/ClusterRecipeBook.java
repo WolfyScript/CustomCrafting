@@ -166,7 +166,7 @@ public class ClusterRecipeBook extends CCCluster {
         btnB.dummy("cauldron.water.disabled").state(s -> s.icon(Material.CAULDRON)).register();
         btnB.dummy("cauldron.water.enabled").state(s -> s.icon(PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6")).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
             var knowledgeBook = cache.getRecipeBookCache();
-            return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getCookingTime())), Placeholder.unparsed("lvl", String.valueOf(((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getWaterLevel())));
+            return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getCookingTime())), Placeholder.unparsed("lvl", String.valueOf(((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getFluidLevel())));
         })).register();
         btnB.dummy("cauldron.fire.disabled").state(s -> s.icon(Material.CAMPFIRE)).register();
         btnB.dummy("cauldron.fire.enabled").state(s -> s.icon(Material.CAMPFIRE)).register();

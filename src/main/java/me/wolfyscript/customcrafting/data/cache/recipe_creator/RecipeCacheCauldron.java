@@ -23,10 +23,12 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 
 public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
 
@@ -34,6 +36,7 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
     private int waterLevel;
     private int xp;
     private List<Ingredient> ingredients;
+    private Result[] additionalResults;
 
     private boolean canCookInLava;
     private boolean canCookInWater;
@@ -49,6 +52,7 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.cookingTime = 60;
         this.waterLevel = 1;
         this.ingredients = new ArrayList<>();
+        this.additionalResults = new Result[3];
     }
 
     RecipeCacheCauldron(CustomCrafting customCrafting, CustomRecipeCauldron recipe) {
@@ -61,6 +65,7 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.signalFire = recipe.isSignalFire();
         this.fluidLevel = recipe.getFluidLevel();
         this.xp = recipe.getXp();
+        this.additionalResults = Arrays.stream(recipe.getAdditionalResults()).map(result1 -> result1 == null ? null : result1.clone()).toArray(value -> new Result[3]);
         this.ingredients = new ArrayList<>(recipe.getIngredients().stream().map(Ingredient::clone).toList());
     }
 
@@ -86,6 +91,7 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
     @Override
     protected CustomRecipeCauldron create(CustomRecipeCauldron recipe) {
         CustomRecipeCauldron cauldron = super.create(recipe);
+        cauldron.setAdditionalResults(additionalResults);
         cauldron.addIngredients(ingredients);
         cauldron.setCookingTime(cookingTime);
         cauldron.setCampfire(campfire);
@@ -96,6 +102,10 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         cauldron.setFluidLevel(fluidLevel);
         cauldron.setXp(xp);
         return cauldron;
+    }
+
+    public Result[] getAdditionalResults() {
+        return additionalResults;
     }
 
     public int getCookingTime() {

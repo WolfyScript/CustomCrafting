@@ -65,6 +65,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     private int cookingTime;
     private int xp;
     private Deque<Ingredient> ingredients;
+    private Result[] additionalResults;
 
     private boolean canCookInLava;
     private boolean canCookInWater;
@@ -83,6 +84,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.canCookInLava = false;
         this.canCookInWater = node.path("water").asBoolean(true);
         this.campfire = this.requiresLitCampfire = node.path("fire").asBoolean(true);
+        this.additionalResults = new Result[3];
         JsonNode ingredientsNode = node.path("ingredient");
         this.ingredients = new ArrayDeque<>();
         if (ingredientsNode.isObject()) {
@@ -96,11 +98,16 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     public CustomRecipeCauldron(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
         super(key, customCrafting, RecipeType.CAULDRON);
         this.result = new Result();
+        this.additionalResults = new Result[3];
         this.ingredients = new ArrayDeque<>();
         this.xp = 0;
         this.cookingTime = 80;
         this.fluidLevel = 0;
         this.canCookInWater = true;
+        this.canCookInLava = false;
+        setCampfire(true);
+        setSoulCampfire(false);
+        this.signalFire = false;
     }
 
     @Deprecated
@@ -110,7 +117,8 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     public CustomRecipeCauldron(CustomRecipeCauldron customRecipeCauldron) {
         super(customRecipeCauldron);
-        this.result = customRecipeCauldron.getResult();
+        this.result = customRecipeCauldron.getResult().clone();
+        this.additionalResults = Arrays.stream(customRecipeCauldron.additionalResults).map(result1 -> result1 == null ? null : result1.clone()).toArray(value -> new Result[3]);
         this.ingredients = new ArrayDeque<>();
         if (customRecipeCauldron.ingredients != null) {
             addIngredients(customRecipeCauldron.ingredients.stream().map(Ingredient::clone).toList());
@@ -120,11 +128,31 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
         this.canCookInWater = customRecipeCauldron.isCanCookInWater();
         this.canCookInLava = customRecipeCauldron.isCanCookInLava();
-        this.fluidLevel = customRecipeCauldron.getWaterLevel();
+        this.fluidLevel = customRecipeCauldron.getFluidLevel();
 
         this.campfire = customRecipeCauldron.isCampfire();
         this.soulCampfire = customRecipeCauldron.isSoulCampfire();
         this.signalFire = customRecipeCauldron.isSignalFire();
+    }
+
+    @JsonSetter("additionalResults")
+    public void setAdditionalResults(Result[] additionalResults) {
+        Preconditions.checkArgument(additionalResults.length <= 3, "Recipe cannot have more than 3 additional results!");
+        if (additionalResults.length != 3) {
+            Result[] filled = new Result[3];
+            for (int i = 0; i < filled.length; i++) {
+                if (i < additionalResults.length) {
+                    filled[i] = additionalResults[i];
+                }
+            }
+            this.additionalResults = filled;
+        } else {
+            this.additionalResults = additionalResults;
+        }
+    }
+
+    public Result[] getAdditionalResults() {
+        return additionalResults;
     }
 
     public int getCookingTime() {
@@ -378,12 +406,12 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
             event.setButton(36 + startSlot + slot, new NamespacedKey(ClusterRecipeBook.KEY, "conditions." + condition.getId()));
             slot += 2;
         }
-        if (needsWater()) {
+        if (canCookInWater) {
             event.setButton(23, new NamespacedKey(cluster.getId(), "cauldron.water.enabled"));
         } else {
             event.setButton(23, new NamespacedKey(ClusterRecipeBook.KEY, "cauldron.water.disabled"));
         }
-        event.setButton(32, new NamespacedKey(ClusterRecipeBook.KEY, needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled"));
+        event.setButton(32, new NamespacedKey(ClusterRecipeBook.KEY, requiresLitCampfire ? "cauldron.fire.enabled" : "cauldron.fire.disabled"));
         event.setButton(25, ButtonContainerIngredient.key(cluster, 25));
     }
 
