@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.listeners.customevents;
 
-import me.wolfyscript.customcrafting.data.cauldron.Cauldron;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;

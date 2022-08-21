@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.Random;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
-import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
+import me.wolfyscript.customcrafting.utils.CauldronUtils;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
@@ -171,7 +171,7 @@ public class CauldronBlockData extends CustomBlockData {
         }
 
         getCauldronStatus(block).ifPresent(status -> {
-            final int level = Cauldrons.getLevel(block);
+            final int level = CauldronUtils.getLevel(block);
             final World world = block.getWorld();
 
             if (recipe.checkRecipeStatus(status)) {
@@ -273,7 +273,7 @@ public class CauldronBlockData extends CustomBlockData {
                 this.isLit = false;
                 this.isSignalFire = false;
             }
-            this.level = Cauldrons.getLevel(block);
+            this.level = CauldronUtils.getLevel(block);
         }
 
         public boolean hasCampfire() {

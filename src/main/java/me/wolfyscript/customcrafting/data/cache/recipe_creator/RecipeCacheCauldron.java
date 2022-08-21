@@ -27,7 +27,6 @@ import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
 public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
 
@@ -55,7 +54,12 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
     RecipeCacheCauldron(CustomCrafting customCrafting, CustomRecipeCauldron recipe) {
         super(customCrafting, recipe);
         this.cookingTime = recipe.getCookingTime();
-        this.waterLevel = recipe.getWaterLevel();
+        this.campfire = recipe.isCampfire();
+        this.soulCampfire = recipe.isSoulCampfire();
+        this.canCookInWater = recipe.isCanCookInWater();
+        this.canCookInLava = recipe.isCanCookInLava();
+        this.signalFire = recipe.isSignalFire();
+        this.fluidLevel = recipe.getFluidLevel();
         this.xp = recipe.getXp();
         this.ingredients = new ArrayList<>(recipe.getIngredients().stream().map(Ingredient::clone).toList());
     }

@@ -36,14 +36,12 @@ public class CauldronPreCookEvent extends Event implements Cancellable {
     private final CustomCrafting customCrafting;
     private boolean cancelled;
     private int cookingTime;
-    private boolean dropItems;
     private final Block cauldron;
     private final Player player;
     private CustomRecipeCauldron recipe;
 
     public CauldronPreCookEvent(CustomCrafting customCrafting, CustomRecipeCauldron recipe, Player player, Block cauldron) {
         this.customCrafting = customCrafting;
-        this.dropItems = recipe.dropItems();
         this.recipe = recipe;
         this.cookingTime = recipe.getCookingTime();
         this.player = player;
@@ -86,13 +84,13 @@ public class CauldronPreCookEvent extends Event implements Cancellable {
         this.cookingTime = cookingTime;
     }
 
+    @Deprecated
     public boolean dropItems() {
-        return dropItems;
+        return false;
     }
 
-    public void setDropItems(boolean dropItems) {
-        this.dropItems = dropItems;
-    }
+    @Deprecated
+    public void setDropItems(boolean dropItems) { }
 
     public CustomRecipeCauldron getRecipe() {
         return recipe;

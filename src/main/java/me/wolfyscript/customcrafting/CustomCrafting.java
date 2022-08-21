@@ -29,7 +29,6 @@ import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.patreon.Patreon;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.gui.cauldron.CauldronWorkstationCluster;
@@ -173,7 +172,6 @@ public class CustomCrafting extends JavaPlugin {
     //File Handlers to load, save or edit data
     private ConfigHandler configHandler;
     private DataHandler dataHandler;
-    private Cauldrons cauldrons = null;
     //Network
     private final UpdateChecker updateChecker;
     private final NetworkHandler networkHandler;
@@ -330,7 +328,6 @@ public class CustomCrafting extends JavaPlugin {
         if (WolfyUtilities.isDevEnv()) {
             this.networkHandler.registerPackets();
         }
-        cauldrons = new Cauldrons(this);
         if (api.getCore().getCompatibilityManager().getPlugins().isDoneLoading()) {
             dataHandler.loadRecipesAndItems();
         }
@@ -482,10 +479,6 @@ public class CustomCrafting extends JavaPlugin {
 
     public ChatUtils getChatUtils() {
         return chatUtils;
-    }
-
-    public Cauldrons getCauldrons() {
-        return cauldrons;
     }
 
     public Patreon getPatreon() {
