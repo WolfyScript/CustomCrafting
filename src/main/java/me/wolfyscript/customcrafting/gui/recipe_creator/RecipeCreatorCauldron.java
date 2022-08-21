@@ -60,7 +60,8 @@ public class RecipeCreatorCauldron extends RecipeCreator {
             getButtonBuilder().itemInput("additional_result_" + resultSlot).state(state -> state.icon(Material.AIR)
                     .action((cache, guiHandler, player, inventory, slot, event) -> false)
                     .postAction((cache, guiHandler, player, inventory, itemStack, slot, event) -> {
-                        Result result = cache.getRecipeCreatorCache().getCauldronCache().getAdditionalResults()[resultSlot];
+                        RecipeCacheCauldron cacheCauldron = cache.getRecipeCreatorCache().getCauldronCache();
+                        Result result = cacheCauldron.getAdditionalResults()[resultSlot];
                         if ((result.getItems().isEmpty() && !result.getTags().isEmpty()) || event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
                             return;
                         }

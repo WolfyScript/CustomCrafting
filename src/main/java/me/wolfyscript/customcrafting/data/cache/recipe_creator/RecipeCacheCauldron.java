@@ -52,7 +52,7 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.cookingTime = 60;
         this.waterLevel = 1;
         this.ingredients = new ArrayList<>();
-        this.additionalResults = new Result[3];
+        this.additionalResults = new Result[]{ new Result(), new Result(), new Result() };
     }
 
     RecipeCacheCauldron(CustomCrafting customCrafting, CustomRecipeCauldron recipe) {

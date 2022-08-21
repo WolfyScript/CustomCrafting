@@ -98,7 +98,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     public CustomRecipeCauldron(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
         super(key, customCrafting, RecipeType.CAULDRON);
         this.result = new Result();
-        this.additionalResults = new Result[3];
+        this.additionalResults = new Result[]{ new Result(), new Result(), new Result() };
         this.ingredients = new ArrayDeque<>();
         this.xp = 0;
         this.cookingTime = 80;

@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Random;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.CauldronUtils;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -161,9 +162,17 @@ public class CauldronBlockData extends CustomBlockData {
                         block.setBlockData(levelled);
                     }
                 }
-                recipe.getResult().executeExtensions(loc.clone(), true, null);
-                for (int i = 0; i < 4; i++) {
-                    this.result[i] = recipe.getResult().getItem(loc.getBlock()).orElse(new CustomItem(ItemUtils.AIR)).create();
+                CustomItem air = new CustomItem(ItemUtils.AIR);
+                Location locCopy = loc.clone();
+
+                Result result = recipe.getResult();
+                result.executeExtensions(locCopy, true, null);
+                this.result[0] = result.getItem(loc.getBlock()).orElse(air).create();
+                // Handle additional results
+                for (int i = 0; i < 3; i++) {
+                    Result additional = recipe.getAdditionalResults()[i];
+                    additional.executeExtensions(locCopy, true, null);
+                    this.result[i+1] = additional.getItem(block).orElse(air).create();
                 }
                 reset();
             }
