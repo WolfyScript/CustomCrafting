@@ -28,6 +28,8 @@ import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -198,7 +200,16 @@ public class ItemLoader {
             }
             CustomItem item = registry.get(namespacedKey);
             registry.remove(namespacedKey);
-            loader.delete(item);
+            try {
+                if (loader.delete(item)) {
+                    CustomCrafting.inst().getApi().getChat().sendMessage(player, Component.text("CustomItem deleted!", NamedTextColor.GREEN));
+                    return true;
+                }
+            } catch (IOException e) {
+                CustomCrafting.inst().getApi().getChat().sendMessage(player, Component.text("Couldn't delete CustomItem file! " + e.getMessage(), NamedTextColor.RED));
+                CustomCrafting.inst().getApi().getChat().sendMessage(player, Component.text("For full error please see logs!", NamedTextColor.RED));
+                e.printStackTrace();
+            }
         }
         return false;
     }

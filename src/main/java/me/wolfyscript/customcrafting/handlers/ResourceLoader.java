@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
+import java.io.IOException;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -113,7 +114,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
      * @param recipe The recipe to delete
      * @return true if the recipe was successfully deleted; otherwise false
      */
-    public abstract boolean delete(CustomRecipe<?> recipe);
+    public abstract boolean delete(CustomRecipe<?> recipe) throws IOException;
 
     /**
      * Deletes the specified CustomItem
@@ -121,7 +122,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
      * @param item The item to delete
      * @return true if the item was successfully deleted; otherwise false
      */
-    public abstract boolean delete(CustomItem item);
+    public abstract boolean delete(CustomItem item) throws IOException;
 
     /**
      * Gets the priority of this loader.<br>

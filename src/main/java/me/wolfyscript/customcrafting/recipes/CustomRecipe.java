@@ -47,6 +47,8 @@ import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -343,11 +345,16 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     public boolean delete(@Nullable Player player) {
         Bukkit.getScheduler().runTask(customCrafting, () -> customCrafting.getRegistries().getRecipes().remove(getNamespacedKey()));
-        if (customCrafting.getDataHandler().getActiveLoader().delete(this)) {
-            getAPI().getChat().sendMessage(player, ChatColor.GREEN + "Recipe deleted!");
-            return true;
+        try {
+            if (customCrafting.getDataHandler().getActiveLoader().delete(this)) {
+                getAPI().getChat().sendMessage(player, Component.text("Recipe deleted!", NamedTextColor.GREEN));
+                return true;
+            }
+        } catch (IOException e) {
+            getAPI().getChat().sendMessage(player, Component.text("Couldn't delete recipe file! " + e.getMessage(), NamedTextColor.RED));
+            getAPI().getChat().sendMessage(player, Component.text("For full error please see logs!", NamedTextColor.RED));
+            e.printStackTrace();
         }
-        getAPI().getChat().sendMessage(player, ChatColor.RED + "Couldn't delete recipe file!");
         return false;
     }
 
