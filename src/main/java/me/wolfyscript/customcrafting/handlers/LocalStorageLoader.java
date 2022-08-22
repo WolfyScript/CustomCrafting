@@ -173,15 +173,10 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     @Override
-    public boolean delete(CustomRecipe<?> recipe) {
+    public boolean delete(CustomRecipe<?> recipe) throws IOException {
         File file = getFileAt(recipe.getNamespacedKey(), recipe.getRecipeType().getId());
-        System.gc();
-        if (file.delete()) {
-            return true;
-        } else {
-            file.deleteOnExit();
-        }
-        return false;
+        Files.delete(file.toPath());
+        return true;
     }
 
     @Override
