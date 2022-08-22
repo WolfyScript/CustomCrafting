@@ -46,6 +46,7 @@ public class ClusterMain extends CCCluster {
     public static final NamespacedKey BACK_BOTTOM = new NamespacedKey(KEY, "back_bottom");
     public static final NamespacedKey GUI_HELP = new NamespacedKey(KEY, "gui_help");
     public static final NamespacedKey GLASS_GRAY = new NamespacedKey(KEY, "glass_gray");
+    public static final NamespacedKey GLASS_LIGHT_GRAY = new NamespacedKey(KEY, "glass_light_gray");
     public static final NamespacedKey GLASS_WHITE = new NamespacedKey(KEY, "glass_white");
     public static final NamespacedKey GLASS_BLACK = new NamespacedKey(KEY, "glass_black");
     public static final NamespacedKey GLASS_RED = new NamespacedKey(KEY, "glass_red");
@@ -79,6 +80,7 @@ public class ClusterMain extends CCCluster {
         ButtonBuilder<CCCache> bb = getButtonBuilder();
         bb.dummy(EMPTY.getKey()).state(s -> s.icon(Material.AIR)).register();
         bb.dummy(GLASS_GRAY.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.GRAY_STAINED_GLASS_PANE)).register();
+        bb.dummy(GLASS_LIGHT_GRAY.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.LIGHT_GRAY_STAINED_GLASS_PANE)).register();
         bb.dummy(GLASS_BLACK.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.BLACK_STAINED_GLASS_PANE)).register();
         bb.dummy(GLASS_RED.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.RED_STAINED_GLASS_PANE)).register();
         bb.dummy(GLASS_WHITE.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.WHITE_STAINED_GLASS_PANE)).register();

@@ -33,7 +33,9 @@ import java.util.List;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
@@ -41,6 +43,7 @@ import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
@@ -130,8 +133,8 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.canCookInLava = customRecipeCauldron.isCanCookInLava();
         this.fluidLevel = customRecipeCauldron.getFluidLevel();
 
-        this.campfire = customRecipeCauldron.isCampfire();
-        this.soulCampfire = customRecipeCauldron.isSoulCampfire();
+        setCampfire(customRecipeCauldron.isCampfire());
+        setSoulCampfire(customRecipeCauldron.isSoulCampfire());
         this.signalFire = customRecipeCauldron.isSignalFire();
     }
 
@@ -378,41 +381,80 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        Ingredient ingredients = getIngredient();
-        int invSlot;
-        for (int i = 0; i < 6; i++) {
-            invSlot = 10 + i + (i / 3) * 6;
-            if (i < ingredients.size()) {
-                ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(invSlot))).setVariants(guiHandler, Collections.singletonList(ingredients.getChoices().get(i)));
+        Ingredient[] ingredients = getIngredients().toArray(Ingredient[]::new);
+
+        for (int i = 5; i > -1; i--) {
+            if (i < ingredients.length) {
+                ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i))).setVariants(guiHandler, ingredients[i]);
             } else {
-                ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(invSlot))).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
+                ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i))).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
             }
         }
+
         ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(25))).setVariants(guiHandler, getResult());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(26))).setVariants(guiHandler, getAdditionalResults()[0]);
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(34))).setVariants(guiHandler, getAdditionalResults()[1]);
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(35))).setVariants(guiHandler, getAdditionalResults()[2]);
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         var cluster = guiWindow.getCluster();
-        int invSlot;
-        for (int i = 0; i < 6; i++) {
-            invSlot = 10 + i + (i / 3) * 6;
-            event.setButton(invSlot, ButtonContainerIngredient.key(cluster, invSlot));
+        CCPlayerData playerStore = PlayerUtil.getStore(event.getPlayer());
+
+        int slot = 10;
+        for (int i = 5; i > -1; i--) {
+            event.setButton(slot, ButtonContainerIngredient.key(cluster, i));
+            slot += i == 3 ? 9-3 : i == 1 ? 9-1 : 2;
         }
+
         List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getNamespacedKey().equals(PermissionCondition.KEY)).toList();
         int startSlot = 9 / (conditions.size() + 1);
-        int slot = 0;
+        slot = 0;
         for (Condition<?> condition : conditions) {
             event.setButton(36 + startSlot + slot, new NamespacedKey(ClusterRecipeBook.KEY, "conditions." + condition.getId()));
             slot += 2;
         }
-        if (canCookInWater) {
-            event.setButton(23, new NamespacedKey(cluster.getId(), "cauldron.water.enabled"));
+
+        if (canCookInWater && canCookInLava) {
+            event.setButton(36, ClusterRecipeBook.CAULDRON_COOK_WATER);
+            event.setButton(37, ClusterRecipeBook.CAULDRON_COOK_LAVA);
+        } else if (canCookInWater) {
+            event.setButton(36, ClusterRecipeBook.CAULDRON_COOK_WATER);
+        } else if (canCookInLava) {
+            event.setButton(36, ClusterRecipeBook.CAULDRON_COOK_LAVA);
         } else {
-            event.setButton(23, new NamespacedKey(ClusterRecipeBook.KEY, "cauldron.water.disabled"));
+            event.setButton(36, ClusterRecipeBook.CAULDRON_EMPTY);
         }
-        event.setButton(32, new NamespacedKey(ClusterRecipeBook.KEY, requiresLitCampfire ? "cauldron.fire.enabled" : "cauldron.fire.disabled"));
-        event.setButton(25, ButtonContainerIngredient.key(cluster, 25));
+        //TODO: Fluid level indicator slot 45 - 47
+        if (canCookInWater || canCookInLava) {
+            NamespacedKey backgroundBtn = playerStore.isDarkMode() ? ClusterMain.GLASS_WHITE : ClusterMain.GLASS_BLACK;
+            ItemStack levelItem = new ItemStack(canCookInWater ? Material.BLUE_STAINED_GLASS_PANE : Material.ORANGE_STAINED_GLASS_PANE);
+            for (int i = 0; i < 3; i++) {
+                if (i < fluidLevel || canCookInLava) {
+                    event.setItem(45 + i, levelItem);
+                } else {
+                    event.setButton(45 + i, backgroundBtn);
+                }
+            }
+        }
+
+        if (requiresLitCampfire) {
+            if (campfire && soulCampfire) {
+                event.setButton(44, ClusterRecipeBook.CAULDRON_CAMPFIRE);
+                event.setButton(43, ClusterRecipeBook.CAULDRON_CAMPFIRE);
+            } else {
+                event.setButton(44, campfire ? ClusterRecipeBook.CAULDRON_CAMPFIRE : ClusterRecipeBook.CAULDRON_SOUL_CAMPFIRE);
+            }
+            if (signalFire) {
+                event.setButton(53, ClusterRecipeBook.CAULDRON_SIGNAL_FIRE);
+            }
+        }
+
+        event.setButton(16, ButtonContainerIngredient.key(cluster, 25));
+        event.setButton(17, ButtonContainerIngredient.key(cluster, 26));
+        event.setButton(25, ButtonContainerIngredient.key(cluster, 34));
+        event.setButton(26, ButtonContainerIngredient.key(cluster, 35));
     }
 
 
