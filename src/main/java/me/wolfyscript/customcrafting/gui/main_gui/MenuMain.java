@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -40,6 +41,8 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
+import me.wolfyscript.utilities.util.version.ServerVersion;
+import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -119,25 +122,31 @@ public class MenuMain extends CCWindow {
         event.setButton(49, ClusterMain.YOUTUBE);
         event.setButton(50, ClusterMain.DISCORD);
 
-        event.setButton(10, CRAFTING);
-        event.setButton(12, FURNACE);
-        event.setButton(14, ANVIL);
-        event.setButton(16, CAULDRON);
+        int offset = 0;
+        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 5, 0))) {
+            event.setButton(16, CAULDRON);
+        } else {
+            offset = 1;
+        }
+        event.setButton(10 + offset, CRAFTING);
+        event.setButton(12 + offset, FURNACE);
+        event.setButton(14 + offset, ANVIL);
 
         event.setButton(19, BLAST_FURNACE);
         event.setButton(21, SMOKER);
         event.setButton(23, CAMPFIRE);
         event.setButton(25, STONECUTTER);
+
+        offset = 0;
         if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
-            event.setButton(28, GRINDSTONE);
             event.setButton(30, BREWING_STAND);
-            event.setButton(32, ELITE_CRAFTING);
-            event.setButton(34, SMITHING);
         } else {
-            event.setButton(29, GRINDSTONE);
-            event.setButton(31, ELITE_CRAFTING);
-            event.setButton(33, SMITHING);
+            offset = 1;
         }
+        event.setButton(28 + offset, GRINDSTONE);
+        event.setButton(32 + offset, ELITE_CRAFTING);
+        event.setButton(34 - offset, SMITHING);
+
         if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
             for (int i = 37; i < 44; i++) {
                 event.setButton(i, data.getLightBackground());
