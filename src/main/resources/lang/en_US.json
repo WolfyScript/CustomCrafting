@@ -1,6 +1,6 @@
 {
   "author": "WolfyScript",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "info": [
     "YouTube: https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g",
     "GitHub:  https://github.com/WolfyScript"
@@ -2442,56 +2442,76 @@
           "cauldron": {
             "name": " "
           },
-          "dropItems": {
+          "campfire": {
             "enabled": {
-              "name": "<gold><b>Drop Items</b></gold>",
-              "lore": [
-                "<yellow>Drops the items when done.</yellow>",
-                "",
-                "<grey>[<green>Click</green>] Keep items in cauldron</grey>"
-              ]
-            },
-            "disabled": {
-              "name": "<gold><b>Keep Items</b></gold>",
-              "lore": [
-                "<yellow>Keeps the items in the cauldron when done.</yellow>",
-                "<yellow>Right-click replaces players hand item.</yellow>",
-                "<grey>« </grey><yellow>Required item for the player to </yellow>",
-                "   <yellow>hold on right click!</yellow>",
-                "   <yellow>Leave blank to require empty hand!</yellow>",
-                "",
-                "<grey>[<green>Click</green>] Drop Items</grey>"
-              ]
-            }
-          },
-          "fire": {
-            "enabled": {
-              "name": "<green>\u2714</green>  <gold><b>Fire required</b></gold>",
+              "name": "<green>\u2714</green> <gold><b>Campfire</b></gold>",
               "lore": [
                 "<yellow>Recipe requires a lit Campfire</yellow>",
-                "<yellow>below the cauldron!</yellow>"
+                "<yellow>underneath the cauldron!</yellow>"
               ]
             },
             "disabled": {
-              "name": "<red>\u274C</red>  <gold><b>No Fire required</b></gold>",
+              "name": "<red>\u274C</red> <gold><b>Campfire</b></gold>",
               "lore": [
-                "<yellow>Recipe requires an unlit Campfire</yellow>",
-                "<yellow>below the cauldron!</yellow>"
+                "<yellow>Recipe works without a Campfire</yellow>"
               ]
             }
           },
-          "water": {
+          "soul_campfire": {
             "enabled": {
-              "name": "<green>\u2714</green>  <gold><b>Water required!</b></gold>",
+              "name": "<green>\u2714</green> <gold><b>Soul Campfire</b></gold>",
               "lore": [
-                "<yellow>Recipe will only work with water in it!</yellow>",
-                "<yellow>Except water level is set to 0!</yellow>"
+                "<yellow>Recipe requires a lit Soul Campfire</yellow>",
+                "<yellow>underneath the cauldron!</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>\u274C</red> <gold><b>Soul Campfire</b></gold>",
+              "lore": [
+                "<yellow>Recipe works without a Soul Campfire</yellow>"
+              ]
+            }
+          },
+          "signal_fire": {
+            "enabled": {
+              "name": "<green>\u2714</green> <gold><b>Signal Fire</b></gold>",
+              "lore": [
+                "<yellow>Recipe requires the Campfire to have</yellow>",
+                "<yellow>the signal fire property (Hay Bale underneath)</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>\u274C</red> <gold><b>Signal Fire</b></gold>",
+              "lore": [
+                "<yellow>Recipe works with just plain Campfire</yellow>"
+              ]
+            }
+          },
+          "can_cook_in_water": {
+            "enabled": {
+              "name": "<green>\u2714</green> <gold><b>Can Cook in Water</b></gold>",
+              "lore": [
+                "<yellow>Recipe can be cooked in water</yellow>"
               ]
             },
             "disabled": {
               "name": "<red>\u274C</red>  <gold><b>No Water required!</b></gold>",
               "lore": [
-                "<yellow>Recipe will only work if cauldron is empty!</yellow>"
+                "<yellow>Recipe works without any water!</yellow>"
+              ]
+            }
+          },
+          "can_cook_in_lava": {
+            "enabled": {
+              "name": "<green>\u2714</green> <gold><b>Can Cook in Lava</b></gold>",
+              "lore": [
+                "<yellow>Recipe can be cooked in lava</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>\u274C</red>  <gold><b>No Lava required!</b></gold>",
+              "lore": [
+                "<yellow>Recipe works without any lava!</yellow>"
               ]
             }
           },
@@ -2511,14 +2531,14 @@
             ],
             "message": "<yellow>Type in the cooking time in ticks. e.g. 20</yellow>"
           },
-          "waterLevel": {
-            "name": "<grey>\u270E</grey>  <gold><b>Water Level</b></gold>",
+          "fluid_level": {
+            "name": "<grey>\u270E</grey>  <gold><b>Fluid Level</b></gold>",
             "lore": [
-              "<grey>Required: </grey><yellow>%level%</yellow>",
+              "<grey>Requires a level of </grey><yellow>%level%</yellow>",
               "",
-              "<yellow>The required cauldron water level.</yellow>",
-              "<yellow>When the recipe is done, </yellow>",
-              "<yellow>it consumes the water level.</yellow>"
+              "<yellow>Consumes the specified level of the fluid.</yellow>",
+              "<yellow>When Lava is used, it consumes the whole</yellow>",
+              "<yellow>fluid, so the cauldron is empty.</yellow>"
             ],
             "message": "<yellow>Type in the amount of water the cauldron needs to have! <red>Max: <dark_red>3</dark_red></red></yellow>"
           },
@@ -3557,6 +3577,32 @@
         "items": {
           "effect_type": {
             "name": "%effect_type%"
+          }
+        }
+      }
+    },
+    "cauldron": {
+      "cauldron": {
+        "gui_name": "<dark_grey>Cauldron</dark_grey>",
+        "items": {
+          "start": {
+            "enabled": {
+              "name": "<green><b>Start Cooking</b></green>"
+            },
+            "disabled": {
+              "name": "<red><b>Cannot be Cooked</b></red>",
+              "lore": [
+                "<grey>Invalid Recipe or Requirements!",
+                "",
+                "<yellow>Check Requirements:",
+                "<grey>- <gold>Liquid <grey>(<blue>Water</blue>/<red>Lava</red>)</grey>",
+                "<grey>- <gold>Campfire</gold> <grey>(<aqua>Soul</aqua>/<yellow>Normal</yellow>)</grey>",
+                "<grey>- <gold>Signal Fire <grey>(Hay Bale)</grey>"
+              ]
+            }
+          },
+          "signal_fire": {
+            "name": "<gold>Signal Fire</gold>"
           }
         }
       }

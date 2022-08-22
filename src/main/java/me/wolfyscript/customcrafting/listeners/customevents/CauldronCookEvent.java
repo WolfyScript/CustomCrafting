@@ -22,9 +22,10 @@
 
 package me.wolfyscript.customcrafting.listeners.customevents;
 
-import me.wolfyscript.customcrafting.data.cauldron.Cauldron;
+import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import org.bukkit.Material;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -37,10 +38,10 @@ public class CauldronCookEvent extends Event implements Cancellable {
     private CustomItem result;
     private CustomRecipeCauldron recipe;
 
-    public CauldronCookEvent(Cauldron cauldron) {
-        this.recipe = cauldron.getRecipe();
-        this.result = cauldron.getResult();
-        this.dropItems = cauldron.dropItems();
+    public CauldronCookEvent(CauldronBlockData cauldron) {
+        this.recipe = cauldron.getRecipe().orElseThrow(() -> new RuntimeException("Cannot call CauldronCookEvent without a recipe!"));
+        this.result = new CustomItem(Material.AIR);
+        this.dropItems = false;
     }
 
     @Override

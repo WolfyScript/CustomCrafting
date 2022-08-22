@@ -125,9 +125,6 @@ public class MenuRecipeOverview extends CCWindow {
                 for (int i = 1; i < 9; i++) {
                     event.setButton(i, grayBtnKey);
                 }
-                for (int i = 1; i < 9; i++) {
-                    event.setButton(i, grayBtnKey);
-                }
                 for (int i = 36; i < 45; i++) {
                     event.setButton(i, grayBtnKey);
                 }

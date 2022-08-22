@@ -73,6 +73,14 @@ public class ClusterRecipeBook extends CCCluster {
     public static final NamespacedKey SMOKER = new NamespacedKey(ClusterRecipeBook.KEY, "smoker");
     public static final NamespacedKey SMITHING = new NamespacedKey(ClusterRecipeBook.KEY, "smithing");
 
+    public static final NamespacedKey CAULDRON_CAMPFIRE = new NamespacedKey(KEY, "cauldron.campfire");
+    public static final NamespacedKey CAULDRON_SOUL_CAMPFIRE = new NamespacedKey(KEY, "cauldron.soul_campfire");
+    public static final NamespacedKey CAULDRON_SIGNAL_FIRE = new NamespacedKey(KEY, "cauldron.signal_fire");
+
+    public static final NamespacedKey CAULDRON_COOK_WATER = new NamespacedKey(KEY, "cauldron.can_cook_in_water");
+    public static final NamespacedKey CAULDRON_COOK_LAVA = new NamespacedKey(KEY, "cauldron.can_cook_in_lava");
+    public static final NamespacedKey CAULDRON_EMPTY = new NamespacedKey(KEY, "cauldron.empty_cauldron");
+
     public ClusterRecipeBook(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
     }
@@ -163,14 +171,21 @@ public class ClusterRecipeBook extends CCCluster {
         btnB.dummy(SMOKER.getKey()).state(s -> s.icon(Material.SMOKER)).register();
         btnB.dummy(SMITHING.getKey()).state(s -> s.icon(Material.SMITHING_TABLE)).register();
 
+        // Register Cauldron Menu Buttons
         btnB.dummy("cauldron.water.disabled").state(s -> s.icon(Material.CAULDRON)).register();
         btnB.dummy("cauldron.water.enabled").state(s -> s.icon(PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6")).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
             var knowledgeBook = cache.getRecipeBookCache();
-            return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getCookingTime())), Placeholder.unparsed("lvl", String.valueOf(((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getWaterLevel())));
+            return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getCookingTime())), Placeholder.unparsed("lvl", String.valueOf(((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getFluidLevel())));
         })).register();
-        btnB.dummy("cauldron.fire.disabled").state(s -> s.icon(Material.CAMPFIRE)).register();
-        btnB.dummy("cauldron.fire.enabled").state(s -> s.icon(Material.CAMPFIRE)).register();
+        btnB.dummy(CAULDRON_CAMPFIRE.getKey()).state(s -> s.icon(Material.CAMPFIRE)).register();
+        btnB.dummy(CAULDRON_SOUL_CAMPFIRE.getKey()).state(s -> s.icon(Material.SOUL_CAMPFIRE)).register();
+        btnB.dummy(CAULDRON_SIGNAL_FIRE.getKey()).state(s -> s.icon(Material.HAY_BLOCK)).register();
 
+        btnB.dummy(CAULDRON_COOK_WATER.getKey()).state(s -> s.icon(Material.WATER_BUCKET)).register();
+        btnB.dummy(CAULDRON_COOK_LAVA.getKey()).state(s -> s.icon(Material.LAVA_BUCKET)).register();
+        btnB.dummy(CAULDRON_EMPTY.getKey()).state(s -> s.icon(Material.BUCKET)).register();
+
+        // Register Brewing Menu Buttons
         btnB.dummy("brewing.icon").state(s -> s.icon(Material.BREWING_STAND).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
             CustomRecipeBrewing cookingRecipe = (CustomRecipeBrewing) (cache.getRecipeBookCache()).getCurrentRecipe();
             return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(cookingRecipe.getBrewTime())), Placeholder.unparsed("cost", String.valueOf(cookingRecipe.getFuelCost())));
