@@ -268,8 +268,10 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         }
         if ((isCanCookInLava() && status.hasLava()) || (isCanCookInWater() && status.hasWater())) {
             return status.getLevel() >= fluidLevel;
+        } else if (!isCanCookInWater() && !isCanCookInLava()) {
+            return !status.hasWater() && !status.hasLava();
         }
-        return !isCanCookInLava() && !isCanCookInWater();
+        return false;
     }
 
     public boolean checkRecipe(List<ItemStack> items, CauldronBlockData.CauldronStatus status) {
