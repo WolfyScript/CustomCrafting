@@ -74,7 +74,7 @@ public class ClusterRecipeBook extends CCCluster {
     public static final NamespacedKey SMITHING = new NamespacedKey(ClusterRecipeBook.KEY, "smithing");
 
     public static final NamespacedKey CAULDRON_CAMPFIRE = new NamespacedKey(KEY, "cauldron.campfire");
-    public static final NamespacedKey CAULDRON_SOUL_CAMPFIRE = new NamespacedKey(KEY, "cauldron.campfire");
+    public static final NamespacedKey CAULDRON_SOUL_CAMPFIRE = new NamespacedKey(KEY, "cauldron.soul_campfire");
     public static final NamespacedKey CAULDRON_SIGNAL_FIRE = new NamespacedKey(KEY, "cauldron.signal_fire");
 
     public static final NamespacedKey CAULDRON_COOK_WATER = new NamespacedKey(KEY, "cauldron.can_cook_in_water");

@@ -345,8 +345,8 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         });
     }
 
-    private void setIngredients(ArrayDeque<Ingredient> ingredients) {
-        Preconditions.checkArgument(this.ingredients.size() <= maxIngredients, "Recipe cannot have more than " + maxIngredients + " ingredients!");
+    private void setIngredients(Deque<Ingredient> ingredients) {
+        Preconditions.checkArgument(ingredients.size() <= maxIngredients, "Recipe cannot have more than " + maxIngredients + " ingredients!");
         this.ingredients = ingredients;
     }
 
@@ -426,7 +426,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         } else {
             event.setButton(36, ClusterRecipeBook.CAULDRON_EMPTY);
         }
-        //TODO: Fluid level indicator slot 45 - 47
         if (canCookInWater || canCookInLava) {
             NamespacedKey backgroundBtn = playerStore.isDarkMode() ? ClusterMain.GLASS_WHITE : ClusterMain.GLASS_BLACK;
             ItemStack levelItem = new ItemStack(canCookInWater ? Material.BLUE_STAINED_GLASS_PANE : Material.ORANGE_STAINED_GLASS_PANE);
@@ -442,7 +441,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         if (requiresLitCampfire) {
             if (campfire && soulCampfire) {
                 event.setButton(44, ClusterRecipeBook.CAULDRON_CAMPFIRE);
-                event.setButton(43, ClusterRecipeBook.CAULDRON_CAMPFIRE);
+                event.setButton(43, ClusterRecipeBook.CAULDRON_SOUL_CAMPFIRE);
             } else {
                 event.setButton(44, campfire ? ClusterRecipeBook.CAULDRON_CAMPFIRE : ClusterRecipeBook.CAULDRON_SOUL_CAMPFIRE);
             }
