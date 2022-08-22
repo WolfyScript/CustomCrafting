@@ -355,7 +355,6 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
             getAPI().getChat().sendMessage(player, Component.text("For full error please see logs!", NamedTextColor.RED));
             e.printStackTrace();
         }
-        getAPI().getChat().sendMessage(player, ChatColor.RED + "");
         return false;
     }
 

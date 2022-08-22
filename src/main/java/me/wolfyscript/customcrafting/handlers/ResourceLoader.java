@@ -122,7 +122,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
      * @param item The item to delete
      * @return true if the item was successfully deleted; otherwise false
      */
-    public abstract boolean delete(CustomItem item);
+    public abstract boolean delete(CustomItem item) throws IOException;
 
     /**
      * Gets the priority of this loader.<br>

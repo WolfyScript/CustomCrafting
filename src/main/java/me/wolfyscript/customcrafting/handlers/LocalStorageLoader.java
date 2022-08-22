@@ -180,16 +180,12 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     @Override
-    public boolean delete(CustomItem item) {
-        System.gc();
+    public boolean delete(CustomItem item) throws IOException {
         var key = item.getNamespacedKey();
         if (key != null) {
             var file = getFileAt(key, ITEMS_FOLDER);
-            if (file.delete()) {
-                return true;
-            } else {
-                file.deleteOnExit();
-            }
+            Files.delete(file.toPath());
+            return true;
         }
         return false;
     }
