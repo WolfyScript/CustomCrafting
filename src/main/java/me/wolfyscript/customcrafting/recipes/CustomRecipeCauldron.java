@@ -87,7 +87,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.canCookInLava = false;
         this.canCookInWater = node.path("water").asBoolean(true);
         this.campfire = this.requiresLitCampfire = node.path("fire").asBoolean(true);
-        this.additionalResults = new Result[3];
+        this.additionalResults = new Result[] { new Result(), new Result(), new Result() };
         JsonNode ingredientsNode = node.path("ingredient");
         this.ingredients = new ArrayDeque<>();
         if (ingredientsNode.isObject()) {
