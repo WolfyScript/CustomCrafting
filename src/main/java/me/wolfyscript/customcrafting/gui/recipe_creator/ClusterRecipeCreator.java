@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -137,10 +138,35 @@ public class ClusterRecipeCreator extends CCCluster {
                     StringUtil.copyPartialMatches(args[0], customCrafting.getRegistries().getRecipes().groups(), results);
                     return results;
                 }).register();
+        getButtonBuilder().multiChoice(VANILLA_BOOK.getKey())
+                // State: vanilla = true, auto_discover = true
+                .addState(state -> state.subKey("vanilla_book_discover").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, i, event) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(true);
+                    cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(false);
+                    return true;
+                }))
+                // State: vanilla = true, auto_discover = false
+                .addState(state -> state.subKey("vanilla_book_no_discover").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, i, event) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(false);
+                    cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(false);
+                    return true;
+                }))
+                // State: vanilla = false, auto_discover = false
+                .addState(state -> state.subKey("no_vanilla_book").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, i, event) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(true);
+                    cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(true);
+                    return true;
+                }))
+                .stateFunction((cache, guiHandler, player, inventory, i) -> {
+                    RecipeCache<?> recipeCache = cache.getRecipeCreatorCache().getRecipeCache();
+                    if (recipeCache.isVanillaBook() && recipeCache.isAutoDiscover()) {
+                        return 0;
+                    }
+                    return recipeCache.isVanillaBook() ? 1 : 2;
+                }).register();
         registerButton(new ButtonExactMeta());
         registerButton(new ButtonPriority());
         registerButton(new ButtonHidden());
-        registerButton(new ButtonVanillaBook());
         registerSaveButtons();
     }
 
