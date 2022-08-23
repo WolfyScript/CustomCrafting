@@ -91,7 +91,11 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         JsonNode ingredientsNode = node.path("ingredient");
         this.ingredients = new ArrayDeque<>();
         if (ingredientsNode.isObject()) {
-            ItemLoader.loadIngredient(node.path("ingredients")).getChoices().stream().map(customItem -> new Ingredient(customItem.getApiReference())).forEach(ingredients::add);
+            ItemLoader.loadIngredient(node.path("ingredients")).getChoices().stream().map(customItem -> {
+                Ingredient ingredient = new Ingredient(customItem.getApiReference());
+                ingredient.buildChoices();
+                return ingredient;
+            }).forEach(ingredients::add);
         } else {
             Streams.stream(ingredientsNode.elements()).map(ItemLoader::loadIngredient).forEach(this::addIngredients);
         }
@@ -356,11 +360,15 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         return ingredients;
     }
 
-    @JsonSetter
+    @JsonSetter("ingredients")
     private void setIngredients(JsonNode ingredientsNode) {
         if (ingredientsNode.isObject()) {
             //Directly set ingredients to bypass max ingredient check, since old recipes might have more ingredients!
-            ItemLoader.loadIngredient(ingredientsNode).getChoices().stream().map(customItem -> new Ingredient(customItem.getApiReference())).forEach(ingredient -> this.ingredients.add(ingredient));
+            ItemLoader.loadIngredient(ingredientsNode).getChoices().stream().map(customItem ->{
+                Ingredient ingredient = new Ingredient(customItem.getApiReference());
+                ingredient.buildChoices();
+                return ingredient;
+            }).forEach(ingredient -> this.ingredients.add(ingredient));
         } else {
             //But disallow it for newly created recipes!
             Streams.stream(ingredientsNode.elements()).map(ItemLoader::loadIngredient).forEach(this::addIngredients);
