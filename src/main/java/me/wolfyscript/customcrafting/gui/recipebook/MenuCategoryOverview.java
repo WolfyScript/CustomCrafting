@@ -120,7 +120,7 @@ public class MenuCategoryOverview extends CCWindow {
         if (recipeBookCache.getPage() >= maxPages) {
             recipeBookCache.setPage(0);
         } else if (recipeBookCache.getPage() < 0) {
-            recipeBookCache.setPage(maxPages - 1);
+            recipeBookCache.setPage(Math.max(0, maxPages - 1));
         }
         for (int item = 0, i = 45 * recipeBookCache.getPage(); item < 45 && i < containers.size(); i++, item++) {
             ButtonContainerRecipeBook button = (ButtonContainerRecipeBook) getCluster().getButton("recipe_book.container_" + item);
