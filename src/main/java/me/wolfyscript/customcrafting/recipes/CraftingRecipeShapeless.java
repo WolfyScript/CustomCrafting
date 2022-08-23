@@ -80,4 +80,14 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
     public void setVisibleVanillaBook(boolean vanillaBook) {
         this.vanillaBook = vanillaBook;
     }
+
+    @Override
+    public boolean isAutoDiscover() {
+        return autoDiscover;
+    }
+
+    @Override
+    public void setAutoDiscover(boolean autoDiscover) {
+        this.autoDiscover = autoDiscover;
+    }
 }

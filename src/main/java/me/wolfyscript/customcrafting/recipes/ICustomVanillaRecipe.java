@@ -36,4 +36,10 @@ public interface ICustomVanillaRecipe<T extends Recipe> {
     @JsonIgnore
     void setVisibleVanillaBook(boolean vanillaBook);
 
+    @JsonIgnore
+    boolean isAutoDiscover();
+
+    @JsonIgnore
+    void setAutoDiscover(boolean autoDiscover);
+
 }

@@ -164,7 +164,7 @@ public class CraftListener implements Listener {
         var player = event.getPlayer();
         List<org.bukkit.NamespacedKey> discoveredCustomRecipes = player.getDiscoveredRecipes().stream().filter(namespacedKey -> namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).toList();
         customCrafting.getRegistries().getRecipes().getAvailable(player).stream()
-                .filter(recipe -> recipe instanceof ICustomVanillaRecipe<?>)
+                .filter(recipe -> recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isAutoDiscover())
                 .map(recipe -> new org.bukkit.NamespacedKey(recipe.getNamespacedKey().getNamespace(), recipe.getNamespacedKey().getKey()))
                 .filter(namespacedKey -> !discoveredCustomRecipes.contains(namespacedKey))
                 .forEach(player::discoverRecipe);
