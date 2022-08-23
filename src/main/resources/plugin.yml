@@ -13,6 +13,15 @@ permissions:
   customcrafting.*:
     default: op
     children:
+      customcrafting.workstation.*:
+        description: Permission to access custom workstations
+        children:
+          customcrafting.workstation.cauldron.*:
+            description: Wildcard permission for the cauldron workstation
+            children:
+              customcrafting.workstation.cauldron.interact:
+                description: Permission to interact and open the cauldron GUI
+                default: true
       customcrafting.update_check:
         description: Displays the new update message on join.
         default: op
