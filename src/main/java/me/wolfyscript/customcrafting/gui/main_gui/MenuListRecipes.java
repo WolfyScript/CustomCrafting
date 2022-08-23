@@ -77,7 +77,7 @@ public class MenuListRecipes extends CCWindow {
                 cache.getRecipeList().setPage(--page);
             }
             return true;
-        }));
+        })).register();
         registerButton(new ButtonRecipeListWorkstationFilter());
         for (int i = 0; i < 45; i++) {
             registerButton(new ButtonContainerRecipeList(i, customCrafting));
