@@ -54,7 +54,7 @@ public class EditorMain extends CCWindow {
         })).register();
         getButtonBuilder().action(SAVE).state(s -> s.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
             try {
-                if (!new File(customCrafting.getDataFolder(), "recipe_book.json").renameTo(new File(customCrafting.getDataFolder(), "recipe_book_backup.json"))) {
+                if (!new File(customCrafting.getDataFolder(), "recipe_book.conf").renameTo(new File(customCrafting.getDataFolder(), "recipe_book_backup.conf"))) {
                     sendMessage(guiHandler, getCluster().translatedMsgKey("save.failed_backup"));
                 }
                 customCrafting.getConfigHandler().save();

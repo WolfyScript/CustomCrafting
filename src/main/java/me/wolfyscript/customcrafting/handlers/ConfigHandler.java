@@ -67,14 +67,15 @@ public class ConfigHandler {
     }
 
     public void loadRecipeBookConfig() {
-        var recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.json");
-        if (!recipeBookFile.exists()) {
-            customCrafting.saveResource("recipe_book.json", true);
+        var recipeBookFileJson = new File(customCrafting.getDataFolder(), "recipe_book.json");
+        var recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.conf");
+        if (!recipeBookFileJson.exists() && !recipeBookFile.exists()) {
+            customCrafting.saveResource("recipe_book.conf", true);
         }
         try {
-            this.recipeBookConfig = JacksonUtil.getObjectMapper().readValue(recipeBookFile, RecipeBookConfig.class);
+            this.recipeBookConfig = JacksonUtil.getObjectMapper().readValue(recipeBookFile.exists() ? recipeBookFile : recipeBookFileJson, RecipeBookConfig.class);
         } catch (IOException e) {
-            customCrafting.getLogger().severe("Failed to load recipe_book.json");
+            customCrafting.getLogger().severe("Failed to load recipe_book.conf");
             e.printStackTrace();
             this.recipeBookConfig = new RecipeBookConfig();
         }
@@ -91,12 +92,12 @@ public class ConfigHandler {
 
     public void loadDefaults() {
         if (mainConfig.resetRecipeBook()) {
-            customCrafting.saveResource("data/customcrafting/items/recipe_book.json", true);
-            customCrafting.saveResource("data/customcrafting/recipes/recipe_book.json", true);
+            customCrafting.saveResource("data/customcrafting/items/recipe_book.conf", true);
+            customCrafting.saveResource("data/customcrafting/recipes/recipe_book.conf", true);
         }
         if (mainConfig.resetAdvancedWorkbench()) {
-            customCrafting.saveResource("data/customcrafting/items/advanced_crafting_table.json", true);
-            customCrafting.saveResource("data/customcrafting/recipes/advanced_crafting_table.json", true);
+            customCrafting.saveResource("data/customcrafting/items/advanced_crafting_table.conf", true);
+            customCrafting.saveResource("data/customcrafting/recipes/advanced_crafting_table.conf", true);
         }
     }
 
@@ -121,7 +122,7 @@ public class ConfigHandler {
 
     public void save() throws IOException {
         if (this.recipeBookConfig != null) {
-            JacksonUtil.getObjectWriter(getConfig().isPrettyPrinting()).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.json"), this.recipeBookConfig);
+            JacksonUtil.getObjectWriter(getConfig().isPrettyPrinting()).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.conf"), this.recipeBookConfig);
         }
         getConfig().save();
     }
