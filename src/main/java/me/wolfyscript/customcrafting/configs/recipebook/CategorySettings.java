@@ -98,7 +98,7 @@ public abstract class CategorySettings {
         if (icon.isTextual()) {
             this.icon = new ItemStack(Objects.requireNonNull(Material.matchMaterial(icon.asText())));
         } else if (icon.isObject()) {
-            this.icon = JacksonUtil.getObjectMapper().convertValue(icon, ItemStack.class);
+            this.icon = CustomCrafting.inst().getApi().getJacksonMapperUtil().getGlobalMapper().convertValue(icon, ItemStack.class);
         } else {
             this.icon = new ItemStack(Material.CHEST);
         }

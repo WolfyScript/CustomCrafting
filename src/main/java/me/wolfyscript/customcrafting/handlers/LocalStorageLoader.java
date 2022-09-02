@@ -28,6 +28,7 @@ import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -141,7 +142,7 @@ public class LocalStorageLoader extends ResourceLoader {
         if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
             try {
                 if (file.isFile() || file.createNewFile()) {
-                    JacksonUtil.getObjectWriter(customCrafting.getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, recipe);
+                    customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(customCrafting.getConfigHandler().getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null).writeValue(file, recipe);
                     return true;
                 }
             } catch (IOException e) {
@@ -160,7 +161,7 @@ public class LocalStorageLoader extends ResourceLoader {
                 if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
                     try {
                         if (file.exists() || file.createNewFile()) {
-                            JacksonUtil.getObjectWriter(customCrafting.getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, item);
+                            customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(customCrafting.getConfigHandler().getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null).writeValue(file, item);
                             return true;
                         }
                     } catch (IOException e) {

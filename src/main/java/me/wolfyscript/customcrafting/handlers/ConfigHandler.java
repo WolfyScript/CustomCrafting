@@ -25,9 +25,9 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,7 +73,7 @@ public class ConfigHandler {
             customCrafting.saveResource("recipe_book.conf", true);
         }
         try {
-            this.recipeBookConfig = JacksonUtil.getObjectMapper().readValue(recipeBookFile.exists() ? recipeBookFile : recipeBookFileJson, RecipeBookConfig.class);
+            this.recipeBookConfig = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readValue(recipeBookFile.exists() ? recipeBookFile : recipeBookFileJson, RecipeBookConfig.class);
         } catch (IOException e) {
             customCrafting.getLogger().severe("Failed to load recipe_book.conf");
             e.printStackTrace();
@@ -122,7 +122,7 @@ public class ConfigHandler {
 
     public void save() throws IOException {
         if (this.recipeBookConfig != null) {
-            JacksonUtil.getObjectWriter(getConfig().isPrettyPrinting()).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.conf"), this.recipeBookConfig);
+            customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.conf"), this.recipeBookConfig);
         }
         getConfig().save();
     }

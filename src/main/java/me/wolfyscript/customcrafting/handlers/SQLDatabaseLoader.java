@@ -183,7 +183,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                     NamespacedKey namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + key);
                     if (isReplaceData() || !api.getRegistries().getCustomItems().has(namespacedKey)) {
                         try {
-                            api.getRegistries().getCustomItems().register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
+                            api.getRegistries().getCustomItems().register(new NamespacedKey(customCrafting, namespace + "/" + key), customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readValue(data, CustomItem.class));
                         } catch (JsonProcessingException e) {
                             api.getConsole().info(PREFIX + "Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
                         }
@@ -235,7 +235,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                         loader = recipeLoader;
                     }
                     if (loader != null) {
-                        return loader.getInstance(namespacedKey, JacksonUtil.getObjectMapper().readTree(data));
+                        return loader.getInstance(namespacedKey, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readTree(data));
                     }
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | IOException e) {
                     ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
@@ -253,7 +253,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
             PreparedStatement pState = dataBase.open().prepareStatement("INSERT INTO customcrafting_recipes (rNamespace, rKey, rType, rData) VALUES (?, ?, ?, ?)");
             setNamespacedKey(pState, data.getNamespacedKey(), 1, 2);
             pState.setString(3, ""); //No longer save the type. The type is contained in the json data now.
-            pState.setString(4, JacksonUtil.getObjectMapper().writeValueAsString(data));
+            pState.setString(4, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writeValueAsString(data));
             dataBase.executeAsyncUpdate(pState);
         } catch (SQLException | JsonProcessingException e) {
             e.printStackTrace();
@@ -264,7 +264,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         if (hasRecipe(data.getNamespacedKey())) {
             try {
                 PreparedStatement pState = dataBase.open().prepareStatement("UPDATE customcrafting_recipes SET rData=? WHERE rNamespace=? AND rKey=?");
-                pState.setString(1, JacksonUtil.getObjectMapper().writeValueAsString(data));
+                pState.setString(1, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writeValueAsString(data));
                 setNamespacedKey(pState, data.getNamespacedKey(), 2, 3);
                 dataBase.executeAsyncUpdate(pState);
             } catch (SQLException | JsonProcessingException e) {
@@ -312,7 +312,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         try {
             PreparedStatement pState = dataBase.open().prepareStatement("INSERT INTO customcrafting_items (rNamespace, rKey, rData) VALUES (?, ?, ?)");
             setNamespacedKey(pState, namespacedKey, 1, 2);
-            pState.setString(3, JacksonUtil.getObjectMapper().writeValueAsString(data));
+            pState.setString(3, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writeValueAsString(data));
             dataBase.executeAsyncUpdate(pState);
         } catch (SQLException | JsonProcessingException e) {
             e.printStackTrace();
@@ -323,7 +323,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         if (hasItem(namespacedKey)) {
             try {
                 PreparedStatement pState = dataBase.open().prepareStatement("UPDATE customcrafting_items SET rData=? WHERE rNamespace=? AND rKey=?");
-                pState.setString(1, JacksonUtil.getObjectMapper().writeValueAsString(data));
+                pState.setString(1, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writeValueAsString(data));
                 setNamespacedKey(pState, namespacedKey, 2, 3);
                 dataBase.executeAsyncUpdate(pState);
             } catch (SQLException | JsonProcessingException e) {

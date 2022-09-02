@@ -66,7 +66,7 @@ public class Conditions {
         this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection
         var injectableValues = new InjectableValues.Std();
         injectableValues.addValue("customcrafting", this.customCrafting);
-        var jsonReader = JacksonUtil.getObjectMapper().reader(injectableValues);
+        var jsonReader = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().reader(injectableValues);
         if (node.isArray()) {
             //Required for backwards compatibility with previous configs.
             this.valuesMap = new HashMap<>();

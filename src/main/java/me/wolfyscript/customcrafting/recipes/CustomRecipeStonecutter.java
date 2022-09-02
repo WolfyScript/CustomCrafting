@@ -62,7 +62,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
         super(namespacedKey, node);
         if (node.has(KEY_RESULT)) {
             //Some old config format, which saved the item directly as a reference
-            setResult(node.path(KEY_RESULT).has("custom_amount") ? new Result(JacksonUtil.getObjectMapper().convertValue(node.path(KEY_RESULT), APIReference.class)) : ItemLoader.loadResult(node.path(KEY_RESULT), this.customCrafting));
+            setResult(node.path(KEY_RESULT).has("custom_amount") ? new Result(CustomCrafting.inst().getApi().getJacksonMapperUtil().getGlobalMapper().convertValue(node.path(KEY_RESULT), APIReference.class)) : ItemLoader.loadResult(node.path(KEY_RESULT), this.customCrafting));
         }
         setSource(ItemLoader.loadIngredient(node.path(KEY_SOURCE)));
     }
@@ -97,7 +97,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
     @JsonSetter("result")
     @Override
     protected void setResult(JsonNode node) {
-        setResult(node.has("custom_amount") ? new Result(JacksonUtil.getObjectMapper().convertValue(node, APIReference.class)) : ItemLoader.loadResult(node, this.customCrafting));
+        setResult(node.has("custom_amount") ? new Result(mapper.convertValue(node, APIReference.class)) : ItemLoader.loadResult(node, this.customCrafting));
     }
 
     @Override

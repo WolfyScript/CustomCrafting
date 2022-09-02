@@ -52,7 +52,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
         this.api = customCrafting.getApi();
         this.config = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
-        this.objectMapper = JacksonUtil.getObjectMapper();
+        this.objectMapper = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper();
     }
 
     public abstract void load();

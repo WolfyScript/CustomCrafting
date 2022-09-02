@@ -170,7 +170,7 @@ public class RecipeBookConfig {
         if (node.has("sort")) {
             node.path("sort").elements().forEachRemaining(element -> sort.accept(element.asText()));
         }
-        node.path("options").elements().forEachRemaining(element -> settings.accept(JacksonUtil.getObjectMapper().convertValue(element, type)));
+        node.path("options").elements().forEachRemaining(element -> settings.accept(CustomCrafting.inst().getApi().getJacksonMapperUtil().getGlobalMapper().convertValue(element, type)));
     }
 
     private <T extends CategorySettings> Map<String, Object> getSettingsMap(List<String> sortedList, Collection<T> settings) {
