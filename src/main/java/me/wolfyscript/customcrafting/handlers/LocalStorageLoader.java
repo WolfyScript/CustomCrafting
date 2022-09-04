@@ -85,13 +85,24 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     /**
-     * Gets the file at the specific path from the {@link NamespacedKey} and sub-folder.
+     * Gets the file at the specific path from the {@link NamespacedKey} and sub-folder with the .conf extension.
      *
      * @param namespacedKey The NamespacedKey for the path.
      * @param typeFolder    The sub-folder of the path. Like {@link #ITEMS_FOLDER} or {@link #RECIPES_FOLDER}.
      * @return The File at the specific path.
      */
     private File getFileAt(NamespacedKey namespacedKey, String typeFolder) {
+        return new File(DataHandler.HOCON_OBJ_PATH.formatted(NamespacedKeyUtils.getKeyRoot(namespacedKey), typeFolder, NamespacedKeyUtils.getRelativeKeyObjPath(namespacedKey)));
+    }
+
+    /**
+     * Gets the file at the specific path from the {@link NamespacedKey} and sub-folder with the .json extension.
+     *
+     * @param namespacedKey The NamespacedKey for the path.
+     * @param typeFolder    The sub-folder of the path. Like {@link #ITEMS_FOLDER} or {@link #RECIPES_FOLDER}.
+     * @return The File at the specific path.
+     */
+    private File getFileAtJson(NamespacedKey namespacedKey, String typeFolder) {
         return new File(DataHandler.JSON_OBJ_PATH.formatted(NamespacedKeyUtils.getKeyRoot(namespacedKey), typeFolder, NamespacedKeyUtils.getRelativeKeyObjPath(namespacedKey)));
     }
 
@@ -175,8 +186,21 @@ public class LocalStorageLoader extends ResourceLoader {
 
     @Override
     public boolean delete(CustomRecipe<?> recipe) throws IOException {
-        File file = getFileAt(recipe.getNamespacedKey(), recipe.getRecipeType().getId());
-        Files.delete(file.toPath());
+        // Deletes the recipe file that is saved under the recipe type specific folder
+        File legacyFile = getFileAt(recipe.getNamespacedKey(), recipe.getRecipeType().getId());
+        if (legacyFile.exists()) {
+            Files.delete(legacyFile.toPath());
+        }
+
+        // Deletes both the HOCON and JSON file
+        File hoconFile = getFileAt(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        if (hoconFile.exists()) {
+            Files.delete(hoconFile.toPath());
+        }
+        File jsonFile = getFileAtJson(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        if (jsonFile.exists()) {
+            Files.delete(jsonFile.toPath());
+        }
         return true;
     }
 
@@ -184,8 +208,15 @@ public class LocalStorageLoader extends ResourceLoader {
     public boolean delete(CustomItem item) throws IOException {
         var key = item.getNamespacedKey();
         if (key != null) {
-            var file = getFileAt(key, ITEMS_FOLDER);
-            Files.delete(file.toPath());
+            // Deletes both the HOCON and JSON file
+            var hoconFile = getFileAt(key, ITEMS_FOLDER);
+            if (hoconFile.exists()) {
+                Files.delete(hoconFile.toPath());
+            }
+            var jsonFile = getFileAt(key, ITEMS_FOLDER);
+            if (jsonFile.exists()) {
+                Files.delete(jsonFile.toPath());
+            }
             return true;
         }
         return false;
