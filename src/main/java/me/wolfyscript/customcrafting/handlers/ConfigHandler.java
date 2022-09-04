@@ -63,7 +63,11 @@ public class ConfigHandler {
         loadLang();
         loadRecipeBookConfig();
         renameOldRecipesFolder();
-        loadDefaults();
+        try {
+            loadDefaults();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void loadRecipeBookConfig() {
@@ -90,16 +94,36 @@ public class ConfigHandler {
         }
     }
 
-    public void loadDefaults() {
+    public void loadDefaults() throws IOException {
         if (mainConfig.resetRecipeBook()) {
-            customCrafting.saveResource("data/customcrafting/items/recipe_book.conf", true);
-            customCrafting.saveResource("data/customcrafting/recipes/recipe_book.conf", true);
+            saveDefault("recipe_book");
         }
         if (mainConfig.resetAdvancedWorkbench()) {
-            customCrafting.saveResource("data/customcrafting/items/advanced_crafting_table.conf", true);
-            customCrafting.saveResource("data/customcrafting/recipes/advanced_crafting_table.conf", true);
+            saveDefault("advanced_crafting_table");
         }
     }
+
+    private void saveDefault(String file) throws IOException {
+        String itemPath = "data/customcrafting/items/";
+        String recipePath = "data/customcrafting/recipes/";
+
+        File jsonFileItem = new File(customCrafting.getDataFolder(), itemPath + file + ".json");
+        if (jsonFileItem.exists()) {
+            if (!jsonFileItem.renameTo(new File(customCrafting.getDataFolder(), itemPath + file + ".conf"))) {
+                Files.delete(jsonFileItem.toPath());
+            }
+        }
+        File jsonFileRecipe = new File(customCrafting.getDataFolder(), recipePath + file + ".json");
+        if (jsonFileRecipe.exists()) {
+            if (!jsonFileRecipe.renameTo(new File(customCrafting.getDataFolder(), recipePath + file + ".conf"))) {
+                Files.delete(jsonFileRecipe.toPath());
+            }
+        }
+
+        customCrafting.saveResource(itemPath + file + ".conf", true);
+        customCrafting.saveResource(recipePath + file + ".conf", true);
+    }
+
 
     public void loadLang() {
         var chosenLang = mainConfig.getString("language");
