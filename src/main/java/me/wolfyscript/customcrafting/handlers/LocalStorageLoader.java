@@ -150,6 +150,12 @@ public class LocalStorageLoader extends ResourceLoader {
     @Override
     public boolean save(CustomRecipe<?> recipe) {
         File file = getFileAt(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        File jsonFile = getFileAtJson(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        if (jsonFile.exists()) { // In case there is already an old json file let's rename it.
+            if (!jsonFile.renameTo(file)) {
+                return false;
+            }
+        }
         if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
             try {
                 if (file.isFile() || file.createNewFile()) {
@@ -169,6 +175,12 @@ public class LocalStorageLoader extends ResourceLoader {
             var key = item.getNamespacedKey();
             if (key != null) {
                 var file = getFileAt(key, ITEMS_FOLDER);
+                File jsonFile = getFileAtJson(key, ITEMS_FOLDER);
+                if (jsonFile.exists()) { // In case there is already an old json file let's rename it.
+                    if (!jsonFile.renameTo(file)) {
+                        return false;
+                    }
+                }
                 if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
                     try {
                         if (file.exists() || file.createNewFile()) {
