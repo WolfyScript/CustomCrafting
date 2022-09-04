@@ -405,6 +405,16 @@
           "brewing_stand": {
             "name": "<grey>\u27A5</grey>  <gold><b>Brewing Stand Recipe</b></gold>"
           },
+          "brewing_stand_disabled": {
+            "name": "<red>❌ </red>  <gold><b>Brewing Stand Recipe</b></gold>",
+            "lore": [
+              "<red>Brewing Stand Recipes are disabled!",
+              "<red>You must enable them in the config!",
+              "",
+              "<red>Note: The development is on Hold, and",
+              "<red>      they might not work as intended!"
+            ]
+          },
           "smithing": {
             "name": "<grey>\u27A5</grey>  <gold><b>Smithing Recipe</b></gold>"
           },

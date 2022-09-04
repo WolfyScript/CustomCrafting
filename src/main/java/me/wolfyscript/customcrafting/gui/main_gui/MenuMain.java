@@ -84,7 +84,10 @@ public class MenuMain extends CCWindow {
         registerButton(new ButtonRecipeType(CAMPFIRE, RecipeType.CAMPFIRE, Material.CAMPFIRE));
         registerButton(new ButtonRecipeType(STONECUTTER, RecipeType.STONECUTTER, Material.STONECUTTER));
         registerButton(new ButtonRecipeType(GRINDSTONE, RecipeType.GRINDSTONE, Material.GRINDSTONE));
+        builder.dummy("brewing_stand_disabled").state(state -> state.icon(Material.BREWING_STAND)).register();
         registerButton(new ButtonRecipeType(BREWING_STAND, RecipeType.BREWING_STAND, Material.BREWING_STAND));
+
+
         registerButton(new ButtonRecipeType(ELITE_CRAFTING, RecipeType.ELITE_CRAFTING_SHAPED, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
         registerButton(new ButtonRecipeType(CAULDRON, RecipeType.CAULDRON, Material.CAULDRON));
         registerButton(new ButtonRecipeType(SMITHING, RecipeType.SMITHING, Material.SMITHING_TABLE));
@@ -138,11 +141,7 @@ public class MenuMain extends CCWindow {
         event.setButton(25, STONECUTTER);
 
         offset = 0;
-        if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
-            event.setButton(30, BREWING_STAND);
-        } else {
-            offset = 1;
-        }
+        event.setButton(30, customCrafting.getConfigHandler().getConfig().isBrewingRecipes() ? BREWING_STAND : "brewing_stand_disabled");
         event.setButton(28 + offset, GRINDSTONE);
         event.setButton(32 + offset, ELITE_CRAFTING);
         event.setButton(34 - offset, SMITHING);
