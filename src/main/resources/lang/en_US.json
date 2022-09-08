@@ -1836,24 +1836,35 @@
           }
         },
         "vanilla_book": {
-          "enabled": {
-            "name": "<green>✔ </green><gold><b>Vanilla Recipe Book</b></gold>",
+          "vanilla_book_discover": {
+            "name": "<grey><b>\u274F </b></grey><gold><b>Vanilla Recipe Book & Auto Discover</b></gold>",
             "lore": [
               "<yellow>Recipe will be visible in the vanilla</yellow>",
-              "<yellow>recipe book. </yellow>",
+              "<yellow>recipe book and auto discovered on join! </yellow>",
+              "<red>NBT for ingredients will not be displayed & </red>",
+              "<red>ignored by the auto-completion!</red>",
+              "",
+              "<dark_grey>[<green>Click</green>]</dark_grey> <yellow>Disable Auto Discover</yellow>"
+            ]
+          },
+          "vanilla_book_no_discover" : {
+            "name": "<grey><b>\u274F </b></grey><gold><b>Vanilla Recipe Book</b></gold>",
+            "lore": [
+              "<yellow>Recipe will be visible in the vanilla</yellow>",
+              "<yellow>recipe book.</yellow>",
               "<red>NBT for ingredients will not be displayed & </red>",
               "<red>ignored by the auto-completion!</red>",
               "",
               "<dark_grey>[<green>Click</green>]</dark_grey> <yellow>Disable Vanilla Recipe Book</yellow>"
             ]
           },
-          "disabled": {
-            "name": "<dark_red>❌ </dark_red><gold><b>Vanilla Recipe Book</b></gold>",
+          "no_vanilla_book": {
+            "name": "<grey><b>\u274F </b></grey><gold><b>No Vanilla Recipe Book</b></gold>",
             "lore": [
               "<yellow>Recipe is not visible in the vanilla</yellow>",
               "<yellow>recipe book. </yellow>",
               "",
-              "<dark_grey>[<green>Click</green>]</dark_grey> <yellow>Enable Vanilla Recipe Book</yellow>"
+              "<dark_grey>[<green>Click</green>]</dark_grey> <yellow>Enable Vanilla Recipe Book & Auto Discover</yellow>"
             ]
           }
         },

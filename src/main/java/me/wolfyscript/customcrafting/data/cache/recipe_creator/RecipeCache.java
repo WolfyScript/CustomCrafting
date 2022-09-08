@@ -45,6 +45,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
     protected boolean checkAllNBT;
     protected boolean hidden;
     protected boolean vanillaBook;
+    protected boolean autoDiscover;
 
     protected RecipePriority priority;
     protected Conditions conditions;
@@ -121,6 +122,14 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         return vanillaBook;
     }
 
+    public void setAutoDiscover(boolean autoDiscover) {
+        this.autoDiscover = autoDiscover;
+    }
+
+    public boolean isAutoDiscover() {
+        return autoDiscover;
+    }
+
     public RecipePriority getPriority() {
         return priority;
     }
@@ -178,6 +187,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         recipe.setPriority(priority);
         if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe) {
             vanillaRecipe.setVisibleVanillaBook(vanillaBook);
+            vanillaRecipe.setAutoDiscover(autoDiscover);
         }
         return recipe;
     }

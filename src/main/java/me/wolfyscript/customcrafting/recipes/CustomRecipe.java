@@ -80,6 +80,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected static final String KEY_RESULT = "result";
     protected static final String KEY_GROUP = "group";
     protected static final String KEY_VANILLA_BOOK = "vanillaBook";
+    protected static final String KEY_AUTO_DISCOVER = "autoDiscover";
     protected static final String KEY_PRIORITY = "priority";
     protected static final String KEY_EXACT_META = "exactItemMeta";
     protected static final String KEY_CONDITIONS = "conditions";
@@ -101,6 +102,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected boolean checkAllNBT;
     protected boolean hidden;
     protected boolean vanillaBook;
+    protected boolean autoDiscover;
     protected RecipePriority priority;
     protected Conditions conditions;
     protected String group;
@@ -126,6 +128,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
             this.conditions = new Conditions(customCrafting);
         }
         this.vanillaBook = node.path(KEY_VANILLA_BOOK).asBoolean(true);
+        this.autoDiscover = node.path(KEY_VANILLA_BOOK).asBoolean(true);
         this.hidden = node.path(KEY_HIDDEN).asBoolean(false);
         //Sets the result of the recipe if one exists in the config
         if (node.has(KEY_RESULT) && !(this instanceof CustomRecipeStonecutter)) {
@@ -151,6 +154,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.priority = RecipePriority.NORMAL;
         this.checkAllNBT = false;
         this.vanillaBook = true;
+        this.autoDiscover = true;
         this.conditions = new Conditions(customCrafting);
         this.hidden = false;
     }
@@ -169,6 +173,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.namespacedKey = Objects.requireNonNull(customRecipe.namespacedKey, ERROR_MSG_KEY);
 
         this.vanillaBook = customRecipe.vanillaBook;
+        this.autoDiscover = customRecipe.autoDiscover;
         this.group = customRecipe.group;
         this.priority = customRecipe.priority;
         this.checkAllNBT = customRecipe.checkAllNBT;

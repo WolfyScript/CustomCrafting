@@ -83,4 +83,14 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
     public void setVisibleVanillaBook(boolean vanillaBook) {
         this.vanillaBook = vanillaBook;
     }
+
+    @Override
+    public boolean isAutoDiscover() {
+        return autoDiscover;
+    }
+
+    @Override
+    public void setAutoDiscover(boolean autoDiscover) {
+        this.autoDiscover = autoDiscover;
+    }
 }
