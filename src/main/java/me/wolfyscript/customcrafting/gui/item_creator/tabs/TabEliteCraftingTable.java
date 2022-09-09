@@ -60,24 +60,24 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
             new MultipleChoiceButton.Builder<>(creator, "elite_workbench.grid_size")
                     .stateFunction((cache, guiHandler, player, guiInventory, i) -> ((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).getGridSize() - 2)
                     .addState(state -> state.subKey("size_2").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(2);
-                        return true;
-                    }))
-                    .addState(state -> state.subKey("size_3").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                         ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(3);
                         return true;
                     }))
-                    .addState(state -> state.subKey("size_4").icon(PlayerHeadUtils.getViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    .addState(state -> state.subKey("size_3").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                         ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(4);
+                        return true;
+                    }))
+                    .addState(state -> state.subKey("size_4").icon(PlayerHeadUtils.getViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(5);
                         return true;
                     }))
                     // Deprecated states
                     .addState(state -> state.subKey("size_5").icon(PlayerHeadUtils.getViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(5);
+                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(6);
                         return true;
                     }))
                     .addState(state -> state.subKey("size_6").icon(PlayerHeadUtils.getViaURL("faff2eb498e5c6a04484f0c9f785b448479ab213df95ec91176a308a12add70")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(6);
+                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(2);
                         return true;
                     })).register();
         } else {
