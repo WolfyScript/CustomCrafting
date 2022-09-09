@@ -30,20 +30,20 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 public class CraftingWindow2 extends CraftingWindow {
 
     public CraftingWindow2(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "crafting_grid2", 27, customCrafting, 2);
+        super(cluster, "crafting_grid2", 18, customCrafting, 2);
     }
 
     @Override
     public void onUpdateSync(GuiUpdate<CCCache> event) {
         super.onUpdateSync(event);
 
-        event.setButton(9, EliteCraftingCluster.RECIPE_BOOK);
-        event.setButton(16, RESULT);
+        event.setButton(0, EliteCraftingCluster.RECIPE_BOOK);
+        event.setButton(7, RESULT);
     }
 
     @Override
     public int getGridX() {
-        return 2;
+        return 3;
     }
 
 }
