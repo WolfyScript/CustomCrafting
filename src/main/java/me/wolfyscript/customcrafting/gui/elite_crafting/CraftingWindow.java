@@ -33,6 +33,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
@@ -91,18 +92,20 @@ abstract class CraftingWindow extends CCWindow {
     public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
         Player player = guiHandler.getPlayer();
         CCCache cache = guiHandler.getCustomCache();
-        CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
-        if (cacheEliteCraftingTable.getContents() != null) {
-            for (ItemStack itemStack : cacheEliteCraftingTable.getContents()) {
-                if (itemStack != null && !itemStack.getType().equals(Material.AIR)) {
-                    player.getInventory().addItem(itemStack);
+        Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+            CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
+            if (cacheEliteCraftingTable.getContents() != null) {
+                for (ItemStack itemStack : cacheEliteCraftingTable.getContents()) {
+                    if (itemStack != null && !itemStack.getType().equals(Material.AIR)) {
+                        player.getInventory().addItem(itemStack);
+                    }
                 }
             }
-        }
-        cacheEliteCraftingTable.setCustomItemAndData(null, null);
-        cacheEliteCraftingTable.setResult(new ItemStack(Material.AIR));
-        cacheEliteCraftingTable.setContents(null);
-        cacheEliteCraftingTable.setCurrentGridSize((byte) 0);
+            cacheEliteCraftingTable.setCustomItemAndData(null, null);
+            cacheEliteCraftingTable.setResult(new ItemStack(Material.AIR));
+            cacheEliteCraftingTable.setContents(null);
+            cacheEliteCraftingTable.setCurrentGridSize((byte) 0);
+        }, 1);
         return false;
     }
 
