@@ -1539,40 +1539,55 @@
               ]
             },
             "grid_size": {
+              "size_2": {
+                "name": "<grey><b>Grid size:</b> 2<dark_grey>x</dark_grey>2 <dark_grey>[<green>Recommended</green>]</dark_grey></grey>",
+                "lore": [
+                  "<yellow>A 2x2 Crafting grid, for smaller recipes.</yellow>",
+                  "",
+                  "<grey>[<green>Click</green>] Switch to 3x3 crafting grid</grey>"
+                ]
+              },
               "size_3": {
                 "name": "<grey><b>Grid size:</b> 3<dark_grey>x</dark_grey>3 <dark_grey>[<green>Recommended</green>]</dark_grey></grey>",
                 "lore": [
-                  "<yellow>A 3x3 Crafting grid, for the normal crafting behaviour.</yellow>",
+                  "<yellow>A 3x3 Crafting grid.</yellow>",
+                  "<yellow>For the normal crafting behaviour.</yellow>",
                   "",
-                  "<grey>[<green>Click</green>] Toggle to 4x4 crafting grid</grey>"
+                  "<grey>[<green>Click</green>] Switch to 4x4 crafting grid</grey>"
                 ]
               },
               "size_4": {
                 "name": "<grey><b>Grid size:</b> <yellow>4</yellow><dark_grey>x</dark_grey><yellow>4</yellow></grey>",
                 "lore": [
-                  "<yellow>More space for crafting. Create advanced items</yellow>",
-                  "<yellow>that require more materials to create.</yellow>",
+                  "<yellow>More space for crafting.</yellow>",
+                  "<yellow>Create complex recipes with more items.</yellow>",
                   "",
-                  "<grey>[<green>Click</green>] Toggle to 5x5 crafting grid</grey>"
+                  "<grey>[<green>Click</green>] Switch to 5x5 crafting grid</grey>"
                 ]
               },
               "size_5": {
-                "name": "<grey><b>Grid size:</b> <gold>5</gold><dark_grey>x</dark_grey><gold>5 </gold><dark_grey>[<red><b>Deprecated</b></red>]</dark_grey></grey>",
+                "name": "<grey><b>Grid size:</b> <gold>5</gold><dark_grey>x</dark_grey><gold>5 </gold><dark_grey>[<red><b>Warning</b></red>]</dark_grey></grey>",
                 "lore": [
-                  "<yellow>Even more slots... to create more complex recipes</yellow>",
-                  "<red>This will most likely cause lag!</red>",
+                  "<yellow>Even more slots...</yellow>",
+                  "<yellow>to create more complex recipes.</yellow>",
                   "",
-                  "<grey>[<green>Click</green>] Toggle to 6x6 crafting grid</grey>"
+                  "<red>This will most likely cause lag!</red>",
+                  "<red>You should use the <yellow>Craft Delay</yellow> Condition!</red>",
+                  "",
+                  "<grey>[<green>Click</green>] Switch to 6x6 crafting grid</grey>"
                 ]
               },
               "size_6": {
                 "name": "<grey><b>Grid size:</b> <dark_red>6</dark_red><dark_grey>x</dark_grey><dark_red>6 </dark_red><dark_grey>[<red><b>Deprecated</b></red>]</dark_grey></grey>",
                 "lore": [
-                  "<yellow>A very big crafting grid to create very complex recipes.</yellow>",
-                  "<red>These recipes need more resources and </red>",
-                  "<red>will definitely result in lag if used too often in a short time!</red>",
+                  "<yellow>A very big crafting grid</yellow>",
+                  "<yellow>to create very complex recipes.</yellow>",
                   "",
-                  "<grey>[<green>Click</green>] Toggle to 3x3 crafting grid</grey>"
+                  "<red>Recipes need more resources and are going to</red>",
+                  "<red>result in lag if used too often in a short time!</red>",
+                  "<red>Make sure to use the <yellow>Craft Delay</yellow> Condition!</red>",
+                  "",
+                  "<grey>[<green>Click</green>] Switch to 2x2 crafting grid</grey>"
                 ]
               }
             },

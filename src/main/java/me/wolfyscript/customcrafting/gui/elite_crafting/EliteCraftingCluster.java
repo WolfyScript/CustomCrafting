@@ -43,6 +43,7 @@ public class EliteCraftingCluster extends CCCluster {
 
     @Override
     public void onInit() {
+        registerGuiWindow(new CraftingWindow2(this, customCrafting));
         registerGuiWindow(new CraftingWindow3(this, customCrafting));
         registerGuiWindow(new CraftingWindow4(this, customCrafting));
         registerGuiWindow(new CraftingWindow5(this, customCrafting));
