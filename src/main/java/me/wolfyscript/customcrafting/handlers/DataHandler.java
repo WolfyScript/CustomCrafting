@@ -45,6 +45,7 @@ public class DataHandler implements Listener {
 
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     public static final String JSON_OBJ_PATH = DATA_FOLDER.getPath() + "/%s/%s/%s.json";
+    public static final String HOCON_OBJ_PATH = DATA_FOLDER.getPath() + "/%s/%s/%s.conf";
     private final CustomCrafting customCrafting;
     private List<Recipe> minecraftRecipes = new ArrayList<>();
 

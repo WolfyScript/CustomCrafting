@@ -28,6 +28,7 @@ import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
@@ -53,6 +54,10 @@ public class ItemLoader {
     private ItemLoader() {
     }
 
+    private static ObjectMapper getObjectMapper() {
+        return CustomCrafting.inst().getApi().getJacksonMapperUtil().getGlobalMapper();
+    }
+
     /**
      * Loads the {@link Ingredient} from the specified node.
      *
@@ -70,7 +75,7 @@ public class ItemLoader {
                 }
             });
         } else {
-            ingredient = JacksonUtil.getObjectMapper().convertValue(node, Ingredient.class);
+            ingredient = getObjectMapper().convertValue(node, Ingredient.class);
         }
         if (ingredient != null) {
             ingredient.buildChoices();
@@ -115,7 +120,7 @@ public class ItemLoader {
             injects.addValue("customcrafting", customCrafting);
             Result desResult = null;
             try {
-                desResult = JacksonUtil.getObjectMapper().reader(injects).readValue(node, Result.class);
+                desResult = getObjectMapper().reader(injects).readValue(node, Result.class);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -137,7 +142,7 @@ public class ItemLoader {
      */
     @Nullable
     private static APIReference loadAndConvertCorruptReference(JsonNode itemNode) {
-        APIReference reference = JacksonUtil.getObjectMapper().convertValue(itemNode, APIReference.class);
+        APIReference reference = getObjectMapper().convertValue(itemNode, APIReference.class);
         if (CustomCrafting.inst().getConfigHandler().getConfig().getDataVersion() < CustomCrafting.CONFIG_VERSION && reference != null) {
             if (reference instanceof VanillaRef) {
                 //Check for possible APIReference that could be used!
@@ -167,7 +172,7 @@ public class ItemLoader {
     }
 
     public static CustomItem load(JsonNode node) {
-        return load(JacksonUtil.getObjectMapper().convertValue(node, APIReference.class));
+        return load(getObjectMapper().convertValue(node, APIReference.class));
     }
 
     public static CustomItem load(APIReference reference) {

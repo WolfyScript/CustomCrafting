@@ -22,8 +22,10 @@
 
 package me.wolfyscript.customcrafting.utils;
 
+import com.wolfyscript.jackson.dataformat.hocon.HoconMapper;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
@@ -48,19 +50,21 @@ public class UpdateChecker {
     private boolean outdated;
     private long lastCheck;
     private WUVersion version;
+    private final ObjectMapper objectMapper;
 
     public UpdateChecker(CustomCrafting plugin, int id) {
         this.outdated = false;
         this.id = id;
         this.plugin = plugin;
         this.api = plugin.getApi();
+        this.objectMapper = new HoconMapper();
     }
 
     protected void check(@Nullable Player player) {
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(REQUEST_URL + id).openConnection();
             con.setReadTimeout(2000);
-            JsonNode node = JacksonUtil.getObjectMapper().readTree(new BufferedReader(new InputStreamReader(con.getInputStream())));
+            JsonNode node = objectMapper.readTree(new BufferedReader(new InputStreamReader(con.getInputStream())));
             version = WUVersion.parse(node.path("current_version").asText(plugin.getVersion().getVersion()));
             outdated = version.isAfter(plugin.getVersion());
             lastCheck = System.currentTimeMillis();

@@ -28,6 +28,7 @@ import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -84,13 +85,24 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     /**
-     * Gets the file at the specific path from the {@link NamespacedKey} and sub-folder.
+     * Gets the file at the specific path from the {@link NamespacedKey} and sub-folder with the .conf extension.
      *
      * @param namespacedKey The NamespacedKey for the path.
      * @param typeFolder    The sub-folder of the path. Like {@link #ITEMS_FOLDER} or {@link #RECIPES_FOLDER}.
      * @return The File at the specific path.
      */
     private File getFileAt(NamespacedKey namespacedKey, String typeFolder) {
+        return new File(DataHandler.HOCON_OBJ_PATH.formatted(NamespacedKeyUtils.getKeyRoot(namespacedKey), typeFolder, NamespacedKeyUtils.getRelativeKeyObjPath(namespacedKey)));
+    }
+
+    /**
+     * Gets the file at the specific path from the {@link NamespacedKey} and sub-folder with the .json extension.
+     *
+     * @param namespacedKey The NamespacedKey for the path.
+     * @param typeFolder    The sub-folder of the path. Like {@link #ITEMS_FOLDER} or {@link #RECIPES_FOLDER}.
+     * @return The File at the specific path.
+     */
+    private File getFileAtJson(NamespacedKey namespacedKey, String typeFolder) {
         return new File(DataHandler.JSON_OBJ_PATH.formatted(NamespacedKeyUtils.getKeyRoot(namespacedKey), typeFolder, NamespacedKeyUtils.getRelativeKeyObjPath(namespacedKey)));
     }
 
@@ -138,10 +150,16 @@ public class LocalStorageLoader extends ResourceLoader {
     @Override
     public boolean save(CustomRecipe<?> recipe) {
         File file = getFileAt(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        File jsonFile = getFileAtJson(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        if (jsonFile.exists()) { // In case there is already an old json file let's rename it.
+            if (!jsonFile.renameTo(file)) {
+                return false;
+            }
+        }
         if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
             try {
                 if (file.isFile() || file.createNewFile()) {
-                    JacksonUtil.getObjectWriter(customCrafting.getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, recipe);
+                    customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(customCrafting.getConfigHandler().getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null).writeValue(file, recipe);
                     return true;
                 }
             } catch (IOException e) {
@@ -157,10 +175,16 @@ public class LocalStorageLoader extends ResourceLoader {
             var key = item.getNamespacedKey();
             if (key != null) {
                 var file = getFileAt(key, ITEMS_FOLDER);
+                File jsonFile = getFileAtJson(key, ITEMS_FOLDER);
+                if (jsonFile.exists()) { // In case there is already an old json file let's rename it.
+                    if (!jsonFile.renameTo(file)) {
+                        return false;
+                    }
+                }
                 if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
                     try {
                         if (file.exists() || file.createNewFile()) {
-                            JacksonUtil.getObjectWriter(customCrafting.getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, item);
+                            customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(customCrafting.getConfigHandler().getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null).writeValue(file, item);
                             return true;
                         }
                     } catch (IOException e) {
@@ -174,8 +198,21 @@ public class LocalStorageLoader extends ResourceLoader {
 
     @Override
     public boolean delete(CustomRecipe<?> recipe) throws IOException {
-        File file = getFileAt(recipe.getNamespacedKey(), recipe.getRecipeType().getId());
-        Files.delete(file.toPath());
+        // Deletes the recipe file that is saved under the recipe type specific folder
+        File legacyFile = getFileAt(recipe.getNamespacedKey(), recipe.getRecipeType().getId());
+        if (legacyFile.exists()) {
+            Files.delete(legacyFile.toPath());
+        }
+
+        // Deletes both the HOCON and JSON file
+        File hoconFile = getFileAt(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        if (hoconFile.exists()) {
+            Files.delete(hoconFile.toPath());
+        }
+        File jsonFile = getFileAtJson(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        if (jsonFile.exists()) {
+            Files.delete(jsonFile.toPath());
+        }
         return true;
     }
 
@@ -183,8 +220,15 @@ public class LocalStorageLoader extends ResourceLoader {
     public boolean delete(CustomItem item) throws IOException {
         var key = item.getNamespacedKey();
         if (key != null) {
-            var file = getFileAt(key, ITEMS_FOLDER);
-            Files.delete(file.toPath());
+            // Deletes both the HOCON and JSON file
+            var hoconFile = getFileAt(key, ITEMS_FOLDER);
+            if (hoconFile.exists()) {
+                Files.delete(hoconFile.toPath());
+            }
+            var jsonFile = getFileAt(key, ITEMS_FOLDER);
+            if (jsonFile.exists()) {
+                Files.delete(jsonFile.toPath());
+            }
             return true;
         }
         return false;

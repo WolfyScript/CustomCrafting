@@ -25,9 +25,9 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,18 +63,23 @@ public class ConfigHandler {
         loadLang();
         loadRecipeBookConfig();
         renameOldRecipesFolder();
-        loadDefaults();
+        try {
+            loadDefaults();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void loadRecipeBookConfig() {
-        var recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.json");
-        if (!recipeBookFile.exists()) {
-            customCrafting.saveResource("recipe_book.json", true);
+        var recipeBookFileJson = new File(customCrafting.getDataFolder(), "recipe_book.json");
+        var recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.conf");
+        if (!recipeBookFileJson.exists() && !recipeBookFile.exists()) {
+            customCrafting.saveResource("recipe_book.conf", true);
         }
         try {
-            this.recipeBookConfig = JacksonUtil.getObjectMapper().readValue(recipeBookFile, RecipeBookConfig.class);
+            this.recipeBookConfig = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readValue(recipeBookFile.exists() ? recipeBookFile : recipeBookFileJson, RecipeBookConfig.class);
         } catch (IOException e) {
-            customCrafting.getLogger().severe("Failed to load recipe_book.json");
+            customCrafting.getLogger().severe("Failed to load recipe_book.conf");
             e.printStackTrace();
             this.recipeBookConfig = new RecipeBookConfig();
         }
@@ -89,16 +94,36 @@ public class ConfigHandler {
         }
     }
 
-    public void loadDefaults() {
+    public void loadDefaults() throws IOException {
         if (mainConfig.resetRecipeBook()) {
-            customCrafting.saveResource("data/customcrafting/items/recipe_book.json", true);
-            customCrafting.saveResource("data/customcrafting/recipes/recipe_book.json", true);
+            saveDefault("recipe_book");
         }
         if (mainConfig.resetAdvancedWorkbench()) {
-            customCrafting.saveResource("data/customcrafting/items/advanced_crafting_table.json", true);
-            customCrafting.saveResource("data/customcrafting/recipes/advanced_crafting_table.json", true);
+            saveDefault("advanced_crafting_table");
         }
     }
+
+    private void saveDefault(String file) throws IOException {
+        String itemPath = "data/customcrafting/items/";
+        String recipePath = "data/customcrafting/recipes/";
+
+        File jsonFileItem = new File(customCrafting.getDataFolder(), itemPath + file + ".json");
+        if (jsonFileItem.exists()) {
+            if (!jsonFileItem.renameTo(new File(customCrafting.getDataFolder(), itemPath + file + ".conf"))) {
+                Files.delete(jsonFileItem.toPath());
+            }
+        }
+        File jsonFileRecipe = new File(customCrafting.getDataFolder(), recipePath + file + ".json");
+        if (jsonFileRecipe.exists()) {
+            if (!jsonFileRecipe.renameTo(new File(customCrafting.getDataFolder(), recipePath + file + ".conf"))) {
+                Files.delete(jsonFileRecipe.toPath());
+            }
+        }
+
+        customCrafting.saveResource(itemPath + file + ".conf", true);
+        customCrafting.saveResource(recipePath + file + ".conf", true);
+    }
+
 
     public void loadLang() {
         var chosenLang = mainConfig.getString("language");
@@ -121,7 +146,7 @@ public class ConfigHandler {
 
     public void save() throws IOException {
         if (this.recipeBookConfig != null) {
-            JacksonUtil.getObjectWriter(getConfig().isPrettyPrinting()).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.json"), this.recipeBookConfig);
+            customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.conf"), this.recipeBookConfig);
         }
         getConfig().save();
     }

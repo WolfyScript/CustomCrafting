@@ -27,9 +27,9 @@ import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.DeserializationContext;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -127,7 +127,7 @@ public class CCPlayerData extends CustomPlayerData {
         totalCrafts = node.path("total_crafts").asInt(0);
         advancedCrafts = node.path("advanced_crafts").asInt(0);
         normalCrafts = node.path("normal_crafts").asInt(0);
-        crafts = JacksonUtil.getObjectMapper().convertValue(node.path("crafts"), new TypeReference<>() {});
+        crafts = WolfyUtilCore.getInstance().getWolfyUtils().getJacksonMapperUtil().getGlobalMapper().convertValue(node.path("crafts"), new TypeReference<>() {});
     }
 
     @Override

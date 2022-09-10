@@ -116,8 +116,8 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
         this.type = RecipeType.valueOfRecipe(this);
         this.namespacedKey = Objects.requireNonNull(namespacedKey, ERROR_MSG_KEY);
-        this.mapper = JacksonUtil.getObjectMapper();
         this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection
+        this.mapper = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper();
         this.api = this.customCrafting.getApi();
         //Get fields from JsonNode
         this.group = node.path(KEY_GROUP).asText("");
@@ -145,8 +145,8 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.type = type == null ? RecipeType.valueOfRecipe(this) : type;
         Preconditions.checkArgument(this.type != null, "Error constructing Recipe Object \"" + getClass().getName() + "\": Missing RecipeType!");
         this.namespacedKey = Objects.requireNonNull(key, ERROR_MSG_KEY);
-        this.mapper = JacksonUtil.getObjectMapper();
         this.customCrafting = customCrafting; //TODO: Dependency Injection
+        this.mapper = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper();
         this.api = customCrafting.getApi();
         this.result = new Result();
 
@@ -167,8 +167,8 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
      */
     protected CustomRecipe(CustomRecipe<C> customRecipe) {
         this.type = customRecipe.type;
-        this.mapper = JacksonUtil.getObjectMapper();
         this.customCrafting = customRecipe.customCrafting;
+        this.mapper = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper();
         this.api = customCrafting.getApi();
         this.namespacedKey = Objects.requireNonNull(customRecipe.namespacedKey, ERROR_MSG_KEY);
 
