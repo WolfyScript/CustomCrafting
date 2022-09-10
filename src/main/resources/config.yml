@@ -91,6 +91,22 @@ recipe_book:
   reset: true
   # If closed and opened again, it'll open up the recipe and menu the player last left on.
   keep_last_open: true
+  # The title of the single recipe menu
+  recipe_type_titles:
+    crafting_shaped: "<translate:recipe.type.crafting.crafting_shaped>"
+    crafting_shapeless: "<translate:recipe.type.crafting.crafting_shapeless>"
+    elite_crafting_shaped: "<translate:recipe.type.crafting.elite_crafting_shaped>"
+    elite_crafting_shapeless: "<translate:recipe.type.crafting.crafting_shaped>"
+    furnace: "<translate:recipe.type.cooking.furnace>"
+    blast_furnace: "<translate:recipe.type.cooking.blast_furnace>"
+    smoker: "<translate:recipe.type.cooking.smoker>"
+    campfire: "<translate:recipe.type.cooking.campfire>"
+    smithing: "<translate:recipe.type.smithing>"
+    anvil: "<translate:recipe.type.anvil>"
+    cauldron: "<translate:recipe.type.cauldron>"
+    stonecutter: "<translate:recipe.type.stonecutter>"
+    grindstone: "<translate:recipe.type.grindstone>"
+    brewing_stand: "<translate:recipe.type.brewing_stand>"
 
 custom_items:
   # Use this option if you have saved CustomItems and your players got them in their inventory. Each time a Player joins the server it will try to update the CustomItems.
