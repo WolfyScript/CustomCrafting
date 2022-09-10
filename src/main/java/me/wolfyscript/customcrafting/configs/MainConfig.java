@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.configs;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.config.YamlConfiguration;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -40,6 +41,10 @@ public class MainConfig extends YamlConfiguration {
 
     @Override
     public void init() {
+    }
+
+    public String getRecipeBookTypeName(RecipeType<?> recipeType) {
+        return getString("recipe_book.recipe_type_titles." + recipeType.getId());
     }
 
     public boolean isGUIDrawBackground() {

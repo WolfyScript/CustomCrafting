@@ -22,21 +22,28 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.Tag;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 
 import java.util.Optional;
+import org.jetbrains.annotations.Nullable;
 
 public class MenuSingleRecipe extends CCWindow {
 
@@ -49,6 +56,22 @@ public class MenuSingleRecipe extends CCWindow {
     @Override
     public void onInit() {
 
+    }
+    @Override
+    public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
+        Optional<CustomRecipe<?>> recipeOptional = guiHandler.getCustomCache().getCacheRecipeView().getRecipe();
+        if (recipeOptional.isPresent()) {
+            CustomRecipe<?> customRecipe = recipeOptional.get();
+            final TagResolver papiResolver = TagResolverUtil.papi(player);
+            final TagResolver langResolver = TagResolver.resolver("translate", (args, context) -> {
+                String text = args.popOr("The <translate> tag requires exactly one argument! The path to the language entry!").value();
+                return Tag.selfClosingInserting(getChat().translated(text, papiResolver));
+            });
+            String text = customCrafting.getConfigHandler().getConfig().getRecipeBookTypeName(customRecipe.getRecipeType());
+            TagResolver recipeTypeTitle = Placeholder.component("recipe_type_title", getChat().getMiniMessage().deserialize(text, papiResolver, langResolver));
+            return wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", recipeTypeTitle, TagResolverUtil.papi(player));
+        }
+        return super.onUpdateTitle(player, inventory, guiHandler);
     }
 
     @Override

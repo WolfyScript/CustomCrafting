@@ -65,6 +65,30 @@
       }
     }
   },
+  "recipe": {
+    "type": {
+      "crafting" : {
+        "crafting_shaped": "Shaped Crafting Recipe",
+        "crafting_shapeless": "Shapeless Crafting Recipe"
+      },
+      "elite_crafting" : {
+        "elite_crafting_shaped": "Shaped Elite Crafting Recipe",
+        "elite_crafting_shapeless": "Shapeless Elite Crafting Recipe"
+      },
+      "cooking" : {
+        "furnace": "Smelting Recipe",
+        "blast_furnace": "Blasting Recipe",
+        "smoker": "Smoking Recipe",
+        "campfire": "Campfire Recipe"
+      },
+      "brewing_stand" : "Brewing Recipe",
+      "anvil" : "Anvil Recipe",
+      "stonecutter" : "Stonecutter Recipe",
+      "grindstone" : "Grindstone Recipe",
+      "smithing" : "Smithing Recipe",
+      "cauldron" : "Cauldron Recipe"
+    }
+  },
   "msg": {
     "auto_save": {
       "start": "   Auto save data   ",
@@ -3251,7 +3275,7 @@
         }
       },
       "recipe_book": {
-        "gui_name": "<dark_grey><b>Recipe Book</b></dark_grey>",
+        "gui_name": "<recipe_type_title>",
         "items": {
           "next_recipe": {
             "name": "<grey><b>» Next</b></grey>",
@@ -3276,7 +3300,7 @@
     },
     "recipe_view": {
       "single_recipe": {
-        "gui_name": "<dark_grey><b>Recipe Book</b></dark_grey>"
+        "gui_name": "<recipe_type_title>"
       }
     },
     "recipe_book_editor": {
