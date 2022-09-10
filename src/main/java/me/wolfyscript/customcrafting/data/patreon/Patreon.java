@@ -46,11 +46,9 @@ public class Patreon {
         addPatron(new Patron("PwassonDoDouce", Tier.WOLFRAM));
         addPatron(new Patron("Mr_Mint_", Tier.WOLFRAM));
         addPatron(new Patron("Mithran", Tier.WOLFRAM));
-        addPatron(new Patron("Jaden Bautista", Tier.WOLFRAM));
-        addPatron(new Patron("Kyle Kangas", Tier.WOLFRAM));
-        addPatron(new Patron("Jacob Folkerts", Tier.WOLFRAM));
         addPatron(new Patron("Isabel Maskrey", Tier.WOLFRAM));
-        addPatron(new Patron("Amy Randall", Tier.WOLFRAM));
+        addPatron(new Patron("nocando", "777d6910-a1a8-453e-964e-4de7286e1fcd", Tier.WOLFRAM));
+        addPatron(new Patron("MoOrizzle", Tier.WOLFRAM));
     }
 
     public void printPatreonCredits() {
