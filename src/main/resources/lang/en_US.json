@@ -3260,7 +3260,7 @@
         }
       },
       "recipe_book": {
-        "gui_name": "<dark_grey><b><recipe_type_title></b></dark_grey>",
+        "gui_name": "<recipe_type_title>",
         "items": {
           "next_recipe": {
             "name": "<grey><b>» Next</b></grey>",
@@ -3285,7 +3285,7 @@
     },
     "recipe_view": {
       "single_recipe": {
-        "gui_name": "<dark_grey><b>Recipe Book</b></dark_grey>"
+        "gui_name": "<recipe_type_title>"
       }
     },
     "recipe_book_editor": {
