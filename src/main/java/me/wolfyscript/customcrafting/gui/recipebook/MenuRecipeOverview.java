@@ -44,6 +44,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.util.reflection.InventoryUpdate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -171,6 +172,7 @@ public class MenuRecipeOverview extends CCWindow {
                     //A new prepare can be queued by using book.setPrepareRecipe(true)
                     recipeBookCache.applyRecipeToButtons(event.getGuiHandler(), customRecipe);
                     recipeBookCache.setPrepareRecipe(false);
+                    InventoryUpdate.updateInventory(wolfyUtilities.getCore(), player, onUpdateTitle(player, event.getInventory(), event.getGuiHandler()));
                 }
                 customRecipe.renderMenu(this, event);
                 boolean elite = RecipeType.Container.ELITE_CRAFTING.isInstance(customRecipe);
