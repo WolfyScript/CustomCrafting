@@ -3673,6 +3673,10 @@
             "name": "<gold>Signal Fire</gold>"
           }
         }
+      },
+      "result": {
+        "gui_name": "<dark_grey>Cauldron [Done]</dark_grey>",
+        "items": {}
       }
     }
   }

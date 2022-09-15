@@ -36,6 +36,7 @@ public class CauldronWorkstationCluster extends CCCluster {
 
     public static final String KEY = "cauldron";
     public static final NamespacedKey CAULDRON_MAIN = new NamespacedKey(KEY, "cauldron");
+    public static final NamespacedKey CAULDRON_RESULT = new NamespacedKey(KEY, "result");
 
     public CauldronWorkstationCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
@@ -46,6 +47,7 @@ public class CauldronWorkstationCluster extends CCCluster {
         setEntry(CAULDRON_MAIN);
         
         registerGuiWindow(new CauldronWorkstationMenu(this, customCrafting));
+        registerGuiWindow(new CauldronResultMenu(this, customCrafting));
 
         registerButton(new ActionButton<>(CAULDRON_MAIN.getKey(), Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             ButtonContainerIngredient.resetButtons(guiHandler);
