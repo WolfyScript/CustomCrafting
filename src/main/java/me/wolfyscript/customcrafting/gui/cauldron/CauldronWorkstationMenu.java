@@ -33,6 +33,7 @@ import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -49,6 +50,9 @@ public class CauldronWorkstationMenu extends CCWindow {
 
     protected static final int INGREDIENT_AMOUNT = 6;
     protected static final String RESULT = "result_slot";
+
+    private static final String INDICATOR_LAVA = "indicator.lava";
+    private static final String INDICATOR_WATER = "indicator.water";
 
     protected CauldronWorkstationMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, CauldronWorkstationCluster.CAULDRON_MAIN.getKey(), 54, customCrafting);
@@ -120,6 +124,11 @@ public class CauldronWorkstationMenu extends CCWindow {
         getButtonBuilder().dummy("start_disabled").state(state -> state.icon(Material.GRAY_CONCRETE)).register();
         getButtonBuilder().dummy("cauldron_icon").state(s -> s.icon(Material.CAULDRON)).register();
         getButtonBuilder().dummy("signal_fire").state(s -> s.icon(Material.HAY_BLOCK)).register();
+
+        getButtonBuilder().dummy(INDICATOR_LAVA).state(s -> s.icon(Material.ORANGE_STAINED_GLASS_PANE)
+                .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
+        getButtonBuilder().dummy(INDICATOR_WATER).state(s -> s.icon(Material.BLUE_STAINED_GLASS_PANE)
+                .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
     }
 
     @Override
@@ -170,10 +179,10 @@ public class CauldronWorkstationMenu extends CCWindow {
                     }
                     event.setButton(39, "cauldron_icon");
 
-                    ItemStack levelItem = new ItemStack(block.getType().equals(Material.LAVA_CAULDRON) ? Material.ORANGE_STAINED_GLASS_PANE : Material.BLUE_STAINED_GLASS_PANE);
+                    String levelItem = block.getType().equals(Material.LAVA_CAULDRON) ? INDICATOR_LAVA : INDICATOR_WATER;
                     for (int i = 0; i < 3; i++) {
                         if (i < status.getLevel() || status.hasLava()) {
-                            event.setItem(45 - i * 9, levelItem);
+                            event.setButton(45 - i * 9, levelItem);
                         } else {
                             event.setButton(45 - i * 9, ClusterMain.GLASS_WHITE);
                         }
