@@ -129,8 +129,10 @@ public class CauldronWorkstationMenu extends CCWindow {
 
     @Override
     public void onUpdateSync(GuiUpdate<CCCache> event) {
-        for (int i = 0; i < getSize(); i++) {
-            event.setButton(i, ClusterMain.GLASS_GRAY);
+        if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
+            for (int i = 0; i < getSize(); i++) {
+                event.setButton(i, ClusterMain.GLASS_GRAY);
+            }
         }
 
         CCCache cache = event.getGuiHandler().getCustomCache();
