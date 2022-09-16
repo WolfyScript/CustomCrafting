@@ -234,7 +234,7 @@ public class CauldronBlockData extends CustomBlockData {
 
     @Override
     public void onLoad() {
-        if (ticker == null || ticker.isCancelled()) {
+        if ((ticker == null || ticker.isCancelled()) && customCrafting.isEnabled()) {
             ticker = Bukkit.getScheduler().runTaskTimer(customCrafting, this::tick, 1, 1);
         }
     }
