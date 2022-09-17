@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.cauldron;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import java.util.Map;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -33,18 +34,25 @@ import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.Tag;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import org.bukkit.Instrument;
 import org.bukkit.Material;
+import org.bukkit.Note;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class CauldronWorkstationMenu extends CCWindow {
 
@@ -76,6 +84,7 @@ public class CauldronWorkstationMenu extends CCWindow {
                                     if (!preCookEvent.isCancelled()) {
                                         //Cache event results
                                         cacheCauldron.setPreCookEvent(preCookEvent);
+                                        player.playNote(player.getLocation(), Instrument.BELL, Note.sharp(2, Note.Tone.F));
                                     }
                                     return;
                                 }
@@ -110,6 +119,20 @@ public class CauldronWorkstationMenu extends CCWindow {
                             cauldronBlockData.initNewRecipe(cauldronWorkstation);
                             cauldronWorkstation.setPreCookEvent(null);
                             if (cauldronBlockData.getRecipe().isPresent()) {
+                                cauldronBlockData.getCauldronStatus().ifPresent(status -> {
+                                    if (status.hasWater()) {
+                                        player.playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 0.1f, 1.75f);
+                                        player.playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 0.1f, 2.4f);
+                                        player.playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 0.1f, 1.2f);
+                                        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_SPLASH, 0.1f, 0.5f);
+                                    } else if (status.hasLava()) {
+                                        player.playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1f, 1f);
+                                    } else {
+                                        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.1f, 0.25f);
+                                        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.2f, 0.5f);
+                                        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.6f, 1f);
+                                    }
+                                });
                                 guiHandler.close();
                             }
                         }
@@ -132,6 +155,21 @@ public class CauldronWorkstationMenu extends CCWindow {
     }
 
     @Override
+    public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
+        CacheCauldronWorkstation cacheCauldronWorkstation = guiHandler.getCustomCache().getCauldronWorkstation();
+        Optional<CauldronBlockData> optionalCauldronBlockData = cacheCauldronWorkstation.getBlockData();
+        String menu = "main_menu";
+        if (optionalCauldronBlockData.isPresent() && !optionalCauldronBlockData.get().isResultEmpty()) {
+            menu = "result_menu";
+        }
+        String title = customCrafting.getConfigHandler().getConfig().getString("workstation.cauldron.gui." + menu + ".title", "<translate:inventories.cauldron.cauldron.default_title>");
+        final TagResolver papiResolver = TagResolverUtil.papi(player);
+        final TagResolver langResolver = TagResolver.resolver("translate", (args, context) -> Tag.selfClosingInserting(getChat().translated(args.popOr("The <translate> tag requires exactly one argument! The path to the language entry!").value(), papiResolver)));
+        TagResolver recipeTypeTitle = Placeholder.component("title", getChat().getMiniMessage().deserialize(title, papiResolver, langResolver));
+        return wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", recipeTypeTitle, TagResolverUtil.papi(player));
+    }
+
+    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         //Prevent super class from rendering
     }
@@ -151,7 +189,10 @@ public class CauldronWorkstationMenu extends CCWindow {
         if (optionalCauldronBlockData.isPresent()) {
             CauldronBlockData blockData = optionalCauldronBlockData.get();
             if (!blockData.isResultEmpty()) {
-                event.getGuiHandler().reloadWindow(CauldronWorkstationCluster.CAULDRON_RESULT);
+                event.setButton(21, "result_0");
+                event.setButton(22, "result_1");
+                event.setButton(30, "result_2");
+                event.setButton(31, "result_3");
                 return;
             }
 

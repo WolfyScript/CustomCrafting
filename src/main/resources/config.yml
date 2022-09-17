@@ -108,6 +108,18 @@ recipe_book:
     grindstone: "<translate:recipe.type.grindstone>"
     brewing_stand: "<translate:recipe.type.brewing_stand>"
 
+workstation:
+  cauldron:
+    sound:
+      valid_recipe:
+      start:
+      finished:
+    gui:
+      main_menu:
+        title: "<translate:inventories.cauldron.cauldron.default_title>"
+      result_menu:
+        title: "<translate:inventories.cauldron.cauldron.default_title>"
+
 custom_items:
   # Use this option if you have saved CustomItems and your players got them in their inventory. Each time a Player joins the server it will try to update the CustomItems.
   update: true

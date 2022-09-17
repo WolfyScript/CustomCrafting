@@ -3643,7 +3643,8 @@
     },
     "cauldron": {
       "cauldron": {
-        "gui_name": "<dark_grey>Cauldron</dark_grey>",
+        "default_title": "<dark_grey>Cauldron</dark_grey>",
+        "gui_name": "<title>",
         "items": {
           "start": {
             "enabled": {
@@ -3673,10 +3674,6 @@
             "name": "<gold>Signal Fire</gold>"
           }
         }
-      },
-      "result": {
-        "gui_name": "<dark_grey>Cauldron [Done]</dark_grey>",
-        "items": {}
       }
     }
   }
