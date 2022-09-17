@@ -32,7 +32,6 @@ import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
@@ -98,7 +97,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     @JsonIgnore
     protected final ObjectMapper mapper;
 
-    @JsonAlias("checkNBT")
+    @JsonIgnore
     protected boolean checkAllNBT;
     protected boolean hidden;
     protected boolean vanillaBook;
@@ -218,10 +217,12 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.checkAllNBT = exactMeta;
     }
 
+    @JsonSetter("checkNBT")
     public void setCheckNBT(boolean checkAllNBT) {
         this.checkAllNBT = checkAllNBT;
     }
 
+    @JsonGetter("checkNBT")
     public boolean isCheckNBT() {
         return checkAllNBT;
     }
