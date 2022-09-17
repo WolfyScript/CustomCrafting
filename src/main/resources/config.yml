@@ -73,12 +73,6 @@ data:
   bukkit_version: 0
   # Do not change this number! It is used to update configs of recipes and items to new formats!
   version: 0
-  auto_save:
-    # Interval in minutes to save data.
-    # Currently, used to save the data of the placed cauldrons with campfires underneath and the contained items and recipes.
-    interval: 30
-    # Save message that is printed into the console.
-    message: true
 
 crafting_table:
   # If the advanced crafting table is enabled or not.

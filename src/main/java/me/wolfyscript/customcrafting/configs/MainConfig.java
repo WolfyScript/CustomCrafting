@@ -119,14 +119,6 @@ public class MainConfig extends YamlConfiguration {
         set("crafting_table.reset", reset);
     }
 
-    public long getAutosaveInterval() {
-        return getLong("data.auto_save.interval");
-    }
-
-    public boolean isAutoSaveMessage() {
-        return getBoolean("data.auto_save.message");
-    }
-
     public boolean isPrintingStacktrace() {
         return getBoolean("data.print_stacktrace");
     }
