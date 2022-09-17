@@ -63,17 +63,17 @@ public class DataHandler implements Listener {
         this.customCrafting = customCrafting;
         this.configHandler = customCrafting.getConfigHandler();
 
-        if (configHandler.getConfig().isDatabaseEnabled()) {
+        if (configHandler.getConfig().getDatabaseSettings().isEnabled()) {
             setSaveDestination(SaveDestination.DATABASE);
             //Currently, there is only support for SQL. MongoDB is planned!
             this.databaseLoader = new SQLDatabaseLoader(customCrafting);
             this.databaseLoader.setPriority(2);
 
-            MainConfig config = configHandler.getConfig();
-            if (config.isLocalStorageEnabled()) {
+            MainConfig.LocalStorageSettings localStorageSettings = configHandler.getConfig().getLocalStorageSettings();
+            if (localStorageSettings.isEnabled()) {
                 this.localStorageLoader = new LocalStorageLoader(customCrafting);
-                this.localStorageLoader.setPriority(config.isLocalStorageBeforeDatabase() ? 3 : 1);
-                if (config.isDataOverride()) {
+                this.localStorageLoader.setPriority(localStorageSettings.isBeforeDatabase() ? 3 : 1);
+                if (localStorageSettings.isOverride()) {
                     if (localStorageLoader.getPriority() > databaseLoader.getPriority()) {
                         databaseLoader.setReplaceData(true);
                     } else {

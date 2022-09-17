@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -55,7 +56,8 @@ public class SQLDatabaseLoader extends DatabaseLoader {
 
     public SQLDatabaseLoader(CustomCrafting customCrafting) {
         super(customCrafting, new NamespacedKey(customCrafting, "database_loader"));
-        this.dataBase = new SQLDataBase(api, config.getDatabaseHost(), config.getDatabaseSchema(), config.getDatabaseUsername(), config.getDatabasePassword(), config.getDatabasePort());
+        MainConfig.DatabaseSettings settings = config.getDatabaseSettings();
+        this.dataBase = new SQLDataBase(api, settings.getHost(), settings.getSchema(), settings.getUsername(), settings.getPassword(), settings.getPort());
         init();
         this.loaded = new LinkedList<>();
         this.skippedError = new LinkedList<>();

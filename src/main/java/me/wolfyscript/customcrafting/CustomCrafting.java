@@ -29,6 +29,7 @@ import java.io.IOException;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.compatibility.PluginCompatibility;
+import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.custom_data.CauldronData;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
@@ -135,6 +136,7 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -235,6 +237,9 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("Environment   : " + WolfyUtilities.getENVIRONMENT());
 
         api.getCore().applyWolfyUtilsJsonMapperModules(api.getJacksonMapperUtil().getGlobalMapper());
+
+        ConfigurationSerialization.registerClass(MainConfig.DatabaseSettings.class);
+        ConfigurationSerialization.registerClass(MainConfig.LocalStorageSettings.class);
 
         getLogger().info("Registering CustomItem Data");
         var customItemData = api.getRegistries().getCustomItemData();
