@@ -22,16 +22,23 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import org.jetbrains.annotations.Nullable;
 
 @JsonPropertyOrder({"id", "icon", "name", "description", "auto"})
 public class Category extends CategorySettings {
@@ -70,11 +77,13 @@ public class Category extends CategorySettings {
             return recipe == null ? null : new RecipeContainer(customCrafting, recipe);
         }).filter(Objects::nonNull).toList());
         containers.addAll(recipeContainers.stream().distinct().sorted().toList());
+
         //Index filters for quick filtering on runtime.
         filters.forEach(this::indexFilters);
     }
 
     public void indexFilters(CategoryFilter filter) {
+        Preconditions.checkNotNull(filter, "Filter cannot be null! Cannot filter containers with null Filter!");
         indexedFilters.put(filter, containers.stream().filter(filter::filter).toList());
     }
 
@@ -89,8 +98,15 @@ public class Category extends CategorySettings {
         return getContainers(filter).stream().filter(container -> container.canView(player)).toList();
     }
 
-    private List<RecipeContainer> getContainers(CategoryFilter filter) {
-        return indexedFilters.getOrDefault(filter, new ArrayList<>());
+    /**
+     * Returns the containers that are filtered by the specified filter.<br>
+     * In case no filter is provided or the category hasn't been filtered, then it returns the whole unfiltered list of recipe containers.
+     *
+     * @param filter The filter to get the containers for; or null to get an unfiltered list.
+     * @return The list of filtered containers; or unfiltered list of containers.
+     */
+    private List<RecipeContainer> getContainers(@Nullable CategoryFilter filter) {
+        return !indexedFilters.isEmpty() && filter != null ? indexedFilters.getOrDefault(filter, new ArrayList<>()) : containers;
     }
 
     @JsonGetter("auto")

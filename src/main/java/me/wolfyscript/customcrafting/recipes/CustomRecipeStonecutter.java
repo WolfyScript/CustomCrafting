@@ -22,14 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import com.google.common.base.Preconditions;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -37,6 +31,13 @@ import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -61,19 +62,24 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
         super(namespacedKey, node);
         if (node.has(KEY_RESULT)) {
             //Some old config format, which saved the item directly as a reference
-            setResult(node.path(KEY_RESULT).has("custom_amount") ? new Result(JacksonUtil.getObjectMapper().convertValue(node.path(KEY_RESULT), APIReference.class)) : ItemLoader.loadResult(node.path(KEY_RESULT)));
+            setResult(node.path(KEY_RESULT).has("custom_amount") ? new Result(CustomCrafting.inst().getApi().getJacksonMapperUtil().getGlobalMapper().convertValue(node.path(KEY_RESULT), APIReference.class)) : ItemLoader.loadResult(node.path(KEY_RESULT), this.customCrafting));
         }
         setSource(ItemLoader.loadIngredient(node.path(KEY_SOURCE)));
     }
 
     @JsonCreator
-    public CustomRecipeStonecutter(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key, RecipeType.STONECUTTER);
+    public CustomRecipeStonecutter(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting, RecipeType.STONECUTTER);
         this.result = new Result();
         this.source = new Ingredient();
     }
 
-    public CustomRecipeStonecutter(CustomRecipeStonecutter customRecipeStonecutter) {
+    @Deprecated
+    public CustomRecipeStonecutter(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
+    }
+
+    private CustomRecipeStonecutter(CustomRecipeStonecutter customRecipeStonecutter) {
         super(customRecipeStonecutter);
         this.result = customRecipeStonecutter.getResult();
         this.source = customRecipeStonecutter.getSource();
@@ -91,7 +97,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
     @JsonSetter("result")
     @Override
     protected void setResult(JsonNode node) {
-        setResult(node.has("custom_amount") ? new Result(JacksonUtil.getObjectMapper().convertValue(node, APIReference.class)) : ItemLoader.loadResult(node));
+        setResult(node.has("custom_amount") ? new Result(mapper.convertValue(node, APIReference.class)) : ItemLoader.loadResult(node, this.customCrafting));
     }
 
     @Override
@@ -162,5 +168,15 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
     @Override
     public void setVisibleVanillaBook(boolean vanillaBook) {
         this.vanillaBook = vanillaBook;
+    }
+
+    @Override
+    public boolean isAutoDiscover() {
+        return autoDiscover;
+    }
+
+    @Override
+    public void setAutoDiscover(boolean autoDiscover) {
+        this.autoDiscover = autoDiscover;
     }
 }

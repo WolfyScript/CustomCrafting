@@ -22,13 +22,13 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.items.Ingredient;
-import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
@@ -40,8 +40,13 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
     }
 
     @JsonCreator
-    public CraftingRecipeShapeless(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key, 3, new AdvancedRecipeSettings());
+    public CraftingRecipeShapeless(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting, 3, new AdvancedRecipeSettings());
+    }
+
+    @Deprecated
+    public CraftingRecipeShapeless(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
     }
 
     public CraftingRecipeShapeless(CraftingRecipeShapeless craftingRecipe) {
@@ -74,5 +79,15 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
     @Override
     public void setVisibleVanillaBook(boolean vanillaBook) {
         this.vanillaBook = vanillaBook;
+    }
+
+    @Override
+    public boolean isAutoDiscover() {
+        return autoDiscover;
+    }
+
+    @Override
+    public void setAutoDiscover(boolean autoDiscover) {
+        this.autoDiscover = autoDiscover;
     }
 }

@@ -38,5 +38,5 @@ public interface ItemsButtonAction extends ButtonAction<CCCache> {
         return execute(cache, cache.getItems(), guiHandler, player, inventory, i, inventoryClickEvent);
     }
 
-    boolean execute(CCCache cache, Items items, GuiHandler<?> guiHandler, Player player, GUIInventory<CCCache> inventory, int i, InventoryInteractEvent inventoryClickEvent);
+    boolean execute(CCCache cache, Items items, GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int i, InventoryInteractEvent inventoryClickEvent);
 }

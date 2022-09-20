@@ -29,7 +29,6 @@ import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -53,21 +52,21 @@ public class MenuTagChooseList extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getChooseListPage();
             int maxPages = ITEM_TAGS.size() / 45 + ITEM_TAGS.size() % 45 > 0 ? 1 : 0;
             if (page < maxPages) {
                 cache.getRecipeCreatorCache().getTagSettingsCache().setChooseListPage(++page);
             }
             return true;
-        }));
-        registerButton(new ActionButton<>("previous_page", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        })).register();
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getChooseListPage();
             if (page > 0) {
                 cache.getRecipeCreatorCache().getTagSettingsCache().setChooseListPage(--page);
             }
             return true;
-        }));
+        })).register();
     }
 
     @Override

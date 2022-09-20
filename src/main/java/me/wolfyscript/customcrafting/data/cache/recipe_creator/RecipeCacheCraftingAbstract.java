@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.AbstractRecipeShaped;
 import me.wolfyscript.customcrafting.recipes.AbstractRecipeShapeless;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
@@ -44,8 +45,8 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
     private boolean mirrorVertical;
     private boolean mirrorRotation;
 
-    protected RecipeCacheCraftingAbstract() {
-        super();
+    protected RecipeCacheCraftingAbstract(CustomCrafting customCrafting) {
+        super(customCrafting);
         this.shapeless = false;
         this.ingredients = new HashMap<>();
         this.mirrorHorizontal = false;
@@ -53,8 +54,8 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
         this.mirrorRotation = false;
     }
 
-    protected RecipeCacheCraftingAbstract(CraftingRecipe<?, S> recipe) {
-        super(recipe);
+    protected RecipeCacheCraftingAbstract(CustomCrafting customCrafting, CraftingRecipe<?, S> recipe) {
+        super(customCrafting, recipe);
         this.settings = recipe.getSettings().clone();
         this.shapeless = RecipeType.CRAFTING_SHAPELESS.isInstance(recipe) || RecipeType.ELITE_CRAFTING_SHAPELESS.isInstance(recipe);
         if (recipe instanceof AbstractRecipeShaped<?, ?> shaped) {
@@ -84,7 +85,7 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
 
     @Override
     public void setIngredient(int slot, Ingredient ingredients) {
-        if(ingredients != null) {
+        if (ingredients != null) {
             ingredients.buildChoices();
         }
         if (ingredients == null || ingredients.isEmpty()) {

@@ -46,7 +46,7 @@ public class ButtonFolderRecipe extends ActionButton<CCCache> {
                 } else {
                     DisableRecipesHandler disableRecipesHandler = customCrafting.getDisableRecipesHandler();
                     RegistryRecipes recipes = customCrafting.getRegistries().getRecipes();
-                    if(clickEvent.isLeftClick()) {
+                    if (clickEvent.isLeftClick()) {
                         recipes.get(namespace, folder).forEach(disableRecipesHandler::disableRecipe);
                     } else if (clickEvent.isRightClick()) {
                         recipes.get(namespace, folder).forEach(disableRecipesHandler::enableRecipe);

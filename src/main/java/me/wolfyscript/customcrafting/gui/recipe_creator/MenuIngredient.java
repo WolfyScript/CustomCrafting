@@ -28,9 +28,6 @@ import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
@@ -49,30 +46,31 @@ public class MenuIngredient extends CCWindow {
         for (int i = 0; i < 36; i++) {
             registerButton(new ButtonContainerItemIngredient(i));
         }
-        registerButton(new ActionButton<>("back", new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inv, i, event) -> {
             var creatorCache = cache.getRecipeCreatorCache();
             creatorCache.getRecipeCache().setIngredient(creatorCache.getIngredientCache().getSlot(), creatorCache.getIngredientCache().getIngredient());
             guiHandler.openPreviousWindow();
             return true;
-        })));
-        registerButton(new ActionButton<>("tags", new ButtonState<>(ClusterRecipeCreator.TAGS, Material.NAME_TAG, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        })).register();
+        getButtonBuilder().action("tags").state(s -> s.key(ClusterRecipeCreator.TAGS).icon(Material.NAME_TAG).action((cache, guiHandler, player, inv, i, event) -> {
             cache.getRecipeCreatorCache().getTagSettingsCache().setRecipeItemStack(cache.getRecipeCreatorCache().getIngredientCache().getIngredient());
             guiHandler.openWindow("tag_settings");
             return true;
-        })));
-        registerButton(new ToggleButton<>(REPLACE_WITH_REMAINS, (cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getIngredientCache().getIngredient().isReplaceWithRemains(), new ButtonState<>(REPLACE_WITH_REMAINS + ".enabled", Material.BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        })).register();
+        getButtonBuilder().toggle(REPLACE_WITH_REMAINS).stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getIngredientCache().getIngredient().isReplaceWithRemains()).enabledState(state -> state.subKey("enabled").icon(Material.BUCKET).action((cache, guiHandler, player, inv, i, event) -> {
             cache.getRecipeCreatorCache().getIngredientCache().getIngredient().setReplaceWithRemains(false);
             return true;
-        }), new ButtonState<>(REPLACE_WITH_REMAINS + ".disabled", Material.BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        })).disabledState(state -> state.subKey("disabled").icon(Material.BUCKET).action((cache, guiHandler, player, inv, i, event) -> {
             cache.getRecipeCreatorCache().getIngredientCache().getIngredient().setReplaceWithRemains(true);
             return true;
-        })));
+        })).register();
     }
 
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, "back");
+        update.setButton(8, ClusterMain.GUI_HELP);
         for (int i = 0; i < 36; i++) {
             update.setButton(9 + i, "item_container_" + i);
         }

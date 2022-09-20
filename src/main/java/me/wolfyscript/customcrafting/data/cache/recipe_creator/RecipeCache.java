@@ -39,28 +39,33 @@ import org.bukkit.entity.Player;
 
 public abstract class RecipeCache<R extends CustomRecipe<?>> {
 
+    protected final CustomCrafting customCrafting;
+
     protected NamespacedKey key;
     protected boolean checkAllNBT;
     protected boolean hidden;
     protected boolean vanillaBook;
+    protected boolean autoDiscover;
 
     protected RecipePriority priority;
     protected Conditions conditions;
     protected String group;
     protected Result result;
 
-    protected RecipeCache() {
+    protected RecipeCache(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
         this.key = null;
         this.checkAllNBT = false;
         this.hidden = false;
         this.vanillaBook = true;
         this.priority = RecipePriority.NORMAL;
-        this.conditions = new Conditions();
+        this.conditions = new Conditions(this.customCrafting);
         this.group = "";
         this.result = new Result();
     }
 
-    protected RecipeCache(R customRecipe) {
+    protected RecipeCache(CustomCrafting customCrafting, R customRecipe) {
+        this.customCrafting = customCrafting;
         this.key = customRecipe.getNamespacedKey();
         this.checkAllNBT = customRecipe.isCheckNBT();
         this.hidden = customRecipe.isHidden();
@@ -115,6 +120,14 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
 
     public boolean isVanillaBook() {
         return vanillaBook;
+    }
+
+    public void setAutoDiscover(boolean autoDiscover) {
+        this.autoDiscover = autoDiscover;
+    }
+
+    public boolean isAutoDiscover() {
+        return autoDiscover;
     }
 
     public RecipePriority getPriority() {
@@ -174,6 +187,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         recipe.setPriority(priority);
         if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe) {
             vanillaRecipe.setVisibleVanillaBook(vanillaBook);
+            vanillaRecipe.setAutoDiscover(autoDiscover);
         }
         return recipe;
     }

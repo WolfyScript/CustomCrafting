@@ -24,6 +24,10 @@ debug: false
 # If you have any language file you would like to add to this plugin, then feel free to contact me.
 language: en_US
 
+gui:
+  # Specifies if the background glass panes should be placed into the gui. If disabled things like crafting grids/slots won't be apparent anymore! Best in combination with custom gui textures!
+  draw_background: true
+
 creator:
   # Configure if the stored values and items you put or configured in the GUI should be cleared after saving a recipe.
   reset_after_save: true
@@ -69,12 +73,6 @@ data:
   bukkit_version: 0
   # Do not change this number! It is used to update configs of recipes and items to new formats!
   version: 0
-  auto_save:
-    # Interval in minutes to save data.
-    # Currently, used to save the data of the placed cauldrons with campfires underneath and the contained items and recipes.
-    interval: 30
-    # Save message that is printed into the console.
-    message: true
 
 crafting_table:
   # If the advanced crafting table is enabled or not.
@@ -85,6 +83,36 @@ crafting_table:
 recipe_book:
   # If the recipe book item should be reset on each server start. This means the config is replaced with a new version.
   reset: true
+  # If closed and opened again, it'll open up the recipe and menu the player last left on.
+  keep_last_open: true
+  # The title of the single recipe menu
+  recipe_type_titles:
+    crafting_shaped: "<translate:recipe.type.crafting.crafting_shaped>"
+    crafting_shapeless: "<translate:recipe.type.crafting.crafting_shapeless>"
+    elite_crafting_shaped: "<translate:recipe.type.crafting.elite_crafting_shaped>"
+    elite_crafting_shapeless: "<translate:recipe.type.crafting.crafting_shaped>"
+    furnace: "<translate:recipe.type.cooking.furnace>"
+    blast_furnace: "<translate:recipe.type.cooking.blast_furnace>"
+    smoker: "<translate:recipe.type.cooking.smoker>"
+    campfire: "<translate:recipe.type.cooking.campfire>"
+    smithing: "<translate:recipe.type.smithing>"
+    anvil: "<translate:recipe.type.anvil>"
+    cauldron: "<translate:recipe.type.cauldron>"
+    stonecutter: "<translate:recipe.type.stonecutter>"
+    grindstone: "<translate:recipe.type.grindstone>"
+    brewing_stand: "<translate:recipe.type.brewing_stand>"
+
+workstation:
+  cauldron:
+    sound:
+      valid_recipe:
+      start:
+      finished:
+    gui:
+      main_menu:
+        title: "<translate:inventories.cauldron.cauldron.default_title>"
+      result_menu:
+        title: "<translate:inventories.cauldron.cauldron.default_title>"
 
 custom_items:
   # Use this option if you have saved CustomItems and your players got them in their inventory. Each time a Player joins the server it will try to update the CustomItems.

@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 
@@ -34,15 +35,15 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
     private boolean preserveDamage;
     private boolean onlyChangeMaterial;
 
-    RecipeCacheSmithing() {
-        super();
+    RecipeCacheSmithing(CustomCrafting customCrafting) {
+        super(customCrafting);
         this.preserveEnchants = true;
         this.preserveDamage = true;
         this.onlyChangeMaterial = false;
     }
 
-    RecipeCacheSmithing(CustomRecipeSmithing recipe) {
-        super(recipe);
+    RecipeCacheSmithing(CustomCrafting customCrafting, CustomRecipeSmithing recipe) {
+        super(customCrafting, recipe);
         this.base = recipe.getBase().clone();
         this.addition = recipe.getAddition().clone();
         this.preserveEnchants = recipe.isPreserveEnchants();

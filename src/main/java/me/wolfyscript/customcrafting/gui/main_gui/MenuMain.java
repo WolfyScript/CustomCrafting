@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -31,14 +33,21 @@ import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.ClusterRecipeBookEditor;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
+import me.wolfyscript.utilities.util.version.ServerVersion;
+import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
+import org.jetbrains.annotations.Nullable;
 
 public class MenuMain extends CCWindow {
 
@@ -66,6 +75,7 @@ public class MenuMain extends CCWindow {
 
     @Override
     public void onInit() {
+        var builder = getButtonBuilder();
         registerButton(new ButtonRecipeType(CRAFTING, RecipeType.CRAFTING_SHAPED, Material.CRAFTING_TABLE));
         registerButton(new ButtonRecipeType(FURNACE, RecipeType.FURNACE, Material.FURNACE));
         registerButton(new ButtonRecipeType(ANVIL, RecipeType.ANVIL, Material.ANVIL));
@@ -74,28 +84,34 @@ public class MenuMain extends CCWindow {
         registerButton(new ButtonRecipeType(CAMPFIRE, RecipeType.CAMPFIRE, Material.CAMPFIRE));
         registerButton(new ButtonRecipeType(STONECUTTER, RecipeType.STONECUTTER, Material.STONECUTTER));
         registerButton(new ButtonRecipeType(GRINDSTONE, RecipeType.GRINDSTONE, Material.GRINDSTONE));
+        builder.dummy("brewing_stand_disabled").state(state -> state.icon(Material.BREWING_STAND)).register();
         registerButton(new ButtonRecipeType(BREWING_STAND, RecipeType.BREWING_STAND, Material.BREWING_STAND));
+
+
         registerButton(new ButtonRecipeType(ELITE_CRAFTING, RecipeType.ELITE_CRAFTING_SHAPED, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
         registerButton(new ButtonRecipeType(CAULDRON, RecipeType.CAULDRON, Material.CAULDRON));
         registerButton(new ButtonRecipeType(SMITHING, RecipeType.SMITHING, Material.SMITHING_TABLE));
-
-        registerButton(new ActionButton<>(ITEM_EDITOR, Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
+        builder.action(ITEM_EDITOR).state(s -> s.icon(Material.CHEST).action((cache, guiHandler, player, guiInventory, i, event) -> {
             cache.setSetting(Setting.ITEMS);
             cache.getItems().setRecipeItem(false);
             cache.getItems().setSaved(false);
             cache.getItems().setNamespacedKey(null);
             guiHandler.openCluster(ClusterItemCreator.KEY);
             return true;
-        }));
-
-        registerButton(new ActionButton<>(SETTINGS, PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164"), (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        builder.action(SETTINGS).state(s -> s.icon(PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164")).action((cache, guiHandler, player, inv, i, event) -> {
             guiHandler.openWindow(SETTINGS);
             return true;
-        }));
-        registerButton(new ActionButton<>(RECIPE_BOOK_EDITOR, Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        builder.action(RECIPE_BOOK_EDITOR).state(s -> s.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inv, i, inventoryInteractEvent) -> {
             guiHandler.openCluster(ClusterRecipeBookEditor.KEY);
             return true;
-        }));
+        })).register();
+    }
+
+    @Override
+    public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
+        return this.wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", TagResolverUtil.papi(player), Placeholder.unparsed("plugin_version", customCrafting.getVersion().getVersion()));
     }
 
     @Override
@@ -103,37 +119,38 @@ public class MenuMain extends CCWindow {
         super.onUpdateAsync(event);
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         event.setButton(0, SETTINGS);
-        event.setButton(8, ClusterMain.GUI_HELP);
+        event.setButton(8, ClusterMain.PATREON);
 
-        event.setButton(4, ClusterMain.PATREON);
         event.setButton(48, ClusterMain.GITHUB);
         event.setButton(49, ClusterMain.YOUTUBE);
         event.setButton(50, ClusterMain.DISCORD);
 
-        event.setButton(10, CRAFTING);
-        event.setButton(12, FURNACE);
-        event.setButton(14, ANVIL);
-        event.setButton(16, CAULDRON);
+        int offset = 0;
+        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 5, 0))) {
+            event.setButton(16, CAULDRON);
+        } else {
+            offset = 1;
+        }
+        event.setButton(10 + offset, CRAFTING);
+        event.setButton(12 + offset, FURNACE);
+        event.setButton(14 + offset, ANVIL);
 
         event.setButton(19, BLAST_FURNACE);
         event.setButton(21, SMOKER);
         event.setButton(23, CAMPFIRE);
         event.setButton(25, STONECUTTER);
-        if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
-            event.setButton(28, GRINDSTONE);
-            event.setButton(30, BREWING_STAND);
-            event.setButton(32, ELITE_CRAFTING);
-            event.setButton(34, SMITHING);
-        } else {
-            event.setButton(29, GRINDSTONE);
-            event.setButton(31, ELITE_CRAFTING);
-            event.setButton(33, SMITHING);
-        }
 
-        for (int i = 37; i < 44; i++) {
-            event.setButton(i, data.getLightBackground());
-        }
+        offset = 0;
+        event.setButton(30, customCrafting.getConfigHandler().getConfig().isBrewingRecipes() ? BREWING_STAND : "brewing_stand_disabled");
+        event.setButton(28 + offset, GRINDSTONE);
+        event.setButton(32 + offset, ELITE_CRAFTING);
+        event.setButton(34 - offset, SMITHING);
 
+        if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
+            for (int i = 37; i < 44; i++) {
+                event.setButton(i, data.getLightBackground());
+            }
+        }
         event.setButton(36, ITEM_EDITOR);
         event.setButton(44, ClusterMain.RECIPE_LIST);
         event.setButton(45, ClusterMain.ITEM_LIST);

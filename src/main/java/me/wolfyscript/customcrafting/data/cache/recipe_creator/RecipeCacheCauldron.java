@@ -22,53 +22,65 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 
 public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
 
     private int cookingTime;
     private int waterLevel;
     private int xp;
-    private CustomItem handItem;
-    private Ingredient ingredients;
-    private boolean dropItems;
-    private boolean needsFire;
-    private boolean needsWater;
+    private List<Ingredient> ingredients;
+    private Result[] additionalResults;
 
-    RecipeCacheCauldron() {
-        super();
+    private boolean canCookInLava;
+    private boolean canCookInWater;
+    private int fluidLevel;
+
+    private boolean campfire;
+    private boolean soulCampfire;
+    private boolean signalFire;
+
+    RecipeCacheCauldron(CustomCrafting customCrafting) {
+        super(customCrafting);
         this.xp = 0;
         this.cookingTime = 60;
         this.waterLevel = 1;
-        this.needsWater = true;
-        this.needsFire = true;
-        this.dropItems = true;
-        this.handItem = null;
-        this.ingredients = new Ingredient();
+        this.ingredients = new ArrayList<>();
+        this.additionalResults = new Result[]{ new Result(), new Result(), new Result() };
     }
 
-    RecipeCacheCauldron(CustomRecipeCauldron recipe) {
-        super(recipe);
+    RecipeCacheCauldron(CustomCrafting customCrafting, CustomRecipeCauldron recipe) {
+        super(customCrafting, recipe);
         this.cookingTime = recipe.getCookingTime();
-        this.waterLevel = recipe.getWaterLevel();
+        this.campfire = recipe.isCampfire();
+        this.soulCampfire = recipe.isSoulCampfire();
+        this.canCookInWater = recipe.isCanCookInWater();
+        this.canCookInLava = recipe.isCanCookInLava();
+        this.signalFire = recipe.isSignalFire();
+        this.fluidLevel = recipe.getFluidLevel();
         this.xp = recipe.getXp();
-        this.handItem = recipe.getHandItem() != null ? recipe.getHandItem().clone() : null;
-        this.ingredients = recipe.getIngredient().clone();
-        this.dropItems = recipe.dropItems();
-        this.needsFire = recipe.needsFire();
-        this.needsWater = recipe.needsWater();
+        this.additionalResults = Arrays.stream(recipe.getAdditionalResults()).map(result1 -> result1 == null ? null : result1.clone()).toArray(value -> new Result[3]);
+        this.ingredients = new ArrayList<>(recipe.getIngredients().stream().map(Ingredient::clone).toList());
     }
 
     @Override
     public void setIngredient(int slot, Ingredient ingredient) {
-        setIngredients(ingredient);
+        if (slot < ingredients.size()) {
+            ingredients.set(slot, ingredient);
+        } else if (ingredients.size() < 6){
+            ingredients.add(ingredient);
+        }
     }
 
     @Override
     public Ingredient getIngredient(int slot) {
-        return getIngredients();
+        return slot < ingredients.size() ? ingredients.get(slot) : null;
     }
 
     @Override
@@ -79,15 +91,21 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
     @Override
     protected CustomRecipeCauldron create(CustomRecipeCauldron recipe) {
         CustomRecipeCauldron cauldron = super.create(recipe);
-        cauldron.setIngredient(ingredients);
+        cauldron.setAdditionalResults(additionalResults);
+        cauldron.addIngredients(ingredients);
         cauldron.setCookingTime(cookingTime);
-        cauldron.setWaterLevel(waterLevel);
+        cauldron.setCampfire(campfire);
+        cauldron.setSoulCampfire(soulCampfire);
+        cauldron.setSignalFire(signalFire);
+        cauldron.setCanCookInLava(canCookInLava);
+        cauldron.setCanCookInWater(canCookInWater);
+        cauldron.setFluidLevel(fluidLevel);
         cauldron.setXp(xp);
-        cauldron.setHandItem(handItem);
-        cauldron.setDropItems(dropItems);
-        cauldron.setNeedsFire(needsFire);
-        cauldron.setNeedsWater(needsWater);
         return cauldron;
+    }
+
+    public Result[] getAdditionalResults() {
+        return additionalResults;
     }
 
     public int getCookingTime() {
@@ -114,43 +132,59 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.xp = xp;
     }
 
-    public CustomItem getHandItem() {
-        return handItem;
-    }
-
-    public void setHandItem(CustomItem handItem) {
-        this.handItem = handItem;
-    }
-
-    public Ingredient getIngredients() {
+    public List<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(Ingredient ingredients) {
+    public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public boolean isDropItems() {
-        return dropItems;
+    public boolean isCanCookInLava() {
+        return canCookInLava;
     }
 
-    public void setDropItems(boolean dropItems) {
-        this.dropItems = dropItems;
+    public void setCanCookInLava(boolean canCookInLava) {
+        this.canCookInLava = canCookInLava;
     }
 
-    public boolean isNeedsFire() {
-        return needsFire;
+    public boolean isCanCookInWater() {
+        return canCookInWater;
     }
 
-    public void setNeedsFire(boolean needsFire) {
-        this.needsFire = needsFire;
+    public void setCanCookInWater(boolean canCookInWater) {
+        this.canCookInWater = canCookInWater;
     }
 
-    public boolean isNeedsWater() {
-        return needsWater;
+    public int getFluidLevel() {
+        return fluidLevel;
     }
 
-    public void setNeedsWater(boolean needsWater) {
-        this.needsWater = needsWater;
+    public void setFluidLevel(int fluidLevel) {
+        this.fluidLevel = fluidLevel;
+    }
+
+    public boolean isCampfire() {
+        return campfire;
+    }
+
+    public void setCampfire(boolean campfire) {
+        this.campfire = campfire;
+    }
+
+    public boolean isSoulCampfire() {
+        return soulCampfire;
+    }
+
+    public void setSoulCampfire(boolean soulCampfire) {
+        this.soulCampfire = soulCampfire;
+    }
+
+    public boolean isSignalFire() {
+        return signalFire;
+    }
+
+    public void setSignalFire(boolean signalFire) {
+        this.signalFire = signalFire;
     }
 }

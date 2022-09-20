@@ -27,12 +27,12 @@ import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -56,18 +56,18 @@ public class TabEnchants extends ItemCreatorTabVanilla {
                 try {
                     level = Integer.parseInt(args[args.length - 1]);
                 } catch (NumberFormatException ex) {
-                    creator.sendMessage(player, "enchant.invalid_lvl");
+                    creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_lvl"));
                     return true;
                 }
                 var enchantment = Enchantment.getByKey(org.bukkit.NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
                 if (enchantment != null) {
                     guiHandler.getCustomCache().getItems().getItem().addUnsafeEnchantment(enchantment, level);
                 } else {
-                    creator.sendMessage(player, "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
+                    creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_enchant", Placeholder.unparsed("enchant", args[0])));
                     return true;
                 }
             } else {
-                creator.sendMessage(player, "enchant.no_lvl");
+                creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.no_lvl"));
                 return true;
             }
             return false;
@@ -77,7 +77,7 @@ public class TabEnchants extends ItemCreatorTabVanilla {
             if (enchantment != null) {
                 guiHandler.getCustomCache().getItems().getItem().removeEnchantment(enchantment);
             } else {
-                creator.sendMessage(player, "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
+                creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_enchant", Placeholder.unparsed("enchant", args[0])));
                 return true;
             }
             return false;

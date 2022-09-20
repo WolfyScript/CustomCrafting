@@ -22,7 +22,13 @@
 
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import me.wolfyscript.utilities.util.Keyed;

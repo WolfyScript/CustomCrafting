@@ -24,7 +24,11 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
-import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.AbstractRecipeShapeless;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipeEliteShaped;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.registry.RegistryRecipes;
@@ -36,7 +40,13 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 public class RecipeContainer implements Comparable<RecipeContainer> {
 

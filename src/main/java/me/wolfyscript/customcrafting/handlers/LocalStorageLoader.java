@@ -28,6 +28,7 @@ import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -45,8 +46,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class LocalStorageLoader extends ResourceLoader {
 
@@ -86,13 +85,24 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     /**
-     * Gets the file at the specific path from the {@link NamespacedKey} and sub-folder.
+     * Gets the file at the specific path from the {@link NamespacedKey} and sub-folder with the .conf extension.
      *
      * @param namespacedKey The NamespacedKey for the path.
-     * @param typeFolder The sub-folder of the path. Like {@link #ITEMS_FOLDER} or {@link #RECIPES_FOLDER}.
+     * @param typeFolder    The sub-folder of the path. Like {@link #ITEMS_FOLDER} or {@link #RECIPES_FOLDER}.
      * @return The File at the specific path.
      */
     private File getFileAt(NamespacedKey namespacedKey, String typeFolder) {
+        return new File(DataHandler.HOCON_OBJ_PATH.formatted(NamespacedKeyUtils.getKeyRoot(namespacedKey), typeFolder, NamespacedKeyUtils.getRelativeKeyObjPath(namespacedKey)));
+    }
+
+    /**
+     * Gets the file at the specific path from the {@link NamespacedKey} and sub-folder with the .json extension.
+     *
+     * @param namespacedKey The NamespacedKey for the path.
+     * @param typeFolder    The sub-folder of the path. Like {@link #ITEMS_FOLDER} or {@link #RECIPES_FOLDER}.
+     * @return The File at the specific path.
+     */
+    private File getFileAtJson(NamespacedKey namespacedKey, String typeFolder) {
         return new File(DataHandler.JSON_OBJ_PATH.formatted(NamespacedKeyUtils.getKeyRoot(namespacedKey), typeFolder, NamespacedKeyUtils.getRelativeKeyObjPath(namespacedKey)));
     }
 
@@ -100,7 +110,7 @@ public class LocalStorageLoader extends ResourceLoader {
      * Gets the NamespacedKey from the namespace and path.
      *
      * @param namespace The namespace in the data folder.
-     * @param path The rest of the path.
+     * @param path      The rest of the path.
      * @return The NamespacedKey from the namespace and path.
      */
     private NamespacedKey keyFromFile(String namespace, Path path) {
@@ -140,10 +150,16 @@ public class LocalStorageLoader extends ResourceLoader {
     @Override
     public boolean save(CustomRecipe<?> recipe) {
         File file = getFileAt(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        File jsonFile = getFileAtJson(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        if (jsonFile.exists()) { // In case there is already an old json file let's rename it.
+            if (!jsonFile.renameTo(file)) {
+                return false;
+            }
+        }
         if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
             try {
                 if (file.isFile() || file.createNewFile()) {
-                    JacksonUtil.getObjectWriter(customCrafting.getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, recipe);
+                    customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(customCrafting.getConfigHandler().getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null).writeValue(file, recipe);
                     return true;
                 }
             } catch (IOException e) {
@@ -159,10 +175,16 @@ public class LocalStorageLoader extends ResourceLoader {
             var key = item.getNamespacedKey();
             if (key != null) {
                 var file = getFileAt(key, ITEMS_FOLDER);
+                File jsonFile = getFileAtJson(key, ITEMS_FOLDER);
+                if (jsonFile.exists()) { // In case there is already an old json file let's rename it.
+                    if (!jsonFile.renameTo(file)) {
+                        return false;
+                    }
+                }
                 if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
                     try {
                         if (file.exists() || file.createNewFile()) {
-                            JacksonUtil.getObjectWriter(CustomCrafting.inst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, item);
+                            customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(customCrafting.getConfigHandler().getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null).writeValue(file, item);
                             return true;
                         }
                     } catch (IOException e) {
@@ -175,28 +197,39 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     @Override
-    public boolean delete(CustomRecipe<?> recipe) {
-        File file = getFileAt(recipe.getNamespacedKey(), recipe.getRecipeType().getId());
-        System.gc();
-        if (file.delete()) {
-            return true;
-        } else {
-            file.deleteOnExit();
+    public boolean delete(CustomRecipe<?> recipe) throws IOException {
+        // Deletes the recipe file that is saved under the recipe type specific folder
+        File legacyFile = getFileAt(recipe.getNamespacedKey(), recipe.getRecipeType().getId());
+        if (legacyFile.exists()) {
+            Files.delete(legacyFile.toPath());
         }
-        return false;
+
+        // Deletes both the HOCON and JSON file
+        File hoconFile = getFileAt(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        if (hoconFile.exists()) {
+            Files.delete(hoconFile.toPath());
+        }
+        File jsonFile = getFileAtJson(recipe.getNamespacedKey(), RECIPES_FOLDER);
+        if (jsonFile.exists()) {
+            Files.delete(jsonFile.toPath());
+        }
+        return true;
     }
 
     @Override
-    public boolean delete(CustomItem item) {
-        System.gc();
+    public boolean delete(CustomItem item) throws IOException {
         var key = item.getNamespacedKey();
         if (key != null) {
-            var file = getFileAt(key, ITEMS_FOLDER);
-            if (file.delete()) {
-                return true;
-            } else {
-                file.deleteOnExit();
+            // Deletes both the HOCON and JSON file
+            var hoconFile = getFileAt(key, ITEMS_FOLDER);
+            if (hoconFile.exists()) {
+                Files.delete(hoconFile.toPath());
             }
+            var jsonFile = getFileAt(key, ITEMS_FOLDER);
+            if (jsonFile.exists()) {
+                Files.delete(jsonFile.toPath());
+            }
+            return true;
         }
         return false;
     }
@@ -222,6 +255,7 @@ public class LocalStorageLoader extends ResourceLoader {
                 if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     try {
                         injectableValues.addValue("key", namespacedKey);
+                        injectableValues.addValue("customcrafting", customCrafting);
                         customCrafting.getRegistries().getRecipes().register(objectMapper.reader(injectableValues).readValue(file.toFile(), CustomRecipe.class));
                         loaded.add(namespacedKey);
                     } catch (IOException e) {
@@ -301,7 +335,8 @@ public class LocalStorageLoader extends ResourceLoader {
                     try {
                         customCrafting.getRegistries().getRecipes().register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
                         loaded.add(namespacedKey);
-                    } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+                    } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException |
+                             IllegalAccessException e) {
                         ChatUtils.sendRecipeItemLoadingError("[LOCAL] ", namespacedKey.getNamespace(), namespacedKey.getKey(), e);
                         skippedError.add(namespacedKey);
                     }
@@ -312,7 +347,7 @@ public class LocalStorageLoader extends ResourceLoader {
         }
 
         protected String[] getOldTypeFolders(String namespace) {
-            return  new File(DATA_FOLDER + "/" + namespace).list((dir1, name) -> !name.equals(ITEMS_FOLDER) && !name.equals(RECIPES_FOLDER));
+            return new File(DATA_FOLDER + "/" + namespace).list((dir1, name) -> !name.equals(ITEMS_FOLDER) && !name.equals(RECIPES_FOLDER));
         }
 
     }
@@ -320,7 +355,7 @@ public class LocalStorageLoader extends ResourceLoader {
     /**
      * Used to load data & cache the loaded, skipped errors & already existing keys.
      */
-    private abstract class DataLoader {
+    private abstract static class DataLoader {
 
         protected List<NamespacedKey> loaded;
         protected List<NamespacedKey> skippedError;

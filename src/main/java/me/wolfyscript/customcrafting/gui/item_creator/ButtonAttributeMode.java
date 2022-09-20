@@ -32,7 +32,7 @@ import java.util.Locale;
 public class ButtonAttributeMode extends ActionButton<CCCache> {
 
     public ButtonAttributeMode(AttributeModifier.Operation operation, String headURLValue) {
-        super("attribute."+operation.toString().toLowerCase(Locale.ROOT), PlayerHeadUtils.getViaURL(headURLValue), (cache, guiHandler, player, inventory, slot, event) -> {
+        super("attribute." + operation.toString().toLowerCase(Locale.ROOT), PlayerHeadUtils.getViaURL(headURLValue), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getItems().setAttribOperation(operation);
             return true;
         }, (replacements, cache, guiHandler, player, inventory, itemStack, i, b) -> {

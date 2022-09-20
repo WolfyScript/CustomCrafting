@@ -23,7 +23,15 @@
 package me.wolfyscript.customcrafting.data;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.cache.*;
+import me.wolfyscript.customcrafting.data.cache.BrewingGUICache;
+import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
+import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
+import me.wolfyscript.customcrafting.data.cache.CacheRecipeView;
+import me.wolfyscript.customcrafting.data.cache.ChatLists;
+import me.wolfyscript.customcrafting.data.cache.ParticleCache;
+import me.wolfyscript.customcrafting.data.cache.RecipeBookCache;
+import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
+import me.wolfyscript.customcrafting.data.cache.RecipeList;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.potions.ApplyPotionEffect;
@@ -36,9 +44,9 @@ import org.bukkit.potion.PotionEffect;
 
 public class CCCache extends CustomCache {
 
-    private Setting setting;
-
     private final CustomCrafting customCrafting;
+
+    private Setting setting;
     private String subSetting;
 
     private final RecipeBookEditor recipeBookEditor = new RecipeBookEditor();
@@ -47,24 +55,29 @@ public class CCCache extends CustomCache {
     private final RecipeList recipeList = new RecipeList();
 
     private final PotionEffects potionEffectCache = new PotionEffects();
-    private final RecipeBookCache recipeBookCache = new RecipeBookCache();
+    private final RecipeBookCache recipeBookCache;
     private final CacheRecipeView cacheRecipeView = new CacheRecipeView();
     private CacheEliteCraftingTable cacheEliteCraftingTable = new CacheEliteCraftingTable();
     private final ChatLists chatLists = new ChatLists();
     private final ParticleCache particleCache = new ParticleCache();
     private final BrewingGUICache brewingGUICache = new BrewingGUICache();
+    private final CacheCauldronWorkstation cauldronWorkstation = new CacheCauldronWorkstation();
 
     private ApplyItem applyItem;
     private ApplyPotionEffect applyPotionEffect;
 
-    private final RecipeCreatorCache recipeCreatorCache = new RecipeCreatorCache();
+    private final RecipeCreatorCache recipeCreatorCache;
 
     public CCCache() {
         super();
-        this.customCrafting = CustomCrafting.inst();
+        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
         this.applyItem = null;
+
+        this.recipeBookCache = new RecipeBookCache(customCrafting);
+
+        this.recipeCreatorCache = new RecipeCreatorCache(customCrafting);
     }
 
     public Setting getSetting() {
@@ -157,4 +170,7 @@ public class CCCache extends CustomCache {
         return recipeCreatorCache;
     }
 
+    public CacheCauldronWorkstation getCauldronWorkstation() {
+        return cauldronWorkstation;
+    }
 }

@@ -30,10 +30,9 @@ import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 class MenuMain extends CCWindow {
 
@@ -46,11 +45,10 @@ class MenuMain extends CCWindow {
     @Override
     public void onInit() {
         var categories = customCrafting.getConfigHandler().getRecipeBookConfig();
-
         for (String categoryId : categories.getSortedCategories()) {
             registerButton(new ButtonCategoryMain(categoryId, customCrafting));
         }
-        registerButton(new ActionButton<>(BACK_BOTTOM, new ButtonState<>(ClusterMain.BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(BACK_BOTTOM).state(s -> s.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((cache, guiHandler, player, guiInventory, i, event) -> {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 if (cache.getRecipeBookCache().hasEliteCraftingTable()) {
                     guiHandler.openCluster(EliteCraftingCluster.KEY);
@@ -60,14 +58,18 @@ class MenuMain extends CCWindow {
                 cache.getRecipeBookCache().setEliteCraftingTable(null);
             });
             return true;
-        })));
+        })).register();
     }
 
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
-        event.setButton(8, data.getLightBackground());
+        if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
+            event.setButton(8, data.getLightBackground());
+        } else {
+            event.setItem(8, new ItemStack(Material.AIR));
+        }
 
         var categories = customCrafting.getConfigHandler().getRecipeBookConfig();
         var sorted = categories.getSortedCategories();

@@ -51,7 +51,7 @@ class ButtonFilter extends ActionButton<CCCache> {
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            itemStack.setType(filter.getIcon());
+            itemStack = filter.getIconStack();
             values.put("%name%", filter.getName());
             values.put("%description%", filter.getDescription());
             return itemStack;

@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -30,8 +29,6 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
-
-import java.util.List;
 
 public class PermissionCondition extends Condition<PermissionCondition> {
 
@@ -63,13 +60,14 @@ public class PermissionCondition extends Condition<PermissionCondition> {
             return true;
         }
         if (data.getPlayer() == null) return false;
-        return CustomCrafting.inst().getApi().getPermissions().hasPermission(data.getPlayer(), permission.replace("%namespace%", recipe.getNamespacedKey().getNamespace()).replace("%recipe_name%", recipe.getNamespacedKey().getKey()));
+        var keyComponent = recipe.getNamespacedKey().getKeyComponent();
+        return data.getPlayer().hasPermission(permission.replace("%namespace%", keyComponent.getFolder().replace("/", ".")).replace("%recipe_name%", keyComponent.getObject()));
     }
 
     public static class GUIComponent extends FunctionalGUIComponent<PermissionCondition> {
 
         public GUIComponent() {
-            super(Material.REDSTONE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.REDSTONE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, wolfyUtilities) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.permission.set", Material.REDSTONE, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(PermissionCondition.class).getPermission());

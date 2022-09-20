@@ -22,15 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
@@ -40,6 +34,10 @@ import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -83,8 +81,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         });
     }
 
-    protected CraftingRecipe(NamespacedKey key, int gridSize, S settings) {
-        super(key);
+    protected CraftingRecipe(NamespacedKey key, CustomCrafting customCrafting, int gridSize, S settings) {
+        super(key, customCrafting);
         this.ingredients = List.of();
         this.maxGridDimension = gridSize;
         this.maxIngredients = maxGridDimension * maxGridDimension;
@@ -239,8 +237,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         boolean saveSuccessful = super.save(player);
         if (saveSuccessful) {
             //We need to delete the old recipe when the type changes between shapeless and shaped, because else it is present in two different folders!
-            CustomRecipe<?> oldRecipe = CustomCrafting.inst().getRegistries().getRecipes().get(getNamespacedKey());
-            if (oldRecipe instanceof CraftingRecipe<?,?> oldCraftingRecipe && oldCraftingRecipe.isShapeless() != isShapeless()) {
+            CustomRecipe<?> oldRecipe = customCrafting.getRegistries().getRecipes().get(getNamespacedKey());
+            if (oldRecipe instanceof CraftingRecipe<?, ?> oldCraftingRecipe && oldCraftingRecipe.isShapeless() != isShapeless()) {
                 getAPI().getChat().sendMessage(player, ChatColor.YELLOW + "Recipe Type changed... deleting old recipe!");
                 oldCraftingRecipe.delete(player);
             }

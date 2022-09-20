@@ -22,11 +22,11 @@
 
 package me.wolfyscript.customcrafting.configs.custom_data;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.DeserializationContext;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;

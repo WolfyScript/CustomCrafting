@@ -22,16 +22,17 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeFurnace;
 
 public class RecipeCacheFurnace extends RecipeCacheCooking<CustomRecipeFurnace> {
 
-    RecipeCacheFurnace() {
-        super();
+    RecipeCacheFurnace(CustomCrafting customCrafting) {
+        super(customCrafting);
     }
 
-    RecipeCacheFurnace(CustomRecipeFurnace recipe) {
-        super(recipe);
+    RecipeCacheFurnace(CustomCrafting customCrafting, CustomRecipeFurnace recipe) {
+        super(customCrafting, recipe);
     }
 
     @Override

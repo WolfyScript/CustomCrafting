@@ -22,16 +22,18 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 class ButtonSettingsLanguage extends ActionButton<CCCache> {
@@ -63,19 +65,9 @@ class ButtonSettingsLanguage extends ActionButton<CCCache> {
             }
             customCrafting.getConfigHandler().getConfig().setLanguage(availableLangs.get(nextIndex));
             return true;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, b) -> {
+        }, (CallbackButtonRender<CCCache>) (cache, guiHandler, player, inventory, itemStack, slot) -> {
             int index = availableLangs.indexOf(customCrafting.getConfigHandler().getConfig().getLanguage());
-            List<String> displayLangs = new ArrayList<>();
-            displayLangs.addAll(availableLangs.subList(index, availableLangs.size()));
-            displayLangs.addAll(availableLangs.subList(0, index));
-            for (int i = 0; i < 5; i++) {
-                if (i < displayLangs.size()) {
-                    hashMap.put("%lang" + i + "%", displayLangs.get(i));
-                } else {
-                    hashMap.put("%lang" + i + "%", "");
-                }
-            }
-            return itemStack;
+            return CallbackButtonRender.UpdateResult.of(TagResolverUtil.entries(availableLangs.stream().map(s -> Component.text(s).asComponent()).toList(), Component.empty(), index));
         }));
     }
 }

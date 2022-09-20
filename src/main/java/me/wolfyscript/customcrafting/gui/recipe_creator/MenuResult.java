@@ -28,9 +28,6 @@ import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
@@ -46,24 +43,25 @@ public class MenuResult extends CCWindow {
         for (int i = 0; i < 45; i++) {
             registerButton(new ButtonContainerItemResult(i));
         }
-        registerButton(new ActionButton<>("back", new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inv, i, event) -> {
             cache.getRecipeCreatorCache().getRecipeCache().getResult().buildChoices();
             guiHandler.openPreviousWindow();
             return true;
-        })));
-        registerButton(new ActionButton<>("tags", new ButtonState<>(ClusterRecipeCreator.TAGS, Material.NAME_TAG, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        })).register();
+        getButtonBuilder().action("tags").state(s -> s.key(ClusterRecipeCreator.TAGS).icon(Material.NAME_TAG).action((cache, guiHandler, player, inv, i, event) -> {
             cache.getRecipeCreatorCache().getTagSettingsCache().setRecipeItemStack(cache.getRecipeCreatorCache().getRecipeCache().getResult());
             guiHandler.openWindow("tag_settings");
             return true;
-        })));
-        registerButton(new DummyButton<>("target", Material.ARROW));
-        registerButton(new DummyButton<>("extensions", Material.COMMAND_BLOCK));
+        })).register();
+        getButtonBuilder().dummy("target").state(s -> s.icon(Material.ARROW)).register();
+        getButtonBuilder().dummy("extensions").state(s -> s.icon(Material.COMMAND_BLOCK)).register();
     }
 
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, "back");
+        update.setButton(8, ClusterMain.GUI_HELP);
         for (int i = 0; i < 36; i++) {
             update.setButton(9 + i, "variant_container_" + i);
         }

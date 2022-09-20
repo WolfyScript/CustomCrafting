@@ -58,7 +58,7 @@ public class OverviewCategories extends Overview {
         List<String> categories = recipeBookConfig.getSortedCategories();
         for (int i = 0; i < categories.size() && i + 9 < 45; i++) {
             var category = recipeBookConfig.getCategory(categories.get(i));
-            if(category != null) {
+            if (category != null) {
                 registerButton(new ButtonCategory(category, customCrafting));
                 update.setButton(i + 9, "category_" + category.getId());
             }

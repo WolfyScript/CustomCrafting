@@ -23,16 +23,21 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.annotations.OptionalKeyReference;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 @OptionalKeyReference(field = "key")
 public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, Keyed {
@@ -112,7 +117,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         static Collection<Container<? extends CustomRecipe<?>>> values() {
             return ContainerImpl.values.values();
         }
-        
+
         static boolean isLegacy(String id) {
             return !ContainerImpl.values.containsKey(id) && ContainerImpl.legacyValues.containsKey(id);
         }

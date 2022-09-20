@@ -32,7 +32,6 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.registry.Registries;
 import me.wolfyscript.utilities.registry.RegistrySimple;
@@ -42,7 +41,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,6 +57,8 @@ import java.util.stream.Stream;
  * Providing a lot of functionality to get the recipes you need.
  */
 public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
+
+    private final CustomCrafting customCrafting;
 
     private final Map<String, List<CustomRecipe<?>>> BY_NAMESPACE = new HashMap<>();
     private final Map<String, List<CustomRecipe<?>>> BY_GROUP = new HashMap<>();
@@ -65,6 +73,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
     RegistryRecipes(CustomCrafting customCrafting, Registries registries) {
         super(new NamespacedKey(customCrafting, "recipe/recipes"), registries);
+        this.customCrafting = customCrafting;
     }
 
     public boolean has(NamespacedKey namespacedKey) {
@@ -111,7 +120,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
             try {
                 Bukkit.addRecipe(vanillaRecipe.getVanillaRecipe());
             } catch (IllegalArgumentException | IllegalStateException ex) {
-                CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
+                customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
             }
         }
         clearCache(namespacedKey);
@@ -126,7 +135,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * @return A list of all available namespaces.
      */
     public List<String> namespaces() {
-        if(NAMESPACES.isEmpty()) {
+        if (NAMESPACES.isEmpty()) {
             NAMESPACES.addAll(keySet().stream().map(NamespacedKey::getNamespace).distinct().toList());
         }
         return new ArrayList<>(NAMESPACES);
@@ -186,7 +195,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * Gets all recipes from the specified namespace and folder.
      *
      * @param namespace The namespace of the recipes.
-     * @param folder The folder of the recipes.
+     * @param folder    The folder of the recipes.
      * @return A list of all recipes in the folder inside the namespace.
      */
     public List<CustomRecipe<?>> get(String namespace, String folder) {

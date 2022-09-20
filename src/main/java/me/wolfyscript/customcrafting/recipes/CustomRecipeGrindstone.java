@@ -22,7 +22,15 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.google.common.base.Preconditions;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,13 +38,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import com.google.common.base.Preconditions;
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
-import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
-import me.wolfyscript.customcrafting.recipes.items.Ingredient;
-import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -61,14 +62,19 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
     }
 
     @JsonCreator
-    public CustomRecipeGrindstone(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JsonProperty("inputTop") Ingredient inputTop, @JsonProperty("inputBottom") Ingredient inputBottom) {
-        super(key, RecipeType.GRINDSTONE);
+    public CustomRecipeGrindstone(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting, @JsonProperty("inputTop") Ingredient inputTop, @JsonProperty("inputBottom") Ingredient inputBottom) {
+        super(key, customCrafting, RecipeType.GRINDSTONE);
         setInput(inputTop, inputBottom);
         this.result = new Result();
         this.xp = 0;
     }
 
-    public CustomRecipeGrindstone(CustomRecipeGrindstone customRecipeGrindstone) {
+    @Deprecated
+    public CustomRecipeGrindstone(NamespacedKey key, Ingredient inputTop, Ingredient inputBottom) {
+        this(key, CustomCrafting.inst(), inputTop, inputBottom);
+    }
+
+    private CustomRecipeGrindstone(CustomRecipeGrindstone customRecipeGrindstone) {
         super(customRecipeGrindstone);
         this.inputBottom = customRecipeGrindstone.getInputBottom();
         this.inputTop = customRecipeGrindstone.getInputTop();

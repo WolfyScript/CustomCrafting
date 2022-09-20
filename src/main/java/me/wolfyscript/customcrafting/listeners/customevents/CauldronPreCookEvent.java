@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.listeners.customevents;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -32,19 +33,23 @@ import org.bukkit.event.HandlerList;
 public class CauldronPreCookEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
+    private final CustomCrafting customCrafting;
     private boolean cancelled;
     private int cookingTime;
-    private boolean dropItems;
     private final Block cauldron;
     private final Player player;
     private CustomRecipeCauldron recipe;
 
-    public CauldronPreCookEvent(CustomRecipeCauldron recipe, Player player, Block cauldron) {
-        this.dropItems = recipe.dropItems();
+    public CauldronPreCookEvent(CustomCrafting customCrafting, CustomRecipeCauldron recipe, Player player, Block cauldron) {
+        this.customCrafting = customCrafting;
         this.recipe = recipe;
         this.cookingTime = recipe.getCookingTime();
         this.player = player;
         this.cauldron = cauldron;
+    }
+
+    public CustomCrafting getCustomCrafting() {
+        return customCrafting;
     }
 
     @Override
@@ -79,13 +84,13 @@ public class CauldronPreCookEvent extends Event implements Cancellable {
         this.cookingTime = cookingTime;
     }
 
+    @Deprecated
     public boolean dropItems() {
-        return dropItems;
+        return false;
     }
 
-    public void setDropItems(boolean dropItems) {
-        this.dropItems = dropItems;
-    }
+    @Deprecated
+    public void setDropItems(boolean dropItems) { }
 
     public CustomRecipeCauldron getRecipe() {
         return recipe;

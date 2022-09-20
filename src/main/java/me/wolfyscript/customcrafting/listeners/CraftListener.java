@@ -38,7 +38,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -76,22 +75,34 @@ public class CraftListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            if (craftManager.has(event.getWhoClicked().getUniqueId())) {
+            craftManager.get(event.getWhoClicked().getUniqueId()).ifPresent(craftingData -> {
                 event.setCancelled(true);
+                var player = (Player) event.getWhoClicked();
                 if (event.isShiftClick() || ItemUtils.isAirOrNull(cursor) || cursor.getAmount() + resultItem.getAmount() <= cursor.getMaxStackSize()) {
-                    craftManager.consumeRecipe(resultItem, event);
-                    ((Player) event.getWhoClicked()).updateInventory();
-                    inventory.setResult(new ItemStack(Material.AIR));
-                    callPreCraftEvent(inventory, event);
+                    //Clear Matrix to prevent duplication and buggy behaviour.
+                    //This must not update the inventory yet, as that would call the PrepareItemCraftEvent, invalidating the recipe and preventing consumption of the recipe!
+                    //But clearing it later can cause other issues too!
+                    //So lets just set the items to AIR and amount to 0...
+                    for (int i = 0; i < 10; i++) {
+                        ItemStack item = inventory.getItem(i);
+                        if (item != null) {
+                            item.setAmount(0);
+                            item.setType(Material.AIR);
+                        }
+                    }
+                    //...do all the calculations & item replacements...
+                    craftManager.consumeRecipe(event);
+                    //...and finally update the inventory.
+                    player.updateInventory();
+                    //Reset Matrix with the re-calculated items. (1 tick later, to not cause duplication!)
+                    //This will result in a short flicker of the items in the inventory... still better than duplications, so the flickering won't be fixed!
+                    Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                        craftingData.getIndexedBySlot().forEach((integer, ingredientData) -> inventory.setItem(integer + 1, ingredientData.itemStack()));
+                        player.updateInventory();
+                    }, 1);
                 }
-            }
-        } else if ((event.getAction().equals(InventoryAction.PLACE_ALL) || event.getAction().equals(InventoryAction.PLACE_ONE) || event.getAction().equals(InventoryAction.PLACE_SOME)) && inventory.getItem(event.getSlot()) != null) {
-            callPreCraftEvent(inventory, event);
+            });
         }
-    }
-
-    public void callPreCraftEvent(CraftingInventory inventory, InventoryClickEvent event) {
-        Bukkit.getScheduler().runTask(customCrafting, () -> Bukkit.getPluginManager().callEvent(new PrepareItemCraftEvent(inventory, event.getView(), false)));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -147,14 +158,13 @@ public class CraftListener implements Listener {
 
     /**
      * Automatically discovers available custom recipes for players.
-     *
      */
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
         List<org.bukkit.NamespacedKey> discoveredCustomRecipes = player.getDiscoveredRecipes().stream().filter(namespacedKey -> namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).toList();
         customCrafting.getRegistries().getRecipes().getAvailable(player).stream()
-                .filter(recipe -> recipe instanceof ICustomVanillaRecipe<?>)
+                .filter(recipe -> recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isAutoDiscover())
                 .map(recipe -> new org.bukkit.NamespacedKey(recipe.getNamespacedKey().getNamespace(), recipe.getNamespacedKey().getKey()))
                 .filter(namespacedKey -> !discoveredCustomRecipes.contains(namespacedKey))
                 .forEach(player::discoverRecipe);

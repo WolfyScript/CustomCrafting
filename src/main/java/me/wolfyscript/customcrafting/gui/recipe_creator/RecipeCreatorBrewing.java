@@ -65,8 +65,8 @@ public class RecipeCreatorBrewing extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-
-        registerButton(new DummyButton<>("brewing_stand", Material.BREWING_STAND));
+        var btnBld = getButtonBuilder();
+        btnBld.dummy("brewing_stand").state(s -> s.icon(Material.BREWING_STAND)).register();
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeIngredient(1));
 
@@ -349,10 +349,7 @@ public class RecipeCreatorBrewing extends RecipeCreator {
             guiHandler.openWindow(ClusterPotionCreator.POTION_EFFECT_TYPE_SELECTION);
             return true;
         }));
-
-
         registerButton(new ButtonBrewingOption(Material.BOOKSHELF, "required_effects"));
-
     }
 
     @Override
@@ -458,10 +455,7 @@ public class RecipeCreatorBrewing extends RecipeCreator {
 
     private String getOption(BrewingGUICache brewingGUICache, RecipeCacheBrewing brewingRecipe) {
         // Ignore cache and parse option from the saved recipe if we're loading it fresh
-        if (
-            brewingRecipe.isSaved() &&
-            brewingGUICache.getParsedOptionKey() != brewingRecipe.getKey()
-        ) {
+        if (brewingRecipe.isSaved() && brewingGUICache.getParsedOptionKey() != brewingRecipe.getKey()) {
             String option = parseOption(brewingRecipe);
 
             brewingGUICache.setOption(option);

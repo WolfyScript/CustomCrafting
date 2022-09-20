@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.utilities.api.inventory.gui.GuiMenuComponent;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;

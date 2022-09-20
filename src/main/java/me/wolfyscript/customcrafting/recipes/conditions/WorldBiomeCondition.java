@@ -81,7 +81,7 @@ public class WorldBiomeCondition extends Condition<WorldBiomeCondition> {
         private static final String REMOVE = PARENT_LANG + ".remove";
 
         public GUIComponent() {
-            super(Material.SAND, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.SAND, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         menu.registerButton(new ActionButton<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
                             var conditions = cache.getRecipeCreatorCache().getRecipeCache().getConditions();
@@ -109,13 +109,13 @@ public class WorldBiomeCondition extends Condition<WorldBiomeCondition> {
                                     var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
                                     WorldBiomeCondition condition = conditions.getByType(WorldBiomeCondition.class);
                                     if (condition.getBiomes().contains(biome.toString())) {
-                                        menu.sendMessage(player, "already_existing");
+                                        menu.sendMessage(guiHandler, menu.translatedMsgKey("already_existing"));
                                         return true;
                                     }
                                     conditions.getByType(WorldBiomeCondition.class).addBiome(biome.toString());
                                     return false;
                                 } catch (IllegalArgumentException ex) {
-                                    menu.sendMessage(player, "invalid_biome");
+                                    menu.sendMessage(guiHandler, menu.translatedMsgKey("invalid_biome"));
                                 }
                             }
                             return true;

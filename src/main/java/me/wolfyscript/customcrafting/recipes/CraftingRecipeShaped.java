@@ -22,12 +22,12 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
@@ -39,15 +39,21 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
     }
 
     @JsonCreator
-    public CraftingRecipeShaped(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JsonProperty("shape") String[] shape) {
-        super(key, shape, 3, new AdvancedRecipeSettings());
+    public CraftingRecipeShaped(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting, @JsonProperty("symmetry") Symmetry symmetry, @JsonProperty("shape") String[] shape) {
+        super(key, customCrafting, symmetry, shape, 3, new AdvancedRecipeSettings());
     }
 
+    @Deprecated
+    public CraftingRecipeShaped(NamespacedKey key, Symmetry symmetry, String[] shape) {
+        this(key, CustomCrafting.inst(), symmetry, shape);
+    }
+
+    @Deprecated
     public CraftingRecipeShaped(NamespacedKey key) {
-        super(key, 3, new AdvancedRecipeSettings());
+        super(key, CustomCrafting.inst(), new Symmetry(), 3, new AdvancedRecipeSettings());
     }
 
-    public CraftingRecipeShaped(CraftingRecipeShaped craftingRecipe) {
+    private CraftingRecipeShaped(CraftingRecipeShaped craftingRecipe) {
         super(craftingRecipe);
     }
 
@@ -76,5 +82,15 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
     @Override
     public void setVisibleVanillaBook(boolean vanillaBook) {
         this.vanillaBook = vanillaBook;
+    }
+
+    @Override
+    public boolean isAutoDiscover() {
+        return autoDiscover;
+    }
+
+    @Override
+    public void setAutoDiscover(boolean autoDiscover) {
+        this.autoDiscover = autoDiscover;
     }
 }

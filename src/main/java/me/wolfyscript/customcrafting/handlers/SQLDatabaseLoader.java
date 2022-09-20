@@ -22,14 +22,14 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonProcessingException;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonProcessingException;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.network.database.sql.SQLDataBase;
@@ -38,7 +38,6 @@ import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -57,7 +56,8 @@ public class SQLDatabaseLoader extends DatabaseLoader {
 
     public SQLDatabaseLoader(CustomCrafting customCrafting) {
         super(customCrafting, new NamespacedKey(customCrafting, "database_loader"));
-        this.dataBase = new SQLDataBase(api, config.getDatabaseHost(), config.getDatabaseSchema(), config.getDatabaseUsername(), config.getDatabasePassword(), config.getDatabasePort());
+        MainConfig.DatabaseSettings settings = config.getDatabaseSettings();
+        this.dataBase = new SQLDataBase(api, settings.getHost(), settings.getSchema(), settings.getUsername(), settings.getPassword(), settings.getPort());
         init();
         this.loaded = new LinkedList<>();
         this.skippedError = new LinkedList<>();
@@ -76,6 +76,9 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         }
     }
 
+    /**
+     * Loads the data from the configured database.
+     */
     @Override
     public void load() {
         api.getConsole().info("- - - - [Database Storage] - - - -");
@@ -84,11 +87,21 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         api.getConsole().info("");
     }
 
+    /**
+     * This does nothing when using the database, since the data is queried and updated
+     * when saving single recipes and items.
+     */
     @Override
     public void save() {
 
     }
 
+    /**
+     * Saves the specified recipe
+     *
+     * @param recipe The recipe to save
+     * @return true if the recipe was saved successfully; otherwise false.
+     */
     @Override
     public boolean save(CustomRecipe<?> recipe) {
         updateRecipe(recipe);
@@ -172,7 +185,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                     NamespacedKey namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + key);
                     if (isReplaceData() || !api.getRegistries().getCustomItems().has(namespacedKey)) {
                         try {
-                            api.getRegistries().getCustomItems().register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
+                            api.getRegistries().getCustomItems().register(new NamespacedKey(customCrafting, namespace + "/" + key), customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readValue(data, CustomItem.class));
                         } catch (JsonProcessingException e) {
                             api.getConsole().info(PREFIX + "Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
                         }
@@ -217,14 +230,14 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                 String data = resultSet.getString("rData");
                 try {
                     if (typeID == null || typeID.isBlank()) {
-                        return objectMapper.reader(new InjectableValues.Std().addValue("key", namespacedKey)).readValue(data, CustomRecipe.class);
+                        return objectMapper.reader(new InjectableValues.Std().addValue("customcrafting", customCrafting).addValue("key", namespacedKey)).readValue(data, CustomRecipe.class);
                     }
                     RecipeLoader<?> loader = RecipeType.valueOf(typeID);
                     if (loader == null && RecipeType.Container.valueOf(typeID) instanceof RecipeLoader<?> recipeLoader) {
                         loader = recipeLoader;
                     }
                     if (loader != null) {
-                        return loader.getInstance(namespacedKey, JacksonUtil.getObjectMapper().readTree(data));
+                        return loader.getInstance(namespacedKey, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readTree(data));
                     }
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | IOException e) {
                     ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
@@ -242,7 +255,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
             PreparedStatement pState = dataBase.open().prepareStatement("INSERT INTO customcrafting_recipes (rNamespace, rKey, rType, rData) VALUES (?, ?, ?, ?)");
             setNamespacedKey(pState, data.getNamespacedKey(), 1, 2);
             pState.setString(3, ""); //No longer save the type. The type is contained in the json data now.
-            pState.setString(4, JacksonUtil.getObjectMapper().writeValueAsString(data));
+            pState.setString(4, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writeValueAsString(data));
             dataBase.executeAsyncUpdate(pState);
         } catch (SQLException | JsonProcessingException e) {
             e.printStackTrace();
@@ -253,7 +266,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         if (hasRecipe(data.getNamespacedKey())) {
             try {
                 PreparedStatement pState = dataBase.open().prepareStatement("UPDATE customcrafting_recipes SET rData=? WHERE rNamespace=? AND rKey=?");
-                pState.setString(1, JacksonUtil.getObjectMapper().writeValueAsString(data));
+                pState.setString(1, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writeValueAsString(data));
                 setNamespacedKey(pState, data.getNamespacedKey(), 2, 3);
                 dataBase.executeAsyncUpdate(pState);
             } catch (SQLException | JsonProcessingException e) {
@@ -301,7 +314,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         try {
             PreparedStatement pState = dataBase.open().prepareStatement("INSERT INTO customcrafting_items (rNamespace, rKey, rData) VALUES (?, ?, ?)");
             setNamespacedKey(pState, namespacedKey, 1, 2);
-            pState.setString(3, JacksonUtil.getObjectMapper().writeValueAsString(data));
+            pState.setString(3, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writeValueAsString(data));
             dataBase.executeAsyncUpdate(pState);
         } catch (SQLException | JsonProcessingException e) {
             e.printStackTrace();
@@ -312,7 +325,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         if (hasItem(namespacedKey)) {
             try {
                 PreparedStatement pState = dataBase.open().prepareStatement("UPDATE customcrafting_items SET rData=? WHERE rNamespace=? AND rKey=?");
-                pState.setString(1, JacksonUtil.getObjectMapper().writeValueAsString(data));
+                pState.setString(1, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writeValueAsString(data));
                 setNamespacedKey(pState, namespacedKey, 2, 3);
                 dataBase.executeAsyncUpdate(pState);
             } catch (SQLException | JsonProcessingException e) {

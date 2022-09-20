@@ -31,6 +31,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.entity.PlayerUtils;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class PlayerUtil {
@@ -53,6 +54,14 @@ public class PlayerUtil {
         InventoryAPI<CCCache> invAPI = customCrafting.getApi().getInventoryAPI(CCCache.class);
         var categories = customCrafting.getConfigHandler().getRecipeBookConfig();
         var bookCache = invAPI.getGuiHandler(player).getCustomCache().getRecipeBookCache();
+
+        //Reset the pages etc. so it opens up the recipe overview again
+        if (!customCrafting.getConfigHandler().getConfig().isRecipeBookKeepLastOpen()) {
+            bookCache.setResearchItems(new ArrayList<>());
+            bookCache.setSubFolderPage(0);
+            bookCache.setPage(0);
+        }
+
         // Open directly to the category if we only have one
         bookCache.setPrepareRecipe(true);
         if (categories.getSortedCategories().size() == 1) {

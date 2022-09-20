@@ -34,8 +34,6 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class CraftLimitCondition extends Condition<CraftLimitCondition> {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "craft_limit");
@@ -80,7 +78,7 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<CraftLimitCondition> {
 
         public GUIComponent() {
-            super(Material.BARRIER, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.BARRIER, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.craft_limit.set", Material.BARRIER, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftLimitCondition.class).getLimit());

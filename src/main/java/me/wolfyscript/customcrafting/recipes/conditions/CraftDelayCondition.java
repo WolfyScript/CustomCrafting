@@ -22,18 +22,20 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class CraftDelayCondition extends Condition<CraftDelayCondition> {
@@ -89,12 +91,9 @@ public class CraftDelayCondition extends Condition<CraftDelayCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<CraftDelayCondition> {
 
         public GUIComponent() {
-            super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.registerButton(new ChatInputButton<>("conditions.craft_delay.set", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftDelayCondition.class).getDelay());
-                            return itemStack;
-                        }, (guiHandler, player, s, strings) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.craft_delay.set", Material.CLOCK, (CallbackButtonRender<CCCache>) (cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftDelayCondition.class).getDelay()))), (guiHandler, player, s, strings) -> {
                             var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
                             try {
                                 long value = Long.parseLong(s);

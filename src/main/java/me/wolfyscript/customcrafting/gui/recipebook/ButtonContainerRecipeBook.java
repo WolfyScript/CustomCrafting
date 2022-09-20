@@ -106,6 +106,7 @@ class ButtonContainerRecipeBook extends Button<CCCache> {
             book.setPrepareRecipe(true);
             resetButtons(guiHandler);
         }
+        guiHandler.openWindow(ClusterRecipeBook.RECIPE_BOOK);
         return true;
     }
 
@@ -123,7 +124,7 @@ class ButtonContainerRecipeBook extends Button<CCCache> {
                 tasks.computeIfAbsent(guiHandler, thatGuiHandler ->
                         () -> {
                             var newBookCache = thatGuiHandler.getCustomCache().getRecipeBookCache();
-                            if (slot < inventory.getSize() && !displayItems.isEmpty() && openedPage == newBookCache.getPage() && currentFilter.equals(newBookCache.getCategoryFilter())) {
+                            if (slot < inventory.getSize() && !displayItems.isEmpty() && openedPage == newBookCache.getPage() && currentFilter.map(filter -> newBookCache.getCategoryFilter().map(filter::equals).orElse(false)).orElse(true)) {
                                 int variant = getTiming(thatGuiHandler);
                                 variant = variant < displayItems.size() - 1 ? ++variant : 0;
                                 guiInventory.setItem(slot, displayItems.get(variant));

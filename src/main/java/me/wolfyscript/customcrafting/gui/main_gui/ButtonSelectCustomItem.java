@@ -30,14 +30,13 @@ import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
-import me.wolfyscript.utilities.util.chat.ChatColor;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
@@ -56,24 +55,28 @@ class ButtonSelectCustomItem extends ActionButton<CCCache> {
                 return true;
             }
             WolfyUtilities api = customCrafting.getApi();
+            var chat = api.getChat();
             var customItem = registry.get(namespacedKey);
             if (event instanceof InventoryClickEvent clickEvent) {
+                var currentMenu = guiHandler.getWindow();
+                var itemEditor = guiHandler.getInvAPI().getGuiWindow(ClusterRecipeCreator.ITEM_EDITOR);
+                assert currentMenu != null;
                 if (clickEvent.isRightClick()) {
                     if (clickEvent.isShiftClick()) {
-                        api.getChat().sendKey(player, ClusterMain.ITEM_LIST, "delete.confirm", new Pair<>("%item%", customItem.getNamespacedKey().toString()));
-                        api.getChat().sendActionMessage(player, new ClickData("$inventories.none.item_list.messages.delete.confirmed$", (wolfyUtilities, player1) -> {
+                        currentMenu.sendMessage(guiHandler, currentMenu.translatedMsgKey("delete.confirm", Placeholder.unparsed("item", customItem.getNamespacedKey().toString())));
+                        currentMenu.sendMessage(guiHandler, chat.translated("inventories.none.item_list.messages.delete.confirmed").clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
                             guiHandler.openCluster();
                             Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> ItemLoader.deleteItem(namespacedKey, player));
-                        }), new ClickData("$inventories.none.item_list.messages.delete.declined$", (wolfyUtilities, player2) -> guiHandler.openCluster()));
+                        })).append(chat.translated("inventories.none.item_list.messages.delete.declined").clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> guiHandler.openCluster()))));
                     } else if (customItem != null) {
                         items.setItem(items.isRecipeItem(), customItem.clone());
-                        api.getInventoryAPI().getGuiWindow(ClusterRecipeCreator.ITEM_EDITOR).sendMessage(player, "item_editable");
+                        itemEditor.sendMessage(guiHandler, itemEditor.translatedMsgKey("item_editable"));
                         guiHandler.openWindow(ClusterItemCreator.MAIN_MENU);
                     }
                 } else if (clickEvent.isLeftClick()) {
                     if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                         cache.applyItem(customItem);
-                        api.getInventoryAPI().getGuiWindow(ClusterRecipeCreator.ITEM_EDITOR).sendMessage(player, "item_applied");
+                        itemEditor.sendMessage(guiHandler, itemEditor.translatedMsgKey("item_applied"));
                         List<? extends GuiWindow<?>> history = guiHandler.getClusterHistory().get(guiHandler.getCluster());
                         history.remove(history.size() - 1);
                         guiHandler.openCluster(ClusterRecipeCreator.KEY);
@@ -86,28 +89,31 @@ class ButtonSelectCustomItem extends ActionButton<CCCache> {
                         } else {
                             player.getLocation().getWorld().dropItem(player.getLocation(), itemStack);
                         }
+                        var playerPlaceHolder = Placeholder.unparsed("player", player.getDisplayName());
+                        var itemPlaceholder = Placeholder.unparsed("item", namespacedKey.toString());
                         if (clickEvent.isShiftClick()) {
-                            api.getChat().sendMessage(player, "$commands.give.success_amount$", new Pair<>("%PLAYER%", player.getDisplayName()), new Pair<>("%ITEM%", namespacedKey.toString()), new Pair<>("%AMOUNT%", String.valueOf(amount)));
+                            currentMenu.sendMessage(guiHandler, chat.translated("commands.give.success_amount", playerPlaceHolder, itemPlaceholder, Placeholder.unparsed("amount", String.valueOf(amount))));
                         } else {
-                            api.getChat().sendMessage(player, "$commands.give.success$", new Pair<>("%PLAYER%", player.getDisplayName()), new Pair<>("%ITEM%", namespacedKey.toString()));
+                            currentMenu.sendMessage(guiHandler, chat.translated("commands.give.success", playerPlaceHolder, itemPlaceholder));
                         }
                     }
                 }
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            var customItem = guiHandler.getApi().getRegistries().getCustomItems().get(namespacedKey);
+            var api = guiHandler.getApi();
+            var customItem = api.getRegistries().getCustomItems().get(namespacedKey);
             if (!ItemUtils.isAirOrNull(customItem)) {
                 var itemB = new ItemBuilder(customItem.create());
                 itemB.addLoreLine("");
-                itemB.addLoreLine("§8" + namespacedKey);
-                CustomCrafting.inst().getApi().getLanguageAPI().replaceKey("inventories.none.item_list.items.custom_item.lore").forEach(s -> itemB.addLoreLine(ChatColor.convert(s)));
+                itemB.addLoreLine(org.bukkit.ChatColor.DARK_GRAY.toString() + namespacedKey);
+                api.getLanguageAPI().getComponents("inventories.none.item_list.items.custom_item.lore").forEach(c -> itemB.addLoreLine(BukkitComponentSerializer.legacy().serialize(c)));
                 return itemB.create();
             }
             var itemB = new ItemBuilder(itemStack);
             itemB.addLoreLine("");
-            itemB.addLoreLine("§8" + namespacedKey);
-            itemB.addLoreLine("§c");
+            itemB.addLoreLine(org.bukkit.ChatColor.DARK_GRAY.toString() + namespacedKey);
+            itemB.addLoreLine("");
             return itemB.create();
         }));
     }

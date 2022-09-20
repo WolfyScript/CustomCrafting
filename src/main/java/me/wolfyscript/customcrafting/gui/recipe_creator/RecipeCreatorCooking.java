@@ -26,9 +26,10 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import org.bukkit.Material;
 
 public class RecipeCreatorCooking extends RecipeCreator {
@@ -43,38 +44,30 @@ public class RecipeCreatorCooking extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeResult());
-
-        registerButton(new ChatInputButton<>(XP, Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%XP%", cache.getRecipeCreatorCache().getCookingCache().getExp());
-            return itemStack;
-        }, (guiHandler, player, s, args) -> {
+        getButtonBuilder().chatInput(XP).state(state -> state.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getCookingCache().getExp()))))).inputAction((guiHandler, player, s, args) -> {
             float xp;
             try {
                 xp = Float.parseFloat(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendKey(player, getCluster(), "valid_number");
+                getChat().sendMessage(player, getCluster().translatedMsgKey("valid_number"));
                 return true;
             }
             guiHandler.getCustomCache().getRecipeCreatorCache().getCookingCache().setExp(xp);
             return false;
-        }));
-        registerButton(new ChatInputButton<>(COOKING_TIME, Material.COAL, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%TIME%", cache.getRecipeCreatorCache().getCookingCache().getCookingTime());
-            return itemStack;
-        }, (guiHandler, player, s, args) -> {
+        }).register();
+        getButtonBuilder().chatInput(COOKING_TIME).state(state -> state.icon(Material.COAL).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(cache.getRecipeCreatorCache().getCookingCache().getCookingTime()))))).inputAction((guiHandler, player, s, args) -> {
             int time;
             try {
                 time = Short.parseShort(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendKey(player, getCluster(), "valid_number");
+                getChat().sendMessage(player, getCluster().translatedMsgKey("valid_number"));
                 return true;
             }
             guiHandler.getCustomCache().getRecipeCreatorCache().getCookingCache().setCookingTime(time);
             return false;
-        }));
+        }).register();
     }
 
     @Override
@@ -88,6 +81,7 @@ public class RecipeCreatorCooking extends RecipeCreator {
         update.setButton(1, ClusterRecipeCreator.VANILLA_BOOK);
         update.setButton(3, ClusterRecipeCreator.HIDDEN);
         update.setButton(5, ClusterRecipeCreator.CONDITIONS);
+        update.setButton(7, ClusterRecipeCreator.EXACT_META);
         update.setButton(20, data.getLightBackground());
         update.setButton(11, "recipe.ingredient_0");
         update.setButton(24, "recipe.result");

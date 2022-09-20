@@ -40,6 +40,7 @@ public abstract class CCWindow extends GuiWindow<CCCache> {
     protected CCWindow(GuiCluster<CCCache> guiCluster, String namespace, int size, CustomCrafting customCrafting) {
         super(guiCluster, namespace, size);
         this.customCrafting = customCrafting;
+        setForceSyncUpdate(true);
     }
 
     public CustomCrafting getCustomCrafting() {
@@ -53,23 +54,24 @@ public abstract class CCWindow extends GuiWindow<CCCache> {
 
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
-        CCPlayerData store = PlayerUtil.getStore(update.getPlayer());
-        NamespacedKey gray = store.getDarkBackground();
-        if (getSize() > 9) {
-            NamespacedKey white = store.getLightBackground();
-            for (int i = 0; i < 9; i++) {
-                update.setButton(i, white);
-            }
-            for (int i = 9; i < getSize() - 9; i++) {
-                update.setButton(i, gray);
-            }
-            for (int i = getSize() - 9; i < getSize(); i++) {
-                update.setButton(i, white);
-            }
-            update.setButton(8, new NamespacedKey("none", "gui_help"));
-        } else {
-            for (int i = 0; i < 9; i++) {
-                update.setButton(i, gray);
+        if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
+            CCPlayerData store = PlayerUtil.getStore(update.getPlayer());
+            NamespacedKey gray = store.getDarkBackground();
+            if (getSize() > 9) {
+                NamespacedKey white = store.getLightBackground();
+                for (int i = 0; i < 9; i++) {
+                    update.setButton(i, white);
+                }
+                for (int i = 9; i < getSize() - 9; i++) {
+                    update.setButton(i, gray);
+                }
+                for (int i = getSize() - 9; i < getSize(); i++) {
+                    update.setButton(i, white);
+                }
+            } else {
+                for (int i = 0; i < 9; i++) {
+                    update.setButton(i, gray);
+                }
             }
         }
     }

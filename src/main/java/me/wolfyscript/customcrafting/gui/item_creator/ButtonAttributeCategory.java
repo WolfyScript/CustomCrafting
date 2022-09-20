@@ -29,8 +29,8 @@ import org.bukkit.Material;
 public class ButtonAttributeCategory extends ActionButton<CCCache> {
 
     public ButtonAttributeCategory(String attribute, Material material) {
-        super("attribute."+attribute, material, (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.getCustomCache().setSubSetting("attribute."+attribute);
+        super("attribute." + attribute, material, (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.getCustomCache().setSubSetting("attribute." + attribute);
             return true;
         });
     }

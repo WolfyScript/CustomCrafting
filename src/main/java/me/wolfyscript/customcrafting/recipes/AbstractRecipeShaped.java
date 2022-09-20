@@ -22,15 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
@@ -39,6 +33,13 @@ import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -50,12 +51,19 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-@JsonPropertyOrder(value = { "@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions", "symmetry", "shape", "ingredients" })
+@JsonPropertyOrder(value = {"@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions", "symmetry", "shape", "ingredients"})
 public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
     private static final String SHAPE_KEY = "shape";
@@ -65,7 +73,8 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private static final String ROTATION_KEY = "rotation";
 
     protected Map<Character, Ingredient> mappedIngredients;
-    @JsonIgnore private Shape internalShape;
+    @JsonIgnore
+    private Shape internalShape;
     private String[] shape;
     private final Symmetry symmetry;
 
@@ -83,14 +92,14 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         setIngredients(loadedIngredients);
     }
 
-    protected AbstractRecipeShaped(NamespacedKey key, String[] shape, int gridSize, S settings) {
-        this(key, gridSize, settings);
+    protected AbstractRecipeShaped(NamespacedKey key, CustomCrafting customCrafting, Symmetry symmetry, String[] shape, int gridSize, S settings) {
+        this(key, customCrafting, symmetry, gridSize, settings);
         setShape(shape);
     }
 
-    protected AbstractRecipeShaped(NamespacedKey key, int gridSize, S settings) {
-        super(key, gridSize, settings);
-        this.symmetry = new Symmetry();
+    protected AbstractRecipeShaped(NamespacedKey key, CustomCrafting customCrafting, Symmetry symmetry, int gridSize, S settings) {
+        super(key, customCrafting, gridSize, settings);
+        this.symmetry = symmetry;
         this.mappedIngredients = new HashMap<>();
     }
 
@@ -271,7 +280,10 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                     if (ingredient != null) {
                         Optional<CustomItem> item = ingredient.check(invItem, this.checkAllNBT);
                         if (item.isPresent()) {
-                            dataMap.put(recipeSlot, new IngredientData(recipeSlot, ingredient, item.get(), invItem));
+                            //In order to index the ingredients for the correct inventory slot we need to reverse the shape offset.
+                            int row = i / getInternalShape().getWidth();
+                            int offset = matrixData.getOffsetX() + (matrixData.getOffsetY() * matrixData.getGridSize());
+                            dataMap.put(i + offset + (row * (matrixData.getGridSize() - matrixData.getWidth())), new IngredientData(recipeSlot, ingredient, item.get(), new ItemStack(invItem)));
                             i++;
                             continue;
                         }
@@ -290,11 +302,25 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         if (!ingredients.isEmpty()) {
             ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(maxIngredients))).setVariants(guiHandler, this.getResult());
-            int i = 0;
+            //Center Recipe as best as possible
+            // 3 - 1 = 2 / 2 = 1 -> _x_     4 - 1 = 3 / 2 = 1 -> _x__
+            // 3 - 2 = 1 / 2 = 0 -> xx_     4 - 2 = 2 / 2 = 1 -> _xx_
+            //                              4 - 3 = 1 / 2 = 0 -> xxx_
+            //
+            // 5 - 1 = 4 / 2 = 2 -> __x__   6 - 5 = 1 / 2 = 0 -> xxxxx_
+            // 5 - 2 = 3 / 2 = 1 -> _xx__   6 - 4 = 2 / 2 = 1 -> _xxxx_
+            // 5 - 3 = 2 / 2 = 1 -> _xxx_   6 - 3 = 3 / 2 = 1 -> _xxx__
+            // 5 - 4 = 1 / 2 = 0 -> xxxx_   6 - 2 = 4 / 2 = 2 -> __xx__
+            //                              6 - 1 = 5 / 2 = 2 -> __x___
+            int rowOffset = (maxGridDimension - internalShape.getWidth()) / 2;
+            int columnOffset = (maxGridDimension - internalShape.getHeight()) / 2;
+            int rowLimit = internalShape.width + rowOffset;
+            int columnLimit = internalShape.height + columnOffset;
+            int i = (columnOffset * maxGridDimension) + rowOffset;
             int ingredientIndex = 0;
-            for (int r = 0; r < maxGridDimension; r++) {
-                for (int c = 0; c < maxGridDimension; c++) {
-                    if (c < internalShape.width && r < internalShape.height && ingredientIndex < ingredients.size()) {
+            for (int r = columnOffset; r < maxGridDimension; r++) {
+                for (int c = rowOffset; c < maxGridDimension; c++) {
+                    if (c < rowLimit && r < columnLimit && ingredientIndex < ingredients.size()) {
                         var ingredient = ingredients.get(ingredientIndex);
                         if (ingredient != null) {
                             ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i))).setVariants(guiHandler, ingredient);
@@ -303,6 +329,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                     }
                     i++;
                 }
+                i += rowOffset;
             }
         }
     }
@@ -433,7 +460,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         private boolean vertical;
         private boolean rotate;
 
-        private Symmetry() {
+        Symmetry() {
             this.horizontal = false;
             this.vertical = false;
             this.rotate = false;

@@ -22,16 +22,22 @@
 
 package me.wolfyscript.customcrafting;
 
+import com.wolfyscript.jackson.dataformat.hocon.HoconFactory;
+import com.wolfyscript.jackson.dataformat.hocon.HoconGenerator;
+import com.wolfyscript.jackson.dataformat.hocon.HoconMapper;
+import java.io.IOException;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
+import me.wolfyscript.customcrafting.compatibility.PluginCompatibility;
+import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.custom_data.CauldronData;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.patreon.Patreon;
-import me.wolfyscript.customcrafting.data.patreon.Patron;
+import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
+import me.wolfyscript.customcrafting.gui.cauldron.CauldronWorkstationCluster;
 import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabArmorSlots;
@@ -84,6 +90,7 @@ import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
 import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.conditions.ConditionAdvancement;
+import me.wolfyscript.customcrafting.recipes.conditions.ConditionCustomPlayerCheck;
 import me.wolfyscript.customcrafting.recipes.conditions.ConditionScoreboard;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftLimitCondition;
@@ -105,6 +112,7 @@ import me.wolfyscript.customcrafting.recipes.items.target.adapters.DisplayNameMe
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantedBookMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.FireworkRocketMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.NBTMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.PlaceholderAPIMergeAdapter;
 import me.wolfyscript.customcrafting.registry.CCRegistries;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -112,15 +120,15 @@ import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.UpdateChecker;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
-import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
@@ -128,13 +136,11 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.Level;
-
+@JsonIncludeProperties(/* Do not include properties because it is injected and there is no need to serialize this class! */)
 public class CustomCrafting extends JavaPlugin {
 
     private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
@@ -149,6 +155,7 @@ public class CustomCrafting extends JavaPlugin {
     public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
     public static final int CONFIG_VERSION = 5;
+    private final Component coloredTitle;
 
     //Instance Object to use when no Object was passed!
     private static CustomCrafting instance;
@@ -168,12 +175,11 @@ public class CustomCrafting extends JavaPlugin {
     //File Handlers to load, save or edit data
     private ConfigHandler configHandler;
     private DataHandler dataHandler;
-    private Cauldrons cauldrons = null;
     //Network
     private final UpdateChecker updateChecker;
     private final NetworkHandler networkHandler;
     //Compatibility
-    private final OtherPlugins otherPlugins;
+    private final PluginCompatibility pluginCompatibility;
     private final boolean isPaper;
 
     public CustomCrafting() {
@@ -181,17 +187,25 @@ public class CustomCrafting extends JavaPlugin {
         instance = this;
         currentVersion = getDescription().getVersion();
         this.version = WUVersion.parse(currentVersion.split("-")[0]);
-        this.otherPlugins = new OtherPlugins(this);
+        this.pluginCompatibility = new PluginCompatibility(this);
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
         api = WolfyUtilCore.getInstance().getAPI(this, false);
-        JacksonUtil.getObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+
+        HoconMapper mapper = new HoconMapper(new HoconFactory()
+                .disable(HoconGenerator.Feature.ROOT_OBJECT_BRACKETS)
+                .disable(HoconGenerator.Feature.ALWAYS_QUOTE_STRINGS)
+                .disable(HoconGenerator.Feature.OBJECT_VALUE_SEPARATOR));
+        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        api.getJacksonMapperUtil().setGlobalMapper(api.getCore().applyWolfyUtilsJsonMapperModules(mapper));
 
         this.registries = new CCRegistries(this, api.getCore());
 
-        api.getChat().setInGamePrefix("§7[§3CC§7] ");
+        var chat = api.getChat();
+        chat.setChatPrefix(chat.getMiniMessage().deserialize("<gray>[<gradient:dark_aqua:aqua>CC</gradient>]</gray>"));
+        this.coloredTitle = chat.getMiniMessage().deserialize("<gradient:dark_aqua:aqua><b>CustomCrafting</b></gradient>");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
         this.chatUtils = new ChatUtils(this);
-        this.patreon = new Patreon();
+        this.patreon = new Patreon(this);
         this.updateChecker = new UpdateChecker(this, 55883);
         this.networkHandler = new NetworkHandler(this, api);
 
@@ -199,6 +213,11 @@ public class CustomCrafting extends JavaPlugin {
         this.cookingManager = new CookingManager(this);
     }
 
+    /**
+     * Gets the instance of the CustomCrafting plugin.<br>
+     *
+     * @return The instance of this plugin.
+     */
     public static CustomCrafting inst() {
         return instance;
     }
@@ -217,15 +236,24 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("CustomCrafting: v" + getVersion().getVersion());
         getLogger().info("Environment   : " + WolfyUtilities.getENVIRONMENT());
 
-        getLogger().info("Registering custom data");
+        api.getCore().applyWolfyUtilsJsonMapperModules(api.getJacksonMapperUtil().getGlobalMapper());
+
+        ConfigurationSerialization.registerClass(MainConfig.DatabaseSettings.class);
+        ConfigurationSerialization.registerClass(MainConfig.LocalStorageSettings.class);
+
+        getLogger().info("Registering CustomItem Data");
         var customItemData = api.getRegistries().getCustomItemData();
         customItemData.register(new EliteWorkbenchData.Provider());
         customItemData.register(new RecipeBookData.Provider());
         customItemData.register(new CauldronData.Provider());
 
+        getLogger().info("Registering Custom Block Data");
+        var customBlockData = api.getRegistries().getCustomBlockData();
+        customBlockData.register(CauldronBlockData.ID, CauldronBlockData.class);
+
         getLogger().info("Registering Result Extensions");
         var resultExtensions = getRegistries().getRecipeResultExtensions();
-        resultExtensions.register(new CommandResultExtension());
+        resultExtensions.register(new CommandResultExtension(this));
         resultExtensions.register(new MythicMobResultExtension());
         resultExtensions.register(new SoundResultExtension());
         resultExtensions.register(new ResultExtensionAdvancement());
@@ -240,6 +268,9 @@ public class CustomCrafting extends JavaPlugin {
         resultMergeAdapters.register(new DamageMergeAdapter());
         resultMergeAdapters.register(new PlaceholderAPIMergeAdapter());
         resultMergeAdapters.register(new FireworkRocketMergeAdapter());
+        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 4, 0))) {
+            resultMergeAdapters.register(new NBTMergeAdapter());
+        }
 
         getLogger().info("Registering Recipe Conditions");
         var recipeConditions = getRegistries().getRecipeConditions();
@@ -254,12 +285,14 @@ public class CustomCrafting extends JavaPlugin {
         recipeConditions.register(WorldNameCondition.KEY, WorldNameCondition.class, new WorldNameCondition.GUIComponent());
         recipeConditions.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
         recipeConditions.register(ConditionAdvancement.KEY, ConditionAdvancement.class, new ConditionAdvancement.GUIComponent());
+        recipeConditions.register(ConditionCustomPlayerCheck.KEY, ConditionCustomPlayerCheck.class, new ConditionCustomPlayerCheck.GUIComponent());
 
         if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(3, 16, 3, 0))) {
             //Only register it when the features are available
             recipeConditions.register(ConditionScoreboard.KEY, ConditionScoreboard.class, new ConditionScoreboard.GUIComponent());
         }
 
+        getLogger().info("Registering Recipe Types");
         var recipeTypes = getRegistries().getRecipeTypes();
         recipeTypes.register(RecipeType.CRAFTING_SHAPED);
         recipeTypes.register(RecipeType.CRAFTING_SHAPELESS);
@@ -276,11 +309,13 @@ public class CustomCrafting extends JavaPlugin {
         recipeTypes.register(RecipeType.BREWING_STAND);
         recipeTypes.register(RecipeType.SMITHING);
 
+        getLogger().info("Registering Anvil Recipe Tasks");
         var anvilRecipeRepairTasks = getRegistries().getAnvilRecipeRepairTasks();
         anvilRecipeRepairTasks.register(RepairTaskDefault.KEY, RepairTaskDefault.class);
         anvilRecipeRepairTasks.register(RepairTaskResult.KEY, RepairTaskResult.class);
         anvilRecipeRepairTasks.register(RepairTaskDurability.KEY, RepairTaskDurability.class);
 
+        getLogger().info("Registering Type Registries");
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, resultExtensions);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, resultMergeAdapters);
         KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) (Object) Condition.class, recipeConditions);
@@ -291,11 +326,13 @@ public class CustomCrafting extends JavaPlugin {
     public void onEnable() {
         this.api.initialize();
         writeBanner();
-        writePatreonCredits();
+        this.patreon.initialize();
+        this.patreon.printPatreonCredits();
         writeSeparator();
+
         this.configHandler = new ConfigHandler(this);
         this.configHandler.load();
-        this.otherPlugins.init();
+        this.pluginCompatibility.init();
         this.dataHandler = new DataHandler(this);
         this.disableRecipesHandler = new DisableRecipesHandler(this);
 
@@ -306,7 +343,6 @@ public class CustomCrafting extends JavaPlugin {
         if (WolfyUtilities.isDevEnv()) {
             this.networkHandler.registerPackets();
         }
-        cauldrons = new Cauldrons(this);
         if (api.getCore().getCompatibilityManager().getPlugins().isDoneLoading()) {
             dataHandler.loadRecipesAndItems();
         }
@@ -326,8 +362,6 @@ public class CustomCrafting extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cauldrons.endAutoSaveTask();
-        cauldrons.save();
     }
 
     private void writeBanner() {
@@ -341,27 +375,6 @@ public class CustomCrafting extends JavaPlugin {
 
     public void writeSeparator() {
         getLogger().info(CONSOLE_SEPARATOR);
-    }
-
-    private void writePatreonCredits() {
-        patreon.initialize();
-        getLogger().info("");
-        getLogger().info("Special thanks to my Patrons for supporting this project: ");
-        List<Patron> patronList = patreon.getPatronList();
-        int linePos = 0;
-        StringBuilder sB = new StringBuilder();
-        for (Patron patron : patronList) {
-            String name = patron.getName();
-            sB.append(name);
-            if (linePos == 5) {
-                getLogger().log(Level.INFO, sB.toString());
-                sB = new StringBuilder();
-                linePos = 0;
-            } else {
-                sB.append(", ");
-                linePos++;
-            }
-        }
     }
 
     private void registerListeners() {
@@ -393,6 +406,7 @@ public class CustomCrafting extends JavaPlugin {
     private void registerInventories() {
         api.getConsole().info("$msg.startup.inventories$");
         InventoryAPI<CCCache> invAPI = this.api.getInventoryAPI(CCCache.class);
+        getLogger().info("Register ItemCreator Tabs");
         var registry = getRegistries().getItemCreatorTabs();
         //Register tabs for the item creator
         registry.register(new TabArmorSlots());
@@ -426,12 +440,27 @@ public class CustomCrafting extends JavaPlugin {
         invAPI.registerCluster(new ClusterItemCreator(invAPI, this));
         invAPI.registerCluster(new ClusterPotionCreator(invAPI, this));
         invAPI.registerCluster(new ClusterRecipeBookEditor(invAPI, this));
+        invAPI.registerCluster(new CauldronWorkstationCluster(invAPI, this));
     }
 
     public ConfigHandler getConfigHandler() {
         return configHandler;
     }
 
+    /**
+     * Gets the formatted name of this plugin.
+     *
+     * @return The Component of the formatted plugin name.
+     */
+    public Component getColoredTitle() {
+        return coloredTitle;
+    }
+
+    /**
+     * Gets the WolfyUtilities API instance that is bound to this plugin.
+     *
+     * @return The WolfyUtilities instance of this plugin.
+     */
     public WolfyUtilities getApi() {
         return api;
     }
@@ -440,10 +469,21 @@ public class CustomCrafting extends JavaPlugin {
         this.networkHandler.disconnectPlayer(player);
     }
 
+    /**
+     * Gets the DataHandler that loads and saves recipes and items, that are saved in the data directory.
+     *
+     * @return The DataHandler instance
+     */
     public DataHandler getDataHandler() {
         return dataHandler;
     }
 
+    /**
+     * Gets the CraftManager that manages crafting and caches required data.<br>
+     * This can be used to identify if a player has an active custom recipe for example.
+     *
+     * @return The CraftManager instance
+     */
     public CraftManager getCraftManager() {
         return craftManager;
     }
@@ -454,10 +494,6 @@ public class CustomCrafting extends JavaPlugin {
 
     public ChatUtils getChatUtils() {
         return chatUtils;
-    }
-
-    public Cauldrons getCauldrons() {
-        return cauldrons;
     }
 
     public Patreon getPatreon() {
@@ -472,14 +508,30 @@ public class CustomCrafting extends JavaPlugin {
         return updateChecker;
     }
 
+    /**
+     * Gets the version of CustomCrafting parsed to the {@link WUVersion} object.
+     *
+     * @return The version of CustomCrafting
+     */
     public WUVersion getVersion() {
         return version;
     }
 
+    /**
+     * Gets the DisableRecipesHandler that handles toggling of vanilla and custom recipes.
+     *
+     * @return The DisableRecipeHandler instance
+     */
     public DisableRecipesHandler getDisableRecipesHandler() {
         return disableRecipesHandler;
     }
 
+    /**
+     * Gets the Registries of CustomCrafting.<br>
+     * Registries allow you to add custom content to CustomCrafting, from recipes to JSON configurable objects.
+     *
+     * @return The Registries of CustomCrafting
+     */
     public CCRegistries getRegistries() {
         return registries;
     }

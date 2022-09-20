@@ -31,13 +31,10 @@ import me.wolfyscript.customcrafting.registry.RegistryRecipes;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Keyed;
 import org.bukkit.inventory.Recipe;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -51,38 +48,37 @@ public class MenuListRecipes extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("back", new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeList().setPage(0);
-            for (int i = 0; i < 45; i++) {
-                ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(i));
-                button.setCustomRecipe(guiHandler, null);
-                button.setRecipe(guiHandler, null);
-            }
-            if (cache.getRecipeList().getNamespace() == null) {
-                guiHandler.openPreviousWindow();
-                return true;
-            }
-            if (cache.getRecipeList().getFolder() == null) {
-                cache.getRecipeList().setNamespace(null);
-            } else {
-                cache.getRecipeList().setFolder(null);
-            }
-            return true;
-        })));
-        registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action("back").state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"))
+                .action((cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
+                    cache.getRecipeList().setPage(0);
+                    for (int i = 0; i < 45; i++) {
+                        ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(i));
+                        button.setCustomRecipe(guiHandler, null);
+                        button.setRecipe(guiHandler, null);
+                    }
+                    if (cache.getRecipeList().getNamespace() == null) {
+                        guiHandler.openPreviousWindow();
+                        return true;
+                    }
+                    if (cache.getRecipeList().getFolder() == null) {
+                        cache.getRecipeList().setNamespace(null);
+                    } else {
+                        cache.getRecipeList().setFolder(null);
+                    }
+                    return true;
+                })).register();
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, guiInv, i, event) -> {
             cache.getRecipeList().setPage(cache.getRecipeList().getPage() + 1);
             return true;
-        }));
-        registerButton(new ActionButton<>("previous_page", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, guiInv, i, event) -> {
             int page = cache.getRecipeList().getPage();
             if (page > 0) {
                 cache.getRecipeList().setPage(--page);
             }
             return true;
-        }));
-
+        })).register();
         registerButton(new ButtonRecipeListWorkstationFilter());
-
         for (int i = 0; i < 45; i++) {
             registerButton(new ButtonContainerRecipeList(i, customCrafting));
             registerButton(new ButtonNamespaceRecipe(i, customCrafting));
@@ -94,6 +90,7 @@ public class MenuListRecipes extends CCWindow {
         super.onUpdateAsync(event);
         GuiHandler<CCCache> guiHandler = event.getGuiHandler();
         event.setButton(0, "back");
+        event.setButton(8, ClusterMain.GUI_HELP);
 
         RegistryRecipes customRecipes = customCrafting.getRegistries().getRecipes();
         RecipeList recipeListCache = event.getGuiHandler().getCustomCache().getRecipeList();
@@ -125,8 +122,9 @@ public class MenuListRecipes extends CCWindow {
                 button.setRecipe(event.getGuiHandler(), recipes.get(i));
                 event.setButton(9 + slot, button);
             }
-        } else if (folder == null){
+        } else if (folder == null) {
             List<String> folders = customRecipes.folders(namespace);
+            folders.remove("");
             maxPages = recipeListCache.getMaxPages(folders.size());
             page = recipeListCache.getPage(maxPages);
             for (int i = 45 * page, slot = 0; slot < 45 && i < folders.size(); i++, slot++) {

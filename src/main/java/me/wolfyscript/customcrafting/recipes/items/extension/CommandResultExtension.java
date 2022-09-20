@@ -24,6 +24,9 @@ package me.wolfyscript.customcrafting.recipes.items.extension;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
@@ -38,25 +41,30 @@ import java.util.List;
 
 public class CommandResultExtension extends ResultExtension {
 
+    @JsonIgnore
+    private final CustomCrafting customCrafting;
     private List<String> consoleCommands = new ArrayList<>();
     private List<String> playerCommands = new ArrayList<>();
     private boolean nearPlayer = false;
     private boolean nearWorkstation = false;
 
-    public CommandResultExtension() {
-        super(new NamespacedKey(CustomCrafting.inst(), "command"));
+    @JsonCreator
+    public CommandResultExtension(@JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(new NamespacedKey(customCrafting, "command"));
+        this.customCrafting = customCrafting;
     }
 
     public CommandResultExtension(CommandResultExtension extension) {
         super(extension);
+        this.customCrafting = extension.customCrafting;
         this.consoleCommands = extension.consoleCommands;
         this.playerCommands = extension.playerCommands;
         this.nearPlayer = extension.nearPlayer;
         this.nearWorkstation = extension.nearWorkstation;
     }
 
-    public CommandResultExtension(List<String> consoleCommands, List<String> playerCommands, boolean nearPlayer, boolean nearWorkstation) {
-        this();
+    public CommandResultExtension(CustomCrafting customCrafting, List<String> consoleCommands, List<String> playerCommands, boolean nearPlayer, boolean nearWorkstation) {
+        this(customCrafting);
         this.consoleCommands = consoleCommands;
         this.playerCommands = playerCommands;
         this.nearPlayer = nearPlayer;

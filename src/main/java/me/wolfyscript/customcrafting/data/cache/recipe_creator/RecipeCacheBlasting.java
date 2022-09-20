@@ -22,16 +22,17 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBlasting;
 
 public class RecipeCacheBlasting extends RecipeCacheCooking<CustomRecipeBlasting> {
 
-    RecipeCacheBlasting() {
-        super();
+    RecipeCacheBlasting(CustomCrafting customCrafting) {
+        super(customCrafting);
     }
 
-    RecipeCacheBlasting(CustomRecipeBlasting recipe) {
-        super(recipe);
+    RecipeCacheBlasting(CustomCrafting customCrafting, CustomRecipeBlasting recipe) {
+        super(customCrafting, recipe);
     }
 
     @Override

@@ -61,15 +61,14 @@ class ButtonSlotResult extends ItemInputButton<CCCache> {
                         }
                     }
                     return false;
-                } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK) && cacheEliteCraftingTable.getResult() != null && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
+                } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK) && !ItemUtils.isAirOrNull(cacheEliteCraftingTable.getResult()) && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
                     if (inventory.getWindow() instanceof CraftingWindow craftingWindow && (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(cacheEliteCraftingTable.getResult()))) {
-                        customCrafting.getCraftManager().consumeRecipe(cacheEliteCraftingTable.getResult(), clickEvent);
-                        cacheEliteCraftingTable.setResult(null);
-                        int invSlot;
-                        for (int i = 0; i < craftingWindow.gridSize * craftingWindow.gridSize; i++) {
-                            invSlot = craftingWindow.getGridX() + i + (i / craftingWindow.gridSize) * (9 - craftingWindow.gridSize);
-                            inventory.setItem(invSlot, cacheEliteCraftingTable.getContents()[i]);
-                        }
+                        customCrafting.getCraftManager().get(event.getWhoClicked().getUniqueId()).ifPresent(craftingData -> {
+                            customCrafting.getCraftManager().consumeRecipe(clickEvent);
+                            cacheEliteCraftingTable.setResult(null);
+                            cacheEliteCraftingTable.setContents(new ItemStack[craftingWindow.gridSize * craftingWindow.gridSize]);
+                            craftingData.getIndexedBySlot().forEach((integer, ingredientData) -> cacheEliteCraftingTable.getContents()[integer] = ingredientData.itemStack());
+                        });
                         customCrafting.getCraftManager().remove(event.getWhoClicked().getUniqueId());
                     }
                 }

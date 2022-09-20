@@ -32,7 +32,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public class DisableRecipesHandler {
 
@@ -47,7 +52,7 @@ public class DisableRecipesHandler {
         this.config = customCrafting.getConfigHandler().getConfig();
 
         if (!config.getDisabledRecipes().isEmpty()) {
-            recipes.addAll(config.getDisabledRecipes().parallelStream().map(NamespacedKey::of).toList());
+            recipes.addAll(config.getDisabledRecipes().parallelStream().map(NamespacedKey::of).filter(Objects::nonNull).toList());
             recipes.forEach(key -> {
                 if (customCrafting.getRegistries().getRecipes().has(key)) {
                     disableRecipe(Objects.requireNonNull(customCrafting.getRegistries().getRecipes().get(key)));

@@ -22,9 +22,17 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.google.common.collect.Streams;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.brewing.EffectAddition;
-import me.wolfyscript.customcrafting.recipes.brewing.EffectSettingsUpgrade;
 import me.wolfyscript.customcrafting.recipes.brewing.EffectSettingsRequired;
+import me.wolfyscript.customcrafting.recipes.brewing.EffectSettingsUpgrade;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
@@ -35,13 +43,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import com.google.common.collect.Streams;
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
-import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
-import me.wolfyscript.customcrafting.recipes.items.Ingredient;
-import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -59,7 +60,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
@@ -95,7 +101,7 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     public CustomRecipeBrewing(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
-        this.result = ItemLoader.loadResult(node.path("results"));
+        this.result = ItemLoader.loadResult(node.path("results"), this.customCrafting);
         this.fuelCost = node.path("fuel_cost").asInt(1);
         this.brewTime = node.path("brew_time").asInt(80);
         this.allowedItems = ItemLoader.loadIngredient(node.path("allowed_items"));
@@ -112,8 +118,8 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     }
 
     @JsonCreator
-    public CustomRecipeBrewing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key, RecipeType.BREWING_STAND);
+    public CustomRecipeBrewing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting, RecipeType.BREWING_STAND);
         this.ingredients = new Ingredient();
         this.fuelCost = 1;
         this.brewTime = 400;
@@ -130,7 +136,12 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         this.requiredEffectsByEffectType = new HashMap<>();
     }
 
-    public CustomRecipeBrewing(CustomRecipeBrewing customRecipeBrewing) {
+    @Deprecated
+    public CustomRecipeBrewing(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
+    }
+
+    private CustomRecipeBrewing(CustomRecipeBrewing customRecipeBrewing) {
         super(customRecipeBrewing);
         this.ingredients = customRecipeBrewing.getIngredient();
         this.fuelCost = customRecipeBrewing.getFuelCost();
@@ -283,13 +294,18 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     }
 
     /**
-     *
      * @deprecated The upgrades are using their own object now. This method converts it to the new format. Use {@link #setEffectUpgrades(List)} instead!
      */
     @JsonIgnore
     @Deprecated
-    public void setEffectUpgrades(Map<PotionEffectType, Pair<Integer, Integer>> effectUpgradesByEffectType) {
-        this.effectUpgradesByEffectType = effectUpgradesByEffectType.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new EffectSettingsUpgrade(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue())));
+    public void setEffectUpgrades(Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades) {
+        this.effectUpgradesByEffectType = new HashMap<>();
+        this.effectUpgrades = new ArrayList<>();
+        for (var entry : effectUpgrades.entrySet()) {
+            var upgrade = new EffectSettingsUpgrade(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue());
+            this.effectUpgrades.add(upgrade);
+            this.effectUpgradesByEffectType.put(entry.getKey(), upgrade);
+        }
     }
 
     /**
@@ -299,8 +315,8 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
      */
     @JsonSetter("effectUpgrades")
     public void setEffectUpgrades(List<EffectSettingsUpgrade> effectUpgrades) {
-        this.effectUpgrades = effectUpgrades;
-        this.effectUpgradesByEffectType = effectUpgrades.stream().collect(Collectors.toMap(EffectSettingsUpgrade::getEffectType, settings -> settings));
+        this.effectUpgrades = Objects.requireNonNullElseGet(effectUpgrades, ArrayList::new);
+        this.effectUpgradesByEffectType = this.effectUpgrades.stream().collect(Collectors.toMap(EffectSettingsUpgrade::getEffectType, settings -> settings));
     }
 
     /**
@@ -322,7 +338,13 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     @JsonIgnore
     @Deprecated
     public void setRequiredEffects(Map<PotionEffectType, Pair<Integer, Integer>> requiredEffects) {
-        this.requiredEffectsByEffectType = requiredEffects.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new EffectSettingsRequired(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue())));
+        this.requiredEffectsByEffectType = new HashMap<>();
+        this.requiredEffects = new ArrayList<>();
+        for (var entry : requiredEffects.entrySet()) {
+            var required = new EffectSettingsRequired(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue());
+            this.requiredEffects.add(required);
+            this.requiredEffectsByEffectType.put(entry.getKey(), required);
+        }
     }
 
     /**
@@ -332,8 +354,8 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
      */
     @JsonSetter("requiredEffects")
     public void setRequiredEffects(List<EffectSettingsRequired> requiredEffects) {
-        this.requiredEffects = requiredEffects;
-        this.requiredEffectsByEffectType = requiredEffects.stream().collect(Collectors.toMap(EffectSettingsRequired::getEffectType, settings -> settings));
+        this.requiredEffects = Objects.requireNonNullElseGet(requiredEffects, ArrayList::new);
+        this.requiredEffectsByEffectType = this.requiredEffects.stream().collect(Collectors.toMap(EffectSettingsRequired::getEffectType, settings -> settings));
     }
 
     /**

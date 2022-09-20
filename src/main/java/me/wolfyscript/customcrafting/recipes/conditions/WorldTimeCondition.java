@@ -29,8 +29,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 
-import java.util.List;
-
 public class WorldTimeCondition extends Condition<WorldTimeCondition> {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_time");
@@ -44,7 +42,7 @@ public class WorldTimeCondition extends Condition<WorldTimeCondition> {
 
     @Override
     public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
-        if(data.getBlock() != null) {
+        if (data.getBlock() != null) {
             long currentTime = data.getBlock().getWorld().getTime();
             return switch (option) {
                 case EXACT -> currentTime == time;
@@ -70,7 +68,7 @@ public class WorldTimeCondition extends Condition<WorldTimeCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<WorldTimeCondition> {
 
         public GUIComponent() {
-            super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+            super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.world_time.set", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldTimeCondition.class).getTime());

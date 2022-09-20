@@ -22,18 +22,19 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import com.google.common.base.Preconditions;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -62,8 +63,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         this.source = ItemLoader.loadIngredient(node.path("source"));
     }
 
-    protected CustomRecipeCooking(NamespacedKey key) {
-        super(key);
+    protected CustomRecipeCooking(NamespacedKey key, CustomCrafting customCrafting) {
+        super(key, customCrafting);
         this.source = new Ingredient();
         this.exp = 0;
         this.cookingTime = 80;
@@ -130,7 +131,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     }
 
     protected RecipeChoice getRecipeChoice() {
-        return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().getChoices().parallelStream().map(CustomItem::create).toList()) : new RecipeChoice.MaterialChoice(getSource().getChoices().parallelStream().map(i -> i.create().getType()).toList());
+        return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().getChoices().stream().map(CustomItem::create).toList()) : new RecipeChoice.MaterialChoice(getSource().getChoices().stream().map(i -> i.create().getType()).toList());
     }
 
     @Override
@@ -185,5 +186,15 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     @Override
     public void setVisibleVanillaBook(boolean vanillaBook) {
         this.vanillaBook = vanillaBook;
+    }
+
+    @Override
+    public boolean isAutoDiscover() {
+        return autoDiscover;
+    }
+
+    @Override
+    public void setAutoDiscover(boolean autoDiscover) {
+        this.autoDiscover = autoDiscover;
     }
 }

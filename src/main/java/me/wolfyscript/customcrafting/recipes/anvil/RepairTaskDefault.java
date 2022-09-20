@@ -34,8 +34,6 @@ import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 
-import java.util.Map;
-
 public class RepairTaskDefault extends RepairTask {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "default");

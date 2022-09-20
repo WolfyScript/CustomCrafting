@@ -25,18 +25,14 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Material;
-import org.bukkit.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public class EditorMain extends CCWindow {
 
@@ -51,40 +47,40 @@ public class EditorMain extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>(CANCEL, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(CANCEL).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, inventory, slot, event) -> {
             customCrafting.getConfigHandler().loadRecipeBookConfig();
             guiHandler.openCluster("none");
             return true;
-        }));
-        registerButton(new ActionButton<>(SAVE, Material.WRITTEN_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        getButtonBuilder().action(SAVE).state(s -> s.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
             try {
-                if (!new File(customCrafting.getDataFolder(), "recipe_book.json").renameTo(new File(customCrafting.getDataFolder(), "recipe_book_backup.json"))) {
-                    api.getChat().sendKey(player, "recipe_book_editor", "save.failed_backup");
+                if (!new File(customCrafting.getDataFolder(), "recipe_book.conf").renameTo(new File(customCrafting.getDataFolder(), "recipe_book_backup.conf"))) {
+                    sendMessage(guiHandler, getCluster().translatedMsgKey("save.failed_backup"));
                 }
                 customCrafting.getConfigHandler().save();
-                api.getChat().sendKey(player, "recipe_book_editor", "save.success");
+                sendMessage(guiHandler, getCluster().translatedMsgKey("save.success"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
             guiHandler.openCluster("none");
             return true;
-        }));
-        registerButton(new ActionButton<>(FILTERS, Material.COMPASS, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        getButtonBuilder().action(FILTERS).state(s -> s.icon(Material.COMPASS).action((cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().setFilters(true);
             guiHandler.openWindow(FILTERS);
             return true;
-        }));
-        registerButton(new ActionButton<>(CATEGORIES, Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        getButtonBuilder().action(CATEGORIES).state(s -> s.icon(Material.CHEST).action((cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().setFilters(false);
             guiHandler.openWindow(CATEGORIES);
             return true;
-        }));
+        })).register();
     }
 
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        update.setButton(0, PlayerUtil.getStore(update.getPlayer()).getLightBackground());
+        update.setButton(0, customCrafting.getConfigHandler().getConfig().isGUIDrawBackground() ? PlayerUtil.getStore(update.getPlayer()).getLightBackground() : ClusterMain.EMPTY);
         update.setButton(20, CATEGORIES);
         update.setButton(24, FILTERS);
 

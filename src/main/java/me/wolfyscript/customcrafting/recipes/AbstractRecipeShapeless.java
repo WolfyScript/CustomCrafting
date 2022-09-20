@@ -22,37 +22,49 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Streams;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
-    @JsonIgnore private List<Integer> indexes;
-    @JsonIgnore private int combinations = 1;
-    @JsonIgnore private int nonEmptyIngredientSize;
-    @JsonIgnore private boolean hasAllowedEmptyIngredient;
+    @JsonIgnore
+    private List<Integer> indexes;
+    @JsonIgnore
+    private int combinations = 1;
+    @JsonIgnore
+    private int nonEmptyIngredientSize;
+    @JsonIgnore
+    private boolean hasAllowedEmptyIngredient;
 
     protected AbstractRecipeShapeless(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node, gridSize, settingsType);
@@ -62,8 +74,8 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         setIngredients(Streams.stream(node.path(INGREDIENTS_KEY).elements()).map(ItemLoader::loadIngredient).toList());
     }
 
-    protected AbstractRecipeShapeless(NamespacedKey key, int gridSize, S settings) {
-        super(key, gridSize, settings);
+    protected AbstractRecipeShapeless(NamespacedKey key, CustomCrafting customCrafting, int gridSize, S settings) {
+        super(key, customCrafting, gridSize, settings);
     }
 
     protected AbstractRecipeShapeless(CraftingRecipe<C, S> craftingRecipe) {
@@ -119,7 +131,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         indexes.sort((index, index1) -> {
             var ingredient = this.ingredients.get(index);
             var ingredient1 = this.ingredients.get(index1);
-            if(ingredient.getChoices().size() > 1) {
+            if (ingredient.getChoices().size() > 1) {
                 return ingredient1.getChoices().size() > 1 ? 0 : 1;
             }
             return ingredient1.getChoices().size() > 1 ? -1 : 0;
@@ -132,22 +144,22 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @Override
     public boolean fitsDimensions(CraftManager.MatrixData matrixData) {
-        return hasAllowedEmptyIngredient ? ( matrixData.getStrippedSize() >= nonEmptyIngredientSize && matrixData.getStrippedSize() <= ingredients.size() ) : matrixData.getStrippedSize() == nonEmptyIngredientSize;
+        return hasAllowedEmptyIngredient ? (matrixData.getStrippedSize() >= nonEmptyIngredientSize && matrixData.getStrippedSize() <= ingredients.size()) : matrixData.getStrippedSize() == nonEmptyIngredientSize;
     }
 
     @Override
     public CraftingData check(CraftManager.MatrixData matrixData) {
-        Map<Integer, IngredientData> dataMap = new HashMap<>();
-        List<Integer> selectedSlots = new ArrayList<>();
-        Multimap<Integer, Integer> checkedSlots = HashMultimap.create(ingredients.size(), ingredients.size());
-        ItemStack[] matrix = matrixData.getItems();
+        final Map<Integer, IngredientData> dataMap = new HashMap<>();
+        final List<Integer> selectedSlots = new LinkedList<>();
+        final Multimap<Integer, Integer> checkedSlots = HashMultimap.create(ingredients.size(), ingredients.size());
+        final ItemStack[] matrix = matrixData.getItems();
         /*
         Previous implementation had the issue that it didn't go through all possible variations and therefore failed to verify the recipe if the items weren't arranged correctly.
         The new implementation should fix that. Of course at the cost of more calculation time... For 9 ingredients not that big of a deal, but for 36, well... that's why 3x3 recipe grids should be the max size possible.
          */
         for (int i = 0; i < matrix.length; i++) { //First we go through all the items in the grid.
             var checked = checkedSlots.get(i);
-            var recipeSlot = checkIngredientNew(i, selectedSlots, checked, dataMap, matrix[i]); //Get the slot of the ingredient or -1 if non is found.
+            var recipeSlot = checkIngredientNew(i, matrixData, selectedSlots, checked, dataMap, matrix[i]); //Get the slot of the ingredient or -1 if non is found.
             if (recipeSlot == -1) {
                 if (i == 0 || checked.size() == indexes.size()) { //We can directly end the check if it fails for the first slot.
                     return null;
@@ -167,22 +179,25 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         if ((selectedSlots.size() == ingredients.size())) {
             return new CraftingData(this, dataMap);
         }
-        if(hasAllowedEmptyIngredient && matrixData.getStrippedSize() == selectedSlots.size()) { //The empty ingredients can be very tricky in shapeless recipes and shouldn't be used... but might as well implement it anyway.
+        if (hasAllowedEmptyIngredient && matrixData.getStrippedSize() == selectedSlots.size()) { //The empty ingredients can be very tricky in shapeless recipes and shouldn't be used... but might as well implement it anyway.
             if (indexes.stream().filter(index -> !selectedSlots.contains(index)).allMatch(index -> ingredients.get(index).isAllowEmpty())) {
                 return new CraftingData(this, dataMap);
             }
         }
-
         return null;
     }
 
-    protected Integer checkIngredientNew(int pos, List<Integer> selectedSlots, Collection<Integer> checkedSlots, Map<Integer, IngredientData> dataMap, ItemStack item) {
+    protected Integer checkIngredientNew(int pos, CraftManager.MatrixData matrixData, List<Integer> selectedSlots, Collection<Integer> checkedSlots, Map<Integer, IngredientData> dataMap, ItemStack item) {
         for (int key : indexes) {
             if (!selectedSlots.contains(key) && !checkedSlots.contains(key)) {
                 var ingredient = ingredients.get(key);
                 Optional<CustomItem> validItem = ingredient.check(item, isCheckNBT());
                 if (validItem.isPresent()) {
-                    dataMap.put(pos, new IngredientData(key, ingredient, validItem.get(), item));
+                    //For shapeless we can't actually determine the exact inventory slot of the ingredient (without massively increasing complexity), but we can make an estimate using the same tactic as with shaped recipes.
+                    //Though, Items will still be slightly rearranged in the matrix.
+                    int row = pos / maxGridDimension;
+                    int offset = matrixData.getOffsetX() + (matrixData.getOffsetY() * matrixData.getGridSize());
+                    dataMap.put(pos + offset + (row * (matrixData.getGridSize() - matrixData.getWidth())), new IngredientData(key, ingredient, validItem.get(), new ItemStack(item)));
                     return key;
                 }
                 //Check failed. Let's add the key back into the queue. (To the end, so we don't check it again and again...)

@@ -23,13 +23,14 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
-import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDurability;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDefault;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDurability;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
@@ -57,7 +58,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-@JsonIgnoreProperties({ "result" })
+@JsonIgnoreProperties({"result"})
 public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     private boolean blockRepair;
@@ -81,7 +82,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
             case NONE -> new RepairTaskDefault();
             case RESULT -> {
                 var repairModeResult = new RepairTaskResult();
-                repairModeResult.setResult(ItemLoader.loadResult(modeNode.path("result")));
+                repairModeResult.setResult(ItemLoader.loadResult(modeNode.path("result"), this.customCrafting));
                 yield repairModeResult;
             }
             case DURABILITY -> {
@@ -102,8 +103,8 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     }
 
     @JsonCreator
-    public CustomRecipeAnvil(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key, RecipeType.ANVIL);
+    public CustomRecipeAnvil(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting, RecipeType.ANVIL);
         this.repairTask = new RepairTaskDefault();
         this.repairCost = 1;
         this.applyRepairCost = false;
@@ -111,6 +112,11 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         this.blockEnchant = false;
         this.blockRename = false;
         this.blockRepair = false;
+    }
+
+    @Deprecated
+    public CustomRecipeAnvil(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
     }
 
     public CustomRecipeAnvil(CustomRecipeAnvil recipe) {
@@ -339,8 +345,23 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         event.setButton(34, ButtonContainerIngredient.key(cluster, 34));
     }
 
+    /**
+     * The mode of the anvil recipe result computation.
+     */
     public enum Mode {
-        DURABILITY(1), RESULT(2), NONE(0);
+        /**
+         * Same as {@link #NONE} plus it provides an option to specify the durability that the
+         * left item gets repaired with.
+         */
+        DURABILITY(1),
+        /**
+         * Always uses the specified result as the result, no matter what input.
+         */
+        RESULT(2),
+        /**
+         * Processes Rename, Repair, and Enchant Blocks of the recipe, but no further computations/settings.
+         */
+        NONE(0);
 
         private final int id;
 
@@ -361,6 +382,9 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         }
     }
 
+    /**
+     * The mode how the repair cost of the current recipe is applied to the result item.
+     */
     public enum RepairCostMode {
         ADD(), MULTIPLY(), NONE();
 

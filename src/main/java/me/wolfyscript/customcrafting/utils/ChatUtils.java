@@ -38,7 +38,6 @@ import me.wolfyscript.utilities.api.chat.ClickEvent;
 import me.wolfyscript.utilities.api.chat.HoverEvent;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -67,14 +66,15 @@ public class ChatUtils {
     }
 
     public static boolean checkPerm(CommandSender sender, String perm, boolean sendMessage) {
-        if (api.getPermissions().hasPermission(sender, perm)) {
+        if (sender.hasPermission(perm)) {
             return true;
         }
         if (sendMessage) {
+            var msg = chat.translated("msg.denied_perm", Placeholder.unparsed("perm", perm));
             if (sender instanceof Player player) {
-                chat.sendMessage(player, "$msg.denied_perm$", new Pair<>("%PERM%", perm));
+                chat.sendMessage(player, msg);
             } else {
-                api.getConsole().severe(api.getLanguageAPI().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
+                api.getConsole().severe(BukkitComponentSerializer.legacy().serialize(msg));
             }
         }
         return false;
@@ -94,7 +94,7 @@ public class ChatUtils {
             }
             return s.contains(":") ? NamespacedKey.of(s) : null;
         } catch (IllegalArgumentException e) {
-            api.getLanguageAPI().replaceKey("msg.player.invalid_namespacedkey").forEach(s1 -> chat.sendMessage(player, s1));
+            api.getLanguageAPI().getComponents("msg.player.invalid_namespacedkey").forEach(s1 -> chat.sendMessage(player, s1));
         }
         return null;
     }
@@ -128,7 +128,7 @@ public class ChatUtils {
             }
             return new NamespacedKey(CustomCrafting.inst(), folder + fileName);
         } catch (IllegalArgumentException e) {
-            api.getLanguageAPI().replaceKey("msg.player.invalid_namespacedkey").forEach(s1 -> chat.sendMessage(player, s1));
+            api.getLanguageAPI().getComponents("msg.player.invalid_namespacedkey").forEach(s1 -> chat.sendMessage(player, s1));
         }
         return null;
     }

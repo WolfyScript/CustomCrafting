@@ -22,11 +22,12 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class CraftingRecipeEliteShaped extends AbstractRecipeShaped<CraftingRecipeEliteShaped, EliteRecipeSettings> {
@@ -36,15 +37,16 @@ public class CraftingRecipeEliteShaped extends AbstractRecipeShaped<CraftingReci
     }
 
     @JsonCreator
-    public CraftingRecipeEliteShaped(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JsonProperty("shape") String[] shape) {
-        super(key, shape, 6, new EliteRecipeSettings());
+    public CraftingRecipeEliteShaped(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting, @JsonProperty("symmetry") Symmetry symmetry, @JsonProperty("shape") String[] shape) {
+        super(key, customCrafting, symmetry, shape, 6, new EliteRecipeSettings());
     }
 
+    @Deprecated
     public CraftingRecipeEliteShaped(NamespacedKey key) {
-        super(key, 6, new EliteRecipeSettings());
+        super(key, CustomCrafting.inst(), new Symmetry(), 6, new EliteRecipeSettings());
     }
 
-    public CraftingRecipeEliteShaped(CraftingRecipeEliteShaped eliteCraftingRecipe) {
+    private CraftingRecipeEliteShaped(CraftingRecipeEliteShaped eliteCraftingRecipe) {
         super(eliteCraftingRecipe);
     }
 

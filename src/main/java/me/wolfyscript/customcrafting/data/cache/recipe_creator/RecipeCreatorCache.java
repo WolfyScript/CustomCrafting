@@ -22,36 +22,63 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.ConditionsCache;
 import me.wolfyscript.customcrafting.data.cache.IngredientCache;
 import me.wolfyscript.customcrafting.data.cache.TagSettingsCache;
-import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeBlasting;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCampfire;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeFurnace;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeSmoking;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeStonecutter;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 
 
 public class RecipeCreatorCache {
 
+    private final CustomCrafting customCrafting;
+
     private final IngredientCache ingredientCache = new IngredientCache();
     private final TagSettingsCache tagSettingsCache = new TagSettingsCache();
     private final ConditionsCache conditionsCache = new ConditionsCache();
     private RecipeType<?> recipeType;
 
-    private RecipeCacheAnvil anvilCache = new RecipeCacheAnvil();
-    private RecipeCacheBrewing brewingCache = new RecipeCacheBrewing();
-    private RecipeCacheCauldron cauldronCache = new RecipeCacheCauldron();
-    private RecipeCacheCrafting craftingCache = new RecipeCacheCrafting();
-    private RecipeCacheCraftingElite eliteCraftingCache = new RecipeCacheCraftingElite();
-    private RecipeCacheGrinding grindingCache = new RecipeCacheGrinding();
-    private RecipeCacheSmithing smithingCache = new RecipeCacheSmithing();
-    private RecipeCacheStonecutting stonecuttingCache = new RecipeCacheStonecutting();
-    private RecipeCacheFurnace furnaceCache = new RecipeCacheFurnace();
-    private RecipeCacheBlasting blastingCache = new RecipeCacheBlasting();
-    private RecipeCacheSmoking smokerCache = new RecipeCacheSmoking();
-    private RecipeCacheCampfire campfireCache = new RecipeCacheCampfire();
+    private RecipeCacheAnvil anvilCache;
+    private RecipeCacheBrewing brewingCache;
+    private RecipeCacheCauldron cauldronCache;
+    private RecipeCacheCrafting craftingCache;
+    private RecipeCacheCraftingElite eliteCraftingCache;
+    private RecipeCacheGrinding grindingCache;
+    private RecipeCacheSmithing smithingCache;
+    private RecipeCacheStonecutting stonecuttingCache;
+    private RecipeCacheFurnace furnaceCache;
+    private RecipeCacheBlasting blastingCache;
+    private RecipeCacheSmoking smokerCache;
+    private RecipeCacheCampfire campfireCache;
 
-    public RecipeCreatorCache() {
-
+    public RecipeCreatorCache(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
+        this.anvilCache = new RecipeCacheAnvil(this.customCrafting);
+        this.brewingCache = new RecipeCacheBrewing(this.customCrafting);
+        this.cauldronCache = new RecipeCacheCauldron(this.customCrafting);
+        this.craftingCache = new RecipeCacheCrafting(this.customCrafting);
+        this.eliteCraftingCache = new RecipeCacheCraftingElite(this.customCrafting);
+        this.grindingCache = new RecipeCacheGrinding(this.customCrafting);
+        this.smithingCache = new RecipeCacheSmithing(this.customCrafting);
+        this.stonecuttingCache = new RecipeCacheStonecutting(this.customCrafting);
+        this.furnaceCache = new RecipeCacheFurnace(this.customCrafting);
+        this.blastingCache = new RecipeCacheBlasting(this.customCrafting);
+        this.smokerCache = new RecipeCacheSmoking(this.customCrafting);
+        this.campfireCache = new RecipeCacheCampfire(this.customCrafting);
     }
 
     public RecipeType<?> getRecipeType() {
@@ -86,42 +113,43 @@ public class RecipeCreatorCache {
             case BLAST_FURNACE -> blastingCache;
             case SMOKER -> smokerCache;
             case CAMPFIRE -> campfireCache;
-            default -> throw new IllegalArgumentException("Recipe type \"" + getRecipeType().name() + "\" is not a cooking recipe type!");
+            default ->
+                    throw new IllegalArgumentException("Recipe type \"" + getRecipeType().name() + "\" is not a cooking recipe type!");
         };
     }
 
     public void loadRecipeIntoCache(CustomRecipe<?> recipe) throws IllegalArgumentException {
         switch (recipe.getRecipeType().getType()) {
-            case ANVIL -> setAnvilCache(new RecipeCacheAnvil((CustomRecipeAnvil) recipe));
-            case FURNACE -> setFurnaceCache(new RecipeCacheFurnace((CustomRecipeFurnace) recipe));
-            case BLAST_FURNACE -> setBlastingCache(new RecipeCacheBlasting((CustomRecipeBlasting) recipe));
-            case CAMPFIRE -> setCampfireCache(new RecipeCacheCampfire((CustomRecipeCampfire) recipe));
-            case SMOKER -> setSmokerCache(new RecipeCacheSmoking((CustomRecipeSmoking) recipe));
-            case CRAFTING_SHAPED, CRAFTING_SHAPELESS -> setCraftingCache(new RecipeCacheCrafting((CraftingRecipe<?, AdvancedRecipeSettings>) recipe));
-            case CAULDRON -> setCauldronCache(new RecipeCacheCauldron((CustomRecipeCauldron) recipe));
-            case SMITHING -> setSmithingCache(new RecipeCacheSmithing((CustomRecipeSmithing) recipe));
-            case GRINDSTONE -> setGrindingCache(new RecipeCacheGrinding((CustomRecipeGrindstone) recipe));
-            case STONECUTTER -> setStonecuttingCache(new RecipeCacheStonecutting((CustomRecipeStonecutter) recipe));
-            case BREWING_STAND -> setBrewingCache(new RecipeCacheBrewing((CustomRecipeBrewing) recipe));
-            case ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS -> setEliteCraftingCache(new RecipeCacheCraftingElite((CraftingRecipe<?, EliteRecipeSettings>) recipe));
+            case ANVIL -> setAnvilCache(new RecipeCacheAnvil(this.customCrafting, (CustomRecipeAnvil) recipe));
+            case FURNACE -> setFurnaceCache(new RecipeCacheFurnace(this.customCrafting, (CustomRecipeFurnace) recipe));
+            case BLAST_FURNACE -> setBlastingCache(new RecipeCacheBlasting(this.customCrafting, (CustomRecipeBlasting) recipe));
+            case CAMPFIRE -> setCampfireCache(new RecipeCacheCampfire(this.customCrafting, (CustomRecipeCampfire) recipe));
+            case SMOKER -> setSmokerCache(new RecipeCacheSmoking(this.customCrafting, (CustomRecipeSmoking) recipe));
+            case CRAFTING_SHAPED, CRAFTING_SHAPELESS -> setCraftingCache(new RecipeCacheCrafting(this.customCrafting, (CraftingRecipe<?, AdvancedRecipeSettings>) recipe));
+            case CAULDRON -> setCauldronCache(new RecipeCacheCauldron(this.customCrafting, (CustomRecipeCauldron) recipe));
+            case SMITHING -> setSmithingCache(new RecipeCacheSmithing(this.customCrafting, (CustomRecipeSmithing) recipe));
+            case GRINDSTONE -> setGrindingCache(new RecipeCacheGrinding(this.customCrafting, (CustomRecipeGrindstone) recipe));
+            case STONECUTTER -> setStonecuttingCache(new RecipeCacheStonecutting(this.customCrafting, (CustomRecipeStonecutter) recipe));
+            case BREWING_STAND -> setBrewingCache(new RecipeCacheBrewing(this.customCrafting, (CustomRecipeBrewing) recipe));
+            case ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS -> setEliteCraftingCache(new RecipeCacheCraftingElite(this.customCrafting, (CraftingRecipe<?, EliteRecipeSettings>) recipe));
             default -> throw new IllegalArgumentException("Unsupported recipe type \"" + recipe.getRecipeType().name() + "\"!");
         }
     }
 
     public void reset() {
         switch (getRecipeType().getType()) {
-            case ANVIL -> setAnvilCache(new RecipeCacheAnvil());
-            case FURNACE -> setFurnaceCache(new RecipeCacheFurnace());
-            case BLAST_FURNACE -> setBlastingCache(new RecipeCacheBlasting());
-            case CAMPFIRE -> setCampfireCache(new RecipeCacheCampfire());
-            case SMOKER -> setSmokerCache(new RecipeCacheSmoking());
-            case CRAFTING_SHAPED, CRAFTING_SHAPELESS -> setCraftingCache(new RecipeCacheCrafting());
-            case CAULDRON -> setCauldronCache(new RecipeCacheCauldron());
-            case SMITHING -> setSmithingCache(new RecipeCacheSmithing());
-            case GRINDSTONE -> setGrindingCache(new RecipeCacheGrinding());
-            case STONECUTTER -> setStonecuttingCache(new RecipeCacheStonecutting());
-            case BREWING_STAND -> setBrewingCache(new RecipeCacheBrewing());
-            case ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS -> setEliteCraftingCache(new RecipeCacheCraftingElite());
+            case ANVIL -> setAnvilCache(new RecipeCacheAnvil(this.customCrafting));
+            case FURNACE -> setFurnaceCache(new RecipeCacheFurnace(this.customCrafting));
+            case BLAST_FURNACE -> setBlastingCache(new RecipeCacheBlasting(this.customCrafting));
+            case CAMPFIRE -> setCampfireCache(new RecipeCacheCampfire(this.customCrafting));
+            case SMOKER -> setSmokerCache(new RecipeCacheSmoking(this.customCrafting));
+            case CRAFTING_SHAPED, CRAFTING_SHAPELESS -> setCraftingCache(new RecipeCacheCrafting(this.customCrafting));
+            case CAULDRON -> setCauldronCache(new RecipeCacheCauldron(this.customCrafting));
+            case SMITHING -> setSmithingCache(new RecipeCacheSmithing(this.customCrafting));
+            case GRINDSTONE -> setGrindingCache(new RecipeCacheGrinding(this.customCrafting));
+            case STONECUTTER -> setStonecuttingCache(new RecipeCacheStonecutting(this.customCrafting));
+            case BREWING_STAND -> setBrewingCache(new RecipeCacheBrewing(this.customCrafting));
+            case ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS -> setEliteCraftingCache(new RecipeCacheCraftingElite(this.customCrafting));
             default -> throw new IllegalArgumentException("Unsupported recipe type \"" + getRecipeType().name() + "\"!");
         }
     }

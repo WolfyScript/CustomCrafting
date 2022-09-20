@@ -1,12 +1,12 @@
 name: Feature Request/Improvement
 description: Suggest a new feature or improvements to existing ones.
-labels: ["enhancement"]
+labels: [ "enhancement" ]
 assignees:
   - WolfyScript
 body:
   - type: markdown
     attributes:
-      value: | 
+      value: |
         Thank you for filling out a feature request for CustomCrafting!  
         Please describe everything as detailed as possible, so it is easier to understand.  
         Before submitting the issue please make sure, that you searched for and ensured there isn't a duplicate issue.  

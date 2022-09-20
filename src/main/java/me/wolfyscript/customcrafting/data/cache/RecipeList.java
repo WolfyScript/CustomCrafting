@@ -24,7 +24,15 @@ package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.BlastingRecipe;
+import org.bukkit.inventory.CampfireRecipe;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.SmithingRecipe;
+import org.bukkit.inventory.SmokingRecipe;
+import org.bukkit.inventory.StonecuttingRecipe;
 
 import java.util.List;
 
@@ -78,7 +86,7 @@ public class RecipeList {
 
     public void setFilterType(RecipeType<?> filterType) {
         this.filterType = filterType;
-        if(filterType != null) {
+        if (filterType != null) {
             this.filterClass = switch (filterType.getType()) {
                 case CRAFTING_SHAPED -> ShapedRecipe.class;
                 case CRAFTING_SHAPELESS -> ShapelessRecipe.class;

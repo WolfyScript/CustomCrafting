@@ -22,11 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.BlastingRecipe;
@@ -38,11 +38,16 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
     }
 
     @JsonCreator
-    public CustomRecipeBlasting(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
+    public CustomRecipeBlasting(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting);
     }
 
-    public CustomRecipeBlasting(CustomRecipeBlasting customRecipeBlasting) {
+    @Deprecated
+    public CustomRecipeBlasting(NamespacedKey key) {
+        super(key, CustomCrafting.inst());
+    }
+
+    private CustomRecipeBlasting(CustomRecipeBlasting customRecipeBlasting) {
         super(customRecipeBlasting);
     }
 

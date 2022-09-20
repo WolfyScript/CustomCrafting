@@ -22,16 +22,16 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.extension.ExecutionType;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.ResultTarget;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -46,7 +46,13 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -126,7 +132,7 @@ public class Result extends RecipeItemStack {
     public void addExtension(ResultExtension extension) {
         this.extensions.add(extension);
         if (extension.getExecutionType().equals(ExecutionType.BULK)) {
-           this.bulkExtensions.add(extension);
+            this.bulkExtensions.add(extension);
         }
     }
 

@@ -25,16 +25,20 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.item_creator.*;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonAttributeCategory;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonAttributeMode;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonAttributeSlot;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -99,7 +103,7 @@ public class TabAttributes extends ItemCreatorTabVanilla {
             try {
                 guiHandler.getCustomCache().getItems().setAttribAmount(Double.parseDouble(args[0]));
             } catch (NumberFormatException e) {
-                creator.sendMessage(player, "attribute.amount.error");
+                creator.sendMessage(guiHandler, creator.translatedMsgKey("attribute.amount.error"));
                 return true;
             }
             return false;
@@ -119,8 +123,8 @@ public class TabAttributes extends ItemCreatorTabVanilla {
                 var uuid = UUID.fromString(strings[0]);
                 guiHandler.getCustomCache().getItems().setAttributeUUID(uuid.toString());
             } catch (IllegalArgumentException ex) {
-                api.getChat().sendKey(player, creator.getNamespacedKey(), "attribute.uuid.error.line1", new Pair<>("%UUID%", strings[0]));
-                api.getChat().sendKey(player, creator.getNamespacedKey(), "attribute.uuid.error.line2");
+                creator.sendMessage(guiHandler, creator.translatedMsgKey("attribute.uuid.error.line1", Placeholder.unparsed("uuid", strings[0])));
+                creator.sendMessage(guiHandler, creator.translatedMsgKey("attribute.uuid.error.line2"));
                 return true;
             }
             return false;

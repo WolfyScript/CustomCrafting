@@ -22,15 +22,19 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,13 +52,13 @@ public abstract class CategorySettings {
     protected Set<String> folders;
     protected Set<NamespacedKey> recipes;
     private String id = "";
-    private Material icon;
+    private ItemStack icon;
     private String name;
     private List<String> description;
 
     protected CategorySettings() {
         this.name = "";
-        this.icon = Material.CHEST;
+        this.icon = new ItemStack(Material.CHEST);
         this.groups = new HashSet<>();
         this.folders = new HashSet<>();
         this.description = new ArrayList<>();
@@ -64,7 +68,7 @@ public abstract class CategorySettings {
     protected CategorySettings(CategorySettings category) {
         this.id = category.id;
         this.name = category.name;
-        this.icon = category.getIcon();
+        this.icon = category.getIconStack();
         this.groups = new HashSet<>(category.groups);
         this.folders = new HashSet<>(category.folders);
         this.description = new ArrayList<>(category.getDescription());
@@ -81,14 +85,45 @@ public abstract class CategorySettings {
         this.id = id;
     }
 
-    @JsonGetter
-    public Material getIcon() {
+    @JsonGetter("icon")
+    private Object getJsonIconStack() {
+        if (icon.hasItemMeta() || icon.getAmount() > 1) {
+            return icon;
+        }
+        return icon.getType();
+    }
+
+    @JsonSetter("icon")
+    private void setJsonIconStack(JsonNode icon) {
+        if (icon.isTextual()) {
+            this.icon = new ItemStack(Objects.requireNonNull(Material.matchMaterial(icon.asText())));
+        } else if (icon.isObject()) {
+            this.icon = CustomCrafting.inst().getApi().getJacksonMapperUtil().getGlobalMapper().convertValue(icon, ItemStack.class);
+        } else {
+            this.icon = new ItemStack(Material.CHEST);
+        }
+    }
+
+    @JsonIgnore
+    public ItemStack getIconStack() {
         return icon;
     }
 
-    @JsonSetter
-    public void setIcon(Material icon) {
+    @JsonIgnore
+    public void setIconStack(ItemStack icon) {
         this.icon = icon;
+    }
+
+    @JsonIgnore
+    @Deprecated
+    public void setIcon(Material icon) {
+        this.icon = new ItemStack(icon);
+    }
+
+    @JsonIgnore
+    @Deprecated
+    public Material getIcon() {
+        return icon.getType();
     }
 
     @JsonGetter
@@ -142,11 +177,16 @@ public abstract class CategorySettings {
     }
 
     public ItemStack createItemStack(CustomCrafting customCrafting) {
-        var categoryItem = new ItemStack(getIcon());
+        var categoryItem = getIconStack().clone();
         var itemMeta = categoryItem.getItemMeta();
         var languageAPI = customCrafting.getApi().getLanguageAPI();
-        itemMeta.setDisplayName(languageAPI.replaceColoredKeys(getName()));
-        itemMeta.setLore(languageAPI.replaceColoredKeys(getDescription()));
+        var miniMsg = customCrafting.getApi().getChat().getMiniMessage();
+        if (getName().contains("§")) {
+            itemMeta.setDisplayName(getName());
+        } else {
+            itemMeta.setDisplayName(BukkitComponentSerializer.legacy().serialize(miniMsg.deserialize(languageAPI.replaceKeys(getName()))));
+        }
+        itemMeta.setLore(languageAPI.replaceKeys(getDescription()).stream().map(s -> s.contains("§") ? s : BukkitComponentSerializer.legacy().serialize(miniMsg.deserialize(languageAPI.convertLegacyToMiniMessage(s)))).toList());
         categoryItem.setItemMeta(itemMeta);
         return categoryItem;
     }

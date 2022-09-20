@@ -22,17 +22,16 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.utilities.api.chat.ClickData;
-import me.wolfyscript.utilities.api.chat.ClickEvent;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.lib.net.kyori.adventure.text.event.ClickEvent;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonAction;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
@@ -43,9 +42,11 @@ public class ClusterMain extends CCCluster {
 
     //Button keys
     public static final NamespacedKey BACK = new NamespacedKey(KEY, "back");
+    public static final NamespacedKey EMPTY = new NamespacedKey(KEY, "empty");
     public static final NamespacedKey BACK_BOTTOM = new NamespacedKey(KEY, "back_bottom");
     public static final NamespacedKey GUI_HELP = new NamespacedKey(KEY, "gui_help");
     public static final NamespacedKey GLASS_GRAY = new NamespacedKey(KEY, "glass_gray");
+    public static final NamespacedKey GLASS_LIGHT_GRAY = new NamespacedKey(KEY, "glass_light_gray");
     public static final NamespacedKey GLASS_WHITE = new NamespacedKey(KEY, "glass_white");
     public static final NamespacedKey GLASS_BLACK = new NamespacedKey(KEY, "glass_black");
     public static final NamespacedKey GLASS_RED = new NamespacedKey(KEY, "glass_red");
@@ -53,83 +54,77 @@ public class ClusterMain extends CCCluster {
     public static final NamespacedKey GLASS_PURPLE = new NamespacedKey(KEY, "glass_purple");
     public static final NamespacedKey GLASS_PINK = new NamespacedKey(KEY, "glass_pink");
     public static final NamespacedKey PATREON = new NamespacedKey(KEY, "patreon");
-    public static final NamespacedKey INSTAGRAM = new NamespacedKey(KEY, "instagram");
     public static final NamespacedKey YOUTUBE = new NamespacedKey(KEY, "youtube");
     public static final NamespacedKey DISCORD = new NamespacedKey(KEY, "discord");
     public static final NamespacedKey GITHUB = new NamespacedKey(KEY, "github");
-
     //Language keys
     public static final NamespacedKey BACKGROUND = new NamespacedKey(KEY, "background");
-
     //Both Button and Window keys
     public static final NamespacedKey RECIPE_LIST = new NamespacedKey(KEY, "recipe_list");
-
     //Window keys
     public static final NamespacedKey ITEM_LIST = new NamespacedKey(KEY, "item_list");
-    //Message keys
+    //Messages
+    private final Component githubLink;
+    private final Component youtubeLink;
+    private final Component discordLink;
 
     public ClusterMain(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
+        githubLink = getChat().getMiniMessage().deserialize("<gray>[<aqua>Click here to go to GitHub</aqua>]</gray>").clickEvent(ClickEvent.openUrl("https://www.github.com/WolfyScript/"));
+        youtubeLink = getChat().getMiniMessage().deserialize("<gray>[<aqua>Click here to go to YouTube</aqua>]</gray>").clickEvent(ClickEvent.openUrl("https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"));
+        discordLink = getChat().getMiniMessage().deserialize("<gray>[<aqua>Click here to join Discord</aqua>]</gray>").clickEvent(ClickEvent.openUrl("https://discord.gg/qGhDTSr"));
     }
 
     @Override
     public void onInit() {
-        registerButton(new DummyButton<>(GLASS_GRAY.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.GRAY_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_BLACK.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.BLACK_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_RED.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.RED_STAINED_GLASS_PANE)));
-
-        registerButton(new DummyButton<>(GLASS_WHITE.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.WHITE_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_GREEN.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.GREEN_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_PURPLE.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.PURPLE_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_PINK.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.PINK_STAINED_GLASS_PANE)));
-
-        registerButton(new ToggleButton<>(GUI_HELP.getKey(), true, new ButtonState<>("gui_help_off", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19"), (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.setHelpEnabled(true);
-            return true;
-        }), new ButtonState<>("gui_help_on", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19"), (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.setHelpEnabled(false);
-            return true;
-        })));
-        registerButton(new ActionButton<>(BACK.getKey(), PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        ButtonBuilder<CCCache> bb = getButtonBuilder();
+        bb.dummy(EMPTY.getKey()).state(s -> s.icon(Material.AIR)).register();
+        bb.dummy(GLASS_GRAY.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.GRAY_STAINED_GLASS_PANE)).register();
+        bb.dummy(GLASS_LIGHT_GRAY.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.LIGHT_GRAY_STAINED_GLASS_PANE)).register();
+        bb.dummy(GLASS_BLACK.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.BLACK_STAINED_GLASS_PANE)).register();
+        bb.dummy(GLASS_RED.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.RED_STAINED_GLASS_PANE)).register();
+        bb.dummy(GLASS_WHITE.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.WHITE_STAINED_GLASS_PANE)).register();
+        bb.dummy(GLASS_GREEN.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.GREEN_STAINED_GLASS_PANE)).register();
+        bb.dummy(GLASS_PURPLE.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.PURPLE_STAINED_GLASS_PANE)).register();
+        bb.dummy(GLASS_PINK.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.PINK_STAINED_GLASS_PANE)).register();
+        bb.dummy(GUI_HELP.getKey()).state(state -> state.key(GUI_HELP.getKey() + "_on").icon(PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19"))
+                .render((cache, guiHandler, player, guiInv, stack, slot) -> {
+                    guiInv.getWindow().getHelpInformation();
+                    var window = guiInv.getWindow();
+                    return CallbackButtonRender.UpdateResult.of(TagResolverUtil.entries(guiHandler.getApi().getLanguageAPI().getComponents("inventories." + window.getCluster().getId() + "." + window.getNamespacedKey().getKey() + ".gui_help")));
+                })).register();
+        final ButtonAction<CCCache> backAction = (cache, guiHandler, player, guiInventory, i, event) -> {
             guiHandler.openPreviousWindow();
             return true;
-        }));
-        registerButton(new ActionButton<>(BACK_BOTTOM.getKey(), Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.openPreviousWindow();
-            return true;
-        }));
-
-        registerButton(new ActionButton<>(PATREON.getKey(), PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (cache, guiHandler, player, inventory, slot, event) -> {
+        };
+        bb.action(BACK.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action(backAction)).register();
+        bb.action(BACK_BOTTOM.getKey()).state(state -> state.icon(Material.BARRIER).action(backAction)).register();
+        bb.action(PATREON.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275")).action((cache, guiHandler, player, guiInventory, i, event) -> {
             guiHandler.openWindow("patrons_menu");
             return true;
-        }));
-        registerButton(new ActionButton<>(INSTAGRAM.getKey(), PlayerHeadUtils.getViaURL("ac88d6163fabe7c5e62450eb37a074e2e2c88611c998536dbd8429faa0819453"), (cache, guiHandler, player, inventory, slot, event) -> {
-            wolfyUtilities.getChat().sendActionMessage(player, new ClickData("&7[&3Click here to go to Instagram&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.instagram.com/wolfyscript/")));
+        })).register();
+        bb.action(GITHUB.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("26e27da12819a8b053da0cc2b62dec4cda91de6eeec21ccf3bfe6dd8d4436a7")).action((cache, guiHandler, player, guiInventory, i, event) -> {
+            getChat().sendMessage(player, githubLink);
             return true;
-        }));
-        registerButton(new ActionButton<>(GITHUB.getKey(), PlayerHeadUtils.getViaURL("26e27da12819a8b053da0cc2b62dec4cda91de6eeec21ccf3bfe6dd8d4436a7"), (cache, guiHandler, player, inventory, slot, event) -> {
-            wolfyUtilities.getChat().sendActionMessage(player, new ClickData("&7[&3Click here to go to GitHub&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.github.com/WolfyScript/")));
+        })).register();
+        bb.action(YOUTUBE.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed")).action((cache, guiHandler, player, guiInventory, i, event) -> {
+            getChat().sendMessage(player, youtubeLink);
             return true;
-        }));
-        registerButton(new ActionButton<>(YOUTUBE.getKey(), PlayerHeadUtils.getViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed"), (cache, guiHandler, player, inventory, slot, event) -> {
-            wolfyUtilities.getChat().sendActionMessage(player, new ClickData("&7[&3Click here to go to YouTube&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g")));
+        })).register();
+        bb.action(DISCORD.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53")).action((cache, guiHandler, player, guiInventory, i, event) -> {
+            getChat().sendMessage(player, discordLink);
             return true;
-        }));
-        registerButton(new ActionButton<>(DISCORD.getKey(), PlayerHeadUtils.getViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53"), (cache, guiHandler, player, inventory, slot, event) -> {
-            wolfyUtilities.getChat().sendActionMessage(player, new ClickData("&7[&3Click here to join Discord&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/qGhDTSr")));
-            return true;
-        }));
-        registerButton(new ActionButton<>(RECIPE_LIST.getKey(), Material.WRITTEN_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        bb.action(RECIPE_LIST.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             guiHandler.getCustomCache().setSetting(Setting.RECIPE_LIST);
             guiHandler.openWindow(RECIPE_LIST.getKey());
             return true;
-        }));
-        registerButton(new ActionButton<>(ITEM_LIST.getKey(), Material.BOOKSHELF, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        bb.action(ITEM_LIST.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             guiHandler.getCustomCache().setSetting(Setting.ITEM_LIST);
             guiHandler.openWindow(ITEM_LIST.getKey());
             return true;
-        }));
-
+        })).register();
         registerGuiWindow(new MenuMain(this, customCrafting));
         registerGuiWindow(new MenuListCustomItem(this, customCrafting));
         registerGuiWindow(new MenuListRecipes(this, customCrafting));

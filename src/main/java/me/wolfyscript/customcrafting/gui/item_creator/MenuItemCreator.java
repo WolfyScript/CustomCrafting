@@ -22,35 +22,56 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator;
 
+import com.google.common.collect.Lists;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabArmorSlots;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabAttributes;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabConsume;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabCustomDurability;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabCustomModelData;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabDamage;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabDisplayName;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEliteCraftingTable;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEnchants;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFlags;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFuel;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLocalizedName;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLore;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabParticleEffects;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPermission;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPlayerHead;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPotion;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabRarity;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabRecipeBook;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabRepairCost;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabUnbreakable;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabVanilla;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
 import me.wolfyscript.utilities.compatibility.plugins.mythicmobs.MythicMobsRef;
 import me.wolfyscript.utilities.compatibility.plugins.oraxen.OraxenRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -84,57 +105,47 @@ public class MenuItemCreator extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>(BACK, new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, i, event) -> {
-            if (cache.getItems().isRecipeItem()) {
-                guiHandler.openCluster("recipe_creator");
-            } else {
-                guiHandler.openCluster("none");
-            }
+        var btnB = getButtonBuilder();
+        btnB.action(BACK).state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, i, event) -> {
+            guiHandler.openCluster(cache.getItems().isRecipeItem() ? "recipe_creator" : "none");
             return true;
-        })));
-        registerButton(new ItemInputButton<>(ITEM_INPUT, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> false, (cache, guiHandler, player, inventory, item, slot, event) -> {
+        })).register();
+        btnB.itemInput(ITEM_INPUT).state(s -> s.icon(Material.AIR).postAction((cache, guiHandler, player, guiInventory, stack, slot, event) -> {
             var items = cache.getItems();
-            CustomItem reference = CustomItem.getReferenceByItemStack(item != null ? item : ItemUtils.AIR);
+            CustomItem reference = CustomItem.getReferenceByItemStack(stack != null ? stack : ItemUtils.AIR);
             if (ItemUtils.isAirOrNull(reference.getItemStack())) {
-                reference = new CustomItem(item != null ? item : ItemUtils.AIR);
+                reference = new CustomItem(stack != null ? stack : ItemUtils.AIR);
             }
             items.setItem(reference);
-        }, null, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().getItemStack())));
-
-        registerButton(new ActionButton<>(SAVE_ITEM, Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(guiHandler.getCustomCache().getItems().getItem().getItemStack()))).register();
+        btnB.action(SAVE_ITEM).state(s -> s.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, i, event) -> {
             var items = cache.getItems();
             if (!ItemUtils.isAirOrNull(items.getItem().getItemStack()) && items.getNamespacedKey() != null) {
                 saveItem(items, player, items.getNamespacedKey());
             }
             return true;
-        }));
-        registerButton(new ActionButton<>(SAVE_ITEM_AS, Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
+        })).register();
+        btnB.action(SAVE_ITEM_AS).state(s -> s.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, i, event) -> {
             var items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
-                sendMessage(player, "save.input.line1");
+                getChat().sendMessage(player, translatedMsgKey("save.input.line1"));
                 List<String[]> namespacedKeys = api.getRegistries().getCustomItems().get(NamespacedKeyUtils.NAMESPACE).stream().map(customItem -> customItem.getNamespacedKey().getKey().split("/")).toList();
                 List<String> namespaces = namespacedKeys.stream().filter(strings -> strings.length > 0).map(strings -> strings[0]).toList();
                 List<String> keys = namespacedKeys.stream().filter(strings -> strings.length > 1).map(strings -> strings[1]).toList();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
-                    List<String> results = new ArrayList<>();
-                    if (args.length > 0) {
-                        if (args.length == 1) {
-                            results.add("<namespace>");
-                            StringUtil.copyPartialMatches(args[0], namespaces, results);
-                        } else if (args.length == 2) {
-                            results.add("<key>");
-                            StringUtil.copyPartialMatches(args[1], keys, results);
-                        }
+                    if (args.length == 2) {
+                        return StringUtil.copyPartialMatches(args[1], keys, Lists.newArrayList("<key>"));
                     }
-                    Collections.sort(results);
-                    return results;
+                    if (args.length >= 1) {
+                        return StringUtil.copyPartialMatches(args[0], namespaces, Lists.newArrayList("<namespace>"));
+                    }
+                    return Collections.emptyList();
                 });
-
-                openChat("save.input.line2", guiHandler, (guiHandler1, player1, s, args) -> !saveItem(items, player1, ChatUtils.getNamespacedKey(player1, s, args)));
+                openChat(guiHandler, translatedMsgKey("save.input.line2"), (guiHandler1, player1, s1, args) -> !saveItem(items, player1, ChatUtils.getNamespacedKey(player1, s1, args)));
             }
             return true;
-        }));
-        registerButton(new ActionButton<>(APPLY_ITEM, Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        })).register();
+        btnB.action(APPLY_ITEM).state(s -> s.icon(Material.GREEN_CONCRETE).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 var customItem = cache.getItems().getItem();
                 if (items.isSaved()) {
@@ -145,36 +156,27 @@ public class MenuItemCreator extends CCWindow {
                 guiHandler.openCluster("recipe_creator");
             }
             return true;
-        }));
-        registerButton(new ActionButton<>(PAGE_NEXT, PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        })).register();
+        btnB.action(PAGE_NEXT).state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             items.setPage(items.getPage() + 1);
             return true;
-        }));
-        registerButton(new ActionButton<>(PAGE_PREVIOUS, PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        })).register();
+        btnB.action(PAGE_PREVIOUS).state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (items.getPage() > 0) {
                 items.setPage(items.getPage() - 1);
             }
             return true;
-        }));
-        registerReferences();
+        })).register();
+        registerReferences(btnB);
         tabs.clear();
         customCrafting.getRegistries().getItemCreatorTabs().forEach(tab -> tab.register(this, api));
     }
 
-    private void registerReferences() {
-        registerButton(new DummyButton<>(REFERENCE_WOLFYUTILITIES, Material.CRAFTING_TABLE, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
-            hashMap.put("%item_key%", ((WolfyUtilitiesRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getNamespacedKey().toString());
-            return itemStack;
-        }));
-        registerButton(new DummyButton<>(REFERENCE_ORAXEN, Material.DIAMOND, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
-            hashMap.put("%item_key%", ((OraxenRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID());
-            return itemStack;
-        }));
-        registerButton(new DummyButton<>(REFERENCE_ITEMSADDER, Material.GRASS_BLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
-            hashMap.put("%item_key%", ((ItemsAdderRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID());
-            return itemStack;
-        }));
-        registerButton(new DummyButton<>(REFERENCE_MYTHICMOBS, Material.WITHER_SKELETON_SKULL));
+    private void registerReferences(ButtonBuilder<CCCache> btnB) {
+        btnB.dummy(REFERENCE_WOLFYUTILITIES).state(s -> s.icon(Material.CRAFTING_TABLE).render((cache, guiHandler, player, inv, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((WolfyUtilitiesRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getNamespacedKey().toString())))).register();
+        btnB.dummy(REFERENCE_ORAXEN).state(s -> s.icon(Material.DIAMOND).render((cache, guiHandler, player, inv, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((OraxenRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID())))).register();
+        btnB.dummy(REFERENCE_ITEMSADDER).state(s -> s.icon(Material.GRASS_BLOCK).render((cache, guiHandler, player, inv, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((ItemsAdderRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID())))).register();
+        btnB.dummy(REFERENCE_MYTHICMOBS).state(s -> s.icon(Material.WITHER_SKELETON_SKULL)).register();
     }
 
     private void orderTabs() {
@@ -212,15 +214,15 @@ public class MenuItemCreator extends CCWindow {
         if (namespacedKey != null && !namespacedKey.getNamespace().equalsIgnoreCase("minecraft")) {
             var customItem = items.getItem();
             if (customItem.getApiReference() instanceof WolfyUtilitiesRef wolfyUtilitiesRef && wolfyUtilitiesRef.getNamespacedKey().equals(namespacedKey)) {
-                api.getChat().sendMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
+                getChat().sendMessage(player, Component.text("Error saving item! Cannot override original CustomItem ", NamedTextColor.RED).append(Component.text(namespacedKey.toString(), NamedTextColor.DARK_RED)).append(Component.text("! Save it under another NamespacedKey or Edit the original!", NamedTextColor.RED)));
                 return false;
             }
             ItemLoader.saveItem(namespacedKey, items.getItem());
             items.setSaved(true);
             items.setNamespacedKey(namespacedKey);
-            sendMessage(player, "save.success");
+            getChat().sendMessage(player, translatedMsgKey("save.success"));
             var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
-            api.getChat().sendMessage(player, ChatColor.YELLOW + internalKey.getNamespace() + "/items/" + internalKey.getKey());
+            getChat().sendMessage(player, Component.text(internalKey.getNamespace() + "/items/" + internalKey.getKey(), NamedTextColor.YELLOW));
         }
         return true;
     }
@@ -238,7 +240,7 @@ public class MenuItemCreator extends CCWindow {
         event.setButton(4, ITEM_INPUT);
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         var gray = data.getLightBackground();
-        event.setButton(13, gray);
+        if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) event.setButton(13, gray);
         if (items.isRecipeItem()) {
             event.setButton(51, APPLY_ITEM);
         }
@@ -284,7 +286,7 @@ public class MenuItemCreator extends CCWindow {
                     i--;
                 }
                 j++;
-            } else {
+            } else if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
                 event.setButton(slot + i, gray);
             }
         }

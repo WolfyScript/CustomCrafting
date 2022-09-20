@@ -22,15 +22,24 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import com.google.common.base.Preconditions;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.MenuConditions;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonTypeInfo;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.util.Keyed;
@@ -41,6 +50,7 @@ import org.bukkit.Material;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +65,7 @@ import java.util.function.BiConsumer;
 public abstract class Condition<C extends Condition<C>> implements Keyed {
 
     public static String getLangKey(String condition, String subPath) {
-        return "$recipe_conditions." + condition + "." + subPath + "$";
+        return "recipe_conditions." + condition + "." + subPath;
     }
 
     private static final Map<NamespacedKey, AbstractGUIComponent<?>> GUI_COMPONENTS = new HashMap<>();
@@ -84,9 +94,13 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
 
     @JsonProperty("key")
     private final NamespacedKey key;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     protected Conditions.Option option = Conditions.Option.EXACT;
     @JsonIgnore
     private List<Conditions.Option> availableOptions;
+    @JsonIgnore
+    @JacksonInject("customcrafting")
+    protected CustomCrafting customCrafting;
 
     protected Condition(NamespacedKey key) {
         this.key = key;
@@ -158,11 +172,24 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
         private final Material icon;
         private final String name;
         private final List<String> description;
+        private String nameLangKey = null;
+        private String descriptionLangKey = null;
 
+        @Deprecated
         protected AbstractGUIComponent(Material icon, String name, List<String> description) {
             this.icon = icon;
             this.name = name;
             this.description = description;
+            this.nameLangKey = name;
+            this.descriptionLangKey = "";
+        }
+
+        protected AbstractGUIComponent(Material icon, String nameKey, String descriptionKey) {
+            this.icon = icon;
+            this.name = nameKey;
+            this.description = Collections.singletonList(descriptionKey);
+            this.nameLangKey = nameKey;
+            this.descriptionLangKey = descriptionKey;
         }
 
         public abstract void init(MenuConditions menu, WolfyUtilities api);
@@ -173,8 +200,17 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
             return icon;
         }
 
+        @Deprecated
         public String getName() {
             return name;
+        }
+
+        public Component getDisplayName() {
+            return CustomCrafting.inst().getApi().getLanguageAPI().getComponent(nameLangKey);
+        }
+
+        public List<Component> getDescriptionComponents() {
+            return CustomCrafting.inst().getApi().getLanguageAPI().getComponents(descriptionLangKey);
         }
 
         public List<String> getDescription() {
@@ -208,8 +244,15 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
         private final BiConsumer<MenuConditions, WolfyUtilities> initConsumer;
         private final RenderConsumer<C> renderConsumer;
 
+        @Deprecated
         protected FunctionalGUIComponent(Material icon, String name, List<String> description, BiConsumer<MenuConditions, WolfyUtilities> init, RenderConsumer<C> render) {
             super(icon, name, description);
+            this.initConsumer = init;
+            this.renderConsumer = render;
+        }
+
+        protected FunctionalGUIComponent(Material icon, String nameLangKey, String descriptionLangKey, BiConsumer<MenuConditions, WolfyUtilities> init, RenderConsumer<C> render) {
+            super(icon, nameLangKey, descriptionLangKey);
             this.initConsumer = init;
             this.renderConsumer = render;
         }

@@ -59,15 +59,13 @@ public class GiveSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if(ChatUtils.checkPerm(sender, "customcrafting.cmd.give")) {
+        if (ChatUtils.checkPerm(sender, "customcrafting.cmd.give")) {
             if (args.length >= 2) {
-
                 String giveTarget = args[0];
                 Player target = switch (giveTarget) {
                     case "@s" -> sender instanceof Player player ? player : null;
                     default -> Bukkit.getPlayer(giveTarget);
                 };
-
                 if (target == null) {
                     Pair<String, String> playerValue = new Pair<>("%target%", giveTarget);
                     if (sender instanceof Player) {
@@ -159,12 +157,13 @@ public class GiveSubCommand extends AbstractSubCommand {
                     switch (strings.length) {
                         case 1 -> {
                             List<String> players = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()); //Player completion
-                            if(sender instanceof Player) {
+                            if (sender instanceof Player) {
                                 players.add("@s");
                             }
                             yield players;
                         }
-                        case 2 -> api.getRegistries().getCustomItems().keySet().stream().map(namespacedKey -> NamespacedKeyUtils.toInternal(namespacedKey).toString()).toList(); //Item completion
+                        case 2 ->
+                                api.getRegistries().getCustomItems().keySet().stream().map(namespacedKey -> NamespacedKeyUtils.toInternal(namespacedKey).toString()).toList(); //Item completion
                         case 3 -> NUMBERS;
                         case 4 -> Arrays.asList("true", "false"); //Drop Items
                         default -> new ArrayList<String>();

@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,8 +44,13 @@ public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace
     }
 
     @JsonCreator
-    public CustomRecipeFurnace(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
+    public CustomRecipeFurnace(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting);
+    }
+
+    @Deprecated
+    public CustomRecipeFurnace(NamespacedKey key) {
+        this(key, CustomCrafting.inst());
     }
 
     public CustomRecipeFurnace(CustomRecipeFurnace customRecipeFurnace) {

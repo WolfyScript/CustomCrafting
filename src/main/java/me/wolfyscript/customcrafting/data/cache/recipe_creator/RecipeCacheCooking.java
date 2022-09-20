@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
 import com.google.common.base.Preconditions;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 
@@ -32,15 +33,17 @@ public abstract class RecipeCacheCooking<R extends CustomRecipeCooking<R, ?>> ex
     private float exp;
     private int cookingTime;
 
-    protected RecipeCacheCooking() {
-        super();
+    protected RecipeCacheCooking(CustomCrafting customCrafting) {
+        super(customCrafting);
+        this.checkAllNBT = true;
         this.source = new Ingredient();
         this.exp = 0;
         this.cookingTime = 80;
     }
 
-    protected RecipeCacheCooking(R recipe) {
-        super(recipe);
+    protected RecipeCacheCooking(CustomCrafting customCrafting, R recipe) {
+        super(customCrafting, recipe);
+        this.checkAllNBT = true;
         this.source = recipe.getSource();
         this.exp = recipe.getExp();
         this.cookingTime = recipe.getCookingTime();

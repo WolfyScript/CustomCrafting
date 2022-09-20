@@ -23,8 +23,8 @@
 package me.wolfyscript.customcrafting.recipes.items.target;
 
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

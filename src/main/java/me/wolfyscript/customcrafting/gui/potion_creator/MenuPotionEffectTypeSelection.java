@@ -54,7 +54,9 @@ public class MenuPotionEffectTypeSelection extends CCWindow {
         })));
 
         for (PotionEffectType type : PotionEffectType.values()) {
-            registerButton(new ButtonPotionEffectTypeSelect(type));
+            if (type != null) { // Required for servers running mods along side spigot.
+                registerButton(new ButtonPotionEffectTypeSelect(type));
+            }
         }
     }
 

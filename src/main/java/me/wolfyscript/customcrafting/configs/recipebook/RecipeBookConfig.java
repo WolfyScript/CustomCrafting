@@ -22,15 +22,19 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.node.ObjectNode;
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -166,7 +170,7 @@ public class RecipeBookConfig {
         if (node.has("sort")) {
             node.path("sort").elements().forEachRemaining(element -> sort.accept(element.asText()));
         }
-        node.path("options").elements().forEachRemaining(element -> settings.accept(JacksonUtil.getObjectMapper().convertValue(element, type)));
+        node.path("options").elements().forEachRemaining(element -> settings.accept(CustomCrafting.inst().getApi().getJacksonMapperUtil().getGlobalMapper().convertValue(element, type)));
     }
 
     private <T extends CategorySettings> Map<String, Object> getSettingsMap(List<String> sortedList, Collection<T> settings) {

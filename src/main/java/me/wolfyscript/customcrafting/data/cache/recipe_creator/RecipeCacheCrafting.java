@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipeShaped;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipeShapeless;
@@ -29,12 +30,12 @@ import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 
 public class RecipeCacheCrafting extends RecipeCacheCraftingAbstract<AdvancedRecipeSettings> {
 
-    RecipeCacheCrafting() {
-        super();
+    RecipeCacheCrafting(CustomCrafting customCrafting) {
+        super(customCrafting);
     }
 
-    RecipeCacheCrafting(CraftingRecipe<?, AdvancedRecipeSettings> recipe) {
-        super(recipe);
+    RecipeCacheCrafting(CustomCrafting customCrafting, CraftingRecipe<?, AdvancedRecipeSettings> recipe) {
+        super(customCrafting, recipe);
     }
 
     @Override

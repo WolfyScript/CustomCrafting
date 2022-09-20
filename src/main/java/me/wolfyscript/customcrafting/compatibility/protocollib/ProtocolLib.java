@@ -20,7 +20,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.utils.other_plugins;
+package me.wolfyscript.customcrafting.compatibility.protocollib;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -38,11 +38,16 @@ import com.comphenix.protocol.reflect.fuzzy.FuzzyMethodContract;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.Converters;
 import com.comphenix.protocol.wrappers.MinecraftKey;
+import java.util.function.UnaryOperator;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.CraftingInventory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,14 +58,14 @@ import java.util.stream.Collectors;
 
 public class ProtocolLib {
 
-    private final CustomCrafting plugin;
+    private final CustomCrafting customCrafting;
     private final ProtocolManager protocolManager;
     private Function<MinecraftKey, Boolean> recipeFilter;
     private final Map<UUID, Long> playersLastRecipeBookInteract = new HashMap<>();
     private static final int RECIPEBOOK_CLICK_DELAY = 100;
 
-    public ProtocolLib(CustomCrafting plugin) {
-        this.plugin = plugin;
+    public ProtocolLib(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
         this.protocolManager = ProtocolLibrary.getProtocolManager();
         init();
     }
@@ -72,7 +77,7 @@ public class ProtocolLib {
     private void registerServerSide() {
         recipeFilter = minecraftKey -> {
             if (minecraftKey.getPrefix().equals(NamespacedKeyUtils.NAMESPACE)) {
-                CustomRecipe<?> recipe = plugin.getRegistries().getRecipes().get(NamespacedKey.of(minecraftKey.getFullKey()));
+                CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(NamespacedKey.of(minecraftKey.getFullKey()));
                 if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
                     return !recipe.isHidden() && !recipe.isDisabled();
                 }
@@ -81,7 +86,7 @@ public class ProtocolLib {
             return true;
         };
         // Recipe packet that sends the discovered recipes to the client.
-        protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.RECIPES) {
+        protocolManager.addPacketListener(new PacketAdapter(customCrafting, ListenerPriority.HIGH, PacketType.Play.Server.RECIPES) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
@@ -93,7 +98,7 @@ public class ProtocolLib {
             }
         });
         // Recipe packet that sends the recipe data to the client.
-        protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.RECIPE_UPDATE) {
+        protocolManager.addPacketListener(new PacketAdapter(customCrafting, ListenerPriority.HIGH, PacketType.Play.Server.RECIPE_UPDATE) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
@@ -103,9 +108,9 @@ public class ProtocolLib {
         });
 
         //Prevent spam clicking of the recipe book, which might cause lag when players are using auto-clickers
-        if (!plugin.getApi().getCore().getCompatibilityManager().getPlugins().hasIntegration("ItemsAdder")) {
+        if (!customCrafting.getApi().getCore().getCompatibilityManager().getPlugins().hasIntegration("ItemsAdder")) {
             //No need to register this listener when ItemsAdder is installed. It has its own listener for this.
-            protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Client.AUTO_RECIPE) {
+            protocolManager.addPacketListener(new PacketAdapter(customCrafting, ListenerPriority.HIGH, PacketType.Play.Client.AUTO_RECIPE) {
                 @Override
                 public void onPacketReceiving(PacketEvent event) {
                     long currentMillis = System.currentTimeMillis();
@@ -119,6 +124,22 @@ public class ProtocolLib {
                         }
                     } else {
                         playersLastRecipeBookInteract.put(uuid, currentMillis);
+                    }
+
+                    //Call the PrepareItemCraftEvent one more time, if the recipe is a custom recipe, to update the last ingredient in the grid
+                    //Issue #136 – Items disappear when using recipe book on crafting table.
+                    NamespacedKey recipeId = NamespacedKey.of(event.getPacket().getMinecraftKeys().read(0).getFullKey());
+                    if (customCrafting.getRegistries().getRecipes().has(recipeId)) {
+                        Player player = event.getPlayer();
+                        if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory craftingInventory) {
+                            Runnable callPreEvent = () -> Bukkit.getPluginManager().callEvent(new PrepareItemCraftEvent(craftingInventory, event.getPlayer().getOpenInventory(), false));
+                            if (event.isAsync()) {
+                                Bukkit.getScheduler().runTask(customCrafting, callPreEvent);
+                            } else {
+                                callPreEvent.run();
+                            }
+
+                        }
                     }
                 }
             });

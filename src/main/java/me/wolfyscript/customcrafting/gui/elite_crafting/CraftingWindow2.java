@@ -20,32 +20,30 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.utils.other_plugins;
+package me.wolfyscript.customcrafting.gui.elite_crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import org.bukkit.Bukkit;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 
-public class OtherPlugins {
+public class CraftingWindow2 extends CraftingWindow {
 
-    private final CustomCrafting plugin;
-
-    private ProtocolLib protocolLib = null;
-
-    public OtherPlugins(CustomCrafting plugin) {
-        this.plugin = plugin;
+    public CraftingWindow2(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "crafting_grid2", 18, customCrafting, 2);
     }
 
-    public void init() {
-        if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
-            plugin.getLogger().info("Detected ProtocolLib... initiating additional features.");
-            this.protocolLib = new ProtocolLib(plugin);
-        }
-        if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
-            plugin.getApi().getConsole().info("$msg.startup.placeholder$");
-            new PlaceHolder(plugin).register();
-        }
+    @Override
+    public void onUpdateSync(GuiUpdate<CCCache> event) {
+        super.onUpdateSync(event);
 
+        event.setButton(0, EliteCraftingCluster.RECIPE_BOOK);
+        event.setButton(7, RESULT);
     }
+
+    @Override
+    public int getGridX() {
+        return 3;
+    }
+
 }

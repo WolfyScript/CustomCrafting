@@ -9,3 +9,150 @@ loadbefore:
   - EpicWorldGenerator
 softdepend: [ ProtocolLib, MythicMobs, Oraxen, ItemsAdder, PlaceholderAPI ]
 description: Create your own custom recipes for workbenches and furnaces. Disable Vanilla recipes and more.
+permissions:
+  customcrafting.*:
+    default: op
+    children:
+      customcrafting.workstation.*:
+        description: Permission to access custom workstations
+        children:
+          customcrafting.workstation.cauldron.*:
+            description: Wildcard permission for the cauldron workstation
+            children:
+              customcrafting.workstation.cauldron.interact:
+                description: Permission to interact and open the cauldron GUI
+                default: true
+      customcrafting.update_check:
+        description: Displays the new update message on join.
+        default: op
+      customcrafting.craft.*:
+        default: op
+      customcrafting.inv.*:
+        default: op
+        children:
+          customcrafting.inv.none.*:
+            description: The main menus that are visible right after the cc command
+            default: op
+            children:
+              customcrafting.inv.none.patrons_menu:
+                default: op
+              customcrafting.inv.none.settings:
+                default: op
+              customcrafting.inv.none.recipe_list:
+                default: op
+              customcrafting.inv.none.item_list:
+                default: op
+          customcrafting.inv.recipe_book.*:
+            description: Permission to open the overview and all the other sub menus of the custom recipe book.
+            default: true
+            children:
+              customcrafting.inv.recipe_book.main_menu:
+                default: true
+              customcrafting.inv.recipe_book.recipe_book:
+                default: true
+          customcrafting.inv.recipe_view.*:
+            description: The menus to view a single recipe via the lookup command.
+            default: true
+            children:
+              customcrafting.inv.recipe_view.single_recipe:
+                default: true
+          customcrafting.inv.recipe_creator.*:
+            description: Permission for all the recipe creator GUI menus
+            default: op
+            children:
+              customcrafting.inv.recipe_creator.crafting:
+                default: op
+              customcrafting.inv.recipe_creator.cooking:
+                default: op
+              customcrafting.inv.recipe_creator.anvil:
+                default: op
+              customcrafting.inv.recipe_creator.cauldron:
+                default: op
+              customcrafting.inv.recipe_creator.stonecutter:
+                default: op
+              customcrafting.inv.recipe_creator.grindstone:
+                default: op
+              customcrafting.inv.recipe_creator.elite_crafting:
+                default: op
+              customcrafting.inv.recipe_creator.elite_crafting_settings:
+                default: op
+              customcrafting.inv.recipe_creator.brewing_stand:
+                default: op
+              customcrafting.inv.recipe_creator.smithing:
+                default: op
+              customcrafting.inv.recipe_creator.conditions:
+                default: op
+              customcrafting.inv.recipe_creator.conditions_add:
+                default: op
+              customcrafting.inv.recipe_creator.result:
+                default: op
+              customcrafting.inv.recipe_creator.ingredient:
+                default: op
+              customcrafting.inv.recipe_creator.tag_settings:
+                default: op
+              customcrafting.inv.recipe_creator.tag_list:
+                default: op
+              customcrafting.inv.recipe_creator.item_editor:
+                default: op
+          customcrafting.inv.item_creator.*:
+            description: The menus of the ItemCreator
+            default: op
+            children:
+              customcrafting.inv.item_creator.main_menu:
+                default: op
+          customcrafting.inv.crafting.*:
+            description: The menus of all the Elite Crafting Table variations (Grid sizes from 3 up to 6)
+            children:
+              customcrafting.inv.crafting.crafting_grid3:
+                default: op
+              customcrafting.inv.crafting.crafting_grid4:
+                default: op
+              customcrafting.inv.crafting.crafting_grid5:
+                default: op
+              customcrafting.inv.crafting.crafting_grid6:
+                default: op
+          customcrafting.inv.recipe_book_editor.*:
+            description: The menus of the Recipe Book Editor
+            children:
+              customcrafting.inv.recipe_book_editor.editor_main:
+                default: op
+              customcrafting.inv.recipe_book_editor.categories:
+                default: op
+              customcrafting.inv.recipe_book_editor.filters:
+                default: op
+              customcrafting.inv.recipe_book_editor.category:
+                default: op
+              customcrafting.inv.recipe_book_editor.filter:
+                default: op
+          customcrafting.inv.potion_creator.*:
+            description: The menus of the Potion Creator
+            children:
+              customcrafting.inv.potion_creator.potion_creator:
+                default: op
+              customcrafting.inv.potion_creator.potion_effect_type_selection:
+                default: op
+      customcrafting.cmd.*:
+        description: The permission for all the available commands
+        default: op
+        children:
+          customcrafting.cmd.info:
+            default: op
+          customcrafting.cmd.help:
+            default: op
+          customcrafting.cmd.studio:
+            default: op
+          customcrafting.cmd.reload:
+            default: op
+          customcrafting.cmd.give:
+            default: op
+          customcrafting.cmd.database:
+            default: op
+          customcrafting.cmd.lockdown:
+            default: op
+          customcrafting.cmd.debug:
+            default: op
+          customcrafting.cmd.darkmode:
+            default: op
+          customcrafting.cmd.recipes:
+            description: Permission to open the custom recipe book. Needs customcrafting.inv.recipe_book.* to allow players to open the GUI!
+            default: true
