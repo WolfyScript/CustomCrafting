@@ -127,7 +127,8 @@ public class FurnaceListener implements Listener {
         //Similar to the check in the FurnaceStartSmeltEvent.
         //This is needed in 1.16 as the FurnaceStartSmeltEvent doesn't exist.
         //Check if the CustomItem is allowed in Vanilla recipes
-        if (CustomItem.getByItemStack(event.getSource()) != null) {
+        CustomItem customItem = CustomItem.getByItemStack(event.getSource());
+        if (customItem != null && customItem.isBlockVanillaRecipes()) {
             event.setCancelled(true); //Cancel the process if it is.
         }
         Bukkit.getScheduler().runTask(customCrafting, () -> {
