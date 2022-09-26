@@ -27,8 +27,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.utilities.api.nms.RecipeUtil;
-import me.wolfyscript.utilities.api.nms.item.crafting.FunctionalCampfireRecipe;
+import me.wolfyscript.utilities.api.nms.item.crafting.FunctionalRecipeBuilderCampfire;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.CampfireRecipe;
@@ -56,10 +55,7 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
     @Override
     public CampfireRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            RecipeUtil recipeUtil = api.getNmsUtil().getRecipeUtil();
-            FunctionalCampfireRecipe campfireRecipe = recipeUtil.campfireRecipe(getNamespacedKey(), getGroup(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime(), (inventory, world) -> getSource().test(inventory.getItem(0), isCheckNBT()));
-            campfireRecipe.setAssembler(inventory -> java.util.Optional.ofNullable(getResult().getItemStack()));
-            recipeUtil.registerCookingRecipe(campfireRecipe);
+            registerRecipeIntoMinecraft(new FunctionalRecipeBuilderCampfire(getNamespacedKey(), getResult().getItemStack(), getRecipeChoice()));
         }
         return null;
     }

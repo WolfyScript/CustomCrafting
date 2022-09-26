@@ -29,6 +29,7 @@ import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
@@ -40,8 +41,10 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.api.nms.item.crafting.FunctionalRecipeBuilderCooking;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.RecipeChoice;
@@ -132,6 +135,19 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
 
     protected RecipeChoice getRecipeChoice() {
         return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().getChoices().stream().map(CustomItem::create).toList()) : new RecipeChoice.MaterialChoice(getSource().getChoices().stream().map(i -> i.create().getType()).toList());
+    }
+
+    protected void registerRecipeIntoMinecraft(FunctionalRecipeBuilderCooking builder) {
+        builder.setGroup(group);
+        builder.setExperience(getExp());
+        builder.setCookingTime(getCookingTime());
+        builder.setRecipeMatcher((inventory, world) -> {
+            Location location = inventory.getLocation();
+            if (location != null && !checkConditions(new Conditions.Data(null, location.getBlock(), null))) return false;
+            return getSource().test(inventory.getItem(0), isCheckNBT());
+        });
+        builder.setRecipeAssembler(inventory -> java.util.Optional.ofNullable(getResult().getItemStack()));
+        builder.createAndRegister();
     }
 
     @Override
