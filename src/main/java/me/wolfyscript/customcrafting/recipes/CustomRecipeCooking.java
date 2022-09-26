@@ -148,6 +148,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         });
         builder.setRecipeAssembler(inventory -> java.util.Optional.ofNullable(getResult().getItemStack()));
         builder.createAndRegister();
+        customCrafting.getLogger().info(String.format("Added recipe '%s' to Minecraft", namespacedKey));
     }
 
     @Override
