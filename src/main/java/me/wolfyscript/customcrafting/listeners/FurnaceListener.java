@@ -33,7 +33,6 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.registry.RegistryCustomItem;
 import me.wolfyscript.utilities.util.Pair;
-import me.wolfyscript.utilities.util.events.EventFactory;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
@@ -42,8 +41,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.EventHandler;
@@ -58,12 +55,10 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class FurnaceListener implements Listener {
 
     public static final NamespacedKey RECIPES_USED_KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipes_used");
-    public static final NamespacedKey ACTIVE_RECIPE_KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "active_recipe");
 
     protected final CustomCrafting customCrafting;
     protected final WolfyUtilities api;
@@ -131,13 +126,6 @@ public class FurnaceListener implements Listener {
         if (customItem != null && customItem.isBlockVanillaRecipes()) {
             event.setCancelled(true); //Cancel the process if it is.
         }
-        Bukkit.getScheduler().runTask(customCrafting, () -> {
-            //make sure to reset the active custom recipe when the new recipe is a vanilla recipe.
-            var state = ((Furnace) event.getBlock().getState());
-            PersistentDataContainer container = state.getPersistentDataContainer();
-            container.remove(FurnaceListener.ACTIVE_RECIPE_KEY);
-            state.update();
-        });
     }
 
     /**
@@ -152,29 +140,21 @@ public class FurnaceListener implements Listener {
         if (location == null) return;
         if (!(location.getBlock().getState() instanceof Furnace)) return;
 
-        if (ItemUtils.isAirOrNull(inventory.getResult())) { //Make sure to only give exp if the result is actually there.
+        if (!ItemUtils.isAirOrNull(inventory.getResult())) { //Make sure to only give exp if the result is actually there.
+            // Keep this for backwards compatibility and handle existing custom recipe exp.
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 Furnace blockState = (Furnace) location.getBlock().getState();
                 PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
-                rootContainer.remove(FurnaceListener.ACTIVE_RECIPE_KEY);
-                blockState.update();
+                PersistentDataContainer usedRecipes = rootContainer.get(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER);
+                if (usedRecipes != null) {
+                    //Award the experience of all the stored recipes.
+                    usedRecipes.getKeys().forEach(bukkitRecipeKey -> awardRecipeExperience(usedRecipes, bukkitRecipeKey, location));
+                    rootContainer.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, rootContainer.getAdapterContext().newPersistentDataContainer());
+                    //Update the furnace state, so the NBT is updated.
+                    blockState.update();
+                }
             });
-            return;
         }
-        Bukkit.getScheduler().runTask(customCrafting, () -> {
-            Furnace blockState = (Furnace) location.getBlock().getState();
-            PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
-            PersistentDataContainer usedRecipes = rootContainer.get(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER);
-            if (usedRecipes != null) {
-                //Remove active recipe from the NBT.
-                rootContainer.remove(FurnaceListener.ACTIVE_RECIPE_KEY);
-                //Award the experience of all the stored recipes.
-                usedRecipes.getKeys().forEach(bukkitRecipeKey -> awardRecipeExperience(usedRecipes, bukkitRecipeKey, location));
-                rootContainer.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, rootContainer.getAdapterContext().newPersistentDataContainer());
-                //Update the furnace state, so the NBT is updated.
-                blockState.update();
-            }
-        });
     }
 
     private void awardRecipeExperience(PersistentDataContainer usedRecipes, NamespacedKey bukkitRecipeKey, Location location) {
