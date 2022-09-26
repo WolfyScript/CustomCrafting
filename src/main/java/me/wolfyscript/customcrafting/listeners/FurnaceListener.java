@@ -72,6 +72,8 @@ public class FurnaceListener implements Listener {
         this.registryCustomItem = api.getRegistries().getCustomItems();
         if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_17)) {
             Bukkit.getPluginManager().registerEvents(new FurnaceListener1_17Adapter(customCrafting, manager), customCrafting);
+        } else {
+            customCrafting.getLogger().warning("Looks like you are using 1.16. This will impact the Cooking Recipe Performance! Please update to 1.17 and/or use Paper!");
         }
     }
 
