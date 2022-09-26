@@ -111,22 +111,6 @@ public abstract class SmeltAPIAdapter {
             smelting.setAmount(smelting.getAmount() - 1);
             result.executeExtensions(block.getLocation(), true, null);
             result.removeCachedItem(block);
-
-            Bukkit.getScheduler().runTask(customCrafting, () -> {
-                var blockState = ((Furnace) event.getBlock().getState());
-                CustomRecipeCooking<?, ?> recipe = data.getRecipe();
-                //Setting the active recipe
-                PersistentDataContainer container = blockState.getPersistentDataContainer();
-                container.set(FurnaceListener.ACTIVE_RECIPE_KEY, PersistentDataType.STRING, recipe.getNamespacedKey().toString());
-                //Increase recipe used counter
-                var usedRecipesContainer = container.getOrDefault(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, container.getAdapterContext().newPersistentDataContainer());
-                var bukkitKey = org.bukkit.NamespacedKey.fromString(recipe.getNamespacedKey().toString());
-                int amount = usedRecipesContainer.getOrDefault(bukkitKey, PersistentDataType.INTEGER, 0);
-                usedRecipesContainer.set(bukkitKey, PersistentDataType.INTEGER, ++amount);
-                //Update data
-                container.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, usedRecipesContainer);
-                blockState.update();
-            });
         }
     }
 
