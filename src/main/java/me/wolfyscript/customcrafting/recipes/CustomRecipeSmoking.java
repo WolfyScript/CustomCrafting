@@ -27,7 +27,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.utilities.api.nms.item.crafting.FunctionalRecipeBuilderSmoking;
+import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderSmoking;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.SmokingRecipe;

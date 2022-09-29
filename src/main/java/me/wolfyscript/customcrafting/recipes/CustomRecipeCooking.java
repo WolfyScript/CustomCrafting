@@ -41,7 +41,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.api.nms.item.crafting.FunctionalRecipeBuilderCooking;
+import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderCooking;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Location;
