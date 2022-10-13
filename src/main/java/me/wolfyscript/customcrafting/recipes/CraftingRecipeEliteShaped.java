@@ -37,13 +37,13 @@ public class CraftingRecipeEliteShaped extends AbstractRecipeShaped<CraftingReci
     }
 
     @JsonCreator
-    public CraftingRecipeEliteShaped(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting, @JsonProperty("symmetry") Symmetry symmetry, @JsonProperty("shape") String[] shape) {
-        super(key, customCrafting, symmetry, shape, 6, new EliteRecipeSettings());
+    public CraftingRecipeEliteShaped(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting, @JsonProperty("symmetry") Symmetry symmetry, @JsonProperty(value = "keepShapeAsIs") boolean keepShapeAsIs, @JsonProperty("shape") String[] shape) {
+        super(key, customCrafting, symmetry, keepShapeAsIs, shape, 6, new EliteRecipeSettings());
     }
 
     @Deprecated
     public CraftingRecipeEliteShaped(NamespacedKey key) {
-        super(key, CustomCrafting.inst(), new Symmetry(), 6, new EliteRecipeSettings());
+        super(key, CustomCrafting.inst(), new Symmetry(), false, 6, new EliteRecipeSettings());
     }
 
     private CraftingRecipeEliteShaped(CraftingRecipeEliteShaped eliteCraftingRecipe) {
