@@ -52,7 +52,7 @@
         <dependency>
             <groupId>com.wolfyscript.wolfyutils.spigot</groupId>
             <artifactId>wolfyutils-spigot</artifactId>
-            <version>4.16.6.1-func-cooking-SNAPSHOT</version>
+            <version>4.16.8-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!--
