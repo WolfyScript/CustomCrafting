@@ -20,14 +20,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.listeners;
+package me.wolfyscript.customcrafting.listeners.crafting;
 
+import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -40,29 +37,17 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-import java.util.stream.Stream;
-
-public class CraftListener implements Listener {
+public class EventBasedCraftRecipeHandler implements Listener {
 
     private final CustomCrafting customCrafting;
     private final CraftManager craftManager;
 
-    public CraftListener(CustomCrafting customCrafting) {
+    public EventBasedCraftRecipeHandler(CustomCrafting customCrafting, CraftManager craftManager) {
         this.customCrafting = customCrafting;
-        this.craftManager = customCrafting.getCraftManager();
-    }
-
-    @EventHandler
-    public void onAdvancedWorkbench(CustomPreCraftEvent event) {
-        if (!event.isCancelled() && event.getRecipe().getNamespacedKey().equals(CustomCrafting.ADVANCED_CRAFTING_TABLE) && !customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled()) {
-            event.setCancelled(true);
-        }
+        this.craftManager = craftManager;
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
@@ -143,30 +128,4 @@ public class CraftListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
-        org.bukkit.NamespacedKey key = event.getRecipe();
-        if (key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(NamespacedKey.fromBukkit(key));
-            if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
-                event.setCancelled(recipe.isHidden() || recipe.isDisabled());
-            } else {
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    /**
-     * Automatically discovers available custom recipes for players.
-     */
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        var player = event.getPlayer();
-        List<org.bukkit.NamespacedKey> discoveredCustomRecipes = player.getDiscoveredRecipes().stream().filter(namespacedKey -> namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).toList();
-        customCrafting.getRegistries().getRecipes().getAvailable(player).stream()
-                .filter(recipe -> recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isAutoDiscover())
-                .map(recipe -> new org.bukkit.NamespacedKey(recipe.getNamespacedKey().getNamespace(), recipe.getNamespacedKey().getKey()))
-                .filter(namespacedKey -> !discoveredCustomRecipes.contains(namespacedKey))
-                .forEach(player::discoverRecipe);
-    }
 }

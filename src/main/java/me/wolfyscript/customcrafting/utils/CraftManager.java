@@ -39,7 +39,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,10 +58,22 @@ import java.util.UUID;
 public class CraftManager {
 
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
+    private final Map<InventoryView, MatrixData> currentMatrixData = new HashMap<>();
     private final CustomCrafting customCrafting;
 
     public CraftManager(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
+    }
+
+    public MatrixData getMatrixData(InventoryView view, CraftingInventory craftingInventory) {
+        return currentMatrixData.computeIfAbsent(view, inventory1 -> {
+            System.out.println("        Create new MatrixData");
+            return getIngredients(craftingInventory.getMatrix());
+        });
+    }
+
+    public void clearCurrentMatrixData(InventoryView view) {
+        currentMatrixData.remove(view);
     }
 
     /**

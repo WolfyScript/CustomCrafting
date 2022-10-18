@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import java.util.logging.Level;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -148,7 +149,6 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         });
         builder.setRecipeAssembler(inventory -> java.util.Optional.ofNullable(getResult().getItemStack()));
         builder.createAndRegister();
-        customCrafting.getLogger().info(String.format("Added recipe '%s' to Minecraft", namespacedKey));
     }
 
     @Override

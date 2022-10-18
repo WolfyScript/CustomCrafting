@@ -144,6 +144,10 @@ public class MainConfig extends YamlConfiguration {
         return getBoolean("recipes.pretty_printing");
     }
 
+    public boolean isNMSBasedCrafting() {
+        return getBoolean("recipes.nms_based_crafting", false);
+    }
+
     public void setPrettyPrinting(boolean prettyPrinting) {
         set("recipes.pretty_printing", prettyPrinting);
     }
