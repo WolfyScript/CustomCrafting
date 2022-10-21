@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.listeners.customevents;
 
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -32,13 +33,19 @@ public class CustomCraftEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
     private final Inventory inventory;
+    private final Player player;
     private boolean cancelled;
     private final CraftingRecipe<?, ?> craftingRecipe;
 
-    public CustomCraftEvent(CraftingRecipe<?, ?> craftingRecipe, Inventory inventory) {
+    public CustomCraftEvent(CraftingRecipe<?, ?> craftingRecipe, Player player, Inventory inventory) {
         this.craftingRecipe = craftingRecipe;
+        this.player = player;
         this.inventory = inventory;
         this.cancelled = false;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     public Inventory getInventory() {
