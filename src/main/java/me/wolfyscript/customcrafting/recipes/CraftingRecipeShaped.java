@@ -76,7 +76,6 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
     @Override
     public org.bukkit.inventory.ShapedRecipe getVanillaRecipe() {
         if (!getResult().isEmpty() && !ingredients.isEmpty()) {
-
             if (customCrafting.getConfigHandler().getConfig().isNMSBasedCrafting()) {
                 FunctionalRecipeBuilderShaped builder = new FunctionalRecipeBuilderShaped(getNamespacedKey(), getResult().getItemStack(), getInternalShape().getWidth(), getInternalShape().getHeight());
                 final CraftManager craftManager = CustomCrafting.inst().getCraftManager();
@@ -88,8 +87,8 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
                                 craftManager.put(player.getUniqueId(), craftingData);
                                 return true;
                             }
-                            craftManager.remove(player.getUniqueId());
                         }
+                        craftManager.remove(player.getUniqueId());
                     }
                     return false;
                 });
@@ -102,10 +101,9 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
                     if (!isDisabled() && inventory.getHolder() instanceof Player player) {
                         craftManager.get(player.getUniqueId()).ifPresent(craftingData -> {
                             for (int i = 0; i < inventory.getMatrix().length; i++) {
-                                ItemStack stack = inventory.getMatrix()[i];
-                                IngredientData ingredientData = craftingData.getBySlot(i);
+                                IngredientData ingredientData = craftingData.getIndexedBySlot().get(i);
                                 if (ingredientData != null) {
-                                    ingredientData.customItem().remove(stack, 1, inventory, player, player.getLocation(), ingredientData.ingredient().isReplaceWithRemains());
+                                    inventory.setItem(i+1, ingredientData.customItem().shrink(inventory.getMatrix()[i], 1, ingredientData.ingredient().isReplaceWithRemains(), inventory, player, player.getLocation()));
                                 }
                             }
                         });

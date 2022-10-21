@@ -24,13 +24,13 @@ package me.wolfyscript.customcrafting.listeners.crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.Keyed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -46,12 +46,12 @@ public class NMSBasedCraftRecipeHandler implements Listener {
         this.craftManager = craftManager;
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onCraft(InventoryClickEvent event) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onCraftClick(InventoryClickEvent event) {
         if (!(event.getClickedInventory() instanceof CraftingInventory inventory)) return;
         // Update MatrixData for the clicked inventory
         craftManager.clearCurrentMatrixData(event.getView());
-        if (event.getSlot() == 0) {
+        if (event.getSlot() == 0 && inventory instanceof Keyed keyed && keyed.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
             ItemStack resultItem = inventory.getResult();
             ItemStack cursor = event.getCursor();
             if (ItemUtils.isAirOrNull(resultItem) || (!ItemUtils.isAirOrNull(cursor) && !cursor.isSimilar(resultItem) && !event.isShiftClick())) {
@@ -61,14 +61,15 @@ public class NMSBasedCraftRecipeHandler implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    public void onItemCraft(CraftItemEvent event) {
+        // Update MatrixData for the clicked inventory
+        craftManager.clearCurrentMatrixData(event.getView());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPreCraft(PrepareItemCraftEvent e) {
-        var player = (Player) e.getView().getPlayer();
         // Update MatrixData for the clicked inventory
         craftManager.clearCurrentMatrixData(e.getView());
-        if (e.getRecipe() == null) {
-            //craftManager.remove(player.getUniqueId());
-            //e.getInventory().setResult(new ItemStack(Material.AIR));
-        }
     }
 
 }
