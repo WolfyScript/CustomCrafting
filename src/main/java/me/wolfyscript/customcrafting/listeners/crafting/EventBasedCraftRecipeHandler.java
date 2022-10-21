@@ -35,6 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -50,7 +51,7 @@ public class EventBasedCraftRecipeHandler implements Listener {
         this.craftManager = craftManager;
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onCraft(InventoryClickEvent event) {
         if (!(event.getClickedInventory() instanceof CraftingInventory inventory)) return;
         if (event.getSlot() == 0) {
@@ -68,22 +69,15 @@ public class EventBasedCraftRecipeHandler implements Listener {
                     //This must not update the inventory yet, as that would call the PrepareItemCraftEvent, invalidating the recipe and preventing consumption of the recipe!
                     //But clearing it later can cause other issues too!
                     //So lets just set the items to AIR and amount to 0...
-                    for (int i = 0; i < 10; i++) {
-                        ItemStack item = inventory.getItem(i);
-                        if (item != null) {
-                            item.setAmount(0);
-                            item.setType(Material.AIR);
-                        }
-                    }
+                    inventory.clear();
+                    final int count = craftManager.collectResult(event, craftingData, player);
                     //...do all the calculations & item replacements...
-                    craftManager.consumeRecipe(event);
                     //...and finally update the inventory.
                     player.updateInventory();
                     //Reset Matrix with the re-calculated items. (1 tick later, to not cause duplication!)
                     //This will result in a short flicker of the items in the inventory... still better than duplications, so the flickering won't be fixed!
                     Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                        craftingData.getIndexedBySlot().forEach((integer, ingredientData) -> inventory.setItem(integer + 1, ingredientData.itemStack()));
-                        player.updateInventory();
+                        inventory.setMatrix(craftingData.getRecipe().shrinkMatrix(player, inventory, count, craftingData, inventory.getMatrix().length == 9 ? 3 : 2));
                     }, 1);
                 }
             });
