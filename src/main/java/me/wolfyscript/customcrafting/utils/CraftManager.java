@@ -23,6 +23,15 @@
 package me.wolfyscript.customcrafting.utils;
 
 import com.google.common.collect.Lists;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
@@ -39,27 +48,28 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 
 public class CraftManager {
 
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
+    private final Map<InventoryView, MatrixData> currentMatrixData = new HashMap<>();
     private final CustomCrafting customCrafting;
 
     public CraftManager(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
+    }
+
+    public MatrixData getMatrixData(InventoryView view, CraftingInventory craftingInventory) {
+        return currentMatrixData.computeIfAbsent(view, inventory1 -> getIngredients(craftingInventory.getMatrix()));
+    }
+
+    public void clearCurrentMatrixData(InventoryView view) {
+        currentMatrixData.remove(view);
     }
 
     /**
@@ -119,15 +129,22 @@ public class CraftManager {
         var player = (Player) event.getWhoClicked();
         if (event.getClickedInventory() != null && has(player.getUniqueId())) {
             var craftingData = preCraftedRecipes.get(player.getUniqueId());
-            CraftingRecipe<?, ?> recipe = craftingData.getRecipe();
-            if (recipe != null) {
-                Result recipeResult = craftingData.getResult();
-                editStatistics(player, event.getClickedInventory(), recipe);
-                setPlayerCraftTime(player, recipe);
-                calculateClick(player, event, craftingData, recipe, recipeResult);
-            }
-            remove(event.getWhoClicked().getUniqueId());
+            collectResult(event, craftingData, player);
         }
+    }
+
+    public int collectResult(InventoryClickEvent event, CraftingData craftingData, Player player) {
+        if (event.getClickedInventory() == null) return 0;
+        CraftingRecipe<?, ?> recipe = craftingData.getRecipe();
+        if (recipe != null) {
+            Result recipeResult = craftingData.getResult();
+            editStatistics(player, event.getClickedInventory(), recipe);
+            setPlayerCraftTime(player, recipe);
+            remove(event.getWhoClicked().getUniqueId());
+            return calculateClick(player, event, craftingData, recipe, recipeResult);
+        }
+        remove(event.getWhoClicked().getUniqueId());
+        return 0;
     }
 
     private void editStatistics(Player player, Inventory inventory, CraftingRecipe<?, ?> recipe) {
@@ -149,11 +166,10 @@ public class CraftManager {
         }
     }
 
-    private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?, ?> recipe, Result recipeResult) {
+    private int calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?, ?> recipe, Result recipeResult) {
         var result = recipeResult.getItem(craftingData, player, null);
         var inventory = event.getClickedInventory();
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(craftingData)) : 1;
-        recipe.removeMatrix(player, inventory, possible, craftingData);
         recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked(), possible);
         if (event.isShiftClick()) {
             if (possible > 0) {
@@ -171,7 +187,7 @@ public class CraftManager {
                     }
                 }
             }
-            return;
+            return possible;
         }
         ItemStack cursor = event.getCursor();
         if (ItemUtils.isAirOrNull(cursor) || (result.isSimilar(cursor) && cursor.getAmount() + result.getAmount() <= cursor.getMaxStackSize())) {
@@ -182,6 +198,7 @@ public class CraftManager {
             }
             recipeResult.removeCachedItem(player);
         }
+        return possible;
     }
 
     /**

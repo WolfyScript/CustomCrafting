@@ -22,14 +22,25 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderShaped;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
+import me.wolfyscript.customcrafting.recipes.data.CraftingData;
+import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
+import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 
 public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeShaped, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapedRecipe> {
@@ -65,11 +76,50 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
     @Override
     public org.bukkit.inventory.ShapedRecipe getVanillaRecipe() {
         if (!getResult().isEmpty() && !ingredients.isEmpty()) {
-            var recipe = new org.bukkit.inventory.ShapedRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack());
-            recipe.shape(getShape());
-            mappedIngredients.forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().stream().map(CustomItem::getItemStack).distinct().toList())));
-            recipe.setGroup(getGroup());
-            return recipe;
+            if (customCrafting.getConfigHandler().getConfig().isNMSBasedCrafting()) {
+                FunctionalRecipeBuilderShaped builder = new FunctionalRecipeBuilderShaped(getNamespacedKey(), getResult().getItemStack(), getInternalShape().getWidth(), getInternalShape().getHeight());
+                final CraftManager craftManager = CustomCrafting.inst().getCraftManager();
+                builder.setRecipeMatcher((inventory, world) -> {
+                    if (!isDisabled() && inventory.getHolder() instanceof Player player) {
+                        if (checkConditions(Conditions.Data.of(player, inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getLocation().getBlock(), player.getOpenInventory()))) {
+                            CraftingData craftingData = check(craftManager.getMatrixData(player.getOpenInventory(), inventory));
+                            if (craftingData != null) {
+                                craftManager.put(player.getUniqueId(), craftingData);
+                                return true;
+                            }
+                        }
+                        craftManager.remove(player.getUniqueId());
+                    }
+                    return false;
+                });
+                builder.setRecipeAssembler(inventory -> {
+                    if (inventory.getHolder() instanceof Player player)
+                        return Optional.ofNullable(getResult().getItem(player).orElse(new CustomItem(Material.AIR)).create());
+                    return Optional.of(new ItemStack(Material.AIR));
+                });
+                builder.setRemainingItemsFunction(inventory -> {
+                    if (!isDisabled() && inventory.getHolder() instanceof Player player) {
+                        craftManager.get(player.getUniqueId()).ifPresent(craftingData -> {
+                            for (int i = 0; i < inventory.getMatrix().length; i++) {
+                                IngredientData ingredientData = craftingData.getIndexedBySlot().get(i);
+                                if (ingredientData != null) {
+                                    inventory.setItem(i+1, ingredientData.customItem().shrink(inventory.getMatrix()[i], 1, ingredientData.ingredient().isReplaceWithRemains(), inventory, player, player.getLocation()));
+                                }
+                            }
+                        });
+                    }
+                    return Optional.of(new ArrayList<>());
+                });
+                builder.setGroup(group);
+                builder.setChoices(getIngredients().stream().map(ingredient -> ingredient.isEmpty() ? null : new RecipeChoice.ExactChoice(ingredient.getBukkitChoices())).collect(Collectors.toCollection(ArrayList::new)));
+                builder.createAndRegister();
+            } else {
+                var recipe = new org.bukkit.inventory.ShapedRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack());
+                recipe.shape(getShape());
+                mappedIngredients.forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().stream().map(CustomItem::getItemStack).distinct().toList())));
+                recipe.setGroup(getGroup());
+                return recipe;
+            }
         }
         return null;
     }

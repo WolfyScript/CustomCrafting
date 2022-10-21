@@ -117,12 +117,16 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         remove(namespacedKey);
         super.register(namespacedKey, value);
         if (value instanceof ICustomVanillaRecipe<?> vanillaRecipe && !value.isDisabled()) {
-            try {
-                if (Bukkit.addRecipe(vanillaRecipe.getVanillaRecipe())) {
-                    customCrafting.getLogger().info(String.format("Added recipe '%s' to Minecraft", namespacedKey));
+            if (customCrafting.getConfigHandler().getConfig().isNMSBasedCrafting()) {
+                vanillaRecipe.getVanillaRecipe();
+            } else {
+                try {
+                    if (!Bukkit.addRecipe(vanillaRecipe.getVanillaRecipe())) {
+                        customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit!", namespacedKey));
+                    }
+                } catch (IllegalArgumentException | IllegalStateException ex) {
+                    customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
-            } catch (IllegalArgumentException | IllegalStateException ex) {
-                customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
             }
         }
         clearCache(namespacedKey);

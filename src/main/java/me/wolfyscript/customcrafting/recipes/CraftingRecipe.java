@@ -47,6 +47,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -156,6 +157,14 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
                 item.remove(data.itemStack(), totalAmount, inventory, player, player != null ? player.getLocation() : null, data.ingredient().isReplaceWithRemains());
             }
         });
+    }
+
+    public ItemStack[] shrinkMatrix(@Nullable Player player, @Nullable Inventory inventory, int totalAmount, CraftingData craftingData, int gridDimension) {
+        ItemStack[] matrix = new ItemStack[gridDimension * gridDimension];
+        craftingData.getIndexedBySlot().forEach((slot, data) -> {
+            matrix[slot] = data.customItem().shrink(data.itemStack(), totalAmount, data.ingredient().isReplaceWithRemains(), inventory, player, null);
+        });
+        return matrix;
     }
 
     public int getAmountCraftable(CraftingData craftingData) {
