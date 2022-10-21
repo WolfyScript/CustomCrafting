@@ -116,9 +116,11 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         Preconditions.checkArgument(!namespacedKey.getNamespace().equalsIgnoreCase("minecraft"), "Invalid NamespacedKey! Cannot register recipe under minecraft namespace!");
         remove(namespacedKey);
         super.register(namespacedKey, value);
-        if (value instanceof ICustomVanillaRecipe vanillaRecipe && !value.isDisabled()) {
+        if (value instanceof ICustomVanillaRecipe<?> vanillaRecipe && !value.isDisabled()) {
             try {
-                Bukkit.addRecipe(vanillaRecipe.getVanillaRecipe());
+                if (Bukkit.addRecipe(vanillaRecipe.getVanillaRecipe())) {
+                    customCrafting.getLogger().info(String.format("Added recipe '%s' to Minecraft", namespacedKey));
+                }
             } catch (IllegalArgumentException | IllegalStateException ex) {
                 customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
             }

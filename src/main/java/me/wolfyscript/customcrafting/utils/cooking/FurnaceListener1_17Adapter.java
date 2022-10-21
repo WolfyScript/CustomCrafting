@@ -49,16 +49,14 @@ public class FurnaceListener1_17Adapter implements Listener {
         var recipe = event.getRecipe();
         if (recipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
             var data = manager.getAdapter().processRecipe(event.getSource(), NamespacedKey.fromBukkit(recipe.getKey()), event.getBlock());
-            if (data.getKey() == null) { //"Cancel" the process when no custom recipe is valid.
-                //event.setTotalCookTime(0);
-            }
             //Update the cache to the new Custom Recipe.
             manager.cacheRecipeData(event.getBlock(), data);
         } else {
             //Update the cache with the vanilla recipe
             manager.cacheRecipeData(event.getBlock(), new Pair<>(null, false));
             //Check if the CustomItem is allowed in Vanilla recipes
-            if (CustomItem.getByItemStack(event.getSource()) != null) {
+            CustomItem customItem = CustomItem.getByItemStack(event.getSource());
+            if (customItem != null && customItem.isBlockVanillaRecipes()) {
                 event.setTotalCookTime(0); //"Cancel" the process if it is.
             }
         }

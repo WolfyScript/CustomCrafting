@@ -189,6 +189,9 @@ public class CustomCrafting extends JavaPlugin {
         this.version = WUVersion.parse(currentVersion.split("-")[0]);
         this.pluginCompatibility = new PluginCompatibility(this);
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
+        if (!isPaper) {
+            getLogger().warning("Paper not detected! Not using performance improvements.");
+        }
         api = WolfyUtilCore.getInstance().getAPI(this, false);
 
         HoconMapper mapper = new HoconMapper(new HoconFactory()
@@ -335,6 +338,7 @@ public class CustomCrafting extends JavaPlugin {
         this.pluginCompatibility.init();
         this.dataHandler = new DataHandler(this);
         this.disableRecipesHandler = new DisableRecipesHandler(this);
+
         registerListeners();
         registerCommands();
         registerInventories();

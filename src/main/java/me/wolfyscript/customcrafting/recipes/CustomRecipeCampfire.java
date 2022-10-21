@@ -27,6 +27,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderCampfire;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.CampfireRecipe;
@@ -54,9 +55,7 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
     @Override
     public CampfireRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            var recipe = new CampfireRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
-            recipe.setGroup(group);
-            return recipe;
+            registerRecipeIntoMinecraft(new FunctionalRecipeBuilderCampfire(getNamespacedKey(), getResult().getItemStack(), getRecipeChoice()));
         }
         return null;
     }

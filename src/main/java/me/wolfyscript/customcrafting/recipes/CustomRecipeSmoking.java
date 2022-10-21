@@ -27,6 +27,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderSmoking;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.SmokingRecipe;
@@ -64,9 +65,7 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
     @Override
     public SmokingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            var recipe = new SmokingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
-            recipe.setGroup(group);
-            return recipe;
+            registerRecipeIntoMinecraft(new FunctionalRecipeBuilderSmoking(getNamespacedKey(), getResult().getItemStack(), getRecipeChoice()));
         }
         return null;
     }
