@@ -107,7 +107,7 @@ public class CraftManager {
         if (!recipe.isDisabled() && recipe.checkConditions(Conditions.Data.of(player, block, player.getOpenInventory()))) {
             var craftingData = recipe.check(flatMatrix);
             if (craftingData != null) {
-                var customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, flatMatrix);
+                var customPreCraftEvent = new CustomPreCraftEvent(recipe, player, inventory, flatMatrix);
                 Bukkit.getPluginManager().callEvent(customPreCraftEvent);
                 if (!customPreCraftEvent.isCancelled()) {
                     Result result = customPreCraftEvent.getResult();
