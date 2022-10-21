@@ -63,7 +63,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-@JsonPropertyOrder(value = {"@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions", "symmetry", "shape", "ingredients"})
+@JsonPropertyOrder(value = {"@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions", "symmetry", "keepShapeAsIs", "shape", "ingredients"})
 public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
     private static final String SHAPE_KEY = "shape";
@@ -75,6 +75,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     protected Map<Character, Ingredient> mappedIngredients;
     @JsonIgnore
     private Shape internalShape;
+    private boolean keepShapeAsIs = false;
     private String[] shape;
     private final Symmetry symmetry;
 
@@ -92,19 +93,21 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         setIngredients(loadedIngredients);
     }
 
-    protected AbstractRecipeShaped(NamespacedKey key, CustomCrafting customCrafting, Symmetry symmetry, String[] shape, int gridSize, S settings) {
-        this(key, customCrafting, symmetry, gridSize, settings);
+    protected AbstractRecipeShaped(NamespacedKey key, CustomCrafting customCrafting, Symmetry symmetry, boolean keepShapeAsIs, String[] shape, int gridSize, S settings) {
+        this(key, customCrafting, symmetry, keepShapeAsIs, gridSize, settings);
         setShape(shape);
     }
 
-    protected AbstractRecipeShaped(NamespacedKey key, CustomCrafting customCrafting, Symmetry symmetry, int gridSize, S settings) {
+    protected AbstractRecipeShaped(NamespacedKey key, CustomCrafting customCrafting, Symmetry symmetry, boolean keepShapeAsIs, int gridSize, S settings) {
         super(key, customCrafting, gridSize, settings);
+        this.keepShapeAsIs = keepShapeAsIs;
         this.symmetry = symmetry;
         this.mappedIngredients = new HashMap<>();
     }
 
     protected AbstractRecipeShaped(AbstractRecipeShaped<C, S> recipe) {
         super(recipe);
+        this.keepShapeAsIs = recipe.keepShapeAsIs;
         this.symmetry = recipe.symmetry.copy();
         this.mappedIngredients = new HashMap<>();
         setShape(recipe.shape.clone());
@@ -149,6 +152,10 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         return shape;
     }
 
+    public boolean isKeepShapeAsIs() {
+        return keepShapeAsIs;
+    }
+
     /**
      * Sets the shape of the recipe and generates all the possible variations based on the mirror settings.<br>
      * <br>
@@ -169,7 +176,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
             Preconditions.checkArgument(currentWidth == -1 || currentWidth == row.length(), "Shape must be rectangular!");
             currentWidth = row.length();
         }
-        this.shape = RecipeUtil.formatShape(shape).toArray(new String[0]);
+        this.shape = keepShapeAsIs ? shape : RecipeUtil.formatShape(shape).toArray(new String[0]);
         var flattenShape = String.join("", this.shape);
         Preconditions.checkArgument(!flattenShape.isEmpty() && !flattenShape.isBlank(), "Shape must not be empty! (Shape: \"" + Arrays.toString(this.shape) + "\")!");
         Map<Character, Ingredient> newIngredients = new HashMap<>();
@@ -257,7 +264,10 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
 
     @Override
     public boolean fitsDimensions(@NotNull CraftManager.MatrixData matrixData) {
-        return ingredients.size() == matrixData.getMatrix().length && internalShape.height == matrixData.getHeight() && internalShape.width == matrixData.getWidth();
+        if (keepShapeAsIs) {
+            return ingredients.size() == matrixData.getOriginalMatrix().length && internalShape.getHeight() == matrixData.getGridSize() && internalShape.getWidth() == matrixData.getGridSize();
+        }
+        return ingredients.size() == matrixData.getMatrix().length && internalShape.getHeight() == matrixData.getHeight() && internalShape.getWidth() == matrixData.getWidth();
     }
 
     @Override
@@ -274,7 +284,8 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     protected CraftingData checkShape(@NotNull CraftManager.MatrixData matrixData, int[] shape) {
         Map<Integer, IngredientData> dataMap = new HashMap<>();
         var i = 0;
-        for (ItemStack invItem : matrixData.getMatrix()) {
+        ItemStack[] matrix = keepShapeAsIs ? matrixData.getOriginalMatrix() : matrixData.getMatrix();
+        for (ItemStack invItem : matrix) {
             int recipeSlot = shape[i];
             if (invItem != null) {
                 if (recipeSlot >= 0) {
@@ -283,9 +294,15 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                         Optional<CustomItem> item = ingredient.check(invItem, this.checkAllNBT);
                         if (item.isPresent()) {
                             //In order to index the ingredients for the correct inventory slot we need to reverse the shape offset.
-                            int row = i / getInternalShape().getWidth();
-                            int offset = matrixData.getOffsetX() + (matrixData.getOffsetY() * matrixData.getGridSize());
-                            dataMap.put(i + offset + (row * (matrixData.getGridSize() - matrixData.getWidth())), new IngredientData(recipeSlot, ingredient, item.get(), new ItemStack(invItem)));
+                            int estimatedSlot;
+                            if (keepShapeAsIs) {
+                                estimatedSlot = i;
+                            } else {
+                                int row = i / getInternalShape().getWidth();
+                                int offset = keepShapeAsIs ? 0 : matrixData.getOffsetX() + (matrixData.getOffsetY() * matrixData.getGridSize());
+                                estimatedSlot = i + offset + (row * (matrixData.getGridSize() - matrixData.getWidth()));
+                            }
+                            dataMap.put(estimatedSlot, new IngredientData(recipeSlot, ingredient, item.get(), new ItemStack(invItem)));
                             i++;
                             continue;
                         }

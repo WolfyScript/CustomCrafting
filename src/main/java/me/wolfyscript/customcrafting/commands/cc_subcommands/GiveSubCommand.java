@@ -26,6 +26,8 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -67,9 +69,8 @@ public class GiveSubCommand extends AbstractSubCommand {
                     default -> Bukkit.getPlayer(giveTarget);
                 };
                 if (target == null) {
-                    Pair<String, String> playerValue = new Pair<>("%target%", giveTarget);
                     if (sender instanceof Player) {
-                        api.getChat().sendMessage((Player) sender, "$commands.give.invalid_target$", playerValue);
+                        api.getChat().sendMessage((Player) sender, api.getChat().translated("commands.give.invalid_target", Placeholder.unparsed("target", giveTarget)));
                     } else {
                         api.getConsole().log(Level.INFO, "$commands.give.invalid_target$", giveTarget);
                     }
@@ -77,7 +78,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                 }
 
                 var namespacedKey = NamespacedKey.of(args[1]);
-                Pair<String, String> itemValue = new Pair<>("%ITEM%", args[1]);
+                TagResolver.Single itemPlaceholder = Placeholder.unparsed("item", args[1]);
 
                 //not required values ---------------------------------------
                 var amount = 1;
@@ -86,14 +87,14 @@ public class GiveSubCommand extends AbstractSubCommand {
                         amount = Integer.parseInt(args[2]);
                     } catch (NumberFormatException ex) {
                         if (sender instanceof Player) {
-                            api.getChat().sendMessage((Player) sender, "$commands.give.invalid_amount$");
+                            api.getChat().sendMessage((Player) sender, api.getChat().translated("commands.give.invalid_amount"));
                         } else {
                             api.getConsole().info("$commands.give.invalid_amount$");
                         }
                         return true;
                     }
                 }
-                Pair<String, String> amountValue = new Pair<>("%AMOUNT%", String.valueOf(amount));
+                TagResolver.Single amountPlaceholder = Placeholder.unparsed("amount", String.valueOf(amount));
                 var dropItems = true;
                 if (args.length > 3) {
                     dropItems = Boolean.parseBoolean(args[3]);
@@ -103,7 +104,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                 if (namespacedKey != null) {
                     var customItem = api.getRegistries().getCustomItems().get(NamespacedKeyUtils.fromInternal(namespacedKey));
                     if (customItem != null) {
-                        Pair<String, String> playerValue = new Pair<>("%PLAYER%", target.getDisplayName());
+                        TagResolver.Single playerPlaceholder = Placeholder.unparsed("player", target.getName());
                         var itemStack = customItem.create(amount);
                         if (InventoryUtils.hasInventorySpace(target, itemStack)) {
                             target.getInventory().addItem(itemStack);
@@ -111,7 +112,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                             target.getLocation().getWorld().dropItem(target.getLocation(), itemStack);
                         } else {
                             if (sender instanceof Player) {
-                                api.getChat().sendMessage((Player) sender, "$commands.give.no_inv_space$", itemValue);
+                                api.getChat().sendMessage((Player) sender, api.getChat().translated("commands.give.no_inv_space", itemPlaceholder));
                             } else {
                                 api.getConsole().log(Level.INFO, "$commands.give.no_inv_space$", args[1]);
                             }
@@ -119,13 +120,13 @@ public class GiveSubCommand extends AbstractSubCommand {
                         }
                         if (amount > 1) {
                             if (sender instanceof Player) {
-                                api.getChat().sendMessage((Player) sender, "$commands.give.success_amount$", amountValue, itemValue, playerValue);
+                                api.getChat().sendMessage((Player) sender, api.getChat().translated("commands.give.success_amount", amountPlaceholder, itemPlaceholder, playerPlaceholder));
                             } else {
                                 api.getConsole().log(Level.INFO, "$commands.give.success_amount$", args[2], args[1], target.getDisplayName());
                             }
                         } else {
                             if (sender instanceof Player) {
-                                api.getChat().sendMessage((Player) sender, "$commands.give.success$", playerValue, itemValue);
+                                api.getChat().sendMessage((Player) sender, api.getChat().translated("commands.give.success", playerPlaceholder, itemPlaceholder));
                             } else {
                                 api.getConsole().log(Level.INFO, "$commands.give.success$", args[1], target.getDisplayName());
                             }
@@ -134,13 +135,13 @@ public class GiveSubCommand extends AbstractSubCommand {
                     }
                 }
                 if (sender instanceof Player) {
-                    api.getChat().sendMessage((Player) sender, "$commands.give.invalid_item$", itemValue);
+                    api.getChat().sendMessage((Player) sender, api.getChat().translated("commands.give.invalid_item", itemPlaceholder));
                 } else {
                     api.getConsole().log(Level.INFO, "$commands.give.invalid_item$", args[1]);
                 }
             } else {
                 if (sender instanceof Player) {
-                    api.getChat().sendMessage((Player) sender, "$commands.give.invalid_usage$");
+                    api.getChat().sendMessage((Player) sender, api.getChat().translated("commands.give.invalid_usage"));
                 }
             }
 
