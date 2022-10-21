@@ -288,7 +288,7 @@ public class CraftManager {
         }
         var finalLeftPos = leftPos;
         var finalRightPos = rightPos + 1;
-        return new MatrixData(items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).toArray(ItemStack[]::new), items.size(), finalRightPos - finalLeftPos, gridSize, finalLeftPos, yPosOfFirstOccurrence);
+        return new MatrixData(ingredients, items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).toArray(ItemStack[]::new), items.size(), finalRightPos - finalLeftPos, gridSize, finalLeftPos, yPosOfFirstOccurrence);
     }
 
     /**
@@ -300,6 +300,7 @@ public class CraftManager {
     public static class MatrixData {
 
         private final ItemStack[] matrix;
+        private final ItemStack[] originalMatrix;
         private final int gridSize;
         private final int height;
         private final int width;
@@ -310,10 +311,11 @@ public class CraftManager {
 
         @Deprecated
         public MatrixData(ItemStack[] matrix, int height, int width) {
-            this(matrix, height, width, 3, 0, 0);
+            this(matrix, matrix, height, width, 3, 0, 0);
         }
 
-        public MatrixData(ItemStack[] matrix, int height, int width, int gridSize, int offsetX, int offsetY) {
+        public MatrixData(ItemStack[] originalMatrix, ItemStack[] matrix, int height, int width, int gridSize, int offsetX, int offsetY) {
+            this.originalMatrix = originalMatrix;
             this.matrix = matrix;
             this.height = height;
             this.width = width;
@@ -388,6 +390,10 @@ public class CraftManager {
          */
         public ItemStack[] getMatrix() {
             return matrix;
+        }
+
+        public ItemStack[] getOriginalMatrix() {
+            return originalMatrix;
         }
 
         @Override
