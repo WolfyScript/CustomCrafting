@@ -74,39 +74,7 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
         if (!getResult().isEmpty()) {
             if (customCrafting.getConfigHandler().getConfig().isNMSBasedCrafting()) {
                 FunctionalRecipeBuilderShapeless builder = new FunctionalRecipeBuilderShapeless(getNamespacedKey(), getResult().getItemStack());
-                final CraftManager craftManager = CustomCrafting.inst().getCraftManager();
-                builder.setRecipeMatcher((inventory, world) -> {
-                    if (!isDisabled() && inventory.getHolder() instanceof Player player) {
-                        if (checkConditions(Conditions.Data.of(player, inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getLocation().getBlock(), player.getOpenInventory()))) {
-                            CraftingData craftingData = check(craftManager.getMatrixData(player.getOpenInventory(), inventory));
-                            if (craftingData != null) {
-                                craftManager.put(player.getUniqueId(), craftingData);
-                                return true;
-                            }
-                        }
-                        craftManager.remove(player.getUniqueId());
-                    }
-                    return false;
-                });
-                builder.setRecipeAssembler(inventory -> {
-                    if (inventory.getHolder() instanceof Player player)
-                        return Optional.ofNullable(getResult().getItem(player).orElse(new CustomItem(Material.AIR)).create());
-                    return Optional.of(new ItemStack(Material.AIR));
-                });
-                builder.setRemainingItemsFunction(inventory -> {
-                    if (!isDisabled() && inventory.getHolder() instanceof Player player) {
-                        craftManager.get(player.getUniqueId()).ifPresent(craftingData -> {
-                            for (int i = 0; i < inventory.getMatrix().length; i++) {
-                                IngredientData ingredientData = craftingData.getIndexedBySlot().get(i);
-                                if (ingredientData != null) {
-                                    inventory.setItem(i+1, ingredientData.customItem().shrink(inventory.getMatrix()[i], 1, ingredientData.ingredient().isReplaceWithRemains(), inventory, player, player.getLocation()));
-                                }
-                            }
-                        });
-                    }
-                    return Optional.of(new ArrayList<>());
-                });
-                builder.setGroup(group);
+                applySettingsToFunctionalRecipe(builder);
                 builder.setChoices(getIngredients().stream().map(ingredient -> ingredient.isEmpty() ? null : new RecipeChoice.ExactChoice(ingredient.getBukkitChoices())).collect(Collectors.toCollection(ArrayList::new)));
                 builder.createAndRegister();
             } else {

@@ -22,29 +22,38 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderCrafting;
+import java.util.ArrayList;
+import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -225,6 +234,49 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
             }
             event.setButton(25, ButtonContainerIngredient.key(cluster, maxIngredients));
         }
+    }
+
+    protected void applySettingsToFunctionalRecipe(FunctionalRecipeBuilderCrafting builder) {
+        builder.setGroup(group);
+        final CraftManager craftManager = customCrafting.getCraftManager();
+        builder.setRecipeMatcher((inventory, world) -> {
+            if (!isDisabled() && inventory.getHolder() instanceof Player player) {
+                if (checkConditions(Conditions.Data.of(player, inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getLocation().getBlock(), player.getOpenInventory()))) {
+                    var matrixData = craftManager.getMatrixData(player.getOpenInventory(), inventory);
+                    CraftingData craftingData = check(matrixData);
+                    if (craftingData != null) {
+                        var customPreCraftEvent = new CustomPreCraftEvent(this, player, inventory, matrixData);
+                        Bukkit.getPluginManager().callEvent(customPreCraftEvent);
+                        if (!customPreCraftEvent.isCancelled()) {
+                            Result result = customPreCraftEvent.getResult();
+                            craftingData.setResult(result);
+                            craftManager.put(player.getUniqueId(), craftingData);
+                            return true;
+                        }
+                    }
+                }
+                craftManager.remove(player.getUniqueId());
+            }
+            return false;
+        });
+        builder.setRecipeAssembler(inventory -> {
+            if (inventory.getHolder() instanceof Player player)
+                return Optional.ofNullable(getResult().getItem(player).orElse(new CustomItem(Material.AIR)).create());
+            return Optional.of(new ItemStack(Material.AIR));
+        });
+        builder.setRemainingItemsFunction(inventory -> {
+            if (!isDisabled() && inventory.getHolder() instanceof Player player) {
+                craftManager.get(player.getUniqueId()).ifPresent(craftingData -> {
+                    for (int i = 0; i < inventory.getMatrix().length; i++) {
+                        IngredientData ingredientData = craftingData.getIndexedBySlot().get(i);
+                        if (ingredientData != null) {
+                            inventory.setItem(i+1, ingredientData.customItem().shrink(inventory.getMatrix()[i], 1, ingredientData.ingredient().isReplaceWithRemains(), inventory, player, player.getLocation()));
+                        }
+                    }
+                });
+            }
+            return Optional.of(new ArrayList<>());
+        });
     }
 
     @Deprecated
