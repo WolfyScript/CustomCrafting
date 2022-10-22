@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -51,13 +52,25 @@ public class EliteWorkbenchListener implements Listener {
             if (block != null && WorldUtils.getWorldCustomItemStore().isStored(block.getLocation())) {
                 var customItem = NamespacedKeyUtils.getCustomItem(block);
                 if (customItem != null) {
-                    var eliteCraftingTableData = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA);
-                    if (eliteCraftingTableData != null && eliteCraftingTableData.isEnabled()) {
-                        event.setCancelled(true);
-                        GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(event.getPlayer());
-                        guiHandler.getCustomCache().getEliteWorkbench().setCustomItemAndData(customItem, eliteCraftingTableData.clone());
-                        guiHandler.openWindow(new NamespacedKey("crafting", "crafting_grid" + eliteCraftingTableData.getGridSize()));
-                    }
+                    // New EliteCraftingTableSettings
+                    customItem.getData(EliteCraftingTableSettings.class).ifPresentOrElse(settings -> {
+                        if (settings.isEnabled()) {
+                            event.setCancelled(true);
+                            GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(event.getPlayer());
+                            guiHandler.getCustomCache().getEliteWorkbench().setCustomItem(customItem);
+                            guiHandler.getCustomCache().getEliteWorkbench().setSettings(settings);
+                            guiHandler.openWindow(new NamespacedKey("crafting", "crafting_grid" + settings.getGridSize()));
+                        }
+                    }, () -> {
+                        // Old settings handled when new ones are not available
+                        var eliteCraftingTableData = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA);
+                        if (eliteCraftingTableData != null && eliteCraftingTableData.isEnabled()) {
+                            event.setCancelled(true);
+                            GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(event.getPlayer());
+                            guiHandler.getCustomCache().getEliteWorkbench().setCustomItemAndData(customItem, eliteCraftingTableData.clone());
+                            guiHandler.openWindow(new NamespacedKey("crafting", "crafting_grid" + eliteCraftingTableData.getGridSize()));
+                        }
+                    });
                 }
             }
         }

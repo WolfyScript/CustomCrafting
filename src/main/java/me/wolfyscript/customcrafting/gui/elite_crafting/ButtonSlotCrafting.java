@@ -40,7 +40,7 @@ class ButtonSlotCrafting extends ItemInputButton<CCCache> {
                     CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
                     if (cacheEliteCraftingTable.getContents() != null) {
                         cacheEliteCraftingTable.getContents()[recipeSlot] = inventory.getItem(slot);
-                        ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), player, inventory, true, cacheEliteCraftingTable.getData().isAdvancedRecipes());
+                        ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), player, inventory, true, cacheEliteCraftingTable.isAdvancedCraftingRecipes());
                         cacheEliteCraftingTable.setResult(result);
                     } else {
                         cacheEliteCraftingTable.setResult(new ItemStack(Material.AIR));

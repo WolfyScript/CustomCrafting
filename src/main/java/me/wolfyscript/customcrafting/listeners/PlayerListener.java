@@ -24,10 +24,10 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
+import me.wolfyscript.customcrafting.configs.customitem.RecipeBookSettings;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -65,13 +65,17 @@ public class PlayerListener implements Listener {
         if (event.hasItem() && (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR))) {
             var customItem = CustomItem.getByItemStack(event.getItem());
             if (customItem != null) {
-                RecipeBookData knowledgeBook = (RecipeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK_DATA);
-                if (knowledgeBook != null && knowledgeBook.isEnabled()) {
-                    event.setUseItemInHand(Event.Result.DENY);
-                    event.setUseInteractedBlock(Event.Result.DENY);
+                if (customItem.getData(RecipeBookSettings.class).map(RecipeBookSettings::isEnabled).orElse(false)) {
+                    event.setCancelled(true);
                     event.getPlayer().closeInventory();
-
                     PlayerUtil.openRecipeBook(event.getPlayer());
+                } else {
+                    RecipeBookData knowledgeBook = (RecipeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK_DATA);
+                    if (knowledgeBook != null && knowledgeBook.isEnabled()) {
+                        event.setCancelled(true);
+                        event.getPlayer().closeInventory();
+                        PlayerUtil.openRecipeBook(event.getPlayer());
+                    }
                 }
             }
         }
