@@ -30,7 +30,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 @KeyedStaticId(RecipeBookSettings.ID)
 public class RecipeBookSettings extends CustomItemData {
 
-    protected static final String ID = NamespacedKeyUtils.NAMESPACE + ":" + "recipebook";
+    protected static final String ID = NamespacedKeyUtils.NAMESPACE + ":" + "recipe_book";
 
     private boolean enabled;
 
