@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -31,6 +32,7 @@ public class CacheEliteCraftingTable {
 
     private byte currentGridSize;
     private EliteWorkbenchData data;
+    private EliteCraftingTableSettings settings;
     private CustomItem customItem;
     private ItemStack result;
     private ItemStack[] contents;
@@ -39,6 +41,8 @@ public class CacheEliteCraftingTable {
         this.contents = null;
         this.currentGridSize = 3;
         this.result = new ItemStack(Material.AIR);
+        this.settings = null;
+        this.data = null;
     }
 
     public ItemStack[] getContents() {
@@ -65,16 +69,30 @@ public class CacheEliteCraftingTable {
         this.result = result;
     }
 
+    @Deprecated
+    public void setCustomItemAndData(CustomItem customItem, EliteWorkbenchData eliteWorkbench) {
+        this.customItem = customItem;
+        this.data = eliteWorkbench;
+    }
+
+    @Deprecated
     public EliteWorkbenchData getData() {
         return data;
+    }
+
+    public boolean isAdvancedCraftingRecipes() {
+        return settings != null ? settings.isAdvancedRecipes() : data != null && data.isAdvancedRecipes();
     }
 
     public CustomItem getCustomItem() {
         return customItem;
     }
 
-    public void setCustomItemAndData(CustomItem customItem, EliteWorkbenchData eliteWorkbench) {
+    public void setCustomItem(CustomItem customItem) {
         this.customItem = customItem;
-        this.data = eliteWorkbench;
+    }
+
+    public void setSettings(EliteCraftingTableSettings settings) {
+        this.settings = settings;
     }
 }

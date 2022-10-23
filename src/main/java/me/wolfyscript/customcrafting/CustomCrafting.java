@@ -30,9 +30,10 @@ import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.compatibility.PluginCompatibility;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.configs.custom_data.CauldronData;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
+import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
+import me.wolfyscript.customcrafting.configs.customitem.RecipeBookSettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.patreon.Patreon;
@@ -248,7 +249,10 @@ public class CustomCrafting extends JavaPlugin {
         var customItemData = api.getRegistries().getCustomItemData();
         customItemData.register(new EliteWorkbenchData.Provider());
         customItemData.register(new RecipeBookData.Provider());
-        customItemData.register(new CauldronData.Provider());
+
+        var customItemDataTypes = api.getRegistries().getCustomItemDataTypeRegistry();
+        customItemDataTypes.register(RecipeBookSettings.class);
+        customItemDataTypes.register(EliteCraftingTableSettings.class);
 
         getLogger().info("Registering Custom Block Data");
         var customBlockData = api.getRegistries().getCustomBlockData();

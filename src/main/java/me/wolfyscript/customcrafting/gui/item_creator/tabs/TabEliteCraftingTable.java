@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
@@ -52,67 +53,99 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
     }
 
+    private static EliteCraftingTableSettings getOrCreateSettings(Items items) {
+        return items.getItem().computeDataIfAbsent(EliteCraftingTableSettings.class, id -> new EliteCraftingTableSettings());
+    }
+
+    private static void changeGridSize(Items items, int gridSize) {
+        getOrCreateSettings(items).setGridSize(gridSize);
+    }
+
+    private static void setEnable(Items items, boolean enable) {
+        getOrCreateSettings(items).setEnabled(enable);
+    }
+
+    private static void setAdvancedRecipes(Items items, boolean advRec) {
+        getOrCreateSettings(items).setAdvancedRecipes(advRec);
+    }
+
     @Override
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ButtonOption(Material.CRAFTING_TABLE, this));
         creator.registerButton(new DummyButton<>("elite_workbench.particles", Material.FIREWORK_ROCKET));
         if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 6, 1))) {
             new MultipleChoiceButton.Builder<>(creator, "elite_workbench.grid_size")
-                    .stateFunction((cache, guiHandler, player, guiInventory, i) -> ((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).getGridSize() - 2)
+                    .stateFunction((cache, guiHandler, player, guiInventory, i) ->
+                            cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(settings -> settings.getGridSize() - 2)
+                                    // Get old elite crafting table settings
+                                    .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).getGridSize() - 2))
                     .addState(state -> state.subKey("size_2").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(3);
+                        changeGridSize(items, 3);
                         return true;
                     }))
                     .addState(state -> state.subKey("size_3").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(4);
+                        changeGridSize(items, 4);
                         return true;
                     }))
                     .addState(state -> state.subKey("size_4").icon(PlayerHeadUtils.getViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(5);
+                        changeGridSize(items, 5);
                         return true;
                     }))
                     // Deprecated states
                     .addState(state -> state.subKey("size_5").icon(PlayerHeadUtils.getViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(6);
+                        changeGridSize(items, 6);
                         return true;
                     }))
                     .addState(state -> state.subKey("size_6").icon(PlayerHeadUtils.getViaURL("faff2eb498e5c6a04484f0c9f785b448479ab213df95ec91176a308a12add70")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(2);
+                        changeGridSize(items, 2);
                         return true;
                     })).register();
         } else {
-            creator.registerButton(new MultipleChoiceButton<>("elite_workbench.grid_size", (cache, guiHandler, player, guiInventory, i) -> ((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).getGridSize() - 3,
+            creator.registerButton(new MultipleChoiceButton<>("elite_workbench.grid_size", (cache, guiHandler, player, guiInventory, i) ->
+                    cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(settings -> settings.getGridSize() - 3)
+                            // Get old elite crafting table settings
+                            .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).getGridSize() - 3),
                     new ButtonState<>("elite_workbench.grid_size.size_3", PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(4);
+                        changeGridSize(items, 4);
                         return true;
                     }),
                     new ButtonState<>("elite_workbench.grid_size.size_4", PlayerHeadUtils.getViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(5);
+                        changeGridSize(items, 5);
                         return true;
                     }),
                     new ButtonState<>("elite_workbench.grid_size.size_5", PlayerHeadUtils.getViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(6);
+                        changeGridSize(items, 6);
                         return true;
                     }),
                     new ButtonState<>("elite_workbench.grid_size.size_6", PlayerHeadUtils.getViaURL("faff2eb498e5c6a04484f0c9f785b448479ab213df95ec91176a308a12add70"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                        ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setGridSize(3);
+                        changeGridSize(items, 3);
                         return true;
                     })));
         }
-        creator.registerButton(new ToggleButton<>("elite_workbench.toggle", (cache, guiHandler, player, guiInventory, i) -> ((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isEnabled(), new ButtonState<>("elite_workbench.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setEnabled(false);
-            return true;
-        }), new ButtonState<>("elite_workbench.toggle.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setEnabled(true);
-            return true;
-        })));
-        creator.registerButton(new ToggleButton<>("elite_workbench.advanced_recipes", (cache, guiHandler, player, guiInventory, i) -> ((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isAdvancedRecipes(), new ButtonState<>("elite_workbench.advanced_recipes.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setAdvancedRecipes(false);
-            return true;
-        }), new ButtonState<>("elite_workbench.advanced_recipes.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).setAdvancedRecipes(true);
-            return true;
-        })));
+        creator.registerButton(new ToggleButton<>("elite_workbench.toggle", (cache, guiHandler, player, guiInventory, i) ->
+                cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(EliteCraftingTableSettings::isEnabled)
+                        // Get old elite crafting table settings
+                        .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isEnabled()),
+                new ButtonState<>("elite_workbench.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    setEnable(items, false);
+                    return true;
+                }),
+                new ButtonState<>("elite_workbench.toggle.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    setEnable(items, true);
+                    return true;
+                })));
+        creator.registerButton(new ToggleButton<>("elite_workbench.advanced_recipes", (cache, guiHandler, player, guiInventory, i) ->
+                cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(EliteCraftingTableSettings::isAdvancedRecipes)
+                        // Get old elite crafting table settings
+                        .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isAdvancedRecipes()),
+                new ButtonState<>("elite_workbench.advanced_recipes.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    setAdvancedRecipes(items, false);
+                    return true;
+                }),
+                new ButtonState<>("elite_workbench.advanced_recipes.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    setAdvancedRecipes(items, true);
+                    return true;
+                })));
     }
 
     @Override
