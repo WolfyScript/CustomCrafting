@@ -22,15 +22,17 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
+import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
-
-import java.util.List;
+import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class OverviewCategories extends Overview {
 
@@ -59,7 +61,31 @@ public class OverviewCategories extends Overview {
         for (int i = 0; i < categories.size() && i + 9 < 45; i++) {
             var category = recipeBookConfig.getCategory(categories.get(i));
             if (category != null) {
-                registerButton(new ButtonCategory(category, customCrafting));
+                String id = "category_" + category.getId();
+                getButtonBuilder()
+                        .action(id)
+                        .state(state -> state.icon(Material.AIR)
+                                .render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(category.createItemStack(customCrafting)))
+                                .action((cache, guiHandler, player, guiInventory, i1, event) -> {
+                                    if (event instanceof InventoryClickEvent clickEvent) {
+                                        var recipeBookEditor = cache.getRecipeBookEditor();
+                                        var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
+                                        if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
+                                            //Delete Category
+                                            recipeBook.removeCategory(category.getId());
+                                            return true;
+                                        } else if (clickEvent.isLeftClick()) {
+                                            //Edit Category
+                                            recipeBookEditor.setCategoryID(category.getId());
+                                            recipeBookEditor.setCategory(new Category(category));
+                                            guiHandler.openWindow("category");
+                                            return true;
+                                        }
+                                    }
+                                    return true;
+                                })
+                        )
+                        .register();
                 update.setButton(i + 9, "category_" + category.getId());
             }
         }
