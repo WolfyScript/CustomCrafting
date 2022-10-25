@@ -3306,37 +3306,59 @@
     "recipe_book_editor": {
       "global_items": {
         "save": {
-          "name": "<dark_aqua>Save</dark_aqua>",
+          "name": "<grey>▷</grey> <gold><b>Save</b></gold>",
           "lore": [
-            "<grey>Save with the current key.</grey>"
+            "<grey>Save with the current id.</grey>",
+            "<grey>ID: </grey><yellow><id></yellow>"
           ]
         },
         "save_as": {
-          "name": "<gold>Save As...</gold>",
+          "name": "<grey>✎</grey>  <gold><b>Save As...</b></gold>",
           "lore": [
-            "<grey>Save with a new key.</grey>",
-            "<grey>Input: </grey><yellow><category_key></yellow>",
-            "<red>The ID must be lowercase alphanumeric!</red>",
-            "<red>(a-z 0-9 _ -)</red>"
+            "<grey>Save under a new id.</grey>",
+            "<grey>Input: </grey><yellow><b><category_key></b></yellow>",
+            "<red>The id must be lowercase and</red>",
+            "<red>only contain letters, numbers, '_', '-', or '/'!</red>"
           ]
         },
         "name": {
-          "name": "<gold>Name: </gold>%name%",
+          "name": "<grey>✎</grey> <gold><b>Name</b>",
           "lore": [
+            "<grey>Current Name:",
+            "<name>",
+            "",
+            "<grey>(<green>Click</green>)</grey> <yellow>Change name"
           ],
-          "message": "<yellow>Type in the Name. You can use & for formatting codes.</yellow>"
+          "message": "<yellow>Type in the Name. <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
         },
         "description": {
           "add": {
-            "name": "<gold>Add Description Line</gold>",
+            "name": "<grey>✎</grey> <gold><b>Description</b></gold>",
             "lore": [
-              "<yellow>Description: </yellow>",
-              "%description%"
+              "<list_entry:0>",
+              "<list_entry:1>",
+              "<list_entry:2>",
+              "<list_entry:3>",
+              "<list_entry:4>",
+              "<list_entry:5>",
+              "<list_entry:6>",
+              "<list_entry:7>",
+              "<list_entry:8>",
+              "<list_entry:9>",
+              "<list_entry:10>",
+              "<list_entry:11>",
+              "<list_entry:12>",
+              "...",
+              "",
+              "<grey>(<green>Click</green>)</grey> <yellow>Edit Description"
             ],
-            "message": "<yellow>Type in the Description. You can use & for formatting codes.</yellow>"
+            "message": "<yellow>Type in the Description. <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
           },
           "remove": {
-            "name": "<gold>Remove Description</gold>"
+            "name": "<grey>✎</grey> <gold><b>Remove Description</b></gold>",
+            "lore": [
+              "<grey>(<green>Click</green>)</grey> <yellow>Add Description Line"
+            ]
           }
         },
         "recipes": {
