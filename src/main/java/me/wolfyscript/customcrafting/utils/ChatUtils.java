@@ -22,6 +22,14 @@
 
 package me.wolfyscript.customcrafting.utils;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
@@ -37,6 +45,7 @@ import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.chat.ClickEvent;
 import me.wolfyscript.utilities.api.chat.HoverEvent;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
@@ -44,11 +53,6 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
 
 public class ChatUtils {
 
@@ -188,6 +192,52 @@ public class ChatUtils {
                 Component.empty(),
                 Component.text("-------------------------------------------------"),
                 miniM.deserialize("                        <grey>[<yellow><b>Back to ItemCreator</b></yellow>]</grey>")
+                        .clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openCluster()))
+        );
+    }
+
+    public static <T> void sendListEditor(Player player, Function<T, Component> toComponent, BiFunction<String, String[], T> toListItem, Supplier<List<T>> listSupplier, Consumer<List<T>> applyChanges) {
+        for (int i = 0; i < 15; i++) {
+            player.sendMessage("");
+        }
+        chat.sendMessages(player, chat.translated("msg.chat_editor.list_edit.title"), Component.text("|"));
+        List<T> list = listSupplier.get();
+        if (!list.isEmpty()) {
+            int i = 0;
+            for (T listItem : list) {
+                final int finalI = i;
+                TagResolver tagResolver = Placeholder.unparsed("list_item", String.valueOf(finalI + 1));
+                chat.sendMessage(player, Component.text("| ").append(chat.translated("msg.chat_editor.list_edit.line.number", tagResolver))
+                        .append(chat
+                                .translated("msg.chat_editor.list_edit.line.remove", tagResolver)
+                                .clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
+                                    list.remove(finalI);
+                                    applyChanges.accept(list);
+                                    sendListEditor(player1, toComponent, toListItem, listSupplier, applyChanges);
+                                }))
+                                .append(chat.translated("msg.chat_editor.list_edit.line.edit", tagResolver).clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
+                                    sendListEditor(player1, toComponent, toListItem, listSupplier, applyChanges);
+                                    chat.sendMessage(player1, chat.translated("msg.chat_editor.list_edit.input_new_lore", tagResolver));
+                                    api.getInventoryAPI(CCCache.class).getGuiHandler(player1).setChatInputAction((guiHandler, player2, value, args) -> {
+                                        List<T> currentList = listSupplier.get();
+                                        if (finalI < currentList.size()) {
+                                            currentList.set(finalI, toListItem.apply(value, args));
+                                            applyChanges.accept(currentList);
+                                            sendListEditor(player1, toComponent, toListItem, listSupplier, applyChanges);
+                                        }
+                                        return true;
+                                    });
+                                })))
+                                .append(toComponent.apply(listItem))));
+                i++;
+            }
+        } else {
+            chat.sendMessage(player, Component.text("List is empty!", NamedTextColor.RED, TextDecoration.BOLD));
+        }
+        chat.sendMessages(player,
+                Component.text("|"),
+                Component.text("-------------------------------------------------"),
+                miniM.deserialize("                        <grey>[<yellow><b>Back to GUI</b></yellow>]</grey>")
                         .clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openCluster()))
         );
     }

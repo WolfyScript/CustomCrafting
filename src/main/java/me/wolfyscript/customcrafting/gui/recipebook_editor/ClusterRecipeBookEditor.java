@@ -22,14 +22,20 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import java.util.ArrayList;
+import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.MiniMessage;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
+import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.chat.ChatColor;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -39,9 +45,6 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClusterRecipeBookEditor extends CCCluster {
 
@@ -97,12 +100,25 @@ public class ClusterRecipeBookEditor extends CCCluster {
             guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().setName(s);
             return false;
         }).register();
-        btnBld.chatInput(DESCRIPTION_ADD.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("description", String.join("<newline> ", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getDescription()))))).inputAction((guiHandler, player, s, strings) -> {
+        btnBld.chatInput(DESCRIPTION_ADD.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK)
+                .render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
+                            List<String> description = guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getDescription();
+                            LanguageAPI langAPI = wolfyUtilities.getLanguageAPI();
+                            MiniMessage miniMsg = getChat().getMiniMessage();
+                            return CallbackButtonRender.UpdateResult.of(TagResolverUtil.entries(langAPI.replaceKeys(description).stream().map(s -> miniMsg.deserialize(langAPI.convertLegacyToMiniMessage(s))).toList()));
+                        }
+                )
+        ).inputAction((guiHandler, player, s, strings) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getDescription().add(s.equals("&empty") ? "" : ChatColor.convert(s));
             return false;
         }).register();
         btnBld.action(DESCRIPTION_REMOVE.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            ChatUtils.sendCategoryDescription(player);
+            ChatUtils.sendListEditor(player,
+                    item -> BukkitComponentSerializer.legacy().deserialize(item),
+                    (value, strings) -> BukkitComponentSerializer.legacy().serialize(getChat().getMiniMessage().deserialize(value)),
+                    () -> guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getDescription(),
+                    description -> guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().setDescription(description)
+            );
             guiHandler.close();
             return true;
         })).register();

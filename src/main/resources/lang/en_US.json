@@ -131,6 +131,15 @@
           "edit": "<hover:show_text:'Edit line <lore_line>'><grey>[<yellow>✎</yellow>]</grey></hover> "
         },
         "input_new_lore": "<grey>[<gold>Line <lore_line></gold>] </grey><yellow>Input the new lore line <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey></yellow>"
+      },
+      "list_edit": {
+        "title": "<grey>-------------------[<green>Modify List</green>]------------------</grey>",
+        "line": {
+          "number": "<list_item>. ",
+          "remove": "<hover:show_text:'<red><b>Remove line <list_item></b></red>'><grey>[<red>-</red>]</grey></hover> ",
+          "edit": "<hover:show_text:'Edit line <list_item>'><grey>[<yellow>✎</yellow>]</grey></hover> "
+        },
+        "input_new_lore": "<grey>[<gold>Line <list_item></gold>] </grey><yellow>Input the new lore line <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey></yellow>"
       }
     }
   },
