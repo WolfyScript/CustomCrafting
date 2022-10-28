@@ -237,7 +237,7 @@ public class ChatUtils {
                         })))
                         .append(Component.text(" "))
                         .append(chat.translated("msg.chat_editor.list_edit.entry.add_below", tagResolver).clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
-                            chat.sendMessage(player1, chat.translated("msg.chat_editor.list_edit.input_new_entry"));
+                            chat.sendMessage(player1, chat.translated("msg.chat_editor.list_edit.input_new_entry", tagResolver));
                             api.getInventoryAPI(CCCache.class).getGuiHandler(player1).setChatInputAction((guiHandler, player2, value, args) -> {
                                 List<T> currentList = listSupplier.get();
                                 if (finalEntryIndex + 1 >= currentList.size()) {

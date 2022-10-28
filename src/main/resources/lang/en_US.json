@@ -133,7 +133,7 @@
         "input_new_lore": "<grey>[<gold>Line <lore_line></gold>] </grey><yellow>Input the new lore line <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey></yellow>"
       },
       "list_edit": {
-        "title": "<grey>┌───── [<green>Modify List</green>]</grey>",
+        "title": "<grey>┌──── [<green>Modify List</green>]</grey>",
         "back_to_gui": "<grey>└─── [<yellow><b>➥ Back to GUI</b></yellow>]</grey>",
         "empty": "<red><b>List is empty</b></red>",
         "entry": {
