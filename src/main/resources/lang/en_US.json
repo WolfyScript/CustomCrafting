@@ -133,13 +133,20 @@
         "input_new_lore": "<grey>[<gold>Line <lore_line></gold>] </grey><yellow>Input the new lore line <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey></yellow>"
       },
       "list_edit": {
-        "title": "<grey>-------------------[<green>Modify List</green>]------------------</grey>",
-        "line": {
-          "number": "<list_item>. ",
-          "remove": "<hover:show_text:'<red><b>Remove line <list_item></b></red>'><grey>[<red>-</red>]</grey></hover> ",
-          "edit": "<hover:show_text:'Edit line <list_item>'><grey>[<yellow>✎</yellow>]</grey></hover> "
+        "title": "<grey>┌───── [<green>Modify List</green>]</grey>",
+        "back_to_gui": "<grey>└─── [<yellow><b>➥ Back to GUI</b></yellow>]</grey>",
+        "empty": "<red><b>List is empty</b></red>",
+        "entry": {
+          "number": "<list_entry>. ",
+          "remove": "<hover:show_text:'<red><b>Remove entry <list_entry></b></red>'><b><red>-</red></b></hover>",
+          "edit": "<hover:show_text:'Edit entry <list_entry>'><b><yellow>✎</yellow></b></hover>",
+          "add": "<hover:show_text:'Add New Entry'><b><green>+ Add Entry</green></b></hover>",
+          "add_below": "<hover:show_text:'Add below entry <list_entry>'><b><green>+</green></b></hover>",
+          "move_up": "<hover:show_text:'Move entry <list_entry> up'><b><gold>∧</gold></b></hover>",
+          "move_down": "<hover:show_text:'Move entry <list_entry> down'><b><gold>∨</gold></b></hover>"
         },
-        "input_new_lore": "<grey>[<gold>Line <list_item></gold>] </grey><yellow>Input the new lore line <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey></yellow>"
+        "input_new_entry": "<grey>[<gold>Entry <list_entry></gold>] </grey><yellow>Input the new list entry <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey></yellow>",
+        "input_add_entry": "<yellow>Input the new list entry <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey></yellow>"
       }
     }
   },
@@ -3341,7 +3348,7 @@
           "message": "<yellow>Type in the Name. <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
         },
         "description": {
-          "add": {
+          "edit": {
             "name": "<grey>✎</grey> <gold><b>Description</b></gold>",
             "lore": [
               "<list_entry:0>",
@@ -3352,22 +3359,11 @@
               "<list_entry:5>",
               "<list_entry:6>",
               "<list_entry:7>",
-              "<list_entry:8>",
-              "<list_entry:9>",
-              "<list_entry:10>",
-              "<list_entry:11>",
-              "<list_entry:12>",
               "...",
               "",
               "<grey>(<green>Click</green>)</grey> <yellow>Edit Description"
             ],
             "message": "<yellow>Type in the Description. <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
-          },
-          "remove": {
-            "name": "<grey>✎</grey> <gold><b>Remove Description</b></gold>",
-            "lore": [
-              "<grey>(<green>Click</green>)</grey> <yellow>Add Description Line"
-            ]
           }
         },
         "recipes": {
