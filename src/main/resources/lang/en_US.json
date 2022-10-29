@@ -3392,6 +3392,12 @@
             "<yellow>Configured Groups:</yellow>",
             "%groups%"
           ]
+        },
+        "previous_page": {
+          "name": "<grey>⏪</grey> <gold><b>Previous Page</b></gold>"
+        },
+        "next_page": {
+          "name": "<grey>⏩</grey> <gold><b>Next Page</b></gold>"
         }
       },
       "global_messages": {
@@ -3453,12 +3459,6 @@
               "<grey>[<green>Left Click</green>]</grey> <yellow>Edit Category</yellow>",
               "<grey>[<red>Shift + Right Click</red>]</grey> <red>Delete Category</red>"
             ]
-          },
-          "previous": {
-            "name": "<grey>Previous Page</grey>"
-          },
-          "next": {
-            "name": "<grey>Next Page</grey>"
           },
           "add": {
             "name": "<gold>Add Category</gold>",

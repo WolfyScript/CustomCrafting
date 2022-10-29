@@ -37,7 +37,6 @@ import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.chat.ChatColor;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
@@ -51,12 +50,13 @@ public class ClusterRecipeBookEditor extends CCCluster {
     public static final String KEY = "recipe_book_editor";
 
     public static final NamespacedKey BACK = new NamespacedKey(KEY, "back");
+    public static final NamespacedKey NEXT_PAGE = new NamespacedKey(KEY, "next_page");
+    public static final NamespacedKey PREVIOUS_PAGE = new NamespacedKey(KEY, "previous_page");
     public static final NamespacedKey SAVE = new NamespacedKey(KEY, "save");
     public static final NamespacedKey SAVE_AS = new NamespacedKey(KEY, "save_as");
     public static final NamespacedKey ICON = new NamespacedKey(KEY, "icon");
     public static final NamespacedKey NAME = new NamespacedKey(KEY, "name");
     public static final NamespacedKey DESCRIPTION_EDIT = new NamespacedKey(KEY, "description.edit");
-    public static final NamespacedKey DESCRIPTION_REMOVE = new NamespacedKey(KEY, "description.remove");
     public static final NamespacedKey RECIPES = new NamespacedKey(KEY, "recipes");
     public static final NamespacedKey FOLDERS = new NamespacedKey(KEY, "folders");
     public static final NamespacedKey GROUPS = new NamespacedKey(KEY, "groups");
@@ -72,6 +72,9 @@ public class ClusterRecipeBookEditor extends CCCluster {
         registerGuiWindow(new OverviewFilters(this, customCrafting));
         registerGuiWindow(new EditCategory(this, customCrafting));
         registerGuiWindow(new EditFilter(this, customCrafting));
+
+        getButtonBuilder().action(PREVIOUS_PAGE.getKey()).state(state-> state.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"))).register();
+        getButtonBuilder().action(NEXT_PAGE.getKey()).state(state-> state.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"))).register();
 
         registerButton(new ButtonSaveCategory(false, customCrafting));
         registerButton(new ButtonSaveCategory(true, customCrafting));
