@@ -205,9 +205,8 @@ public class ChatUtils {
                 final int finalEntryIndex = i;
                 TagResolver tagResolver = Placeholder.unparsed("list_entry", String.valueOf(finalEntryIndex + 1));
                 chat.sendMessage(player, false, Component.text("│", NamedTextColor.GRAY));
-                chat.sendMessage(player, false, Component.text("├─ ", NamedTextColor.GRAY)
+                chat.sendMessage(player, false, Component.text("╞", NamedTextColor.GRAY)
                         //.append(chat.translated("msg.chat_editor.list_edit.entry.number", tagResolver))
-                        .append(Component.text(""))
                         .append(chat.translated("msg.chat_editor.list_edit.entry.move_up", tagResolver).clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
                             List<T> currentList = listSupplier.get();
                             int aboveIndex = finalEntryIndex - 1;
@@ -269,10 +268,9 @@ public class ChatUtils {
                                 return true;
                             });
                         })))
-                );
-                chat.sendMessage(player, false, Component.text("╞", NamedTextColor.GRAY).append(Component.text("")
+                        .append(Component.text("═"))
                         .append(miniM.deserialize(" <white><entry_val>", Placeholder.component("entry_val", toComponent.apply(listItem))))
-                ));
+                );
                 i++;
             }
         } else {

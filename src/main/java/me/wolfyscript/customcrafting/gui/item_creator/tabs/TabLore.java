@@ -55,7 +55,7 @@ public class TabLore extends ItemCreatorTabVanilla {
             guiHandler.getCustomCache().getItems().getItem().addLoreLine(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s, Placeholder.component("emtpy", Component.empty()))));
             return false;
         }));
-        creator.registerButton(new ActionButton<>(KEY + ".edit", Material.WRITTEN_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
+        creator.registerButton(new ActionButton<>(KEY + ".edit", Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
             ChatUtils.sendLoreEditor(player);
             guiHandler.close();
             return true;
@@ -64,7 +64,6 @@ public class TabLore extends ItemCreatorTabVanilla {
 
     @Override
     public void render(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
-        update.setButton(30, KEY + ".add");
-        update.setButton(32, KEY + ".edit");
+        update.setButton(31, KEY + ".edit");
     }
 }
