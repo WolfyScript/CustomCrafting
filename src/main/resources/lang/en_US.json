@@ -3413,7 +3413,7 @@
         "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Editor]</dark_grey></grey>",
         "items": {
           "filters": {
-            "name": "<gold><b>Filters</b></gold>",
+            "name": "<grey>➥</grey> <gold><b>Filters</b></gold>",
             "lore": [
               "<yellow>The Filters are present on top of </yellow>",
               "<yellow>each Category and you can cycle</yellow>",
@@ -3421,7 +3421,7 @@
             ]
           },
           "categories": {
-            "name": "<gold>Categories</gold>",
+            "name": "<grey>➥</grey> <gold><b>Categories</b></gold>",
             "lore": [
               "<yellow>Categories are displayed on the</yellow>",
               "<yellow>Main Menu of the Recipe Book.</yellow>",
@@ -3431,7 +3431,7 @@
             ]
           },
           "cancel": {
-            "name": "<red><b>Cancel</b></red>",
+            "name": "<red>❌</red> <gold><b>Cancel</b></gold>",
             "lore": [
               "<grey>Reverts changes made to the Recipe Book!</grey>",
               "<red>If you don't revert the changes before</red>",
@@ -3439,7 +3439,7 @@
             ]
           },
           "save": {
-            "name": "<gold><b>Save</b></gold>",
+            "name": "<green>▷</green> <gold><b>Save</b></gold>",
             "lore": [
               "<grey>Save Recipe Book settings to the config!</grey>",
               "<grey>To load and apply the changes you need</grey>",
@@ -3461,7 +3461,7 @@
             ]
           },
           "add": {
-            "name": "<gold>Add Category</gold>",
+            "name": "<grey>➥</grey> <gold><b>Add Category</b></gold>",
             "lore": [
               "<yellow>Configure a new Category for</yellow>",
               "<yellow>the Recipe Book</yellow>"
@@ -3482,7 +3482,7 @@
             ]
           },
           "add": {
-            "name": "<gold>Add Filter</gold>",
+            "name": "<grey>➥</grey> <gold><b>Add Filter</b></gold>",
             "lore": [
               "<yellow>Configure a new Filter for</yellow>",
               "<yellow>the Recipe Book</yellow>"
