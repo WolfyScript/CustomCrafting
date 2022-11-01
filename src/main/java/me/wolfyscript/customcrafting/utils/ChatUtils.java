@@ -134,66 +134,12 @@ public class ChatUtils {
         return null;
     }
 
-    public static void sendCategoryDescription(Player player) {
-        List<String> description = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeBookEditor().getCategorySetting().getDescription();
-        for (int i = 0; i < 15; i++) {
-            player.sendMessage("");
-        }
-        chat.sendMessage(player, "------------------[&cEdit Description&7]-----------------");
-        chat.sendMessage(player, "");
-        if (!description.isEmpty()) {
-            int i = 0;
-            for (String line : description) {
-                int finalI = i;
-                chat.sendActionMessage(player, new ClickData("§7[§4-§7] ", (wolfyUtilities, player1) -> {
-                    description.remove(finalI);
-                    sendCategoryDescription(player1);
-                }, true), new ClickData(line, null));
-                i++;
-            }
-        } else {
-            chat.sendMessage(player, ChatColor.BOLD.toString() + ChatColor.RED + "No Description set yet!");
-        }
-        chat.sendMessage(player, "");
-        chat.sendMessage(player, "-------------------------------------------------");
-        chat.sendActionMessage(player, new ClickData("                    §7[§3Back to Recipe Book Editor§7]", (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
-    }
-
+    @Deprecated
     public static void sendLoreManager(Player player) {
-        var itemMeta = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getItems().getItem().getItemMeta();
-        for (int i = 0; i < 15; i++) {
-            player.sendMessage("");
-        }
-        chat.sendMessages(player,
-                miniM.deserialize("<grey>-------------------[<red>Remove Lore</red>]------------------</grey>"),
-                Component.empty()
-        );
-        List<String> lore;
-        if (itemMeta != null && itemMeta.hasLore()) {
-            lore = itemMeta.getLore() == null ? new ArrayList<>() : itemMeta.getLore();
-            int i = 0;
-            for (String line : lore) {
-                int finalI = i;
-                chat.sendMessage(player, miniM.deserialize("<grey>[<red>-</red>]</grey> ").clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
-                    lore.remove(finalI);
-                    itemMeta.setLore(lore);
-                    ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
-                    sendLoreManager(player1);
-                })).append(BukkitComponentSerializer.legacy().deserialize(line)));
-                i++;
-            }
-        } else {
-            chat.sendMessage(player, Component.text("No Lore set yet!", NamedTextColor.RED, TextDecoration.BOLD));
-        }
-        chat.sendMessages(player,
-                Component.empty(),
-                Component.text("-------------------------------------------------"),
-                miniM.deserialize("                        <grey>[<yellow><b>Back to ItemCreator</b></yellow>]</grey>")
-                        .clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openCluster()))
-        );
+        sendLoreEditor(player);
     }
 
-    public static <T> void sendListEditor(Player player, Function<T, Component> toComponent, BiFunction<String, String[], T> toListItem, Supplier<List<T>> listSupplier, Consumer<List<T>> applyChanges) {
+    private static <T> void _sendListEditor(Player player, boolean hasPages, int page, int entriesPerPage, Function<T, Component> toComponent, BiFunction<String, String[], T> toListItem, Supplier<List<T>> listSupplier, Consumer<List<T>> applyChanges) {
         for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }
@@ -218,7 +164,7 @@ public class ChatUtils {
                                 currentList.set(finalEntryIndex, below);
                             }
                             applyChanges.accept(currentList);
-                            sendListEditor(player1, toComponent, toListItem, listSupplier, applyChanges);
+                            _sendListEditor(player1, hasPages, page, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
                         })))
                         .append(Component.text(" "))
                         .append(chat.translated("msg.chat_editor.list_edit.entry.move_down", tagResolver).clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
@@ -232,20 +178,23 @@ public class ChatUtils {
                                 currentList.set(finalEntryIndex, below);
                             }
                             applyChanges.accept(currentList);
-                            sendListEditor(player1, toComponent, toListItem, listSupplier, applyChanges);
+                            _sendListEditor(player1, hasPages, page, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
                         })))
                         .append(Component.text(" "))
                         .append(chat.translated("msg.chat_editor.list_edit.entry.add_below", tagResolver).clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
                             chat.sendMessage(player1, chat.translated("msg.chat_editor.list_edit.input_new_entry", tagResolver));
                             api.getInventoryAPI(CCCache.class).getGuiHandler(player1).setChatInputAction((guiHandler, player2, value, args) -> {
                                 List<T> currentList = listSupplier.get();
-                                if (finalEntryIndex + 1 >= currentList.size()) {
-                                    currentList.add(toListItem.apply(value, args));
-                                } else {
-                                    currentList.add(finalEntryIndex + 1, toListItem.apply(value, args));
+                                T listEntry = toListItem.apply(value, args);
+                                if (listEntry != null) {
+                                    if (finalEntryIndex + 1 >= currentList.size()) {
+                                        currentList.add(listEntry);
+                                    } else {
+                                        currentList.add(finalEntryIndex + 1, listEntry);
+                                    }
+                                    applyChanges.accept(currentList);
                                 }
-                                applyChanges.accept(currentList);
-                                sendListEditor(player1, toComponent, toListItem, listSupplier, applyChanges);
+                                _sendListEditor(player1, hasPages, page, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
                                 return true;
                             });
                         })))
@@ -253,17 +202,18 @@ public class ChatUtils {
                         .append(chat.translated("msg.chat_editor.list_edit.entry.remove", tagResolver).clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
                             list.remove(finalEntryIndex);
                             applyChanges.accept(list);
-                            sendListEditor(player1, toComponent, toListItem, listSupplier, applyChanges);
+                            _sendListEditor(player1, hasPages, page, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
                         })))
                         .append(Component.text(" "))
                         .append(chat.translated("msg.chat_editor.list_edit.entry.edit", tagResolver).clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
                             chat.sendMessage(player1, chat.translated("msg.chat_editor.list_edit.input_new_entry", tagResolver));
                             api.getInventoryAPI(CCCache.class).getGuiHandler(player1).setChatInputAction((guiHandler, player2, value, args) -> {
                                 List<T> currentList = listSupplier.get();
-                                if (finalEntryIndex < currentList.size()) {
-                                    currentList.set(finalEntryIndex, toListItem.apply(value, args));
+                                T listEntry = toListItem.apply(value, args);
+                                if (listEntry != null && finalEntryIndex < currentList.size()) {
+                                    currentList.set(finalEntryIndex, listEntry);
                                     applyChanges.accept(currentList);
-                                    sendListEditor(player1, toComponent, toListItem, listSupplier, applyChanges);
+                                    _sendListEditor(player1, hasPages, page, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
                                 }
                                 return true;
                             });
@@ -273,15 +223,40 @@ public class ChatUtils {
                 );
                 i++;
             }
+            if (hasPages) {
+                chat.sendMessage(player, false, Component.text("│", NamedTextColor.GRAY));
+                chat.sendMessage(player, false, Component.text("├ ", NamedTextColor.GRAY)
+                        .append(Component.text("« ", NamedTextColor.YELLOW, TextDecoration.BOLD).clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
+                            List<T> currentList = listSupplier.get();
+                            int pages = currentList.size() % entriesPerPage;
+                            if (page + 1 < pages) {
+                                _sendListEditor(player1, true, page + 1, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
+                            } else {
+                                _sendListEditor(player1, true, page, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
+                            }
+                        })))
+                        .append(chat.translated("msg.chat_editor.list_edit.pages", Placeholder.unparsed("current_page", String.valueOf(page)), Placeholder.unparsed("pages", String.valueOf(list.size() % entriesPerPage))))
+                        .append(Component.text(" »", NamedTextColor.YELLOW, TextDecoration.BOLD).clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
+                            if (page - 1 > 0) {
+                                _sendListEditor(player1, true, page - 1, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
+                            } else {
+                                _sendListEditor(player1, true, page, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
+                            }
+                        })))
+                );
+            }
         } else {
             chat.sendMessage(player, false, Component.text("╞═ ", NamedTextColor.GRAY).append(chat.translated("msg.chat_editor.list_edit.entry.add").clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> {
-                sendListEditor(player1, toComponent, toListItem, listSupplier, applyChanges);
+                _sendListEditor(player1, hasPages, page, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
                 chat.sendMessage(player1, chat.translated("msg.chat_editor.list_edit.input_add_entry"));
                 api.getInventoryAPI(CCCache.class).getGuiHandler(player1).setChatInputAction((guiHandler, player2, value, args) -> {
                     List<T> currentList = listSupplier.get();
-                    currentList.add(toListItem.apply(value, args));
-                    applyChanges.accept(currentList);
-                    sendListEditor(player1, toComponent, toListItem, listSupplier, applyChanges);
+                    T listEntry = toListItem.apply(value, args);
+                    if (listEntry != null) {
+                        currentList.add(listEntry);
+                        applyChanges.accept(currentList);
+                        _sendListEditor(player1, hasPages, page, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
+                    }
                     return true;
                 });
             }))));
@@ -290,6 +265,14 @@ public class ChatUtils {
                 Component.text("│", NamedTextColor.GRAY),
                 chat.translated("msg.chat_editor.list_edit.back_to_gui").clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openCluster()))
         );
+    }
+
+    public static <T> void sendListEditor(Player player, Function<T, Component> toComponent, BiFunction<String, String[], T> toListItem, Supplier<List<T>> listSupplier, Consumer<List<T>> applyChanges) {
+        _sendListEditor(player, false, 0, 0, toComponent, toListItem, listSupplier, applyChanges);
+    }
+
+    public static <T> void sendPagedListEditor(Player player, int page, int entriesPerPage, Function<T, Component> toComponent, BiFunction<String, String[], T> toListItem, Supplier<List<T>> listSupplier, Consumer<List<T>> applyChanges) {
+        _sendListEditor(player, true, page, entriesPerPage, toComponent, toListItem, listSupplier, applyChanges);
     }
 
     public static void sendLoreEditor(Player player) {
