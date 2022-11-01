@@ -22,8 +22,6 @@
 
 package me.wolfyscript.customcrafting.configs;
 
-import java.util.HashMap;
-import java.util.Map;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
@@ -32,10 +30,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.util.NumberConversions;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class MainConfig extends YamlConfiguration {
 
@@ -165,12 +160,13 @@ public class MainConfig extends YamlConfiguration {
     }
 
     public LocalStorageSettings getLocalStorageSettings() {
-        //return getObject("local_storage", LocalStorageSettings.class);
-        return (LocalStorageSettings) ConfigurationSerialization.deserializeObject(getObject("local_storage", Map.class, new HashMap<>()), LocalStorageSettings.class);
+        ConfigurationSection section = getConfigurationSection("local_storage");
+        return section != null ? new LocalStorageSettings(section) : null;
     }
 
     public DatabaseSettings getDatabaseSettings() {
-        return (DatabaseSettings) ConfigurationSerialization.deserializeObject(getObject("database", Map.class, new HashMap<>()), DatabaseSettings.class);
+        ConfigurationSection section = getConfigurationSection("database");
+        return section != null ? new DatabaseSettings(section) : null;
     }
 
     public boolean isBrewingRecipes() {
