@@ -22,8 +22,6 @@
 
 package me.wolfyscript.customcrafting.configs;
 
-import java.util.HashMap;
-import java.util.Map;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
@@ -32,10 +30,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.util.NumberConversions;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class MainConfig extends YamlConfiguration {
 
@@ -165,118 +160,17 @@ public class MainConfig extends YamlConfiguration {
     }
 
     public LocalStorageSettings getLocalStorageSettings() {
-        //return getObject("local_storage", LocalStorageSettings.class);
-        return (LocalStorageSettings) ConfigurationSerialization.deserializeObject(getObject("local_storage", Map.class, new HashMap<>()), LocalStorageSettings.class);
+        ConfigurationSection section = getConfigurationSection("local_storage");
+        return section != null ? new LocalStorageSettings(section) : null;
     }
 
     public DatabaseSettings getDatabaseSettings() {
-        return (DatabaseSettings) ConfigurationSerialization.deserializeObject(getObject("database", Map.class, new HashMap<>()), DatabaseSettings.class);
+        ConfigurationSection section = getConfigurationSection("database");
+        return section != null ? new DatabaseSettings(section) : null;
     }
 
     public boolean isBrewingRecipes() {
         return getBoolean("recipes.brewing");
-    }
-
-    public static class LocalStorageSettings implements ConfigurationSerializable {
-
-        private static final String LOAD = "load";
-        private static final String BEFORE_DATABASE = "before_database";
-        private static final String OVERRIDE = "override";
-
-        private final boolean load;
-        private final boolean beforeDatabase;
-        private final boolean override;
-
-        public LocalStorageSettings(Map<String, Object> values) {
-            this.load = values.get(LOAD) instanceof Boolean bool && bool;
-            this.beforeDatabase = values.get(BEFORE_DATABASE) instanceof Boolean bool && bool;
-            this.override = values.get(OVERRIDE) instanceof Boolean bool && bool;
-        }
-
-        @Override
-        public @NotNull Map<String, Object> serialize() {
-            Map<String, Object> result = new HashMap<>();
-            result.put(LOAD, load);
-            result.put(BEFORE_DATABASE, beforeDatabase);
-            result.put(OVERRIDE, override);
-            return result;
-        }
-
-        public boolean isEnabled() {
-            return load;
-        }
-
-        public boolean isBeforeDatabase() {
-            return beforeDatabase;
-        }
-
-        public boolean isOverride() {
-            return override;
-        }
-    }
-
-
-    public static class DatabaseSettings implements ConfigurationSerializable {
-
-        private static final String ENABLED = "enabled";
-        private static final String HOST = "host";
-        private static final String PORT = "port";
-        private static final String SCHEMA = "schema";
-        private static final String USERNAME = "username";
-        private static final String PASSWORD = "password";
-
-        private final boolean enabled;
-        private final String host;
-        private final int port;
-        private final String schema;
-        private final String username;
-        private final String password;
-
-        public DatabaseSettings(Map<String, Object> values) {
-            this.enabled = values.get(ENABLED) instanceof Boolean bool && bool;
-            this.host = (String) values.getOrDefault(HOST, "localhost");
-            Object portVal = values.get(PORT);
-            this.port = portVal instanceof Number ? NumberConversions.toInt(portVal) : 3306;
-            this.schema = values.getOrDefault(SCHEMA, "mc_plugins").toString();
-            this.username = values.getOrDefault(USERNAME, "minecraft").toString();
-            this.password = values.getOrDefault(PASSWORD, "").toString();
-        }
-
-        @Override
-        public @NotNull Map<String, Object> serialize() {
-            Map<String, Object> result = new HashMap<>();
-            result.put(ENABLED, enabled);
-            result.put(HOST, host);
-            result.put(PORT, port);
-            result.put(SCHEMA, schema);
-            result.put(USERNAME, username);
-            result.put(PASSWORD, password);
-            return result;
-        }
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public String getHost() {
-            return host;
-        }
-
-        public int getPort() {
-            return port;
-        }
-
-        public String getSchema() {
-            return schema;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
     }
 
 }

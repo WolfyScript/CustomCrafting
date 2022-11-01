@@ -29,7 +29,8 @@ import java.io.IOException;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.compatibility.PluginCompatibility;
-import me.wolfyscript.customcrafting.configs.MainConfig;
+import me.wolfyscript.customcrafting.configs.DatabaseSettings;
+import me.wolfyscript.customcrafting.configs.LocalStorageSettings;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
@@ -242,8 +243,8 @@ public class CustomCrafting extends JavaPlugin {
 
         api.getCore().applyWolfyUtilsJsonMapperModules(api.getJacksonMapperUtil().getGlobalMapper());
 
-        ConfigurationSerialization.registerClass(MainConfig.DatabaseSettings.class);
-        ConfigurationSerialization.registerClass(MainConfig.LocalStorageSettings.class);
+        ConfigurationSerialization.registerClass(DatabaseSettings.class, "customcrafting:database_settings");
+        ConfigurationSerialization.registerClass(LocalStorageSettings.class, "customcrafting:local_storage_settings");
 
         getLogger().info("Registering CustomItem Data");
         var customItemData = api.getRegistries().getCustomItemData();
