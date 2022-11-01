@@ -119,7 +119,7 @@ public class CollectionEditor<C extends CustomCache, T> {
             _sendEmpty(player);
         } else {
             int startPoint = page * entriesPerPage;
-            list = list.stream().skip(startPoint).limit(entriesPerPage).collect(Collectors.toSet());
+            list = list.stream().skip(startPoint).limit(entriesPerPage).toList();
             _sendEntries(player, page, startPoint, list);
         }
         _sendPageButtons(player, maxPages, page);
