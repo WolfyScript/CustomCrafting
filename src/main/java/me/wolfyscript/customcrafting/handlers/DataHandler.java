@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.handlers;
 
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.LocalStorageSettings;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.events.DependenciesLoadedEvent;
@@ -69,7 +70,7 @@ public class DataHandler implements Listener {
             this.databaseLoader = new SQLDatabaseLoader(customCrafting);
             this.databaseLoader.setPriority(2);
 
-            MainConfig.LocalStorageSettings localStorageSettings = configHandler.getConfig().getLocalStorageSettings();
+            LocalStorageSettings localStorageSettings = configHandler.getConfig().getLocalStorageSettings();
             if (localStorageSettings.isEnabled()) {
                 this.localStorageLoader = new LocalStorageLoader(customCrafting);
                 this.localStorageLoader.setPriority(localStorageSettings.isBeforeDatabase() ? 3 : 1);

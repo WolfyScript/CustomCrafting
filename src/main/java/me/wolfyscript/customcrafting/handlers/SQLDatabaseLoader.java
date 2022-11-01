@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.MainConfig;
+import me.wolfyscript.customcrafting.configs.DatabaseSettings;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -34,7 +34,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.network.database.sql.SQLDataBase;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -56,7 +55,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
 
     public SQLDatabaseLoader(CustomCrafting customCrafting) {
         super(customCrafting, new NamespacedKey(customCrafting, "database_loader"));
-        MainConfig.DatabaseSettings settings = config.getDatabaseSettings();
+        DatabaseSettings settings = config.getDatabaseSettings();
         this.dataBase = new SQLDataBase(api, settings.getHost(), settings.getSchema(), settings.getUsername(), settings.getPassword(), settings.getPort());
         init();
         this.loaded = new LinkedList<>();
