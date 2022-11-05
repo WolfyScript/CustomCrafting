@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.utils;
 
 import com.google.common.collect.Lists;
+import com.wolfyscript.utilities.bukkit.nms.inventory.NMSInventoryUtils;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -44,6 +45,8 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.version.ServerVersion;
+import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -112,6 +115,9 @@ public class CraftManager {
                 if (!customPreCraftEvent.isCancelled()) {
                     Result result = customPreCraftEvent.getResult();
                     craftingData.setResult(result);
+                    if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 9, 0))) {
+                        NMSInventoryUtils.setCurrentRecipe(inventory, recipe.getNamespacedKey());
+                    }
                     put(player.getUniqueId(), craftingData);
                     return result.getItem(craftingData, player, block);
                 }
