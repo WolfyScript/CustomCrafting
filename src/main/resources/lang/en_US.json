@@ -122,15 +122,27 @@
         "<yellow>Please retype the folder and key!</yellow>"
       ]
     },
+    "input":{
+      "mini_message" : "<aqua>Use <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>Mini Message uses <tags> instead of the legacy color codes!<br>These tags can be used to specify color, gradients, formatting, and more<br><br>(Click) Open Link to Wiki'><yellow>MiniMessage</yellow></hover></click> for color & formatting!</aqua>",
+      "wui_command": "<aqua>Use the <click:suggest_command:'/wui '><hover:show_text:'<white>Use the <yellow>/wui</yellow> command to input your values, instead of typing it straight into the chat!<br>It provides tab completion & prevents issues with chat plugins!<br><br>(Click) Suggest Command'><yellow>/wui</yellow></hover></click> command to input your values!</aqua>"
+    },
     "chat_editor": {
-      "lore": {
-        "title": "<grey>-------------------[<green>Modify Lore</green>]------------------</grey>",
-        "line": {
-          "number": "<lore_line>. ",
-          "remove": "<hover:show_text:'<red><b>Remove line <lore_line></b></red>'><grey>[<red>-</red>]</grey></hover> ",
-          "edit": "<hover:show_text:'Edit line <lore_line>'><grey>[<yellow>✎</yellow>]</grey></hover> "
+      "list_edit": {
+        "title": "<grey>┌──── [<green>Modify List</green>]</grey>",
+        "back_to_gui": "<grey>└─── [<yellow><b>➥ Back to GUI</b></yellow>]</grey>",
+        "empty": "<red><b>List is empty</b></red>",
+        "pages": "<gold><b><current_page><b><grey> / </grey><pages></gold>",
+        "entry": {
+          "number": "<list_entry>. ",
+          "remove": "<hover:show_text:'<red><b>Remove entry <list_entry></b></red>'><b><red>-</red></b></hover>",
+          "edit": "<hover:show_text:'Edit entry <list_entry>'><b><yellow>✎</yellow></b></hover>",
+          "add": "<hover:show_text:'Add New Entry'><b><green>+ Add Entry</green></b></hover>",
+          "add_below": "<hover:show_text:'Add below entry <list_entry>'><b><green>+</green></b></hover>",
+          "move_up": "<hover:show_text:'Move entry <list_entry> up'><b><gold>∧</gold></b></hover>",
+          "move_down": "<hover:show_text:'Move entry <list_entry> down'><b><gold>∨</gold></b></hover>"
         },
-        "input_new_lore": "<grey>[<gold>Line <lore_line></gold>] </grey><yellow>Input the new lore line <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey></yellow>"
+        "input_new_entry": "<grey>[<green>Input</green>] Type in the new value for the <list_entry>. Entry.</grey>",
+        "input_add_entry": "<white>Type in a value for the new entry."
       }
     }
   },
@@ -3306,37 +3318,48 @@
     "recipe_book_editor": {
       "global_items": {
         "save": {
-          "name": "<dark_aqua>Save</dark_aqua>",
+          "name": "<grey>▷</grey> <gold><b>Save</b></gold>",
           "lore": [
-            "<grey>Save with the current key.</grey>"
+            "<grey>Save with the current id.</grey>",
+            "<grey>ID: </grey><yellow><id></yellow>"
           ]
         },
         "save_as": {
-          "name": "<gold>Save As...</gold>",
+          "name": "<grey>✎</grey>  <gold><b>Save As...</b></gold>",
           "lore": [
-            "<grey>Save with a new key.</grey>",
-            "<grey>Input: </grey><yellow><category_key></yellow>",
-            "<red>The ID must be lowercase alphanumeric!</red>",
-            "<red>(a-z 0-9 _ -)</red>"
+            "<grey>Save under a new id.</grey>",
+            "<grey>Input: </grey><yellow><b><category_key></b></yellow>",
+            "<red>The id must be lowercase and</red>",
+            "<red>only contain letters, numbers, '_', '-', or '/'!</red>"
           ]
         },
         "name": {
-          "name": "<gold>Name: </gold>%name%",
+          "name": "<grey>✎</grey> <gold><b>Name</b>",
           "lore": [
+            "<grey>Current Name:",
+            "<name>",
+            "",
+            "<grey>(<green>Click</green>)</grey> <yellow>Change name"
           ],
-          "message": "<yellow>Type in the Name. You can use & for formatting codes.</yellow>"
+          "message": "<yellow>Type in the Name. <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
         },
         "description": {
-          "add": {
-            "name": "<gold>Add Description Line</gold>",
+          "edit": {
+            "name": "<grey>✎</grey> <gold><b>Description</b></gold>",
             "lore": [
-              "<yellow>Description: </yellow>",
-              "%description%"
+              "<list_entry:0>",
+              "<list_entry:1>",
+              "<list_entry:2>",
+              "<list_entry:3>",
+              "<list_entry:4>",
+              "<list_entry:5>",
+              "<list_entry:6>",
+              "<list_entry:7>",
+              "...",
+              "",
+              "<grey>(<green>Click</green>)</grey> <yellow>Edit Description"
             ],
-            "message": "<yellow>Type in the Description. You can use & for formatting codes.</yellow>"
-          },
-          "remove": {
-            "name": "<gold>Remove Description</gold>"
+            "message": "<yellow>Type in the Description. <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
           }
         },
         "recipes": {
@@ -3365,6 +3388,12 @@
             "<yellow>Configured Groups:</yellow>",
             "%groups%"
           ]
+        },
+        "previous_page": {
+          "name": "<grey>⏪</grey> <gold><b>Previous Page</b></gold>"
+        },
+        "next_page": {
+          "name": "<grey>⏩</grey> <gold><b>Next Page</b></gold>"
         }
       },
       "global_messages": {
@@ -3380,7 +3409,7 @@
         "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Editor]</dark_grey></grey>",
         "items": {
           "filters": {
-            "name": "<gold><b>Filters</b></gold>",
+            "name": "<grey>➥</grey> <gold><b>Filters</b></gold>",
             "lore": [
               "<yellow>The Filters are present on top of </yellow>",
               "<yellow>each Category and you can cycle</yellow>",
@@ -3388,7 +3417,7 @@
             ]
           },
           "categories": {
-            "name": "<gold>Categories</gold>",
+            "name": "<grey>➥</grey> <gold><b>Categories</b></gold>",
             "lore": [
               "<yellow>Categories are displayed on the</yellow>",
               "<yellow>Main Menu of the Recipe Book.</yellow>",
@@ -3398,7 +3427,7 @@
             ]
           },
           "cancel": {
-            "name": "<red><b>Cancel</b></red>",
+            "name": "<red>❌</red> <gold><b>Cancel</b></gold>",
             "lore": [
               "<grey>Reverts changes made to the Recipe Book!</grey>",
               "<red>If you don't revert the changes before</red>",
@@ -3406,7 +3435,7 @@
             ]
           },
           "save": {
-            "name": "<gold><b>Save</b></gold>",
+            "name": "<green>▷</green> <gold><b>Save</b></gold>",
             "lore": [
               "<grey>Save Recipe Book settings to the config!</grey>",
               "<grey>To load and apply the changes you need</grey>",
@@ -3427,14 +3456,8 @@
               "<grey>[<red>Shift + Right Click</red>]</grey> <red>Delete Category</red>"
             ]
           },
-          "previous": {
-            "name": "<grey>Previous Page</grey>"
-          },
-          "next": {
-            "name": "<grey>Next Page</grey>"
-          },
           "add": {
-            "name": "<gold>Add Category</gold>",
+            "name": "<grey>➥</grey> <gold><b>Add Category</b></gold>",
             "lore": [
               "<yellow>Configure a new Category for</yellow>",
               "<yellow>the Recipe Book</yellow>"
@@ -3455,7 +3478,7 @@
             ]
           },
           "add": {
-            "name": "<gold>Add Filter</gold>",
+            "name": "<grey>➥</grey> <gold><b>Add Filter</b></gold>",
             "lore": [
               "<yellow>Configure a new Filter for</yellow>",
               "<yellow>the Recipe Book</yellow>"
