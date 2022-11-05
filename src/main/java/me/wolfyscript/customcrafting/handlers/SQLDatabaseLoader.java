@@ -264,9 +264,10 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     public void updateRecipe(CustomRecipe<?> data) {
         if (hasRecipe(data.getNamespacedKey())) {
             try {
-                PreparedStatement pState = dataBase.open().prepareStatement("UPDATE customcrafting_recipes SET rData=? WHERE rNamespace=? AND rKey=?");
-                pState.setString(1, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writeValueAsString(data));
-                setNamespacedKey(pState, data.getNamespacedKey(), 2, 3);
+                PreparedStatement pState = dataBase.open().prepareStatement("UPDATE customcrafting_recipes SET rType=?, rData=? WHERE rNamespace=? AND rKey=?");
+                pState.setString(1, "");
+                pState.setString(2, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writeValueAsString(data));
+                setNamespacedKey(pState, data.getNamespacedKey(), 3, 4);
                 dataBase.executeAsyncUpdate(pState);
             } catch (SQLException | JsonProcessingException e) {
                 e.printStackTrace();
