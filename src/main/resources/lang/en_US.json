@@ -141,7 +141,7 @@
           "move_up": "<hover:show_text:'Move entry <list_entry> up'><b><gold>∧</gold></b></hover>",
           "move_down": "<hover:show_text:'Move entry <list_entry> down'><b><gold>∨</gold></b></hover>"
         },
-        "input_new_entry": "<grey>[<green>Input</green>] Type in the new value for the <list_entry>. Entry.</grey>",
+        "input_new_entry": "<white>Type in the new value for the <list_entry>. Entry",
         "input_add_entry": "<white>Type in a value for the new entry."
       }
     }
@@ -748,8 +748,7 @@
         "messages": {
           "save": {
             "input": {
-              "line1": "<yellow>Type in the namespace and key!</yellow>",
-              "line2": "<yellow>Input format: [namespace] [key]</yellow>"
+              "line1": "<white>Type in the <hover:show_text:'Custom Items are saved as follows: <yellow>/data/<folder>/items/<item_name>.conf</yellow><br><br>The folder can be used to group your items and nested folders are allowed!<br>Input your folder and name like this: <yellow>/wui <folder> <name></yellow><br><br><red>Make sure the folder and name only contain: <br> - lowercase letters,<br> - numbers,<br> - underscores,<br> - or dashes!<br>Use <yellow>/wui </yellow>to get input assistance, like tab completions!</red>'><yellow>folder and item name</yellow></hover>, under which to save the item"
             },
             "success": "<green>Config saved to:</green>"
           },
@@ -2050,10 +2049,10 @@
         }
       },
       "global_messages": {
-        "override": "<dark_aqua>type the namespace and key from the recipe!</dark_aqua>",
+        "override": "<white>Type the folder and key of the recipe",
         "valid_number": "<red>Type in a valid number!</red>",
         "save": {
-          "input": "<yellow>Type in the folder and key! Use <gold>/wui for better input!</gold></yellow>",
+          "input": "<white>Type in the <hover:show_text:'Recipes are saved as follows: <yellow>/data/<folder>/recipes/<recipe_name>.conf</yellow><br><br>The folder can be used to group your recipes and nested folders are allowed!<br>Input your folder and name like this: <yellow>/wui <folder> <name></yellow><br><br><red>Make sure the folder and name only contain: <br> - lowercase letters,<br> - numbers,<br> - underscores,<br> - or dashes!<br>Use <yellow>/wui </yellow>to get input assistance, like tab completions!</red>'><yellow>folder and recipe name</yellow></hover>, under which to save the recipe",
           "key": {
             "invalid": "<red>The input is not a valid folder or key! \nMake sure it only contains: \n - lowercase letters,\n - numbers,\n - underscores, \n - or dashes!\n - You cannot use the minecraft namespace!\nUse <yellow>/wui </yellow>to get input assistance, like tab completion!</red>"
           },
