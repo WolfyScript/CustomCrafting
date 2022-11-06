@@ -222,6 +222,7 @@ public class ClusterRecipeCreator extends CCCluster {
                     }
                     return true;
                 });
+                getChat().sendMessage(player, getChat().translated("msg.input.wui_command"));
             }
             return true;
         })).register();

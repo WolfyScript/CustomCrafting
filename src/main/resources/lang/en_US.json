@@ -123,8 +123,8 @@
       ]
     },
     "input":{
-      "mini_message" : "<aqua>Use <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>Mini Message uses <tags> instead of the legacy color codes!<br>These tags can be used to specify color, gradients, formatting, and more<br><br>(Click) Open Link to Wiki'><yellow>MiniMessage</yellow></hover></click> for color & formatting!</aqua>",
-      "wui_command": "<aqua>Use the <click:suggest_command:'/wui '><hover:show_text:'<white>Use the <yellow>/wui</yellow> command to input your values, instead of typing it straight into the chat!<br>It provides tab completion & prevents issues with chat plugins!<br><br>(Click) Suggest Command'><yellow>/wui</yellow></hover></click> command to input your values!</aqua>"
+      "mini_message" : "<#00ccff>Use <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>MiniMessage uses tags instead of the legacy color codes!<br>These tags can be used to specify: <br>* Colors: <#FD6684><_colorname_></#FD6684><br>    <#FD6684>\\<green></#FD6684>: <green>Green</green><br>    <#FD6684>\\<#5662F6></#FD6684>: <#5662F6>Hex-Color</#5662F6><br>    ... etc.<br><br>* Decorations:<br>    <#FD6684>\\<bold></#FD6684>, <#FD6684>\\<b></#FD6684>: <b>Bold</b>,<br>    <#FD6684>\\<italic></#FD6684>, <#FD6684>\\<em></#FD6684>, <#FD6684>\\<i></#FD6684>: <em>Italic</em>,<br>    <#FD6684>\\<underline></#FD6684>, <#FD6684>\\<u></#FD6684>: <u>Underline</u>,<br>    <#FD6684>\\<strikethrough></#FD6684>, <#FD6684>\\<st></#FD6684>: <st>Strikethrough</st>,<br>    <#FD6684>\\<obfuscated></#FD6684>, <#FD6684>\\<obf></#FD6684>: <obf>Obfuscated</obf><br><br>* Gradients: <#FD6684><gradient:<#50E975>[color1]</#50E975>:<#50E975>[color...]</#50E975>:<#50E975>[phase]</#50E975>></#FD6684><br>    <#FD6684>\\<gradient></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>:<#50E975>red</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459:red>||||||||||||||||||||||||</gradient><br><br>* Fonts: <#FD6684>\\<font:<#50E975>key</#50E975>></#FD6684><br>    <#FD6684>\\<font:<#50E975>uniform</#50E975>></#FD6684>Uniform<#FD6684>\\</font></#FD6684>: <font:uniform>Uniform</font><br>    <#FD6684>\\<font:<#50E975>alt</#50E975>></#FD6684>Alt<#FD6684>\\</font></#FD6684>: <font:alt>Alt</font><br><br>* and more    <br><br><grey>(<green>Click</green>)</grey> <yellow>Open Link to Wiki'><yellow>MiniMessage</yellow></hover></click> for color & formatting!",
+      "wui_command": "<#00ccff>Use the <click:suggest_command:'/wui '><hover:show_text:'<white>Use the <yellow>/wui</yellow> command to input your values, instead of typing it straight into the chat!<br>It provides tab completion & prevents issues with chat plugins!<br><br>Simply write your input after the command with a space in between.<br>Like this: <yellow>/wui <green>your input here</green></yellow><br><br><grey>(<green>Click</green>)</grey> <yellow>Fill in Command'><yellow>/wui</yellow></hover></click> command to input your values!"
     },
     "chat_editor": {
       "list_edit": {
@@ -141,7 +141,7 @@
           "move_up": "<hover:show_text:'Move entry <list_entry> up'><b><gold>∧</gold></b></hover>",
           "move_down": "<hover:show_text:'Move entry <list_entry> down'><b><gold>∨</gold></b></hover>"
         },
-        "input_new_entry": "<grey>[<green>Input</green>] Type in the new value for the <list_entry>. Entry.</grey>",
+        "input_new_entry": "<white>Type in the new value for the <list_entry>. Entry",
         "input_add_entry": "<white>Type in a value for the new entry."
       }
     }
@@ -748,8 +748,7 @@
         "messages": {
           "save": {
             "input": {
-              "line1": "<yellow>Type in the namespace and key!</yellow>",
-              "line2": "<yellow>Input format: [namespace] [key]</yellow>"
+              "line1": "<white>Type in the <hover:show_text:'Custom Items are saved as follows: <yellow>/data/<folder>/items/<item_name>.conf</yellow><br><br>The folder can be used to group your items and nested folders are allowed!<br>Input your folder and name like this: <yellow>/wui <folder> <name></yellow><br><br><red>Make sure the folder and name only contain: <br> - lowercase letters,<br> - numbers,<br> - underscores,<br> - or dashes!<br>Use <yellow>/wui </yellow>to get input assistance, like tab completions!</red>'><yellow>folder and item name</yellow></hover>, under which to save the item"
             },
             "success": "<green>Config saved to:</green>"
           },
@@ -2050,10 +2049,10 @@
         }
       },
       "global_messages": {
-        "override": "<dark_aqua>type the namespace and key from the recipe!</dark_aqua>",
+        "override": "<white>Type the folder and key of the recipe",
         "valid_number": "<red>Type in a valid number!</red>",
         "save": {
-          "input": "<yellow>Type in the folder and key! Use <gold>/wui for better input!</gold></yellow>",
+          "input": "<white>Type in the <hover:show_text:'Recipes are saved as follows: <yellow>/data/<folder>/recipes/<recipe_name>.conf</yellow><br><br>The folder can be used to group your recipes and nested folders are allowed!<br>Input your folder and name like this: <yellow>/wui <folder> <name></yellow><br><br><red>Make sure the folder and name only contain: <br> - lowercase letters,<br> - numbers,<br> - underscores,<br> - or dashes!<br>Use <yellow>/wui </yellow>to get input assistance, like tab completions!</red>'><yellow>folder and recipe name</yellow></hover>, under which to save the recipe",
           "key": {
             "invalid": "<red>The input is not a valid folder or key! \nMake sure it only contains: \n - lowercase letters,\n - numbers,\n - underscores, \n - or dashes!\n - You cannot use the minecraft namespace!\nUse <yellow>/wui </yellow>to get input assistance, like tab completion!</red>"
           },
