@@ -26,20 +26,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.utils.chat.CollectionEditor;
 import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
-import me.wolfyscript.lib.net.kyori.adventure.text.Component;
-import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
-import me.wolfyscript.lib.net.kyori.adventure.text.format.TextDecoration;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.MiniMessage;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -152,10 +144,15 @@ public class ChatUtils {
         ).onAdd((guiHandler, player, cache, index, entry) -> {
             var itemMeta = cache.getItems().getItem().getItemMeta();
             List<String> lore = itemMeta.getLore();
-            if (lore != null) {
-                lore.add(entry);
-                itemMeta.setLore(lore);
+            if (lore == null) {
+                lore = new ArrayList<>();
             }
+            if (index >= 0) {
+                lore.add(index, entry);
+            } else {
+                lore.add(entry);
+            }
+            itemMeta.setLore(lore);
             cache.getItems().getItem().setItemMeta(itemMeta);
         }).onRemove((guiHandler, player, cache, index, entry) -> {
             var itemMeta = cache.getItems().getItem().getItemMeta();
