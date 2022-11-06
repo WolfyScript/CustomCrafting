@@ -128,7 +128,6 @@ public class MenuItemCreator extends CCWindow {
         btnB.action(SAVE_ITEM_AS).state(s -> s.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, i, event) -> {
             var items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
-                getChat().sendMessage(player, translatedMsgKey("save.input.line1"));
                 List<String[]> namespacedKeys = api.getRegistries().getCustomItems().get(NamespacedKeyUtils.NAMESPACE).stream().map(customItem -> customItem.getNamespacedKey().getKey().split("/")).toList();
                 List<String> namespaces = namespacedKeys.stream().filter(strings -> strings.length > 0).map(strings -> strings[0]).toList();
                 List<String> keys = namespacedKeys.stream().filter(strings -> strings.length > 1).map(strings -> strings[1]).toList();
@@ -141,7 +140,8 @@ public class MenuItemCreator extends CCWindow {
                     }
                     return Collections.emptyList();
                 });
-                openChat(guiHandler, translatedMsgKey("save.input.line2"), (guiHandler1, player1, s1, args) -> !saveItem(items, player1, ChatUtils.getNamespacedKey(player1, s1, args)));
+                openChat(guiHandler, translatedMsgKey("save.input.line1"), (guiHandler1, player1, s1, args) -> !saveItem(items, player1, ChatUtils.getNamespacedKey(player1, s1, args)));
+                getChat().sendMessage(player, getChat().translated("msg.input.wui_command"));
             }
             return true;
         })).register();
