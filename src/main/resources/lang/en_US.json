@@ -903,7 +903,7 @@
               "lore": [
                 "<yellow>Change Display Name"
               ],
-              "message": "<yellow>Type in the new item name! <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
+              "message": "<white>Type in the new name for the item."
             },
             "remove": {
               "name": "<grey>\u25B7 <gold><b>Remove Display Name",

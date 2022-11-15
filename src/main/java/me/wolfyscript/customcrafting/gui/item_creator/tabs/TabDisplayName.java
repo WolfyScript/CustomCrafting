@@ -48,10 +48,16 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ButtonOption(Material.NAME_TAG, this));
-        creator.registerButton(new ChatInputButton<>(KEY + ".set", Material.GREEN_CONCRETE, (guiHandler, player, s, args) -> {
-            guiHandler.getCustomCache().getItems().getItem().setDisplayName(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s)));
-            return false;
-        }));
+        new ChatInputButton.Builder<>(creator, KEY + ".set")
+                .inputAction((guiHandler, player, s, strings) -> {
+                    guiHandler.getCustomCache().getItems().getItem().setDisplayName(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s)));
+                    return false;
+                }).state(state -> state.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, guiInventory, i, event) -> {
+                    var chat = guiInventory.getWindow().getChat();
+                    chat.sendMessage(player, chat.translated("msg.input.wui_command"));
+                    chat.sendMessage(player, chat.translated("msg.input.mini_message"));
+                    return true;
+                })).register();
         creator.registerButton(new ActionButton<>(KEY + ".remove", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
             guiHandler.getCustomCache().getItems().getItem().setDisplayName(null);
             return true;

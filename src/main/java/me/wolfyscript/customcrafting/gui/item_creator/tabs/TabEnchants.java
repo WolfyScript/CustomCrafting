@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
@@ -33,15 +36,23 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Locale;
+import org.bukkit.util.StringUtil;
 
 public class TabEnchants extends ItemCreatorTabVanilla {
 
     public static final String KEY = "enchantments";
+    private static final List<String> NUMBERS = new ArrayList<>();
+    static {
+        for (int i = 0; i < 256; i++) {
+            NUMBERS.add(String.valueOf(i));
+        }
+    }
 
     public TabEnchants() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
@@ -50,38 +61,67 @@ public class TabEnchants extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ButtonOption(Material.ENCHANTED_BOOK, this));
-        creator.registerButton(new ChatInputButton<>(KEY + ".add", Material.ENCHANTED_BOOK, (guiHandler, player, s, args) -> {
-            if (args.length > 1) {
-                int level;
-                try {
-                    level = Integer.parseInt(args[args.length - 1]);
-                } catch (NumberFormatException ex) {
-                    creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_lvl"));
+
+        new ChatInputButton.Builder<>(creator, KEY + ".add")
+                .state(state -> state.icon(Material.ENCHANTED_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                    var chat = guiInventory.getWindow().getChat();
+                    chat.sendMessage(player, chat.translated("msg.input.wui_command"));
                     return true;
-                }
-                var enchantment = Enchantment.getByKey(org.bukkit.NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
-                if (enchantment != null) {
-                    guiHandler.getCustomCache().getItems().getItem().addUnsafeEnchantment(enchantment, level);
-                } else {
-                    creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_enchant", Placeholder.unparsed("enchant", args[0])));
+                }))
+                .tabComplete((guiHandler, player, args) -> {
+                    if (args.length == 1) {
+                        return StringUtil.copyPartialMatches(args[0], Arrays.stream(Enchantment.values()).map(enchantment -> enchantment.getKey().toString()).toList(), new ArrayList<>());
+                    } else if (args.length == 2) {
+                        return StringUtil.copyPartialMatches(args[1], NUMBERS, new ArrayList<>());
+                    }
+                    return null;
+                })
+                .inputAction((guiHandler, player, s, args) -> {
+                    if (args.length > 1) {
+                        int level;
+                        try {
+                            level = Integer.parseInt(args[args.length - 1]);
+                        } catch (NumberFormatException ex) {
+                            creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_lvl"));
+                            return true;
+                        }
+                        var enchantment = Enchantment.getByKey(org.bukkit.NamespacedKey.fromString(args[0]));
+                        if (enchantment != null) {
+                            guiHandler.getCustomCache().getItems().getItem().addUnsafeEnchantment(enchantment, level);
+                        } else {
+                            creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_enchant", Placeholder.unparsed("enchant", args[0])));
+                            return true;
+                        }
+                    } else {
+                        creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.no_lvl"));
+                        return true;
+                    }
+                    return false;
+                })
+                .register();
+        new ChatInputButton.Builder<>(creator, KEY + ".remove")
+                .state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                    var chat = guiInventory.getWindow().getChat();
+                    chat.sendMessage(player, chat.translated("msg.input.wui_command"));
                     return true;
-                }
-            } else {
-                creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.no_lvl"));
-                return true;
-            }
-            return false;
-        }));
-        creator.registerButton(new ChatInputButton<>(KEY + ".remove", Material.RED_CONCRETE, (guiHandler, player, s, args) -> {
-            var enchantment = Enchantment.getByKey(org.bukkit.NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
-            if (enchantment != null) {
-                guiHandler.getCustomCache().getItems().getItem().removeEnchantment(enchantment);
-            } else {
-                creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_enchant", Placeholder.unparsed("enchant", args[0])));
-                return true;
-            }
-            return false;
-        }));
+                }))
+                .tabComplete((guiHandler, player, args) -> {
+                    if (args.length > 0) {
+                        return StringUtil.copyPartialMatches(args[0],guiHandler.getCustomCache().getItems().getItem().getItemMeta().getEnchants().keySet().stream().map(enchantment -> enchantment.getKey().toString()).toList(), new ArrayList<>());
+                    }
+                    return null;
+                })
+                .inputAction((guiHandler, player, s, args) -> {
+                    var enchantment = Enchantment.getByKey(org.bukkit.NamespacedKey.fromString(args[0]));
+                    if (enchantment != null) {
+                        guiHandler.getCustomCache().getItems().getItem().removeEnchantment(enchantment);
+                    } else {
+                        creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_enchant", Placeholder.unparsed("enchant", args[0])));
+                        return true;
+                    }
+                    return false;
+                })
+                .register();
     }
 
     @Override
