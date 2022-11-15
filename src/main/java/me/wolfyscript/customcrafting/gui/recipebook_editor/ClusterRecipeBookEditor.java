@@ -90,6 +90,10 @@ public class ClusterRecipeBookEditor extends CCCluster {
                     String prevTo = description.get(toIndex);
                     description.set(toIndex, description.get(fromIndex));
                     description.set(fromIndex, prevTo);
+                })
+                .setSendInputInfoMessages((guiHandler, player, cache) -> {
+                    getChat().sendMessage(player, getChat().translated("msg.input.mini_message"));
+                    getChat().sendMessage(player, getChat().translated("msg.input.wui_command"));
                 });
 
         this.recipesChatEditor = new CollectionEditor<>(getInventoryAPI(), (guiHandler, player, cache) -> cache.getRecipeBookEditor().getCategorySetting().getRecipes(), (guiHandler, player, cache, recipeId) -> BukkitComponentSerializer.legacy().deserialize(recipeId.toString()), (guiHandler, player, cache, msg, args) -> {

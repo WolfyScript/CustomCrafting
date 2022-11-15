@@ -23,7 +23,6 @@
 package me.wolfyscript.customcrafting.utils.chat;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.event.ClickEvent;
 import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
@@ -52,6 +51,7 @@ public class CollectionEditor<C extends CustomCache, T> {
     protected RemoveEntry<T, C> removeEntry;
     protected MoveEntry<C> moveEntry;
     protected ChatTabComplete<C> tabComplete;
+    protected SendInputInfoMessages<C> sendInputInfoMessages;
 
     public CollectionEditor(InventoryAPI<C> invAPI, SupplyEntryCollection<T, C> listSupplier, ParseEntryToComponent<T, C> toComponent, ParseChatInputToEntry<T, C> toListEntry) {
         this.invAPI = invAPI;
@@ -63,6 +63,7 @@ public class CollectionEditor<C extends CustomCache, T> {
         this.editEntry = null;
         this.removeEntry = null;
         this.moveEntry = null;
+        this.sendInputInfoMessages = (guiHandler, player, cache) -> chat.sendMessage(player, chat.translated("msg.input.wui_command"));
     }
 
     public CollectionEditor<C, T> setEntriesPerPage(int entriesPerPage) {
@@ -95,6 +96,11 @@ public class CollectionEditor<C extends CustomCache, T> {
         return this;
     }
 
+    public CollectionEditor<C, T> setSendInputInfoMessages(SendInputInfoMessages<C> sendInputInfoMessages) {
+        this.sendInputInfoMessages = sendInputInfoMessages;
+        return this;
+    }
+
     /**
      * Sends the default state of the chat editor to the specified player.
      *
@@ -116,7 +122,7 @@ public class CollectionEditor<C extends CustomCache, T> {
         Collection<T> list = listSupplier.get(guiHandler, player, guiHandler.getCustomCache());
         int maxPages = list.size() / entriesPerPage + (list.size() % entriesPerPage > 0 ? 1 : 0);
         if (list.isEmpty()) {
-            _sendEmpty(player);
+            _sendEmpty(guiHandler, player);
         } else {
             int startPoint = page * entriesPerPage;
             list = list.stream().skip(startPoint).limit(entriesPerPage).toList();
@@ -161,14 +167,13 @@ public class CollectionEditor<C extends CustomCache, T> {
         chat.sendMessages(player, chat.translated("msg.chat_editor.list_edit.title"), Component.text("│", NamedTextColor.GRAY));
     }
 
-    protected void _sendNewEntryPrompt(Player player, String promptMsg, boolean edit, T previousEntry, int index, TagResolver... tagResolvers) {
+    protected void _sendNewEntryPrompt(GuiHandler<C> globalGuiHandler, Player player, String promptMsg, boolean edit, T previousEntry, int index, TagResolver... tagResolvers) {
         if (tagResolvers == null || tagResolvers.length == 0) {
             chat.sendMessage(player, chat.translated(promptMsg));
         } else {
             chat.sendMessage(player, chat.translated(promptMsg, tagResolvers));
         }
-        chat.sendMessage(player, chat.translated("msg.input.mini_message"));
-        chat.sendMessage(player, chat.translated("msg.input.wui_command"));
+        sendInputInfoMessages.send(globalGuiHandler, player, globalGuiHandler.getCustomCache());
         invAPI.getGuiHandler(player).setChatInput((guiHandler, player2, value, args) -> {
             T listEntry = toListEntry.parse(guiHandler, player2, guiHandler.getCustomCache(), value, args);
             if (listEntry != null) {
@@ -183,11 +188,11 @@ public class CollectionEditor<C extends CustomCache, T> {
         }, tabComplete);
     }
 
-    protected void _sendEmpty(Player player) {
+    protected void _sendEmpty(GuiHandler<C> globalGuiHandler, Player player) {
         chat.sendMessage(player, false, Component.text("╞═ ", NamedTextColor.GRAY)
                 .append(Component.text("")
                         .append(chat.translated("msg.chat_editor.list_edit.entry.add")
-                                .clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> _sendNewEntryPrompt(player1, "msg.chat_editor.list_edit.input_add_entry", false, null, -1, (TagResolver[]) null)))
+                                .clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> _sendNewEntryPrompt(globalGuiHandler, player1, "msg.chat_editor.list_edit.input_add_entry", false, null, -1, (TagResolver[]) null)))
                         ).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/wui "))
                 ));
     }
@@ -230,7 +235,7 @@ public class CollectionEditor<C extends CustomCache, T> {
                         .append(Component.text(" "));
             }
             if (addEntry != null) {
-                modifiers = modifiers.append(chat.translated("msg.chat_editor.list_edit.entry.add_below", tagResolver).clickEvent(chat.executable(player, true, (wolfyUtils, player1) -> _sendNewEntryPrompt(player1, "msg.chat_editor.list_edit.input_new_entry", false, null, finalEntryIndex + 1, tagResolver))))
+                modifiers = modifiers.append(chat.translated("msg.chat_editor.list_edit.entry.add_below", tagResolver).clickEvent(chat.executable(player, true, (wolfyUtils, player1) -> _sendNewEntryPrompt(globalGuiHandler, player1, "msg.chat_editor.list_edit.input_new_entry", false, null, finalEntryIndex + 1, tagResolver))))
                         .append(Component.text(" "));
             }
             if (removeEntry != null) {
@@ -242,11 +247,17 @@ public class CollectionEditor<C extends CustomCache, T> {
                         .append(Component.text(" "));
             }
             if (editEntry != null) {
-                modifiers = modifiers.append(chat.translated("msg.chat_editor.list_edit.entry.edit", tagResolver).clickEvent(chat.executable(player, true, (wolfyUtils, player1) -> _sendNewEntryPrompt(player1, "msg.chat_editor.list_edit.input_new_entry", true, listItem, finalEntryIndex, tagResolver))));
+                modifiers = modifiers.append(chat.translated("msg.chat_editor.list_edit.entry.edit", tagResolver).clickEvent(chat.executable(player, true, (wolfyUtils, player1) -> _sendNewEntryPrompt(globalGuiHandler, player1, "msg.chat_editor.list_edit.input_new_entry", true, listItem, finalEntryIndex, tagResolver))));
             }
             chat.sendMessage(player, false, modifiers.append(Component.text("═")).append(chat.getMiniMessage().deserialize(" <white><entry_val>", Placeholder.component("entry_val", toComponent.parse(globalGuiHandler, player, globalGuiHandler.getCustomCache(), listItem)))));
             i++;
         }
+    }
+
+    public interface SendInputInfoMessages<C extends CustomCache> {
+
+        void send(GuiHandler<C> guiHandler, Player player, C cache);
+
     }
 
     public interface SupplyEntryCollection<T, C extends CustomCache> {
