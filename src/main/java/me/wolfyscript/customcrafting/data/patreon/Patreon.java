@@ -41,14 +41,15 @@ public class Patreon {
     public void initialize() {
         addPatron(new Patron("Omarlatif", "f24ef68e-5126-414d-9102-54f15c023954", Tier.LEGEND));
         addPatron(new Patron("Nat R", "29e1d027-d8c2-457f-a1a8-e5387b84de31", Tier.ELITE));
-        addPatron(new Patron("Junye Zhou", "02fa85c4-97ea-4d1c-a5a9-f3b5e2f85975", Tier.DIAMOND));
         addPatron(new Patron("Apprehentice", "db61eab0-7fb1-48db-986f-125e73787976", Tier.WOLFRAM));
         addPatron(new Patron("PwassonDoDouce", Tier.WOLFRAM));
         addPatron(new Patron("Mr_Mint_", Tier.WOLFRAM));
         addPatron(new Patron("Mithran", Tier.WOLFRAM));
         addPatron(new Patron("Isabel Maskrey", Tier.WOLFRAM));
-        addPatron(new Patron("nocando", "777d6910-a1a8-453e-964e-4de7286e1fcd", Tier.WOLFRAM));
-        addPatron(new Patron("MoOrizzle", Tier.WOLFRAM));
+        addPatron(new Patron("Dillan Hunter", Tier.WOLFRAM));
+        addPatron(new Patron("Spunkerz", Tier.WOLFRAM));
+        addPatron(new Patron("LilFoxxo", Tier.WOLFRAM));
+        addPatron(new Patron("霜神CreamGod", Tier.WOLFRAM));
     }
 
     public void printPatreonCredits() {
