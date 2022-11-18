@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.brewing;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.bukkit.potion.PotionEffect;
 
 public class EffectAddition {

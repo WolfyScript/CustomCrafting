@@ -23,12 +23,12 @@
 package me.wolfyscript.customcrafting.utils.chat;
 
 import java.util.Collection;
-import me.wolfyscript.lib.net.kyori.adventure.text.Component;
-import me.wolfyscript.lib.net.kyori.adventure.text.event.ClickEvent;
-import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
-import me.wolfyscript.lib.net.kyori.adventure.text.format.TextDecoration;
-import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.ChatTabComplete;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;

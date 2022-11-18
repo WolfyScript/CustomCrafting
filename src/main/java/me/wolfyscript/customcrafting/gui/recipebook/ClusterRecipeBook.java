@@ -36,7 +36,7 @@ import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
-import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;

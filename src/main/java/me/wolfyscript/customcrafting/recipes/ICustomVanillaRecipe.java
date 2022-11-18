@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.bukkit.inventory.Recipe;
 
 public interface ICustomVanillaRecipe<T extends Recipe> {

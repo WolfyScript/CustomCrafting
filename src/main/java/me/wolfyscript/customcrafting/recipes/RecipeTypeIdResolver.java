@@ -23,11 +23,11 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonTypeInfo;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.DatabindContext;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JavaType;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.DatabindContext;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class RecipeTypeIdResolver extends TypeIdResolverBase {

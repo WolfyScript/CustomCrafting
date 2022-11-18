@@ -26,7 +26,7 @@ import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.Component;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
