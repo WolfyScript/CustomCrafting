@@ -34,8 +34,10 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class TabDisplayName extends ItemCreatorTabVanilla {
 
@@ -50,7 +52,15 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
         creator.registerButton(new ButtonOption(Material.NAME_TAG, this));
         new ChatInputButton.Builder<>(creator, KEY + ".set")
                 .inputAction((guiHandler, player, s, strings) -> {
-                    guiHandler.getCustomCache().getItems().getItem().setDisplayName(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s)));
+                    if (creator.getCustomCrafting().isPaper()) {
+                        CustomItem customItem = guiHandler.getCustomCache().getItems().getItem();
+                        ItemMeta itemMeta = customItem.getItemStack().getItemMeta();
+                        // Need to use the non-relocated MiniMessage! TODO: v5.0 | No longer shade & relocate Adventure!
+                        itemMeta.displayName(MiniMessage.miniMessage().deserialize(s));
+                        customItem.setItemMeta(itemMeta);
+                    } else {
+                        guiHandler.getCustomCache().getItems().getItem().setDisplayName(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s)));
+                    }
                     return false;
                 }).state(state -> state.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, guiInventory, i, event) -> {
                     var chat = guiInventory.getWindow().getChat();

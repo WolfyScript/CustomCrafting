@@ -39,6 +39,7 @@ import me.wolfyscript.utilities.api.chat.ClickEvent;
 import me.wolfyscript.utilities.api.chat.HoverEvent;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -180,6 +181,66 @@ public class ChatUtils {
                 itemMeta.setLore(lore);
             }
             cache.getItems().getItem().setItemMeta(itemMeta);
+        }).setSendInputInfoMessages((guiHandler, player, cache) -> {
+            var chat = invAPI.getWolfyUtilities().getChat();
+            chat.sendMessage(player, chat.translated("msg.input.wui_command"));
+            chat.sendMessage(player, chat.translated("msg.input.mini_message"));
+        });
+    }
+
+    public static CollectionEditor<CCCache, net.kyori.adventure.text.Component> createPaperLoreChatEditor(InventoryAPI<CCCache> invAPI) {
+        var paperMiniMsg = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage();
+        return new CollectionEditor<CCCache, net.kyori.adventure.text.Component>(invAPI,
+                (guiHandler, player, cache) -> {
+                    var itemMeta = cache.getItems().getItem().getItemMeta();
+                    return itemMeta != null && itemMeta.hasLore() ? itemMeta.lore() : List.of();
+                },
+                // This is quite inefficient! We need to convert to the shaded version of Adventure! TODO: v5.0 | No longer shade & relocate Adventure!
+                (guiHandler, player, cache, line) -> miniM.deserialize(paperMiniMsg.serialize(line)),
+                (guiHandler, player, cache, msg, args) -> paperMiniMsg.deserialize(msg)
+        ).onAdd((guiHandler, player, cache, index, entry) -> {
+            var itemMeta = cache.getItems().getItem().getItemMeta();
+            List<Component> lore = itemMeta.lore();
+            if (lore == null) {
+                lore = new ArrayList<>();
+            }
+            if (index >= 0) {
+                lore.add(index, entry);
+            } else {
+                lore.add(entry);
+            }
+            itemMeta.lore(lore);
+            cache.getItems().getItem().setItemMeta(itemMeta);
+        }).onRemove((guiHandler, player, cache, index, entry) -> {
+            var itemMeta = cache.getItems().getItem().getItemMeta();
+            List<Component> lore = itemMeta.lore();
+            if (lore != null) {
+                lore.remove(index);
+                itemMeta.lore(lore);
+            }
+            cache.getItems().getItem().setItemMeta(itemMeta);
+        }).onMove((guiHandler, player, cache, fromIndex, toIndex) -> {
+            var itemMeta = cache.getItems().getItem().getItemMeta();
+            List<Component> lore = itemMeta.lore();
+            if (lore != null) {
+                Component toPrevEntry = lore.get(toIndex);
+                lore.set(toIndex, lore.get(fromIndex));
+                lore.set(fromIndex, toPrevEntry);
+                itemMeta.lore(lore);
+            }
+            cache.getItems().getItem().setItemMeta(itemMeta);
+        }).onEdit((guiHandler, player, cache, index, previousEntry, newEntry) -> {
+            var itemMeta = cache.getItems().getItem().getItemMeta();
+            List<Component> lore = itemMeta.lore();
+            if (lore != null) {
+                lore.set(index, newEntry);
+                itemMeta.lore(lore);
+            }
+            cache.getItems().getItem().setItemMeta(itemMeta);
+        }).setSendInputInfoMessages((guiHandler, player, cache) -> {
+            var chat = invAPI.getWolfyUtilities().getChat();
+            chat.sendMessage(player, chat.translated("msg.input.wui_command"));
+            chat.sendMessage(player, chat.translated("msg.input.mini_message"));
         });
     }
 

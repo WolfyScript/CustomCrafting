@@ -51,7 +51,7 @@ public class TabLore extends ItemCreatorTabVanilla {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilities api) {
-        CollectionEditor<CCCache, String> loreChatEditor = ChatUtils.createLoreChatEditor(creator.getInventoryAPI());
+        var loreChatEditor = creator.getCustomCrafting().isPaper() ? ChatUtils.createPaperLoreChatEditor(creator.getInventoryAPI()) : ChatUtils.createLoreChatEditor(creator.getInventoryAPI());
 
         creator.registerButton(new ButtonOption(Material.WRITABLE_BOOK, this));
         creator.registerButton(new ChatInputButton<>(KEY + ".add", Material.WRITABLE_BOOK, (guiHandler, player, s, strings) -> {
