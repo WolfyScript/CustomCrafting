@@ -272,7 +272,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
 
     @Override
     public CraftingData check(CraftManager.MatrixData matrixData) {
-        if (internalShape.getWidth() == matrixData.getWidth() && internalShape.getHeight() == matrixData.getHeight()) {
+        if (fitsDimensions(matrixData)) {
             for (int[] entry : internalShape.getUniqueShapes()) {
                 var craftingData = checkShape(matrixData, entry);
                 if (craftingData != null) return craftingData;
