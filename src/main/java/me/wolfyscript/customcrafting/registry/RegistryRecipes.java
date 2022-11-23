@@ -39,6 +39,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -121,8 +122,9 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
                 vanillaRecipe.getVanillaRecipe();
             } else {
                 try {
-                    if (!Bukkit.addRecipe(vanillaRecipe.getVanillaRecipe())) {
-                        customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit!", namespacedKey));
+                    Recipe bukkitRecipe = vanillaRecipe.getVanillaRecipe();
+                    if (bukkitRecipe != null && !Bukkit.addRecipe(bukkitRecipe)) {
+                        customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
                     }
                 } catch (IllegalArgumentException | IllegalStateException ex) {
                     customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
