@@ -32,18 +32,19 @@ import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.MultipleChoiceButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
 import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bukkit.Material;
@@ -54,7 +55,7 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
     public static final String KEY = "elite_workbench";
 
     public TabEliteCraftingTable() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
+        super(new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
     }
 
     private static EliteCraftingTableSettings getOrCreateSettings(Items items) {
@@ -74,9 +75,9 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
     }
 
     @Override
-    public void register(MenuItemCreator creator, WolfyUtilities api) {
+    public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         creator.registerButton(new ButtonOption(Material.CRAFTING_TABLE, this));
-        creator.registerButton(new DummyButton<>("elite_workbench.particles", Material.FIREWORK_ROCKET));
+        creator.registerButton(new ButtonDummy<>("elite_workbench.particles", Material.FIREWORK_ROCKET));
         if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 6, 1))) {
             new MultipleChoiceButton.Builder<>(creator, "elite_workbench.grid_size")
                     .stateFunction((cache, guiHandler, player, guiInventory, i) ->
@@ -126,7 +127,7 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
                         return true;
                     })));
         }
-        creator.registerButton(new ToggleButton<>("elite_workbench.toggle", (cache, guiHandler, player, guiInventory, i) ->
+        creator.registerButton(new ButtonToggle<>("elite_workbench.toggle", (cache, guiHandler, player, guiInventory, i) ->
                 cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(EliteCraftingTableSettings::isEnabled)
                         // Get old elite crafting table settings
                         .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isEnabled()),
@@ -138,7 +139,7 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
                     setEnable(items, true);
                     return true;
                 })));
-        creator.registerButton(new ToggleButton<>("elite_workbench.advanced_recipes", (cache, guiHandler, player, guiInventory, i) ->
+        creator.registerButton(new ButtonToggle<>("elite_workbench.advanced_recipes", (cache, guiHandler, player, guiInventory, i) ->
                 cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(EliteCraftingTableSettings::isAdvancedRecipes)
                         // Get old elite crafting table settings
                         .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isAdvancedRecipes()),

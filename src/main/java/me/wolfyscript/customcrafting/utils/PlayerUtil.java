@@ -26,8 +26,9 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.entity.PlayerUtils;
 import org.bukkit.entity.Player;
 
@@ -39,7 +40,7 @@ public class PlayerUtil {
     private PlayerUtil() {
     }
 
-    public static final NamespacedKey CC_DATA = new NamespacedKey("customcrafting", "data");
+    public static final NamespacedKey CC_DATA = new BukkitNamespacedKey("customcrafting", "data");
 
     public static CCPlayerData getStore(Player player) {
         return getStore(player.getUniqueId());

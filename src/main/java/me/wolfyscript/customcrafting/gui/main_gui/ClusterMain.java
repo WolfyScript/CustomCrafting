@@ -23,17 +23,18 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.gui.Setting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonAction;
-import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Material;
 
 public class ClusterMain extends CCCluster {
@@ -41,28 +42,28 @@ public class ClusterMain extends CCCluster {
     public static final String KEY = "none";
 
     //Button keys
-    public static final NamespacedKey BACK = new NamespacedKey(KEY, "back");
-    public static final NamespacedKey EMPTY = new NamespacedKey(KEY, "empty");
-    public static final NamespacedKey BACK_BOTTOM = new NamespacedKey(KEY, "back_bottom");
-    public static final NamespacedKey GUI_HELP = new NamespacedKey(KEY, "gui_help");
-    public static final NamespacedKey GLASS_GRAY = new NamespacedKey(KEY, "glass_gray");
-    public static final NamespacedKey GLASS_LIGHT_GRAY = new NamespacedKey(KEY, "glass_light_gray");
-    public static final NamespacedKey GLASS_WHITE = new NamespacedKey(KEY, "glass_white");
-    public static final NamespacedKey GLASS_BLACK = new NamespacedKey(KEY, "glass_black");
-    public static final NamespacedKey GLASS_RED = new NamespacedKey(KEY, "glass_red");
-    public static final NamespacedKey GLASS_GREEN = new NamespacedKey(KEY, "glass_green");
-    public static final NamespacedKey GLASS_PURPLE = new NamespacedKey(KEY, "glass_purple");
-    public static final NamespacedKey GLASS_PINK = new NamespacedKey(KEY, "glass_pink");
-    public static final NamespacedKey PATREON = new NamespacedKey(KEY, "patreon");
-    public static final NamespacedKey YOUTUBE = new NamespacedKey(KEY, "youtube");
-    public static final NamespacedKey DISCORD = new NamespacedKey(KEY, "discord");
-    public static final NamespacedKey GITHUB = new NamespacedKey(KEY, "github");
+    public static final NamespacedKey BACK = new BukkitNamespacedKey(KEY, "back");
+    public static final NamespacedKey EMPTY = new BukkitNamespacedKey(KEY, "empty");
+    public static final NamespacedKey BACK_BOTTOM = new BukkitNamespacedKey(KEY, "back_bottom");
+    public static final NamespacedKey GUI_HELP = new BukkitNamespacedKey(KEY, "gui_help");
+    public static final NamespacedKey GLASS_GRAY = new BukkitNamespacedKey(KEY, "glass_gray");
+    public static final NamespacedKey GLASS_LIGHT_GRAY = new BukkitNamespacedKey(KEY, "glass_light_gray");
+    public static final NamespacedKey GLASS_WHITE = new BukkitNamespacedKey(KEY, "glass_white");
+    public static final NamespacedKey GLASS_BLACK = new BukkitNamespacedKey(KEY, "glass_black");
+    public static final NamespacedKey GLASS_RED = new BukkitNamespacedKey(KEY, "glass_red");
+    public static final NamespacedKey GLASS_GREEN = new BukkitNamespacedKey(KEY, "glass_green");
+    public static final NamespacedKey GLASS_PURPLE = new BukkitNamespacedKey(KEY, "glass_purple");
+    public static final NamespacedKey GLASS_PINK = new BukkitNamespacedKey(KEY, "glass_pink");
+    public static final NamespacedKey PATREON = new BukkitNamespacedKey(KEY, "patreon");
+    public static final NamespacedKey YOUTUBE = new BukkitNamespacedKey(KEY, "youtube");
+    public static final NamespacedKey DISCORD = new BukkitNamespacedKey(KEY, "discord");
+    public static final NamespacedKey GITHUB = new BukkitNamespacedKey(KEY, "github");
     //Language keys
-    public static final NamespacedKey BACKGROUND = new NamespacedKey(KEY, "background");
+    public static final NamespacedKey BACKGROUND = new BukkitNamespacedKey(KEY, "background");
     //Both Button and Window keys
-    public static final NamespacedKey RECIPE_LIST = new NamespacedKey(KEY, "recipe_list");
+    public static final NamespacedKey RECIPE_LIST = new BukkitNamespacedKey(KEY, "recipe_list");
     //Window keys
-    public static final NamespacedKey ITEM_LIST = new NamespacedKey(KEY, "item_list");
+    public static final NamespacedKey ITEM_LIST = new BukkitNamespacedKey(KEY, "item_list");
     //Messages
     private final Component githubLink;
     private final Component youtubeLink;
@@ -91,7 +92,7 @@ public class ClusterMain extends CCCluster {
                 .render((cache, guiHandler, player, guiInv, stack, slot) -> {
                     guiInv.getWindow().getHelpInformation();
                     var window = guiInv.getWindow();
-                    return CallbackButtonRender.UpdateResult.of(TagResolverUtil.entries(guiHandler.getApi().getLanguageAPI().getComponents("inventories." + window.getCluster().getId() + "." + window.getNamespacedKey().getKey() + ".gui_help")));
+                    return CallbackButtonRender.UpdateResult.of(TagResolverUtil.entries(guiHandler.getWolfyUtils().getLanguageAPI().getComponents("inventories." + window.getCluster().getId() + "." + window.getNamespacedKey().getKey() + ".gui_help")));
                 })).register();
         final ButtonAction<CCCache> backAction = (cache, guiHandler, player, guiInventory, i, event) -> {
             guiHandler.openPreviousWindow();

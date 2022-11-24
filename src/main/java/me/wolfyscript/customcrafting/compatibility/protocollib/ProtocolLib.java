@@ -43,7 +43,8 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -77,7 +78,7 @@ public class ProtocolLib {
     private void registerServerSide() {
         recipeFilter = minecraftKey -> {
             if (minecraftKey.getPrefix().equals(NamespacedKeyUtils.NAMESPACE)) {
-                CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(NamespacedKey.of(minecraftKey.getFullKey()));
+                CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(customCrafting.getApi().getIdentifiers().getNamespaced(minecraftKey.getFullKey()));
                 if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
                     return !recipe.isHidden() && !recipe.isDisabled();
                 }
@@ -113,7 +114,7 @@ public class ProtocolLib {
                 public void onPacketReceiving(PacketEvent event) {
                     //Call the PrepareItemCraftEvent one more time, if the recipe is a custom recipe, to update the last ingredient in the grid
                     //Issue #136 – Items disappear when using recipe book on crafting table.
-                    NamespacedKey recipeId = NamespacedKey.of(event.getPacket().getMinecraftKeys().read(0).getFullKey());
+                    NamespacedKey recipeId = customCrafting.getApi().getIdentifiers().getNamespaced(event.getPacket().getMinecraftKeys().read(0).getFullKey());
                     if (customCrafting.getRegistries().getRecipes().has(recipeId)) {
                         Player player = event.getPlayer();
                         if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory craftingInventory) {

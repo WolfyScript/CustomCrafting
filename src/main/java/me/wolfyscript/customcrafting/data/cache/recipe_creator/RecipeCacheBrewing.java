@@ -25,7 +25,7 @@ package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
-import me.wolfyscript.utilities.util.Pair;
+import com.wolfyscript.utilities.tuple.Pair;
 import org.bukkit.Color;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;

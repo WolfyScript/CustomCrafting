@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.utils.chat;
 
+import com.wolfyscript.utilities.bukkit.chat.BukkitChat;
+import com.wolfyscript.utilities.bukkit.gui.cache.CustomCache;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackChatTabComplete;
 import java.util.Collection;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -29,16 +32,14 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import me.wolfyscript.utilities.api.chat.Chat;
-import me.wolfyscript.utilities.api.inventory.gui.ChatTabComplete;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackChatTabComplete;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
 import org.bukkit.entity.Player;
 
 public class CollectionEditor<C extends CustomCache, T> {
 
-    protected final Chat chat;
+    protected final BukkitChat chat;
     protected final InventoryAPI<C> invAPI;
 
     private int entriesPerPage = 7;
@@ -50,7 +51,7 @@ public class CollectionEditor<C extends CustomCache, T> {
     protected EditEntry<T, C> editEntry;
     protected RemoveEntry<T, C> removeEntry;
     protected MoveEntry<C> moveEntry;
-    protected ChatTabComplete<C> tabComplete;
+    protected CallbackChatTabComplete<C> tabComplete;
     protected SendInputInfoMessages<C> sendInputInfoMessages;
 
     public CollectionEditor(InventoryAPI<C> invAPI, SupplyEntryCollection<T, C> listSupplier, ParseEntryToComponent<T, C> toComponent, ParseChatInputToEntry<T, C> toListEntry) {
@@ -58,7 +59,7 @@ public class CollectionEditor<C extends CustomCache, T> {
         this.listSupplier = listSupplier;
         this.toComponent = toComponent;
         this.toListEntry = toListEntry;
-        this.chat = invAPI.getWolfyUtilities().getChat();
+        this.chat = invAPI.getWolfyUtils().getChat();
         this.addEntry = null;
         this.editEntry = null;
         this.removeEntry = null;

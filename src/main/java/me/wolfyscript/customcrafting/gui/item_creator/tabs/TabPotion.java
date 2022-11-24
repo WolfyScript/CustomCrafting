@@ -30,12 +30,13 @@ import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.gui.potion_creator.ClusterPotionCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -45,13 +46,13 @@ public class TabPotion extends ItemCreatorTabVanilla {
     public static final String KEY = "potion";
 
     public TabPotion() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
+        super(new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
     }
 
     @Override
-    public void register(MenuItemCreator creator, WolfyUtilities api) {
+    public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         creator.registerButton(new ButtonOption(Material.POTION, this));
-        creator.registerButton(new ActionButton<>("potion.add", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        creator.registerButton(new ButtonAction<>("potion.add", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             cache.getPotionEffectCache().setApplyPotionEffect((potionEffectCache1, cache1, potionEffect) -> {
                 var itemMeta = items.getItem().getItemMeta();
                 if (itemMeta instanceof PotionMeta) {
@@ -63,7 +64,7 @@ public class TabPotion extends ItemCreatorTabVanilla {
             guiHandler.openWindow(ClusterPotionCreator.POTION_CREATOR);
             return true;
         }));
-        creator.registerButton(new ActionButton<>("potion.remove", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        creator.registerButton(new ButtonAction<>("potion.remove", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, type) -> {
                 var itemMeta = items.getItem().getItemMeta();

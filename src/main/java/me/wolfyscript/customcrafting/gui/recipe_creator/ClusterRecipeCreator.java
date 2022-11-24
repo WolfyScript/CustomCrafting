@@ -29,9 +29,10 @@ import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bukkit.Material;
@@ -47,15 +48,15 @@ public class ClusterRecipeCreator extends CCCluster {
     public static final String KEY = "recipe_creator";
 
     //Buttons
-    public static final NamespacedKey CONDITIONS = new NamespacedKey(KEY, "conditions");
-    public static final NamespacedKey GROUP = new NamespacedKey(KEY, "group");
-    public static final NamespacedKey TAGS = new NamespacedKey(KEY, "tags");
-    public static final NamespacedKey SAVE = new NamespacedKey(KEY, "save");
-    public static final NamespacedKey SAVE_AS = new NamespacedKey(KEY, "save_as");
-    public static final NamespacedKey PRIORITY = new NamespacedKey(KEY, "priority");
-    public static final NamespacedKey EXACT_META = new NamespacedKey(KEY, "exact_meta");
-    public static final NamespacedKey HIDDEN = new NamespacedKey(KEY, "hidden");
-    public static final NamespacedKey VANILLA_BOOK = new NamespacedKey(KEY, "vanilla_book");
+    public static final NamespacedKey CONDITIONS = new BukkitNamespacedKey(KEY, "conditions");
+    public static final NamespacedKey GROUP = new BukkitNamespacedKey(KEY, "group");
+    public static final NamespacedKey TAGS = new BukkitNamespacedKey(KEY, "tags");
+    public static final NamespacedKey SAVE = new BukkitNamespacedKey(KEY, "save");
+    public static final NamespacedKey SAVE_AS = new BukkitNamespacedKey(KEY, "save_as");
+    public static final NamespacedKey PRIORITY = new BukkitNamespacedKey(KEY, "priority");
+    public static final NamespacedKey EXACT_META = new BukkitNamespacedKey(KEY, "exact_meta");
+    public static final NamespacedKey HIDDEN = new BukkitNamespacedKey(KEY, "hidden");
+    public static final NamespacedKey VANILLA_BOOK = new BukkitNamespacedKey(KEY, "vanilla_book");
     public static final String SHAPELESS = "crafting.shapeless";
     public static final String MIRROR_VERTICAL = "crafting.mirror_vertical";
     public static final String MIRROR_HORIZONTAL = "crafting.mirror_horizontal";
@@ -79,14 +80,14 @@ public class ClusterRecipeCreator extends CCCluster {
     public static final NamespacedKey MIRROR_ROTATION_DISABLED = disabledKey(MIRROR_ROTATION);
 
     //Window keys
-    public static final NamespacedKey ITEM_EDITOR = new NamespacedKey(KEY, "item_editor");
+    public static final NamespacedKey ITEM_EDITOR = new BukkitNamespacedKey(KEY, "item_editor");
 
     private static NamespacedKey enabledKey(String key) {
-        return new NamespacedKey(KEY, key + ENABLED);
+        return new BukkitNamespacedKey(KEY, key + ENABLED);
     }
 
     private static NamespacedKey disabledKey(String key) {
-        return new NamespacedKey(KEY, key + DISABLED);
+        return new BukkitNamespacedKey(KEY, key + DISABLED);
     }
 
     public ClusterRecipeCreator(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {

@@ -22,13 +22,13 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator;
 
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
+import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
@@ -36,7 +36,7 @@ import org.bukkit.inventory.ItemFlag;
 
 import java.util.Locale;
 
-public class ButtonArmorSlotToggle extends ToggleButton<CCCache> {
+public class ButtonArmorSlotToggle extends ButtonToggle<CCCache> {
 
     private static String key(EquipmentSlot slot) {
         return "armor_slots." + slot.toString().toLowerCase(Locale.ROOT);

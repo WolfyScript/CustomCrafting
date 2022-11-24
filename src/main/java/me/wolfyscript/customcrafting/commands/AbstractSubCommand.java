@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.commands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.utilities.api.WolfyUtilities;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +33,7 @@ import java.util.List;
 public abstract class AbstractSubCommand {
 
     protected final CustomCrafting customCrafting;
-    protected final WolfyUtilities api;
+    protected final WolfyUtilsBukkit api;
     private final String label;
     private final List<String> alias;
 

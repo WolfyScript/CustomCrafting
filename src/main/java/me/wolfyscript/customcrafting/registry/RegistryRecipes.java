@@ -24,6 +24,12 @@ package me.wolfyscript.customcrafting.registry;
 
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.registry.Registries;
+import com.wolfyscript.utilities.common.registry.RegistrySimple;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -32,10 +38,6 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.registry.Registries;
-import me.wolfyscript.utilities.registry.RegistrySimple;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -72,7 +74,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     private final Set<String> GROUPS = new HashSet<>();
 
     RegistryRecipes(CustomCrafting customCrafting, Registries registries) {
-        super(new NamespacedKey(customCrafting, "recipe/recipes"), registries);
+        super(new BukkitNamespacedKey(customCrafting, "recipe/recipes"), registries);
         this.customCrafting = customCrafting;
     }
 

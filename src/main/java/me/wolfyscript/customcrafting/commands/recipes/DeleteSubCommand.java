@@ -27,11 +27,12 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.chat.ClickData;
-import me.wolfyscript.utilities.api.chat.ClickEvent;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.chat.ClickData;
+import com.wolfyscript.utilities.bukkit.chat.ClickEvent;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -51,8 +52,8 @@ public class DeleteSubCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes_delete") && args.length > 0) {
-            WolfyUtilities api = customCrafting.getApi();
-            NamespacedKey key = NamespacedKey.of(args[0]);
+            WolfyUtilsBukkit api = customCrafting.getApi();
+            NamespacedKey key = customCrafting.getApi().getIdentifiers().getNamespaced(args[0]);
             if (key != null) {
                 CustomRecipe<?> customRecipe = customCrafting.getRegistries().getRecipes().get(key);
                 if (customRecipe != null) {

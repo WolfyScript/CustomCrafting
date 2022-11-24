@@ -23,11 +23,11 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 
-class ButtonHidden extends ToggleButton<CCCache> {
+class ButtonHidden extends ButtonToggle<CCCache> {
 
     ButtonHidden() {
         super(ClusterRecipeCreator.HIDDEN.getKey(), (cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getRecipeCache().isHidden(),

@@ -31,11 +31,12 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.util.StringUtil;
 
@@ -47,7 +48,7 @@ import java.util.stream.Collectors;
 
 public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> {
 
-    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
+    public static final NamespacedKey KEY = new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
 
     private static final String PARENT_LANG = "conditions.elite_crafting_table";
     private static final String ADD = PARENT_LANG + ".add";
@@ -112,7 +113,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
         public GUIComponent() {
             super(Material.CRAFTING_TABLE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.registerButton(new ChatInputButton<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, args) -> {
+                        menu.registerButton(new ButtonChatInput<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, args) -> {
                             if (args.length > 1) {
                                 var namespacedKey = ChatUtils.getNamespacedKey(player, "", args);
                                 if (namespacedKey != null) {
@@ -150,7 +151,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                             }
                             return Collections.emptyList();
                         }));
-                        menu.registerButton(new DummyButton<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
+                        menu.registerButton(new ButtonDummy<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getEliteCraftingTableCondition();
                             for (int i = 0; i < 4; i++) {
                                 if (i < condition.getEliteWorkbenches().size()) {
@@ -161,7 +162,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                             }
                             return itemStack;
                         }));
-                        menu.registerButton(new ActionButton<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                        menu.registerButton(new ButtonAction<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(EliteWorkbenchCondition.class);
                             if (!condition.getEliteWorkbenches().isEmpty()) {
                                 condition.getEliteWorkbenches().remove(condition.getEliteWorkbenches().size() - 1);

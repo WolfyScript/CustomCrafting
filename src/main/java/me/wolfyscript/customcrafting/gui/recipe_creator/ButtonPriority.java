@@ -24,10 +24,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 
-class ButtonPriority extends ActionButton<CCCache> {
+class ButtonPriority extends ButtonAction<CCCache> {
 
     ButtonPriority() {
         super(ClusterRecipeCreator.PRIORITY.getKey(), PlayerHeadUtils.getViaURL("b8ea57c7551c6ab33b8fed354b43df523f1e357c4b4f551143c34ddeac5b6c8d"), (cache, guiHandler, player, inventory, slot, event) -> {

@@ -27,10 +27,11 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.advancement.Advancement;
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
 
 public class ConditionAdvancement extends Condition<ConditionAdvancement> {
 
-    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_advancements");
+    public static final NamespacedKey KEY = new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_advancements");
 
     private static final String PARENT_LANG = "conditions.player_advancements";
     private static final String ADD = PARENT_LANG + ".add";
@@ -90,7 +91,7 @@ public class ConditionAdvancement extends Condition<ConditionAdvancement> {
         public GUIComponent() {
             super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.registerButton(new ChatInputButton<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, args) -> {
+                        menu.registerButton(new ButtonChatInput<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, args) -> {
                             if (args.length > 1) {
                                 var key = ChatUtils.getInternalNamespacedKey(player, "", args);
                                 if (key != null) {
@@ -110,7 +111,7 @@ public class ConditionAdvancement extends Condition<ConditionAdvancement> {
                             menu.sendMessage(guiHandler, menu.translatedMsgKey("no_name"));
                             return true;
                         }, (guiHandler, player, args) -> {
-                            Set<NamespacedKey> entries = Streams.stream(Bukkit.advancementIterator()).map(advancement -> NamespacedKey.fromBukkit(advancement.getKey())).collect(Collectors.toSet());
+                            Set<NamespacedKey> entries = Streams.stream(Bukkit.advancementIterator()).map(advancement -> BukkitNamespacedKey.fromBukkit(advancement.getKey())).collect(Collectors.toSet());
                             List<String> results = new ArrayList<>();
                             if (args.length > 0) {
                                 if (args.length == 1) {
@@ -122,7 +123,7 @@ public class ConditionAdvancement extends Condition<ConditionAdvancement> {
                             }
                             return results;
                         }));
-                        menu.registerButton(new DummyButton<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
+                        menu.registerButton(new ButtonDummy<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ConditionAdvancement.class);
                             for (int i = 0; i < 4; i++) {
                                 if (i < condition.advancements.size()) {
@@ -133,7 +134,7 @@ public class ConditionAdvancement extends Condition<ConditionAdvancement> {
                             }
                             return itemStack;
                         }));
-                        menu.registerButton(new ActionButton<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                        menu.registerButton(new ButtonAction<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ConditionAdvancement.class);
                             if (!condition.advancements.isEmpty()) {
                                 condition.advancements.remove(condition.advancements.size() - 1);

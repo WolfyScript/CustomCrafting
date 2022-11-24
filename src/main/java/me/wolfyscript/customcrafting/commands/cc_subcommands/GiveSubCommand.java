@@ -28,9 +28,10 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.tuple.Pair;
+import com.wolfyscript.utilities.bukkit.world.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -77,7 +78,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                     return true;
                 }
 
-                var namespacedKey = NamespacedKey.of(args[1]);
+                var namespacedKey = customCrafting.getApi().getIdentifiers().getNamespaced(args[1]);
                 TagResolver.Single itemPlaceholder = Placeholder.unparsed("item", args[1]);
 
                 //not required values ---------------------------------------

@@ -23,24 +23,25 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 
-class ButtonTagChoose extends ActionButton<CCCache> {
+class ButtonTagChoose extends ButtonAction<CCCache> {
 
     ButtonTagChoose(Tag<Material> tag) {
-        super("tag." + NamespacedKey.fromBukkit(tag.getKey()).toString("."), new ButtonState<>("tag", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, slot, event) -> {
+        super("tag." + BukkitNamespacedKey.fromBukkit(tag.getKey()).toString("."), new ButtonState<>("tag", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, slot, event) -> {
             var recipeItemStack = cache.getRecipeCreatorCache().getTagSettingsCache().getRecipeItemStack();
             if (recipeItemStack != null) {
-                recipeItemStack.getTags().add(NamespacedKey.fromBukkit(tag.getKey()));
+                recipeItemStack.getTags().add(BukkitNamespacedKey.fromBukkit(tag.getKey()));
             }
             guiHandler.openPreviousWindow();
             return true;
         }, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-            values.put("%namespaced_key%", NamespacedKey.fromBukkit(tag.getKey()).toString());
+            values.put("%namespaced_key%", BukkitNamespacedKey.fromBukkit(tag.getKey()).toString());
             itemStack.setType(tag.getValues().stream().findFirst().orElse(Material.NAME_TAG));
             return itemStack;
         }));

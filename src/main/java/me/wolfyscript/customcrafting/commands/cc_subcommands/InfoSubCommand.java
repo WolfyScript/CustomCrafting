@@ -28,7 +28,7 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import me.wolfyscript.utilities.api.WolfyUtilities;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +57,7 @@ public class InfoSubCommand extends AbstractSubCommand {
     }
 
     public void printInfo(Player p) {
-        WolfyUtilities api = customCrafting.getApi();
+        WolfyUtilsBukkit api = customCrafting.getApi();
         var chat = api.getChat();
         chat.sendMessage(p, Component.text("———————— ", NamedTextColor.GRAY).append(customCrafting.getColoredTitle()).append(Component.text(" ————————")));
         api.getChat().sendMessages(p, Component.empty(),

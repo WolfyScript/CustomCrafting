@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.data;
 
+import com.wolfyscript.utilities.bukkit.gui.cache.CustomCache;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.BrewingGUICache;
 import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
@@ -38,8 +40,6 @@ import me.wolfyscript.customcrafting.data.cache.potions.ApplyPotionEffect;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCreatorCache;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.potion.PotionEffect;
 
 public class CCCache extends CustomCache {

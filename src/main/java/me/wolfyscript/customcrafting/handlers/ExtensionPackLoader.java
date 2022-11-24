@@ -24,13 +24,14 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 
 public class ExtensionPackLoader extends ResourceLoader {
 
     public ExtensionPackLoader(CustomCrafting customCrafting) {
-        super(customCrafting, new NamespacedKey(customCrafting, "extension_loader"));
+        super(customCrafting, new BukkitNamespacedKey(customCrafting, "extension_loader"));
     }
 
     @Override

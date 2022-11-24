@@ -25,7 +25,8 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.eval.context.EvalContextPlayer;
 import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
 import org.bukkit.Bukkit;
@@ -39,7 +40,7 @@ import java.util.Map;
 
 public class ConditionScoreboard extends Condition<ConditionScoreboard> {
 
-    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_scoreboard");
+    public static final NamespacedKey KEY = new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_scoreboard");
 
     private final Map<String, BoolOperator> objectiveChecks;
     private final boolean failOnMissingObjective;

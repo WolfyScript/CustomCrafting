@@ -31,8 +31,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -71,7 +72,7 @@ public class Conditions {
             //Required for backwards compatibility with previous configs.
             this.valuesMap = new HashMap<>();
             node.elements().forEachRemaining(element -> {
-                ((ObjectNode) element).put("key", String.valueOf(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, element.path("id").asText())));
+                ((ObjectNode) element).put("key", String.valueOf(new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, element.path("id").asText())));
                 try {
                     var condition = jsonReader.readValue(element, Condition.class);
                     if (!condition.getOption().equals(Option.IGNORE)) {
@@ -143,7 +144,7 @@ public class Conditions {
 
     @Deprecated
     public Condition<?> getByID(String id) {
-        return valuesMap.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, id));
+        return valuesMap.get(new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, id));
     }
 
     public enum Option {
@@ -165,7 +166,7 @@ public class Conditions {
             return displayString;
         }
 
-        public String getDisplayString(WolfyUtilities api) {
+        public String getDisplayString(WolfyUtilsBukkit api) {
             return api.getLanguageAPI().replaceKeys(displayString);
         }
     }

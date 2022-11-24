@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.fasterxml.jackson.databind.JavaType;
-import me.wolfyscript.utilities.util.json.jackson.KeyedTypeResolver;
+import com.wolfyscript.utilities.json.KeyedTypeResolver;
 
 public class RecipeTypeResolver extends KeyedTypeResolver {
 

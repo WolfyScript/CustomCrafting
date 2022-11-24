@@ -29,8 +29,9 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -56,7 +57,7 @@ public class EnchantMergeAdapter extends MergeAdapter {
     private Map<Enchantment, Integer> enchantsToUpgrade = new HashMap<>();
 
     public EnchantMergeAdapter() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "enchant"));
+        super(new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "enchant"));
         this.ignoreEnchantLimit = false;
         this.ignoreConflicts = true;
         this.increaseLevels = false;

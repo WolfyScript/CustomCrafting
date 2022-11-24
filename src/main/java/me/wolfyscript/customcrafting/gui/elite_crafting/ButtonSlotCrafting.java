@@ -25,13 +25,13 @@ package me.wolfyscript.customcrafting.gui.elite_crafting;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonItemInput;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-class ButtonSlotCrafting extends ItemInputButton<CCCache> {
+class ButtonSlotCrafting extends ButtonItemInput<CCCache> {
 
     ButtonSlotCrafting(int recipeSlot, CustomCrafting customCrafting) {
         super("crafting.slot_" + recipeSlot, new ButtonState<>("", Material.AIR,

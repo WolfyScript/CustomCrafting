@@ -23,9 +23,10 @@
 package me.wolfyscript.customcrafting.configs.customitem;
 
 import com.wolfyscript.utilities.KeyedStaticId;
-import com.wolfyscript.utilities.bukkit.items.CustomItemData;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItemData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 
 @KeyedStaticId(RecipeBookSettings.ID)
 public class RecipeBookSettings extends CustomItemData {
@@ -35,12 +36,12 @@ public class RecipeBookSettings extends CustomItemData {
     private boolean enabled;
 
     public RecipeBookSettings() {
-        super(NamespacedKey.of(ID));
+        super(customCrafting.getApi().getIdentifiers().getNamespaced(ID));
         this.enabled = false;
     }
 
     public RecipeBookSettings(RecipeBookSettings other) {
-        super(NamespacedKey.of(ID));
+        super(customCrafting.getApi().getIdentifiers().getNamespaced(ID));
         this.enabled = other.enabled;
     }
 

@@ -28,7 +28,8 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -65,7 +66,7 @@ public class CraftListener implements Listener {
     public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
         org.bukkit.NamespacedKey key = event.getRecipe();
         if (key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(NamespacedKey.fromBukkit(key));
+            CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(BukkitNamespacedKey.fromBukkit(key));
             if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
                 event.setCancelled(recipe.isHidden() || recipe.isDisabled());
             } else {

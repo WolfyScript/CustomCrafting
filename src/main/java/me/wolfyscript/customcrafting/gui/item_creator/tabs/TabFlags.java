@@ -28,10 +28,11 @@ import me.wolfyscript.customcrafting.gui.item_creator.ButtonItemFlagsToggle;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.version.MinecraftVersion;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Material;
@@ -43,11 +44,11 @@ public class TabFlags extends ItemCreatorTabVanilla {
     public static final String KEY = "flags";
 
     public TabFlags() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
+        super(new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
     }
 
     @Override
-    public void register(MenuItemCreator creator, WolfyUtilities api) {
+    public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         creator.registerButton(new ButtonOption(Material.WRITTEN_BOOK, this));
         creator.registerButton(new ButtonItemFlagsToggle("enchants", ItemFlag.HIDE_ENCHANTS, Material.ENCHANTING_TABLE));
         creator.registerButton(new ButtonItemFlagsToggle("attributes", ItemFlag.HIDE_ATTRIBUTES, Material.ENCHANTED_GOLDEN_APPLE));

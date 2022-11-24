@@ -37,11 +37,12 @@ import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -54,32 +55,32 @@ public class ClusterRecipeBook extends CCCluster {
 
     public static final String KEY = "recipe_book";
 
-    public static final NamespacedKey MAIN_MENU = new NamespacedKey(KEY, "main_menu");
-    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(KEY, "recipe_book");
-    public static final NamespacedKey CATEGORY_OVERVIEW = new NamespacedKey(KEY, "category_overview");
+    public static final NamespacedKey MAIN_MENU = new BukkitNamespacedKey(KEY, "main_menu");
+    public static final NamespacedKey RECIPE_BOOK = new BukkitNamespacedKey(KEY, "recipe_book");
+    public static final NamespacedKey CATEGORY_OVERVIEW = new BukkitNamespacedKey(KEY, "category_overview");
 
-    public static final NamespacedKey BACK_TO_LIST = new NamespacedKey(KEY, "back_to_list");
-    public static final NamespacedKey NEXT_PAGE = new NamespacedKey(KEY, "next_page");
-    public static final NamespacedKey PREVIOUS_PAGE = new NamespacedKey(KEY, "previous_page");
-    public static final NamespacedKey ITEM_CATEGORY = new NamespacedKey(KEY, "item_category");
-    public static final NamespacedKey PERMISSION = new NamespacedKey(KEY, "permission");
+    public static final NamespacedKey BACK_TO_LIST = new BukkitNamespacedKey(KEY, "back_to_list");
+    public static final NamespacedKey NEXT_PAGE = new BukkitNamespacedKey(KEY, "next_page");
+    public static final NamespacedKey PREVIOUS_PAGE = new BukkitNamespacedKey(KEY, "previous_page");
+    public static final NamespacedKey ITEM_CATEGORY = new BukkitNamespacedKey(KEY, "item_category");
+    public static final NamespacedKey PERMISSION = new BukkitNamespacedKey(KEY, "permission");
 
-    public static final NamespacedKey COOKING_ICON = new NamespacedKey(ClusterRecipeBook.KEY, "cooking.icon");
-    public static final NamespacedKey STONECUTTER = new NamespacedKey(ClusterRecipeBook.KEY, "stonecutter");
-    public static final NamespacedKey FURNACE = new NamespacedKey(ClusterRecipeBook.KEY, "furnace");
-    public static final NamespacedKey BLAST_FURNACE = new NamespacedKey(ClusterRecipeBook.KEY, "blast_furnace");
-    public static final NamespacedKey CAMPFIRE = new NamespacedKey(ClusterRecipeBook.KEY, "campfire");
-    public static final NamespacedKey GRINDSTONE = new NamespacedKey(ClusterRecipeBook.KEY, "grindstone");
-    public static final NamespacedKey SMOKER = new NamespacedKey(ClusterRecipeBook.KEY, "smoker");
-    public static final NamespacedKey SMITHING = new NamespacedKey(ClusterRecipeBook.KEY, "smithing");
+    public static final NamespacedKey COOKING_ICON = new BukkitNamespacedKey(ClusterRecipeBook.KEY, "cooking.icon");
+    public static final NamespacedKey STONECUTTER = new BukkitNamespacedKey(ClusterRecipeBook.KEY, "stonecutter");
+    public static final NamespacedKey FURNACE = new BukkitNamespacedKey(ClusterRecipeBook.KEY, "furnace");
+    public static final NamespacedKey BLAST_FURNACE = new BukkitNamespacedKey(ClusterRecipeBook.KEY, "blast_furnace");
+    public static final NamespacedKey CAMPFIRE = new BukkitNamespacedKey(ClusterRecipeBook.KEY, "campfire");
+    public static final NamespacedKey GRINDSTONE = new BukkitNamespacedKey(ClusterRecipeBook.KEY, "grindstone");
+    public static final NamespacedKey SMOKER = new BukkitNamespacedKey(ClusterRecipeBook.KEY, "smoker");
+    public static final NamespacedKey SMITHING = new BukkitNamespacedKey(ClusterRecipeBook.KEY, "smithing");
 
-    public static final NamespacedKey CAULDRON_CAMPFIRE = new NamespacedKey(KEY, "cauldron.campfire");
-    public static final NamespacedKey CAULDRON_SOUL_CAMPFIRE = new NamespacedKey(KEY, "cauldron.soul_campfire");
-    public static final NamespacedKey CAULDRON_SIGNAL_FIRE = new NamespacedKey(KEY, "cauldron.signal_fire");
+    public static final NamespacedKey CAULDRON_CAMPFIRE = new BukkitNamespacedKey(KEY, "cauldron.campfire");
+    public static final NamespacedKey CAULDRON_SOUL_CAMPFIRE = new BukkitNamespacedKey(KEY, "cauldron.soul_campfire");
+    public static final NamespacedKey CAULDRON_SIGNAL_FIRE = new BukkitNamespacedKey(KEY, "cauldron.signal_fire");
 
-    public static final NamespacedKey CAULDRON_COOK_WATER = new NamespacedKey(KEY, "cauldron.can_cook_in_water");
-    public static final NamespacedKey CAULDRON_COOK_LAVA = new NamespacedKey(KEY, "cauldron.can_cook_in_lava");
-    public static final NamespacedKey CAULDRON_EMPTY = new NamespacedKey(KEY, "cauldron.empty_cauldron");
+    public static final NamespacedKey CAULDRON_COOK_WATER = new BukkitNamespacedKey(KEY, "cauldron.can_cook_in_water");
+    public static final NamespacedKey CAULDRON_COOK_LAVA = new BukkitNamespacedKey(KEY, "cauldron.can_cook_in_lava");
+    public static final NamespacedKey CAULDRON_EMPTY = new BukkitNamespacedKey(KEY, "cauldron.empty_cauldron");
 
     public ClusterRecipeBook(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);

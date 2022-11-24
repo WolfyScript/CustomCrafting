@@ -27,7 +27,7 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import me.wolfyscript.utilities.api.WolfyUtilities;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +56,7 @@ public class HelpSubCommand extends AbstractSubCommand {
     }
 
     public void printHelp(Player p) {
-        WolfyUtilities api = customCrafting.getApi();
+        WolfyUtilsBukkit api = customCrafting.getApi();
         var chat = api.getChat();
         chat.sendMessage(p, Component.text("———————— ", NamedTextColor.GRAY).append(customCrafting.getColoredTitle()).append(Component.text(" ————————")));
         chat.sendMessages(p, api.getLanguageAPI().getComponents("commands.help", true, List.of()).toArray(new Component[0]));

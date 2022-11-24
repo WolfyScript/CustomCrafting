@@ -24,9 +24,10 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -35,7 +36,7 @@ import java.util.Locale;
 
 public class WeatherCondition extends Condition<WeatherCondition> {
 
-    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "weather");
+    public static final NamespacedKey KEY = new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "weather");
 
     private Weather weather;
 
@@ -83,7 +84,7 @@ public class WeatherCondition extends Condition<WeatherCondition> {
             this.display = "$recipe_conditions.weather.modes." + super.toString().toLowerCase(Locale.ROOT) + "$";
         }
 
-        public String getDisplay(WolfyUtilities api) {
+        public String getDisplay(WolfyUtilsBukkit api) {
             return api.getLanguageAPI().replaceKeys(display);
         }
     }
@@ -93,7 +94,7 @@ public class WeatherCondition extends Condition<WeatherCondition> {
         public GUIComponent() {
             super(Material.WATER_BUCKET, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.registerButton(new ActionButton<>("conditions.weather.set", Material.WATER_BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                        menu.registerButton(new ButtonAction<>("conditions.weather.set", Material.WATER_BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
                             cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).toggleWeather();
                             return true;
                         }, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {

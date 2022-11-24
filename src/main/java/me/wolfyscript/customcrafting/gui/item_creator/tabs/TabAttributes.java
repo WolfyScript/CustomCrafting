@@ -33,13 +33,14 @@ import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -67,11 +68,11 @@ public class TabAttributes extends ItemCreatorTabVanilla {
     private static final String ZOMBIE_SPAWN_REINFORCEMENTS = "zombie_spawn_reinforcements";
 
     public TabAttributes() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
+        super(new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
     }
 
     @Override
-    public void register(MenuItemCreator creator, WolfyUtilities api) {
+    public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         creator.registerButton(new ButtonOption(Material.ENCHANTED_GOLDEN_APPLE, this));
         creator.registerButton(new ButtonAttributeCategory(MAX_HEALTH, Material.ENCHANTED_GOLDEN_APPLE));
         creator.registerButton(new ButtonAttributeCategory(FOLLOW_RANGE, Material.ENDER_EYE));
@@ -96,7 +97,7 @@ public class TabAttributes extends ItemCreatorTabVanilla {
         creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.LEGS, Material.IRON_LEGGINGS));
         creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.CHEST, Material.IRON_CHESTPLATE));
         creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.HEAD, Material.IRON_HELMET));
-        creator.registerButton(new ChatInputButton<>("attribute.set_amount", PlayerHeadUtils.getViaURL("461c8febcac21b9f63d87f9fd933589fe6468e93aa81cfcf5e52a4322e16e6"), (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        creator.registerButton(new ButtonChatInput<>("attribute.set_amount", PlayerHeadUtils.getViaURL("461c8febcac21b9f63d87f9fd933589fe6468e93aa81cfcf5e52a4322e16e6"), (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             values.put("%NUMBER%", guiHandler.getCustomCache().getItems().getAttribAmount());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
@@ -108,14 +109,14 @@ public class TabAttributes extends ItemCreatorTabVanilla {
             }
             return false;
         }));
-        creator.registerButton(new ChatInputButton<>("attribute.set_name", Material.NAME_TAG, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        creator.registerButton(new ButtonChatInput<>("attribute.set_name", Material.NAME_TAG, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             values.put("%NAME%", guiHandler.getCustomCache().getItems().getAttributeName());
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
             guiHandler.getCustomCache().getItems().setAttributeName(strings[0]);
             return false;
         }));
-        creator.registerButton(new ChatInputButton<>("attribute.set_uuid", Material.TRIPWIRE_HOOK, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        creator.registerButton(new ButtonChatInput<>("attribute.set_uuid", Material.TRIPWIRE_HOOK, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             values.put("%UUID%", guiHandler.getCustomCache().getItems().getAttributeUUID());
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
@@ -129,13 +130,13 @@ public class TabAttributes extends ItemCreatorTabVanilla {
             }
             return false;
         }));
-        creator.registerButton(new ActionButton<>("attribute.save", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        creator.registerButton(new ButtonAction<>("attribute.save", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             var itemMeta = items.getItem().getItemMeta();
             itemMeta.addAttributeModifier(Attribute.valueOf(cache.getSubSetting().split("\\.")[1].toUpperCase(Locale.ROOT)), items.getAttributeModifier());
             items.getItem().setItemMeta(itemMeta);
             return true;
         }));
-        creator.registerButton(new ActionButton<>("attribute.delete", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
+        creator.registerButton(new ButtonAction<>("attribute.delete", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
             ChatUtils.sendAttributeModifierManager(player);
             guiHandler.close();
             return true;

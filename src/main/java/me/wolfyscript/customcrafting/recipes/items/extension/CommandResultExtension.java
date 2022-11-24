@@ -27,8 +27,9 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -50,7 +51,7 @@ public class CommandResultExtension extends ResultExtension {
 
     @JsonCreator
     public CommandResultExtension(@JacksonInject("customcrafting") CustomCrafting customCrafting) {
-        super(new NamespacedKey(customCrafting, "command"));
+        super(new BukkitNamespacedKey(customCrafting, "command"));
         this.customCrafting = customCrafting;
     }
 
@@ -104,7 +105,7 @@ public class CommandResultExtension extends ResultExtension {
 
     protected List<String> parseCommands(List<String> commands, Player player) {
         return commands.stream().map(s -> {
-            if (WolfyUtilities.hasPlaceHolderAPI()) {
+            if (WolfyUtilsBukkit.hasPlaceHolderAPI()) {
                 return PlaceholderAPI.setPlaceholders(player, s);
             } else {
                 return s.replace("%player%", player.getName());

@@ -23,13 +23,13 @@
 package me.wolfyscript.customcrafting.gui.item_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.bukkit.attribute.AttributeModifier;
 
 import java.util.Locale;
 
-public class ButtonAttributeMode extends ActionButton<CCCache> {
+public class ButtonAttributeMode extends ButtonAction<CCCache> {
 
     public ButtonAttributeMode(AttributeModifier.Operation operation, String headURLValue) {
         super("attribute." + operation.toString().toLowerCase(Locale.ROOT), PlayerHeadUtils.getViaURL(headURLValue), (cache, guiHandler, player, inventory, slot, event) -> {

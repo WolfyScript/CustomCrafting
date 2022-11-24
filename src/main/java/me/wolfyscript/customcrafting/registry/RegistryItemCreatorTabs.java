@@ -22,15 +22,15 @@
 
 package me.wolfyscript.customcrafting.registry;
 
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.common.registry.Registries;
+import com.wolfyscript.utilities.common.registry.RegistrySimple;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
-import me.wolfyscript.utilities.registry.Registries;
-import me.wolfyscript.utilities.registry.RegistrySimple;
-import me.wolfyscript.utilities.util.NamespacedKey;
 
 public final class RegistryItemCreatorTabs extends RegistrySimple<ItemCreatorTab> {
 
     RegistryItemCreatorTabs(CustomCrafting customCrafting, Registries registries) {
-        super(new NamespacedKey(customCrafting, "item_creator_tabs"), registries, ItemCreatorTab.class);
+        super(new BukkitNamespacedKey(customCrafting, "item_creator_tabs"), registries, ItemCreatorTab.class);
     }
 }

@@ -25,14 +25,15 @@ package me.wolfyscript.customcrafting.gui.item_creator;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 
 public class ClusterItemCreator extends CCCluster {
 
     public static final String KEY = "item_creator";
 
-    public static final NamespacedKey MAIN_MENU = new NamespacedKey(KEY, "main_menu");
+    public static final NamespacedKey MAIN_MENU = new BukkitNamespacedKey(KEY, "main_menu");
 
     public ClusterItemCreator(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);

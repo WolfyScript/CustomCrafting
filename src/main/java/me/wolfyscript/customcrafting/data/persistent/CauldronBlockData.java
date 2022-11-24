@@ -39,9 +39,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -57,7 +58,7 @@ import org.bukkit.util.Vector;
 
 public class CauldronBlockData extends CustomBlockData {
 
-    public static final NamespacedKey ID = new NamespacedKey("customcrafting", "cauldron");
+    public static final NamespacedKey ID = new BukkitNamespacedKey("customcrafting", "cauldron");
     private static final Random random = new Random();
 
     private final CustomCrafting customCrafting;
@@ -109,7 +110,7 @@ public class CauldronBlockData extends CustomBlockData {
         if (key == null || key.isBlank()) {
             this.recipe = null;
         } else {
-            CustomRecipe<?> customRecipe = customCrafting.getRegistries().getRecipes().get(NamespacedKey.of(key));
+            CustomRecipe<?> customRecipe = customCrafting.getRegistries().getRecipes().get(customCrafting.getApi().getIdentifiers().getNamespaced(key));
             if (customRecipe instanceof CustomRecipeCauldron recipeCauldron) {
                 this.recipe = recipeCauldron;
             } else {

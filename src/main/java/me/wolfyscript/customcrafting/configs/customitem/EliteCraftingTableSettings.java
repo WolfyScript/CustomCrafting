@@ -23,10 +23,12 @@
 package me.wolfyscript.customcrafting.configs.customitem;
 
 import com.wolfyscript.utilities.KeyedStaticId;
-import com.wolfyscript.utilities.bukkit.items.CustomItemData;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItemData;
 import java.util.Objects;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 
 @KeyedStaticId(EliteCraftingTableSettings.ID)
 public class EliteCraftingTableSettings extends CustomItemData {
@@ -40,7 +42,7 @@ public class EliteCraftingTableSettings extends CustomItemData {
     private int gridSize;
 
     public EliteCraftingTableSettings() {
-        super(NamespacedKey.of(ID));
+        super(CustomCrafting.inst().getApi().getIdentifiers().getNamespaced(ID));
         this.enabled = false;
         this.gridSize = 3;
         this.allowHoppers = false;
@@ -48,7 +50,7 @@ public class EliteCraftingTableSettings extends CustomItemData {
     }
 
     protected EliteCraftingTableSettings(EliteCraftingTableSettings eliteWorkbenchData) {
-        super(NamespacedKey.of(ID));
+        super(CustomCrafting.inst().getApi().getIdentifiers().getNamespaced(ID));
         this.enabled = eliteWorkbenchData.enabled;
         this.gridSize = eliteWorkbenchData.gridSize;
         this.allowHoppers = eliteWorkbenchData.allowHoppers;

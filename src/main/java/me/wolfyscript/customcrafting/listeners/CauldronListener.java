@@ -32,8 +32,8 @@ import me.wolfyscript.customcrafting.utils.CauldronUtils;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.gui.cauldron.CauldronWorkstationCluster;
 import me.wolfyscript.utilities.api.Permissions;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -45,7 +45,7 @@ import org.bukkit.inventory.ItemStack;
 public class CauldronListener implements Listener {
 
     private final CustomCrafting customCrafting;
-    private final WolfyUtilities api;
+    private final WolfyUtilsBukkit api;
 
     public CauldronListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;

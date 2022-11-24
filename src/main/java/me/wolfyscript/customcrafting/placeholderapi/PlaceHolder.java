@@ -29,7 +29,8 @@ import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -110,7 +111,7 @@ public class PlaceHolder extends PlaceholderExpansion {
                     for (int i = 3; i < args.length; i++) {
                         recipeID.append(args[i]);
                     }
-                    NamespacedKey recipeKey = NamespacedKey.of(recipeID.toString());
+                    NamespacedKey recipeKey = customCrafting.getApi().getIdentifiers().getNamespaced(recipeID.toString());
                     CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(recipeKey);
                     switch (args[1]) {
                         case "type":

@@ -29,11 +29,12 @@ import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.StackedContents;
-import me.wolfyscript.utilities.api.WolfyUtilities;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import me.wolfyscript.utilities.api.network.messages.MessageAPI;
 import me.wolfyscript.utilities.api.nms.NetworkUtil;
-import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.nms.api.network.MCByteBuf;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.BlastFurnace;
@@ -53,28 +54,28 @@ public class NetworkHandler {
     private static final int MAX_PACKET_SIZE = 29696;
 
     private static final String KEY = NamespacedKeyUtils.NAMESPACE;
-    private static final NamespacedKey DATA_REQUEST = new NamespacedKey(KEY, "data_request");
-    private static final NamespacedKey RECIPE_LIST_SIZE = new NamespacedKey(KEY, "recipe_list_size"); //Sends size of recipes the client will receive.
-    private static final NamespacedKey RECIPE_LIST = new NamespacedKey(KEY, "recipe_list"); //Sends the recipe data.
-    private static final NamespacedKey RECIPE_LIST_END = new NamespacedKey(KEY, "recipe_list_end"); //Sent when all recipes are transmitted.
+    private static final NamespacedKey DATA_REQUEST = new BukkitNamespacedKey(KEY, "data_request");
+    private static final NamespacedKey RECIPE_LIST_SIZE = new BukkitNamespacedKey(KEY, "recipe_list_size"); //Sends size of recipes the client will receive.
+    private static final NamespacedKey RECIPE_LIST = new BukkitNamespacedKey(KEY, "recipe_list"); //Sends the recipe data.
+    private static final NamespacedKey RECIPE_LIST_END = new BukkitNamespacedKey(KEY, "recipe_list_end"); //Sent when all recipes are transmitted.
 
-    private static final NamespacedKey RECIPE_BOOK_SETTINGS = new NamespacedKey(KEY, "recipe_book_settings");
-    private static final NamespacedKey RECIPE_BOOK_SETTINGS_SIZE = new NamespacedKey(KEY, "recipe_book_settings_size");
-    private static final NamespacedKey RECIPE_BOOK_CATEGORIES = new NamespacedKey(KEY, "recipe_book_categories");
-    private static final NamespacedKey RECIPE_BOOK_FILTERS = new NamespacedKey(KEY, "recipe_book_filters");
-    private static final NamespacedKey RECIPE_BOOK_FILTERS_END = new NamespacedKey(KEY, "recipe_book_filters_end");
+    private static final NamespacedKey RECIPE_BOOK_SETTINGS = new BukkitNamespacedKey(KEY, "recipe_book_settings");
+    private static final NamespacedKey RECIPE_BOOK_SETTINGS_SIZE = new BukkitNamespacedKey(KEY, "recipe_book_settings_size");
+    private static final NamespacedKey RECIPE_BOOK_CATEGORIES = new BukkitNamespacedKey(KEY, "recipe_book_categories");
+    private static final NamespacedKey RECIPE_BOOK_FILTERS = new BukkitNamespacedKey(KEY, "recipe_book_filters");
+    private static final NamespacedKey RECIPE_BOOK_FILTERS_END = new BukkitNamespacedKey(KEY, "recipe_book_filters_end");
 
-    private static final NamespacedKey PLACE_RECIPE = new NamespacedKey(KEY, "place_recipe");
-    private static final NamespacedKey GHOST_RECIPE = new NamespacedKey(KEY, "ghost_recipe");
+    private static final NamespacedKey PLACE_RECIPE = new BukkitNamespacedKey(KEY, "place_recipe");
+    private static final NamespacedKey GHOST_RECIPE = new BukkitNamespacedKey(KEY, "ghost_recipe");
 
     private static final Set<UUID> networkPlayers = new HashSet<>();
 
     private final CustomCrafting customCrafting;
-    private final WolfyUtilities wolfyUtilities;
+    private final WolfyUtilsBukkit wolfyUtilities;
     private final MessageAPI api;
     private final NetworkUtil networkUtil;
 
-    public NetworkHandler(CustomCrafting customCrafting, WolfyUtilities wolfyUtilities) {
+    public NetworkHandler(CustomCrafting customCrafting, WolfyUtilsBukkit wolfyUtilities) {
         this.customCrafting = customCrafting;
         this.wolfyUtilities = wolfyUtilities;
         this.api = this.wolfyUtilities.getMessageAPI();

@@ -30,8 +30,9 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.InjectableValues;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.File;
@@ -55,7 +56,7 @@ public class LocalStorageLoader extends ResourceLoader {
     private static final String RECIPES_FOLDER = "recipes";
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
-        super(customCrafting, new NamespacedKey(customCrafting, "local_loader"));
+        super(customCrafting, new BukkitNamespacedKey(customCrafting, "local_loader"));
     }
 
     @Override
@@ -115,7 +116,7 @@ public class LocalStorageLoader extends ResourceLoader {
      */
     private NamespacedKey keyFromFile(String namespace, Path path) {
         String pathString = path.toString();
-        return new NamespacedKey(customCrafting, namespace + "/" + pathString.substring(0, pathString.lastIndexOf(".")));
+        return new BukkitNamespacedKey(customCrafting, namespace + "/" + pathString.substring(0, pathString.lastIndexOf(".")));
     }
 
     private void loadItemsInNamespace(String namespace) {
@@ -330,7 +331,7 @@ public class LocalStorageLoader extends ResourceLoader {
         protected void loadOldOrLegacyRecipeFiles(RecipeLoader<?> loader, List<File> files, String namespace) {
             for (File file : files) {
                 var name = file.getName();
-                var namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
+                var namespacedKey = new BukkitNamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
                 if (!customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     try {
                         customCrafting.getRegistries().getRecipes().register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));

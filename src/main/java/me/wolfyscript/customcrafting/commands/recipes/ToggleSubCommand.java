@@ -26,7 +26,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.utilities.util.Pair;
+import com.wolfyscript.utilities.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
@@ -50,7 +50,7 @@ public class ToggleSubCommand extends AbstractSubCommand {
         if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes_toggle") && args.length > 0) {
             String id = args[0];
             if (id.contains(":")) {
-                var namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
+                var namespacedKey = customCrafting.getApi().getIdentifiers().getNamespaced(id);
                 if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey)) {
                     api.getChat().sendMessage((Player) sender, "$commands.recipes.toggle.enabled$", new Pair<>("%recipe%", args[0]));
                     customCrafting.getDisableRecipesHandler().getRecipes().remove(namespacedKey);

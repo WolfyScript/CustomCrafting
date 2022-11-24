@@ -24,9 +24,10 @@ package me.wolfyscript.customcrafting.gui.potion_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -38,7 +39,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.Locale;
 import java.util.Random;
 
-public class ButtonPotionEffectTypeSelect extends ActionButton<CCCache> {
+public class ButtonPotionEffectTypeSelect extends ButtonAction<CCCache> {
 
     private static final Random random = new Random(System.currentTimeMillis());
 
@@ -49,7 +50,7 @@ public class ButtonPotionEffectTypeSelect extends ActionButton<CCCache> {
                 potionEffectCache.getApplyPotionEffectType().applyPotionEffect(guiHandler.getCustomCache(), effectType);
             }
             if (!potionEffectCache.getOpenedFromCluster().isEmpty()) {
-                guiHandler.openWindow(new NamespacedKey(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow()));
+                guiHandler.openWindow(new BukkitNamespacedKey(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow()));
             } else {
                 guiHandler.openWindow(potionEffectCache.getOpenedFromWindow());
             }

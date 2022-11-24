@@ -24,7 +24,7 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class ButtonRecipeListWorkstationFilter extends ActionButton<CCCache> {
+public class ButtonRecipeListWorkstationFilter extends ButtonAction<CCCache> {
 
     static final String KEY = "workstation_filter";
 

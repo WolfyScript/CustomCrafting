@@ -34,12 +34,13 @@ import me.wolfyscript.customcrafting.utils.chat.CollectionEditor;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
-import me.wolfyscript.utilities.api.language.LanguageAPI;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.common.language.LanguageAPI;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -54,17 +55,17 @@ public class ClusterRecipeBookEditor extends CCCluster {
     private CollectionEditor<CCCache, String> foldersChatEditor;
     private CollectionEditor<CCCache, String> groupsChatEditor;
 
-    public static final NamespacedKey BACK = new NamespacedKey(KEY, "back");
-    public static final NamespacedKey NEXT_PAGE = new NamespacedKey(KEY, "next_page");
-    public static final NamespacedKey PREVIOUS_PAGE = new NamespacedKey(KEY, "previous_page");
-    public static final NamespacedKey SAVE = new NamespacedKey(KEY, "save");
-    public static final NamespacedKey SAVE_AS = new NamespacedKey(KEY, "save_as");
-    public static final NamespacedKey ICON = new NamespacedKey(KEY, "icon");
-    public static final NamespacedKey NAME = new NamespacedKey(KEY, "name");
-    public static final NamespacedKey DESCRIPTION_EDIT = new NamespacedKey(KEY, "description.edit");
-    public static final NamespacedKey RECIPES = new NamespacedKey(KEY, "recipes");
-    public static final NamespacedKey FOLDERS = new NamespacedKey(KEY, "folders");
-    public static final NamespacedKey GROUPS = new NamespacedKey(KEY, "groups");
+    public static final NamespacedKey BACK = new BukkitNamespacedKey(KEY, "back");
+    public static final NamespacedKey NEXT_PAGE = new BukkitNamespacedKey(KEY, "next_page");
+    public static final NamespacedKey PREVIOUS_PAGE = new BukkitNamespacedKey(KEY, "previous_page");
+    public static final NamespacedKey SAVE = new BukkitNamespacedKey(KEY, "save");
+    public static final NamespacedKey SAVE_AS = new BukkitNamespacedKey(KEY, "save_as");
+    public static final NamespacedKey ICON = new BukkitNamespacedKey(KEY, "icon");
+    public static final NamespacedKey NAME = new BukkitNamespacedKey(KEY, "name");
+    public static final NamespacedKey DESCRIPTION_EDIT = new BukkitNamespacedKey(KEY, "description.edit");
+    public static final NamespacedKey RECIPES = new BukkitNamespacedKey(KEY, "recipes");
+    public static final NamespacedKey FOLDERS = new BukkitNamespacedKey(KEY, "folders");
+    public static final NamespacedKey GROUPS = new BukkitNamespacedKey(KEY, "groups");
 
     public ClusterRecipeBookEditor(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
@@ -98,7 +99,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
 
         this.recipesChatEditor = new CollectionEditor<>(getInventoryAPI(), (guiHandler, player, cache) -> cache.getRecipeBookEditor().getCategorySetting().getRecipes(), (guiHandler, player, cache, recipeId) -> BukkitComponentSerializer.legacy().deserialize(recipeId.toString()), (guiHandler, player, cache, msg, args) -> {
             if (args.length > 0) {
-                var namespacedKey = NamespacedKey.of(args[0]);
+                var namespacedKey = customCrafting.getApi().getIdentifiers().getNamespaced(args[0]);
                 if (customCrafting.getRegistries().getRecipes().get(namespacedKey) != null) {
                     return namespacedKey;
                 }

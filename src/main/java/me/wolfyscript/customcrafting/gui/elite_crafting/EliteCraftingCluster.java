@@ -27,15 +27,16 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Material;
 
 public class EliteCraftingCluster extends CCCluster {
 
     public static final String KEY = "crafting";
-    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(KEY, "recipe_book");
+    public static final NamespacedKey RECIPE_BOOK = new BukkitNamespacedKey(KEY, "recipe_book");
 
     public EliteCraftingCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
@@ -48,9 +49,9 @@ public class EliteCraftingCluster extends CCCluster {
         registerGuiWindow(new CraftingWindow4(this, customCrafting));
         registerGuiWindow(new CraftingWindow5(this, customCrafting));
         registerGuiWindow(new CraftingWindow6(this, customCrafting));
-        setEntry(new NamespacedKey(KEY, "crafting_3"));
+        setEntry(new BukkitNamespacedKey(KEY, "crafting_3"));
 
-        registerButton(new ActionButton<>(RECIPE_BOOK.getKey(), Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ButtonAction<>(RECIPE_BOOK.getKey(), Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             ButtonContainerIngredient.resetButtons(guiHandler);
             cache.getRecipeBookCache().setEliteCraftingTable(cache.getEliteWorkbench());
             PlayerUtil.openRecipeBook(player);

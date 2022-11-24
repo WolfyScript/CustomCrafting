@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.utilities.util.particles.ParticleLocation;
+import com.wolfyscript.utilities.bukkit.world.particles.ParticleLocation;
 
 public class ParticleCache {
 

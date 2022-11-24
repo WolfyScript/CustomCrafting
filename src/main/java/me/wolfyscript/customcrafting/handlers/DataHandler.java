@@ -26,10 +26,11 @@ import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.LocalStorageSettings;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.utilities.api.WolfyUtilities;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import me.wolfyscript.utilities.events.DependenciesLoadedEvent;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.world.WorldUtils;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.event.EventHandler;
@@ -51,7 +52,7 @@ public class DataHandler implements Listener {
     private List<Recipe> minecraftRecipes = new ArrayList<>();
 
     private final ConfigHandler configHandler;
-    private final WolfyUtilities api;
+    private final WolfyUtilsBukkit api;
     private final DatabaseLoader databaseLoader;
     private final LocalStorageLoader localStorageLoader;
     private final ExtensionPackLoader extensionPackLoader;
@@ -168,6 +169,6 @@ public class DataHandler implements Listener {
     }
 
     public List<String> getBukkitNamespacedKeys() {
-        return getMinecraftRecipes().stream().filter(Keyed.class::isInstance).map(recipe -> NamespacedKey.fromBukkit(((Keyed) recipe).getKey()).toString()).collect(Collectors.toList());
+        return getMinecraftRecipes().stream().filter(Keyed.class::isInstance).map(recipe -> BukkitNamespacedKey.fromBukkit(((Keyed) recipe).getKey()).toString()).collect(Collectors.toList());
     }
 }

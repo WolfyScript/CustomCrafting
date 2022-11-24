@@ -43,12 +43,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
@@ -336,11 +337,11 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         event.setButton(32, glass);
         event.setButton(33, glass);
         if (getMode().equals(CustomRecipeAnvil.Mode.RESULT)) {
-            event.setButton(31, new NamespacedKey(ClusterRecipeBook.KEY, "anvil.result"));
+            event.setButton(31, new BukkitNamespacedKey(ClusterRecipeBook.KEY, "anvil.result"));
         } else if (getMode().equals(CustomRecipeAnvil.Mode.DURABILITY)) {
-            event.setButton(31, new NamespacedKey(cluster.getId(), "anvil.durability"));
+            event.setButton(31, new BukkitNamespacedKey(cluster.getId(), "anvil.durability"));
         } else {
-            event.setButton(31, new NamespacedKey(ClusterRecipeBook.KEY, "anvil.none"));
+            event.setButton(31, new BukkitNamespacedKey(ClusterRecipeBook.KEY, "anvil.none"));
         }
         event.setButton(34, ButtonContainerIngredient.key(cluster, 34));
     }

@@ -23,11 +23,11 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
 import org.bukkit.Material;
 
-class ButtonVanillaBook extends ToggleButton<CCCache> {
+class ButtonVanillaBook extends ButtonToggle<CCCache> {
 
     ButtonVanillaBook() {
         super(ClusterRecipeCreator.VANILLA_BOOK.getKey(), (cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getRecipeCache().isVanillaBook(), new ButtonState<>(ClusterRecipeCreator.VANILLA_BOOK_ENABLED, Material.GRASS_BLOCK, (cache, guiHandler, player, inventory, slot, event) -> {

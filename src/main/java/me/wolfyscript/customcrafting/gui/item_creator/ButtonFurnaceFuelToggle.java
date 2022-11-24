@@ -24,11 +24,11 @@ package me.wolfyscript.customcrafting.gui.item_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
 import org.bukkit.Material;
 
-public class ButtonFurnaceFuelToggle extends ToggleButton<CCCache> {
+public class ButtonFurnaceFuelToggle extends ButtonToggle<CCCache> {
 
     public ButtonFurnaceFuelToggle(String id, Material material) {
         super("fuel." + id, (cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().getFuelSettings().getAllowedBlocks().contains(material), new ButtonState<>("fuel." + id + ".enabled", material, (ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {

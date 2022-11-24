@@ -28,11 +28,10 @@ import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.Keyed;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.Keyed;
+import com.wolfyscript.utilities.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -42,7 +41,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
     protected final NamespacedKey key;
     protected final CustomCrafting customCrafting;
     protected final MainConfig config;
-    protected final WolfyUtilities api;
+    protected final WolfyUtilsBukkit api;
     protected final ObjectMapper objectMapper;
     private int priority = 0;
     private boolean replaceData = false;

@@ -26,8 +26,9 @@ import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 public class EnchantedBookMergeAdapter extends MergeAdapter {
 
     public EnchantedBookMergeAdapter() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "enchanted_book"));
+        super(new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "enchanted_book"));
     }
 
     public EnchantedBookMergeAdapter(EnchantedBookMergeAdapter adapter) {

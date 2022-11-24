@@ -24,7 +24,7 @@ package me.wolfyscript.customcrafting.utils.cooking;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
-import me.wolfyscript.utilities.util.Pair;
+import com.wolfyscript.utilities.tuple.Pair;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;

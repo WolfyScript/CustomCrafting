@@ -24,11 +24,11 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import org.bukkit.Material;
 
-class ButtonNamespaceItem extends ActionButton<CCCache> {
+class ButtonNamespaceItem extends ButtonAction<CCCache> {
 
     ButtonNamespaceItem(String namespace) {
         super("namespace_" + namespace, new ButtonState<>("namespace", Material.ENDER_CHEST, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {

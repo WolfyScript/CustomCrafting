@@ -23,7 +23,8 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 
 import java.lang.reflect.InvocationTargetException;
 

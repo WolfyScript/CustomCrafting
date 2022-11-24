@@ -22,15 +22,16 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.world.WorldUtils;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.world.WorldUtils;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,9 +40,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class EliteWorkbenchListener implements Listener {
 
-    private final WolfyUtilities api;
+    private final WolfyUtilsBukkit api;
 
-    public EliteWorkbenchListener(WolfyUtilities api) {
+    public EliteWorkbenchListener(WolfyUtilsBukkit api) {
         this.api = api;
     }
 
@@ -59,7 +60,7 @@ public class EliteWorkbenchListener implements Listener {
                             GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(event.getPlayer());
                             guiHandler.getCustomCache().getEliteWorkbench().setCustomItem(customItem);
                             guiHandler.getCustomCache().getEliteWorkbench().setSettings(settings);
-                            guiHandler.openWindow(new NamespacedKey("crafting", "crafting_grid" + settings.getGridSize()));
+                            guiHandler.openWindow(new BukkitNamespacedKey("crafting", "crafting_grid" + settings.getGridSize()));
                         }
                     }, () -> {
                         // Old settings handled when new ones are not available
@@ -68,7 +69,7 @@ public class EliteWorkbenchListener implements Listener {
                             event.setCancelled(true);
                             GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(event.getPlayer());
                             guiHandler.getCustomCache().getEliteWorkbench().setCustomItemAndData(customItem, eliteCraftingTableData.clone());
-                            guiHandler.openWindow(new NamespacedKey("crafting", "crafting_grid" + eliteCraftingTableData.getGridSize()));
+                            guiHandler.openWindow(new BukkitNamespacedKey("crafting", "crafting_grid" + eliteCraftingTableData.getGridSize()));
                         }
                     });
                 }

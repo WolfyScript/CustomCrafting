@@ -31,9 +31,10 @@ import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -196,7 +197,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         if (!isSaved()) {
             return false;
         }
-        WolfyUtilities api = customCrafting.getApi();
+        WolfyUtilsBukkit api = customCrafting.getApi();
         try {
             CustomRecipe<?> recipe = constructRecipe();
             if (recipe.save(player)) {

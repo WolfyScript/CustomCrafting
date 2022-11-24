@@ -29,8 +29,9 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.registry.RegistryRecipes;
 import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -40,7 +41,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Deprecated
-public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> extends Registry<T> {
+public interface CCRegistry<T extends com.wolfyscript.utilities.Keyed> extends Registry<T> {
 
     /**
      * This Registry contains all the recipes of this plugin.

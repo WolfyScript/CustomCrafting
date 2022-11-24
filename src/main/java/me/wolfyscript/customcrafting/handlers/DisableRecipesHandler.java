@@ -27,7 +27,8 @@ import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
@@ -115,7 +116,7 @@ public class DisableRecipesHandler {
     }
 
     public boolean isBukkitRecipeDisabled(org.bukkit.NamespacedKey namespacedKey) {
-        return recipes.contains(NamespacedKey.fromBukkit(namespacedKey));
+        return recipes.contains(BukkitNamespacedKey.fromBukkit(namespacedKey));
     }
 
     public void toggleBukkitRecipe(org.bukkit.NamespacedKey namespacedKey) {
@@ -140,7 +141,7 @@ public class DisableRecipesHandler {
                 player1.undiscoverRecipe(namespacedKey);
             }
             if (!namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-                recipes.add(NamespacedKey.fromBukkit(namespacedKey));
+                recipes.add(BukkitNamespacedKey.fromBukkit(namespacedKey));
                 //Cache the recipe if it is a Bukkit recipe, so we can add it again at runtime, without the requirement to reload everything.
                 cachedRecipes.put(namespacedKey, bukkitRecipe);
             }
@@ -156,7 +157,7 @@ public class DisableRecipesHandler {
      * @param namespacedKey The {@link org.bukkit.NamespacedKey} of the recipe to enable.
      */
     public void enableBukkitRecipe(org.bukkit.NamespacedKey namespacedKey) {
-        recipes.remove(NamespacedKey.fromBukkit(namespacedKey));
+        recipes.remove(BukkitNamespacedKey.fromBukkit(namespacedKey));
         Recipe bukkitRecipe = cachedRecipes.get(namespacedKey);
         if (bukkitRecipe != null) {
             Bukkit.addRecipe(bukkitRecipe);

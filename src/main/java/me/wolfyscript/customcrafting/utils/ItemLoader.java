@@ -31,13 +31,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import me.wolfyscript.utilities.api.WolfyUtilCore;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.world.items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -49,7 +50,7 @@ import java.io.IOException;
 
 public class ItemLoader {
 
-    private static final org.bukkit.NamespacedKey customItemContainerKey = new org.bukkit.NamespacedKey(WolfyUtilities.getWUPlugin(), "custom_item");
+    private static final org.bukkit.NamespacedKey customItemContainerKey = new org.bukkit.NamespacedKey(WolfyUtilsBukkit.getWUPlugin(), "custom_item");
 
     private ItemLoader() {
     }
@@ -157,7 +158,7 @@ public class ItemLoader {
             //Update NamespacedKey of old WolfyUtilityReference
             if (reference instanceof WolfyUtilitiesRef wolfyUtilitiesRef) {
                 var oldNamespacedKey = wolfyUtilitiesRef.getNamespacedKey();
-                var registry = WolfyUtilCore.getInstance().getRegistries().getCustomItems();
+                var registry = WolfyCoreBukkit.getInstance().getRegistries().getCustomItems();
                 if (!oldNamespacedKey.getKey().contains("/") && !registry.has(oldNamespacedKey)) {
                     var namespacedKey = NamespacedKeyUtils.fromInternal(wolfyUtilitiesRef.getNamespacedKey());
                     if (registry.has(namespacedKey)) {
@@ -192,13 +193,13 @@ public class ItemLoader {
         if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
             customItem.setNamespacedKey(namespacedKey);
             loader.save(customItem);
-            WolfyUtilCore.getInstance().getRegistries().getCustomItems().register(customItem);
+            WolfyCoreBukkit.getInstance().getRegistries().getCustomItems().register(customItem);
         }
     }
 
     public static boolean deleteItem(ResourceLoader loader, NamespacedKey namespacedKey, @Nullable Player player) {
         if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            var registry = WolfyUtilCore.getInstance().getRegistries().getCustomItems();
+            var registry = WolfyCoreBukkit.getInstance().getRegistries().getCustomItems();
             if (!registry.has(namespacedKey)) {
                 if (player != null) CustomCrafting.inst().getApi().getChat().sendMessage(player, "error");
                 return false;
@@ -229,8 +230,8 @@ public class ItemLoader {
             if (itemMeta != null && !itemMeta.getPersistentDataContainer().isEmpty()) {
                 var container = itemMeta.getPersistentDataContainer();
                 if (container.has(customItemContainerKey, PersistentDataType.STRING)) {
-                    var itemKey = NamespacedKey.of(container.get(customItemContainerKey, PersistentDataType.STRING));
-                    var registry = WolfyUtilCore.getInstance().getRegistries().getCustomItems();
+                    var itemKey = customCrafting.getApi().getIdentifiers().getNamespaced(container.get(customItemContainerKey, PersistentDataType.STRING));
+                    var registry = WolfyCoreBukkit.getInstance().getRegistries().getCustomItems();
                     if (itemKey != null && !registry.has(itemKey)) {
                         var updatedKey = NamespacedKeyUtils.fromInternal(itemKey);
                         if (registry.has(updatedKey)) {

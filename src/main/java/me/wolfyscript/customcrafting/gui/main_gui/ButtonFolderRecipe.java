@@ -22,16 +22,16 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.registry.RegistryRecipes;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-public class ButtonFolderRecipe extends ActionButton<CCCache> {
+public class ButtonFolderRecipe extends ButtonAction<CCCache> {
 
     private static final String KEY = "recipe_list.folder_";
 

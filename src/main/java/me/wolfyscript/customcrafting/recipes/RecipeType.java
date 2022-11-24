@@ -22,15 +22,16 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.wolfyscript.utilities.Keyed;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.json.annotations.OptionalKeyReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 import com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.utilities.util.Keyed;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.annotations.OptionalKeyReference;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -290,7 +291,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         }
 
         private RecipeTypeImpl(Type type, Class<C> clazz, String creatorID) {
-            this.key = new NamespacedKey(CustomCrafting.inst(), creatorID);
+            this.key = new BukkitNamespacedKey(CustomCrafting.inst(), creatorID);
             this.type = type;
             this.clazz = clazz;
             this.id = type.toString().toLowerCase(Locale.ROOT);

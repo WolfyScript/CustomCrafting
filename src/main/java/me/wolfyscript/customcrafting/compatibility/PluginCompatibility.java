@@ -25,7 +25,7 @@ package me.wolfyscript.customcrafting.compatibility;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.compatibility.protocollib.ProtocolLib;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
-import me.wolfyscript.utilities.api.WolfyUtilities;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -60,7 +60,7 @@ public class PluginCompatibility {
             plugin.getLogger().info("Detected ProtocolLib... initiating additional features.");
             this.protocolLib = new ProtocolLib(plugin);
         }
-        if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
+        if (WolfyUtilsBukkit.hasPlugin("PlaceholderAPI")) {
             plugin.getApi().getConsole().info("$msg.startup.placeholder$");
             new PlaceHolder(plugin).register();
         }

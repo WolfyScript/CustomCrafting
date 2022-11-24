@@ -27,16 +27,17 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Material;
 
 public class CauldronWorkstationCluster extends CCCluster {
 
     public static final String KEY = "cauldron";
-    public static final NamespacedKey CAULDRON_MAIN = new NamespacedKey(KEY, "cauldron");
-    public static final NamespacedKey CAULDRON_RESULT = new NamespacedKey(KEY, "result");
+    public static final NamespacedKey CAULDRON_MAIN = new BukkitNamespacedKey(KEY, "cauldron");
+    public static final NamespacedKey CAULDRON_RESULT = new BukkitNamespacedKey(KEY, "result");
 
     public CauldronWorkstationCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
@@ -48,7 +49,7 @@ public class CauldronWorkstationCluster extends CCCluster {
         
         registerGuiWindow(new CauldronWorkstationMenu(this, customCrafting));
 
-        registerButton(new ActionButton<>(CAULDRON_MAIN.getKey(), Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ButtonAction<>(CAULDRON_MAIN.getKey(), Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             ButtonContainerIngredient.resetButtons(guiHandler);
 
             PlayerUtil.openRecipeBook(player);

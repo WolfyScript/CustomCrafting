@@ -22,12 +22,12 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
+import com.wolfyscript.utilities.common.language.LanguageAPI;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.language.LanguageAPI;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class ConfigHandler {
     private RecipeBookConfig recipeBookConfig;
 
     public ConfigHandler(CustomCrafting customCrafting) {
-        WolfyUtilities api = customCrafting.getApi();
+        WolfyUtilsBukkit api = customCrafting.getApi();
         this.customCrafting = customCrafting;
         var configAPI = api.getConfigAPI();
         this.languageAPI = api.getLanguageAPI();

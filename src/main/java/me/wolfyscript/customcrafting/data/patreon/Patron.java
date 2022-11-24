@@ -24,8 +24,8 @@ package me.wolfyscript.customcrafting.data.patreon;
 
 import com.google.gson.JsonParser;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.utilities.util.RandomCollection;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.collection.RandomCollection;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

@@ -25,9 +25,10 @@ package me.wolfyscript.customcrafting.listeners.crafting;
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
@@ -99,7 +100,7 @@ public class EventBasedCraftRecipeHandler implements Listener {
             if (!(e.getRecipe() instanceof Keyed)) return;
             //Vanilla Recipe is available.
             //Check for custom recipe that overrides the vanilla recipe
-            var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
+            var namespacedKey = BukkitNamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
             if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey) || customCrafting.getRegistries().getRecipes().getAdvancedCrafting(namespacedKey) != null) {
                 //Recipe is disabled or it is a custom recipe!
                 e.getInventory().setResult(ItemUtils.AIR);

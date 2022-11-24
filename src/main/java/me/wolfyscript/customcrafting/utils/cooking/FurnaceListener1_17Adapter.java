@@ -24,9 +24,10 @@ package me.wolfyscript.customcrafting.utils.cooking;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.tuple.Pair;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceStartSmeltEvent;
@@ -48,7 +49,7 @@ public class FurnaceListener1_17Adapter implements Listener {
     public void onStartSmelt(FurnaceStartSmeltEvent event) {
         var recipe = event.getRecipe();
         if (recipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            var data = manager.getAdapter().processRecipe(event.getSource(), NamespacedKey.fromBukkit(recipe.getKey()), event.getBlock());
+            var data = manager.getAdapter().processRecipe(event.getSource(), BukkitNamespacedKey.fromBukkit(recipe.getKey()), event.getBlock());
             //Update the cache to the new Custom Recipe.
             manager.cacheRecipeData(event.getBlock(), data);
         } else {

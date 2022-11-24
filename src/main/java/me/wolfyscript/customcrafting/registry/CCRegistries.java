@@ -22,18 +22,20 @@
 
 package me.wolfyscript.customcrafting.registry;
 
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import com.wolfyscript.utilities.common.registry.Registry;
+import com.wolfyscript.utilities.common.registry.RegistrySimple;
+import com.wolfyscript.utilities.common.registry.TypeRegistry;
+import com.wolfyscript.utilities.common.registry.TypeRegistrySimple;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
-import me.wolfyscript.utilities.api.WolfyUtilCore;
-import me.wolfyscript.utilities.registry.Registry;
-import me.wolfyscript.utilities.registry.RegistrySimple;
-import me.wolfyscript.utilities.registry.TypeRegistry;
-import me.wolfyscript.utilities.registry.TypeRegistrySimple;
-import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class CCRegistries {
 
@@ -45,15 +47,15 @@ public class CCRegistries {
     private final TypeRegistry<ResultExtension> recipeResultExtensions;
     private final TypeRegistry<RepairTask> anvilRecipeRepairTasks;
 
-    public CCRegistries(CustomCrafting customCrafting, WolfyUtilCore core) {
+    public CCRegistries(CustomCrafting customCrafting, WolfyCoreBukkit core) {
         var registries = core.getRegistries();
         this.recipes = new RegistryRecipes(customCrafting, registries);
         this.itemCreatorTabs = new RegistryItemCreatorTabs(customCrafting, registries);
         this.recipeConditions = new TypeRegistryRecipeConditions(customCrafting, registries);
-        this.recipeMergeAdapters = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/merge_adapters"), registries);
-        this.recipeResultExtensions = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/result_extensions"), registries);
-        this.recipeTypes = new RegistrySimple<>(new NamespacedKey(customCrafting, "recipe/types"), registries, (Class<RecipeType<?>>) (Object) RecipeType.class);
-        this.anvilRecipeRepairTasks = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/anvil/repair_tasks"), registries);
+        this.recipeMergeAdapters = new TypeRegistrySimple<>(new BukkitNamespacedKey(customCrafting, "recipe/merge_adapters"), registries);
+        this.recipeResultExtensions = new TypeRegistrySimple<>(new BukkitNamespacedKey(customCrafting, "recipe/result_extensions"), registries);
+        this.recipeTypes = new RegistrySimple<>(new BukkitNamespacedKey(customCrafting, "recipe/types"), registries, (Class<RecipeType<?>>) (Object) RecipeType.class);
+        this.anvilRecipeRepairTasks = new TypeRegistrySimple<>(new BukkitNamespacedKey(customCrafting, "recipe/anvil/repair_tasks"), registries);
     }
 
     public TypeRegistryRecipeConditions getRecipeConditions() {

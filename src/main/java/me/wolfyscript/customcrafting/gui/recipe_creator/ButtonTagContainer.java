@@ -23,14 +23,15 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-class ButtonTagContainer extends ActionButton<CCCache> {
+class ButtonTagContainer extends ButtonAction<CCCache> {
 
     ButtonTagContainer(NamespacedKey namespacedKey) {
         super("tag." + namespacedKey.toString("."), new ButtonState<>("tag_container", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, slot, event) -> {

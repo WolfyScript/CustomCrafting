@@ -23,9 +23,10 @@
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.utilities.api.WolfyUtilCore;
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
 import me.wolfyscript.utilities.compatibility.plugins.MythicMobsIntegration;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -42,7 +43,7 @@ public class MythicMobResultExtension extends ResultExtension {
     private Vector offset = new Vector(0.5, 1, 0.5);
 
     public MythicMobResultExtension() {
-        super(new NamespacedKey(CustomCrafting.inst(), "mythicmobs/mob_spawn"));
+        super(new BukkitNamespacedKey(CustomCrafting.inst(), "mythicmobs/mob_spawn"));
     }
 
     public MythicMobResultExtension(MythicMobResultExtension extension) {
@@ -86,7 +87,7 @@ public class MythicMobResultExtension extends ResultExtension {
     }
 
     protected void spawnMob(Location origin) {
-        WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().runIfAvailable("MythicMobs", MythicMobsIntegration.class, integration -> {
+        WolfyCoreBukkit.getInstance().getCompatibilityManager().getPlugins().runIfAvailable("MythicMobs", MythicMobsIntegration.class, integration -> {
             ThreadLocalRandom random = ThreadLocalRandom.current();
             Vector innerRange = getInnerRadius();
             Vector outerRange = getOuterRadius();

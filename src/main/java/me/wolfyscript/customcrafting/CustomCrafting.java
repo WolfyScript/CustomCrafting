@@ -25,6 +25,18 @@ package me.wolfyscript.customcrafting;
 import com.wolfyscript.jackson.dataformat.hocon.HoconFactory;
 import com.wolfyscript.jackson.dataformat.hocon.HoconGenerator;
 import com.wolfyscript.jackson.dataformat.hocon.HoconMapper;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import com.wolfyscript.utilities.bukkit.WolfyUtilCore;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.bukkit.nms.Reflection;
+import com.wolfyscript.utilities.bukkit.world.entity.CustomPlayerData;
+import com.wolfyscript.utilities.json.KeyedTypeIdResolver;
+import com.wolfyscript.utilities.versioning.ServerVersion;
+import com.wolfyscript.utilities.versioning.WUVersion;
 import java.io.IOException;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
@@ -125,15 +137,6 @@ import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import net.kyori.adventure.text.Component;
-import me.wolfyscript.utilities.api.WolfyUtilCore;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Reflection;
-import me.wolfyscript.utilities.util.entity.CustomPlayerData;
-import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
-import me.wolfyscript.utilities.util.version.ServerVersion;
-import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
@@ -147,14 +150,14 @@ public class CustomCrafting extends JavaPlugin {
 
     private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
     //CustomData keys
-    public static final NamespacedKey ELITE_CRAFTING_TABLE_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
-    public static final NamespacedKey RECIPE_BOOK_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe_book");
-    public static final NamespacedKey CAULDRON_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "cauldron");
+    public static final NamespacedKey ELITE_CRAFTING_TABLE_DATA = new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
+    public static final NamespacedKey RECIPE_BOOK_DATA = new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe_book");
+    public static final NamespacedKey CAULDRON_DATA = new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "cauldron");
     //Recipes & Items keys
-    public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "customcrafting/advanced_crafting_table");
-    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "customcrafting/recipe_book");
+    public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "customcrafting/advanced_crafting_table");
+    public static final NamespacedKey RECIPE_BOOK = new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "customcrafting/recipe_book");
     //Used for backwards compatibility
-    public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
+    public static final NamespacedKey ADVANCED_WORKBENCH = new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
     public static final int CONFIG_VERSION = 5;
     private final Component coloredTitle;
@@ -168,7 +171,7 @@ public class CustomCrafting extends JavaPlugin {
     private final Patreon patreon;
     private final ChatUtils chatUtils;
     //The main WolfyUtilities instance
-    private final WolfyUtilities api;
+    private final WolfyUtilsBukkit api;
     private final CCRegistries registries;
     //Recipe Managers / API
     private final CraftManager craftManager;
@@ -190,11 +193,11 @@ public class CustomCrafting extends JavaPlugin {
         currentVersion = getDescription().getVersion();
         this.version = WUVersion.parse(currentVersion.split("-")[0]);
         this.pluginCompatibility = new PluginCompatibility(this);
-        isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
+        isPaper = WolfyCoreBukkit.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
         if (!isPaper) {
             getLogger().warning("Paper not detected! Not using performance improvements.");
         }
-        api = WolfyUtilCore.getInstance().getAPI(this, false);
+        api = WolfyCoreBukkit.getInstance().getAPI(this, false);
 
         HoconMapper mapper = new HoconMapper(new HoconFactory()
                 .disable(HoconGenerator.Feature.ROOT_OBJECT_BRACKETS)
@@ -239,7 +242,7 @@ public class CustomCrafting extends JavaPlugin {
     public void onLoad() {
         getLogger().info("WolfyUtils API: v" + ServerVersion.getWUVersion().getVersion());
         getLogger().info("CustomCrafting: v" + getVersion().getVersion());
-        getLogger().info("Environment   : " + WolfyUtilities.getENVIRONMENT());
+        getLogger().info("Environment   : " + WolfyUtilsBukkit.getENVIRONMENT());
 
         api.getCore().applyWolfyUtilsJsonMapperModules(api.getJacksonMapperUtil().getGlobalMapper());
 
@@ -348,7 +351,7 @@ public class CustomCrafting extends JavaPlugin {
         registerCommands();
         registerInventories();
         //Used for testing purposes, might be available for production in the future
-        if (WolfyUtilities.isDevEnv()) {
+        if (WolfyUtilsBukkit.isDevEnv()) {
             this.networkHandler.registerPackets();
         }
         if (api.getCore().getCompatibilityManager().getPlugins().isDoneLoading()) {
@@ -469,7 +472,7 @@ public class CustomCrafting extends JavaPlugin {
      *
      * @return The WolfyUtilities instance of this plugin.
      */
-    public WolfyUtilities getApi() {
+    public WolfyUtilsBukkit getApi() {
         return api;
     }
 

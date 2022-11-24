@@ -26,9 +26,10 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.chat.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -52,7 +53,7 @@ public class PlaceholderAPIMergeAdapter extends MergeAdapter {
     private boolean loreBracketPlaceholders = true;
 
     public PlaceholderAPIMergeAdapter() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "placeholderapi"));
+        super(new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "placeholderapi"));
     }
 
     public PlaceholderAPIMergeAdapter(PlaceholderAPIMergeAdapter adapter) {
@@ -65,7 +66,7 @@ public class PlaceholderAPIMergeAdapter extends MergeAdapter {
 
     @Override
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
-        if (player != null && WolfyUtilities.hasPlaceHolderAPI() && result.hasItemMeta()) {
+        if (player != null && WolfyUtilsBukkit.hasPlaceHolderAPI() && result.hasItemMeta()) {
             var meta = result.getItemMeta();
             if (replaceName) {
                 String name = meta.getDisplayName();

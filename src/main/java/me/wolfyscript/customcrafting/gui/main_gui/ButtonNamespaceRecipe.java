@@ -25,17 +25,17 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.HashMap;
 
-public class ButtonNamespaceRecipe extends ActionButton<CCCache> {
+public class ButtonNamespaceRecipe extends ButtonAction<CCCache> {
 
     private static final String KEY = "recipe_list.namespace_";
     private final CustomCrafting customCrafting;

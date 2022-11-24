@@ -26,8 +26,8 @@ import com.wolfyscript.jackson.dataformat.hocon.HoconMapper;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.chat.ClickData;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.chat.ClickData;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -45,7 +45,7 @@ public class UpdateChecker {
     private static final String REQUEST_URL = "https://api.spigotmc.org/simple/0.2/index.php?action=getResource&id=";
     private static final String RESOURCE_URL = "https://www.spigotmc.org/resources/";
     private final CustomCrafting plugin;
-    private final WolfyUtilities api;
+    private final WolfyUtilsBukkit api;
     private final int id;
     private boolean outdated;
     private long lastCheck;
@@ -91,7 +91,7 @@ public class UpdateChecker {
             api.getChat().sendActionMessage(player,
                     new ClickData("$msg.player.outdated.msg2$", null),
                     new ClickData("$msg.player.outdated.link$", null,
-                            new me.wolfyscript.utilities.api.chat.ClickEvent(ClickEvent.Action.OPEN_URL, RESOURCE_URL + id)));
+                            new com.wolfyscript.utilities.bukkit.chat.ClickEvent(ClickEvent.Action.OPEN_URL, RESOURCE_URL + id)));
         }
     }
 

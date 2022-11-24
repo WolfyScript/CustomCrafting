@@ -29,12 +29,12 @@ import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.customcrafting.utils.cooking.FurnaceListener1_17Adapter;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.utilities.registry.RegistryCustomItem;
-import me.wolfyscript.utilities.util.Pair;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import com.wolfyscript.utilities.tuple.Pair;
+import com.wolfyscript.utilities.bukkit.world.inventory.InventoryUtils;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Bukkit;
@@ -58,10 +58,10 @@ import java.util.Optional;
 
 public class FurnaceListener implements Listener {
 
-    public static final NamespacedKey RECIPES_USED_KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipes_used");
+    public static final NamespacedKey RECIPES_USED_KEY = new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipes_used");
 
     protected final CustomCrafting customCrafting;
-    protected final WolfyUtilities api;
+    protected final WolfyUtilsBukkit api;
     protected final CookingManager manager;
     protected final RegistryCustomItem registryCustomItem;
 
@@ -160,7 +160,7 @@ public class FurnaceListener implements Listener {
     }
 
     private void awardRecipeExperience(PersistentDataContainer usedRecipes, NamespacedKey bukkitRecipeKey, Location location) {
-        CustomRecipe<?> recipeFurnace = customCrafting.getRegistries().getRecipes().get(me.wolfyscript.utilities.util.NamespacedKey.fromBukkit(bukkitRecipeKey));
+        CustomRecipe<?> recipeFurnace = customCrafting.getRegistries().getRecipes().get(me.wolfyscript.utilities.util.BukkitNamespacedKey.fromBukkit(bukkitRecipeKey));
         if (recipeFurnace instanceof CustomRecipeCooking<?, ?> furnaceRecipe) {
             if (furnaceRecipe.getExp() > 0) {
                 //Calculates the amount of xp levels the Exp Orbs will get. (See net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity#createExperience)

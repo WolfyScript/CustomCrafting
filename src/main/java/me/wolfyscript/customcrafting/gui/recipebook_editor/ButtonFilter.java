@@ -25,12 +25,12 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-class ButtonFilter extends ActionButton<CCCache> {
+class ButtonFilter extends ButtonAction<CCCache> {
 
     ButtonFilter(CategoryFilter filter, CustomCrafting customCrafting) {
         super("filter_" + filter.getId(), new ButtonState<>("filter", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {

@@ -27,16 +27,17 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
-import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +54,7 @@ public class MenuPotionCreator extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("back", new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ButtonAction<>("back", new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
             if (cache.getPotionEffectCache().isRecipePotionEffect()) {
                 guiHandler.openCluster("recipe_creator");
             } else {
@@ -62,7 +63,7 @@ public class MenuPotionCreator extends CCWindow {
             return true;
         })));
 
-        registerButton(new ActionButton<>("cancel", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ButtonAction<>("cancel", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             if (cache.getPotionEffectCache().isRecipePotionEffect()) {
                 guiHandler.openCluster("recipe_creator");
             } else {
@@ -71,7 +72,7 @@ public class MenuPotionCreator extends CCWindow {
             return true;
         }));
 
-        registerButton(new ActionButton<>("apply", Material.LIME_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ButtonAction<>("apply", Material.LIME_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.applyPotionEffect(cache);
             if (potionEffectCache.isRecipePotionEffect()) {
@@ -82,7 +83,7 @@ public class MenuPotionCreator extends CCWindow {
             return true;
         }));
 
-        registerButton(new DummyButton<>("preview", Material.POTION, (hashMap, cache, guiHandler, player, inventory, oldItem, i, b) -> {
+        registerButton(new ButtonDummy<>("preview", Material.POTION, (hashMap, cache, guiHandler, player, inventory, oldItem, i, b) -> {
             PotionEffects potionEffectCache = guiHandler.getCustomCache().getPotionEffectCache();
             ItemStack itemStack = new ItemStack(Material.POTION);
             PotionMeta itemMeta = (PotionMeta) itemStack.getItemMeta();
@@ -94,7 +95,7 @@ public class MenuPotionCreator extends CCWindow {
             return itemStack;
         }));
 
-        registerButton(new ActionButton<>("potion_effect_type", new ButtonState<>("potion_effect_type", Material.BOOKSHELF, (cache, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ButtonAction<>("potion_effect_type", new ButtonState<>("potion_effect_type", Material.BOOKSHELF, (cache, guiHandler, player, inventory, i, event) -> {
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, potionEffect) -> potionEffectCache.setType(potionEffect));
             potionEffectCache.setOpenedFrom("potion_creator", "potion_creator");
@@ -106,7 +107,7 @@ public class MenuPotionCreator extends CCWindow {
             return itemStack;
         })));
 
-        registerButton(new ChatInputButton<>("duration", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
+        registerButton(new ButtonChatInput<>("duration", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
             hashMap.put("%duration%", guiHandler.getCustomCache().getPotionEffectCache().getDuration());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
@@ -114,11 +115,11 @@ public class MenuPotionCreator extends CCWindow {
                 guiHandler.getCustomCache().getPotionEffectCache().setDuration(Integer.parseInt(args[0]));
                 return false;
             } catch (NumberFormatException e) {
-                api.getChat().sendKey(player, new NamespacedKey("item_creator", "main_menu"), "potion.error_number");
+                api.getChat().sendKey(player, new BukkitNamespacedKey("item_creator", "main_menu"), "potion.error_number");
             }
             return true;
         }));
-        registerButton(new ChatInputButton<>("amplifier", Material.IRON_SWORD, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
+        registerButton(new ButtonChatInput<>("amplifier", Material.IRON_SWORD, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
             hashMap.put("%amplifier%", guiHandler.getCustomCache().getPotionEffectCache().getAmplifier());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
@@ -126,25 +127,25 @@ public class MenuPotionCreator extends CCWindow {
                 guiHandler.getCustomCache().getPotionEffectCache().setAmplifier(Integer.parseInt(args[0]));
                 return false;
             } catch (NumberFormatException e) {
-                api.getChat().sendKey(player, new NamespacedKey("item_creator", "main_menu"), "potion.error_number");
+                api.getChat().sendKey(player, new BukkitNamespacedKey("item_creator", "main_menu"), "potion.error_number");
             }
             return true;
         }));
-        registerButton(new ToggleButton<>("ambient", new ButtonState<>("ambient.enabled", Material.BLAZE_POWDER, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ButtonToggle<>("ambient", new ButtonState<>("ambient.enabled", Material.BLAZE_POWDER, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getPotionEffectCache().setAmbient(false);
             return true;
         }), new ButtonState<>("ambient.disabled", Material.BLAZE_POWDER, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getPotionEffectCache().setAmbient(true);
             return true;
         })));
-        registerButton(new ToggleButton<>("particles", new ButtonState<>("particles.enabled", Material.FIREWORK_ROCKET, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ButtonToggle<>("particles", new ButtonState<>("particles.enabled", Material.FIREWORK_ROCKET, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getPotionEffectCache().setParticles(false);
             return true;
         }), new ButtonState<>("particles.disabled", Material.FIREWORK_ROCKET, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getPotionEffectCache().setParticles(true);
             return true;
         })));
-        registerButton(new ToggleButton<>("icon", new ButtonState<>("icon.enabled", Material.ITEM_FRAME, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ButtonToggle<>("icon", new ButtonState<>("icon.enabled", Material.ITEM_FRAME, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getPotionEffectCache().setIcon(false);
             return true;
         }), new ButtonState<>("icon.disabled", Material.ITEM_FRAME, (cache, guiHandler, player, inventory, slot, event) -> {
@@ -167,9 +168,9 @@ public class MenuPotionCreator extends CCWindow {
         update.setButton(28, "potion_effect_type");
         update.setButton(30, "duration");
         update.setButton(32, "amplifier");
-        ((ToggleButton<CCCache>) getButton("ambient")).setState(guiHandler, potionEffectCache.isAmbient());
-        ((ToggleButton<CCCache>) getButton("particles")).setState(guiHandler, potionEffectCache.isParticles());
-        ((ToggleButton<CCCache>) getButton("icon")).setState(guiHandler, potionEffectCache.isIcon());
+        ((ButtonToggle<CCCache>) getButton("ambient")).setState(guiHandler, potionEffectCache.isAmbient());
+        ((ButtonToggle<CCCache>) getButton("particles")).setState(guiHandler, potionEffectCache.isParticles());
+        ((ButtonToggle<CCCache>) getButton("icon")).setState(guiHandler, potionEffectCache.isIcon());
         update.setButton(34, "ambient");
         update.setButton(38, "particles");
         update.setButton(42, "icon");

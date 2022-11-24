@@ -26,12 +26,11 @@ import com.wolfyscript.lib.nbt.nbtapi.NBTTileEntity;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.nms.NMSUtil;
-import me.wolfyscript.utilities.util.Pair;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.tuple.Pair;
+import com.wolfyscript.utilities.bukkit.world.inventory.InventoryUtils;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -59,10 +58,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BrewingStandListener implements Listener {
 
     private final CustomCrafting customCrafting;
-    private final WolfyUtilities wolfyUtilities;
+    private final WolfyUtilsBukkit wolfyUtilities;
     private final Map<Location, Pair<BukkitTask, Map<CustomRecipeBrewing, CustomItem>>> activeBrewingStands = new HashMap<>();
 
-    public BrewingStandListener(WolfyUtilities wolfyUtilities, CustomCrafting customCrafting) {
+    public BrewingStandListener(WolfyUtilsBukkit wolfyUtilities, CustomCrafting customCrafting) {
         this.wolfyUtilities = wolfyUtilities;
         this.customCrafting = customCrafting;
     }

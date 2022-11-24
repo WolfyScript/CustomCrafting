@@ -27,7 +27,7 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
-import me.wolfyscript.utilities.api.WolfyUtilities;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
@@ -46,7 +46,7 @@ public class SaveSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        WolfyUtilities api = customCrafting.getApi();
+        WolfyUtilsBukkit api = customCrafting.getApi();
         if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes_save")) {
             api.getRegistries().getCustomItems().entrySet().forEach(entry -> {
                 api.getConsole().info("Saving item: " + entry.getKey().toString());

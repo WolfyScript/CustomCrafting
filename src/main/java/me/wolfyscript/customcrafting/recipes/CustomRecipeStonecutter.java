@@ -38,12 +38,13 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
-import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.references.APIReference;
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -131,8 +132,8 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         NamespacedKey glass = ClusterMain.GLASS_GREEN;
-        event.setButton(20, new NamespacedKey(ClusterRecipeBook.KEY, ButtonContainerIngredient.key(20)));
-        event.setButton(24, new NamespacedKey(ClusterRecipeBook.KEY, ButtonContainerIngredient.key(24)));
+        event.setButton(20, new BukkitNamespacedKey(ClusterRecipeBook.KEY, ButtonContainerIngredient.key(20)));
+        event.setButton(24, new BukkitNamespacedKey(ClusterRecipeBook.KEY, ButtonContainerIngredient.key(24)));
         event.setButton(29, glass);
         event.setButton(30, glass);
         event.setButton(31, ClusterRecipeBook.STONECUTTER);

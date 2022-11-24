@@ -29,16 +29,16 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
 import org.bukkit.Material;
 
-class ButtonSettingsLockdown extends ToggleButton<CCCache> {
+class ButtonSettingsLockdown extends ButtonToggle<CCCache> {
 
     public static final String KEY = "lockdown";
 
-    ButtonSettingsLockdown(WolfyUtilities api, CustomCrafting customCrafting) {
+    ButtonSettingsLockdown(WolfyUtilsBukkit api, CustomCrafting customCrafting) {
         super(KEY, (ccCache, guiHandler, player, guiInventory, i) -> customCrafting.getConfigHandler().getConfig().isLockedDown(),
                 new State(true, api, customCrafting, Component.text("Are you sure you want to disable LockDown mode?", NamedTextColor.RED), Component.text("This will enable all the custom recipes!", NamedTextColor.RED, TextDecoration.BOLD)),
                 new State(false, api, customCrafting, Component.text("Are you sure you want to enable LockDown mode?", NamedTextColor.RED), Component.text("This will disable all the custom recipes!", NamedTextColor.RED, TextDecoration.BOLD))
@@ -47,7 +47,7 @@ class ButtonSettingsLockdown extends ToggleButton<CCCache> {
 
     private static class State extends ButtonState<CCCache> {
 
-        public State(boolean enabled, WolfyUtilities api, CustomCrafting customCrafting, Component... components) {
+        public State(boolean enabled, WolfyUtilsBukkit api, CustomCrafting customCrafting, Component... components) {
             super(KEY + (enabled ? ".enabled" : ".disabled"), Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
                 if (ChatUtils.checkPerm(player, "customcrafting.cmd.lockdown")) {
                     guiHandler.close();

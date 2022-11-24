@@ -36,11 +36,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -157,7 +158,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         var cluster = guiWindow.getCluster();
         event.setButton(19, ButtonContainerIngredient.key(cluster, 10));
         event.setButton(21, ButtonContainerIngredient.key(cluster, 13));
-        event.setButton(23, new NamespacedKey(ClusterRecipeBook.KEY, "smithing"));
+        event.setButton(23, new BukkitNamespacedKey(ClusterRecipeBook.KEY, "smithing"));
         event.setButton(25, ButtonContainerIngredient.key(cluster, 23));
     }
 

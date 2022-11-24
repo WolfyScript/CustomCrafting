@@ -38,11 +38,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -152,7 +153,7 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
         event.setButton(11, ButtonContainerIngredient.key(cluster, 11));
         event.setButton(12, ClusterMain.GLASS_GREEN);
         event.setButton(21, ClusterMain.GLASS_GREEN);
-        event.setButton(22, new NamespacedKey(ClusterRecipeBook.KEY, "grindstone"));
+        event.setButton(22, new BukkitNamespacedKey(ClusterRecipeBook.KEY, "grindstone"));
         event.setButton(23, ClusterMain.GLASS_GREEN);
         event.setButton(24, ButtonContainerIngredient.key(cluster, 24));
         event.setButton(29, ButtonContainerIngredient.key(cluster, 29));

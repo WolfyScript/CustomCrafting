@@ -28,12 +28,13 @@ import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -44,13 +45,13 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
     public static final String KEY = "display_name";
 
     public TabDisplayName() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
+        super(new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
     }
 
     @Override
-    public void register(MenuItemCreator creator, WolfyUtilities api) {
+    public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         creator.registerButton(new ButtonOption(Material.NAME_TAG, this));
-        new ChatInputButton.Builder<>(creator, KEY + ".set")
+        new ButtonChatInput.Builder<>(creator, KEY + ".set")
                 .inputAction((guiHandler, player, s, strings) -> {
                     if (creator.getCustomCrafting().isPaper()) {
                         CustomItem customItem = guiHandler.getCustomCache().getItems().getItem();
@@ -68,7 +69,7 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
                     chat.sendMessage(player, chat.translated("msg.input.mini_message"));
                     return true;
                 })).register();
-        creator.registerButton(new ActionButton<>(KEY + ".remove", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
+        creator.registerButton(new ButtonAction<>(KEY + ".remove", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
             guiHandler.getCustomCache().getItems().getItem().setDisplayName(null);
             return true;
         }));

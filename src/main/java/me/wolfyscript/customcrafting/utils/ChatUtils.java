@@ -22,6 +22,13 @@
 
 package me.wolfyscript.customcrafting.utils;
 
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.chat.BukkitChat;
+import com.wolfyscript.utilities.bukkit.chat.ClickData;
+import com.wolfyscript.utilities.bukkit.chat.ClickEvent;
+import com.wolfyscript.utilities.bukkit.chat.HoverEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,13 +39,7 @@ import me.wolfyscript.customcrafting.utils.chat.CollectionEditor;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.chat.Chat;
-import me.wolfyscript.utilities.api.chat.ClickData;
-import me.wolfyscript.utilities.api.chat.ClickEvent;
-import me.wolfyscript.utilities.api.chat.HoverEvent;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
@@ -48,8 +49,8 @@ import org.bukkit.entity.Player;
 
 public class ChatUtils {
 
-    private static final WolfyUtilities api = CustomCrafting.inst().getApi();
-    private static final Chat chat = api.getChat();
+    private static final WolfyUtilsBukkit api = CustomCrafting.inst().getApi();
+    private static final BukkitChat chat = api.getChat();
     private static final MiniMessage miniM = chat.getMiniMessage();
     private final CustomCrafting customCrafting;
 
@@ -86,9 +87,9 @@ public class ChatUtils {
     public static NamespacedKey getInternalNamespacedKey(Player player, String s, String[] args) {
         try {
             if (args.length > 1) {
-                return new NamespacedKey(args[0], args[1]);
+                return new BukkitNamespacedKey(args[0], args[1]);
             }
-            return s.contains(":") ? NamespacedKey.of(s) : null;
+            return s.contains(":") ? CustomCrafting.inst().getApi().getIdentifiers().getNamespaced(s) : null;
         } catch (IllegalArgumentException e) {
             api.getLanguageAPI().getComponents("msg.player.invalid_namespacedkey").forEach(s1 -> chat.sendMessage(player, s1));
         }
@@ -109,7 +110,7 @@ public class ChatUtils {
                 folder = args[0];
                 fileName = args[1];
             } else if (s.contains(":")) {
-                NamespacedKey key = NamespacedKey.of(s);
+                NamespacedKey key = CustomCrafting.inst().getApi().getIdentifiers().getNamespaced(s);
                 if (key == null) return null;
                 folder = key.getNamespace();
                 fileName = key.getKey();
@@ -122,7 +123,7 @@ public class ChatUtils {
             if (fileName.startsWith("/")) {
                 fileName = fileName.substring(1);
             }
-            return new NamespacedKey(CustomCrafting.inst(), folder + fileName);
+            return new BukkitNamespacedKey(CustomCrafting.inst(), folder + fileName);
         } catch (IllegalArgumentException e) {
             api.getLanguageAPI().getComponents("msg.player.invalid_namespacedkey").forEach(s1 -> chat.sendMessage(player, s1));
         }
@@ -182,7 +183,7 @@ public class ChatUtils {
             }
             cache.getItems().getItem().setItemMeta(itemMeta);
         }).setSendInputInfoMessages((guiHandler, player, cache) -> {
-            var chat = invAPI.getWolfyUtilities().getChat();
+            var chat = invAPI.getWolfyUtils().getChat();
             chat.sendMessage(player, chat.translated("msg.input.wui_command"));
             chat.sendMessage(player, chat.translated("msg.input.mini_message"));
         });
@@ -238,7 +239,7 @@ public class ChatUtils {
             }
             cache.getItems().getItem().setItemMeta(itemMeta);
         }).setSendInputInfoMessages((guiHandler, player, cache) -> {
-            var chat = invAPI.getWolfyUtilities().getChat();
+            var chat = invAPI.getWolfyUtils().getChat();
             chat.sendMessage(player, chat.translated("msg.input.wui_command"));
             chat.sendMessage(player, chat.translated("msg.input.mini_message"));
         });

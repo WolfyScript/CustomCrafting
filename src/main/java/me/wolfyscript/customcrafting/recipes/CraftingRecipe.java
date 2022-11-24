@@ -44,13 +44,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
+import com.wolfyscript.utilities.bukkit.nms.api.network.MCByteBuf;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -223,11 +224,11 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
             int startSlot = 9 / (conditions.size() + 1);
             int slot = 0;
             for (Condition<?> condition : conditions) {
-                event.setButton(36 + startSlot + slot, new NamespacedKey(ClusterRecipeBook.KEY, "conditions." + condition.getNamespacedKey().toString("__")));
+                event.setButton(36 + startSlot + slot, new BukkitNamespacedKey(ClusterRecipeBook.KEY, "conditions." + condition.getNamespacedKey().toString("__")));
                 slot += 2;
             }
             boolean elite = RecipeType.Container.ELITE_CRAFTING.isInstance(this);
-            event.setButton(elite ? 24 : 23, new NamespacedKey(ClusterRecipeBook.KEY, isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
+            event.setButton(elite ? 24 : 23, new BukkitNamespacedKey(ClusterRecipeBook.KEY, isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
             startSlot = elite ? 0 : 10;
             for (int i = 0; i < maxIngredients; i++) {
                 event.setButton(startSlot + i + (i / maxGridDimension) * (9 - maxGridDimension), ButtonContainerIngredient.key(cluster, i));

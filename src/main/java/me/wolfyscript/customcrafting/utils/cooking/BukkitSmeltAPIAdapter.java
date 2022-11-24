@@ -22,12 +22,13 @@
 
 package me.wolfyscript.customcrafting.utils.cooking;
 
+import com.wolfyscript.utilities.bukkit.nms.api.inventory.RecipeType;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.nms.inventory.RecipeType;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.tuple.Pair;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
@@ -53,7 +54,7 @@ public class BukkitSmeltAPIAdapter extends SmeltAPIAdapter {
         while (recipeIterator.hasNext()) {
             if (recipeIterator.next() instanceof CookingRecipe<?> recipe && recipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) && recipe.getResult().isSimilar(event.getResult())) {
                 customRecipe = true;
-                Pair<CookingRecipeData<?>, Boolean> data = processRecipe(event.getSource(), NamespacedKey.fromBukkit(recipe.getKey()), block);
+                Pair<CookingRecipeData<?>, Boolean> data = processRecipe(event.getSource(), BukkitNamespacedKey.fromBukkit(recipe.getKey()), block);
                 if (data.getKey() != null) {
                     return data;
                 }

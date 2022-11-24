@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

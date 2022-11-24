@@ -22,7 +22,8 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 
 public class ConditionsCache {
 

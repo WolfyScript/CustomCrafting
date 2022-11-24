@@ -32,29 +32,30 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.inventory.InventoryUtils;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.List;
 
-class ButtonSelectCustomItem extends ActionButton<CCCache> {
+class ButtonSelectCustomItem extends ButtonAction<CCCache> {
 
     ButtonSelectCustomItem(CustomCrafting customCrafting, NamespacedKey namespacedKey) {
         super("item_" + namespacedKey.toString("__"), new ButtonState<>("custom_item_error", Material.STONE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            var registry = guiHandler.getApi().getRegistries().getCustomItems();
+            var registry = guiHandler.getWolfyUtils().getRegistries().getCustomItems();
             if (!registry.has(namespacedKey) || ItemUtils.isAirOrNull(registry.get(namespacedKey))) {
                 return true;
             }
-            WolfyUtilities api = customCrafting.getApi();
+            WolfyUtilsBukkit api = customCrafting.getApi();
             var chat = api.getChat();
             var customItem = registry.get(namespacedKey);
             if (event instanceof InventoryClickEvent clickEvent) {
@@ -101,7 +102,7 @@ class ButtonSelectCustomItem extends ActionButton<CCCache> {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            var api = guiHandler.getApi();
+            var api = guiHandler.getWolfyUtils();
             var customItem = api.getRegistries().getCustomItems().get(namespacedKey);
             if (!ItemUtils.isAirOrNull(customItem)) {
                 var itemB = new ItemBuilder(customItem.create());

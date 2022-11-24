@@ -22,11 +22,12 @@
 
 package me.wolfyscript.customcrafting.utils;
 
-import me.wolfyscript.utilities.api.WolfyUtilCore;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.world.BlockCustomItemStore;
-import me.wolfyscript.utilities.util.world.WorldUtils;
+import com.wolfyscript.utilities.bukkit.world.WorldUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -52,7 +53,7 @@ public class NamespacedKeyUtils {
     @Deprecated(since = "3.16.1.0")
     public static NamespacedKey fromInternal(NamespacedKey internalKey) {
         if (internalKey == null) return null;
-        return new NamespacedKey(NAMESPACE, internalKey.toString("/"));
+        return new BukkitNamespacedKey(NAMESPACE, internalKey.toString("/"));
     }
 
     /**
@@ -68,7 +69,7 @@ public class NamespacedKeyUtils {
         if (namespacedKey != null && namespacedKey.getNamespace().equals(NAMESPACE)) {
             String[] values = namespacedKey.getKey().split("/", 2);
             if (values.length > 1) {
-                return new NamespacedKey(values[0], values[1]);
+                return new BukkitNamespacedKey(values[0], values[1]);
             }
         }
         return namespacedKey;
@@ -171,7 +172,7 @@ public class NamespacedKeyUtils {
         if (store != null) {
             var customItem = store.getCustomItem();
             if (customItem == null) {
-                customItem = WolfyUtilCore.getInstance().getRegistries().getCustomItems().get(fromInternal(store.getCustomItemKey()));
+                customItem = WolfyCoreBukkit.getInstance().getRegistries().getCustomItems().get(fromInternal(store.getCustomItemKey()));
             }
             return customItem;
         }

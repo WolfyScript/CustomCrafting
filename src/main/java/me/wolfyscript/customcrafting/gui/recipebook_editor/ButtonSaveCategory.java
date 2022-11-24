@@ -28,10 +28,10 @@ import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.util.StringUtil;
 
@@ -39,12 +39,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class ButtonSaveCategory extends ActionButton<CCCache> {
+class ButtonSaveCategory extends ButtonAction<CCCache> {
 
     ButtonSaveCategory(boolean saveAs, CustomCrafting customCrafting) {
         super(saveAs ? ClusterRecipeBookEditor.SAVE_AS.getKey() : ClusterRecipeBookEditor.SAVE.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             var recipeBookEditor = cache.getRecipeBookEditor();
-            WolfyUtilities api = guiHandler.getApi();
+            WolfyUtilsBukkit api = guiHandler.getWolfyUtils();
 
             if (saveAs) {
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {

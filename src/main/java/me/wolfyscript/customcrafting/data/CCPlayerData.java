@@ -27,9 +27,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.WolfyUtilCore;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.entity.CustomPlayerData;
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import com.wolfyscript.utilities.bukkit.world.entity.CustomPlayerData;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -57,11 +58,11 @@ public class CCPlayerData extends CustomPlayerData {
     }
 
     public NamespacedKey getDarkBackground() {
-        return new NamespacedKey("none", isDarkMode() ? "glass_black" : "glass_gray");
+        return new BukkitNamespacedKey("none", isDarkMode() ? "glass_black" : "glass_gray");
     }
 
     public NamespacedKey getLightBackground() {
-        return new NamespacedKey("none", isDarkMode() ? "glass_gray" : "glass_white");
+        return new BukkitNamespacedKey("none", isDarkMode() ? "glass_gray" : "glass_white");
     }
 
     public void setDarkMode(boolean darkMode) {
@@ -127,7 +128,7 @@ public class CCPlayerData extends CustomPlayerData {
         totalCrafts = node.path("total_crafts").asInt(0);
         advancedCrafts = node.path("advanced_crafts").asInt(0);
         normalCrafts = node.path("normal_crafts").asInt(0);
-        crafts = WolfyUtilCore.getInstance().getWolfyUtils().getJacksonMapperUtil().getGlobalMapper().convertValue(node.path("crafts"), new TypeReference<>() {});
+        crafts = WolfyCoreBukkit.getInstance().getWolfyUtils().getJacksonMapperUtil().getGlobalMapper().convertValue(node.path("crafts"), new TypeReference<>() {});
     }
 
     @Override
@@ -144,7 +145,7 @@ public class CCPlayerData extends CustomPlayerData {
     public static class Provider extends CustomPlayerData.Provider<CCPlayerData> {
 
         public Provider() {
-            super(new NamespacedKey("customcrafting", "data"), CCPlayerData.class);
+            super(new BukkitNamespacedKey("customcrafting", "data"), CCPlayerData.class);
         }
     }
 }
