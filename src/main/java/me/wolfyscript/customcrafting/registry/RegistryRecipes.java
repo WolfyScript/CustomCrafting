@@ -24,6 +24,16 @@ package me.wolfyscript.customcrafting.registry;
 
 
 import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -42,17 +52,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * The custom Registry for the Recipes of CustomCrafting.
  * Providing a lot of functionality to get the recipes you need.
@@ -68,8 +67,9 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     private final Map<RecipeType<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE = new HashMap<>();
     private final Map<RecipeType.Container<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE_CONTAINER = new HashMap<>();
     private final Map<String, Map<String, List<CustomRecipe<?>>>> BY_NAMESPACE_AND_FOLDER = new HashMap<>();
+    private final Map<String, Map<String, List<CustomRecipe<?>>>> BY_NAMESPACE_AND_DIR = new HashMap<>();
     private final Set<String> NAMESPACES = new HashSet<>();
-    private final Map<String, Set<String>> FOLDERS = new HashMap<>();
+    private final Map<String, List<String>> FOLDERS = new HashMap<>();
     private final Set<String> GROUPS = new HashSet<>();
 
     RegistryRecipes(CustomCrafting customCrafting, Registries registries) {
@@ -109,6 +109,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         BY_RECIPE_TYPE.clear();
         BY_RECIPE_TYPE_CONTAINER.clear();
         BY_NAMESPACE_AND_FOLDER.remove(key.getNamespace());
+        BY_NAMESPACE_AND_DIR.remove(key.getNamespace());
     }
 
     @Override
@@ -161,8 +162,9 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * @param namespace The namespace to index the folders for.
      * @return A list of all available folders and sub folders.
      */
+    @Deprecated
     public List<String> folders(String namespace) {
-        return new LinkedList<>(FOLDERS.computeIfAbsent(namespace, s -> {
+        return FOLDERS.computeIfAbsent(namespace, s -> {
             Set<String> folders = new HashSet<>();
             folders.add("");
             for (CustomRecipe<?> recipe : get(s)) {
@@ -175,8 +177,138 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
                     }
                 }
             }
-            return folders;
-        }));
+            return List.copyOf(folders);
+        });
+    }
+
+    /**
+     * Gets the directories available in the specified namespace.<br>
+     * This will return a tree of the available directories separated by "/".<br>
+     * <br>
+     * For example:<br>
+     * A registry with a single namespaced key like this:
+     * <pre>&lt;namespace&gt;:&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/&lt;recipe_name&gt;</pre>
+     * will result in
+     * <pre>
+     * [
+     *  "/",
+     *  "/&lt;root_dir&gt;/",
+     *  "/&lt;root_dir&gt;/&lt;sec_dir&gt;/",
+     *  "/&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/"
+     * ]</pre>
+     *
+     * @param namespace   The namespace to index the folders for.
+     * @return A list of all available folders and sub folders.
+     */
+    public List<String> dirs(String namespace) {
+        return dirs(namespace, 64);
+    }
+
+    /**
+     * Gets the directories available in the specified namespace.<br>
+     * This will return a tree of the available directories separated by "/".<br>
+     * <br>
+     * For example:<br>
+     * A registry with a single namespaced key like this:
+     * <pre>&lt;namespace&gt;:&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/&lt;recipe_name&gt;</pre>
+     * will result in
+     * <pre>
+     * [
+     *  "/",
+     *  "/&lt;root_dir&gt;/",
+     *  "/&lt;root_dir&gt;/&lt;sec_dir&gt;/",
+     *  "/&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/"
+     * ]</pre>
+     * <br>
+     * The <b>max depth</b> limits how many levels it goes down the directories.<br>
+     * So a max depth of 2 will return:<br>
+     * <pre>
+     * [
+     * "/",
+     * "/&lt;root_dir&gt;/",
+     * "/&lt;root_dir&gt;/&lt;sec_dir&gt;/"
+     * ]</pre>
+     *
+     * @param namespace   The namespace to index the folders for.
+     * @param maxDepth    The max depth of directory levels.
+     * @return A list of all available folders and sub folders.
+     */
+    public List<String> dirs(String namespace, int maxDepth) {
+        return dirs(namespace, maxDepth, true);
+    }
+
+    /**
+     * Gets the directories available in the specified namespace.<br>
+     * This will return a tree of the available directories separated by "/".<br>
+     * <br>
+     * A registry with a single namespaced key like this:
+     * <pre>&lt;namespace&gt;:&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/&lt;recipe_name&gt;</pre>
+     * will result in:<br>
+     *
+     * <pre>
+     * [
+     *  "/",
+     *  "/&lt;root_dir&gt;/",
+     *  "/&lt;root_dir&gt;/&lt;sec_dir&gt;/",
+     *  "/&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/"
+     * ]</pre>
+     * or
+     * <pre>
+     * [
+     *  "&lt;root_dir&gt;/",
+     *  "&lt;root_dir&gt;/&lt;sec_dir&gt;/",
+     *  "&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/"
+     * ]</pre>
+     * when <b>includeRoot</b> is <b>false</b>
+     * <br>
+     * The <b>max depth</b> limits how many levels it goes down the directories.<br>
+     * So a max depth of 2 will return:<br>
+     * <pre>
+     * [
+     * "/",
+     * "/&lt;root_dir&gt;/",
+     * "/&lt;root_dir&gt;/&lt;sec_dir&gt;/"
+     * ]</pre>
+     *
+     * @param namespace   The namespace to index the folders for.
+     * @param maxDepth    The max depth of directory levels.
+     * @param includeRoot Specifies if the root '/' should be included.
+     * @return A list of all available folders and sub folders.
+     */
+    public List<String> dirs(String namespace, int maxDepth, boolean includeRoot) {
+        final String root = includeRoot ? "/" : "";
+        return get(namespace).stream().<String>mapMulti((customRecipe, consumer) -> {
+            String[] parts = customRecipe.getNamespacedKey().getKeyComponent().getFolder().split("/");
+            StringBuilder path = new StringBuilder(root);
+            consumer.accept(root);
+            for (int i = 0; i < parts.length && i < maxDepth; i++) {
+                consumer.accept(path.append(parts[i]).append("/").toString());
+            }
+        }).distinct().toList();
+    }
+
+    /**
+     * Gets the sub-folders available in the specified namespace and folder.<br>
+     * This will return a tree list of the available sub-folders separated by "/".<br>
+     * For example:<br>
+     * A single namespaced key like this:
+     * <pre>&lt;namespace&gt;:&lt;root_folder&gt;/&lt;folder&gt;/&lt;sub_folder&gt;/&lt;recipe_name&gt;</pre>
+     * with the specified folder "root_folder",
+     * will result in
+     * <pre>["", "folder", "folder/sub_folder"]</pre>
+     *
+     * @param namespace The namespace to index the folders for.
+     * @return A list of all available folders and sub folders.
+     */
+    public List<String> dirs(String namespace, final String folder, boolean includeRoot) {
+        boolean hasRoot = folder.startsWith("/");
+        // Clear the folder, so it is in proper format.
+        final String dir = (
+                includeRoot ?
+                        (!hasRoot ? "/" + folder : folder) :
+                        (hasRoot ? folder.substring(1) : folder)
+        ) + (!folder.endsWith("/") ? "/" : "");
+        return dirs(namespace, 64, includeRoot).stream().filter(sub -> sub.startsWith(dir) && (sub.length() != dir.length() || includeRoot)).toList();
     }
 
     /**
@@ -216,6 +348,25 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
             });
             return folderIndex;
         }).getOrDefault(folder, new LinkedList<>());
+    }
+
+    /**
+     * Gets all recipes from the specified namespace and folder.
+     *
+     * @param namespace The namespace of the recipes.
+     * @param dir       The folder of the recipes.
+     * @return A list of all recipes in the folder inside the namespace.
+     */
+    public List<CustomRecipe<?>> getFromDir(String namespace, String dir) {
+        return BY_NAMESPACE_AND_DIR.computeIfAbsent(namespace, s -> {
+            Map<String, List<CustomRecipe<?>>> folderIndex = new HashMap<>();
+            get(s).forEach(recipe -> {
+                String key = recipe.getNamespacedKey().getKey();
+                String recipeFolder = "/" + (key.contains("/") ? key.substring(0, key.lastIndexOf("/") + 1) : "");
+                folderIndex.computeIfAbsent(recipeFolder, s1 -> new LinkedList<>()).add(recipe);
+            });
+            return folderIndex;
+        }).getOrDefault(dir, new LinkedList<>());
     }
 
     /**
