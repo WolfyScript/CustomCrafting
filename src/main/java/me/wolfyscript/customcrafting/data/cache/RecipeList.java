@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import org.bukkit.inventory.BlastingRecipe;
@@ -40,6 +42,7 @@ public class RecipeList {
 
     private String namespace;
     private String folder;
+    private final Deque<String> folders;
     private int page;
     private RecipeType<?> filterType;
     private Class<? extends Recipe> filterClass;
@@ -47,6 +50,7 @@ public class RecipeList {
     public RecipeList() {
         this.namespace = null;
         this.page = 0;
+        this.folders = new ArrayDeque<>();
     }
 
     public int getPage() {
@@ -70,7 +74,15 @@ public class RecipeList {
     }
 
     public String getFolder() {
-        return folder;
+        return folders.peekFirst();
+    }
+
+    public void goUpFolder() {
+        folders.pop();
+    }
+
+    public void goDownFolder(String folder) {
+        folders.push(folder);
     }
 
     public int getPage(int maxPages) {

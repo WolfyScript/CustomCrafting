@@ -63,7 +63,8 @@ public class MenuListRecipes extends CCWindow {
                     if (cache.getRecipeList().getFolder() == null) {
                         cache.getRecipeList().setNamespace(null);
                     } else {
-                        cache.getRecipeList().setFolder(null);
+                        cache.getRecipeList().goUpFolder();
+                        cache.getRecipeList().setPage(0);
                     }
                     return true;
                 })).register();
@@ -123,8 +124,7 @@ public class MenuListRecipes extends CCWindow {
                 event.setButton(9 + slot, button);
             }
         } else if (folder == null) {
-            List<String> folders = customRecipes.folders(namespace);
-            folders.remove("");
+            List<String> folders = customRecipes.dirs(namespace, 1, false);
             maxPages = recipeListCache.getMaxPages(folders.size());
             page = recipeListCache.getPage(maxPages);
             for (int i = 45 * page, slot = 0; slot < 45 && i < folders.size(); i++, slot++) {
@@ -136,11 +136,29 @@ public class MenuListRecipes extends CCWindow {
                 event.setButton(9 + slot, getButton(key));
             }
         } else {
-            List<CustomRecipe<?>> recipes = customCrafting.getRegistries().getRecipes().get(namespace, folder).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).collect(Collectors.toList());
+            List<String> subFolders = customRecipes.dirs(namespace, folder, false);
+            List<CustomRecipe<?>> recipes = customRecipes.getFromDir(namespace, folder).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).collect(Collectors.toList());
             recipeListCache.filterCustomRecipes(recipes);
-            maxPages = recipeListCache.getMaxPages(recipes.size());
+            int clearDirRow = !subFolders.isEmpty() ? 9 - subFolders.size() % 9 : 0;
+            maxPages = recipeListCache.getMaxPages(subFolders.size() + clearDirRow + recipes.size());
             page = recipeListCache.getPage(maxPages);
-            for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
+
+            int i = page * 45;
+            int slot = 0;
+            if (i < subFolders.size()) {
+                for (; slot < 45 && i < subFolders.size(); i++, slot++) {
+                    String key = ButtonFolderRecipe.key(slot, namespace, subFolders.get(i));
+                    if (getButton(key) == null) {
+                        registerButton(new ButtonFolderRecipe(slot, namespace, subFolders.get(i), customCrafting));
+                    }
+                    event.setButton(9 + slot, getButton(key));
+                }
+            }
+            for (int j = 0; j < clearDirRow && slot < 45; j++, slot++) {
+                event.setButton(9 + slot, ClusterMain.GLASS_PINK);
+            }
+            i = 0;
+            for (; slot < 45 && i < recipes.size(); i++, slot++) {
                 ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(slot));
                 button.setCustomRecipe(event.getGuiHandler(), recipes.get(i));
                 event.setButton(9 + slot, button);
