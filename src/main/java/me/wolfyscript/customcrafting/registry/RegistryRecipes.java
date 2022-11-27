@@ -358,6 +358,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * @return A list of all recipes in the folder inside the namespace.
      */
     public List<CustomRecipe<?>> getFromDir(String namespace, String dir) {
+        dir = cleanDir(dir);
         return BY_NAMESPACE_AND_DIR.computeIfAbsent(namespace, s -> {
             Map<String, List<CustomRecipe<?>>> folderIndex = new HashMap<>();
             get(s).forEach(recipe -> {
@@ -367,6 +368,11 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
             });
             return folderIndex;
         }).getOrDefault(dir, new LinkedList<>());
+    }
+
+    private String cleanDir(String dir) {
+        // Clear the folder, so it is in proper format.
+        return  (!dir.startsWith("/") ? "/" + dir : dir) + (!dir.endsWith("/") ? "/" : "");
     }
 
     /**
