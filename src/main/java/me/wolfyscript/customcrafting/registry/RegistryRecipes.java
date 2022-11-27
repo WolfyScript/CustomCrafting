@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.registry;
 
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -279,8 +280,8 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         final String root = includeRoot ? "/" : "";
         return get(namespace).stream().<String>mapMulti((customRecipe, consumer) -> {
             String[] parts = customRecipe.getNamespacedKey().getKeyComponent().getFolder().split("/");
+            if (includeRoot) consumer.accept(root);
             StringBuilder path = new StringBuilder(root);
-            consumer.accept(root);
             for (int i = 0; i < parts.length && i < maxDepth; i++) {
                 consumer.accept(path.append(parts[i]).append("/").toString());
             }
