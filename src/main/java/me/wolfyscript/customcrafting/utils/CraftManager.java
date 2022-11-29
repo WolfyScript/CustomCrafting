@@ -203,7 +203,7 @@ public class CraftManager {
                 cursor.setAmount(cursor.getAmount() + result.getAmount());
             }
             recipeResult.removeCachedItem(player);
-        }
+        } else return 0;
         return possible;
     }
 
