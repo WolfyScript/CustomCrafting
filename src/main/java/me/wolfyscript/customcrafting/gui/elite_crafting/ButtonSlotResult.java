@@ -63,10 +63,10 @@ class ButtonSlotResult extends ItemInputButton<CCCache> {
                 } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK) && !ItemUtils.isAirOrNull(cacheEliteCraftingTable.getResult()) && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
                     if (inventory.getWindow() instanceof CraftingWindow craftingWindow && (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(cacheEliteCraftingTable.getResult()))) {
                         customCrafting.getCraftManager().get(event.getWhoClicked().getUniqueId()).ifPresent(craftingData -> {
-                            customCrafting.getCraftManager().consumeRecipe(clickEvent);
+                            final int count = customCrafting.getCraftManager().collectResult(clickEvent, craftingData, player);
+                            ItemStack[] stacks = craftingData.getRecipe().shrinkMatrix(player, inventory, count, craftingData, craftingWindow.gridSize);
                             cacheEliteCraftingTable.setResult(null);
-                            cacheEliteCraftingTable.setContents(new ItemStack[craftingWindow.gridSize * craftingWindow.gridSize]);
-                            craftingData.getIndexedBySlot().forEach((integer, ingredientData) -> cacheEliteCraftingTable.getContents()[integer] = ingredientData.itemStack());
+                            cacheEliteCraftingTable.setContents(stacks);
                         });
                         customCrafting.getCraftManager().remove(event.getWhoClicked().getUniqueId());
                     }
