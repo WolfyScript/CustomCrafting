@@ -50,7 +50,7 @@ public class TabRepairCost extends ItemCreatorTabVanilla {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.EXPERIENCE_BOTTLE, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.EXPERIENCE_BOTTLE, this);
         creator.registerButton(new ButtonChatInput<>("repair_cost.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
             var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             try {

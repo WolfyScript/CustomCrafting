@@ -22,36 +22,36 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator;
 
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
-import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import java.util.Locale;
+import me.wolfyscript.customcrafting.data.CCCache;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 
-import java.util.Locale;
-
-public class ButtonArmorSlotToggle extends ButtonToggle<CCCache> {
+public class ButtonArmorSlotToggle {
 
     private static String key(EquipmentSlot slot) {
         return "armor_slots." + slot.toString().toLowerCase(Locale.ROOT);
     }
 
-    public ButtonArmorSlotToggle(EquipmentSlot slot, Material material) {
-        super(key(slot), (cache, guiHandler, player, guiInventory, i) -> {
+    public static void register(GuiMenuComponent.ButtonBuilder<CCCache> builder, EquipmentSlot slot, Material material) {
+        builder.toggle(key(slot)).stateFunction((cache, guiHandler, player, guiInventory, i) -> {
             CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.hasEquipmentSlot(slot);
-        }, new ButtonState<>(key(slot) + ".enabled", new ItemBuilder(material).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create(), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            items.getItem().removeEquipmentSlots(slot);
+        }).enabledState(state -> state.subKey("enabled").icon(new ItemBuilder(material).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create())
+                .action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+                    cache.getItems().getItem().removeEquipmentSlots(slot);
+                    return true;
+                })
+        ).disabledState(state -> state.subKey("disabled").icon(material).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+            cache.getItems().getItem().addEquipmentSlots(slot);
             return true;
-        }), new ButtonState<>(key(slot) + ".disabled", material, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            items.getItem().addEquipmentSlots(slot);
-            return true;
-        }));
+        })).register();
     }
+
 }

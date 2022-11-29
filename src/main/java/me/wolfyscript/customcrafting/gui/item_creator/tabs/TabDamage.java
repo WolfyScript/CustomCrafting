@@ -50,7 +50,7 @@ public class TabDamage extends ItemCreatorTabVanilla {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.IRON_SWORD, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.IRON_SWORD, this);
         creator.registerButton(new ButtonChatInput<>("damage.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
             var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             if (!(itemMeta instanceof Damageable)) {

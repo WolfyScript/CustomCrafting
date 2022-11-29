@@ -47,11 +47,11 @@ public class TabArmorSlots extends ItemCreatorTab {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.IRON_HELMET, this));
-        creator.registerButton(new ButtonArmorSlotToggle(EquipmentSlot.HEAD, Material.DIAMOND_HELMET));
-        creator.registerButton(new ButtonArmorSlotToggle(EquipmentSlot.CHEST, Material.DIAMOND_CHESTPLATE));
-        creator.registerButton(new ButtonArmorSlotToggle(EquipmentSlot.LEGS, Material.DIAMOND_LEGGINGS));
-        creator.registerButton(new ButtonArmorSlotToggle(EquipmentSlot.FEET, Material.DIAMOND_BOOTS));
+        ButtonOption.register(creator.getButtonBuilder(), Material.IRON_HELMET, this);
+        ButtonArmorSlotToggle.register(creator.getButtonBuilder(), EquipmentSlot.HEAD, Material.DIAMOND_HELMET);
+        ButtonArmorSlotToggle.register(creator.getButtonBuilder(), EquipmentSlot.CHEST, Material.DIAMOND_CHESTPLATE);
+        ButtonArmorSlotToggle.register(creator.getButtonBuilder(), EquipmentSlot.LEGS, Material.DIAMOND_LEGGINGS);
+        ButtonArmorSlotToggle.register(creator.getButtonBuilder(), EquipmentSlot.FEET, Material.DIAMOND_BOOTS);
     }
 
     @Override

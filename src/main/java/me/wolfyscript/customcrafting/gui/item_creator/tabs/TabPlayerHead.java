@@ -55,7 +55,7 @@ public class TabPlayerHead extends ItemCreatorTabVanilla {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.PLAYER_HEAD, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.PLAYER_HEAD, this);
         creator.registerButton(new ButtonItemInput<>("player_head.texture.input", Material.AIR, (cache, guiHandler, player, inventory, i, event) -> {
             if (event instanceof InventoryClickEvent) {
                 return ((InventoryClickEvent) event).getCurrentItem().getType().equals(Material.PLAYER_HEAD);

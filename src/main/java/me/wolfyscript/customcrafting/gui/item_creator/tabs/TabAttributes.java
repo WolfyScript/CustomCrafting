@@ -22,33 +22,30 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import java.util.Locale;
+import java.util.UUID;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.item_creator.ButtonAttributeCategory;
-import me.wolfyscript.customcrafting.gui.item_creator.ButtonAttributeMode;
-import me.wolfyscript.customcrafting.gui.item_creator.ButtonAttributeSlot;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Locale;
-import java.util.UUID;
 
 public class TabAttributes extends ItemCreatorTabVanilla {
 
@@ -71,76 +68,103 @@ public class TabAttributes extends ItemCreatorTabVanilla {
         super(new BukkitNamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
     }
 
+    public static void registerCategory(GuiMenuComponent.ButtonBuilder<CCCache> bB, String attribute, Material material) {
+        bB.action("attribute." + attribute).state(state -> state.icon(material).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+            guiHandler.getCustomCache().setSubSetting("attribute." + attribute);
+            return true;
+        })).register();
+    }
+
+    public static void registerMode(GuiMenuComponent.ButtonBuilder<CCCache> bB, AttributeModifier.Operation operation, String headURLValue) {
+        bB.action("attribute." + operation.toString().toLowerCase(Locale.ROOT)).state(state -> state.icon(PlayerHeadUtils.getViaURL(headURLValue)).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+            guiHandler.getCustomCache().getItems().setAttribOperation(operation);
+            return true;
+        }).render((cache, handler, player, inv, button, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("c", handler.getCustomCache().getItems().getAttribOperation().equals(operation) ? "<green>" : "<red>")))).register();
+    }
+
+    public static void registerAttributeSlot(GuiMenuComponent.ButtonBuilder<CCCache> bB, EquipmentSlot equipmentSlot, Material material) {
+        bB.action("attribute.slot_" + equipmentSlot.toString().toLowerCase(Locale.ROOT)).state(state -> state.icon(material)
+                .action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+                    Items items = guiHandler.getCustomCache().getItems();
+                    items.setAttributeSlot(items.getAttributeSlot() == null ? equipmentSlot : (items.getAttributeSlot().equals(equipmentSlot) ? null : equipmentSlot));
+                    return true;
+                }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
+                    if (guiHandler.getCustomCache().getItems().isAttributeSlot(equipmentSlot)) {
+                        return CallbackButtonRender.UpdateResult.of(new ItemBuilder(itemStack).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create());
+                    }
+                    return CallbackButtonRender.UpdateResult.of();
+                })
+        ).register();
+    }
+
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.ENCHANTED_GOLDEN_APPLE, this));
-        creator.registerButton(new ButtonAttributeCategory(MAX_HEALTH, Material.ENCHANTED_GOLDEN_APPLE));
-        creator.registerButton(new ButtonAttributeCategory(FOLLOW_RANGE, Material.ENDER_EYE));
-        creator.registerButton(new ButtonAttributeCategory(KNOCKBACK_RESISTANCE, Material.STICK));
-        creator.registerButton(new ButtonAttributeCategory(MOVEMENT_SPEED, Material.IRON_BOOTS));
-        creator.registerButton(new ButtonAttributeCategory(FLYING_SPEED, Material.FIREWORK_ROCKET));
-        creator.registerButton(new ButtonAttributeCategory(ATTACK_DAMAGE, Material.DIAMOND_SWORD));
-        creator.registerButton(new ButtonAttributeCategory(ATTACK_SPEED, Material.DIAMOND_AXE));
-        creator.registerButton(new ButtonAttributeCategory(ARMOR, Material.CHAINMAIL_CHESTPLATE));
-        creator.registerButton(new ButtonAttributeCategory(ARMOR_TOUGHNESS, Material.DIAMOND_CHESTPLATE));
-        creator.registerButton(new ButtonAttributeCategory(LUCK, Material.NETHER_STAR));
-        creator.registerButton(new ButtonAttributeCategory(HORSE_JUMB_STRENGTH, Material.DIAMOND_HORSE_ARMOR));
-        creator.registerButton(new ButtonAttributeCategory(ZOMBIE_SPAWN_REINFORCEMENTS, Material.ZOMBIE_HEAD));
+        GuiMenuComponent.ButtonBuilder<CCCache> bB = creator.getButtonBuilder();
+        ButtonOption.register(creator.getButtonBuilder(), Material.ENCHANTED_GOLDEN_APPLE, this);
+        registerCategory(bB, MAX_HEALTH, Material.ENCHANTED_GOLDEN_APPLE);
+        registerCategory(bB, FOLLOW_RANGE, Material.ENDER_EYE);
+        registerCategory(bB, KNOCKBACK_RESISTANCE, Material.STICK);
+        registerCategory(bB, MOVEMENT_SPEED, Material.IRON_BOOTS);
+        registerCategory(bB, FLYING_SPEED, Material.FIREWORK_ROCKET);
+        registerCategory(bB, ATTACK_DAMAGE, Material.DIAMOND_SWORD);
+        registerCategory(bB, ATTACK_SPEED, Material.DIAMOND_AXE);
+        registerCategory(bB, ARMOR, Material.CHAINMAIL_CHESTPLATE);
+        registerCategory(bB, ARMOR_TOUGHNESS, Material.DIAMOND_CHESTPLATE);
+        registerCategory(bB, LUCK, Material.NETHER_STAR);
+        registerCategory(bB, HORSE_JUMB_STRENGTH, Material.DIAMOND_HORSE_ARMOR);
+        registerCategory(bB, ZOMBIE_SPAWN_REINFORCEMENTS, Material.ZOMBIE_HEAD);
 
-        creator.registerButton(new ButtonAttributeMode(AttributeModifier.Operation.ADD_NUMBER, "60b55f74681c68283a1c1ce51f1c83b52e2971c91ee34efcb598df3990a7e7"));
-        creator.registerButton(new ButtonAttributeMode(AttributeModifier.Operation.ADD_SCALAR, "57b1791bdc46d8a5c51729e8982fd439bb40513f64b5babee93294efc1c7"));
-        creator.registerButton(new ButtonAttributeMode(AttributeModifier.Operation.MULTIPLY_SCALAR_1, "a9f27d54ec5552c2ed8f8e1917e8a21cb98814cbb4bc3643c2f561f9e1e69f"));
+        registerMode(bB, AttributeModifier.Operation.ADD_NUMBER, "60b55f74681c68283a1c1ce51f1c83b52e2971c91ee34efcb598df3990a7e7");
+        registerMode(bB, AttributeModifier.Operation.ADD_SCALAR, "57b1791bdc46d8a5c51729e8982fd439bb40513f64b5babee93294efc1c7");
+        registerMode(bB, AttributeModifier.Operation.MULTIPLY_SCALAR_1, "a9f27d54ec5552c2ed8f8e1917e8a21cb98814cbb4bc3643c2f561f9e1e69f");
 
-        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.HAND, Material.IRON_SWORD));
-        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.OFF_HAND, Material.SHIELD));
-        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.FEET, Material.IRON_BOOTS));
-        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.LEGS, Material.IRON_LEGGINGS));
-        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.CHEST, Material.IRON_CHESTPLATE));
-        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.HEAD, Material.IRON_HELMET));
-        creator.registerButton(new ButtonChatInput<>("attribute.set_amount", PlayerHeadUtils.getViaURL("461c8febcac21b9f63d87f9fd933589fe6468e93aa81cfcf5e52a4322e16e6"), (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%NUMBER%", guiHandler.getCustomCache().getItems().getAttribAmount());
-            return itemStack;
-        }, (guiHandler, player, s, args) -> {
-            try {
-                guiHandler.getCustomCache().getItems().setAttribAmount(Double.parseDouble(args[0]));
-            } catch (NumberFormatException e) {
-                creator.sendMessage(guiHandler, creator.translatedMsgKey("attribute.amount.error"));
-                return true;
-            }
-            return false;
-        }));
-        creator.registerButton(new ButtonChatInput<>("attribute.set_name", Material.NAME_TAG, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%NAME%", guiHandler.getCustomCache().getItems().getAttributeName());
-            return itemStack;
-        }, (guiHandler, player, s, strings) -> {
-            guiHandler.getCustomCache().getItems().setAttributeName(strings[0]);
-            return false;
-        }));
-        creator.registerButton(new ButtonChatInput<>("attribute.set_uuid", Material.TRIPWIRE_HOOK, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%UUID%", guiHandler.getCustomCache().getItems().getAttributeUUID());
-            return itemStack;
-        }, (guiHandler, player, s, strings) -> {
-            try {
-                var uuid = UUID.fromString(strings[0]);
-                guiHandler.getCustomCache().getItems().setAttributeUUID(uuid.toString());
-            } catch (IllegalArgumentException ex) {
-                creator.sendMessage(guiHandler, creator.translatedMsgKey("attribute.uuid.error.line1", Placeholder.unparsed("uuid", strings[0])));
-                creator.sendMessage(guiHandler, creator.translatedMsgKey("attribute.uuid.error.line2"));
-                return true;
-            }
-            return false;
-        }));
-        creator.registerButton(new ButtonAction<>("attribute.save", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            var itemMeta = items.getItem().getItemMeta();
-            itemMeta.addAttributeModifier(Attribute.valueOf(cache.getSubSetting().split("\\.")[1].toUpperCase(Locale.ROOT)), items.getAttributeModifier());
-            items.getItem().setItemMeta(itemMeta);
+        registerAttributeSlot(bB, EquipmentSlot.HAND, Material.IRON_SWORD);
+        registerAttributeSlot(bB, EquipmentSlot.OFF_HAND, Material.SHIELD);
+        registerAttributeSlot(bB, EquipmentSlot.FEET, Material.IRON_BOOTS);
+        registerAttributeSlot(bB, EquipmentSlot.LEGS, Material.IRON_LEGGINGS);
+        registerAttributeSlot(bB, EquipmentSlot.CHEST, Material.IRON_CHESTPLATE);
+        registerAttributeSlot(bB, EquipmentSlot.HEAD, Material.IRON_HELMET);
+        bB.chatInput("attribute.set_amount").state(state -> state.icon(PlayerHeadUtils.getViaURL("461c8febcac21b9f63d87f9fd933589fe6468e93aa81cfcf5e52a4322e16e6"))
+                        .render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("number", String.valueOf(guiHandler.getCustomCache().getItems().getAttribAmount())))))
+                .inputAction((guiHandler, player, s, args) -> {
+                    try {
+                        guiHandler.getCustomCache().getItems().setAttribAmount(Double.parseDouble(args[0]));
+                    } catch (NumberFormatException e) {
+                        creator.sendMessage(guiHandler, creator.translatedMsgKey("attribute.amount.error"));
+                        return true;
+                    }
+                    return false;
+                }).register();
+        bB.chatInput("attribute.set_name").state(state -> state.icon(Material.NAME_TAG)
+                        .render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("name", guiHandler.getCustomCache().getItems().getAttributeName()))))
+                .inputAction((guiHandler, player, s, args) -> {
+                    guiHandler.getCustomCache().getItems().setAttributeName(args[0]);
+                    return false;
+                }).register();
+        bB.chatInput("attribute.set_uuid").state(state -> state.icon(Material.TRIPWIRE_HOOK)
+                        .render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("uuid", guiHandler.getCustomCache().getItems().getAttributeUUID()))))
+                .inputAction((guiHandler, player, s, args) -> {
+                    try {
+                        var uuid = UUID.fromString(args[0]);
+                        guiHandler.getCustomCache().getItems().setAttributeUUID(uuid.toString());
+                    } catch (IllegalArgumentException ex) {
+                        creator.sendMessage(guiHandler, creator.translatedMsgKey("attribute.uuid.error.line1", Placeholder.unparsed("uuid", args[0])));
+                        creator.sendMessage(guiHandler, creator.translatedMsgKey("attribute.uuid.error.line2"));
+                        return true;
+                    }
+                    return false;
+                }).register();
+        bB.action("attribute.save").state(state -> state.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+            var itemMeta = cache.getItems().getItem().getItemMeta();
+            itemMeta.addAttributeModifier(Attribute.valueOf(cache.getSubSetting().split("\\.")[1].toUpperCase(Locale.ROOT)), cache.getItems().getAttributeModifier());
+            cache.getItems().getItem().setItemMeta(itemMeta);
             return true;
-        }));
-        creator.registerButton(new ButtonAction<>("attribute.delete", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
+        })).register();
+        bB.action("attribute.delete").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
             ChatUtils.sendAttributeModifierManager(player);
             guiHandler.close();
             return true;
-        }));
+        })).register();
     }
 
     @Override

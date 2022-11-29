@@ -48,7 +48,7 @@ public class TabCustomDurability extends ItemCreatorTab {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.DIAMOND_SWORD, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.DIAMOND_SWORD, this);
         creator.registerButton(new ButtonAction<>("custom_durability.remove", Material.RED_CONCRETE_POWDER, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             items.getItem().removeCustomDurability();
             return true;

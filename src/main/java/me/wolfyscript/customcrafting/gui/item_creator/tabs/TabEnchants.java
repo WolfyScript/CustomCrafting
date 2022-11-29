@@ -61,7 +61,7 @@ public class TabEnchants extends ItemCreatorTabVanilla {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.ENCHANTED_BOOK, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.ENCHANTED_BOOK, this);
 
         new ButtonChatInput.Builder<>(creator, KEY + ".add")
                 .state(state -> state.icon(Material.ENCHANTED_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {

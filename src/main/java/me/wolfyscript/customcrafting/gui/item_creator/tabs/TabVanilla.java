@@ -48,7 +48,7 @@ public class TabVanilla extends ItemCreatorTab {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.GRASS_BLOCK, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.GRASS_BLOCK, this);
         creator.registerButton(new ButtonToggle<>("vanilla.block_recipes", (cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().isBlockVanillaRecipes(), new ButtonState<>("vanilla.block_recipes.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             items.getItem().setBlockVanillaRecipes(false);
             return true;

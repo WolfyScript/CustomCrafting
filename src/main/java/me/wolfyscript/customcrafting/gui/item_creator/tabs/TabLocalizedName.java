@@ -48,7 +48,7 @@ public class TabLocalizedName extends ItemCreatorTabVanilla {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.NAME_TAG, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.NAME_TAG, this);
         creator.registerButton(new ButtonChatInput<>("localized_name.set", Material.NAME_TAG, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
             hashMap.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getItemMeta().getLocalizedName());
             return itemStack;

@@ -54,7 +54,7 @@ public class TabLore extends ItemCreatorTabVanilla {
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         var loreChatEditor = creator.getCustomCrafting().isPaper() ? ChatUtils.createPaperLoreChatEditor(creator.getInventoryAPI()) : ChatUtils.createLoreChatEditor(creator.getInventoryAPI());
 
-        creator.registerButton(new ButtonOption(Material.WRITABLE_BOOK, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.WRITABLE_BOOK, this);
         creator.registerButton(new ButtonChatInput<>(KEY + ".add", Material.WRITABLE_BOOK, (guiHandler, player, s, strings) -> {
             guiHandler.getCustomCache().getItems().getItem().addLoreLine(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s, Placeholder.component("emtpy", Component.empty()))));
             return false;

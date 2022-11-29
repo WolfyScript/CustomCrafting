@@ -22,18 +22,20 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import org.bukkit.Material;
 
-public class ButtonOption extends ButtonAction<CCCache> {
+public class ButtonOption {
 
-    public ButtonOption(Material material, ItemCreatorTab tab) {
-        super(tab.getOptionButton(), material, (cache, guiHandler, player, inventory, slot, event) -> {
+    public static void register(GuiMenuComponent.ButtonBuilder<CCCache> builder, Material material, ItemCreatorTab tab) {
+        builder.action(tab.getOptionButton()).state(state -> state.icon(material).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
             cache.setSubSetting("");
             cache.getItems().setCurrentTab(tab);
             return true;
-        });
+        })).register();
     }
+
 }

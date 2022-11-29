@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.data.cache.items;
 
+import com.wolfyscript.utilities.bukkit.gui.button.Button;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import me.wolfyscript.customcrafting.data.CCCache;
 import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
@@ -31,12 +33,15 @@ import org.bukkit.event.inventory.InventoryInteractEvent;
 
 import java.io.IOException;
 
-public interface ItemsButtonAction extends ButtonAction<CCCache> {
+public interface ItemsButtonAction extends CallbackButtonAction<CCCache> {
 
     @Override
     default boolean run(CCCache cache, GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int i, InventoryInteractEvent inventoryClickEvent) throws IOException {
         return execute(cache, cache.getItems(), guiHandler, player, inventory, i, inventoryClickEvent);
     }
+
+    @Override
+    default boolean run(CCCache cache, GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Button<CCCache> button, int i, InventoryInteractEvent inventoryInteractEvent) throws IOException;
 
     boolean execute(CCCache cache, Items items, GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int i, InventoryInteractEvent inventoryClickEvent);
 }

@@ -54,7 +54,7 @@ public class TabConsume extends ItemCreatorTab {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.ITEM_FRAME, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.ITEM_FRAME, this);
         creator.registerButton(new ButtonChatInput<>(KEY + ".durability_cost.enabled", Material.DROPPER, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             hashMap.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getDurabilityCost());
             return itemStack;

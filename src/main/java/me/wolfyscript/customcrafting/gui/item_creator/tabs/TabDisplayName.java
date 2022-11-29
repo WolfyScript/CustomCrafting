@@ -50,7 +50,7 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.NAME_TAG, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.NAME_TAG, this);
         new ButtonChatInput.Builder<>(creator, KEY + ".set")
                 .inputAction((guiHandler, player, s, strings) -> {
                     if (creator.getCustomCrafting().isPaper()) {

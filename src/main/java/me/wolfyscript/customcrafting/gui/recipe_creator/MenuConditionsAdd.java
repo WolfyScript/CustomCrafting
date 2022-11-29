@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.gui.button.Button;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -34,6 +37,7 @@ import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 
 import java.util.Map;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 public class MenuConditionsAdd extends CCWindow {
 
@@ -50,6 +54,15 @@ public class MenuConditionsAdd extends CCWindow {
 
     }
 
+    private void registerConditionAddBtn(NamespacedKey key, Condition.AbstractGUIComponent<?> condition) {
+        getButtonBuilder().action("icon_" + key.toString("_")).state(state -> state.key("icon").icon(condition.getIcon()).action((cache, guiHandler, player, guiInventory, button, i, inventoryInteractEvent) -> {
+            cache.getRecipeCreatorCache().getRecipeCache().getConditions().setCondition(customCrafting.getRegistries().getRecipeConditions().create(key));
+            return true;
+        }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
+            return CallbackButtonRender.UpdateResult.of(Placeholder.component("name", condition.getDisplayName()), TagResolverUtil.entries(condition.getDescriptionComponents()));
+        })).register();
+    }
+
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
@@ -64,9 +77,8 @@ public class MenuConditionsAdd extends CCWindow {
             conditions = conditions.subList(page * CONDITIONS_PER_PAGE, size);
             for (int slot = 0; slot < conditions.size(); slot++) {
                 Map.Entry<NamespacedKey, Condition.AbstractGUIComponent<?>> entry = conditions.get(slot);
-                var button = new ButtonConditionAdd(customCrafting, entry.getKey(), entry.getValue());
-                registerButton(button);
-                update.setButton(slot, button);
+                registerConditionAddBtn(entry.getKey(), entry.getValue());
+                update.setButton(slot, "icon_" + entry.getKey().toString("_"));
             }
             int maxPages = (int) Math.floor(size / (double) CONDITIONS_PER_PAGE);
         }

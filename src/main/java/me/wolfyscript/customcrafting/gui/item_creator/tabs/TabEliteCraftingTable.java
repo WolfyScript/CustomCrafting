@@ -76,7 +76,7 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.CRAFTING_TABLE, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.CRAFTING_TABLE, this);
         creator.registerButton(new ButtonDummy<>("elite_workbench.particles", Material.FIREWORK_ROCKET));
         if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 6, 1))) {
             new MultipleChoiceButton.Builder<>(creator, "elite_workbench.grid_size")

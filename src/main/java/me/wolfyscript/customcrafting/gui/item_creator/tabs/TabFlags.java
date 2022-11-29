@@ -49,7 +49,7 @@ public class TabFlags extends ItemCreatorTabVanilla {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.WRITTEN_BOOK, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.WRITTEN_BOOK, this);
         creator.registerButton(new ButtonItemFlagsToggle("enchants", ItemFlag.HIDE_ENCHANTS, Material.ENCHANTING_TABLE));
         creator.registerButton(new ButtonItemFlagsToggle("attributes", ItemFlag.HIDE_ATTRIBUTES, Material.ENCHANTED_GOLDEN_APPLE));
         creator.registerButton(new ButtonItemFlagsToggle("unbreakable", ItemFlag.HIDE_UNBREAKABLE, Material.BEDROCK));

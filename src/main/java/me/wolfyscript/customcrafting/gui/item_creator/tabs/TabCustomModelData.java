@@ -50,7 +50,7 @@ public class TabCustomModelData extends ItemCreatorTab {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.REDSTONE, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.REDSTONE, this);
         creator.registerButton(new ButtonChatInput<>("custom_model_data.set", Material.GREEN_CONCRETE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             var items = guiHandler.getCustomCache().getItems();
             hashMap.put("%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : "&7&l/") + "");

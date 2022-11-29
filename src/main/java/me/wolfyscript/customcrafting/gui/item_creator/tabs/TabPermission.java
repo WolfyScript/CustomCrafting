@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
@@ -34,6 +36,8 @@ import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -47,19 +51,19 @@ public class TabPermission extends ItemCreatorTab {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.BARRIER, this));
-        creator.registerButton(new ButtonChatInput<>("permission.set", Material.GREEN_CONCRETE, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
+        GuiMenuComponent.ButtonBuilder<CCCache> bB = creator.getButtonBuilder();
+        ButtonOption.register(bB, Material.BARRIER, this);
+        bB.chatInput("permission.set").state(state -> state.icon(Material.GREEN_CONCRETE).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
             String perm = guiHandler.getCustomCache().getItems().getItem().getPermission();
-            hashMap.put("%VAR%", perm.isEmpty() ? "none" : perm);
-            return itemStack;
-        }, (guiHandler, player, s, strings) -> {
+            return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("var", perm.isEmpty() ? "none" : perm));
+        })).inputAction((guiHandler, player, s, strings) -> {
             guiHandler.getCustomCache().getItems().getItem().setPermission(s.replace(" ", "."));
             return false;
-        }));
-        creator.registerButton(new ButtonAction<>("permission.remove", Material.RED_CONCRETE_POWDER, (cache, guiHandler, player, inventory, i, event) -> {
+        }).register();
+        bB.action("permission.remove").state(state -> state.icon(Material.RED_CONCRETE_POWDER).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
             guiHandler.getCustomCache().getItems().getItem().setPermission("");
             return true;
-        }));
+        })).register();
     }
 
     @Override

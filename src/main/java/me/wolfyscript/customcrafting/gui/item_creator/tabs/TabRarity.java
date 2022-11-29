@@ -22,19 +22,19 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
-import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,22 +48,24 @@ public class TabRarity extends ItemCreatorTab {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.DIAMOND, this));
-        creator.registerButton(new ButtonChatInput<>("rarity.set", Material.GREEN_CONCRETE, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
-            hashMap.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getRarityPercentage() + "§8(§7" + (cache.getItems().getItem().getRarityPercentage() * 100) + "%§8)");
-            return itemStack;
-        }, (guiHandler, player, s, strings) -> {
+        ButtonOption.register(creator.getButtonBuilder(), Material.DIAMOND, this);
+        creator.getButtonBuilder().chatInput("rarity.set").state(state -> state.icon(Material.GREEN_CONCRETE).render((cache, guiHandler, player, inventory, btn, stack, b) -> CallbackButtonRender.UpdateResult.of(Placeholder.component("var",
+                Component.text(guiHandler.getCustomCache().getItems().getItem().getWeight()).append(
+                        Component.text("(").color(NamedTextColor.DARK_GRAY)
+                                .append(Component.text(cache.getItems().getItem().getWeight() * 100).color(NamedTextColor.GRAY))
+                                .append(Component.text(")"))
+                ))))).inputAction((guiHandler, player, s, strings) -> {
             try {
                 guiHandler.getCustomCache().getItems().getItem().setRarityPercentage(Double.parseDouble(s));
             } catch (NumberFormatException ex) {
                 return true;
             }
             return false;
-        }));
-        creator.registerButton(new ButtonAction<>("rarity.reset", Material.RED_CONCRETE_POWDER, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            items.getItem().setRarityPercentage(1.0d);
+        }).register();
+        creator.getButtonBuilder().action("rarity.reset").state(state -> state.icon(Material.RED_CONCRETE_POWDER).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+            cache.getItems().getItem().setWeight(1.0d);
             return true;
-        }));
+        })).register();
     }
 
     @Override

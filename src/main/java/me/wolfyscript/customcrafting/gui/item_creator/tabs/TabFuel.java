@@ -50,7 +50,7 @@ public class TabFuel extends ItemCreatorTab {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.COAL, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.COAL, this);
         creator.registerButton(new ButtonChatInput<>("fuel.burn_time.set", Material.GREEN_CONCRETE, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             values.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getBurnTime());
             return itemStack;

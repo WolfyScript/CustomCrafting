@@ -51,7 +51,7 @@ public class TabRecipeBook extends ItemCreatorTab {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.registerButton(new ButtonOption(Material.KNOWLEDGE_BOOK, this));
+        ButtonOption.register(creator.getButtonBuilder(), Material.KNOWLEDGE_BOOK, this);
         creator.registerButton(
                 new ButtonToggle<>("knowledge_book.toggle", (cache, guiHandler, player, guiInventory, i) ->
                         cache.getItems().getItem().getData(RecipeBookSettings.class).map(RecipeBookSettings::isEnabled)
