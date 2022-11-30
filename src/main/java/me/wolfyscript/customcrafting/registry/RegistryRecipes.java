@@ -162,6 +162,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      *
      * @param namespace The namespace to index the folders for.
      * @return A list of all available folders and sub folders.
+     * @deprecated Replaced by {@link #dirs(String)}
      */
     @Deprecated
     public List<String> folders(String namespace) {
@@ -184,7 +185,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
     /**
      * Gets the directories available in the specified namespace.<br>
-     * This will return a tree of the available directories separated by "/".<br>
+     * This will return a list of the available directories separated by "/".<br>
      * <br>
      * For example:<br>
      * A registry with a single namespaced key like this:
@@ -207,7 +208,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
     /**
      * Gets the directories available in the specified namespace.<br>
-     * This will return a tree of the available directories separated by "/".<br>
+     * This will return a list of the available directories separated by "/".<br>
      * <br>
      * For example:<br>
      * A registry with a single namespaced key like this:
@@ -240,7 +241,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
     /**
      * Gets the directories available in the specified namespace.<br>
-     * This will return a tree of the available directories separated by "/".<br>
+     * This will return a list of the available directories separated by "/".<br>
      * <br>
      * A registry with a single namespaced key like this:
      * <pre>&lt;namespace&gt;:&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/&lt;recipe_name&gt;</pre>
@@ -289,26 +290,41 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     }
 
     /**
-     * Gets the sub-folders available in the specified namespace and folder.<br>
-     * This will return a tree list of the available sub-folders separated by "/".<br>
-     * For example:<br>
-     * A single namespaced key like this:
-     * <pre>&lt;namespace&gt;:&lt;root_folder&gt;/&lt;folder&gt;/&lt;sub_folder&gt;/&lt;recipe_name&gt;</pre>
-     * with the specified folder "root_folder",
-     * will result in
-     * <pre>["", "folder", "folder/sub_folder"]</pre>
+     * Gets the subdirectories available in the specified namespace and directory.<br>
+     * This will return a list of the available directories separated by "/".<br>
+     * <br>
+     * A registry with a single namespaced key like this:
+     * <pre>&lt;namespace&gt;:&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/&lt;recipe_name&gt;</pre>
+     * will result in:<br>
+     *
+     * <pre>
+     * [
+     *  "/",
+     *  "/&lt;root_dir&gt;/",
+     *  "/&lt;root_dir&gt;/&lt;sec_dir&gt;/",
+     *  "/&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/"
+     * ]</pre>
+     * or
+     * <pre>
+     * [
+     *  "&lt;root_dir&gt;/",
+     *  "&lt;root_dir&gt;/&lt;sec_dir&gt;/",
+     *  "&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/"
+     * ]</pre>
+     * when <b>includeRoot</b> is <b>false</b>
+     * <br>
      *
      * @param namespace The namespace to index the folders for.
      * @return A list of all available folders and sub folders.
      */
-    public List<String> dirs(String namespace, final String folder, boolean includeRoot) {
-        boolean hasRoot = folder.startsWith("/");
+    public List<String> dirs(String namespace, final String directory, boolean includeRoot) {
+        boolean hasRoot = directory.startsWith("/");
         // Clear the folder, so it is in proper format.
         final String dir = (
                 includeRoot ?
-                        (!hasRoot ? "/" + folder : folder) :
-                        (hasRoot ? folder.substring(1) : folder)
-        ) + (!folder.endsWith("/") ? "/" : "");
+                        (!hasRoot ? "/" + directory : directory) :
+                        (hasRoot ? directory.substring(1) : directory)
+        ) + (!directory.endsWith("/") ? "/" : "");
         return dirs(namespace, 64, includeRoot).stream().filter(sub -> sub.startsWith(dir) && (sub.length() != dir.length() || includeRoot)).toList();
     }
 
@@ -336,25 +352,6 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * Gets all recipes from the specified namespace and folder.
      *
      * @param namespace The namespace of the recipes.
-     * @param folder    The folder of the recipes.
-     * @return A list of all recipes in the folder inside the namespace.
-     */
-    public List<CustomRecipe<?>> get(String namespace, String folder) {
-        return BY_NAMESPACE_AND_FOLDER.computeIfAbsent(namespace, s -> {
-            Map<String, List<CustomRecipe<?>>> folderIndex = new HashMap<>();
-            get(s).forEach(recipe -> {
-                String key = recipe.getNamespacedKey().getKey();
-                String recipeFolder = key.contains("/") ? key.substring(0, key.lastIndexOf("/")) : "";
-                folderIndex.computeIfAbsent(recipeFolder, s1 -> new LinkedList<>()).add(recipe);
-            });
-            return folderIndex;
-        }).getOrDefault(folder, new LinkedList<>());
-    }
-
-    /**
-     * Gets all recipes from the specified namespace and folder.
-     *
-     * @param namespace The namespace of the recipes.
      * @param dir       The folder of the recipes.
      * @return A list of all recipes in the folder inside the namespace.
      */
@@ -374,6 +371,25 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     private String cleanDir(String dir) {
         // Clear the folder, so it is in proper format.
         return  (!dir.startsWith("/") ? "/" + dir : dir) + (!dir.endsWith("/") ? "/" : "");
+    }
+
+    /**
+     * Gets all recipes from the specified namespace and folder.
+     *
+     * @param namespace The namespace of the recipes.
+     * @param folder    The folder of the recipes.
+     * @return A list of all recipes in the folder inside the namespace.
+     */
+    public List<CustomRecipe<?>> get(String namespace, String folder) {
+        return BY_NAMESPACE_AND_FOLDER.computeIfAbsent(namespace, s -> {
+            Map<String, List<CustomRecipe<?>>> folderIndex = new HashMap<>();
+            get(s).forEach(recipe -> {
+                String key = recipe.getNamespacedKey().getKey();
+                String recipeFolder = key.contains("/") ? key.substring(0, key.lastIndexOf("/")) : "";
+                folderIndex.computeIfAbsent(recipeFolder, s1 -> new LinkedList<>()).add(recipe);
+            });
+            return folderIndex;
+        }).getOrDefault(folder, new LinkedList<>());
     }
 
     /**
