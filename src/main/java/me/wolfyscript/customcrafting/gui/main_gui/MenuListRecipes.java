@@ -100,7 +100,7 @@ public class MenuListRecipes extends CCWindow {
         int page;
 
         String namespace = recipeListCache.getNamespace();
-        String folder = recipeListCache.getFolder();
+        String dir = recipeListCache.getFolder();
         if (namespace == null) {
             List<String> namespaceList = customRecipes.namespaces();
             namespaceList.add("minecraft");
@@ -123,7 +123,7 @@ public class MenuListRecipes extends CCWindow {
                 button.setRecipe(event.getGuiHandler(), recipes.get(i));
                 event.setButton(9 + slot, button);
             }
-        } else if (folder == null) {
+        } else if (dir == null) {
             List<String> folders = customRecipes.dirs(namespace, 1, false);
             maxPages = recipeListCache.getMaxPages(folders.size());
             page = recipeListCache.getPage(maxPages);
@@ -136,33 +136,13 @@ public class MenuListRecipes extends CCWindow {
                 event.setButton(9 + slot, getButton(key));
             }
         } else {
-            List<String> subFolders = customRecipes.dirs(namespace, folder, false);
-            List<CustomRecipe<?>> recipes = customRecipes.getFromDir(namespace, folder).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).collect(Collectors.toList());
+            List<String> subFolders = customRecipes.dirs(namespace, dir, false);
+            List<CustomRecipe<?>> recipes = customRecipes.getFromDir(namespace, dir).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).collect(Collectors.toList());
             recipeListCache.filterCustomRecipes(recipes);
             int clearDirRow = !subFolders.isEmpty() ? 9 - subFolders.size() % 9 : 0;
             maxPages = recipeListCache.getMaxPages(subFolders.size() + clearDirRow + recipes.size());
             page = recipeListCache.getPage(maxPages);
-
-            int i = page * 45;
-            int slot = 0;
-            if (i < subFolders.size()) {
-                for (; slot < 45 && i < subFolders.size(); i++, slot++) {
-                    String key = ButtonFolderRecipe.key(slot, namespace, subFolders.get(i));
-                    if (getButton(key) == null) {
-                        registerButton(new ButtonFolderRecipe(slot, namespace, subFolders.get(i), customCrafting));
-                    }
-                    event.setButton(9 + slot, getButton(key));
-                }
-            }
-            for (int j = 0; j < clearDirRow && slot < 45; j++, slot++) {
-                event.setButton(9 + slot, ClusterMain.GLASS_PINK);
-            }
-            i = 0;
-            for (; slot < 45 && i < recipes.size(); i++, slot++) {
-                ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(slot));
-                button.setCustomRecipe(event.getGuiHandler(), recipes.get(i));
-                event.setButton(9 + slot, button);
-            }
+            renderSelectedDirectory(recipes, subFolders, clearDirRow, page, namespace, event);
         }
         if (page != 0) {
             event.setButton(2, "previous_page");
@@ -172,4 +152,28 @@ public class MenuListRecipes extends CCWindow {
             event.setButton(6, "next_page");
         }
     }
+
+    private void renderSelectedDirectory(List<CustomRecipe<?>> recipes, List<String> subFolders, int clearDirRow, int page, String namespace, GuiUpdate<CCCache> update) {
+        int i = page * 45;
+        int slot = 0;
+        if (i < subFolders.size()) {
+            for (; slot < 45 && i < subFolders.size(); i++, slot++) {
+                String key = ButtonFolderRecipe.key(slot, namespace, subFolders.get(i));
+                if (getButton(key) == null) {
+                    registerButton(new ButtonFolderRecipe(slot, namespace, subFolders.get(i), customCrafting));
+                }
+                update.setButton(9 + slot, getButton(key));
+            }
+        }
+        for (int j = 0; j < clearDirRow && slot < 45; j++, slot++) {
+            update.setButton(9 + slot, ClusterMain.GLASS_PINK);
+        }
+        i = 0;
+        for (; slot < 45 && i < recipes.size(); i++, slot++) {
+            ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(slot));
+            button.setCustomRecipe(update.getGuiHandler(), recipes.get(i));
+            update.setButton(9 + slot, button);
+        }
+    }
+
 }
