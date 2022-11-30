@@ -40,7 +40,7 @@ public class ButtonFolderRecipe extends ActionButton<CCCache> {
             if (event instanceof InventoryClickEvent clickEvent) {
                 if (!clickEvent.isShiftClick()) {
                     if (guiInventory.getWindow() instanceof MenuListRecipes) {
-                        cache.getRecipeList().setFolder(folder);
+                        cache.getRecipeList().goDownFolder(folder);
                         cache.getRecipeList().setPage(0);
                     }
                 } else {

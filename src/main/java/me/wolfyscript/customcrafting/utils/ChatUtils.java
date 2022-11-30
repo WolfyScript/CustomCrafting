@@ -117,12 +117,22 @@ public class ChatUtils {
                 return null;
             }
             if (!folder.endsWith("/")) {
+                // Add separator between directory and object
                 folder += "/";
             }
+            if (folder.startsWith("/")) {
+                // Do not include the root in the namespaced key!
+                folder = folder.substring(1);
+            }
             if (fileName.startsWith("/")) {
+                // We added the separator to the directory already!
                 fileName = fileName.substring(1);
             }
-            return new NamespacedKey(CustomCrafting.inst(), folder + fileName);
+            if (!folder.isBlank()) {
+                return new NamespacedKey(CustomCrafting.inst(), folder + fileName);
+            }
+            // Cannot save inside Root Directory! Requires at least one directory.
+            api.getLanguageAPI().getComponents("msg.player.invalid_namespacedkey").forEach(s1 -> chat.sendMessage(player, s1));
         } catch (IllegalArgumentException e) {
             api.getLanguageAPI().getComponents("msg.player.invalid_namespacedkey").forEach(s1 -> chat.sendMessage(player, s1));
         }
