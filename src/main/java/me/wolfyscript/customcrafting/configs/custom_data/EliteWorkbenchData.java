@@ -22,19 +22,18 @@
 
 package me.wolfyscript.customcrafting.configs.custom_data;
 
-import com.wolfyscript.utilities.bukkit.world.items.CustomData;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-
+import com.wolfyscript.utilities.bukkit.world.items.CustomData;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import java.io.IOException;
 import java.util.Objects;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 
 public class EliteWorkbenchData extends CustomData implements Cloneable {
 

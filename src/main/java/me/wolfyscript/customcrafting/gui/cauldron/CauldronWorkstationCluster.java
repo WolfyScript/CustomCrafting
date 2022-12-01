@@ -22,15 +22,14 @@
 
 package me.wolfyscript.customcrafting.gui.cauldron;
 
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Material;
 
 public class CauldronWorkstationCluster extends CCCluster {
@@ -49,11 +48,10 @@ public class CauldronWorkstationCluster extends CCCluster {
         
         registerGuiWindow(new CauldronWorkstationMenu(this, customCrafting));
 
-        registerButton(new ButtonAction<>(CAULDRON_MAIN.getKey(), Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(CAULDRON_MAIN.getKey()).state(state -> state.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             ButtonContainerIngredient.resetButtons(guiHandler);
-
             PlayerUtil.openRecipeBook(player);
             return true;
-        }));
+        })).register();
     }
 }

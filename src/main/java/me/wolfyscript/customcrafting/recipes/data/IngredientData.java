@@ -22,8 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import org.bukkit.inventory.ItemStack;
 
 /**

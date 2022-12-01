@@ -22,17 +22,16 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import java.io.File;
+import java.io.IOException;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import org.bukkit.Material;
-
-import java.io.File;
-import java.io.IOException;
 
 public class EditorMain extends CCWindow {
 
@@ -47,12 +46,12 @@ public class EditorMain extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action(CANCEL).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(CANCEL).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             customCrafting.getConfigHandler().loadRecipeBookConfig();
             guiHandler.openCluster("none");
             return true;
         })).register();
-        getButtonBuilder().action(SAVE).state(s -> s.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(SAVE).state(s -> s.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             try {
                 if (!new File(customCrafting.getDataFolder(), "recipe_book.conf").renameTo(new File(customCrafting.getDataFolder(), "recipe_book_backup.conf"))) {
                     sendMessage(guiHandler, getCluster().translatedMsgKey("save.failed_backup"));
@@ -65,12 +64,12 @@ public class EditorMain extends CCWindow {
             guiHandler.openCluster("none");
             return true;
         })).register();
-        getButtonBuilder().action(FILTERS).state(s -> s.icon(Material.COMPASS).action((cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(FILTERS).state(s -> s.icon(Material.COMPASS).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().setFilters(true);
             guiHandler.openWindow(FILTERS);
             return true;
         })).register();
-        getButtonBuilder().action(CATEGORIES).state(s -> s.icon(Material.CHEST).action((cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(CATEGORIES).state(s -> s.icon(Material.CHEST).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().setFilters(false);
             guiHandler.openWindow(CATEGORIES);
             return true;

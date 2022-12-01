@@ -23,7 +23,6 @@
 package me.wolfyscript.customcrafting.data.cache;
 
 import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 
 public class ChatLists {
 

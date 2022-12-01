@@ -22,19 +22,17 @@
 
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
-import me.wolfyscript.utilities.compatibility.plugins.MythicMobsIntegration;
-import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import java.util.concurrent.ThreadLocalRandom;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.utilities.compatibility.plugins.MythicMobsIntegration;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MythicMobResultExtension extends ResultExtension {
 

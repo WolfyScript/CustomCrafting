@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.placeholderapi;
 
+import com.wolfyscript.utilities.NamespacedKey;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -29,8 +30,6 @@ import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

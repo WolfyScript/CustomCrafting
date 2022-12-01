@@ -22,18 +22,17 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
-import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import com.wolfyscript.utilities.tuple.Pair;
-import org.bukkit.Color;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import org.bukkit.Color;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
 

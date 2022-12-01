@@ -22,27 +22,30 @@
 
 package me.wolfyscript.customcrafting.configs.customitem;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.wolfyscript.utilities.KeyedStaticId;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItemData;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 
 @KeyedStaticId(RecipeBookSettings.ID)
 public class RecipeBookSettings extends CustomItemData {
 
     protected static final String ID = NamespacedKeyUtils.NAMESPACE + ":" + "recipe_book";
 
+    private CustomCrafting customCrafting;
     private boolean enabled;
 
-    public RecipeBookSettings() {
+    public RecipeBookSettings(@JacksonInject CustomCrafting customCrafting) {
         super(customCrafting.getApi().getIdentifiers().getNamespaced(ID));
+        this.customCrafting = customCrafting;
         this.enabled = false;
     }
 
     public RecipeBookSettings(RecipeBookSettings other) {
-        super(customCrafting.getApi().getIdentifiers().getNamespaced(ID));
+        super(other.customCrafting.getApi().getIdentifiers().getNamespaced(ID));
         this.enabled = other.enabled;
+        this.customCrafting = other.customCrafting;
     }
 
     public void setEnabled(boolean enabled) {

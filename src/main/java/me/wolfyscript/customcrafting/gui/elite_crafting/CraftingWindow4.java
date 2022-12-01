@@ -22,10 +22,10 @@
 
 package me.wolfyscript.customcrafting.gui.elite_crafting;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.CCCache;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
 
 public class CraftingWindow4 extends CraftingWindow {
 

@@ -22,11 +22,10 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
-import me.wolfyscript.customcrafting.data.CCCache;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import me.wolfyscript.customcrafting.data.CCCache;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 

@@ -22,23 +22,21 @@
 
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
-import me.clip.placeholderapi.PlaceholderAPI;
-import me.wolfyscript.customcrafting.CustomCrafting;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import java.util.ArrayList;
+import java.util.List;
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CommandResultExtension extends ResultExtension {
 
@@ -105,7 +103,7 @@ public class CommandResultExtension extends ResultExtension {
 
     protected List<String> parseCommands(List<String> commands, Player player) {
         return commands.stream().map(s -> {
-            if (WolfyUtilsBukkit.hasPlaceHolderAPI()) {
+            if (WolfyCoreBukkit.getInstance().getCompatibilityManager().getPlugins().hasPlaceHolderAPI()) {
                 return PlaceholderAPI.setPlaceholders(player, s);
             } else {
                 return s.replace("%player%", player.getName());

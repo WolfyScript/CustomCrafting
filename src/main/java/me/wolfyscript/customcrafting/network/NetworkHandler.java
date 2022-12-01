@@ -22,19 +22,24 @@
 
 package me.wolfyscript.customcrafting.network;
 
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.nms.api.network.MCByteBuf;
 import io.netty.buffer.Unpooled;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.StackedContents;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import me.wolfyscript.utilities.api.network.messages.MessageAPI;
 import me.wolfyscript.utilities.api.nms.NetworkUtil;
-import com.wolfyscript.utilities.bukkit.nms.api.network.MCByteBuf;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.BlastFurnace;
@@ -42,12 +47,6 @@ import org.bukkit.block.Furnace;
 import org.bukkit.block.Smoker;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 public class NetworkHandler {
 

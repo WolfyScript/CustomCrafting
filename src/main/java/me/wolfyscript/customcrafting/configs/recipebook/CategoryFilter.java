@@ -28,12 +28,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.wolfyscript.utilities.bukkit.nms.api.network.MCByteBuf;
-import me.wolfyscript.utilities.util.inventory.CreativeModeTab;
-import org.bukkit.Material;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import me.wolfyscript.utilities.util.inventory.CreativeModeTab;
+import org.bukkit.Material;
 
 @JsonPropertyOrder({"id", "icon", "name", "description"})
 public class CategoryFilter extends CategorySettings {

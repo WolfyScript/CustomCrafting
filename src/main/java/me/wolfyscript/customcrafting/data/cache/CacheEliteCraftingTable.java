@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

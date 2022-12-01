@@ -22,25 +22,15 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.bukkit.world.items.references.APIReference;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
-import me.wolfyscript.utilities.api.inventory.tags.CustomTag;
 import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
 import com.wolfyscript.utilities.bukkit.world.inventory.InventoryUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Tag;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.world.items.references.APIReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -50,6 +40,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
+import me.wolfyscript.utilities.api.inventory.tags.CustomTag;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 @JsonPropertyOrder({"items", "tags"})
 public abstract class RecipeItemStack {

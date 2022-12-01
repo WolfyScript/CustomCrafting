@@ -22,22 +22,18 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.configs.customitem.RecipeBookSettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -52,21 +48,18 @@ public class TabRecipeBook extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.KNOWLEDGE_BOOK, this);
-        creator.registerButton(
-                new ButtonToggle<>("knowledge_book.toggle", (cache, guiHandler, player, guiInventory, i) ->
-                        cache.getItems().getItem().getData(RecipeBookSettings.class).map(RecipeBookSettings::isEnabled)
-                                // Get old recipe book settings
-                                .orElse(((RecipeBookData) cache.getItems().getItem().getCustomData(CustomCrafting.RECIPE_BOOK_DATA)).isEnabled()),
-                        new ButtonState<>("knowledge_book.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                            items.getItem().computeDataIfAbsent(RecipeBookSettings.class, id -> new RecipeBookSettings()).setEnabled(false);
-                            return true;
-                        }),
-                        new ButtonState<>("knowledge_book.toggle.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                            items.getItem().computeDataIfAbsent(RecipeBookSettings.class, id -> new RecipeBookSettings()).setEnabled(true);
-                            return true;
-                        })
-                )
-        );
+        creator.getButtonBuilder().toggle("knowledge_book.toggle").stateFunction((cache, guiHandler, player, guiInventory, i) ->
+                cache.getItems().getItem().getData(RecipeBookSettings.class).map(RecipeBookSettings::isEnabled)
+                        // Get old recipe book settings
+                        .orElse(((RecipeBookData) cache.getItems().getItem().getCustomData(CustomCrafting.RECIPE_BOOK_DATA)).isEnabled())).enabledState(state -> state.subKey("knowledge_book.toggle.enabled").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
+            items.getItem().computeDataIfAbsent(RecipeBookSettings.class, id -> new RecipeBookSettings()).setEnabled(false);
+            return true;
+        })).disabledState(state -> state.subKey("knowledge_book.toggle.disabled").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
+            items.getItem().computeDataIfAbsent(RecipeBookSettings.class, id -> new RecipeBookSettings()).setEnabled(true);
+            return true;
+        })).register();
     }
 
     @Override

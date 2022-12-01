@@ -22,11 +22,14 @@
 
 package me.wolfyscript.customcrafting.commands.recipes;
 
+import com.wolfyscript.utilities.tuple.Pair;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import com.wolfyscript.utilities.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
@@ -34,10 +37,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ToggleSubCommand extends AbstractSubCommand {
 

@@ -22,21 +22,19 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Tag;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.StreamSupport;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 
 public class MenuTagChooseList extends CCWindow {
 
@@ -52,7 +50,8 @@ public class MenuTagChooseList extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getChooseListPage();
             int maxPages = ITEM_TAGS.size() / 45 + ITEM_TAGS.size() % 45 > 0 ? 1 : 0;
             if (page < maxPages) {
@@ -60,7 +59,8 @@ public class MenuTagChooseList extends CCWindow {
             }
             return true;
         })).register();
-        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getChooseListPage();
             if (page > 0) {
                 cache.getRecipeCreatorCache().getTagSettingsCache().setChooseListPage(--page);

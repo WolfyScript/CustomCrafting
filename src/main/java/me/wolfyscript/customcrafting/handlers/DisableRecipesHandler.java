@@ -22,23 +22,22 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Recipe;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.MainConfig;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Recipe;
 
 public class DisableRecipesHandler {
 
@@ -53,7 +52,7 @@ public class DisableRecipesHandler {
         this.config = customCrafting.getConfigHandler().getConfig();
 
         if (!config.getDisabledRecipes().isEmpty()) {
-            recipes.addAll(config.getDisabledRecipes().parallelStream().map(NamespacedKey::of).filter(Objects::nonNull).toList());
+            recipes.addAll(config.getDisabledRecipes().parallelStream().map(s -> customCrafting.getApi().getIdentifiers().getNamespaced(s)).filter(Objects::nonNull).toList());
             recipes.forEach(key -> {
                 if (customCrafting.getRegistries().getRecipes().has(key)) {
                     disableRecipe(Objects.requireNonNull(customCrafting.getRegistries().getRecipes().get(key)));

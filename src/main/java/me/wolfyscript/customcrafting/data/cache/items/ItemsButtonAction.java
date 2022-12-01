@@ -22,16 +22,14 @@
 
 package me.wolfyscript.customcrafting.data.cache.items;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.button.Button;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
-import me.wolfyscript.customcrafting.data.CCCache;
-import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
+import java.io.IOException;
+import me.wolfyscript.customcrafting.data.CCCache;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryInteractEvent;
-
-import java.io.IOException;
 
 public interface ItemsButtonAction extends CallbackButtonAction<CCCache> {
 

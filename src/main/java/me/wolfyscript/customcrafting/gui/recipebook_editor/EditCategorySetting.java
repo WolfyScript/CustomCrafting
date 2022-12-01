@@ -22,11 +22,11 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 
 public abstract class EditCategorySetting extends CCWindow {
 

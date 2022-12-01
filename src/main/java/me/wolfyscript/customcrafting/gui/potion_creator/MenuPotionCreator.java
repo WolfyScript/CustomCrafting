@@ -22,29 +22,27 @@
 
 package me.wolfyscript.customcrafting.gui.potion_creator;
 
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import java.util.Locale;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
-import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
-import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
-
-import java.util.Locale;
 
 public class MenuPotionCreator extends CCWindow {
 
@@ -95,7 +93,7 @@ public class MenuPotionCreator extends CCWindow {
             return itemStack;
         }));
 
-        registerButton(new ButtonAction<>("potion_effect_type", new ButtonState<>("potion_effect_type", Material.BOOKSHELF, (cache, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ButtonAction<>("potion_effect_type", new ButtonState<>("potion_effect_type", Material.BOOKSHELF, (cache, guiHandler, player, inventory, btn, i, event) -> {
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, potionEffect) -> potionEffectCache.setType(potionEffect));
             potionEffectCache.setOpenedFrom("potion_creator", "potion_creator");

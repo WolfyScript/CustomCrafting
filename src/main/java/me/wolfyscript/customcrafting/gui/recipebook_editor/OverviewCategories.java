@@ -22,15 +22,14 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
-import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -43,7 +42,7 @@ public class OverviewCategories extends Overview {
     @Override
     public void onInit() {
         super.onInit();
-        registerButton(new ButtonAction<>(ADD, PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(ADD).state(state -> state.icon(PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeBookEditor().setCategory(new Category());
             cache.getRecipeBookEditor().setCategoryID("");
             guiHandler.openWindow("category");
@@ -64,9 +63,9 @@ public class OverviewCategories extends Overview {
                 String id = "category_" + category.getId();
                 getButtonBuilder()
                         .action(id)
-                        .state(state -> state.icon(Material.AIR)
-                                .render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(category.createItemStack(customCrafting)))
-                                .action((cache, guiHandler, player, guiInventory, i1, event) -> {
+                        .state(state -> state.key("category").icon(Material.AIR)
+                                .render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(category.createItemStack(customCrafting)))
+                                .action((cache, guiHandler, player, guiInventory, btn, i1, event) -> {
                                     if (event instanceof InventoryClickEvent clickEvent) {
                                         var recipeBookEditor = cache.getRecipeBookEditor();
                                         var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();

@@ -22,6 +22,12 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.inventory.InventoryUtils;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.tuple.Pair;
+import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
@@ -29,12 +35,7 @@ import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.customcrafting.utils.cooking.FurnaceListener1_17Adapter;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.utilities.registry.RegistryCustomItem;
-import com.wolfyscript.utilities.tuple.Pair;
-import com.wolfyscript.utilities.bukkit.world.inventory.InventoryUtils;
-import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Bukkit;
@@ -53,8 +54,6 @@ import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-
-import java.util.Optional;
 
 public class FurnaceListener implements Listener {
 

@@ -22,28 +22,25 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonItemInput;
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
-import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonItemInput;
 import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import java.util.UUID;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.cache.items.Items;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-
-import java.util.UUID;
 
 public class TabPlayerHead extends ItemCreatorTabVanilla {
 
@@ -56,13 +53,14 @@ public class TabPlayerHead extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.PLAYER_HEAD, this);
-        creator.registerButton(new ButtonItemInput<>("player_head.texture.input", Material.AIR, (cache, guiHandler, player, inventory, i, event) -> {
+        creator.registerButton(new ButtonItemInput<>("player_head.texture.input", Material.AIR, (cache, guiHandler, player, inventory, btn, i, event) -> {
             if (event instanceof InventoryClickEvent) {
                 return ((InventoryClickEvent) event).getCurrentItem().getType().equals(Material.PLAYER_HEAD);
             }
             return true;
         }));
-        creator.registerButton(new ButtonAction<>("player_head.texture.apply", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        creator.registerButton(new ButtonAction<>("player_head.texture.apply", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
             if (inventory.getItem(38) != null && inventory.getItem(38).getType().equals(Material.PLAYER_HEAD)) {
                 items.getItem().setPlayerHeadValue(new ItemBuilder(inventory.getItem(38)).getPlayerHeadValue());
             }

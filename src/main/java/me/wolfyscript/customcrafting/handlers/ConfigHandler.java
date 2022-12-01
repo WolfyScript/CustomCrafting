@@ -22,17 +22,16 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
-import com.wolfyscript.utilities.common.language.LanguageAPI;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-
+import com.wolfyscript.utilities.common.language.LanguageAPI;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.MainConfig;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 
 public class ConfigHandler {
 

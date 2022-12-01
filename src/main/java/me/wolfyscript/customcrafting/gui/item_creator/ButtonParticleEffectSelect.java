@@ -22,21 +22,19 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator;
 
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import java.util.Locale;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import me.wolfyscript.utilities.util.particles.ParticleLocation;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.util.Locale;
-
 public class ButtonParticleEffectSelect extends ButtonAction<CCCache> {
 
     public ButtonParticleEffectSelect(ParticleLocation action) {
-        super("particle_effects." + action.toString().toLowerCase(Locale.ROOT) + ".input", new ButtonState<>("particle_effects.input", Material.BARRIER, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        super("particle_effects." + action.toString().toLowerCase(Locale.ROOT) + ".input", new ButtonState<>("particle_effects.input", Material.BARRIER, (cache, guiHandler, player, inv, btn, i, event)
             if (event instanceof InventoryClickEvent clickEvent) {
                 if (clickEvent.getClick().isShiftClick()) {
                     //TODO: new particle system. items.getItem().getParticleContent().set(action);

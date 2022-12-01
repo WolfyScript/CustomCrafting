@@ -22,8 +22,8 @@
 
 package me.wolfyscript.customcrafting.utils;
 
-import me.wolfyscript.utilities.util.version.MinecraftVersions;
-import me.wolfyscript.utilities.util.version.ServerVersion;
+import com.wolfyscript.utilities.versioning.MinecraftVersions;
+import com.wolfyscript.utilities.versioning.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;

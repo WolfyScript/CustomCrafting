@@ -22,10 +22,10 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
-import me.wolfyscript.customcrafting.data.CCCache;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import me.wolfyscript.customcrafting.data.CCCache;
 
 class ButtonHidden extends ButtonToggle<CCCache> {
 

@@ -22,20 +22,18 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
-import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.tuple.Pair;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.cache.items.Items;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;
@@ -64,7 +62,8 @@ public class TabRepairCost extends ItemCreatorTabVanilla {
             }
             return false;
         }));
-        creator.registerButton(new ButtonAction<>("repair_cost.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        creator.registerButton(new ButtonAction<>("repair_cost.reset", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
             var itemMeta = items.getItem().getItemMeta();
             if (itemMeta instanceof Repairable) {
                 ((Repairable) itemMeta).setRepairCost(0);

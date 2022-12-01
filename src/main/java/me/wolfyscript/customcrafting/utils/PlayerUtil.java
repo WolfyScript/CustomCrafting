@@ -22,18 +22,17 @@
 
 package me.wolfyscript.customcrafting.utils;
 
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import java.util.ArrayList;
+import java.util.UUID;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
-import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.entity.PlayerUtils;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.UUID;
 
 public class PlayerUtil {
 

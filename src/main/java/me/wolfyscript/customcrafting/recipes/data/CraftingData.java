@@ -22,10 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
+import java.util.Map;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
-
-import java.util.Map;
 
 /**
  * Besides the usual use case for {@link MergeOption}s,

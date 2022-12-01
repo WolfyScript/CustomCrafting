@@ -22,24 +22,23 @@
 
 package me.wolfyscript.customcrafting.gui.elite_crafting;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
+import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
-import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
-import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
-import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 abstract class CraftingWindow extends CCWindow {
 
@@ -55,12 +54,13 @@ abstract class CraftingWindow extends CCWindow {
 
     @Override
     public void onInit() {
+        var bB = getButtonBuilder();
         for (int i = 0; i < gridSize * gridSize; i++) {
             registerButton(new ButtonSlotCrafting(i, customCrafting));
         }
         registerButton(new ButtonSlotResult(customCrafting));
-        registerButton(new ButtonDummy<>("texture_dark", new ButtonState<>(ClusterMain.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
-        registerButton(new ButtonDummy<>("texture_light", new ButtonState<>(ClusterMain.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
+        bB.dummy("texture_dark").state(state -> state.key(ClusterMain.BACKGROUND).icon(Material.BLACK_STAINED_GLASS_PANE)).register();
+        bB.dummy("texture_light").state(state -> state.key(ClusterMain.BACKGROUND).icon(Material.BLACK_STAINED_GLASS_PANE)).register();
     }
 
     @Override

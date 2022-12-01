@@ -22,16 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.wolfyscript.utilities.Keyed;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.json.annotations.OptionalKeyReference;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
-import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
-import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
-import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,6 +34,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 
 @OptionalKeyReference(field = "key")
 public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, Keyed {

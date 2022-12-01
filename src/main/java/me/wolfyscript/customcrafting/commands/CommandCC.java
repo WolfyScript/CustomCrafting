@@ -22,8 +22,10 @@
 
 package me.wolfyscript.customcrafting.commands;
 
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import java.util.Arrays;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.cc_subcommands.DarkModeSubCommand;
 import me.wolfyscript.customcrafting.commands.cc_subcommands.DataBaseSubCommand;
@@ -40,12 +42,9 @@ import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeView;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 public class CommandCC extends IndexCommand {
 

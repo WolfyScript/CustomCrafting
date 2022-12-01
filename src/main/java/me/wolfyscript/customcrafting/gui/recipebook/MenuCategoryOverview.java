@@ -23,6 +23,10 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.button.Button;
+import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -36,10 +40,6 @@ import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.Button;
-import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -80,7 +80,7 @@ public class MenuCategoryOverview extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action(BACK).state(state -> state.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        getButtonBuilder().action(BACK).state(state -> state.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
             ButtonContainerIngredient.resetButtons(guiHandler);
             ButtonContainerRecipeBook.resetButtons(guiHandler);
             guiHandler.openPreviousWindow();

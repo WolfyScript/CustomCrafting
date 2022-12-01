@@ -22,12 +22,12 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.CCCache;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 
 public class RecipeCreatorGrindstone extends RecipeCreator {
@@ -43,7 +43,7 @@ public class RecipeCreatorGrindstone extends RecipeCreator {
         registerButton(new ButtonRecipeIngredient(1));
         registerButton(new ButtonRecipeResult());
         getButtonBuilder().dummy("grindstone").state(s -> s.icon(Material.GRINDSTONE)).register();
-        getButtonBuilder().chatInput("xp").state(s -> s.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getGrindingCache().getXp()))))).inputAction((guiHandler, player, msg, args) -> {
+        getButtonBuilder().chatInput("xp").state(s -> s.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getGrindingCache().getXp()))))).inputAction((guiHandler, player, msg, args) -> {
             int xp;
             try {
                 xp = Integer.parseInt(args[0]);

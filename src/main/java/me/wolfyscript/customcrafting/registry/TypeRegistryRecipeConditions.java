@@ -25,14 +25,12 @@ package me.wolfyscript.customcrafting.registry;
 import com.google.common.base.Preconditions;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.common.registry.Registries;
 import com.wolfyscript.utilities.common.registry.TypeRegistrySimple;
+import java.util.Objects;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public final class TypeRegistryRecipeConditions extends TypeRegistrySimple<Condition<?>> {
 

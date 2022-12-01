@@ -22,10 +22,10 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.recipes.RecipePriority;
 
 class ButtonPriority extends ButtonAction<CCCache> {
 

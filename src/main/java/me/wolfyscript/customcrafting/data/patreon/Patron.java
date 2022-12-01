@@ -23,19 +23,18 @@
 package me.wolfyscript.customcrafting.data.patreon;
 
 import com.google.gson.JsonParser;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import com.wolfyscript.utilities.collection.RandomCollection;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.collection.RandomCollection;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Collections;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.Collections;
 
 public class Patron {
 

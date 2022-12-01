@@ -22,19 +22,18 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import org.bukkit.Material;
-import org.bukkit.block.Biome;
-
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.bukkit.Material;
+import org.bukkit.block.Biome;
 
 public class WorldBiomeCondition extends Condition<WorldBiomeCondition> {
 
@@ -84,26 +83,28 @@ public class WorldBiomeCondition extends Condition<WorldBiomeCondition> {
         public GUIComponent() {
             super(Material.SAND, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.registerButton(new ButtonAction<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
+                        var bB = menu.getButtonBuilder();
+                        bB.action(REMOVE).state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, slot, inventoryInteractEvent) -> {
                             var conditions = cache.getRecipeCreatorCache().getRecipeCache().getConditions();
                             if (!conditions.getByType(WorldBiomeCondition.class).getBiomes().isEmpty()) {
                                 conditions.getByType(WorldBiomeCondition.class).getBiomes().remove(conditions.getByType(WorldBiomeCondition.class).getBiomes().size() - 1);
                             }
                             return true;
-                        }));
-                        menu.registerButton(new ButtonDummy<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
+                        })).register();
+                        bB.dummy(LIST).state(state -> state.icon(Material.BOOK).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> {
                             WorldBiomeCondition condition = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldBiomeCondition.class);
-                            hashMap.put("%MODE%", condition.getOption().getDisplayString(api));
+                            var tagResBuilder = TagResolver.builder();
+                            tagResBuilder.resolver(Placeholder.unparsed("mode", condition.getOption().getDisplayString(api)));
                             for (int i = 0; i < 4; i++) {
                                 if (i < condition.getBiomes().size()) {
-                                    hashMap.put("%var" + i + "%", condition.getBiomes().get(i));
+                                    tagResBuilder.resolver(Placeholder.unparsed("var"+i, condition.getBiomes().get(i)));
                                 } else {
-                                    hashMap.put("%var" + i + "%", "...");
+                                    tagResBuilder.resolver(Placeholder.unparsed("var"+i, "..."));
                                 }
                             }
-                            return itemStack;
-                        }));
-                        menu.registerButton(new ButtonChatInput<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
+                            return CallbackButtonRender.UpdateResult.of(tagResBuilder.build());
+                        })).register();
+                        bB.chatInput(ADD).state(state -> state.icon(Material.GREEN_CONCRETE)).inputAction((guiHandler, player, s, strings) -> {
                             if (!s.isEmpty()) {
                                 try {
                                     var biome = Biome.valueOf(s.toUpperCase(Locale.ROOT));
@@ -120,7 +121,7 @@ public class WorldBiomeCondition extends Condition<WorldBiomeCondition> {
                                 }
                             }
                             return true;
-                        }));
+                        }).register();
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(29, ADD);

@@ -22,7 +22,11 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -31,10 +35,6 @@ import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.gui.Setting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.bukkit.Material;
 
 public class ClusterMain extends CCCluster {
@@ -100,28 +100,28 @@ public class ClusterMain extends CCCluster {
         };
         bb.action(BACK.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action(backAction)).register();
         bb.action(BACK_BOTTOM.getKey()).state(state -> state.icon(Material.BARRIER).action(backAction)).register();
-        bb.action(PATREON.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275")).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        bb.action(PATREON.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275")).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
             guiHandler.openWindow("patrons_menu");
             return true;
         })).register();
-        bb.action(GITHUB.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("26e27da12819a8b053da0cc2b62dec4cda91de6eeec21ccf3bfe6dd8d4436a7")).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        bb.action(GITHUB.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("26e27da12819a8b053da0cc2b62dec4cda91de6eeec21ccf3bfe6dd8d4436a7")).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
             getChat().sendMessage(player, githubLink);
             return true;
         })).register();
-        bb.action(YOUTUBE.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed")).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        bb.action(YOUTUBE.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed")).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
             getChat().sendMessage(player, youtubeLink);
             return true;
         })).register();
-        bb.action(DISCORD.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53")).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        bb.action(DISCORD.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53")).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
             getChat().sendMessage(player, discordLink);
             return true;
         })).register();
-        bb.action(RECIPE_LIST.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        bb.action(RECIPE_LIST.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
             guiHandler.getCustomCache().setSetting(Setting.RECIPE_LIST);
             guiHandler.openWindow(RECIPE_LIST.getKey());
             return true;
         })).register();
-        bb.action(ITEM_LIST.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        bb.action(ITEM_LIST.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
             guiHandler.getCustomCache().setSetting(Setting.ITEM_LIST);
             guiHandler.openWindow(ITEM_LIST.getKey());
             return true;

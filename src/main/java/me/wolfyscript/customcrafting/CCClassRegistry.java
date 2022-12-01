@@ -23,16 +23,14 @@
 package me.wolfyscript.customcrafting;
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.Keyed;
+import com.wolfyscript.utilities.NamespacedKey;
+import java.util.Objects;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.utilities.util.ClassRegistry;
-import com.wolfyscript.utilities.Keyed;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 @Deprecated
 public interface CCClassRegistry<T extends Keyed> extends ClassRegistry<T> {

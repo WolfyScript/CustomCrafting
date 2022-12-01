@@ -22,15 +22,14 @@
 
 package me.wolfyscript.customcrafting.utils.cooking;
 
+import com.wolfyscript.utilities.tuple.Pair;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
-import com.wolfyscript.utilities.tuple.Pair;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class CookingManager {
 

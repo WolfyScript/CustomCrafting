@@ -22,26 +22,25 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
-import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class ClusterRecipeCreator extends CCCluster {
 
@@ -116,21 +115,21 @@ public class ClusterRecipeCreator extends CCCluster {
         registerGuiWindow(new MenuTagChooseList(this, customCrafting));
         registerGuiWindow(new MenuItemEditor(this, customCrafting));
 
-        getButtonBuilder().action(CONDITIONS.getKey()).state(state -> state.icon(Material.CYAN_CONCRETE_POWDER).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        getButtonBuilder().action(CONDITIONS.getKey()).state(state -> state.icon(Material.CYAN_CONCRETE_POWDER).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
             guiHandler.openWindow("conditions");
             return true;
         })).register();
-        getButtonBuilder().action(TAGS.getKey()).state(state -> state.icon(Material.NAME_TAG).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        getButtonBuilder().action(TAGS.getKey()).state(state -> state.icon(Material.NAME_TAG).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
             guiHandler.openWindow("tag_settings");
             return true;
         })).register();
-        getButtonBuilder().chatInput(GROUP.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        getButtonBuilder().chatInput(GROUP.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
                     if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().isRightClick()) {
                         cache.getRecipeCreatorCache().getRecipeCache().setGroup("");
                         return false;
                     }
                     return true;
-                }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("group", cache.getRecipeCreatorCache().getRecipeCache().getGroup()))))
+                }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("group", cache.getRecipeCreatorCache().getRecipeCache().getGroup()))))
                 .inputAction((guiHandler, player, s, args) -> {
                     if (args.length > 0) {
                         guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().setGroup(args[0]);
@@ -180,19 +179,19 @@ public class ClusterRecipeCreator extends CCCluster {
     }
 
     private void registerSaveButtons() {
-        getButtonBuilder().action(SAVE.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, i, event) -> {
+        getButtonBuilder().action(SAVE.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
             if (guiHandler.getWindow() instanceof RecipeCreator && !cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, player, guiHandler)) {
                 getChat().sendMessage(player, translatedMsgKey("save.empty"));
             }
             return true;
-        }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
+        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
             NamespacedKey namespacedKey = cache.getRecipeCreatorCache().getRecipeCache().getKey();
             if (namespacedKey != null) {
                 return CallbackButtonRender.UpdateResult.of(itemStack, Placeholder.unparsed("recipe_folder", namespacedKey.getKeyComponent().getFolder()), Placeholder.unparsed("recipe_key", namespacedKey.getKeyComponent().getObject()));
             }
             return CallbackButtonRender.UpdateResult.of(itemStack);
         })).register();
-        getButtonBuilder().action(SAVE_AS.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        getButtonBuilder().action(SAVE_AS.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
             if (guiHandler.getWindow() instanceof RecipeCreator) {
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();

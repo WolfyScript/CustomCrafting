@@ -22,29 +22,27 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.MultipleChoiceButton;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
 import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bukkit.Material;
@@ -84,24 +82,29 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
                             cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(settings -> settings.getGridSize() - 2)
                                     // Get old elite crafting table settings
                                     .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).getGridSize() - 2))
-                    .addState(state -> state.subKey("size_2").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    .addState(state -> state.subKey("size_2").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                         changeGridSize(items, 3);
                         return true;
                     }))
-                    .addState(state -> state.subKey("size_3").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    .addState(state -> state.subKey("size_3").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                         changeGridSize(items, 4);
                         return true;
                     }))
-                    .addState(state -> state.subKey("size_4").icon(PlayerHeadUtils.getViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    .addState(state -> state.subKey("size_4").icon(PlayerHeadUtils.getViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                         changeGridSize(items, 5);
                         return true;
                     }))
                     // Deprecated states
-                    .addState(state -> state.subKey("size_5").icon(PlayerHeadUtils.getViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    .addState(state -> state.subKey("size_5").icon(PlayerHeadUtils.getViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                         changeGridSize(items, 6);
                         return true;
                     }))
-                    .addState(state -> state.subKey("size_6").icon(PlayerHeadUtils.getViaURL("faff2eb498e5c6a04484f0c9f785b448479ab213df95ec91176a308a12add70")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    .addState(state -> state.subKey("size_6").icon(PlayerHeadUtils.getViaURL("faff2eb498e5c6a04484f0c9f785b448479ab213df95ec91176a308a12add70")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                         changeGridSize(items, 2);
                         return true;
                     })).register();
@@ -110,19 +113,23 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
                     cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(settings -> settings.getGridSize() - 3)
                             // Get old elite crafting table settings
                             .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).getGridSize() - 3),
-                    new ButtonState<>("elite_workbench.grid_size.size_3", PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    new ButtonState<>("elite_workbench.grid_size.size_3", PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839"), (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                         changeGridSize(items, 4);
                         return true;
                     }),
-                    new ButtonState<>("elite_workbench.grid_size.size_4", PlayerHeadUtils.getViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    new ButtonState<>("elite_workbench.grid_size.size_4", PlayerHeadUtils.getViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424"), (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                         changeGridSize(items, 5);
                         return true;
                     }),
-                    new ButtonState<>("elite_workbench.grid_size.size_5", PlayerHeadUtils.getViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    new ButtonState<>("elite_workbench.grid_size.size_5", PlayerHeadUtils.getViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c"), (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                         changeGridSize(items, 6);
                         return true;
                     }),
-                    new ButtonState<>("elite_workbench.grid_size.size_6", PlayerHeadUtils.getViaURL("faff2eb498e5c6a04484f0c9f785b448479ab213df95ec91176a308a12add70"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                    new ButtonState<>("elite_workbench.grid_size.size_6", PlayerHeadUtils.getViaURL("faff2eb498e5c6a04484f0c9f785b448479ab213df95ec91176a308a12add70"), (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                         changeGridSize(items, 3);
                         return true;
                     })));
@@ -131,11 +138,13 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
                 cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(EliteCraftingTableSettings::isEnabled)
                         // Get old elite crafting table settings
                         .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isEnabled()),
-                new ButtonState<>("elite_workbench.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                new ButtonState<>("elite_workbench.toggle.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                     setEnable(items, false);
                     return true;
                 }),
-                new ButtonState<>("elite_workbench.toggle.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                new ButtonState<>("elite_workbench.toggle.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                     setEnable(items, true);
                     return true;
                 })));
@@ -143,11 +152,13 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
                 cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(EliteCraftingTableSettings::isAdvancedRecipes)
                         // Get old elite crafting table settings
                         .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isAdvancedRecipes()),
-                new ButtonState<>("elite_workbench.advanced_recipes.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                new ButtonState<>("elite_workbench.advanced_recipes.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                     setAdvancedRecipes(items, false);
                     return true;
                 }),
-                new ButtonState<>("elite_workbench.advanced_recipes.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+                new ButtonState<>("elite_workbench.advanced_recipes.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
                     setAdvancedRecipes(items, true);
                     return true;
                 })));

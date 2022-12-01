@@ -25,7 +25,6 @@ package me.wolfyscript.customcrafting.gui.item_creator;
 import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import org.bukkit.Material;
 
 public class ButtonOption {

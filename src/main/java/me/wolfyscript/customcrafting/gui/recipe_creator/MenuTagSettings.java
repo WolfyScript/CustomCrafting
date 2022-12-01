@@ -22,15 +22,14 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
-import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
 public class MenuTagSettings extends CCWindow {
@@ -41,16 +40,16 @@ public class MenuTagSettings extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action("add_tag_list").state(s -> s.icon(Material.NAME_TAG).action((cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action("add_tag_list").state(s -> s.icon(Material.NAME_TAG).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             guiHandler.openWindow("tag_list");
             return true;
         })).register();
-        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getListPage();
             cache.getRecipeCreatorCache().getTagSettingsCache().setListPage(++page);
             return true;
         })).register();
-        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getListPage();
             if (page > 0) {
                 cache.getRecipeCreatorCache().getTagSettingsCache().setListPage(--page);

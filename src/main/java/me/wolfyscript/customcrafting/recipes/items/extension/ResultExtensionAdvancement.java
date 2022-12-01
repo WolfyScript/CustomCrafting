@@ -22,9 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import java.util.Objects;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -35,8 +37,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 public class ResultExtensionAdvancement extends ResultExtension {
 
     private NamespacedKey advancement;
@@ -46,7 +46,7 @@ public class ResultExtensionAdvancement extends ResultExtension {
     private boolean nearWorkstation = false;
 
     public ResultExtensionAdvancement() {
-        super(new me.wolfyscript.utilities.util.NamespacedKey(CustomCrafting.inst(), "advancement"));
+        super(new BukkitNamespacedKey(CustomCrafting.inst(), "advancement"));
     }
 
     public ResultExtensionAdvancement(ResultExtensionAdvancement extension) {

@@ -23,16 +23,15 @@
 package me.wolfyscript.customcrafting.recipes.items.target;
 
 
-import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import java.util.ArrayList;
+import java.util.List;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ResultTarget {

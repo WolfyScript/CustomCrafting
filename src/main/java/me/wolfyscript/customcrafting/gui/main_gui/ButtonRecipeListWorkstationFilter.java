@@ -22,16 +22,15 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import org.bukkit.Material;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class ButtonRecipeListWorkstationFilter extends ButtonAction<CCCache> {
 

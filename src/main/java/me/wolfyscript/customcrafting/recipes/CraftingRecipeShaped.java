@@ -22,18 +22,17 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderShaped;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderShaped;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import org.bukkit.inventory.RecipeChoice;
 
 public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeShaped, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapedRecipe> {

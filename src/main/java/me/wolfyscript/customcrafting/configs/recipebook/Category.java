@@ -22,22 +22,21 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
-import com.google.common.base.Preconditions;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.google.common.base.Preconditions;
 import com.wolfyscript.utilities.bukkit.nms.api.network.MCByteBuf;
-import org.bukkit.entity.Player;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 @JsonPropertyOrder({"id", "icon", "name", "description", "auto"})

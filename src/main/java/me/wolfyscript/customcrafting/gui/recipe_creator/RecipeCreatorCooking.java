@@ -22,14 +22,14 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import org.bukkit.Material;
 
 public class RecipeCreatorCooking extends RecipeCreator {
@@ -46,7 +46,7 @@ public class RecipeCreatorCooking extends RecipeCreator {
         super.onInit();
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeResult());
-        getButtonBuilder().chatInput(XP).state(state -> state.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getCookingCache().getExp()))))).inputAction((guiHandler, player, s, args) -> {
+        getButtonBuilder().chatInput(XP).state(state -> state.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getCookingCache().getExp()))))).inputAction((guiHandler, player, s, args) -> {
             float xp;
             try {
                 xp = Float.parseFloat(args[0]);
@@ -57,7 +57,7 @@ public class RecipeCreatorCooking extends RecipeCreator {
             guiHandler.getCustomCache().getRecipeCreatorCache().getCookingCache().setExp(xp);
             return false;
         }).register();
-        getButtonBuilder().chatInput(COOKING_TIME).state(state -> state.icon(Material.COAL).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(cache.getRecipeCreatorCache().getCookingCache().getCookingTime()))))).inputAction((guiHandler, player, s, args) -> {
+        getButtonBuilder().chatInput(COOKING_TIME).state(state -> state.icon(Material.COAL).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(cache.getRecipeCreatorCache().getCookingCache().getCookingTime()))))).inputAction((guiHandler, player, s, args) -> {
             int time;
             try {
                 time = Short.parseShort(args[0]);

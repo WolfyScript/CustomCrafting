@@ -22,14 +22,13 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
-import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
+import java.util.Objects;
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-
-import java.util.Objects;
 
 public class RecipeBookListener implements Listener {
 

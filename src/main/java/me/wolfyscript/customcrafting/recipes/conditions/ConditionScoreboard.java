@@ -22,11 +22,13 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import java.util.HashMap;
+import java.util.Map;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import me.wolfyscript.utilities.util.eval.context.EvalContextPlayer;
 import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
 import org.bukkit.Bukkit;
@@ -34,9 +36,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ConditionScoreboard extends Condition<ConditionScoreboard> {
 

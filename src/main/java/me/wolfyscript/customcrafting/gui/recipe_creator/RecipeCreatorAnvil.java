@@ -22,13 +22,13 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -54,7 +54,7 @@ public class RecipeCreatorAnvil extends RecipeCreator {
         registerButton(new ButtonRecipeIngredient(1));
         registerButton(new ButtonRecipeResult());
         var btnB = getButtonBuilder();
-        btnB.action(MODE).state(s -> s.icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, slot, event) -> {
+        btnB.action(MODE).state(s -> s.icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             var mode = cache.getRecipeCreatorCache().getAnvilCache().getMode();
             int id = mode.getId();
             if (id < 2) {
@@ -64,41 +64,41 @@ public class RecipeCreatorAnvil extends RecipeCreator {
             }
             cache.getRecipeCreatorCache().getAnvilCache().setMode(CustomRecipeAnvil.Mode.getById(id));
             return true;
-        }).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("mode", cache.getRecipeCreatorCache().getAnvilCache().getMode().name())))).register();
-        btnB.action(REPAIR_MODE).state(s -> s.icon(Material.GLOWSTONE_DUST).action((cache, guiHandler, player, inventory, slot, event) -> {
+        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("mode", cache.getRecipeCreatorCache().getAnvilCache().getMode().name())))).register();
+        btnB.action(REPAIR_MODE).state(s -> s.icon(Material.GLOWSTONE_DUST).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             int index = CustomRecipeAnvil.RepairCostMode.getModes().indexOf(cache.getRecipeCreatorCache().getAnvilCache().getRepairCostMode()) + 1;
             cache.getRecipeCreatorCache().getAnvilCache().setRepairCostMode(CustomRecipeAnvil.RepairCostMode.getModes().get(index >= CustomRecipeAnvil.RepairCostMode.getModes().size() ? 0 : index));
             return true;
-        }).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("var", cache.getRecipeCreatorCache().getAnvilCache().getRepairCostMode().name())))).register();
-        btnB.toggle(REPAIR_APPLY).enabledState(s -> s.subKey("true").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, slot, event) -> {
+        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("var", cache.getRecipeCreatorCache().getAnvilCache().getRepairCostMode().name())))).register();
+        btnB.toggle(REPAIR_APPLY).enabledState(s -> s.subKey("true").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getAnvilCache().setApplyRepairCost(false);
             return true;
-        })).disabledState(s -> s.subKey("false").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.subKey("false").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getAnvilCache().setApplyRepairCost(true);
             return true;
         })).register();
-        btnB.toggle(BLOCK_REPAIR).enabledState(s -> s.subKey("true").icon(Material.IRON_SWORD).action((cache, guiHandler, player, inventory, slot, event) -> {
+        btnB.toggle(BLOCK_REPAIR).enabledState(s -> s.subKey("true").icon(Material.IRON_SWORD).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getAnvilCache().setBlockRepair(false);
             return true;
-        })).disabledState(s -> s.subKey("false").icon(Material.IRON_SWORD).action((cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.subKey("false").icon(Material.IRON_SWORD).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getAnvilCache().setBlockRepair(true);
             return true;
         })).register();
-        btnB.toggle(BLOCK_RENAME).enabledState(s -> s.subKey("true").icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
+        btnB.toggle(BLOCK_RENAME).enabledState(s -> s.subKey("true").icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getAnvilCache().setBlockRename(false);
             return true;
-        })).disabledState(s -> s.subKey("false").icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.subKey("false").icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getAnvilCache().setBlockRename(true);
             return true;
         })).register();
-        btnB.toggle(BLOCK_ENCHANT).enabledState(s -> s.subKey("true").icon(Material.ENCHANTING_TABLE).action((cache, guiHandler, player, inventory, slot, event) -> {
+        btnB.toggle(BLOCK_ENCHANT).enabledState(s -> s.subKey("true").icon(Material.ENCHANTING_TABLE).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getAnvilCache().setBlockEnchant(false);
             return true;
-        })).disabledState(s -> s.subKey("false").icon(Material.ENCHANTING_TABLE).action((cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.subKey("false").icon(Material.ENCHANTING_TABLE).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getAnvilCache().setBlockEnchant(true);
             return true;
         })).register();
-        btnB.chatInput(REPAIR_COST).state(s -> s.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("var", String.valueOf(cache.getRecipeCreatorCache().getAnvilCache().getRepairCost()))))).inputAction((guiHandler, player, msg, args) -> {
+        btnB.chatInput(REPAIR_COST).state(s -> s.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("var", String.valueOf(cache.getRecipeCreatorCache().getAnvilCache().getRepairCost()))))).inputAction((guiHandler, player, msg, args) -> {
             int repairCost;
             try {
                 repairCost = Math.max(1, Integer.parseInt(args[0]));
@@ -109,7 +109,7 @@ public class RecipeCreatorAnvil extends RecipeCreator {
             guiHandler.getCustomCache().getRecipeCreatorCache().getAnvilCache().setRepairCost(repairCost);
             return false;
         }).register();
-        btnB.chatInput(DURABILITY).state(s -> s.icon(Material.IRON_SWORD).render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("var", String.valueOf(cache.getRecipeCreatorCache().getAnvilCache().getDurability()))))).inputAction((guiHandler, player, msg, args) -> {
+        btnB.chatInput(DURABILITY).state(s -> s.icon(Material.IRON_SWORD).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("var", String.valueOf(cache.getRecipeCreatorCache().getAnvilCache().getDurability()))))).inputAction((guiHandler, player, msg, args) -> {
             int durability;
             try {
                 durability = Integer.parseInt(args[0]);

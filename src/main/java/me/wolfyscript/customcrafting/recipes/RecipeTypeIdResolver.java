@@ -22,14 +22,12 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import me.wolfyscript.customcrafting.CustomCrafting;
 
 public class RecipeTypeIdResolver extends TypeIdResolverBase {
 
@@ -61,7 +59,7 @@ public class RecipeTypeIdResolver extends TypeIdResolverBase {
 
     @Override
     public JavaType typeFromId(DatabindContext context, String id) {
-        RecipeType<?> recipeType = CustomCrafting.inst().getRegistries().getRecipeTypes().get(customCrafting.getApi().getIdentifiers().getNamespaced(id));
+        RecipeType<?> recipeType = CustomCrafting.inst().getRegistries().getRecipeTypes().get(CustomCrafting.inst().getApi().getIdentifiers().getNamespaced(id));
         if (recipeType != null) {
             Class<?> clazz = recipeType.getRecipeClass();
             return clazz != null ? context.constructSpecializedType(this.superType, clazz) : TypeFactory.unknownType();

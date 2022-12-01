@@ -22,9 +22,8 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-
 import java.util.Optional;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 
 public class CacheRecipeView {
 

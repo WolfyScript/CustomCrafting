@@ -22,22 +22,21 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class WorldNameCondition extends Condition<WorldNameCondition> {
 
@@ -88,26 +87,28 @@ public class WorldNameCondition extends Condition<WorldNameCondition> {
         public GUIComponent() {
             super(Material.GRASS_BLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.registerButton(new ButtonAction<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
+                        var bB = menu.getButtonBuilder();
+                        bB.action(REMOVE).state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, slot, event) -> {
                             var conditions = cache.getRecipeCreatorCache().getRecipeCache().getConditions();
                             if (!conditions.getByType(WorldNameCondition.class).getWorldNames().isEmpty()) {
                                 conditions.getByType(WorldNameCondition.class).getWorldNames().remove(conditions.getByType(WorldNameCondition.class).getWorldNames().size() - 1);
                             }
                             return true;
-                        }));
-                        menu.registerButton(new ButtonDummy<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
+                        })).register();
+                        bB.dummy(LIST).state(state -> state.icon(Material.BOOK).render((cache, guiHandler, player, guiInventory, btn, stack, slot) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldNameCondition.class);
-                            hashMap.put("%MODE%", condition.getOption().getDisplayString(api));
+                            var tagResBuilder = TagResolver.builder();
+                            tagResBuilder.resolver(Placeholder.unparsed("mode", condition.getOption().getDisplayString(api)));
                             for (int i = 0; i < 4; i++) {
                                 if (i < condition.getWorldNames().size()) {
-                                    hashMap.put("%var" + i + "%", condition.getWorldNames().get(i));
+                                    tagResBuilder.resolver(Placeholder.unparsed("var"+i, condition.getWorldNames().get(i)));
                                 } else {
-                                    hashMap.put("%var" + i + "%", "...");
+                                    tagResBuilder.resolver(Placeholder.unparsed("var"+i,  "..."));
                                 }
                             }
-                            return itemStack;
-                        }));
-                        menu.registerButton(new ButtonChatInput<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
+                            return CallbackButtonRender.UpdateResult.of();
+                        })).register();
+                        bB.chatInput(ADD).state(state -> state.icon(Material.GREEN_CONCRETE)).inputAction((guiHandler, player, s, strings) -> {
                             if (!s.isEmpty()) {
                                 var world = Bukkit.getWorld(s);
                                 if (world == null) {
@@ -124,12 +125,12 @@ public class WorldNameCondition extends Condition<WorldNameCondition> {
                                 return false;
                             }
                             return true;
-                        }, (guiHandler, player, args) -> {
+                        }).tabComplete((guiHandler, player, args) -> {
                             if (args.length > 0) {
                                 return StringUtil.copyPartialMatches(args[0], Bukkit.getWorlds().stream().map(World::getName).toList(), Collections.emptyList());
                             }
                             return Collections.emptyList();
-                        }));
+                        }).register();
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(29, ADD);

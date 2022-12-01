@@ -22,8 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes.settings;
 
-import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 
 public class AdvancedRecipeSettings implements CraftingRecipeSettings<AdvancedRecipeSettings> {
 

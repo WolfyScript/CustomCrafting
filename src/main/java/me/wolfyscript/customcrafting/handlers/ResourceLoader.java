@@ -22,19 +22,18 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wolfyscript.utilities.Keyed;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import java.io.IOException;
+import java.util.Objects;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.Keyed;
-import com.wolfyscript.utilities.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keyed {
 

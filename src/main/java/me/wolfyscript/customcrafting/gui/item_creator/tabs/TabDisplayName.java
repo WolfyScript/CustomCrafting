@@ -22,19 +22,16 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -51,7 +48,7 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.NAME_TAG, this);
-        new ButtonChatInput.Builder<>(creator, KEY + ".set")
+        creator.getButtonBuilder().chatInput(KEY + ".set")
                 .inputAction((guiHandler, player, s, strings) -> {
                     if (creator.getCustomCrafting().isPaper()) {
                         CustomItem customItem = guiHandler.getCustomCache().getItems().getItem();
@@ -63,16 +60,16 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
                         guiHandler.getCustomCache().getItems().getItem().setDisplayName(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s)));
                     }
                     return false;
-                }).state(state -> state.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, guiInventory, i, event) -> {
+                }).state(state -> state.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
                     var chat = guiInventory.getWindow().getChat();
                     chat.sendMessage(player, chat.translated("msg.input.wui_command"));
                     chat.sendMessage(player, chat.translated("msg.input.mini_message"));
                     return true;
                 })).register();
-        creator.registerButton(new ButtonAction<>(KEY + ".remove", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
-            guiHandler.getCustomCache().getItems().getItem().setDisplayName(null);
+        creator.getButtonBuilder().action(KEY + ".remove").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            cache.getItems().getItem().setDisplayName(null);
             return true;
-        }));
+        })).register();
     }
 
     @Override

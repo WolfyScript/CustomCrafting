@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.listeners.customevents;
 
+import java.util.ArrayList;
+import java.util.List;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import org.bukkit.entity.Player;
@@ -29,9 +31,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CustomPreCraftEvent extends CustomCraftEvent {
 

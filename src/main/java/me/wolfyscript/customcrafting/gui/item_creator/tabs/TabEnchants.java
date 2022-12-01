@@ -22,6 +22,11 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,18 +36,9 @@ import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Locale;
 import org.bukkit.util.StringUtil;
 
 public class TabEnchants extends ItemCreatorTabVanilla {
@@ -64,7 +60,7 @@ public class TabEnchants extends ItemCreatorTabVanilla {
         ButtonOption.register(creator.getButtonBuilder(), Material.ENCHANTED_BOOK, this);
 
         new ButtonChatInput.Builder<>(creator, KEY + ".add")
-                .state(state -> state.icon(Material.ENCHANTED_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                .state(state -> state.icon(Material.ENCHANTED_BOOK).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
                     var chat = guiInventory.getWindow().getChat();
                     chat.sendMessage(player, chat.translated("msg.input.wui_command"));
                     return true;
@@ -101,7 +97,7 @@ public class TabEnchants extends ItemCreatorTabVanilla {
                 })
                 .register();
         new ButtonChatInput.Builder<>(creator, KEY + ".remove")
-                .state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                .state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
                     var chat = guiInventory.getWindow().getChat();
                     chat.sendMessage(player, chat.translated("msg.input.wui_command"));
                     return true;

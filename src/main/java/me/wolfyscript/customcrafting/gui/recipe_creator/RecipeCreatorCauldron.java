@@ -22,19 +22,18 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import java.util.function.BiConsumer;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCacheCauldron;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
-import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
-import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -58,7 +57,7 @@ public class RecipeCreatorCauldron extends RecipeCreator {
         for (int i = 0; i < 3; i++) {
             final int resultSlot = i;
             getButtonBuilder().itemInput("additional_result_" + resultSlot).state(state -> state.icon(Material.AIR)
-                    .action((cache, guiHandler, player, inventory, slot, event) -> false)
+                    .action((cache, guiHandler, player, inventory, btn, slot, event) -> false)
                     .postAction((cache, guiHandler, player, inventory, itemStack, slot, event) -> {
                         RecipeCacheCauldron cacheCauldron = cache.getRecipeCreatorCache().getCauldronCache();
                         Result result = cacheCauldron.getAdditionalResults()[resultSlot];

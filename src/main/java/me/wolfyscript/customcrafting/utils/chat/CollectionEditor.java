@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.utils.chat;
 
 import com.wolfyscript.utilities.bukkit.chat.BukkitChat;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
 import com.wolfyscript.utilities.bukkit.gui.cache.CustomCache;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackChatTabComplete;
 import java.util.Collection;
@@ -32,9 +34,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import com.wolfyscript.utilities.bukkit.gui.callback.CallbackChatTabComplete;
-import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
-import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
 import org.bukkit.entity.Player;
 
 public class CollectionEditor<C extends CustomCache, T> {
@@ -72,7 +71,7 @@ public class CollectionEditor<C extends CustomCache, T> {
         return this;
     }
 
-    public CollectionEditor<C, T> setTabComplete(ChatTabComplete<C> tabComplete) {
+    public CollectionEditor<C, T> setTabComplete(CallbackChatTabComplete<C> tabComplete) {
         this.tabComplete = tabComplete;
         return this;
     }

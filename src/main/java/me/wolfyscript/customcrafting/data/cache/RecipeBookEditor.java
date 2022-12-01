@@ -22,11 +22,10 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
+import java.util.regex.Pattern;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
-
-import java.util.regex.Pattern;
 
 public class RecipeBookEditor {
 

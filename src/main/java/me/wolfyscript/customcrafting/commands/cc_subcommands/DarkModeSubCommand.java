@@ -22,17 +22,16 @@
 
 package me.wolfyscript.customcrafting.commands.cc_subcommands;
 
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import java.util.ArrayList;
+import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DarkModeSubCommand extends AbstractSubCommand {
 

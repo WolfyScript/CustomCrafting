@@ -22,10 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-
 import java.util.Map;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 
 public class AnvilData extends RecipeData<CustomRecipeAnvil> {
 

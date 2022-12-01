@@ -22,8 +22,6 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,19 +29,18 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.JsonNode;
-import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
-import com.wolfyscript.utilities.bukkit.nms.api.network.MCByteBuf;
 import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
+import com.wolfyscript.utilities.bukkit.nms.api.network.MCByteBuf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)

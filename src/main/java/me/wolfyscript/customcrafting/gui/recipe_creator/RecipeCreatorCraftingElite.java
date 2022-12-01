@@ -22,11 +22,11 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.CCCache;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
 import org.bukkit.Material;
 
 public class RecipeCreatorCraftingElite extends RecipeCreator {
@@ -47,35 +47,35 @@ public class RecipeCreatorCraftingElite extends RecipeCreator {
             registerButton(new ButtonRecipeIngredient(i));
         }
         registerButton(new ButtonRecipeResult());
-        btnB.action(SETTINGS).state(s -> s.icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, slot, event) -> {
+        btnB.action(SETTINGS).state(s -> s.icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             guiHandler.openWindow(RecipeCreatorCraftingEliteSettings.KEY);
             return true;
         })).register();
-        btnB.toggle(ClusterRecipeCreator.SHAPELESS).stateFunction((cache, g, p, i, s) -> cache.getRecipeCreatorCache().getEliteCraftingCache().isShapeless()).enabledState(s -> s.cluster(getCluster()).subKey("enabled").icon(PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813")).action((cache, guiHandler, player, inventory, slot, event) -> {
+        btnB.toggle(ClusterRecipeCreator.SHAPELESS).stateFunction((cache, g, p, i, s) -> cache.getRecipeCreatorCache().getEliteCraftingCache().isShapeless()).enabledState(s -> s.cluster(getCluster()).subKey("enabled").icon(PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getEliteCraftingCache().setShapeless(false);
             return true;
-        })).disabledState(s -> s.cluster(getCluster()).subKey("disabled").icon(PlayerHeadUtils.getViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312")).action((cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.cluster(getCluster()).subKey("disabled").icon(PlayerHeadUtils.getViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getEliteCraftingCache().setShapeless(true);
             return true;
         })).register();
-        btnB.toggle(ClusterRecipeCreator.MIRROR_HORIZONTAL).stateFunction((cache, g, p, i, s) -> cache.getRecipeCreatorCache().getEliteCraftingCache().isMirrorHorizontal()).enabledState(s -> s.cluster(getCluster()).subKey("enabled").icon(PlayerHeadUtils.getViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311")).action((cache, guiHandler, player, inventory, slot, event) -> {
+        btnB.toggle(ClusterRecipeCreator.MIRROR_HORIZONTAL).stateFunction((cache, g, p, i, s) -> cache.getRecipeCreatorCache().getEliteCraftingCache().isMirrorHorizontal()).enabledState(s -> s.cluster(getCluster()).subKey("enabled").icon(PlayerHeadUtils.getViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getEliteCraftingCache().setMirrorHorizontal(false);
             return true;
-        })).disabledState(s -> s.cluster(getCluster()).subKey("disabled").icon(PlayerHeadUtils.getViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311")).action((cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.cluster(getCluster()).subKey("disabled").icon(PlayerHeadUtils.getViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getEliteCraftingCache().setMirrorHorizontal(true);
             return true;
         })).register();
-        btnB.toggle(ClusterRecipeCreator.MIRROR_VERTICAL).stateFunction((cache, g, p, i, s) -> cache.getRecipeCreatorCache().getEliteCraftingCache().isMirrorVertical()).enabledState(s -> s.cluster(getCluster()).subKey("enabled").icon(PlayerHeadUtils.getViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7")).action((cache, guiHandler, player, inventory, slot, event) -> {
+        btnB.toggle(ClusterRecipeCreator.MIRROR_VERTICAL).stateFunction((cache, g, p, i, s) -> cache.getRecipeCreatorCache().getEliteCraftingCache().isMirrorVertical()).enabledState(s -> s.cluster(getCluster()).subKey("enabled").icon(PlayerHeadUtils.getViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getEliteCraftingCache().setMirrorVertical(false);
             return true;
-        })).disabledState(s -> s.cluster(getCluster()).subKey("disabled").icon(PlayerHeadUtils.getViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7")).action((cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.cluster(getCluster()).subKey("disabled").icon(PlayerHeadUtils.getViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getEliteCraftingCache().setMirrorVertical(true);
             return true;
         })).register();
-        btnB.toggle(ClusterRecipeCreator.MIRROR_ROTATION).stateFunction((cache, g, p, i, s) -> cache.getRecipeCreatorCache().getEliteCraftingCache().isMirrorRotation()).enabledState(s -> s.cluster(getCluster()).subKey("enabled").icon(PlayerHeadUtils.getViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61")).action((cache, guiHandler, player, inventory, slot, event) -> {
+        btnB.toggle(ClusterRecipeCreator.MIRROR_ROTATION).stateFunction((cache, g, p, i, s) -> cache.getRecipeCreatorCache().getEliteCraftingCache().isMirrorRotation()).enabledState(s -> s.cluster(getCluster()).subKey("enabled").icon(PlayerHeadUtils.getViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getEliteCraftingCache().setMirrorRotation(false);
             return true;
-        })).disabledState(s -> s.cluster(getCluster()).subKey("disabled").icon(PlayerHeadUtils.getViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61")).action((cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(s -> s.cluster(getCluster()).subKey("disabled").icon(PlayerHeadUtils.getViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getEliteCraftingCache().setMirrorRotation(true);
             return true;
         })).register();

@@ -22,16 +22,6 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.google.common.base.Preconditions;
-import com.wolfyscript.utilities.Keyed;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.json.KeyedTypeIdResolver;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.MenuConditions;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -42,19 +32,28 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
-import net.kyori.adventure.text.Component;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.Keyed;
 import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.json.KeyedTypeIdResolver;
 import com.wolfyscript.utilities.json.KeyedTypeResolver;
-import org.bukkit.Material;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCache;
+import me.wolfyscript.customcrafting.gui.recipe_creator.MenuConditions;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
+import org.jetbrains.annotations.Nullable;
 
 @JsonTypeResolver(KeyedTypeResolver.class)
 @JsonTypeIdResolver(KeyedTypeIdResolver.class)

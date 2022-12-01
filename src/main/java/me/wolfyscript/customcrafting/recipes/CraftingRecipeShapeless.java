@@ -22,27 +22,18 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderShapeless;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
-import me.wolfyscript.customcrafting.recipes.data.CraftingData;
-import me.wolfyscript.customcrafting.recipes.data.IngredientData;
-import me.wolfyscript.customcrafting.recipes.items.Ingredient;
-import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
-import me.wolfyscript.customcrafting.utils.CraftManager;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderShapeless;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import org.bukkit.inventory.RecipeChoice;
 
 public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRecipeShapeless, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapelessRecipe> {

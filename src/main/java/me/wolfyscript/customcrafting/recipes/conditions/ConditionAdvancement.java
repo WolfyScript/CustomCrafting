@@ -23,24 +23,23 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import com.google.common.collect.Streams;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
-import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.advancement.Advancement;
-import org.bukkit.util.StringUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.util.StringUtil;
 
 public class ConditionAdvancement extends Condition<ConditionAdvancement> {
 

@@ -23,6 +23,12 @@
 package me.wolfyscript.customcrafting.gui.cauldron;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import java.util.Map;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -38,12 +44,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
-import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
-import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
-import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
@@ -102,7 +102,7 @@ public class CauldronWorkstationMenu extends CCWindow {
         for (int resultSlot = 0; resultSlot < 4; resultSlot++) {
             int finalResultSlot = resultSlot;
             getButtonBuilder().itemInput("result_" + resultSlot).state(state -> state.icon(Material.AIR)
-                    .action((cache, guiHandler, player, inventory, slot, event) -> false)
+                    .action((cache, guiHandler, player, inventory, btn, slot, event) -> false)
                     .postAction((cache, guiHandler, player, inventory, itemStack, i, event) -> {
                         cache.getCauldronWorkstation().getBlockData().ifPresent(cauldronBlockData -> cauldronBlockData.getResult()[finalResultSlot] = itemStack);
                     })
@@ -112,7 +112,7 @@ public class CauldronWorkstationMenu extends CCWindow {
                     })).register();
         }
         getButtonBuilder().toggle("start")
-                .enabledState(state -> state.subKey("enabled").icon(Material.LIME_CONCRETE).action((cache, guiHandler, player, guiInventory, i, event) -> {
+                .enabledState(state -> state.subKey("enabled").icon(Material.LIME_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
                     CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
                     cauldronWorkstation.getBlockData().ifPresent(cauldronBlockData -> {
                         if (cauldronBlockData.isResultEmpty()) {
@@ -139,7 +139,7 @@ public class CauldronWorkstationMenu extends CCWindow {
                     });
                     return true;
                 }))
-                .disabledState(state -> state.subKey("disabled").icon(Material.GRAY_CONCRETE).action((cache, guiHandler, player, guiInventory, i, event) -> true))
+                .disabledState(state -> state.subKey("disabled").icon(Material.GRAY_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, event) -> true))
                 .defaultState(false).stateFunction((cache, guiHandler, player, guiInventory, i) -> {
                     CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
                     return cauldronWorkstation.getBlockData().map(CauldronBlockData::isResultEmpty).orElse(true) && cauldronWorkstation.getPreCookEvent().isPresent();
@@ -149,9 +149,9 @@ public class CauldronWorkstationMenu extends CCWindow {
         getButtonBuilder().dummy("signal_fire").state(s -> s.icon(Material.HAY_BLOCK)).register();
 
         getButtonBuilder().dummy(INDICATOR_LAVA).state(s -> s.icon(Material.ORANGE_STAINED_GLASS_PANE)
-                .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
+                .render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
         getButtonBuilder().dummy(INDICATOR_WATER).state(s -> s.icon(Material.BLUE_STAINED_GLASS_PANE)
-                .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
+                .render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
     }
 
     @Override

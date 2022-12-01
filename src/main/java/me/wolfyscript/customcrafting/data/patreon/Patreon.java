@@ -22,12 +22,11 @@
 
 package me.wolfyscript.customcrafting.data.patreon;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import net.md_5.bungee.api.ChatColor;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import net.md_5.bungee.api.ChatColor;
 
 public class Patreon {
 

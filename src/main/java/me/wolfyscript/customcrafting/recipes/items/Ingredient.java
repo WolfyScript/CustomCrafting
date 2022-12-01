@@ -24,16 +24,14 @@ package me.wolfyscript.customcrafting.recipes.items;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.bukkit.world.items.references.APIReference;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class Ingredient extends RecipeItemStack {
 

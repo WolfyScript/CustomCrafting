@@ -22,9 +22,8 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import me.wolfyscript.customcrafting.CustomCrafting;
 
 public abstract class DatabaseLoader extends ResourceLoader {
 

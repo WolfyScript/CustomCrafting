@@ -22,21 +22,18 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.gui.potion_creator.ClusterPotionCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -52,31 +49,31 @@ public class TabPotion extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.POTION, this);
-        creator.registerButton(new ButtonAction<>("potion.add", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        creator.getButtonBuilder().action("potion.add").state(state -> state.icon(PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             cache.getPotionEffectCache().setApplyPotionEffect((potionEffectCache1, cache1, potionEffect) -> {
-                var itemMeta = items.getItem().getItemMeta();
+                var itemMeta = cache.getItems().getItem().getItemMeta();
                 if (itemMeta instanceof PotionMeta) {
                     ((PotionMeta) itemMeta).addCustomEffect(potionEffect, true);
                 }
-                items.getItem().setItemMeta(itemMeta);
+                cache.getItems().getItem().setItemMeta(itemMeta);
             });
             cache.getPotionEffectCache().setRecipePotionEffect(false);
             guiHandler.openWindow(ClusterPotionCreator.POTION_CREATOR);
             return true;
-        }));
-        creator.registerButton(new ButtonAction<>("potion.remove", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        })).register();
+        creator.getButtonBuilder().action("potion.remove").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, type) -> {
-                var itemMeta = items.getItem().getItemMeta();
+                var itemMeta = cache.getItems().getItem().getItemMeta();
                 if (itemMeta instanceof PotionMeta) {
                     ((PotionMeta) itemMeta).removeCustomEffect(type);
                 }
-                items.getItem().setItemMeta(itemMeta);
+                cache.getItems().getItem().setItemMeta(itemMeta);
             });
             potionEffectCache.setOpenedFrom("item_creator", "main_menu");
             guiHandler.openWindow(ClusterPotionCreator.POTION_EFFECT_TYPE_SELECTION);
             return true;
-        }));
+        })).register();
     }
 
     @Override

@@ -22,16 +22,16 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import me.wolfyscript.customcrafting.data.CCCache;
 import org.bukkit.Material;
 
 class ButtonNamespaceItem extends ButtonAction<CCCache> {
 
     ButtonNamespaceItem(String namespace) {
-        super("namespace_" + namespace, new ButtonState<>("namespace", Material.ENDER_CHEST, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        super("namespace_" + namespace, new ButtonState<>("namespace", Material.ENDER_CHEST, (cache, guiHandler, player, inv, btn, i, event)
+(cache, items, guiHandler, player, inventory, i, event) -> {
             items.setListNamespace(namespace);
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {

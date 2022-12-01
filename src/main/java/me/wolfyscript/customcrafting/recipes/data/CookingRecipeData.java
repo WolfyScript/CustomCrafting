@@ -22,9 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
-
 import java.util.Map;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 
 public abstract class CookingRecipeData<R extends CustomRecipeCooking<?, ?>> extends RecipeData<R> {
 

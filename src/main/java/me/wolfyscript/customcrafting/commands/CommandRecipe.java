@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.commands;
 
+import java.util.ArrayList;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.recipes.DeleteSubCommand;
 import me.wolfyscript.customcrafting.commands.recipes.EditSubCommand;
@@ -33,8 +34,6 @@ import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 
 public class CommandRecipe extends IndexCommand {
 

@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
-import me.wolfyscript.customcrafting.data.CCCache;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
+import me.wolfyscript.customcrafting.data.CCCache;
 import org.bukkit.Material;
 
 class ButtonVanillaBook extends ButtonToggle<CCCache> {

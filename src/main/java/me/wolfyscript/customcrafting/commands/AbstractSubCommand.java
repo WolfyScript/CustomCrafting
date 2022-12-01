@@ -22,13 +22,12 @@
 
 package me.wolfyscript.customcrafting.commands;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import java.util.List;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public abstract class AbstractSubCommand {
 

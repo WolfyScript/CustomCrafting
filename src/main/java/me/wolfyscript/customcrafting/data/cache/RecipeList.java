@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
+import java.util.List;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import org.bukkit.inventory.BlastingRecipe;
@@ -33,8 +34,6 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.inventory.SmokingRecipe;
 import org.bukkit.inventory.StonecuttingRecipe;
-
-import java.util.List;
 
 public class RecipeList {
 

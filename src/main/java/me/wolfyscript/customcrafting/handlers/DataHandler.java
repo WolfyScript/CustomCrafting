@@ -23,25 +23,23 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import com.google.common.collect.Streams;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.LocalStorageSettings;
-import me.wolfyscript.customcrafting.configs.MainConfig;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import me.wolfyscript.utilities.events.DependenciesLoadedEvent;
-import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.events.DependenciesLoadedEvent;
 import com.wolfyscript.utilities.bukkit.world.WorldUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Keyed;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.inventory.Recipe;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.LocalStorageSettings;
+import me.wolfyscript.customcrafting.configs.MainConfig;
+import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.Recipe;
 
 public class DataHandler implements Listener {
 

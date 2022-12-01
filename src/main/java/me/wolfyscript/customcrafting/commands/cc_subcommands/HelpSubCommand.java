@@ -22,19 +22,18 @@
 
 package me.wolfyscript.customcrafting.commands.cc_subcommands;
 
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import java.util.ArrayList;
+import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HelpSubCommand extends AbstractSubCommand {
 

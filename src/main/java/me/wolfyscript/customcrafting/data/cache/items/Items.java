@@ -22,17 +22,15 @@
 
 package me.wolfyscript.customcrafting.data.cache.items;
 
-import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import java.io.Serializable;
+import java.util.UUID;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import org.bukkit.Material;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-
-import java.io.Serializable;
-import java.util.UUID;
 
 public class Items implements Serializable {
 

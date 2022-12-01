@@ -22,18 +22,16 @@
 
 package me.wolfyscript.customcrafting.configs.custom_data;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.world.items.CustomData;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-
 import java.io.IOException;
 import java.util.Objects;
+import me.wolfyscript.customcrafting.CustomCrafting;
 
 public class RecipeBookData extends CustomData implements Cloneable {
 

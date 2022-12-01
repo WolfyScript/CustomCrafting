@@ -22,22 +22,20 @@
 
 package me.wolfyscript.customcrafting.utils;
 
-import com.wolfyscript.jackson.dataformat.hocon.HoconMapper;
-import me.wolfyscript.customcrafting.CustomCrafting;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wolfyscript.jackson.dataformat.hocon.HoconMapper;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.chat.ClickData;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
-import me.wolfyscript.utilities.util.version.WUVersion;
-import net.md_5.bungee.api.chat.ClickEvent;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.utilities.util.version.WUVersion;
+import net.md_5.bungee.api.chat.ClickEvent;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 public class UpdateChecker {
 

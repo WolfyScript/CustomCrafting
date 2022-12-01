@@ -22,19 +22,17 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
-import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.cache.items.Items;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -49,17 +47,21 @@ public class TabVanilla extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.GRASS_BLOCK, this);
-        creator.registerButton(new ButtonToggle<>("vanilla.block_recipes", (cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().isBlockVanillaRecipes(), new ButtonState<>("vanilla.block_recipes.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        creator.registerButton(new ButtonToggle<>("vanilla.block_recipes", (cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().isBlockVanillaRecipes(), new ButtonState<>("vanilla.block_recipes.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
             items.getItem().setBlockVanillaRecipes(false);
             return true;
-        }), new ButtonState<>("vanilla.block_recipes.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        }), new ButtonState<>("vanilla.block_recipes.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
             items.getItem().setBlockVanillaRecipes(true);
             return true;
         })));
-        creator.registerButton(new ButtonToggle<>("vanilla.block_placement", new ButtonState<>("vanilla.block_placement.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        creator.registerButton(new ButtonToggle<>("vanilla.block_placement", new ButtonState<>("vanilla.block_placement.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
             items.getItem().setBlockPlacement(false);
             return true;
-        }), new ButtonState<>("vanilla.block_placement.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        }), new ButtonState<>("vanilla.block_placement.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
             items.getItem().setBlockPlacement(true);
             return true;
         })));

@@ -22,11 +22,10 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Map;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
+import org.jetbrains.annotations.NotNull;
 
 public class GrindstoneData extends RecipeData<CustomRecipeGrindstone> {
 

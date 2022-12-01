@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.listeners.customevents;
 
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

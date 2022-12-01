@@ -22,21 +22,20 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
+import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.tuple.Pair;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.item_creator.ButtonFurnaceFuelToggle;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import com.wolfyscript.utilities.tuple.Pair;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -50,11 +49,9 @@ public class TabFuel extends ItemCreatorTab {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        ButtonOption.register(creator.getButtonBuilder(), Material.COAL, this);
-        creator.registerButton(new ButtonChatInput<>("fuel.burn_time.set", Material.GREEN_CONCRETE, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getBurnTime());
-            return itemStack;
-        }, (guiHandler, player, s, strings) -> {
+        var bB = creator.getButtonBuilder();
+        ButtonOption.register(bB, Material.COAL, this);
+        bB.chatInput("fuel.burn_time.set").state(state -> state.icon(Material.GREEN_CONCRETE).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("var", String.valueOf(guiHandler.getCustomCache().getItems().getItem().getFuelSettings().getBurnTime()))))).inputAction((guiHandler, player, s, strings) -> {
             try {
                 int value = Integer.parseInt(s);
                 guiHandler.getCustomCache().getItems().getItem().setBurnTime(value);
@@ -64,14 +61,25 @@ public class TabFuel extends ItemCreatorTab {
                 return true;
             }
             return false;
-        }));
-        creator.registerButton(new ButtonAction<>("fuel.burn_time.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        }).register();
+        bB.action("fuel.burn_time.reset").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            var items = cache.getItems();
             items.getItem().setBurnTime(0);
             return true;
-        }));
-        creator.registerButton(new ButtonFurnaceFuelToggle("furnace", Material.FURNACE));
-        creator.registerButton(new ButtonFurnaceFuelToggle("blast_furnace", Material.BLAST_FURNACE));
-        creator.registerButton(new ButtonFurnaceFuelToggle("smoker", Material.SMOKER));
+        })).register();
+        registerFuelToggle(bB, "furnace", Material.FURNACE);
+        registerFuelToggle(bB, "blast_furnace", Material.BLAST_FURNACE);
+        registerFuelToggle(bB, "smoker", Material.SMOKER);
+    }
+
+    private void registerFuelToggle(GuiMenuComponent.ButtonBuilder<CCCache> bB, String id, Material material) {
+        bB.toggle("fuel." + id).stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().getFuelSettings().getAllowedBlocks().contains(material)).enabledState(state -> state.subKey("enabled").icon(material).action((ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
+            items.getItem().getFuelSettings().getAllowedBlocks().remove(material);
+            return true;
+        })).disabledState(state -> state.subKey("disabled").icon(material).action((ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
+            items.getItem().getFuelSettings().getAllowedBlocks().add(material);
+            return true;
+        })).register();
     }
 
     @Override

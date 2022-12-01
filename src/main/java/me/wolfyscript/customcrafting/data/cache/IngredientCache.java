@@ -22,11 +22,10 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.bukkit.world.items.references.APIReference;
-
 import java.util.List;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 
 public class IngredientCache {
 

@@ -22,10 +22,10 @@
 
 package me.wolfyscript.customcrafting.listeners.crafting;
 
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import org.bukkit.Keyed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

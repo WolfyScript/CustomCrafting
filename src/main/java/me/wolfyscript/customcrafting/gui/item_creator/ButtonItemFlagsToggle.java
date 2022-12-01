@@ -22,11 +22,11 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator;
 
-import me.wolfyscript.customcrafting.data.CCCache;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import me.wolfyscript.customcrafting.data.CCCache;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 

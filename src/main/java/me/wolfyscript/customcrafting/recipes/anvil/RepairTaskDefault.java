@@ -22,13 +22,13 @@
 
 package me.wolfyscript.customcrafting.recipes.anvil;
 
-import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
-import me.wolfyscript.customcrafting.recipes.data.AnvilData;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
+import me.wolfyscript.customcrafting.recipes.data.AnvilData;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;

@@ -23,11 +23,11 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.registry.RegistryRecipes;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 

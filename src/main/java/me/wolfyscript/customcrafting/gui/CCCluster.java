@@ -22,10 +22,10 @@
 
 package me.wolfyscript.customcrafting.gui;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.CCCache;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
 
 public abstract class CCCluster extends GuiCluster<CCCache> {
 

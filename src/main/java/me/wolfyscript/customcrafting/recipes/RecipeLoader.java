@@ -24,8 +24,6 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-
 import java.lang.reflect.InvocationTargetException;
 
 public interface RecipeLoader<C extends CustomRecipe<?>> {

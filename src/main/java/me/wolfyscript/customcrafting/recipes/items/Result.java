@@ -22,21 +22,28 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
-import com.wolfyscript.utilities.NamespacedKey;
-import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
-import com.wolfyscript.utilities.bukkit.world.items.references.APIReference;
-import com.wolfyscript.utilities.collection.RandomCollection;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.data.RecipeData;
-import me.wolfyscript.customcrafting.recipes.items.extension.ExecutionType;
-import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
-import me.wolfyscript.customcrafting.recipes.items.target.ResultTarget;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wolfyscript.utilities.NamespacedKey;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.world.items.references.APIReference;
+import com.wolfyscript.utilities.collection.RandomCollection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
+import me.wolfyscript.customcrafting.recipes.items.extension.ExecutionType;
+import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.target.ResultTarget;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -46,15 +53,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -147,7 +145,7 @@ public class Result extends RecipeItemStack {
     }
 
     public RandomCollection<CustomItem> getRandomChoices(@Nullable Player player) {
-        return (player == null ? getChoices() : getChoices(player)).stream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getWeight(), customItem)));
+        return (player == null ? getChoices() : getChoices(player)).stream().collect(RandomCollection.createCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getWeight(), customItem)));
     }
 
     /**
