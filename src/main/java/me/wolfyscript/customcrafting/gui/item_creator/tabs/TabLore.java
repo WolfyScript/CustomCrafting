@@ -38,6 +38,9 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.version.MinecraftVersion;
+import me.wolfyscript.utilities.util.version.MinecraftVersions;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -51,7 +54,8 @@ public class TabLore extends ItemCreatorTabVanilla {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilities api) {
-        var loreChatEditor = creator.getCustomCrafting().isPaper() ? ChatUtils.createPaperLoreChatEditor(creator.getInventoryAPI()) : ChatUtils.createLoreChatEditor(creator.getInventoryAPI());
+        // MiniMessage is only included in Paper 1.18.2 or later
+        var loreChatEditor = creator.getCustomCrafting().isPaper() && ServerVersion.getVersion().isAfterOrEq(MinecraftVersion.of(1, 18, 2)) ? ChatUtils.createPaperLoreChatEditor(creator.getInventoryAPI()) : ChatUtils.createLoreChatEditor(creator.getInventoryAPI());
 
         creator.registerButton(new ButtonOption(Material.WRITABLE_BOOK, this));
         creator.registerButton(new ChatInputButton<>(KEY + ".add", Material.WRITABLE_BOOK, (guiHandler, player, s, strings) -> {
