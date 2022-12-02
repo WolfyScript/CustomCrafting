@@ -57,10 +57,10 @@ public class Patreon {
         logger.info("Special thanks to my Patrons for supporting this project: ");
         int linePos = 0;
         StringBuilder sB = new StringBuilder();
-        for (Patron patron : patronList) {
-            String name = patron.getName();
+        for (int i = 0; i < patronList.size(); i++) {
+            String name = patronList.get(i).getName();
             sB.append(name);
-            if (linePos == 5) {
+            if (linePos == 5 || i == patronList.size() - 1) {
                 logger.log(Level.INFO, sB.toString());
                 sB = new StringBuilder();
                 linePos = 0;
