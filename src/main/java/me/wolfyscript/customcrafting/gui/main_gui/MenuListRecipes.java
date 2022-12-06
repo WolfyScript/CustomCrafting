@@ -157,21 +157,26 @@ public class MenuListRecipes extends CCWindow {
         int i = page * 45;
         int slot = 0;
         if (i < subFolders.size()) {
-            for (; slot < 45 && i < subFolders.size(); i++, slot++) {
-                String key = ButtonFolderRecipe.key(slot, namespace, subFolders.get(i));
+            // render the folders first
+            for (int j = i; slot < 45 && j < subFolders.size(); j++, slot++) {
+                String key = ButtonFolderRecipe.key(slot, namespace, subFolders.get(j));
                 if (getButton(key) == null) {
-                    registerButton(new ButtonFolderRecipe(slot, namespace, subFolders.get(i), customCrafting));
+                    registerButton(new ButtonFolderRecipe(slot, namespace, subFolders.get(j), customCrafting));
                 }
                 update.setButton(9 + slot, getButton(key));
             }
+            // Then fill the remaining space of the row, so recipes start on the next row/page.
+            for (int j = 0; j < clearDirRow && slot < 45; j++, slot++) {
+                update.setButton(9 + slot, ClusterMain.GLASS_PINK);
+            }
+            i = 0; // Reset index for recipes
+        } else if (!subFolders.isEmpty()) {
+            i = i - subFolders.size() - clearDirRow; // Properly apply offset to the index.
         }
-        for (int j = 0; j < clearDirRow && slot < 45; j++, slot++) {
-            update.setButton(9 + slot, ClusterMain.GLASS_PINK);
-        }
-        i = 0;
-        for (; slot < 45 && i < recipes.size(); i++, slot++) {
+        // Then render the recipes if possible
+        for (int j = i; slot < 45 && j < recipes.size(); j++, slot++) {
             ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(slot));
-            button.setCustomRecipe(update.getGuiHandler(), recipes.get(i));
+            button.setCustomRecipe(update.getGuiHandler(), recipes.get(j));
             update.setButton(9 + slot, button);
         }
     }
