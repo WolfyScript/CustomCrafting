@@ -22,13 +22,15 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
+import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.node.ObjectNode;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,12 +40,14 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder({"categoryAlign", "categories", "filters"})
 public class RecipeBookConfig {
 
     private final Map<String, Category> categoryMap = new HashMap<>();
     private final Map<String, CategoryFilter> filters = new HashMap<>();
     private List<String> sortedCategories;
     private List<String> sortedFilters;
+    private CategoryAlign categoryAlign = new CategoryAlign();
 
     public RecipeBookConfig(List<String> sortedCategories, List<String> sortedFilters) {
         this.sortedFilters = sortedFilters;
@@ -129,6 +133,16 @@ public class RecipeBookConfig {
         return filters;
     }
 
+    public CategoryAlign getCategoryAlign() {
+        return categoryAlign;
+    }
+
+    public void setCategoryAlign(CategoryAlign categoryAlign) {
+        this.categoryAlign = categoryAlign;
+    }
+
+
+
     public void index(CustomCrafting customCrafting) {
         customCrafting.getApi().getConsole().info("Indexing Recipe Book...");
         Collection<CategoryFilter> filterValues = this.filters.values();
@@ -178,6 +192,58 @@ public class RecipeBookConfig {
                 "sort", sortedList,
                 "options", settings
         );
+    }
+
+    public class CategoryAlign {
+
+        private AlignItems align = AlignItems.LEFT;
+        private int maxPerRow = 9;
+        private int minRows = 2;
+        private Map<String, Integer> customSlots = new HashMap<>();
+
+        @JsonCreator
+        CategoryAlign() { }
+
+        public int getRequiredRows() {
+            return Math.max(minRows, Math.min(5, (int) Math.ceil(categoryMap.size() / (double) maxPerRow)));
+        }
+
+        public AlignItems getAlign() {
+            return align;
+        }
+
+        public void setAlign(AlignItems align) {
+            this.align = align;
+        }
+
+        public int getMaxPerRow() {
+            return maxPerRow;
+        }
+
+        public void setMaxPerRow(int maxPerRow) {
+            this.maxPerRow = maxPerRow;
+        }
+
+        public int getMinRows() {
+            return minRows;
+        }
+
+        public void setMinRows(int minRows) {
+            this.minRows = minRows;
+        }
+
+        @JsonGetter("customSlots")
+        Map<String, Integer> getCustomSlots() {
+            return customSlots;
+        }
+
+        public Optional<Integer> getCustomSlot(String categoryId) {
+            return Optional.ofNullable(customSlots.get(categoryId));
+        }
+
+        public void setCustomSlots(Map<String, Integer> customSlots) {
+            this.customSlots = customSlots;
+        }
     }
 
 }

@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -39,7 +40,7 @@ class MenuMain extends CCWindow {
     private static final String BACK_BOTTOM = "back_bottom";
 
     MenuMain(ClusterRecipeBook cluster, CustomCrafting customCrafting) {
-        super(cluster, ClusterRecipeBook.MAIN_MENU.getKey(), 27, customCrafting);
+        super(cluster, ClusterRecipeBook.MAIN_MENU.getKey(), customCrafting.getConfigHandler().getRecipeBookConfig().getCategoryAlign().getRequiredRows() * 9 + 9, customCrafting);
     }
 
     @Override
@@ -72,10 +73,19 @@ class MenuMain extends CCWindow {
         }
 
         var categories = customCrafting.getConfigHandler().getRecipeBookConfig();
+        RecipeBookConfig.CategoryAlign categoryAlign = categories.getCategoryAlign();
         var sorted = categories.getSortedCategories();
-
-        for (int i = 0; i < sorted.size() && i < getSize(); i++) {
-            event.setButton(i, "main_category." + sorted.get(i));
+        int catIndex = 0;
+        int rows = categoryAlign.getRequiredRows();
+        for (int i = 0; i < rows; i++) {
+            // Get the slots of the specified alignment.
+            int[] slots = categoryAlign.getAlign().getSlotsForAmount(Math.min(categoryAlign.getMaxPerRow(), sorted.size() - catIndex));
+            for (int j = 0; j < slots.length && catIndex < sorted.size(); j++) {
+                var currentId = sorted.get(catIndex);
+                // If there is a custom slot lets use it; otherwise use specified alignment.
+                event.setButton(categoryAlign.getCustomSlot(currentId).orElse(i*9 + slots[j]), "main_category." + currentId);
+                catIndex++;
+            }
         }
         event.setButton(22, BACK_BOTTOM);
     }
