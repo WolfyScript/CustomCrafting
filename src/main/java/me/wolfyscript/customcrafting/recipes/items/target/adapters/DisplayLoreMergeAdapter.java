@@ -153,12 +153,13 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
         }
         List<String> resultLore = resultMeta.hasLore() ? resultMeta.getLore() : new ArrayList<>();
         assert resultLore != null;
-        if (addExtraFirst) {
-            resultLore.addAll(extra(evalContext));
-        }
         if (replaceLore) {
-            resultLore = finalLore;
+            resultLore = addExtraFirst ? extra(evalContext) : new ArrayList<>();
+            resultLore.addAll(finalLore);
         } else {
+            if (addExtraFirst) {
+                resultLore.addAll(extra(evalContext));
+            }
             int index = insertAtIndex().map(integerValueProvider -> integerValueProvider.getValue(evalContext)).orElse(resultLore.size());
             if (index < 0) {
                 index = resultLore.size() + (index % (resultLore.size()+1)); //Convert the negative index to a positive reverted index, that starts from the end.
