@@ -81,7 +81,7 @@ public class ConfigHandler {
         } catch (IOException e) {
             customCrafting.getLogger().severe("Failed to load recipe_book.conf");
             e.printStackTrace();
-            this.recipeBookConfig = new RecipeBookConfig();
+            this.recipeBookConfig = new RecipeBookConfig(false);
         }
     }
 
@@ -145,7 +145,7 @@ public class ConfigHandler {
     }
 
     public void save() throws IOException {
-        if (this.recipeBookConfig != null) {
+        if (this.recipeBookConfig != null && this.recipeBookConfig.isShouldSave()) {
             customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.conf"), this.recipeBookConfig);
         }
         getConfig().save();

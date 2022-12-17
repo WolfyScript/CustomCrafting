@@ -48,6 +48,8 @@ public class RecipeBookConfig {
     private List<String> sortedCategories;
     private List<String> sortedFilters;
     private CategoryAlign categoryAlign = new CategoryAlign();
+    @JsonIgnore
+    private boolean shouldSave = true;
 
     public RecipeBookConfig(List<String> sortedCategories, List<String> sortedFilters) {
         this.sortedFilters = sortedFilters;
@@ -57,6 +59,16 @@ public class RecipeBookConfig {
     public RecipeBookConfig() {
         this.sortedFilters = new ArrayList<>();
         this.sortedCategories = new ArrayList<>();
+    }
+
+    public RecipeBookConfig(boolean shouldSave) {
+        this();
+        this.shouldSave = shouldSave;
+    }
+
+    @JsonIgnore
+    public boolean isShouldSave() {
+        return shouldSave;
     }
 
     public void registerCategory(String key, Category category) {
