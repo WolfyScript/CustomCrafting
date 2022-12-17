@@ -30,6 +30,7 @@ import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -80,6 +81,7 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
         return replaceLore;
     }
 
+    @JsonGetter
     public List<? extends ValueProvider<String>> getExtra() {
         return extra;
     }
@@ -100,7 +102,8 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
         this.addExtraFirst = addExtraFirst;
     }
 
-    public ValueProvider<Integer> getInsertAtIndex() {
+    @JsonGetter
+    ValueProvider<Integer> getInsertAtIndex() {
         return insertAtIndex;
     }
 
@@ -115,11 +118,12 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
     @Override
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
         var resultMeta = result.getItemMeta();
+        if (resultMeta == null) return result;
         var evalContext = player == null ? new EvalContext() : new EvalContextPlayer(player);
         List<String> finalLore = new ArrayList<>();
         for (IngredientData data : recipeData.getBySlots(slots)) {
-            var item = data.itemStack();
-            var meta = item.getItemMeta();
+            var meta = data.itemStack().getItemMeta();
+            if (meta == null) continue;
             if (meta.hasLore()) {
                 List<String> targetedLore = meta.getLore();
                 assert targetedLore != null;
@@ -195,6 +199,11 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
             return Optional.ofNullable(index);
         }
 
+        @JsonGetter
+        ValueProvider<Integer> getIndex() {
+            return index;
+        }
+
         public void setIndex(ValueProvider<Integer> index) {
             this.index = index;
         }
@@ -207,12 +216,22 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
             this.condition = condition;
         }
 
+        @JsonGetter
+        public BoolOperator getCondition() {
+            return condition;
+        }
+
         public Optional<ValueProvider<String>> value() {
             return Optional.ofNullable(value);
         }
 
         public void setValue(ValueProvider<String> value) {
             this.value = value;
+        }
+
+        @JsonGetter
+        ValueProvider<String> getValue() {
+            return value;
         }
     }
 }
