@@ -22,16 +22,24 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
+import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.MiniMessage;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.Tag;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.eval.context.EvalContext;
@@ -45,18 +53,25 @@ import org.jetbrains.annotations.Nullable;
 
 public class DisplayLoreMergeAdapter extends MergeAdapter {
 
+    @JsonIgnore
+    private CustomCrafting customCrafting;
+    @JsonIgnore
+    private MiniMessage miniMessage;
+
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private boolean replaceLore = false;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private ValueProvider<Integer> insertAtIndex = null;
     private List<ElementOption> lines;
-    private List<? extends ValueProvider<String>> extra = new ArrayList<>();
+    private List<? extends ValueProvider<String>> extra;
     private boolean addExtraFirst = false;
 
     public DisplayLoreMergeAdapter() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "display_lore"));
         this.replaceLore = false;
-        this.extra = null;
+        this.extra = new ArrayList<>();
+        this.customCrafting = CustomCrafting.inst(); // TODO: inject instead!
+        this.miniMessage = customCrafting.getApi().getChat().getMiniMessage();
     }
 
     public DisplayLoreMergeAdapter(DisplayLoreMergeAdapter adapter) {
@@ -111,14 +126,19 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
         return Optional.ofNullable(insertAtIndex);
     }
 
-    public List<String> extra(EvalContext context) {
-        return getExtra().stream().map(valueProvider -> valueProvider.getValue(context)).filter(Objects::nonNull).toList();
+    public List<String> extra(EvalContext context, TagResolver... resolvers) {
+        return getExtra().stream().map(valueProvider -> BukkitComponentSerializer.legacy().serialize(miniMessage.deserialize(valueProvider.getValue(context), resolvers))).toList();
     }
 
     @Override
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
         var resultMeta = result.getItemMeta();
         if (resultMeta == null) return result;
+        final TagResolver papiResolver = TagResolverUtil.papi(player);
+        final TagResolver langResolver = TagResolver.resolver("translate", (args, context) -> {
+            String text = args.popOr("The <translate> tag requires exactly one argument! The path to the language entry!").value();
+            return Tag.selfClosingInserting(customCrafting.getApi().getChat().translated(text, papiResolver));
+        });
         var evalContext = player == null ? new EvalContext() : new EvalContextPlayer(player);
         List<String> finalLore = new ArrayList<>();
         for (IngredientData data : recipeData.getBySlots(slots)) {
@@ -138,15 +158,15 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
                             if (targetedLore.size() > index) {
                                 String targetValue = targetedLore.get(index);
                                 line.value().ifPresentOrElse(valueProvider -> {
-                                    if (valueProvider.getValue(evalContext).equals(targetValue)) {
+                                    if (Objects.equals(miniMessage.deserialize(valueProvider.getValue(evalContext), papiResolver, langResolver), BukkitComponentSerializer.legacy().deserialize(targetValue))) {
                                         finalLore.add(targetValue);
                                     }
                                 }, () -> finalLore.add(targetValue));
                             }
                         }, () -> line.value().ifPresentOrElse(valueProvider -> {
-                            String value = valueProvider.getValue(evalContext);
+                            Component value = miniMessage.deserialize(valueProvider.getValue(evalContext), papiResolver, langResolver);
                             for (String targetValue : targetedLore) {
-                                if (value.equals(targetValue)) {
+                                if (Objects.equals(value, BukkitComponentSerializer.legacy().deserialize(targetValue))) {
                                     finalLore.add(targetValue);
                                 }
                             }
@@ -158,11 +178,11 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
         List<String> resultLore = resultMeta.hasLore() ? resultMeta.getLore() : new ArrayList<>();
         assert resultLore != null;
         if (replaceLore) {
-            resultLore = addExtraFirst ? extra(evalContext) : new ArrayList<>();
+            resultLore = addExtraFirst ? extra(evalContext, papiResolver, langResolver) : new ArrayList<>();
             resultLore.addAll(finalLore);
         } else {
             if (addExtraFirst) {
-                resultLore.addAll(extra(evalContext));
+                resultLore.addAll(extra(evalContext, papiResolver, langResolver));
             }
             int index = insertAtIndex().map(integerValueProvider -> integerValueProvider.getValue(evalContext)).orElse(resultLore.size());
             if (index < 0) {
@@ -174,7 +194,7 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
             }
         }
         if (!addExtraFirst) {
-            resultLore.addAll(extra(evalContext));
+            resultLore.addAll(extra(evalContext, papiResolver, langResolver));
         }
         resultMeta.setLore(resultLore);
         result.setItemMeta(resultMeta);
