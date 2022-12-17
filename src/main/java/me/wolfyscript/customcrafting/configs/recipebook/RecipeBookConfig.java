@@ -141,8 +141,6 @@ public class RecipeBookConfig {
         this.categoryAlign = categoryAlign;
     }
 
-
-
     public void index(CustomCrafting customCrafting) {
         customCrafting.getApi().getConsole().info("Indexing Recipe Book...");
         Collection<CategoryFilter> filterValues = this.filters.values();
@@ -201,9 +199,9 @@ public class RecipeBookConfig {
         private int minRows = 2;
         private Map<String, Integer> customSlots = new HashMap<>();
 
-        @JsonCreator
-        CategoryAlign() { }
+        public CategoryAlign() { }
 
+        @JsonIgnore
         public int getRequiredRows() {
             return Math.max(minRows, Math.min(5, (int) Math.ceil(categoryMap.size() / (double) maxPerRow)));
         }
@@ -237,6 +235,7 @@ public class RecipeBookConfig {
             return customSlots;
         }
 
+        @JsonIgnore
         public Optional<Integer> getCustomSlot(String categoryId) {
             return Optional.ofNullable(customSlots.get(categoryId));
         }

@@ -87,6 +87,6 @@ class MenuMain extends CCWindow {
                 catIndex++;
             }
         }
-        event.setButton(22, BACK_BOTTOM);
+        event.setButton(getSize() - 5, BACK_BOTTOM);
     }
 }
