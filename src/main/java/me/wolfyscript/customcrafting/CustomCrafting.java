@@ -110,6 +110,7 @@ import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtensionAdva
 import me.wolfyscript.customcrafting.recipes.items.extension.SoundResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.DisplayLoreMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.DisplayNameMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantedBookMergeAdapter;
@@ -273,6 +274,7 @@ public class CustomCrafting extends JavaPlugin {
         resultMergeAdapters.register(new EnchantMergeAdapter());
         resultMergeAdapters.register(new EnchantedBookMergeAdapter());
         resultMergeAdapters.register(new DisplayNameMergeAdapter());
+        resultMergeAdapters.register(new DisplayLoreMergeAdapter());
         resultMergeAdapters.register(new DamageMergeAdapter());
         resultMergeAdapters.register(new PlaceholderAPIMergeAdapter());
         resultMergeAdapters.register(new FireworkRocketMergeAdapter());
