@@ -63,7 +63,7 @@ public class BookMetaMergeAdapter extends MergeAdapter {
     // Page options
     private BoolOperator copyPages = new BoolOperatorConst(false);
     private BoolOperator replacePages = new BoolOperatorConst(false);
-    private ValueProvider<Integer> insertAtPage;
+    private ValueProvider<Integer> insertAtPage = null;
     private List<ElementOption> pages = new ArrayList<>();
     private List<? extends ValueProvider<String>> extraPages = new ArrayList<>();
     private BoolOperator addExtraPagesFirst = new BoolOperatorConst(false);
@@ -273,6 +273,8 @@ public class BookMetaMergeAdapter extends MergeAdapter {
         }
         if (copyGeneration.evaluate(evalContext)) {
             resultBookMeta.setGeneration(generation);
+        } else if (changeGenerationTo != null) {
+            resultBookMeta.setGeneration(changeGenerationTo);
         }
         result.setItemMeta(resultBookMeta);
         return result;
