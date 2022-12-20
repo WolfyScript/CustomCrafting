@@ -274,7 +274,6 @@ public class CustomCrafting extends JavaPlugin {
         var resultMergeAdapters = getRegistries().getRecipeMergeAdapters();
         resultMergeAdapters.register(new EnchantMergeAdapter());
         resultMergeAdapters.register(new EnchantedBookMergeAdapter());
-        resultMergeAdapters.register(new BookMetaMergeAdapter());
         resultMergeAdapters.register(new DisplayNameMergeAdapter());
         resultMergeAdapters.register(new DisplayLoreMergeAdapter());
         resultMergeAdapters.register(new DamageMergeAdapter());
@@ -282,6 +281,9 @@ public class CustomCrafting extends JavaPlugin {
         resultMergeAdapters.register(new FireworkRocketMergeAdapter());
         if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 4, 0))) {
             resultMergeAdapters.register(new NBTMergeAdapter());
+        }
+        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 9, 6))) {
+            resultMergeAdapters.register(new BookMetaMergeAdapter());
         }
 
         getLogger().info("Registering Recipe Conditions");
