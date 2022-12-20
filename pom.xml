@@ -52,7 +52,7 @@
         <dependency>
             <groupId>com.wolfyscript.wolfyutils.spigot</groupId>
             <artifactId>wolfyutils-spigot</artifactId>
-            <version>4.16.9-SNAPSHOT</version>
+            <version>4.16.9.5-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!--
