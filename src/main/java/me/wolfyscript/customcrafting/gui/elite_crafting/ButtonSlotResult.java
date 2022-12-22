@@ -22,8 +22,10 @@
 
 package me.wolfyscript.customcrafting.gui.elite_crafting;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonItemInput;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.InventoryUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -35,10 +37,10 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-class ButtonSlotResult extends ButtonItemInput<CCCache> {
+class ButtonSlotResult {
 
-    ButtonSlotResult(CustomCrafting customCrafting) {
-        super("result_slot", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
+    static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, CustomCrafting customCrafting) {
+        buttonBuilder.itemInput("result_slot").state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
             if (event instanceof InventoryClickEvent clickEvent && inventory.getWindow() instanceof CraftingWindow) {
                 if (!CraftingWindow.RESULT_SLOTS.contains(slot)) {
@@ -73,18 +75,18 @@ class ButtonSlotResult extends ButtonItemInput<CCCache> {
                 }
             }
             return true;
-        }, (cache, guiHandler, player, inventory, itemStack, slot, event) -> {
+        }).postAction((cache, guiHandler, player, inventory, btn, itemStack, slot, event) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
             if (inventory.getWindow() instanceof CraftingWindow) {
                 cacheEliteCraftingTable.setResult(null);
             }
-        }, (cache, guiHandler, player, inventory, itemStack, slot, b) -> {
+        }).preRender((cache, guiHandler, player, inventory, btn, itemStack, slot, b) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
             ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), player, inventory, true, cacheEliteCraftingTable.isAdvancedCraftingRecipes());
             cacheEliteCraftingTable.setResult(result);
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        }).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
-            return cacheEliteCraftingTable.getResult() != null ? cacheEliteCraftingTable.getResult() : new ItemStack(Material.AIR);
-        }));
+            return CallbackButtonRender.UpdateResult.of(cacheEliteCraftingTable.getResult() != null ? cacheEliteCraftingTable.getResult() : new ItemStack(Material.AIR));
+        })).register();
     }
 }

@@ -53,11 +53,11 @@ public class TabRecipeBook extends ItemCreatorTab {
                         // Get old recipe book settings
                         .orElse(((RecipeBookData) cache.getItems().getItem().getCustomData(CustomCrafting.RECIPE_BOOK_DATA)).isEnabled())).enabledState(state -> state.subKey("knowledge_book.toggle.enabled").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             var items = cache.getItems();
-            items.getItem().computeDataIfAbsent(RecipeBookSettings.class, id -> new RecipeBookSettings()).setEnabled(false);
+            items.getItem().computeDataIfAbsent(RecipeBookSettings.class, id -> new RecipeBookSettings(creator.getCustomCrafting())).setEnabled(false);
             return true;
         })).disabledState(state -> state.subKey("knowledge_book.toggle.disabled").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             var items = cache.getItems();
-            items.getItem().computeDataIfAbsent(RecipeBookSettings.class, id -> new RecipeBookSettings()).setEnabled(true);
+            items.getItem().computeDataIfAbsent(RecipeBookSettings.class, id -> new RecipeBookSettings(creator.getCustomCrafting())).setEnabled(true);
             return true;
         })).register();
     }

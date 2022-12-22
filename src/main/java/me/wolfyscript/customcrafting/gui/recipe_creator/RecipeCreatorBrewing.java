@@ -71,8 +71,8 @@ public class RecipeCreatorBrewing extends RecipeCreator {
         super.onInit();
         var btnBld = getButtonBuilder();
         btnBld.dummy("brewing_stand").state(s -> s.icon(Material.BREWING_STAND)).register();
-        registerButton(new ButtonRecipeIngredient(0));
-        registerButton(new ButtonRecipeIngredient(1));
+        ButtonRecipeIngredient.register(getButtonBuilder(), 0);
+        ButtonRecipeIngredient.register(getButtonBuilder(), 1);
 
         ButtonBuilder<CCCache> bB = getButtonBuilder();
 
@@ -194,7 +194,7 @@ public class RecipeCreatorBrewing extends RecipeCreator {
         })).register();
 
         bB.dummy("result.info").state(state -> state.icon(Material.BOOK)).register();
-        registerButton(new ButtonRecipeResult());
+        ButtonRecipeResult.register(getButtonBuilder());
 
         bB.dummy("effect_additions.info").state(state -> state.icon(Material.LINGERING_POTION).render((cache, guiHandler, player, guiInventory, button, stack, i) -> {
             var itemStack = new ItemStack(Material.LINGERING_POTION);

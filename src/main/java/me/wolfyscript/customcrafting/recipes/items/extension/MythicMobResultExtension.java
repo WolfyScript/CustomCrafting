@@ -24,9 +24,9 @@ package me.wolfyscript.customcrafting.recipes.items.extension;
 
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import com.wolfyscript.utilities.bukkit.compatibility.plugins.MythicMobsIntegration;
 import java.util.concurrent.ThreadLocalRandom;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.utilities.compatibility.plugins.MythicMobsIntegration;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

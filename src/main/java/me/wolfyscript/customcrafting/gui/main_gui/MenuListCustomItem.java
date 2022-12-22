@@ -90,7 +90,7 @@ public class MenuListCustomItem extends CCWindow {
             for (int i = 45 * page, item = 9; item < 54 && i < namespaceList.size(); i++, item++) {
                 String btnID = "namespace_" + namespaceList.get(i);
                 if (!hasButton("namespace_" + namespaceList.get(i))) {
-                    registerButton(new ButtonNamespaceItem(namespaceList.get(i)));
+                    ButtonNamespaceItem.register(getButtonBuilder(), namespaceList.get(i));
                 }
                 update.setButton(item, btnID);
             }
@@ -103,7 +103,7 @@ public class MenuListCustomItem extends CCWindow {
                 var namespacedKey = customItems.get(i).getNamespacedKey();
                 String id = "item_" + namespacedKey.toString("__");
                 if (!hasButton(id)) {
-                    registerButton(new ButtonSelectCustomItem(customCrafting, namespacedKey));
+                    ButtonSelectCustomItem.register(getButtonBuilder(), customCrafting, namespacedKey);
                 }
                 update.setButton(s, id);
             }

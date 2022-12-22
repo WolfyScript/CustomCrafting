@@ -53,20 +53,20 @@ public class TabPlayerHead extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.PLAYER_HEAD, this);
-        creator.registerButton(new ButtonItemInput<>("player_head.texture.input", Material.AIR, (cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().itemInput("player_head.texture.input").state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             if (event instanceof InventoryClickEvent) {
                 return ((InventoryClickEvent) event).getCurrentItem().getType().equals(Material.PLAYER_HEAD);
             }
             return true;
-        }));
-        creator.registerButton(new ButtonAction<>("player_head.texture.apply", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+        })).register();
+        creator.getButtonBuilder().action("player_head.texture.apply").state(state -> state.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             var items = cache.getItems();
             if (inventory.getItem(38) != null && inventory.getItem(38).getType().equals(Material.PLAYER_HEAD)) {
                 items.getItem().setPlayerHeadValue(new ItemBuilder(inventory.getItem(38)).getPlayerHeadValue());
             }
             return true;
-        }));
-        creator.registerButton(new ButtonChatInput<>("player_head.owner", Material.NAME_TAG, (guiHandler, player, s, args) -> {
+        })).register();
+        creator.getButtonBuilder().chatInput("player_head.owner").state(state -> state.icon(Material.NAME_TAG)).inputAction((guiHandler, player, s, args) -> {
             var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             if (!(itemMeta instanceof SkullMeta)) {
                 return true;
@@ -79,7 +79,7 @@ public class TabPlayerHead extends ItemCreatorTabVanilla {
                 return true;
             }
             return false;
-        }));
+        }).register();
     }
 
     @Override

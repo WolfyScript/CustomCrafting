@@ -25,11 +25,9 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import java.util.HashMap;
 import java.util.UUID;
-import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -93,16 +91,18 @@ public class CraftDelayCondition extends Condition<CraftDelayCondition> {
         public GUIComponent() {
             super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.registerButton(new ButtonChatInput<>("conditions.craft_delay.set", Material.CLOCK, (CallbackButtonRender<CCCache>) (cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftDelayCondition.class).getDelay()))), (guiHandler, player, s, strings) -> {
-                            var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
-                            try {
-                                long value = Long.parseLong(s);
-                                conditions.getByType(CraftDelayCondition.class).setDelay(value);
-                            } catch (NumberFormatException ex) {
-                                api.getChat().sendKey(player, "recipe_creator", "valid_number");
-                            }
-                            return false;
-                        }));
+                        menu.getButtonBuilder().chatInput("conditions.craft_delay.set")
+                                .state(state -> state.icon(Material.CLOCK).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftDelayCondition.class).getDelay())))))
+                                .inputAction((guiHandler, player, s, strings) -> {
+                                    var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
+                                    try {
+                                        long value = Long.parseLong(s);
+                                        conditions.getByType(CraftDelayCondition.class).setDelay(value);
+                                    } catch (NumberFormatException ex) {
+                                        api.getChat().sendKey(player, "recipe_creator", "valid_number");
+                                    }
+                                    return false;
+                                }).register();
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(31, "conditions.craft_delay.set");

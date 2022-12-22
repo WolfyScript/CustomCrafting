@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.commands.cc_subcommands;
 
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.registry.RegistryCustomItem;
 import java.util.ArrayList;
 import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -33,7 +34,6 @@ import me.wolfyscript.customcrafting.gui.recipebook.MenuRecipeOverview;
 import me.wolfyscript.customcrafting.registry.RegistryRecipes;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.registry.RegistryCustomItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;

@@ -49,7 +49,7 @@ public class TabDamage extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.IRON_SWORD, this);
-        creator.registerButton(new ButtonChatInput<>("damage.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
+        creator.getButtonBuilder().chatInput("damage.set").state(state -> state.icon(Material.GREEN_CONCRETE)).inputAction((guiHandler, player, s, strings) -> {
             var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             if (!(itemMeta instanceof Damageable)) {
                 return true;
@@ -64,8 +64,8 @@ public class TabDamage extends ItemCreatorTabVanilla {
                 return true;
             }
             return false;
-        }));
-        creator.registerButton(new ButtonAction<>("damage.reset", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+        }).register();
+        creator.getButtonBuilder().action("damage.reset").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             var items = cache.getItems();
             var itemMeta = items.getItem().getItemMeta();
             if (itemMeta instanceof Damageable) {
@@ -73,7 +73,7 @@ public class TabDamage extends ItemCreatorTabVanilla {
             }
             items.getItem().setItemMeta(itemMeta);
             return true;
-        }));
+        })).register();
     }
 
     @Override

@@ -22,8 +22,12 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import java.io.File;
 import java.util.ArrayList;
@@ -34,14 +38,17 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class MenuSettings extends CCWindow {
 
     static final List<String> availableLangs = new ArrayList<>();
 
     private static final String DARK_MODE = "darkMode";
+    private static final String LANGUAGE = "language";
     private static final String PRETTY_PRINTING = "pretty_printing";
     private static final String ADVANCED_CRAFTING_TABLE = "advanced_workbench";
     private static final String DEBUG = "debug";
@@ -57,9 +64,9 @@ public class MenuSettings extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ButtonSettingsLockdown(api, customCrafting));
-        registerButton(new ButtonSettingsLanguage(availableLangs, api, customCrafting));
         ButtonBuilder<CCCache> bb = getButtonBuilder();
+        ButtonSettingsLockdown.register(bb, api, customCrafting);
+        registerLanguageButton(bb, availableLangs, api, customCrafting);
         bb.toggle(DARK_MODE).stateFunction((cache, guiHandler, player, guiInventory, i) -> PlayerUtil.getStore(player).isDarkMode())
                 .enabledState(state -> state.subKey(ENABLED).icon(Material.BLACK_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
                     PlayerUtil.getStore(player).setDarkMode(false);
@@ -130,6 +137,37 @@ public class MenuSettings extends CCWindow {
                 })).register();
     }
 
+    static void registerLanguageButton(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, List<String> availableLangs, WolfyUtilsBukkit api, CustomCrafting customCrafting) {
+        buttonBuilder.action(LANGUAGE).state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+            int index = availableLangs.indexOf(customCrafting.getConfigHandler().getConfig().getLanguage());
+            int nextIndex = index;
+            if (event instanceof InventoryClickEvent clickEvent) {
+                if (clickEvent.isLeftClick() && !clickEvent.isShiftClick()) {
+                    nextIndex = (index + 1 < availableLangs.size()) ? index + 1 : 0;
+                } else if (clickEvent.isRightClick() && !clickEvent.isShiftClick()) {
+                    nextIndex = index - 1 >= 0 ? index - 1 : availableLangs.size() - 1;
+                } else if (clickEvent.isShiftClick()) {
+                    if (ChatUtils.checkPerm(player, "customcrafting.cmd.reload")) {
+                        api.getChat().sendMessage(player, "&eReloading Inventories and Languages!");
+                        customCrafting.getApi().getLanguageAPI().unregisterLanguages();
+                        customCrafting.getConfigHandler().getConfig().reload();
+                        customCrafting.getConfigHandler().loadLang();
+                        customCrafting.getApi().getInventoryAPI().reset();
+                        api.getChat().sendMessage(player, "&aReload complete! Reloaded GUIs and languages");
+                        guiHandler.close();
+                        return true;
+                    }
+                    return true;
+                }
+            }
+            customCrafting.getConfigHandler().getConfig().setLanguage(availableLangs.get(nextIndex));
+            return true;
+        }).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
+            int index = availableLangs.indexOf(customCrafting.getConfigHandler().getConfig().getLanguage());
+            return CallbackButtonRender.UpdateResult.of(TagResolverUtil.entries(availableLangs.stream().map(s -> Component.text(s).asComponent()).toList(), Component.empty(), index));
+        })).register();
+    }
+
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
@@ -150,7 +188,7 @@ public class MenuSettings extends CCWindow {
         if (ChatUtils.checkPerm(player, "customcrafting.cmd.settings")) {
             event.setButton(11, PRETTY_PRINTING);
             event.setButton(12, ADVANCED_CRAFTING_TABLE);
-            event.setButton(13, ButtonSettingsLanguage.KEY);
+            event.setButton(13, LANGUAGE);
             event.setButton(14, "creator.reset_after_save");
             event.setButton(15, DRAW_BACKGROUND);
             event.setButton(16, RECIPE_BOOK_KEEP_LAST);

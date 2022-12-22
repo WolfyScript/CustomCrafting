@@ -49,7 +49,7 @@ public class TabRepairCost extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.EXPERIENCE_BOTTLE, this);
-        creator.registerButton(new ButtonChatInput<>("repair_cost.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
+        creator.getButtonBuilder().chatInput("repair_cost.set").state(state -> state.icon(Material.GREEN_CONCRETE)).inputAction((guiHandler, player, s, strings) -> {
             var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             try {
                 int value = Integer.parseInt(s);
@@ -61,8 +61,8 @@ public class TabRepairCost extends ItemCreatorTabVanilla {
                 return true;
             }
             return false;
-        }));
-        creator.registerButton(new ButtonAction<>("repair_cost.reset", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+        }).register();
+        creator.getButtonBuilder().action("repair_cost.reset").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             var items = cache.getItems();
             var itemMeta = items.getItem().getItemMeta();
             if (itemMeta instanceof Repairable) {
@@ -70,7 +70,7 @@ public class TabRepairCost extends ItemCreatorTabVanilla {
             }
             items.getItem().setItemMeta(itemMeta);
             return true;
-        }));
+        })).register();
     }
 
     @Override

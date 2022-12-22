@@ -24,27 +24,56 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class MenuIngredient extends CCWindow {
 
     static final String KEY = "ingredient";
     private static final String REPLACE_WITH_REMAINS = "replace_with_remains";
+    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(items.getVariantSlot(), CustomItem.getReferenceByItemStack(customItem.create()));
 
     public MenuIngredient(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, KEY, 54, customCrafting);
         setForceSyncUpdate(true);
     }
 
+    private void registerButtonContainerItemIngredient(int ingredSlot) {
+       getButtonBuilder().itemInput("item_container_" + ingredSlot).state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inv, button, invSlot, event) -> {
+           if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
+               if (!ItemUtils.isAirOrNull(inv.getItem(invSlot))) {
+                   cache.getItems().setVariant(ingredSlot, CustomItem.getReferenceByItemStack(inv.getItem(invSlot)));
+                   cache.setApplyItem(APPLY_ITEM);
+                   guiHandler.openWindow(ClusterRecipeCreator.ITEM_EDITOR);
+               }
+               return true;
+           }
+           return false;
+       }).postAction((cache, guiHandler, player, guiInventory, button, itemStack, i, event) -> {
+           if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
+               return;
+           }
+           cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(ingredSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
+       }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
+           var data = cache.getRecipeCreatorCache().getIngredientCache().getIngredient();
+           return CallbackButtonRender.UpdateResult.of(data != null ? data.getItemStack(ingredSlot) : ItemUtils.AIR);
+       })).register();
+    }
+
     @Override
     public void onInit() {
         for (int i = 0; i < 36; i++) {
-            registerButton(new ButtonContainerItemIngredient(i));
+            registerButtonContainerItemIngredient(i);
         }
         getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inv, btn, i, event) -> {
             var creatorCache = cache.getRecipeCreatorCache();

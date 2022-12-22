@@ -22,17 +22,20 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class ButtonRecipeListWorkstationFilter extends ButtonAction<CCCache> {
+public class ButtonRecipeListWorkstationFilter {
 
     static final String KEY = "workstation_filter";
 
@@ -54,8 +57,8 @@ public class ButtonRecipeListWorkstationFilter extends ButtonAction<CCCache> {
         FILTER_KEYS = new ArrayList<>(FILTERS.keySet());
     }
 
-    ButtonRecipeListWorkstationFilter() {
-        super(KEY, Material.COMPASS, (cache, guiHandler, player, guiInventory, i, event) -> {
+    static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder) {
+        buttonBuilder.action(KEY).state(state -> state.icon(Material.COMPASS).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
             var currentType = cache.getRecipeList().getFilterType();
             if (event instanceof InventoryClickEvent clickEvent) {
                 var nextIndex = FILTER_KEYS.indexOf(currentType);
@@ -69,12 +72,11 @@ public class ButtonRecipeListWorkstationFilter extends ButtonAction<CCCache> {
                 cache.getRecipeList().setFilterType(FILTER_KEYS.get(nextIndex));
             }
             return true;
-        }, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
             RecipeType<?> type = cache.getRecipeList().getFilterType();
-            values.put("%type%", type != null ? type.getType().toString().replace("CRAFTING", "").replace("_CRAFTING", "").replace("_", " ") : "ALL");
             itemStack.setType(FILTERS.get(type).getType());
-            return itemStack;
-        });
+            return CallbackButtonRender.UpdateResult.of(itemStack, Placeholder.parsed("type", type != null ? type.getType().toString().replace("CRAFTING", "").replace("_CRAFTING", "").replace("_", " ") : "ALL"));
+        })).register();
     }
 
 

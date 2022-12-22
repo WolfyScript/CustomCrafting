@@ -28,10 +28,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.wolfyscript.utilities.bukkit.nms.api.network.MCByteBuf;
+import com.wolfyscript.utilities.bukkit.world.inventory.CreativeModeTab;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import me.wolfyscript.utilities.util.inventory.CreativeModeTab;
 import org.bukkit.Material;
 
 @JsonPropertyOrder({"id", "icon", "name", "description"})

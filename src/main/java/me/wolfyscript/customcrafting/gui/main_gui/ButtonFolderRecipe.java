@@ -22,21 +22,24 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.registry.RegistryRecipes;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-public class ButtonFolderRecipe extends ButtonAction<CCCache> {
+public class ButtonFolderRecipe {
 
     private static final String KEY = "recipe_list.folder_";
 
-    ButtonFolderRecipe(int slot, String namespace, String folder, CustomCrafting customCrafting) {
-        super(key(slot, namespace, folder), new ButtonState<>("folder", Material.CHEST, (cache, guiHandler, player, guiInventory, i, event) -> {
+    static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, int slot, String namespace, String folder, CustomCrafting customCrafting) {
+        buttonBuilder.action(key(slot, namespace, folder)).state(state -> state.key("folder").icon(Material.CHEST).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
             if (event instanceof InventoryClickEvent clickEvent) {
                 if (!clickEvent.isShiftClick()) {
                     if (guiInventory.getWindow() instanceof MenuListRecipes) {
@@ -54,10 +57,7 @@ public class ButtonFolderRecipe extends ButtonAction<CCCache> {
                 }
             }
             return true;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, invSlot, help) -> {
-            hashMap.put("%folder%", folder);
-            return itemStack;
-        }));
+        }).render((cache, guiHandler, player, inventory, itemStack, invSlot, help) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("folder", folder)))).register();
     }
 
     static String key(int slot, String namespace, String folder) {

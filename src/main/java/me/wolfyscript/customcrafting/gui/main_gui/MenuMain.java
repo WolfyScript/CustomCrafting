@@ -29,6 +29,8 @@ import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
+import com.wolfyscript.utilities.versioning.ServerVersion;
+import com.wolfyscript.utilities.versioning.WUVersion;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -38,8 +40,6 @@ import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.ClusterRecipeBookEditor;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import me.wolfyscript.utilities.util.version.ServerVersion;
-import me.wolfyscript.utilities.util.version.WUVersion;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
@@ -75,21 +75,20 @@ public class MenuMain extends CCWindow {
     @Override
     public void onInit() {
         var builder = getButtonBuilder();
-        registerButton(new ButtonRecipeType(CRAFTING, RecipeType.CRAFTING_SHAPED, Material.CRAFTING_TABLE));
-        registerButton(new ButtonRecipeType(FURNACE, RecipeType.FURNACE, Material.FURNACE));
-        registerButton(new ButtonRecipeType(ANVIL, RecipeType.ANVIL, Material.ANVIL));
-        registerButton(new ButtonRecipeType(BLAST_FURNACE, RecipeType.BLAST_FURNACE, Material.BLAST_FURNACE));
-        registerButton(new ButtonRecipeType(SMOKER, RecipeType.SMOKER, Material.SMOKER));
-        registerButton(new ButtonRecipeType(CAMPFIRE, RecipeType.CAMPFIRE, Material.CAMPFIRE));
-        registerButton(new ButtonRecipeType(STONECUTTER, RecipeType.STONECUTTER, Material.STONECUTTER));
-        registerButton(new ButtonRecipeType(GRINDSTONE, RecipeType.GRINDSTONE, Material.GRINDSTONE));
+        ButtonRecipeType.register(getButtonBuilder(), CRAFTING, RecipeType.CRAFTING_SHAPED, Material.CRAFTING_TABLE);
+        ButtonRecipeType.register(getButtonBuilder(), FURNACE, RecipeType.FURNACE, Material.FURNACE);
+        ButtonRecipeType.register(getButtonBuilder(), ANVIL, RecipeType.ANVIL, Material.ANVIL);
+        ButtonRecipeType.register(getButtonBuilder(), BLAST_FURNACE, RecipeType.BLAST_FURNACE, Material.BLAST_FURNACE);
+        ButtonRecipeType.register(getButtonBuilder(), SMOKER, RecipeType.SMOKER, Material.SMOKER);
+        ButtonRecipeType.register(getButtonBuilder(), CAMPFIRE, RecipeType.CAMPFIRE, Material.CAMPFIRE);
+        ButtonRecipeType.register(getButtonBuilder(), STONECUTTER, RecipeType.STONECUTTER, Material.STONECUTTER);
+        ButtonRecipeType.register(getButtonBuilder(), GRINDSTONE, RecipeType.GRINDSTONE, Material.GRINDSTONE);
         builder.dummy("brewing_stand_disabled").state(state -> state.icon(Material.BREWING_STAND)).register();
-        registerButton(new ButtonRecipeType(BREWING_STAND, RecipeType.BREWING_STAND, Material.BREWING_STAND));
+        ButtonRecipeType.register(getButtonBuilder(), BREWING_STAND, RecipeType.BREWING_STAND, Material.BREWING_STAND);
 
-
-        registerButton(new ButtonRecipeType(ELITE_CRAFTING, RecipeType.ELITE_CRAFTING_SHAPED, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
-        registerButton(new ButtonRecipeType(CAULDRON, RecipeType.CAULDRON, Material.CAULDRON));
-        registerButton(new ButtonRecipeType(SMITHING, RecipeType.SMITHING, Material.SMITHING_TABLE));
+        ButtonRecipeType.register(getButtonBuilder(), ELITE_CRAFTING, RecipeType.ELITE_CRAFTING_SHAPED, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create());
+        ButtonRecipeType.register(getButtonBuilder(), CAULDRON, RecipeType.CAULDRON, Material.CAULDRON);
+        ButtonRecipeType.register(getButtonBuilder(), SMITHING, RecipeType.SMITHING, Material.SMITHING_TABLE);
         builder.action(ITEM_EDITOR).state(s -> s.icon(Material.CHEST).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
             cache.setSetting(Setting.ITEMS);
             cache.getItems().setRecipeItem(false);
@@ -102,7 +101,7 @@ public class MenuMain extends CCWindow {
             guiHandler.openWindow(SETTINGS);
             return true;
         })).register();
-        builder.action(RECIPE_BOOK_EDITOR).state(s -> s.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inv, i, inventoryInteractEvent) -> {
+        builder.action(RECIPE_BOOK_EDITOR).state(s -> s.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inv, btn, i, inventoryInteractEvent) -> {
             guiHandler.openCluster(ClusterRecipeBookEditor.KEY);
             return true;
         })).register();

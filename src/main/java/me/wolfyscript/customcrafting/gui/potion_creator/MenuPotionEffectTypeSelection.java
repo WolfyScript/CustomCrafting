@@ -43,7 +43,8 @@ public class MenuPotionEffectTypeSelection extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ButtonAction<>("back", new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+
+        getButtonBuilder().action("back").state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             PotionEffects potionEffectCache = guiHandler.getCustomCache().getPotionEffectCache();
             if (!potionEffectCache.getOpenedFromCluster().isEmpty()) {
                 guiHandler.openWindow(new BukkitNamespacedKey(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow()));
@@ -51,11 +52,11 @@ public class MenuPotionEffectTypeSelection extends CCWindow {
                 guiHandler.openWindow(potionEffectCache.getOpenedFromWindow());
             }
             return true;
-        })));
+        })).register();
 
         for (PotionEffectType type : PotionEffectType.values()) {
             if (type != null) { // Required for servers running mods along side spigot.
-                registerButton(new ButtonPotionEffectTypeSelect(type));
+                ButtonPotionEffectTypeSelect.register(getButtonBuilder(), type);
             }
         }
     }

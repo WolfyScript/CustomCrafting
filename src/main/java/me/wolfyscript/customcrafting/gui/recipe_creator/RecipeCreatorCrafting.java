@@ -41,9 +41,9 @@ public class RecipeCreatorCrafting extends RecipeCreator {
         super.onInit();
         var btnB = getButtonBuilder();
         for (int i = 0; i < 9; i++) {
-            registerButton(new ButtonRecipeIngredient(i));
+            ButtonRecipeIngredient.register(getButtonBuilder(), i);
         }
-        registerButton(new ButtonRecipeResult());
+        ButtonRecipeResult.register(getButtonBuilder());
         btnB.toggle(ClusterRecipeCreator.SHAPELESS).stateFunction((cache, g, p, i, s) -> cache.getRecipeCreatorCache().getCraftingCache().isShapeless()).enabledState(s -> s.cluster(getCluster()).subKey("enabled").icon(PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().getCraftingCache().setShapeless(false);
             return true;

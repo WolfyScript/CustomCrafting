@@ -24,16 +24,18 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.chat.ChatColor;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.chat.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,21 +50,20 @@ public class TabLocalizedName extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.NAME_TAG, this);
-        creator.registerButton(new ButtonChatInput<>("localized_name.set", Material.NAME_TAG, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
-            hashMap.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getItemMeta().getLocalizedName());
-            return itemStack;
-        }, (guiHandler, player, s, strings) -> {
+        creator.getButtonBuilder().chatInput("localized_name.set").state(state -> state.icon(Material.NAME_TAG).render((cache, guiHandler, player, inventory, btn, itemStack, i) -> {
+            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("var", guiHandler.getCustomCache().getItems().getItem().getItemMeta().getLocalizedName()));
+        })).inputAction((guiHandler, player, s, strings) -> {
             var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             itemMeta.setLocalizedName(ChatColor.convert(s));
             guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
             return false;
-        }));
-        creator.registerButton(new ButtonAction<>("localized_name.remove", Material.NAME_TAG, (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }).register();
+        creator.getButtonBuilder().action("localized_name.remove").state(state -> state.icon(Material.NAME_TAG).action((cache, guiHandler, player, inventory, btn, i, inventoryClickEvent) -> {
             var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             itemMeta.setLocalizedName(null);
             guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
             return true;
-        }));
+        })).register();
     }
 
     @Override

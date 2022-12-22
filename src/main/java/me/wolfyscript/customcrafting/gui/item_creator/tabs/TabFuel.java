@@ -31,7 +31,6 @@ import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.tuple.Pair;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -73,11 +72,11 @@ public class TabFuel extends ItemCreatorTab {
     }
 
     private void registerFuelToggle(GuiMenuComponent.ButtonBuilder<CCCache> bB, String id, Material material) {
-        bB.toggle("fuel." + id).stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().getFuelSettings().getAllowedBlocks().contains(material)).enabledState(state -> state.subKey("enabled").icon(material).action((ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
-            items.getItem().getFuelSettings().getAllowedBlocks().remove(material);
+        bB.toggle("fuel." + id).stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().getFuelSettings().getAllowedBlocks().contains(material)).enabledState(state -> state.subKey("enabled").icon(material).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            cache.getItems().getItem().getFuelSettings().getAllowedBlocks().remove(material);
             return true;
-        })).disabledState(state -> state.subKey("disabled").icon(material).action((ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
-            items.getItem().getFuelSettings().getAllowedBlocks().add(material);
+        })).disabledState(state -> state.subKey("disabled").icon(material).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            cache.getItems().getItem().getFuelSettings().getAllowedBlocks().add(material);
             return true;
         })).register();
     }

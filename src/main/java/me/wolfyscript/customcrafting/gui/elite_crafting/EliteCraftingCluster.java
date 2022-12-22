@@ -51,11 +51,11 @@ public class EliteCraftingCluster extends CCCluster {
         registerGuiWindow(new CraftingWindow6(this, customCrafting));
         setEntry(new BukkitNamespacedKey(KEY, "crafting_3"));
 
-        registerButton(new ButtonAction<>(RECIPE_BOOK.getKey(), Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+        getButtonBuilder().action(RECIPE_BOOK.getKey()).state(state -> state.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             ButtonContainerIngredient.resetButtons(guiHandler);
             cache.getRecipeBookCache().setEliteCraftingTable(cache.getEliteWorkbench());
             PlayerUtil.openRecipeBook(player);
             return true;
-        }));
+        })).register();
     }
 }

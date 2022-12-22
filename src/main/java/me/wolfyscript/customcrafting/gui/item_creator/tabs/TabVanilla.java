@@ -47,24 +47,25 @@ public class TabVanilla extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.GRASS_BLOCK, this);
-        creator.registerButton(new ButtonToggle<>("vanilla.block_recipes", (cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().isBlockVanillaRecipes(), new ButtonState<>("vanilla.block_recipes.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().toggle("vanilla.block_recipes").stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().isBlockVanillaRecipes())
+                .enabledState(state -> state.subKey("enabled").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             var items = cache.getItems();
             items.getItem().setBlockVanillaRecipes(false);
             return true;
-        }), new ButtonState<>("vanilla.block_recipes.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+        })).disabledState(state -> state.subKey("disabled").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             var items = cache.getItems();
             items.getItem().setBlockVanillaRecipes(true);
             return true;
-        })));
-        creator.registerButton(new ButtonToggle<>("vanilla.block_placement", new ButtonState<>("vanilla.block_placement.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+        })).register();
+        creator.getButtonBuilder().toggle("vanilla.block_placement").enabledState(state -> state.subKey("enabled").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             var items = cache.getItems();
             items.getItem().setBlockPlacement(false);
             return true;
-        }), new ButtonState<>("vanilla.block_placement.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+        })).disabledState(state -> state.subKey("disabled").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             var items = cache.getItems();
             items.getItem().setBlockPlacement(true);
             return true;
-        })));
+        })).register();
     }
 
     @Override

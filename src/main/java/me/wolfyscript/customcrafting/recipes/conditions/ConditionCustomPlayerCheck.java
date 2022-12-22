@@ -24,11 +24,11 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.eval.context.EvalContextPlayer;
+import com.wolfyscript.utilities.eval.operator.BoolOperator;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.eval.context.EvalContextPlayer;
-import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 

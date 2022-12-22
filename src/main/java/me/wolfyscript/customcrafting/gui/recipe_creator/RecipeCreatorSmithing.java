@@ -42,27 +42,27 @@ public class RecipeCreatorSmithing extends RecipeCreator {
     public void onInit() {
         super.onInit();
         var btnB = getButtonBuilder();
-        registerButton(new ButtonRecipeIngredient(0));
-        registerButton(new ButtonRecipeIngredient(1));
-        registerButton(new ButtonRecipeResult());
-        btnB.toggle(CHANGE_MATERIAL).enabledState(s -> s.subKey("enabled").icon(Material.PAPER).action((cache, handler, player, inv, i, e) -> {
+        ButtonRecipeIngredient.register(getButtonBuilder(), 0);
+        ButtonRecipeIngredient.register(getButtonBuilder(), 1);
+        ButtonRecipeResult.register(getButtonBuilder());
+        btnB.toggle(CHANGE_MATERIAL).enabledState(s -> s.subKey("enabled").icon(Material.PAPER).action((cache, handler, player, inv, btn, i, e) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(false);
             return true;
-        })).disabledState(s -> s.subKey("disabled").icon(Material.WRITABLE_BOOK).action((cache, handler, player, inv, i, e) -> {
+        })).disabledState(s -> s.subKey("disabled").icon(Material.WRITABLE_BOOK).action((cache, handler, player, inv, btn, i, e) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(true);
             return true;
         })).register();
-        btnB.toggle(PRESERVE_ENCHANTS).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveEnchants()).enabledState(s -> s.subKey("enabled").icon(Material.ENCHANTED_BOOK).action((cache, handler, player, inv, i, e) -> {
+        btnB.toggle(PRESERVE_ENCHANTS).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveEnchants()).enabledState(s -> s.subKey("enabled").icon(Material.ENCHANTED_BOOK).action((cache, handler, player, inv, btn, i, e) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(false);
             return true;
-        })).disabledState(s -> s.subKey("disabled").icon(Material.BOOK).action((cache, handler, player, inv, i, e) -> {
+        })).disabledState(s -> s.subKey("disabled").icon(Material.BOOK).action((cache, handler, player, inv, btn, i, e) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(true);
             return true;
         })).register();
-        btnB.toggle(PRESERVE_DAMAGE).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveDamage()).enabledState(s -> s.subKey("enabled").icon(Material.LIME_CONCRETE).action((cache, handler, player, inv, i, e) -> {
+        btnB.toggle(PRESERVE_DAMAGE).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveDamage()).enabledState(s -> s.subKey("enabled").icon(Material.LIME_CONCRETE).action((cache, handler, player, inv, btn, i, e) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(false);
             return true;
-        })).disabledState(s -> s.subKey("disabled").icon(Material.RED_CONCRETE).action((cache, handler, player, inv, i, e) -> {
+        })).disabledState(s -> s.subKey("disabled").icon(Material.RED_CONCRETE).action((cache, handler, player, inv, btn, i, e) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(true);
             return true;
         })).register();

@@ -25,12 +25,16 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class MenuTagSettings extends CCWindow {
 
@@ -79,14 +83,23 @@ public class MenuTagSettings extends CCWindow {
                 update.setButton(4, "next_page");
             }
             for (int i = 45 * page, invSlot = 9; i < tags.length && invSlot < getSize() - 9; i++, invSlot++) {
-                var button = new ButtonTagContainer(tags[i]);
-                registerButton(button);
-                update.setButton(invSlot, button);
+                final var key = tags[i];
+                if (getButton("tag."+key.toString(".")) == null) {
+                    getButtonBuilder().action("tag." + key.toString(".")).state(state -> state.key("tag_container").icon(Material.NAME_TAG).action((cache, guiHandler, player, guiInventory, btn, slot, event) -> {
+                        if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
+                            var currentRecipeStack = cache.getRecipeCreatorCache().getTagSettingsCache().getRecipeItemStack();
+                            if (currentRecipeStack != null) {
+                                currentRecipeStack.getTags().remove(key);
+                            }
+                        }
+                        return true;
+                    }).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> {
+                        return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("namespaced_key", key.toString()));
+                    })).register();
+                }
+                update.setButton(invSlot, "tag."+key.toString("."));
             }
         }
-
         update.setButton(49, "add_tag_list");
-
-
     }
 }

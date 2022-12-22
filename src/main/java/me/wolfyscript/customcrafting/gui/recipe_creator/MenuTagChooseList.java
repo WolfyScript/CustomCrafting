@@ -81,9 +81,11 @@ public class MenuTagChooseList extends CCWindow {
         }
 
         for (int i = 45 * page, invSlot = 0; i < ITEM_TAGS.size() && invSlot < getSize() - 9; i++, invSlot++) {
-            var button = new ButtonTagChoose(ITEM_TAGS.get(i));
-            registerButton(button);
-            update.setButton(invSlot, button);
+            String key = ButtonTagChoose.key(ITEM_TAGS.get(i));
+            if (getButton(key) == null) {
+                ButtonTagChoose.register(getButtonBuilder(), ITEM_TAGS.get(i));
+            }
+            update.setButton(invSlot, key);
         }
         update.setButton(49, ClusterMain.BACK_BOTTOM);
 

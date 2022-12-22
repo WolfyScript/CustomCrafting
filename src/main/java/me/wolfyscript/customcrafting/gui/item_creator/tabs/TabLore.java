@@ -53,15 +53,15 @@ public class TabLore extends ItemCreatorTabVanilla {
         var loreChatEditor = creator.getCustomCrafting().isPaper() ? ChatUtils.createPaperLoreChatEditor(creator.getInventoryAPI()) : ChatUtils.createLoreChatEditor(creator.getInventoryAPI());
 
         ButtonOption.register(creator.getButtonBuilder(), Material.WRITABLE_BOOK, this);
-        creator.registerButton(new ButtonChatInput<>(KEY + ".add", Material.WRITABLE_BOOK, (guiHandler, player, s, strings) -> {
+        creator.getButtonBuilder().chatInput(KEY + ".add").state(state -> state.icon(Material.WRITABLE_BOOK)).inputAction((guiHandler, player, s, strings) -> {
             guiHandler.getCustomCache().getItems().getItem().addLoreLine(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s, Placeholder.component("emtpy", Component.empty()))));
             return false;
-        }));
-        creator.registerButton(new ButtonAction<>(KEY + ".edit", Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, btn, i, event) -> {
+        }).register();
+        creator.getButtonBuilder().action(KEY + ".edit").state(state -> state.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             loreChatEditor.send(player);
             guiHandler.close();
             return true;
-        }));
+        })).register();
     }
 
     @Override

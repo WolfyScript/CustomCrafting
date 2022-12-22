@@ -25,9 +25,9 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.world.items.references.VanillaRef;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class ItemCreatorTabVanilla extends ItemCreatorTab {

@@ -27,7 +27,9 @@ import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -48,12 +50,11 @@ public class MenuListRecipes extends CCWindow {
     @Override
     public void onInit() {
         getButtonBuilder().action("back").state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"))
-                .action((cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
+                .action((cache, guiHandler, player, guiInventory, btn, slot, inventoryInteractEvent) -> {
                     cache.getRecipeList().setPage(0);
                     for (int i = 0; i < 45; i++) {
-                        ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(i));
-                        button.setCustomRecipe(guiHandler, null);
-                        button.setRecipe(guiHandler, null);
+                        cache.getRecipeList().setCustomRecipeForButtonInSlot(slot, null);
+                        cache.getRecipeList().setRecipeForButtonInSlot(slot, null);
                     }
                     if (cache.getRecipeList().getNamespace() == null) {
                         guiHandler.openPreviousWindow();
@@ -66,21 +67,21 @@ public class MenuListRecipes extends CCWindow {
                     }
                     return true;
                 })).register();
-        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, guiInv, i, event) -> {
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, guiInv, btn, i, event) -> {
             cache.getRecipeList().setPage(cache.getRecipeList().getPage() + 1);
             return true;
         })).register();
-        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, guiInv, i, event) -> {
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, guiInv, btn, i, event) -> {
             int page = cache.getRecipeList().getPage();
             if (page > 0) {
                 cache.getRecipeList().setPage(--page);
             }
             return true;
         })).register();
-        registerButton(new ButtonRecipeListWorkstationFilter());
+        ButtonRecipeListWorkstationFilter.register(getButtonBuilder());
         for (int i = 0; i < 45; i++) {
-            registerButton(new ButtonContainerRecipeList(i, customCrafting));
-            registerButton(new ButtonNamespaceRecipe(i, customCrafting));
+            ButtonContainerRecipeList.register(getButtonBuilder(),i, customCrafting);
+            ButtonNamespaceRecipe.register(getButtonBuilder(), i, customCrafting);
         }
     }
 
@@ -106,9 +107,8 @@ public class MenuListRecipes extends CCWindow {
             maxPages = recipeListCache.getMaxPages(namespaceList.size());
             page = recipeListCache.getPage(maxPages);
             for (int i = 45 * page, slot = 0; slot < 45 && i < namespaceList.size(); i++, slot++) {
-                ButtonNamespaceRecipe button = (ButtonNamespaceRecipe) getButton(ButtonNamespaceRecipe.key(slot));
-                button.setNamespace(guiHandler, namespaceList.get(i));
-                event.setButton(9 + slot, button);
+                recipeListCache.setNamespaceForButtonInSlot(slot, namespaceList.get(i));
+                event.setButton(9 + slot, ButtonNamespaceRecipe.key(slot));
             }
         } else if (namespace.equalsIgnoreCase("minecraft")) {
             List<Recipe> recipes = customCrafting.getDataHandler().getMinecraftRecipes().stream().sorted(Comparator.comparing(o -> ((Keyed) o).getKey().getKey())).collect(Collectors.toList());
@@ -117,9 +117,8 @@ public class MenuListRecipes extends CCWindow {
             maxPages = recipeListCache.getMaxPages(recipes.size());
             page = recipeListCache.getPage(maxPages);
             for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
-                ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(slot));
-                button.setRecipe(event.getGuiHandler(), recipes.get(i));
-                event.setButton(9 + slot, button);
+                recipeListCache.setRecipeForButtonInSlot(slot, recipes.get(i));
+                event.setButton(9 + slot, ButtonContainerRecipeList.key(slot));
             }
         } else if (folder == null) {
             List<String> folders = customRecipes.folders(namespace);
@@ -129,8 +128,7 @@ public class MenuListRecipes extends CCWindow {
             for (int i = 45 * page, slot = 0; slot < 45 && i < folders.size(); i++, slot++) {
                 String key = ButtonFolderRecipe.key(slot, namespace, folders.get(i));
                 if (getButton(key) == null) {
-                    ButtonFolderRecipe button = new ButtonFolderRecipe(slot, namespace, folders.get(i), customCrafting);
-                    registerButton(button);
+                    ButtonFolderRecipe.register(getButtonBuilder(), slot, namespace, folders.get(i), customCrafting);
                 }
                 event.setButton(9 + slot, getButton(key));
             }
@@ -140,9 +138,8 @@ public class MenuListRecipes extends CCWindow {
             maxPages = recipeListCache.getMaxPages(recipes.size());
             page = recipeListCache.getPage(maxPages);
             for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
-                ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(slot));
-                button.setCustomRecipe(event.getGuiHandler(), recipes.get(i));
-                event.setButton(9 + slot, button);
+                recipeListCache.setCustomRecipeForButtonInSlot(slot, recipes.get(i));
+                event.setButton(9 + slot, ButtonContainerRecipeList.key(slot));
             }
         }
         if (page != 0) {

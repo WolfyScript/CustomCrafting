@@ -37,8 +37,8 @@ public class RecipeCreatorStonecutter extends RecipeCreator {
     public void onInit() {
         super.onInit();
 
-        registerButton(new ButtonRecipeIngredient(0));
-        registerButton(new ButtonRecipeResult());
+        ButtonRecipeIngredient.register(getButtonBuilder(), 0);
+        ButtonRecipeResult.register(getButtonBuilder());
     }
 
     @Override

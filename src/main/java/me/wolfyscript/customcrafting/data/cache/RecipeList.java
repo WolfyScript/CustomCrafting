@@ -22,7 +22,10 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import org.bukkit.inventory.BlastingRecipe;
@@ -42,6 +45,9 @@ public class RecipeList {
     private int page;
     private RecipeType<?> filterType;
     private Class<? extends Recipe> filterClass;
+    private final Map<Integer, String> NAMESPACES_PER_SLOT = new HashMap<>();
+    private final Map<Integer, Recipe> RECIPES_PER_SLOT = new HashMap<>();
+    private final Map<Integer, CustomRecipe<?>> CUSTOM_RECIPES_PER_SLOT = new HashMap<>();
 
     public RecipeList() {
         this.namespace = null;
@@ -114,5 +120,29 @@ public class RecipeList {
         if (filterClass != null) {
             recipes.removeIf(recipe -> !filterClass.isInstance(recipe));
         }
+    }
+
+    public void setNamespaceForButtonInSlot(int slot, String namespace) {
+        NAMESPACES_PER_SLOT.put(slot, namespace);
+    }
+
+    public String getNamespaceForButtonInSlot(int slot) {
+        return NAMESPACES_PER_SLOT.getOrDefault(slot, "");
+    }
+
+    public void setRecipeForButtonInSlot(int slot, Recipe recipe) {
+        RECIPES_PER_SLOT.put(slot, recipe);
+    }
+
+    public Recipe getRecipeForButtonInSlot(int slot) {
+        return RECIPES_PER_SLOT.get(slot);
+    }
+
+    public void setCustomRecipeForButtonInSlot(int slot, CustomRecipe<?> customRecipe) {
+        CUSTOM_RECIPES_PER_SLOT.put(slot, customRecipe);
+    }
+
+    public CustomRecipe<?> getCustomRecipeForButtonInSlot(int slot) {
+        return CUSTOM_RECIPES_PER_SLOT.get(slot);
     }
 }

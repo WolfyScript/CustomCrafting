@@ -30,6 +30,7 @@ import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +43,8 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Material;
 import org.bukkit.util.StringUtil;
 
@@ -112,7 +115,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
         public GUIComponent() {
             super(Material.CRAFTING_TABLE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.registerButton(new ButtonChatInput<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, args) -> {
+                        menu.getButtonBuilder().chatInput(ADD).state(state -> state.icon(Material.GREEN_CONCRETE)).inputAction((guiHandler, player, s, args) -> {
                             if (args.length > 1) {
                                 var namespacedKey = ChatUtils.getNamespacedKey(player, "", args);
                                 if (namespacedKey != null) {
@@ -137,7 +140,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                             }
                             menu.sendMessage(guiHandler, menu.translatedMsgKey("no_name"));
                             return true;
-                        }, (guiHandler, player, args) -> {
+                        }).tabComplete((guiHandler, player, args) -> {
                             Set<NamespacedKey> entries = api.getRegistries().getCustomItems().entrySet().stream().filter(entry -> {
                                 EliteWorkbenchData data = (EliteWorkbenchData) entry.getValue().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA);
                                 return data != null && data.isEnabled();
@@ -149,25 +152,26 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                                 return StringUtil.copyPartialMatches(args[0], entries.stream().map(NamespacedKey::getNamespace).distinct().toList(), Collections.emptyList());
                             }
                             return Collections.emptyList();
-                        }));
-                        menu.registerButton(new ButtonDummy<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
+                        }).register();
+                        menu.getButtonBuilder().dummy(LIST).state(state -> state.icon(Material.BOOK).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getEliteCraftingTableCondition();
+                            TagResolver.Builder builder = TagResolver.builder();
                             for (int i = 0; i < 4; i++) {
                                 if (i < condition.getEliteWorkbenches().size()) {
-                                    hashMap.put("%var" + i + "%", condition.getEliteWorkbenches().get(i));
+                                    builder.resolver(Placeholder.parsed("var" + i, String.valueOf(condition.getEliteWorkbenches().get(i))));
                                 } else {
-                                    hashMap.put("%var" + i + "%", "...");
+                                    builder.resolver(Placeholder.parsed("var" + i, "..."));
                                 }
                             }
-                            return itemStack;
-                        }));
-                        menu.registerButton(new ButtonAction<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                            return CallbackButtonRender.UpdateResult.of();
+                        })).register();
+                        menu.getButtonBuilder().action(REMOVE).state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(EliteWorkbenchCondition.class);
                             if (!condition.getEliteWorkbenches().isEmpty()) {
                                 condition.getEliteWorkbenches().remove(condition.getEliteWorkbenches().size() - 1);
                             }
                             return true;
-                        }));
+                        })).register();
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(29, ADD);

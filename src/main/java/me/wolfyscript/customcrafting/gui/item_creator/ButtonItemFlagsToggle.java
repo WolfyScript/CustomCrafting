@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
@@ -30,18 +31,18 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 
-public class ButtonItemFlagsToggle extends ButtonToggle<CCCache> {
+public class ButtonItemFlagsToggle {
 
-    public ButtonItemFlagsToggle(String flagId, ItemFlag itemFlag, Material material) {
-        super("flags." + flagId, (cache, guiHandler, player, guiInventory, i) -> {
+    public static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, String flagId, ItemFlag itemFlag, Material material) {
+        buttonBuilder.toggle("flags." + flagId).stateFunction((cache, guiHandler, player, guiInventory, i) -> {
             CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.getItemMeta().hasItemFlag(itemFlag);
-        }, new ButtonState<>("flags." + flagId + ".enabled", material, (cache, guiHandler, player, inventory, slot, event) -> {
+        }).enabledState(state -> state.subKey("flags." + flagId + ".enabled").icon(material).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             guiHandler.getCustomCache().getItems().getItem().removeItemFlags(itemFlag);
             return true;
-        }), new ButtonState<>("flags." + flagId + ".disabled", material, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(state -> state.subKey("flags." + flagId + ".disabled").icon(material).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             guiHandler.getCustomCache().getItems().getItem().addItemFlags(itemFlag);
             return true;
-        }));
+        })).register();
     }
 }

@@ -25,10 +25,12 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 
 public class PermissionCondition extends Condition<PermissionCondition> {
@@ -70,13 +72,12 @@ public class PermissionCondition extends Condition<PermissionCondition> {
         public GUIComponent() {
             super(Material.REDSTONE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, wolfyUtilities) -> {
-                        menu.registerButton(new ButtonChatInput<>("conditions.permission.set", Material.REDSTONE, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(PermissionCondition.class).getPermission());
-                            return itemStack;
-                        }, (guiHandler, player, s, strings) -> {
+                        menu.getButtonBuilder().chatInput("conditions.permission.set").state(state -> state.icon(Material.REDSTONE).render((cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("value", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(PermissionCondition.class).getPermission()));
+                        })).inputAction((guiHandler, player, s, strings) -> {
                             guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(PermissionCondition.class).setPermission(s.trim());
                             return false;
-                        }));
+                        }).register();
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(31, "conditions.permission.set");

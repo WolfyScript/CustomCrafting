@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.Setting;
@@ -30,18 +31,18 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-class ButtonRecipeType extends ButtonAction<CCCache> {
+class ButtonRecipeType {
 
-    ButtonRecipeType(String key, RecipeType<?> recipeType, ItemStack icon) {
-        super(key, icon, (cache, guiHandler, player, inventory, slot, event) -> {
+    static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, String key, RecipeType<?> recipeType, ItemStack icon) {
+        buttonBuilder.action(key).state(state -> state.icon(icon).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getRecipeCreatorCache().setRecipeType(recipeType);
             cache.setSetting(Setting.RECIPE_CREATOR);
             guiHandler.openWindow(new BukkitNamespacedKey("recipe_creator", recipeType.getCreatorID()));
             return true;
-        });
+        })).register();
     }
 
-    ButtonRecipeType(String key, RecipeType<?> recipeType, Material icon) {
-        this(key, recipeType, new ItemStack(icon));
+    static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, String key, RecipeType<?> recipeType, Material icon) {
+        register(buttonBuilder, key, recipeType, new ItemStack(icon));
     }
 }

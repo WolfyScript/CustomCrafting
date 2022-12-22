@@ -24,13 +24,13 @@ package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import com.wolfyscript.utilities.bukkit.compatibility.plugins.ItemsAdderIntegration;
+import com.wolfyscript.utilities.bukkit.compatibility.plugins.itemsadder.CustomStack;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
-import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

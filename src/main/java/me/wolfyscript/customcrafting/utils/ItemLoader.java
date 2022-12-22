@@ -27,16 +27,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
-import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.bukkit.world.items.references.APIReference;
+import com.wolfyscript.utilities.bukkit.world.items.references.VanillaRef;
+import com.wolfyscript.utilities.bukkit.world.items.references.WolfyUtilitiesRef;
 import java.io.IOException;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -47,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemLoader {
 
-    private static final org.bukkit.NamespacedKey customItemContainerKey = new org.bukkit.NamespacedKey(WolfyUtilsBukkit.getWUPlugin(), "custom_item");
+    private static final org.bukkit.NamespacedKey customItemContainerKey = new org.bukkit.NamespacedKey(WolfyCoreBukkit.getInstance(), "custom_item");
 
     private ItemLoader() {
     }
@@ -227,7 +226,7 @@ public class ItemLoader {
             if (itemMeta != null && !itemMeta.getPersistentDataContainer().isEmpty()) {
                 var container = itemMeta.getPersistentDataContainer();
                 if (container.has(customItemContainerKey, PersistentDataType.STRING)) {
-                    var itemKey = customCrafting.getApi().getIdentifiers().getNamespaced(container.get(customItemContainerKey, PersistentDataType.STRING));
+                    var itemKey = CustomCrafting.inst().getApi().getIdentifiers().getNamespaced(container.get(customItemContainerKey, PersistentDataType.STRING));
                     var registry = WolfyCoreBukkit.getInstance().getRegistries().getCustomItems();
                     if (itemKey != null && !registry.has(itemKey)) {
                         var updatedKey = NamespacedKeyUtils.fromInternal(itemKey);

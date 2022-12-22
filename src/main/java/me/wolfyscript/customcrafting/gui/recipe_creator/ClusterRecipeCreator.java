@@ -26,6 +26,7 @@ import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,10 +34,9 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
+import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.version.ServerVersion;
-import me.wolfyscript.utilities.util.version.WUVersion;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -141,40 +141,68 @@ public class ClusterRecipeCreator extends CCCluster {
                     return results;
                 }).register();
 
-        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 6, 1))) {
-            getButtonBuilder().multiChoice(VANILLA_BOOK.getKey())
-                    // State: vanilla = true, auto_discover = true
-                    .addState(state -> state.subKey("vanilla_book_discover").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, i, event) -> {
-                        cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(true);
-                        cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(false);
-                        return true;
-                    }))
-                    // State: vanilla = true, auto_discover = false
-                    .addState(state -> state.subKey("vanilla_book_no_discover").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, i, event) -> {
-                        cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(false);
-                        cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(false);
-                        return true;
-                    }))
-                    // State: vanilla = false, auto_discover = false
-                    .addState(state -> state.subKey("no_vanilla_book").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, i, event) -> {
-                        cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(true);
-                        cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(true);
-                        return true;
-                    }))
-                    .stateFunction((cache, guiHandler, player, inventory, i) -> {
-                        RecipeCache<?> recipeCache = cache.getRecipeCreatorCache().getRecipeCache();
-                        if (recipeCache.isVanillaBook() && recipeCache.isAutoDiscover()) {
-                            return 0;
-                        }
-                        return recipeCache.isVanillaBook() ? 1 : 2;
-                    }).register();
-        } else {
-            registerButton(new ButtonVanillaBook());
-        }
+        getButtonBuilder().multiChoice(VANILLA_BOOK.getKey())
+                // State: vanilla = true, auto_discover = true
+                .addState(state -> state.subKey("vanilla_book_discover").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, button, i, event) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(true);
+                    cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(false);
+                    return true;
+                }))
+                // State: vanilla = true, auto_discover = false
+                .addState(state -> state.subKey("vanilla_book_no_discover").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, button, i, event) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(false);
+                    cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(false);
+                    return true;
+                }))
+                // State: vanilla = false, auto_discover = false
+                .addState(state -> state.subKey("no_vanilla_book").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, button, i, event) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(true);
+                    cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(true);
+                    return true;
+                }))
+                .stateFunction((cache, guiHandler, player, inventory, i) -> {
+                    RecipeCache<?> recipeCache = cache.getRecipeCreatorCache().getRecipeCache();
+                    if (recipeCache.isVanillaBook() && recipeCache.isAutoDiscover()) {
+                        return 0;
+                    }
+                    return recipeCache.isVanillaBook() ? 1 : 2;
+                }).register();
 
-        registerButton(new ButtonExactMeta());
-        registerButton(new ButtonPriority());
-        registerButton(new ButtonHidden());
+        getButtonBuilder().toggle(ClusterRecipeCreator.EXACT_META.getKey()).stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getRecipeCache().isCheckNBT())
+                .enabledState(state -> state.subKey("enabled").icon(Material.ITEM_FRAME).action((cache, guiHandler, player, guiInventory, button, i, inventoryInteractEvent) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setCheckNBT(false);
+                    return true;
+                })).disabledState(state -> state.subKey("disabled").icon(Material.PAPER).action((cache, guiHandler, player, guiInventory, button, i, inventoryInteractEvent) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setCheckNBT(true);
+                    return true;
+                })).register();
+        getButtonBuilder().toggle(ClusterRecipeCreator.HIDDEN.getKey()).stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getRecipeCache().isHidden())
+                .enabledState(state -> state.subKey("enabled").icon(PlayerHeadUtils.getViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98")).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setHidden(false);
+                    return true;
+                })).disabledState(state -> state.subKey("disabled").icon(PlayerHeadUtils.getViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85")).action((cache, guiHandler, player, guiInventory, button, i, inventoryInteractEvent) -> {
+                    cache.getRecipeCreatorCache().getRecipeCache().setHidden(true);
+                    return true;
+                })).register();
+
+        getButtonBuilder().action(ClusterRecipeCreator.PRIORITY.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("b8ea57c7551c6ab33b8fed354b43df523f1e357c4b4f551143c34ddeac5b6c8d")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+            RecipePriority priority = cache.getRecipeCreatorCache().getRecipeCache().getPriority();
+            int order;
+            order = priority.getOrder();
+            if (order < 2) {
+                order++;
+            } else {
+                order = -2;
+            }
+            cache.getRecipeCreatorCache().getRecipeCache().setPriority(RecipePriority.getByOrder(order));
+            return true;
+        }).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
+            RecipePriority priority = cache.getRecipeCreatorCache().getRecipeCache().getPriority();
+            if (priority != null) {
+                return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("pri", priority.name()));
+            }
+            return CallbackButtonRender.UpdateResult.of();
+        })).register();
         registerSaveButtons();
     }
 

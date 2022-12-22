@@ -27,6 +27,7 @@ import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
 import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -37,6 +38,7 @@ import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
@@ -56,9 +58,28 @@ abstract class CraftingWindow extends CCWindow {
     public void onInit() {
         var bB = getButtonBuilder();
         for (int i = 0; i < gridSize * gridSize; i++) {
-            registerButton(new ButtonSlotCrafting(i, customCrafting));
+            final int recipeSlot = i;
+            getButtonBuilder().itemInput("crafting.slot_" + recipeSlot).state(state -> state.icon(Material.AIR)
+                .action((cache, guiHandler, player, inventory, btn, slot, event) -> cache.getEliteWorkbench() == null || event instanceof InventoryClickEvent clickEvent && CraftingWindow.RESULT_SLOTS.contains(clickEvent.getSlot()))
+                .postAction((cache, guiHandler, player, inventory, btn, itemStack, slot, b) -> {
+                    CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
+                    if (cacheEliteCraftingTable.getContents() != null) {
+                        cacheEliteCraftingTable.getContents()[recipeSlot] = inventory.getItem(slot);
+                        ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), player, inventory, true, cacheEliteCraftingTable.isAdvancedCraftingRecipes());
+                        cacheEliteCraftingTable.setResult(result);
+                    } else {
+                        cacheEliteCraftingTable.setResult(new ItemStack(Material.AIR));
+                    }
+                }).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
+                    CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
+                    if (cacheEliteCraftingTable.getContents() != null) {
+                        ItemStack slotItem = cacheEliteCraftingTable.getContents()[recipeSlot];
+                        return CallbackButtonRender.UpdateResult.of(slotItem == null ? new ItemStack(Material.AIR) : slotItem);
+                    }
+                    return CallbackButtonRender.UpdateResult.of(new ItemStack(Material.AIR));
+                })).register();
         }
-        registerButton(new ButtonSlotResult(customCrafting));
+        ButtonSlotResult.register(getButtonBuilder(), customCrafting);
         bB.dummy("texture_dark").state(state -> state.key(ClusterMain.BACKGROUND).icon(Material.BLACK_STAINED_GLASS_PANE)).register();
         bB.dummy("texture_light").state(state -> state.key(ClusterMain.BACKGROUND).icon(Material.BLACK_STAINED_GLASS_PANE)).register();
     }

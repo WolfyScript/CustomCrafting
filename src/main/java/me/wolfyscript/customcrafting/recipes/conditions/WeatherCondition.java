@@ -26,9 +26,11 @@ import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import java.util.Locale;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -93,13 +95,12 @@ public class WeatherCondition extends Condition<WeatherCondition> {
         public GUIComponent() {
             super(Material.WATER_BUCKET, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.registerButton(new ButtonAction<>("conditions.weather.set", Material.WATER_BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                        menu.getButtonBuilder().chatInput("conditions.weather.set").state(state -> state.icon(Material.WATER_BUCKET).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
                             cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).toggleWeather();
                             return true;
-                        }, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-                            hashMap.put("%weather%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(api));
-                            return itemStack;
-                        }));
+                        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
+                            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("weather", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(api)));
+                        })).register();
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(31, "conditions.weather.set");

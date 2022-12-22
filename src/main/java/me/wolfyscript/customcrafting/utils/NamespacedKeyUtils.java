@@ -25,12 +25,12 @@ package me.wolfyscript.customcrafting.utils;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import com.wolfyscript.utilities.bukkit.world.BlockCustomItemStore;
 import com.wolfyscript.utilities.bukkit.world.WorldUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import me.wolfyscript.utilities.util.world.BlockCustomItemStore;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 

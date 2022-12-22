@@ -23,26 +23,32 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import me.wolfyscript.customcrafting.data.CCCache;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 
-class ButtonTagChoose extends ButtonAction<CCCache> {
+class ButtonTagChoose {
 
-    ButtonTagChoose(Tag<Material> tag) {
-        super("tag." + BukkitNamespacedKey.fromBukkit(tag.getKey()).toString("."), new ButtonState<>("tag", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, slot, event) -> {
+    static String key(Tag<Material> tag) {
+        return "tag." + BukkitNamespacedKey.fromBukkit(tag.getKey()).toString(".");
+    }
+
+    static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, Tag<Material> tag) {
+        buttonBuilder.action(key(tag)).state(state -> state.key("tag").icon(Material.NAME_TAG).action((cache, guiHandler, player, guiInventory, btn, slot, event) -> {
             var recipeItemStack = cache.getRecipeCreatorCache().getTagSettingsCache().getRecipeItemStack();
             if (recipeItemStack != null) {
                 recipeItemStack.getTags().add(BukkitNamespacedKey.fromBukkit(tag.getKey()));
             }
             guiHandler.openPreviousWindow();
             return true;
-        }, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-            values.put("%namespaced_key%", BukkitNamespacedKey.fromBukkit(tag.getKey()).toString());
-            itemStack.setType(tag.getValues().stream().findFirst().orElse(Material.NAME_TAG));
-            return itemStack;
-        }));
+        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
+            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("namespaced_key", BukkitNamespacedKey.fromBukkit(tag.getKey()).toString()));
+        })).register();
     }
 }

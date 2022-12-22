@@ -72,8 +72,8 @@ public class CauldronWorkstationMenu extends CCWindow {
         for (int i = 0; i < INGREDIENT_AMOUNT; i++) {
             int recipeSlot = i;
             getButtonBuilder().itemInput("crafting.slot_" + i).state(state -> state.icon(Material.AIR)
-                    .action((cache, guiHandler, player, guiInventory, i1, event) -> false)
-                    .postAction((cache, guiHandler, player, guiInventory, itemStack, i1, event) -> {
+                    .action((cache, guiHandler, player, guiInventory, btn, i1, event) -> false)
+                    .postAction((cache, guiHandler, player, guiInventory, btn, itemStack, i1, event) -> {
                         CacheCauldronWorkstation cacheCauldron = cache.getCauldronWorkstation();
                         cacheCauldron.setPreCookEvent(null);
                         cacheCauldron.getInput().set(recipeSlot, itemStack);
@@ -90,7 +90,7 @@ public class CauldronWorkstationMenu extends CCWindow {
                                 }
                             }
                         });
-                    }).render((cache, guiHandler, player, guiInventory, itemStack, i1) -> {
+                    }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i1) -> {
                         CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
                         ItemStack stack = cauldronWorkstation.getInput().get(recipeSlot);
                         if (!ItemUtils.isAirOrNull(stack)) {
@@ -103,10 +103,10 @@ public class CauldronWorkstationMenu extends CCWindow {
             int finalResultSlot = resultSlot;
             getButtonBuilder().itemInput("result_" + resultSlot).state(state -> state.icon(Material.AIR)
                     .action((cache, guiHandler, player, inventory, btn, slot, event) -> false)
-                    .postAction((cache, guiHandler, player, inventory, itemStack, i, event) -> {
+                    .postAction((cache, guiHandler, player, inventory, btn, itemStack, i, event) -> {
                         cache.getCauldronWorkstation().getBlockData().ifPresent(cauldronBlockData -> cauldronBlockData.getResult()[finalResultSlot] = itemStack);
                     })
-                    .render((cache, guiHandler, player, inventory, itemStack, slot) -> {
+                    .render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
                         ItemStack result = cache.getCauldronWorkstation().getBlockData().map(cauldronBlockData -> cauldronBlockData.getResult()[finalResultSlot]).orElse(ItemUtils.AIR);
                         return CallbackButtonRender.UpdateResult.of(result);
                     })).register();

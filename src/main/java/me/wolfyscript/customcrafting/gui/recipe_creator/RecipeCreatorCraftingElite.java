@@ -44,9 +44,9 @@ public class RecipeCreatorCraftingElite extends RecipeCreator {
         super.onInit();
         var btnB = getButtonBuilder();
         for (int i = 0; i < 37; i++) {
-            registerButton(new ButtonRecipeIngredient(i));
+            ButtonRecipeIngredient.register(getButtonBuilder(), i);
         }
-        registerButton(new ButtonRecipeResult());
+        ButtonRecipeResult.register(getButtonBuilder());
         btnB.action(SETTINGS).state(s -> s.icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             guiHandler.openWindow(RecipeCreatorCraftingEliteSettings.KEY);
             return true;

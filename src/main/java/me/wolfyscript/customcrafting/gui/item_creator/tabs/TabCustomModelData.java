@@ -27,6 +27,7 @@ import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.tuple.Pair;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -34,6 +35,7 @@ import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;
@@ -49,11 +51,10 @@ public class TabCustomModelData extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.REDSTONE, this);
-        creator.registerButton(new ButtonChatInput<>("custom_model_data.set", Material.GREEN_CONCRETE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        creator.getButtonBuilder().chatInput("custom_model_data.set").state(state -> state.icon(Material.GREEN_CONCRETE).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
             var items = guiHandler.getCustomCache().getItems();
-            hashMap.put("%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : "&7&l/") + "");
-            return itemStack;
-        }, (guiHandler, player, s, strings) -> {
+            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("var", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : "<grey><underline>/") + ""));
+        })).inputAction((guiHandler, player, s, strings) -> {
             var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             if (!(itemMeta instanceof Repairable)) {
                 return true;
@@ -68,14 +69,14 @@ public class TabCustomModelData extends ItemCreatorTab {
                 return true;
             }
             return false;
-        }));
-        creator.registerButton(new ButtonAction<>("custom_model_data.reset", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+        }).register();
+        creator.getButtonBuilder().action("custom_model_data.reset").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             var items = cache.getItems();
             var itemMeta = items.getItem().getItemMeta();
             itemMeta.setCustomModelData(null);
             items.getItem().setItemMeta(itemMeta);
             return true;
-        }));
+        })).register();
     }
 
     @Override

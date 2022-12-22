@@ -24,6 +24,8 @@ package me.wolfyscript.customcrafting.listeners;
 
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
+import com.wolfyscript.utilities.bukkit.compatibility.plugins.ItemsAdderIntegration;
+import com.wolfyscript.utilities.bukkit.compatibility.plugins.itemsadder.CustomStack;
 import com.wolfyscript.utilities.bukkit.world.inventory.InventoryUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
@@ -40,8 +42,6 @@ import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.SmithingData;
 import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
-import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;

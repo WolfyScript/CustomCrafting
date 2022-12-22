@@ -23,39 +23,35 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import java.util.HashMap;
+import java.util.Map;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-public class ButtonNamespaceRecipe extends ButtonAction<CCCache> {
+public class ButtonNamespaceRecipe {
 
     private static final String KEY = "recipe_list.namespace_";
-    private final CustomCrafting customCrafting;
-    private final HashMap<GuiHandler<CCCache>, String> namespaces = new HashMap<>();
-
-    public ButtonNamespaceRecipe(int slot, CustomCrafting customCrafting) {
-        super(key(slot), new ButtonState<>("namespace", Material.ENDER_CHEST));
-        this.customCrafting = customCrafting;
-    }
 
     static String key(int slot) {
         return KEY + slot;
     }
 
-    @Override
-    public void init(GuiWindow<CCCache> guiWindow) {
-        getState().setAction((cache, guiHandler, player, inventory, slot, event) -> {
-            String namespace = getNamespace(guiHandler);
+    static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, int slot, CustomCrafting customCrafting) {
+        buttonBuilder.action(key(slot)).state(state -> state.key("namespace").icon(Material.ENDER_CHEST).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+            String namespace = cache.getRecipeList().getNamespaceForButtonInSlot(slot);
             if (!namespace.isEmpty() && event instanceof InventoryClickEvent clickEvent) {
                 if (!clickEvent.isShiftClick()) {
-                    if (guiWindow instanceof MenuListRecipes) {
+                    if (guiInventory.getWindow() instanceof MenuListRecipes) {
                         cache.getRecipeList().setNamespace(namespace);
                         cache.getRecipeList().setPage(0);
                     }
@@ -75,19 +71,9 @@ public class ButtonNamespaceRecipe extends ButtonAction<CCCache> {
                 }
             }
             return true;
-        });
-        getState().setRenderAction((hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%namespace%", getNamespace(guiHandler));
-            return itemStack;
-        });
-        super.init(guiWindow);
+        }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
+            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("namespace", cache.getRecipeList().getNamespaceForButtonInSlot(slot)));
+        })).register();
     }
 
-    public String getNamespace(GuiHandler<CCCache> guiHandler) {
-        return namespaces.getOrDefault(guiHandler, "");
-    }
-
-    public void setNamespace(GuiHandler<CCCache> guiHandler, String namespace) {
-        namespaces.put(guiHandler, namespace);
-    }
 }

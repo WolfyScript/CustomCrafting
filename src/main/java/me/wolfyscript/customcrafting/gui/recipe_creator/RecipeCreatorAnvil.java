@@ -50,9 +50,9 @@ public class RecipeCreatorAnvil extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-        registerButton(new ButtonRecipeIngredient(0));
-        registerButton(new ButtonRecipeIngredient(1));
-        registerButton(new ButtonRecipeResult());
+        ButtonRecipeIngredient.register(getButtonBuilder(), 0);
+        ButtonRecipeIngredient.register(getButtonBuilder(), 1);
+        ButtonRecipeResult.register(getButtonBuilder());
         var btnB = getButtonBuilder();
         btnB.action(MODE).state(s -> s.icon(Material.REDSTONE).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             var mode = cache.getRecipeCreatorCache().getAnvilCache().getMode();

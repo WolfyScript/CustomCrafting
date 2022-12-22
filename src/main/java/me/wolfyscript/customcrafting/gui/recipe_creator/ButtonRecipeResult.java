@@ -22,8 +22,10 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonItemInput;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -33,10 +35,10 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-class ButtonRecipeResult extends ButtonItemInput<CCCache> {
+class ButtonRecipeResult {
 
-    ButtonRecipeResult() {
-        super("recipe.result", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
+    static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder) {
+        buttonBuilder.itemInput("recipe.result").state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             Result result = cache.getRecipeCreatorCache().getRecipeCache().getResult();
             if (event instanceof InventoryClickEvent clickEvent && clickEvent.getSlot() == slot && clickEvent.isRightClick() && clickEvent.isShiftClick()) {
                 //Since shift clicking now updates all the available ItemInputButtons we only use the first button that was clicked.
@@ -44,16 +46,16 @@ class ButtonRecipeResult extends ButtonItemInput<CCCache> {
                 return true;
             }
             return result.getItems().isEmpty() && !result.getTags().isEmpty();
-        }, (cache, guiHandler, player, inventory, itemStack, i, event) -> {
+        }).postAction((cache, guiHandler, player, inventory, btn, itemStack, i, event) -> {
             Result result = cache.getRecipeCreatorCache().getRecipeCache().getResult();
             if ((result.getItems().isEmpty() && !result.getTags().isEmpty()) || event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
                 return;
             }
             result.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
             result.buildChoices();
-        }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        }).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
             Result result = cache.getRecipeCreatorCache().getRecipeCache().getResult();
-            return result != null ? result.getItemStack() : new ItemStack(Material.AIR);
-        }));
+            return CallbackButtonRender.UpdateResult.of(result != null ? result.getItemStack() : new ItemStack(Material.AIR));
+        })).register();
     }
 }

@@ -23,8 +23,8 @@
 package me.wolfyscript.customcrafting.gui.potion_creator;
 
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import java.util.Locale;
 import java.util.Random;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -37,12 +37,12 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class ButtonPotionEffectTypeSelect extends ButtonAction<CCCache> {
+public class ButtonPotionEffectTypeSelect {
 
     private static final Random random = new Random(System.currentTimeMillis());
 
-    public ButtonPotionEffectTypeSelect(PotionEffectType effectType) {
-        super("potion_effect_type_" + effectType.getName().toLowerCase(), new ButtonState<>("effect_type", Material.POTION, (cache, guiHandler, player, inventory, slot, event) -> {
+    static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, PotionEffectType effectType) {
+        buttonBuilder.action("potion_effect_type_" + effectType.getName().toLowerCase()).state(state -> state.key("effect_type").icon(Material.POTION).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             PotionEffects potionEffectCache = guiHandler.getCustomCache().getPotionEffectCache();
             if (potionEffectCache.getApplyPotionEffectType() != null) {
                 potionEffectCache.getApplyPotionEffectType().applyPotionEffect(guiHandler.getCustomCache(), effectType);
@@ -53,7 +53,7 @@ public class ButtonPotionEffectTypeSelect extends ButtonAction<CCCache> {
                 guiHandler.openWindow(potionEffectCache.getOpenedFromWindow());
             }
             return true;
-        }, (replacements, cache, guiHandler, player, inventory, itemStack, i, b) -> getPotionEffectTypeItem(effectType)));
+        }).render((cache, guiHandler, player, inventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(getPotionEffectTypeItem(effectType)))).register();
     }
 
     private static ItemStack getPotionEffectTypeItem(PotionEffectType type) {

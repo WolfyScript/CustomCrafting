@@ -24,9 +24,9 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.InventoryUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
@@ -44,10 +44,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-class ButtonSelectCustomItem extends ButtonAction<CCCache> {
+class ButtonSelectCustomItem {
 
-    ButtonSelectCustomItem(CustomCrafting customCrafting, NamespacedKey namespacedKey) {
-        super("item_" + namespacedKey.toString("__"), new ButtonState<>("custom_item_error", Material.STONE, (cache, guiHandler, player, inventory, btn, i, event) -> {
+    public static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, CustomCrafting customCrafting, NamespacedKey namespacedKey) {
+        buttonBuilder.action("item_" + namespacedKey.toString("__")).state(state -> state.key("custom_item_error").icon(Material.STONE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             var items = cache.getItems();
             var registry = guiHandler.getWolfyUtils().getRegistries().getCustomItems();
             if (!registry.has(namespacedKey) || ItemUtils.isAirOrNull(registry.get(namespacedKey))) {
@@ -76,7 +76,7 @@ class ButtonSelectCustomItem extends ButtonAction<CCCache> {
                     if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                         cache.applyItem(customItem);
                         itemEditor.sendMessage(guiHandler, itemEditor.translatedMsgKey("item_applied"));
-                        List<? extends GuiWindow<?>> history = guiHandler.getClusterHistory().get(guiHandler.getCluster());
+                        List<? extends GuiWindow<?>> history = guiHandler.getHistory(guiHandler.getCluster());
                         history.remove(history.size() - 1);
                         guiHandler.openCluster(ClusterRecipeCreator.KEY);
                     } else if (ChatUtils.checkPerm(player, "customcrafting.cmd.give")) {
@@ -99,7 +99,7 @@ class ButtonSelectCustomItem extends ButtonAction<CCCache> {
                 }
             }
             return true;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        }).render((cache, guiHandler, player, inventory, btn, itemStack, help) -> {
             var api = guiHandler.getWolfyUtils();
             var customItem = api.getRegistries().getCustomItems().get(namespacedKey);
             if (!ItemUtils.isAirOrNull(customItem)) {
@@ -107,14 +107,14 @@ class ButtonSelectCustomItem extends ButtonAction<CCCache> {
                 itemB.addLoreLine("");
                 itemB.addLoreLine(org.bukkit.ChatColor.DARK_GRAY.toString() + namespacedKey);
                 api.getLanguageAPI().getComponents("inventories.none.item_list.items.custom_item.lore").forEach(c -> itemB.addLoreLine(BukkitComponentSerializer.legacy().serialize(c)));
-                return itemB.create();
+                return CallbackButtonRender.UpdateResult.of(itemB.create());
             }
             var itemB = new ItemBuilder(itemStack);
             itemB.addLoreLine("");
             itemB.addLoreLine(org.bukkit.ChatColor.DARK_GRAY.toString() + namespacedKey);
             itemB.addLoreLine("");
-            return itemB.create();
-        }));
+            return CallbackButtonRender.UpdateResult.of(itemB.create());
+        })).register();
     }
 
 }

@@ -27,10 +27,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import me.wolfyscript.customcrafting.gui.recipe_creator.MenuConditions;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 
 public class ExperienceCondition extends Condition<ExperienceCondition> {
@@ -89,10 +91,9 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
         public GUIComponent() {
             super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.registerButton(new ButtonChatInput<>("conditions.player_experience.set", Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ExperienceCondition.class).getExpLevel());
-                            return itemStack;
-                        }, (guiHandler, player, s, strings) -> {
+                        menu.getButtonBuilder().chatInput("conditions.player_experience.set").state(state -> state.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
+                            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ExperienceCondition.class).getExpLevel())));
+                        })).inputAction((guiHandler, player, s, strings) -> {
                             try {
                                 int value = Integer.parseInt(s);
                                 guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ExperienceCondition.class).setExpLevel(value);
@@ -100,7 +101,7 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
                                 api.getChat().sendKey(player, "recipe_creator", "valid_number");
                             }
                             return false;
-                        }));
+                        }).register();
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(30, "conditions.player_experience.set");

@@ -27,8 +27,10 @@ import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.chat.ClickActionCallback;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
@@ -89,12 +91,12 @@ public class ClusterMain extends CCCluster {
         bb.dummy(GLASS_PURPLE.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.PURPLE_STAINED_GLASS_PANE)).register();
         bb.dummy(GLASS_PINK.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.PINK_STAINED_GLASS_PANE)).register();
         bb.dummy(GUI_HELP.getKey()).state(state -> state.key(GUI_HELP.getKey() + "_on").icon(PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19"))
-                .render((cache, guiHandler, player, guiInv, stack, slot) -> {
+                .render((cache, guiHandler, player, guiInv, btn, stack, slot) -> {
                     guiInv.getWindow().getHelpInformation();
                     var window = guiInv.getWindow();
                     return CallbackButtonRender.UpdateResult.of(TagResolverUtil.entries(guiHandler.getWolfyUtils().getLanguageAPI().getComponents("inventories." + window.getCluster().getId() + "." + window.getNamespacedKey().getKey() + ".gui_help")));
                 })).register();
-        final ButtonAction<CCCache> backAction = (cache, guiHandler, player, guiInventory, i, event) -> {
+        final CallbackButtonAction<CCCache> backAction = (cache, guiHandler, player, guiInventory, btn, i, event) -> {
             guiHandler.openPreviousWindow();
             return true;
         };

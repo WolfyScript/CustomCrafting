@@ -22,22 +22,23 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import me.wolfyscript.customcrafting.data.CCCache;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 
-class ButtonNamespaceItem extends ButtonAction<CCCache> {
+class ButtonNamespaceItem {
 
-    ButtonNamespaceItem(String namespace) {
-        super("namespace_" + namespace, new ButtonState<>("namespace", Material.ENDER_CHEST, (cache, guiHandler, player, inv, btn, i, event)
-(cache, items, guiHandler, player, inventory, i, event) -> {
-            items.setListNamespace(namespace);
+    static void register(GuiMenuComponent.ButtonBuilder<CCCache> bB, String namespace) {
+        bB.action("namespace_" + namespace).state(state -> state.key("namespace").icon(Material.ENDER_CHEST).action((cache, guiHandler, player, inv, btn, i, event) -> {
+            cache.getItems().setListNamespace(namespace);
             return true;
-        }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%namespace%", namespace);
-            return itemStack;
-        }));
+        }).render((cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("namespace", namespace));
+        })).register();
     }
 
 }

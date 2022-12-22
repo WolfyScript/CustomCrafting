@@ -31,6 +31,7 @@ import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import java.util.Locale;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -38,6 +39,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -52,25 +54,25 @@ public class MenuPotionCreator extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ButtonAction<>("back", new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        var btbBuilder = getButtonBuilder();
+
+        btbBuilder.action("back").state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             if (cache.getPotionEffectCache().isRecipePotionEffect()) {
                 guiHandler.openCluster("recipe_creator");
             } else {
                 guiHandler.openCluster("item_creator");
             }
             return true;
-        })));
-
-        registerButton(new ButtonAction<>("cancel", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        btbBuilder.action("cancel").state(state -> state.icon(Material.BARRIER).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             if (cache.getPotionEffectCache().isRecipePotionEffect()) {
                 guiHandler.openCluster("recipe_creator");
             } else {
                 guiHandler.openCluster("item_creator");
             }
             return true;
-        }));
-
-        registerButton(new ButtonAction<>("apply", Material.LIME_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        btbBuilder.action("apply").state(state -> state.icon(Material.LIME_CONCRETE).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.applyPotionEffect(cache);
             if (potionEffectCache.isRecipePotionEffect()) {
@@ -79,9 +81,8 @@ public class MenuPotionCreator extends CCWindow {
                 guiHandler.openCluster("item_creator");
             }
             return true;
-        }));
-
-        registerButton(new ButtonDummy<>("preview", Material.POTION, (hashMap, cache, guiHandler, player, inventory, oldItem, i, b) -> {
+        })).register();
+        btbBuilder.dummy("preview").state(state -> state.icon(Material.POTION).render((cache, guiHandler, player, inventory, btn, stack, slot) -> {
             PotionEffects potionEffectCache = guiHandler.getCustomCache().getPotionEffectCache();
             ItemStack itemStack = new ItemStack(Material.POTION);
             PotionMeta itemMeta = (PotionMeta) itemStack.getItemMeta();
@@ -90,25 +91,20 @@ public class MenuPotionCreator extends CCWindow {
                 itemMeta.addCustomEffect(new PotionEffect(potionEffectCache.getType(), potionEffectCache.getDuration(), potionEffectCache.getAmplifier(), potionEffectCache.isAmbient(), potionEffectCache.isParticles(), potionEffectCache.isIcon()), true);
             }
             itemStack.setItemMeta(itemMeta);
-            return itemStack;
-        }));
-
-        registerButton(new ButtonAction<>("potion_effect_type", new ButtonState<>("potion_effect_type", Material.BOOKSHELF, (cache, guiHandler, player, inventory, btn, i, event) -> {
+            return CallbackButtonRender.UpdateResult.of(itemStack);
+        })).register();
+        btbBuilder.action("potion_effect_type").state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, inventory, btn, i, event) -> {
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, potionEffect) -> potionEffectCache.setType(potionEffect));
             potionEffectCache.setOpenedFrom("potion_creator", "potion_creator");
             guiHandler.openWindow("potion_effect_type_selection");
             return true;
-        }, (values, cache, guiHandler, player, inventory, itemStack, i, b) -> {
+        }).render((cache, guiHandler, player, inventory, itemStack, i, b) -> {
             PotionEffects potionEffectCache = guiHandler.getCustomCache().getPotionEffectCache();
-            values.put("%effect_type%", potionEffectCache.getType() != null ? StringUtils.capitalize(potionEffectCache.getType().getName().replace("_", " ").toLowerCase(Locale.ROOT)) : "&cnone");
-            return itemStack;
-        })));
+            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("effect_type", potionEffectCache.getType() != null ? StringUtils.capitalize(potionEffectCache.getType().getName().replace("_", " ").toLowerCase(Locale.ROOT)) : "<red>none"));
+        })).register();
 
-        registerButton(new ButtonChatInput<>("duration", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
-            hashMap.put("%duration%", guiHandler.getCustomCache().getPotionEffectCache().getDuration());
-            return itemStack;
-        }, (guiHandler, player, s, args) -> {
+        btbBuilder.chatInput("duration").state(state -> state.icon(Material.CLOCK).render((cache, guiHandler, player, inventory, itemStack, i, b) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("duration", String.valueOf(guiHandler.getCustomCache().getPotionEffectCache().getDuration()))))).inputAction((guiHandler, player, s, args) -> {
             try {
                 guiHandler.getCustomCache().getPotionEffectCache().setDuration(Integer.parseInt(args[0]));
                 return false;
@@ -116,11 +112,9 @@ public class MenuPotionCreator extends CCWindow {
                 api.getChat().sendKey(player, new BukkitNamespacedKey("item_creator", "main_menu"), "potion.error_number");
             }
             return true;
-        }));
-        registerButton(new ButtonChatInput<>("amplifier", Material.IRON_SWORD, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
-            hashMap.put("%amplifier%", guiHandler.getCustomCache().getPotionEffectCache().getAmplifier());
-            return itemStack;
-        }, (guiHandler, player, s, args) -> {
+        }).register();
+
+        btbBuilder.chatInput("amplifier").state(state -> state.icon(Material.IRON_SWORD).render((cache, guiHandler, player, inventory, itemStack, i, b) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("amplifier", String.valueOf(guiHandler.getCustomCache().getPotionEffectCache().getAmplifier()))))).inputAction((guiHandler, player, s, args) -> {
             try {
                 guiHandler.getCustomCache().getPotionEffectCache().setAmplifier(Integer.parseInt(args[0]));
                 return false;
@@ -128,28 +122,28 @@ public class MenuPotionCreator extends CCWindow {
                 api.getChat().sendKey(player, new BukkitNamespacedKey("item_creator", "main_menu"), "potion.error_number");
             }
             return true;
-        }));
-        registerButton(new ButtonToggle<>("ambient", new ButtonState<>("ambient.enabled", Material.BLAZE_POWDER, (cache, guiHandler, player, inventory, slot, event) -> {
+        }).register();
+        btbBuilder.toggle("ambient").enabledState(state -> state.subKey("enabled").icon(Material.BLAZE_POWDER).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getPotionEffectCache().setAmbient(false);
             return true;
-        }), new ButtonState<>("ambient.disabled", Material.BLAZE_POWDER, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(state -> state.subKey("disabled").icon(Material.BLAZE_POWDER).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getPotionEffectCache().setAmbient(true);
             return true;
-        })));
-        registerButton(new ButtonToggle<>("particles", new ButtonState<>("particles.enabled", Material.FIREWORK_ROCKET, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        btbBuilder.toggle("particles").enabledState(state -> state.subKey("enabled").icon(Material.FIREWORK_ROCKET).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getPotionEffectCache().setParticles(false);
             return true;
-        }), new ButtonState<>("particles.disabled", Material.FIREWORK_ROCKET, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(state -> state.subKey("disabled").icon(Material.FIREWORK_ROCKET).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getPotionEffectCache().setParticles(true);
             return true;
-        })));
-        registerButton(new ButtonToggle<>("icon", new ButtonState<>("icon.enabled", Material.ITEM_FRAME, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        btbBuilder.toggle("icon").enabledState(state -> state.subKey("enabled").icon(Material.ITEM_FRAME).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getPotionEffectCache().setIcon(false);
             return true;
-        }), new ButtonState<>("icon.disabled", Material.ITEM_FRAME, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).disabledState(state -> state.subKey("disabled").icon(Material.ITEM_FRAME).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
             cache.getPotionEffectCache().setIcon(true);
             return true;
-        })));
+        })).register();
 
     }
 

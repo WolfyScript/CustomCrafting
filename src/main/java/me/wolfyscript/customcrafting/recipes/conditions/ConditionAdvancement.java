@@ -28,6 +28,7 @@ import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +37,8 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.advancement.Advancement;
@@ -90,7 +93,7 @@ public class ConditionAdvancement extends Condition<ConditionAdvancement> {
         public GUIComponent() {
             super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.registerButton(new ButtonChatInput<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, args) -> {
+                        menu.getButtonBuilder().chatInput(ADD).state(state -> state.icon(Material.GREEN_CONCRETE)).inputAction((guiHandler, player, s, args) -> {
                             if (args.length > 1) {
                                 var key = ChatUtils.getInternalNamespacedKey(player, "", args);
                                 if (key != null) {
@@ -109,7 +112,7 @@ public class ConditionAdvancement extends Condition<ConditionAdvancement> {
                             }
                             menu.sendMessage(guiHandler, menu.translatedMsgKey("no_name"));
                             return true;
-                        }, (guiHandler, player, args) -> {
+                        }).tabComplete((guiHandler, player, args) -> {
                             Set<NamespacedKey> entries = Streams.stream(Bukkit.advancementIterator()).map(advancement -> BukkitNamespacedKey.fromBukkit(advancement.getKey())).collect(Collectors.toSet());
                             List<String> results = new ArrayList<>();
                             if (args.length > 0) {
@@ -121,25 +124,26 @@ public class ConditionAdvancement extends Condition<ConditionAdvancement> {
                                 return results;
                             }
                             return results;
-                        }));
-                        menu.registerButton(new ButtonDummy<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
+                        }).register();
+                        menu.getButtonBuilder().dummy(LIST).state(state -> state.icon(Material.BOOK).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ConditionAdvancement.class);
+                            TagResolver.Builder builder = TagResolver.builder();
                             for (int i = 0; i < 4; i++) {
                                 if (i < condition.advancements.size()) {
-                                    hashMap.put("%var" + i + "%", condition.advancements.get(i));
+                                    builder.resolver(Placeholder.parsed("var"+i, String.valueOf(condition.advancements.get(i))));
                                 } else {
-                                    hashMap.put("%var" + i + "%", "...");
+                                    builder.resolver(Placeholder.parsed("var"+i, "..."));
                                 }
                             }
-                            return itemStack;
-                        }));
-                        menu.registerButton(new ButtonAction<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                            return CallbackButtonRender.UpdateResult.of(builder.build());
+                        })).register();
+                        menu.getButtonBuilder().action(REMOVE).state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ConditionAdvancement.class);
                             if (!condition.advancements.isEmpty()) {
                                 condition.advancements.remove(condition.advancements.size() - 1);
                             }
                             return true;
-                        }));
+                        })).register();
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(29, ADD);
