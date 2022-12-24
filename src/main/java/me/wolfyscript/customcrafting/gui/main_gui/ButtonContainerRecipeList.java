@@ -64,7 +64,7 @@ class ButtonContainerRecipeList {
     }
 
     static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, int slot, CustomCrafting customCrafting) {
-        buttonBuilder.action(key(slot)).state(state -> state.action((cache, guiHandler, player, inventory, button, i, event) -> {
+        buttonBuilder.action(key(slot)).state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, button, i, event) -> {
             if (!(event instanceof InventoryClickEvent clickEvent)) return true;
             CustomRecipe<?> customRecipe = cache.getRecipeList().getCustomRecipeForButtonInSlot(slot);
             if (clickEvent.isShiftClick() && customRecipe != null) {
