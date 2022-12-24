@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeView;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,8 +36,11 @@ public class RecipeBookListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onClickBottomInv(InventoryClickEvent event) {
-        if (event.getInventory() instanceof GUIInventory<?> inventory && inventory.getWindow().getNamespacedKey().equals(ClusterRecipeBook.RECIPE_BOOK) && Objects.equals(event.getClickedInventory(), event.getView().getBottomInventory())) {
-            event.setCancelled(true);
+        if (event.getInventory() instanceof GUIInventory<?> inventory && Objects.equals(event.getClickedInventory(), event.getView().getBottomInventory())) {
+            String namespace = inventory.getWindow().getNamespacedKey().getNamespace();
+            if (Objects.equals(namespace, ClusterRecipeBook.KEY) || Objects.equals(namespace, ClusterRecipeView.KEY)) {
+                event.setCancelled(true);
+            }
         }
     }
 }
