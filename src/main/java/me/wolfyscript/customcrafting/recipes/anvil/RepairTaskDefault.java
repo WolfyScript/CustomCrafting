@@ -52,12 +52,12 @@ public class RepairTaskDefault extends RepairTask {
         AnvilInventory inventory = event.getInventory();
         CustomItem resultItem;
         if (ItemUtils.isAirOrNull(event.getResult())) {
-            resultItem = new CustomItem(inputLeft).clone();
+            resultItem = new CustomItem(recipe.getAPI(), inputLeft).clone();
             if (!recipe.isBlockRename() && inventory.getRenameText() != null && !inventory.getRenameText().isEmpty()) {
                 resultItem.setDisplayName(inventory.getRenameText());
             }
         } else {
-            resultItem = new CustomItem(event.getResult());
+            resultItem = new CustomItem(recipe.getAPI(), event.getResult());
             ItemStack resultStack = resultItem.getItemStack();
             if (resultItem.hasItemMeta()) {
                 //Further recipe options to block features.

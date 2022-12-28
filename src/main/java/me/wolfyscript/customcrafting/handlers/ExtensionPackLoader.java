@@ -30,7 +30,7 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 public class ExtensionPackLoader extends ResourceLoader {
 
     public ExtensionPackLoader(CustomCrafting customCrafting) {
-        super(customCrafting, new BukkitNamespacedKey(customCrafting, "extension_loader"));
+        super(customCrafting, new BukkitNamespacedKey(customCrafting.getApi(), "extension_loader"));
     }
 
     @Override

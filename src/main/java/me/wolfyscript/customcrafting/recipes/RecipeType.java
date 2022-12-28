@@ -290,7 +290,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         }
 
         private RecipeTypeImpl(Type type, Class<C> clazz, String creatorID) {
-            this.key = new BukkitNamespacedKey(CustomCrafting.inst(), creatorID);
+            this.key = new BukkitNamespacedKey(CustomCrafting.inst().getApi(), creatorID);
             this.type = type;
             this.clazz = clazz;
             this.id = type.toString().toLowerCase(Locale.ROOT);

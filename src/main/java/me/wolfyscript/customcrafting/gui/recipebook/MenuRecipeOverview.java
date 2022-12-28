@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.gui.recipebook;
 
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.gui.GUIHolder;
 import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.Button;
@@ -31,6 +32,7 @@ import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
 import com.wolfyscript.utilities.bukkit.nms.inventory.InventoryUpdate;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.List;
 import java.util.function.Supplier;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -86,9 +88,9 @@ public class MenuRecipeOverview extends CCWindow {
     }
 
     @Override
-    public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
+    public Component onUpdateTitle(GUIHolder<CCCache> holder) {
 
-        var recipeBookCache = guiHandler.getCustomCache().getRecipeBookCache();
+        var recipeBookCache = holder.getGuiHandler().getCustomCache().getRecipeBookCache();
         if (recipeBookCache.getSubFolder() > 0) {
             List<CustomRecipe<?>> recipes = recipeBookCache.getSubFolderRecipes();
             int maxPages = recipes.size();
@@ -97,51 +99,51 @@ public class MenuRecipeOverview extends CCWindow {
             }
             if (recipeBookCache.getSubFolderPage() < recipes.size()) {
                 CustomRecipe<?> customRecipe = recipes.get(recipeBookCache.getSubFolderPage());
-                final TagResolver papiResolver = TagResolverUtil.papi(player);
+                final TagResolver papiResolver = TagResolverUtil.papi(holder.getPlayer());
                 final TagResolver langResolver = TagResolver.resolver("translate", (args, context) -> {
                     String text = args.popOr("The <translate> tag requires exactly one argument! The path to the language entry!").value();
                     return Tag.selfClosingInserting(getChat().translated(text, papiResolver));
                 });
                 String text = customCrafting.getConfigHandler().getConfig().getRecipeBookTypeName(customRecipe.getRecipeType());
                 TagResolver recipeTypeTitle = Placeholder.component("recipe_type_title", getChat().getMiniMessage().deserialize(text, papiResolver, langResolver));
-                return wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", recipeTypeTitle, TagResolverUtil.papi(player));
+                return wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", recipeTypeTitle, TagResolverUtil.papi(holder.getPlayer()));
             }
         }
-        return super.onUpdateTitle(player, inventory, guiHandler);
+        return super.onUpdateTitle(holder);
     }
 
     @Override
     public void onInit() {
-        getButtonBuilder().action(BACK).state(state -> state.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
-            ButtonContainerIngredient.resetButtons(guiHandler);
-            ButtonContainerRecipeBook.resetButtons(guiHandler);
-            guiHandler.openPreviousWindow();
-            return true;
+        getButtonBuilder().action(BACK).state(state -> state.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((holder, cache, btn, slot, details) -> {
+            ButtonContainerIngredient.resetButtons(holder.getGuiHandler());
+            ButtonContainerRecipeBook.resetButtons(holder.getGuiHandler());
+            holder.getGuiHandler().openPreviousWindow();
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action(NEXT_RECIPE).state(state -> state.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
+        getButtonBuilder().action(NEXT_RECIPE).state(state -> state.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((holder, cache, btn, slot, details) -> {
             var book = cache.getRecipeBookCache();
-            ButtonContainerIngredient.resetButtons(guiHandler);
+            ButtonContainerIngredient.resetButtons(holder.getGuiHandler());
             int nextPage = book.getSubFolderPage() + 1;
             if (nextPage < book.getSubFolderRecipes().size()) {
                 book.setSubFolderPage(nextPage);
                 book.setPrepareRecipe(true);
             }
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
-            var book = guiHandler.getCustomCache().getRecipeBookCache();
-            return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("page", String.valueOf(book.getSubFolderPage() + 1)), Placeholder.unparsed("max_pages", String.valueOf(book.getSubFolderRecipes().size())));
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> {
+            var book = holder.getGuiHandler().getCustomCache().getRecipeBookCache();
+            return CallbackButtonRender.Result.of(Placeholder.unparsed("page", String.valueOf(book.getSubFolderPage() + 1)), Placeholder.unparsed("max_pages", String.valueOf(book.getSubFolderRecipes().size())));
         })).register();
-        getButtonBuilder().action(PREVIOUS_RECIPE).state(state -> state.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
+        getButtonBuilder().action(PREVIOUS_RECIPE).state(state -> state.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((holder, cache, btn, slot, details) -> {
             var book = cache.getRecipeBookCache();
-            ButtonContainerIngredient.resetButtons(guiHandler);
+            ButtonContainerIngredient.resetButtons(holder.getGuiHandler());
             if (book.getSubFolderPage() > 0) {
                 book.setSubFolderPage(book.getSubFolderPage() - 1);
                 book.setPrepareRecipe(true);
             }
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
-            var book = guiHandler.getCustomCache().getRecipeBookCache();
-            return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("page", String.valueOf(book.getSubFolderPage() + 1)), Placeholder.unparsed("max_pages", String.valueOf(book.getSubFolderRecipes().size())));
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> {
+            var book = holder.getGuiHandler().getCustomCache().getRecipeBookCache();
+            return CallbackButtonRender.Result.of(Placeholder.unparsed("page", String.valueOf(book.getSubFolderPage() + 1)), Placeholder.unparsed("max_pages", String.valueOf(book.getSubFolderRecipes().size())));
         })).register();
     }
 
@@ -172,7 +174,7 @@ public class MenuRecipeOverview extends CCWindow {
                     //A new prepare can be queued by using book.setPrepareRecipe(true)
                     recipeBookCache.applyRecipeToButtons(event.getGuiHandler(), customRecipe);
                     recipeBookCache.setPrepareRecipe(false);
-                    InventoryUpdate.updateInventory(wolfyUtilities.getCore(), player, onUpdateTitle(player, event.getInventory(), event.getGuiHandler()));
+                    InventoryUpdate.updateInventory(wolfyUtilities.getCore().getWolfyUtils().getPlugin(), player, onUpdateTitle(event.getGuiHolder()));
                 }
                 customRecipe.renderMenu(this, event);
                 boolean elite = RecipeType.Container.ELITE_CRAFTING.isInstance(customRecipe);
@@ -189,10 +191,10 @@ public class MenuRecipeOverview extends CCWindow {
     }
 
     @Override
-    public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
-        ButtonContainerIngredient.removeTasks(guiHandler);
-        ButtonContainerRecipeBook.resetButtons(guiHandler);
-        guiHandler.getCustomCache().getRecipeBookCache().setEliteCraftingTable(null);
-        return super.onClose(guiHandler, guiInventory, transaction);
+    public boolean onClose(GUIHolder<CCCache> holder) {
+        ButtonContainerIngredient.removeTasks(holder.getGuiHandler());
+        ButtonContainerRecipeBook.resetButtons(holder.getGuiHandler());
+        holder.getGuiHandler().getCustomCache().getRecipeBookCache().setEliteCraftingTable(null);
+        return super.onClose(holder);
     }
 }

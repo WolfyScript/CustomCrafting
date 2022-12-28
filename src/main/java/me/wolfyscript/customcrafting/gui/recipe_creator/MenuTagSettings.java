@@ -27,6 +27,7 @@ import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -44,21 +45,21 @@ public class MenuTagSettings extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action("add_tag_list").state(s -> s.icon(Material.NAME_TAG).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
-            guiHandler.openWindow("tag_list");
-            return true;
+        getButtonBuilder().action("add_tag_list").state(s -> s.icon(Material.NAME_TAG).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openWindow("tag_list");
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((holder, cache, btn, slot, details) -> {
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getListPage();
             cache.getRecipeCreatorCache().getTagSettingsCache().setListPage(++page);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((holder, cache, btn, slot, details) -> {
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getListPage();
             if (page > 0) {
                 cache.getRecipeCreatorCache().getTagSettingsCache().setListPage(--page);
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 
@@ -85,7 +86,7 @@ public class MenuTagSettings extends CCWindow {
             for (int i = 45 * page, invSlot = 9; i < tags.length && invSlot < getSize() - 9; i++, invSlot++) {
                 final var key = tags[i];
                 if (getButton("tag."+key.toString(".")) == null) {
-                    getButtonBuilder().action("tag." + key.toString(".")).state(state -> state.key("tag_container").icon(Material.NAME_TAG).action((cache, guiHandler, player, guiInventory, btn, slot, event) -> {
+                    getButtonBuilder().action("tag." + key.toString(".")).state(state -> state.key("tag_container").icon(Material.NAME_TAG).action((holder, cache, btn, slot, details) -> {
                         if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
                             var currentRecipeStack = cache.getRecipeCreatorCache().getTagSettingsCache().getRecipeItemStack();
                             if (currentRecipeStack != null) {
@@ -93,8 +94,8 @@ public class MenuTagSettings extends CCWindow {
                             }
                         }
                         return true;
-                    }).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> {
-                        return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("namespaced_key", key.toString()));
+                    }).render((holder, cache, btn, slot, itemStack) -> {
+                        return CallbackButtonRender.Result.of(Placeholder.parsed("namespaced_key", key.toString()));
                     })).register();
                 }
                 update.setButton(invSlot, "tag."+key.toString("."));

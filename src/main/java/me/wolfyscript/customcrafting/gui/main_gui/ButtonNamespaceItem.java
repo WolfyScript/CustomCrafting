@@ -26,6 +26,7 @@ import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
@@ -33,11 +34,11 @@ import org.bukkit.Material;
 class ButtonNamespaceItem {
 
     static void register(GuiMenuComponent.ButtonBuilder<CCCache> bB, String namespace) {
-        bB.action("namespace_" + namespace).state(state -> state.key("namespace").icon(Material.ENDER_CHEST).action((cache, guiHandler, player, inv, btn, i, event) -> {
+        bB.action("namespace_" + namespace).state(state -> state.key("namespace").icon(Material.ENDER_CHEST).action((holder, cache, btn, slot, details) -> {
             cache.getItems().setListNamespace(namespace);
-            return true;
-        }).render((cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("namespace", namespace));
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, button, slot, itemStack) -> {
+            return CallbackButtonRender.Result.of(Placeholder.parsed("namespace", namespace));
         })).register();
     }
 

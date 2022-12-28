@@ -24,16 +24,22 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
+import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
+import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
+import java.util.Locale;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.gui.item_creator.ButtonArmorSlotToggle;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 public class TabArmorSlots extends ItemCreatorTab {
@@ -47,10 +53,29 @@ public class TabArmorSlots extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.IRON_HELMET, this);
-        ButtonArmorSlotToggle.register(creator.getButtonBuilder(), EquipmentSlot.HEAD, Material.DIAMOND_HELMET);
-        ButtonArmorSlotToggle.register(creator.getButtonBuilder(), EquipmentSlot.CHEST, Material.DIAMOND_CHESTPLATE);
-        ButtonArmorSlotToggle.register(creator.getButtonBuilder(), EquipmentSlot.LEGS, Material.DIAMOND_LEGGINGS);
-        ButtonArmorSlotToggle.register(creator.getButtonBuilder(), EquipmentSlot.FEET, Material.DIAMOND_BOOTS);
+        register(api, creator.getButtonBuilder(), EquipmentSlot.HEAD, Material.DIAMOND_HELMET);
+        register(api, creator.getButtonBuilder(), EquipmentSlot.CHEST, Material.DIAMOND_CHESTPLATE);
+        register(api, creator.getButtonBuilder(), EquipmentSlot.LEGS, Material.DIAMOND_LEGGINGS);
+        register(api, creator.getButtonBuilder(), EquipmentSlot.FEET, Material.DIAMOND_BOOTS);
+    }
+
+    public static void register(WolfyUtilsBukkit api, GuiMenuComponent.ButtonBuilder<CCCache> builder, EquipmentSlot equipmentSlot, Material material) {
+        builder.toggle(key(equipmentSlot)).stateFunction((holder, cache, slot) -> {
+            CustomItem item = cache.getItems().getItem();
+            return !ItemUtils.isAirOrNull(item) && item.hasEquipmentSlot(equipmentSlot);
+        }).enabledState(state -> state.subKey("enabled").icon(new ItemBuilder(api, material).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create())
+                .action((holder, cache, btn, slot, details) -> {
+                    cache.getItems().getItem().removeEquipmentSlots(equipmentSlot);
+                    return ButtonInteractionResult.cancel(true);
+                })
+        ).disabledState(state -> state.subKey("disabled").icon(material).action((holder, cache, btn, slot, details) -> {
+            cache.getItems().getItem().addEquipmentSlots(equipmentSlot);
+            return ButtonInteractionResult.cancel(true);
+        })).register();
+    }
+
+    private static String key(EquipmentSlot slot) {
+        return "armor_slots." + slot.toString().toLowerCase(Locale.ROOT);
     }
 
     @Override

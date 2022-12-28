@@ -26,7 +26,6 @@ import com.google.common.collect.Streams;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.events.DependenciesLoadedEvent;
-import com.wolfyscript.utilities.bukkit.world.WorldUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -124,7 +123,6 @@ public class DataHandler implements Listener {
     public void loadRecipesAndItems() {
         load();
         configHandler.getRecipeBookConfig().index(customCrafting);
-        WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
 
     public DatabaseLoader getDatabaseLoader() {

@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -50,22 +51,22 @@ public class MenuTagChooseList extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getChooseListPage();
             int maxPages = ITEM_TAGS.size() / 45 + ITEM_TAGS.size() % 45 > 0 ? 1 : 0;
             if (page < maxPages) {
                 cache.getRecipeCreatorCache().getTagSettingsCache().setChooseListPage(++page);
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             int page = cache.getRecipeCreatorCache().getTagSettingsCache().getChooseListPage();
             if (page > 0) {
                 cache.getRecipeCreatorCache().getTagSettingsCache().setChooseListPage(--page);
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

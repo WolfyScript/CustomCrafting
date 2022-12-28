@@ -23,12 +23,13 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.gui.GUIHolder;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import com.wolfyscript.utilities.versioning.ServerVersion;
 import com.wolfyscript.utilities.versioning.WUVersion;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -86,30 +87,30 @@ public class MenuMain extends CCWindow {
         builder.dummy("brewing_stand_disabled").state(state -> state.icon(Material.BREWING_STAND)).register();
         ButtonRecipeType.register(getButtonBuilder(), BREWING_STAND, RecipeType.BREWING_STAND, Material.BREWING_STAND);
 
-        ButtonRecipeType.register(getButtonBuilder(), ELITE_CRAFTING, RecipeType.ELITE_CRAFTING_SHAPED, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create());
+        ButtonRecipeType.register(getButtonBuilder(), ELITE_CRAFTING, RecipeType.ELITE_CRAFTING_SHAPED, new ItemBuilder(customCrafting.getApi(), Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create());
         ButtonRecipeType.register(getButtonBuilder(), CAULDRON, RecipeType.CAULDRON, Material.CAULDRON);
         ButtonRecipeType.register(getButtonBuilder(), SMITHING, RecipeType.SMITHING, Material.SMITHING_TABLE);
-        builder.action(ITEM_EDITOR).state(s -> s.icon(Material.CHEST).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
+        builder.action(ITEM_EDITOR).state(s -> s.icon(Material.CHEST).action((holder, cache, btn, slot, details) -> {
             cache.setSetting(Setting.ITEMS);
             cache.getItems().setRecipeItem(false);
             cache.getItems().setSaved(false);
             cache.getItems().setNamespacedKey(null);
-            guiHandler.openCluster(ClusterItemCreator.KEY);
-            return true;
+            holder.getGuiHandler().openCluster(ClusterItemCreator.KEY);
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        builder.action(SETTINGS).state(s -> s.icon(PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164")).action((cache, guiHandler, player, inv, btn, i, event) -> {
-            guiHandler.openWindow(SETTINGS);
-            return true;
+        builder.action(SETTINGS).state(s -> s.icon(PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164")).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openWindow(SETTINGS);
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        builder.action(RECIPE_BOOK_EDITOR).state(s -> s.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inv, btn, i, inventoryInteractEvent) -> {
-            guiHandler.openCluster(ClusterRecipeBookEditor.KEY);
-            return true;
+        builder.action(RECIPE_BOOK_EDITOR).state(s -> s.icon(Material.KNOWLEDGE_BOOK).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openCluster(ClusterRecipeBookEditor.KEY);
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 
     @Override
-    public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
-        return this.wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", TagResolverUtil.papi(player), Placeholder.unparsed("plugin_version", customCrafting.getVersion().getVersion()));
+    public Component onUpdateTitle(GUIHolder<CCCache> holder) {
+        return this.wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", TagResolverUtil.papi(holder.getPlayer()), Placeholder.unparsed("plugin_version", customCrafting.getVersion().getVersion()));
     }
 
     @Override

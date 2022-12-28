@@ -26,10 +26,12 @@ import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.Locale;
 import java.util.UUID;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -69,30 +71,30 @@ public class TabAttributes extends ItemCreatorTabVanilla {
     }
 
     public static void registerCategory(GuiMenuComponent.ButtonBuilder<CCCache> bB, String attribute, Material material) {
-        bB.action("attribute." + attribute).state(state -> state.icon(material).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
-            guiHandler.getCustomCache().setSubSetting("attribute." + attribute);
-            return true;
+        bB.action("attribute." + attribute).state(state -> state.icon(material).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().getCustomCache().setSubSetting("attribute." + attribute);
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 
     public static void registerMode(GuiMenuComponent.ButtonBuilder<CCCache> bB, AttributeModifier.Operation operation, String headURLValue) {
-        bB.action("attribute." + operation.toString().toLowerCase(Locale.ROOT)).state(state -> state.icon(PlayerHeadUtils.getViaURL(headURLValue)).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
-            guiHandler.getCustomCache().getItems().setAttribOperation(operation);
-            return true;
-        }).render((cache, handler, player, inv, button, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("c", handler.getCustomCache().getItems().getAttribOperation().equals(operation) ? "<green>" : "<red>")))).register();
+        bB.action("attribute." + operation.toString().toLowerCase(Locale.ROOT)).state(state -> state.icon(PlayerHeadUtils.getViaURL(headURLValue)).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().getCustomCache().getItems().setAttribOperation(operation);
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.parsed("c", holder.getGuiHandler().getCustomCache().getItems().getAttribOperation().equals(operation) ? "<green>" : "<red>")))).register();
     }
 
     public static void registerAttributeSlot(GuiMenuComponent.ButtonBuilder<CCCache> bB, EquipmentSlot equipmentSlot, Material material) {
         bB.action("attribute.slot_" + equipmentSlot.toString().toLowerCase(Locale.ROOT)).state(state -> state.icon(material)
-                .action((cache, guiHandler, player, guiInventory, button, i, event) -> {
-                    Items items = guiHandler.getCustomCache().getItems();
+                .action((holder, cache, btn, slot, details) -> {
+                    Items items = holder.getGuiHandler().getCustomCache().getItems();
                     items.setAttributeSlot(items.getAttributeSlot() == null ? equipmentSlot : (items.getAttributeSlot().equals(equipmentSlot) ? null : equipmentSlot));
-                    return true;
-                }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
-                    if (guiHandler.getCustomCache().getItems().isAttributeSlot(equipmentSlot)) {
-                        return CallbackButtonRender.UpdateResult.of(new ItemBuilder(itemStack).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create());
+                    return ButtonInteractionResult.cancel(true);
+                }).render((holder, cache, btn, slot, itemStack) -> {
+                    if (holder.getGuiHandler().getCustomCache().getItems().isAttributeSlot(equipmentSlot)) {
+                        return CallbackButtonRender.Result.of(new ItemBuilder(holder.getWindow().getWolfyUtils(), itemStack).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create());
                     }
-                    return CallbackButtonRender.UpdateResult.of();
+                    return CallbackButtonRender.Result.of();
                 })
         ).register();
     }
@@ -125,7 +127,7 @@ public class TabAttributes extends ItemCreatorTabVanilla {
         registerAttributeSlot(bB, EquipmentSlot.CHEST, Material.IRON_CHESTPLATE);
         registerAttributeSlot(bB, EquipmentSlot.HEAD, Material.IRON_HELMET);
         bB.chatInput("attribute.set_amount").state(state -> state.icon(PlayerHeadUtils.getViaURL("461c8febcac21b9f63d87f9fd933589fe6468e93aa81cfcf5e52a4322e16e6"))
-                        .render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("number", String.valueOf(guiHandler.getCustomCache().getItems().getAttribAmount())))))
+                        .render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.unparsed("number", String.valueOf(holder.getGuiHandler().getCustomCache().getItems().getAttribAmount())))))
                 .inputAction((guiHandler, player, s, args) -> {
                     try {
                         guiHandler.getCustomCache().getItems().setAttribAmount(Double.parseDouble(args[0]));
@@ -136,13 +138,13 @@ public class TabAttributes extends ItemCreatorTabVanilla {
                     return false;
                 }).register();
         bB.chatInput("attribute.set_name").state(state -> state.icon(Material.NAME_TAG)
-                        .render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("name", guiHandler.getCustomCache().getItems().getAttributeName()))))
+                        .render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.unparsed("name", holder.getGuiHandler().getCustomCache().getItems().getAttributeName()))))
                 .inputAction((guiHandler, player, s, args) -> {
                     guiHandler.getCustomCache().getItems().setAttributeName(args[0]);
                     return false;
                 }).register();
         bB.chatInput("attribute.set_uuid").state(state -> state.icon(Material.TRIPWIRE_HOOK)
-                        .render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("uuid", guiHandler.getCustomCache().getItems().getAttributeUUID()))))
+                        .render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.unparsed("uuid", holder.getGuiHandler().getCustomCache().getItems().getAttributeUUID()))))
                 .inputAction((guiHandler, player, s, args) -> {
                     try {
                         var uuid = UUID.fromString(args[0]);
@@ -154,16 +156,16 @@ public class TabAttributes extends ItemCreatorTabVanilla {
                     }
                     return false;
                 }).register();
-        bB.action("attribute.save").state(state -> state.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+        bB.action("attribute.save").state(state -> state.icon(Material.GREEN_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var itemMeta = cache.getItems().getItem().getItemMeta();
             itemMeta.addAttributeModifier(Attribute.valueOf(cache.getSubSetting().split("\\.")[1].toUpperCase(Locale.ROOT)), cache.getItems().getAttributeModifier());
             cache.getItems().getItem().setItemMeta(itemMeta);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        bB.action("attribute.delete").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
-            ChatUtils.sendAttributeModifierManager(player);
-            guiHandler.close();
-            return true;
+        bB.action("attribute.delete").state(state -> state.icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
+            ChatUtils.sendAttributeModifierManager(holder.getPlayer());
+            holder.getGuiHandler().close();
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

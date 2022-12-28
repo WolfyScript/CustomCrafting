@@ -22,13 +22,13 @@
 
 package me.wolfyscript.customcrafting.gui.elite_crafting;
 
+import com.wolfyscript.utilities.bukkit.gui.GUIHolder;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
-import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
-import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
+import com.wolfyscript.utilities.common.gui.GUIClickInteractionDetails;
 import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -60,23 +60,23 @@ abstract class CraftingWindow extends CCWindow {
         for (int i = 0; i < gridSize * gridSize; i++) {
             final int recipeSlot = i;
             getButtonBuilder().itemInput("crafting.slot_" + recipeSlot).state(state -> state.icon(Material.AIR)
-                .action((cache, guiHandler, player, inventory, btn, slot, event) -> cache.getEliteWorkbench() == null || event instanceof InventoryClickEvent clickEvent && CraftingWindow.RESULT_SLOTS.contains(clickEvent.getSlot()))
-                .postAction((cache, guiHandler, player, inventory, btn, itemStack, slot, b) -> {
+                .action((holder, cache, btn, slot, details) -> ButtonInteractionResult.cancel(cache.getEliteWorkbench() == null || details instanceof GUIClickInteractionDetails clickEvent && CraftingWindow.RESULT_SLOTS.contains(clickEvent.getSlot())))
+                .postAction((holder, cache, btn, slot, itemStack, details) -> {
                     CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
                     if (cacheEliteCraftingTable.getContents() != null) {
-                        cacheEliteCraftingTable.getContents()[recipeSlot] = inventory.getItem(slot);
-                        ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), player, inventory, true, cacheEliteCraftingTable.isAdvancedCraftingRecipes());
+                        cacheEliteCraftingTable.getContents()[recipeSlot] = holder.getInventory().getItem(slot);
+                        ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), holder.getPlayer(), holder.getInventory(), true, cacheEliteCraftingTable.isAdvancedCraftingRecipes());
                         cacheEliteCraftingTable.setResult(result);
                     } else {
                         cacheEliteCraftingTable.setResult(new ItemStack(Material.AIR));
                     }
-                }).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
+                }).render((holder, cache, btn, slot, itemStack) -> {
                     CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
                     if (cacheEliteCraftingTable.getContents() != null) {
                         ItemStack slotItem = cacheEliteCraftingTable.getContents()[recipeSlot];
-                        return CallbackButtonRender.UpdateResult.of(slotItem == null ? new ItemStack(Material.AIR) : slotItem);
+                        return CallbackButtonRender.Result.of(slotItem == null ? new ItemStack(Material.AIR) : slotItem);
                     }
-                    return CallbackButtonRender.UpdateResult.of(new ItemStack(Material.AIR));
+                    return CallbackButtonRender.Result.of(new ItemStack(Material.AIR));
                 })).register();
         }
         ButtonSlotResult.register(getButtonBuilder(), customCrafting);
@@ -110,9 +110,9 @@ abstract class CraftingWindow extends CCWindow {
     public abstract int getGridX();
 
     @Override
-    public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
-        Player player = guiHandler.getPlayer();
-        CCCache cache = guiHandler.getCustomCache();
+    public boolean onClose(GUIHolder<CCCache> holder) {
+        Player player = holder.getPlayer();
+        CCCache cache = holder.getGuiHandler().getCustomCache();
         Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
             if (cacheEliteCraftingTable.getContents() != null) {

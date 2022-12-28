@@ -91,8 +91,8 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
         public GUIComponent() {
             super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.getButtonBuilder().chatInput("conditions.player_experience.set").state(state -> state.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
-                            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ExperienceCondition.class).getExpLevel())));
+                        menu.getButtonBuilder().chatInput("conditions.player_experience.set").state(state -> state.icon(Material.EXPERIENCE_BOTTLE).render((holder, cache, btn, slot, itemStack) -> {
+                            return CallbackButtonRender.Result.of(Placeholder.parsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ExperienceCondition.class).getExpLevel())));
                         })).inputAction((guiHandler, player, s, strings) -> {
                             try {
                                 int value = Integer.parseInt(s);

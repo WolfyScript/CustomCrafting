@@ -25,11 +25,12 @@ package me.wolfyscript.customcrafting.utils;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
-import com.wolfyscript.utilities.bukkit.world.BlockCustomItemStore;
-import com.wolfyscript.utilities.bukkit.world.WorldUtils;
+import com.wolfyscript.utilities.bukkit.persistent.world.BlockStorage;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.bukkit.world.items.CustomItemBlockData;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -164,18 +165,10 @@ public class NamespacedKeyUtils {
     }
 
     public static CustomItem getCustomItem(Location location) {
-        return getCustomItem(WorldUtils.getWorldCustomItemStore().get(location));
-    }
-
-    public static CustomItem getCustomItem(BlockCustomItemStore store) {
-        if (store != null) {
-            var customItem = store.getCustomItem();
-            if (customItem == null) {
-                customItem = WolfyCoreBukkit.getInstance().getRegistries().getCustomItems().get(fromInternal(store.getCustomItemKey()));
-            }
-            return customItem;
-        }
-        return null;
+        return WolfyCoreBukkit.getInstance().getPersistentStorage().getOrCreateWorldStorage(location.getWorld()).getBlock(location).map(blockStorage -> {
+            Optional<CustomItemBlockData> dataOptional = blockStorage.getData(CustomItemBlockData.ID, CustomItemBlockData.class);
+            return dataOptional.map(customItemBlockData -> customItemBlockData.getCustomItem().orElse(null)).orElse(null);
+        }).orElse(null);
     }
 
 }

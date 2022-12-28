@@ -31,6 +31,7 @@ import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import com.wolfyscript.utilities.common.chat.ClickActionCallback;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
@@ -91,42 +92,42 @@ public class ClusterMain extends CCCluster {
         bb.dummy(GLASS_PURPLE.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.PURPLE_STAINED_GLASS_PANE)).register();
         bb.dummy(GLASS_PINK.getKey()).state(state -> state.key(BACKGROUND.getKey()).icon(Material.PINK_STAINED_GLASS_PANE)).register();
         bb.dummy(GUI_HELP.getKey()).state(state -> state.key(GUI_HELP.getKey() + "_on").icon(PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19"))
-                .render((cache, guiHandler, player, guiInv, btn, stack, slot) -> {
-                    guiInv.getWindow().getHelpInformation();
-                    var window = guiInv.getWindow();
-                    return CallbackButtonRender.UpdateResult.of(TagResolverUtil.entries(guiHandler.getWolfyUtils().getLanguageAPI().getComponents("inventories." + window.getCluster().getId() + "." + window.getNamespacedKey().getKey() + ".gui_help")));
+                .render((holder, cache, button, slot, itemStack) -> {
+                    holder.getWindow().getHelpInformation();
+                    var window = holder.getWindow();
+                    return CallbackButtonRender.Result.of(TagResolverUtil.entries(holder.getGuiHandler().getWolfyUtils().getLanguageAPI().getComponents("inventories." + window.getCluster().getId() + "." + window.getNamespacedKey().getKey() + ".gui_help")));
                 })).register();
-        final CallbackButtonAction<CCCache> backAction = (cache, guiHandler, player, guiInventory, btn, i, event) -> {
-            guiHandler.openPreviousWindow();
-            return true;
+        final CallbackButtonAction<CCCache> backAction = (holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openPreviousWindow();
+            return ButtonInteractionResult.cancel(true);
         };
         bb.action(BACK.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action(backAction)).register();
         bb.action(BACK_BOTTOM.getKey()).state(state -> state.icon(Material.BARRIER).action(backAction)).register();
-        bb.action(PATREON.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275")).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-            guiHandler.openWindow("patrons_menu");
-            return true;
+        bb.action(PATREON.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275")).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openWindow("patrons_menu");
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        bb.action(GITHUB.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("26e27da12819a8b053da0cc2b62dec4cda91de6eeec21ccf3bfe6dd8d4436a7")).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-            getChat().sendMessage(player, githubLink);
-            return true;
+        bb.action(GITHUB.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("26e27da12819a8b053da0cc2b62dec4cda91de6eeec21ccf3bfe6dd8d4436a7")).action((holder, cache, btn, slot, details) -> {
+            getChat().sendMessage(holder.getPlayer(), githubLink);
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        bb.action(YOUTUBE.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed")).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-            getChat().sendMessage(player, youtubeLink);
-            return true;
+        bb.action(YOUTUBE.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed")).action((holder, cache, btn, slot, details) -> {
+            getChat().sendMessage(holder.getPlayer(), youtubeLink);
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        bb.action(DISCORD.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53")).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-            getChat().sendMessage(player, discordLink);
-            return true;
+        bb.action(DISCORD.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53")).action((holder, cache, btn, slot, details) -> {
+            getChat().sendMessage(holder.getPlayer(), discordLink);
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        bb.action(RECIPE_LIST.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
-            guiHandler.getCustomCache().setSetting(Setting.RECIPE_LIST);
-            guiHandler.openWindow(RECIPE_LIST.getKey());
-            return true;
+        bb.action(RECIPE_LIST.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().getCustomCache().setSetting(Setting.RECIPE_LIST);
+            holder.getGuiHandler().openWindow(RECIPE_LIST.getKey());
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        bb.action(ITEM_LIST.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
-            guiHandler.getCustomCache().setSetting(Setting.ITEM_LIST);
-            guiHandler.openWindow(ITEM_LIST.getKey());
-            return true;
+        bb.action(ITEM_LIST.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().getCustomCache().setSetting(Setting.ITEM_LIST);
+            holder.getGuiHandler().openWindow(ITEM_LIST.getKey());
+            return ButtonInteractionResult.cancel(true);
         })).register();
         registerGuiWindow(new MenuMain(this, customCrafting));
         registerGuiWindow(new MenuListCustomItem(this, customCrafting));

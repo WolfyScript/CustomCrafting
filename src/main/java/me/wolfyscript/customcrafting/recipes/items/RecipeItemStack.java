@@ -42,6 +42,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -127,7 +128,7 @@ public abstract class RecipeItemStack {
             if (namespacedKey.getNamespace().equals("minecraft")) {
                 Tag<Material> tag = Bukkit.getTag("items", org.bukkit.NamespacedKey.minecraft(namespacedKey.getKey()), Material.class);
                 if (tag != null) {
-                    return tag.getValues().stream().map(CustomItem::new).collect(Collectors.toSet());
+                    return tag.getValues().stream().map(material -> new CustomItem(CustomCrafting.inst().getApi(), material)).collect(Collectors.toSet());
                 }
             } else {
                 CustomTag<CustomItem> tag = WolfyCoreBukkit.getInstance().getRegistries().getItemTags().getTag(namespacedKey);

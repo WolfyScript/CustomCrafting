@@ -28,7 +28,9 @@ import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -125,7 +127,7 @@ public class ConditionAdvancement extends Condition<ConditionAdvancement> {
                             }
                             return results;
                         }).register();
-                        menu.getButtonBuilder().dummy(LIST).state(state -> state.icon(Material.BOOK).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> {
+                        menu.getButtonBuilder().dummy(LIST).state(state -> state.icon(Material.BOOK).render((holder, cache, btn, slot, itemStack) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ConditionAdvancement.class);
                             TagResolver.Builder builder = TagResolver.builder();
                             for (int i = 0; i < 4; i++) {
@@ -135,14 +137,14 @@ public class ConditionAdvancement extends Condition<ConditionAdvancement> {
                                     builder.resolver(Placeholder.parsed("var"+i, "..."));
                                 }
                             }
-                            return CallbackButtonRender.UpdateResult.of(builder.build());
+                            return CallbackButtonRender.Result.of(builder.build());
                         })).register();
-                        menu.getButtonBuilder().action(REMOVE).state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
+                        menu.getButtonBuilder().action(REMOVE).state(state -> state.icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ConditionAdvancement.class);
                             if (!condition.advancements.isEmpty()) {
                                 condition.advancements.remove(condition.advancements.size() - 1);
                             }
-                            return true;
+                            return ButtonInteractionResult.cancel(true);
                         })).register();
                     },
                     (update, cache, condition, recipe) -> {

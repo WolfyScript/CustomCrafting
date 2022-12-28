@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -48,16 +49,16 @@ class MenuMain extends CCWindow {
         for (String categoryId : categories.getSortedCategories()) {
             registerButton(new ButtonCategoryMain(categoryId, customCrafting));
         }
-        getButtonBuilder().action(BACK_BOTTOM).state(s -> s.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
+        getButtonBuilder().action(BACK_BOTTOM).state(s -> s.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((holder, cache, btn, slot, details) -> {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 if (cache.getRecipeBookCache().hasEliteCraftingTable()) {
-                    guiHandler.openCluster(EliteCraftingCluster.KEY);
+                    holder.getGuiHandler().openCluster(EliteCraftingCluster.KEY);
                 } else {
-                    guiHandler.close();
+                    holder.getGuiHandler().close();
                 }
                 cache.getRecipeBookCache().setEliteCraftingTable(null);
             });
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

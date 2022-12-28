@@ -27,6 +27,7 @@ import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.Locale;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -95,11 +96,11 @@ public class WeatherCondition extends Condition<WeatherCondition> {
         public GUIComponent() {
             super(Material.WATER_BUCKET, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.getButtonBuilder().chatInput("conditions.weather.set").state(state -> state.icon(Material.WATER_BUCKET).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
+                        menu.getButtonBuilder().chatInput("conditions.weather.set").state(state -> state.icon(Material.WATER_BUCKET).action((holder, cache, btn, slot, details) -> {
                             cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).toggleWeather();
-                            return true;
-                        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
-                            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("weather", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(api)));
+                            return ButtonInteractionResult.cancel(true);
+                        }).render((holder, cache, btn, slot, itemStack) -> {
+                            return CallbackButtonRender.Result.of(Placeholder.parsed("weather", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(api)));
                         })).register();
                     },
                     (update, cache, condition, recipe) -> {

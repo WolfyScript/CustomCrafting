@@ -123,7 +123,7 @@ public class ChatUtils {
             if (fileName.startsWith("/")) {
                 fileName = fileName.substring(1);
             }
-            return new BukkitNamespacedKey(CustomCrafting.inst(), folder + fileName);
+            return new BukkitNamespacedKey(CustomCrafting.inst().getApi(), folder + fileName);
         } catch (IllegalArgumentException e) {
             api.getLanguageAPI().getComponents("msg.player.invalid_namespacedkey").forEach(s1 -> chat.sendMessage(player, s1));
         }

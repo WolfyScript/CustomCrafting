@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.io.File;
 import java.io.IOException;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -46,33 +47,33 @@ public class EditorMain extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action(CANCEL).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+        getButtonBuilder().action(CANCEL).state(s -> s.icon(Material.BARRIER).action((holder, cache, btn, slot, details) -> {
             customCrafting.getConfigHandler().loadRecipeBookConfig();
-            guiHandler.openCluster("none");
-            return true;
+            holder.getGuiHandler().openCluster("none");
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action(SAVE).state(s -> s.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+        getButtonBuilder().action(SAVE).state(s -> s.icon(Material.WRITTEN_BOOK).action((holder, cache, btn, slot, details) -> {
             try {
                 if (!new File(customCrafting.getDataFolder(), "recipe_book.conf").renameTo(new File(customCrafting.getDataFolder(), "recipe_book_backup.conf"))) {
-                    sendMessage(guiHandler, getCluster().translatedMsgKey("save.failed_backup"));
+                    sendMessage(holder.getGuiHandler(), getCluster().translatedMsgKey("save.failed_backup"));
                 }
                 customCrafting.getConfigHandler().save();
-                sendMessage(guiHandler, getCluster().translatedMsgKey("save.success"));
+                sendMessage(holder.getGuiHandler(), getCluster().translatedMsgKey("save.success"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            guiHandler.openCluster("none");
-            return true;
+            holder.getGuiHandler().openCluster("none");
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action(FILTERS).state(s -> s.icon(Material.COMPASS).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
-            guiHandler.getCustomCache().getRecipeBookEditor().setFilters(true);
-            guiHandler.openWindow(FILTERS);
-            return true;
+        getButtonBuilder().action(FILTERS).state(s -> s.icon(Material.COMPASS).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().getCustomCache().getRecipeBookEditor().setFilters(true);
+            holder.getGuiHandler().openWindow(FILTERS);
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action(CATEGORIES).state(s -> s.icon(Material.CHEST).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
-            guiHandler.getCustomCache().getRecipeBookEditor().setFilters(false);
-            guiHandler.openWindow(CATEGORIES);
-            return true;
+        getButtonBuilder().action(CATEGORIES).state(s -> s.icon(Material.CHEST).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().getCustomCache().getRecipeBookEditor().setFilters(false);
+            holder.getGuiHandler().openWindow(CATEGORIES);
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

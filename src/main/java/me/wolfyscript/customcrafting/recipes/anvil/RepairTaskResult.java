@@ -60,6 +60,6 @@ public class RepairTaskResult extends RepairTask {
     public CustomItem computeResult(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight) {
         //Recipe has a plain result set that we can use.
         anvilData.setUsedResult(true);
-        return recipe.getResult().getItem(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null).orElse(new CustomItem(Material.AIR));
+        return recipe.getResult().getItem(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null).orElse(new CustomItem(recipe.getAPI(), Material.AIR));
     }
 }

@@ -26,6 +26,7 @@ import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import java.io.Serializable;
 import java.util.UUID;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import org.bukkit.Material;
 import org.bukkit.attribute.AttributeModifier;
@@ -57,14 +58,14 @@ public class Items implements Serializable {
 
     private ItemCreatorTab currentTab;
 
-    public Items() {
+    public Items(CustomCrafting customCrafting) {
         this.listPage = 0;
         this.listNamespace = null;
 
         this.page = 0;
         this.playerHeadSetting = new ItemStack(Material.AIR);
 
-        this.item = new CustomItem(Material.AIR);
+        this.item = new CustomItem(customCrafting.getApi(), Material.AIR);
         this.recipeItem = false;
         this.namespacedKey = null;
         this.saved = false;

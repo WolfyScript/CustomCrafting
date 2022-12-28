@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -39,30 +40,30 @@ class ButtonSettingsLockdown {
     public static final String KEY = "lockdown";
 
     static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, WolfyUtilsBukkit api, CustomCrafting customCrafting) {
-        buttonBuilder.toggle(KEY).stateFunction((cache, guiHandler, player, guiInventory, i) -> customCrafting.getConfigHandler().getConfig().isLockedDown())
+        buttonBuilder.toggle(KEY).stateFunction((holder, cache, slot) -> customCrafting.getConfigHandler().getConfig().isLockedDown())
                 .enabledState(state -> buildState(state.subKey("enabled"), true, api, customCrafting, Component.text("Are you sure you want to disable LockDown mode?", NamedTextColor.RED), Component.text("This will enable all the custom recipes!", NamedTextColor.RED, TextDecoration.BOLD)))
                 .disabledState(state -> buildState(state.subKey("disabled"), false, api, customCrafting, Component.text("Are you sure you want to enable LockDown mode?", NamedTextColor.RED), Component.text("This will disable all the custom recipes!", NamedTextColor.RED, TextDecoration.BOLD)))
                 .register();
     }
 
     private static void buildState(ButtonState.Builder<CCCache> state, boolean enabled, WolfyUtilsBukkit api, CustomCrafting customCrafting, Component... components){
-        state.icon(Material.BARRIER).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
-            if (ChatUtils.checkPerm(player, "customcrafting.cmd.lockdown")) {
-                guiHandler.close();
-                api.getChat().sendMessages(player, components);
-                guiHandler.getWindow().sendMessage(guiHandler,
+        state.icon(Material.BARRIER).action((holder, cache, btn, slot, details) -> {
+            if (ChatUtils.checkPerm(holder.getPlayer(), "customcrafting.cmd.lockdown")) {
+                holder.getGuiHandler().close();
+                api.getChat().sendMessages(holder.getPlayer(), components);
+                holder.getWindow().sendMessage(holder.getGuiHandler(),
                         Component.text().append(
-                                Component.text().append(Component.text("[", NamedTextColor.DARK_GRAY), Component.text("Yes", NamedTextColor.GREEN), Component.text("]", NamedTextColor.DARK_GRAY)).hoverEvent(HoverEvent.showText(Component.text("Yes, " + (enabled ? "disable" : "enable") + " lockdown mode!", NamedTextColor.GREEN))).clickEvent(api.getChat().executable(player, true, (wolfyUtilities, player1) -> {
+                                Component.text().append(Component.text("[", NamedTextColor.DARK_GRAY), Component.text("Yes", NamedTextColor.GREEN), Component.text("]", NamedTextColor.DARK_GRAY)).hoverEvent(HoverEvent.showText(Component.text("Yes, " + (enabled ? "disable" : "enable") + " lockdown mode!", NamedTextColor.GREEN))).clickEvent(api.getChat().executable(holder.getPlayer(), true, (wolfyUtilities, player1) -> {
                                     customCrafting.getConfigHandler().getConfig().setLockDown(!enabled);
                                     customCrafting.getConfigHandler().getConfig().save();
                                     wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster();
                                 })),
                                 Component.text(" -- ", NamedTextColor.GRAY),
-                                Component.text().append(Component.text("[", NamedTextColor.DARK_GRAY), Component.text("No", NamedTextColor.RED), Component.text("]", NamedTextColor.DARK_GRAY)).hoverEvent(HoverEvent.showText(Component.text("No, leave lockdown mode " + (enabled ? "enabled" : "disabled") + "!", NamedTextColor.RED))).clickEvent(api.getChat().executable(player, true, (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster()))
+                                Component.text().append(Component.text("[", NamedTextColor.DARK_GRAY), Component.text("No", NamedTextColor.RED), Component.text("]", NamedTextColor.DARK_GRAY)).hoverEvent(HoverEvent.showText(Component.text("No, leave lockdown mode " + (enabled ? "enabled" : "disabled") + "!", NamedTextColor.RED))).clickEvent(api.getChat().executable(holder.getPlayer(), true, (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster()))
                         ).build()
                 );
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         });
     }
 

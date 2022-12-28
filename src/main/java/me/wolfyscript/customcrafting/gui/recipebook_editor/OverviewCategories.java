@@ -24,8 +24,11 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
+import com.wolfyscript.utilities.common.gui.GUIClickInteractionDetails;
 import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
@@ -42,11 +45,11 @@ public class OverviewCategories extends Overview {
     @Override
     public void onInit() {
         super.onInit();
-        getButtonBuilder().action(ADD).state(state -> state.icon(PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+        getButtonBuilder().action(ADD).state(state -> state.icon(PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777")).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeBookEditor().setCategory(new Category());
             cache.getRecipeBookEditor().setCategoryID("");
-            guiHandler.openWindow("category");
-            return true;
+            holder.getGuiHandler().openWindow("category");
+            return ButtonInteractionResult.cancel(true);
         }));
     }
 
@@ -64,24 +67,24 @@ public class OverviewCategories extends Overview {
                 getButtonBuilder()
                         .action(id)
                         .state(state -> state.key("category").icon(Material.AIR)
-                                .render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(category.createItemStack(customCrafting)))
-                                .action((cache, guiHandler, player, guiInventory, btn, i1, event) -> {
-                                    if (event instanceof InventoryClickEvent clickEvent) {
+                                .render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(category.createItemStack(customCrafting)))
+                                .action((holder, cache, btn, slot, details) -> {
+                                    if (details instanceof GUIClickInteractionDetails clickDetails) {
                                         var recipeBookEditor = cache.getRecipeBookEditor();
                                         var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
-                                        if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
+                                        if (clickDetails.isRightClick() && clickDetails.isShiftClick()) {
                                             //Delete Category
                                             recipeBook.removeCategory(category.getId());
-                                            return true;
-                                        } else if (clickEvent.isLeftClick()) {
+                                            return ButtonInteractionResult.cancel(true);
+                                        } else if (clickDetails.isLeftClick()) {
                                             //Edit Category
                                             recipeBookEditor.setCategoryID(category.getId());
                                             recipeBookEditor.setCategory(new Category(category));
-                                            guiHandler.openWindow("category");
-                                            return true;
+                                            holder.getGuiHandler().openWindow("category");
+                                            return ButtonInteractionResult.cancel(true);
                                         }
                                     }
-                                    return true;
+                                    return ButtonInteractionResult.cancel(true);
                                 })
                         )
                         .register();

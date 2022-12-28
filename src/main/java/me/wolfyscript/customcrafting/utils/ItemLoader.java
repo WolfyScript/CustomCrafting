@@ -46,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemLoader {
 
-    private static final org.bukkit.NamespacedKey customItemContainerKey = new org.bukkit.NamespacedKey(WolfyCoreBukkit.getInstance(), "custom_item");
+    private static final org.bukkit.NamespacedKey customItemContainerKey = new org.bukkit.NamespacedKey(WolfyCoreBukkit.getInstance().getWolfyUtils().getPlugin(), "custom_item");
 
     private ItemLoader() {
     }

@@ -163,7 +163,7 @@ public class CauldronBlockData extends CustomBlockData {
                         block.setBlockData(levelled);
                     }
                 }
-                CustomItem air = new CustomItem(ItemUtils.AIR);
+                CustomItem air = new CustomItem(customCrafting.getApi(), ItemUtils.AIR);
                 Location locCopy = loc.clone();
 
                 Result result = recipe.getResult();

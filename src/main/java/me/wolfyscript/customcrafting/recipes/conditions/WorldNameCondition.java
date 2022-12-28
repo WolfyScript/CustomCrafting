@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -88,14 +89,14 @@ public class WorldNameCondition extends Condition<WorldNameCondition> {
             super(Material.GRASS_BLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         var bB = menu.getButtonBuilder();
-                        bB.action(REMOVE).state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, slot, event) -> {
+                        bB.action(REMOVE).state(state -> state.icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
                             var conditions = cache.getRecipeCreatorCache().getRecipeCache().getConditions();
                             if (!conditions.getByType(WorldNameCondition.class).getWorldNames().isEmpty()) {
                                 conditions.getByType(WorldNameCondition.class).getWorldNames().remove(conditions.getByType(WorldNameCondition.class).getWorldNames().size() - 1);
                             }
-                            return true;
+                            return ButtonInteractionResult.cancel(true);
                         })).register();
-                        bB.dummy(LIST).state(state -> state.icon(Material.BOOK).render((cache, guiHandler, player, guiInventory, btn, stack, slot) -> {
+                        bB.dummy(LIST).state(state -> state.icon(Material.BOOK).render((holder, cache, btn, slot, itemStack) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldNameCondition.class);
                             var tagResBuilder = TagResolver.builder();
                             tagResBuilder.resolver(Placeholder.unparsed("mode", condition.getOption().getDisplayString(api)));
@@ -106,7 +107,7 @@ public class WorldNameCondition extends Condition<WorldNameCondition> {
                                     tagResBuilder.resolver(Placeholder.unparsed("var"+i,  "..."));
                                 }
                             }
-                            return CallbackButtonRender.UpdateResult.of();
+                            return CallbackButtonRender.Result.of();
                         })).register();
                         bB.chatInput(ADD).state(state -> state.icon(Material.GREEN_CONCRETE)).inputAction((guiHandler, player, s, strings) -> {
                             if (!s.isEmpty()) {

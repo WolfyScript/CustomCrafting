@@ -73,8 +73,8 @@ public class WorldTimeCondition extends Condition<WorldTimeCondition> {
         public GUIComponent() {
             super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.getButtonBuilder().chatInput("conditions.world_time.set").state(state -> state.icon(Material.CLOCK).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
-                            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldTimeCondition.class).getTime())));
+                        menu.getButtonBuilder().chatInput("conditions.world_time.set").state(state -> state.icon(Material.CLOCK).render((holder, cache, btn, slot, itemStack) -> {
+                            return CallbackButtonRender.Result.of(Placeholder.parsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldTimeCondition.class).getTime())));
                         })).inputAction((guiHandler, player, s, strings) -> {
                             try {
                                 long value = Long.parseLong(s);

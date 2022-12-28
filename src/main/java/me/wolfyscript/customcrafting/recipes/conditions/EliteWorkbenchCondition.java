@@ -32,6 +32,7 @@ import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -153,7 +154,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                             }
                             return Collections.emptyList();
                         }).register();
-                        menu.getButtonBuilder().dummy(LIST).state(state -> state.icon(Material.BOOK).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> {
+                        menu.getButtonBuilder().dummy(LIST).state(state -> state.icon(Material.BOOK).render((holder, cache, btn, slot, itemStack) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getEliteCraftingTableCondition();
                             TagResolver.Builder builder = TagResolver.builder();
                             for (int i = 0; i < 4; i++) {
@@ -163,14 +164,14 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                                     builder.resolver(Placeholder.parsed("var" + i, "..."));
                                 }
                             }
-                            return CallbackButtonRender.UpdateResult.of();
+                            return CallbackButtonRender.Result.of();
                         })).register();
-                        menu.getButtonBuilder().action(REMOVE).state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
+                        menu.getButtonBuilder().action(REMOVE).state(state -> state.icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
                             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(EliteWorkbenchCondition.class);
                             if (!condition.getEliteWorkbenches().isEmpty()) {
                                 condition.getEliteWorkbenches().remove(condition.getEliteWorkbenches().size() - 1);
                             }
-                            return true;
+                            return ButtonInteractionResult.cancel(true);
                         })).register();
                     },
                     (update, cache, condition, recipe) -> {

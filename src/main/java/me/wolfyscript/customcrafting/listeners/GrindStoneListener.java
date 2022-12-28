@@ -259,12 +259,12 @@ public class GrindStoneListener implements Listener {
             return true;
         }).findFirst().map(recipe -> {
             if (recipeComplete.get()) {
-                return new Pair<>(recipe.getResult().getItem(player).orElse(new CustomItem(Material.AIR)), new GrindstoneData(recipe, true,
+                return new Pair<>(recipe.getResult().getItem(player).orElse(new CustomItem(customCrafting.getApi(), Material.AIR)), new GrindstoneData(recipe, true,
                         new IngredientData(0, recipe.getInputTop(), finalInputTop.get(), slot == 0 ? item : itemOther),
                         new IngredientData(1, recipe.getInputBottom(), finalInputBottom.get(), slot == 0 ? itemOther : item))
                 );
             }
-            return new Pair<>(new CustomItem(Material.AIR), (GrindstoneData) null);
+            return new Pair<>(new CustomItem(customCrafting.getApi(), Material.AIR), (GrindstoneData) null);
         }).orElse(null);
     }
 

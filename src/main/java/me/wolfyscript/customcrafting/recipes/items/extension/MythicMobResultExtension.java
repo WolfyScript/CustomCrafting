@@ -41,7 +41,7 @@ public class MythicMobResultExtension extends ResultExtension {
     private Vector offset = new Vector(0.5, 1, 0.5);
 
     public MythicMobResultExtension() {
-        super(new BukkitNamespacedKey(CustomCrafting.inst(), "mythicmobs/mob_spawn"));
+        super(new BukkitNamespacedKey(CustomCrafting.inst().getApi(), "mythicmobs/mob_spawn"));
     }
 
     public MythicMobResultExtension(MythicMobResultExtension extension) {

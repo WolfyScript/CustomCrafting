@@ -30,6 +30,7 @@ import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import com.wolfyscript.utilities.common.language.LanguageAPI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -158,17 +159,17 @@ public class ClusterRecipeBookEditor extends CCCluster {
         getButtonBuilder().action(PREVIOUS_PAGE.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"))).register();
         getButtonBuilder().action(NEXT_PAGE.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"))).register();
 
-        getButtonBuilder().action(ClusterRecipeBookEditor.SAVE.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, button, i, inventoryInteractEvent) -> {
+        getButtonBuilder().action(ClusterRecipeBookEditor.SAVE.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((holder, cache, btn, slot, details) -> {
             var recipeBookEditor = cache.getRecipeBookEditor();
             if (recipeBookEditor.hasCategoryID()) {
-                WolfyUtilsBukkit api = guiHandler.getWolfyUtils();
+                WolfyUtilsBukkit api = holder.getGuiHandler().getWolfyUtils();
                 if (saveCategorySetting(recipeBookEditor, customCrafting)) {
-                    guiHandler.openPreviousWindow();
+                    holder.getGuiHandler().openPreviousWindow();
                 } else {
-                    api.getChat().sendKey(player, ClusterRecipeBookEditor.KEY, "save.error");
+                    api.getChat().sendKey(holder.getPlayer(), ClusterRecipeBookEditor.KEY, "save.error");
                 }
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
         getButtonBuilder().chatInput(ClusterRecipeBookEditor.SAVE_AS.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK)).tabComplete((guiHandler, player, args) -> {
             List<String> results = new ArrayList<>();
@@ -191,57 +192,57 @@ public class ClusterRecipeBookEditor extends CCCluster {
 
 
         var btnBld = getButtonBuilder();
-        btnBld.action(BACK.getKey()).state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
+        btnBld.action(BACK.getKey()).state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeBookEditor().setFilter(null);
             cache.getRecipeBookEditor().setCategory(null);
             cache.getRecipeBookEditor().setCategoryID("");
-            guiHandler.openPreviousWindow();
-            return true;
+            holder.getGuiHandler().openPreviousWindow();
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        btnBld.itemInput(ICON.getKey()).state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+        btnBld.itemInput(ICON.getKey()).state(state -> state.icon(Material.AIR).action((holder, cache, btn, slot, details) -> {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
-                if (!ItemUtils.isAirOrNull(inventory.getItem(slot))) {
-                    cache.getRecipeBookEditor().getCategorySetting().setIconStack(inventory.getItem(slot));
+                if (!ItemUtils.isAirOrNull(holder.getInventory().getItem(slot))) {
+                    cache.getRecipeBookEditor().getCategorySetting().setIconStack(holder.getInventory().getItem(slot));
                 } else {
                     cache.getRecipeBookEditor().getCategorySetting().setIconStack(new ItemStack(Material.AIR));
                 }
             });
-            return false;
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
-            var categorySettings = guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting();
-            return CallbackButtonRender.UpdateResult.of(categorySettings != null ? categorySettings.getIconStack() : new ItemStack(Material.AIR));
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> {
+            var categorySettings = holder.getGuiHandler().getCustomCache().getRecipeBookEditor().getCategorySetting();
+            return CallbackButtonRender.Result.of(categorySettings != null ? categorySettings.getIconStack() : new ItemStack(Material.AIR));
         })).register();
-        btnBld.chatInput(NAME.getKey()).state(state -> state.icon(Material.NAME_TAG).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("name", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getName())))).inputAction((guiHandler, player, s, strings) -> {
+        btnBld.chatInput(NAME.getKey()).state(state -> state.icon(Material.NAME_TAG).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.parsed("name", holder.getGuiHandler().getCustomCache().getRecipeBookEditor().getCategorySetting().getName())))).inputAction((guiHandler, player, s, strings) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().setName(s);
             return false;
         }).register();
-        btnBld.action(DESCRIPTION_EDIT.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
-            descriptionChatEditor.send(player);
-            Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
-                    List<String> description = guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getDescription();
+        btnBld.action(DESCRIPTION_EDIT.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((holder, cache, btn, slot, details) -> {
+            descriptionChatEditor.send(holder.getPlayer());
+            Bukkit.getScheduler().runTask(customCrafting, holder.getGuiHandler()::close);
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> {
+                    List<String> description = holder.getGuiHandler().getCustomCache().getRecipeBookEditor().getCategorySetting().getDescription();
                     LanguageAPI langAPI = wolfyUtilities.getLanguageAPI();
                     MiniMessage miniMsg = getChat().getMiniMessage();
-                    return CallbackButtonRender.UpdateResult.of(TagResolverUtil.entries(langAPI.replaceKeys(description).stream().map(s -> miniMsg.deserialize(langAPI.convertLegacyToMiniMessage(s))).toList()));
+                    return CallbackButtonRender.Result.of(TagResolverUtil.entries(langAPI.replaceKeys(description).stream().map(s -> miniMsg.deserialize(langAPI.convertLegacyToMiniMessage(s))).toList()));
                 }
         )).register();
 
-        btnBld.action(RECIPES.getKey()).state(state -> state.icon(Material.CRAFTING_TABLE).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-            recipesChatEditor.send(player);
-            Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("recipes", String.join("<newline>", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getRecipes().stream().map(recipe -> "<grey> - </grey><yellow>" + recipe + "</yellow>").toList()))))).register();
-        btnBld.action(FOLDERS.getKey()).state(state -> state.icon(Material.ENDER_CHEST).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-            foldersChatEditor.send(player);
-            Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("folders", String.join("<newline>", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getFolders().stream().map(namespacedKey -> "<grey> - </grey><yellow>" + namespacedKey + "</yellow>").toList()))))).register();
-        btnBld.action(GROUPS.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-            groupsChatEditor.send(player);
-            Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("groups", String.join("<newline>", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getGroups().stream().map(group -> "<grey> - </grey><yellow>" + group + "</yellow>").toList()))))).register();
+        btnBld.action(RECIPES.getKey()).state(state -> state.icon(Material.CRAFTING_TABLE).action((holder, cache, btn, slot, details) -> {
+            recipesChatEditor.send(holder.getPlayer());
+            Bukkit.getScheduler().runTask(customCrafting, holder.getGuiHandler()::close);
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.parsed("recipes", String.join("<newline>", holder.getGuiHandler().getCustomCache().getRecipeBookEditor().getCategorySetting().getRecipes().stream().map(recipe -> "<grey> - </grey><yellow>" + recipe + "</yellow>").toList()))))).register();
+        btnBld.action(FOLDERS.getKey()).state(state -> state.icon(Material.ENDER_CHEST).action((holder, cache, btn, slot, details) -> {
+            foldersChatEditor.send(holder.getPlayer());
+            Bukkit.getScheduler().runTask(customCrafting, holder.getGuiHandler()::close);
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.parsed("folders", String.join("<newline>", holder.getGuiHandler().getCustomCache().getRecipeBookEditor().getCategorySetting().getFolders().stream().map(namespacedKey -> "<grey> - </grey><yellow>" + namespacedKey + "</yellow>").toList()))))).register();
+        btnBld.action(GROUPS.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((holder, cache, btn, slot, details) -> {
+            groupsChatEditor.send(holder.getPlayer());
+            Bukkit.getScheduler().runTask(customCrafting, holder.getGuiHandler()::close);
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.parsed("groups", String.join("<newline>", holder.getGuiHandler().getCustomCache().getRecipeBookEditor().getCategorySetting().getGroups().stream().map(group -> "<grey> - </grey><yellow>" + group + "</yellow>").toList()))))).register();
     }
 
     private static boolean saveCategorySetting(RecipeBookEditor recipeBookEditor, CustomCrafting customCrafting) {

@@ -26,6 +26,7 @@ import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
@@ -60,15 +61,15 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
                         guiHandler.getCustomCache().getItems().getItem().setDisplayName(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s)));
                     }
                     return false;
-                }).state(state -> state.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-                    var chat = guiInventory.getWindow().getChat();
-                    chat.sendMessage(player, chat.translated("msg.input.wui_command"));
-                    chat.sendMessage(player, chat.translated("msg.input.mini_message"));
-                    return true;
+                }).state(state -> state.icon(Material.GREEN_CONCRETE).action((holder, cache, btn, slot, details) -> {
+                    var chat = holder.getWindow().getChat();
+                    chat.sendMessage(holder.getPlayer(), chat.translated("msg.input.wui_command"));
+                    chat.sendMessage(holder.getPlayer(), chat.translated("msg.input.mini_message"));
+                    return ButtonInteractionResult.cancel(true);
                 })).register();
-        creator.getButtonBuilder().action(KEY + ".remove").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().action(KEY + ".remove").state(state -> state.icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
             cache.getItems().getItem().setDisplayName(null);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

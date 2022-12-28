@@ -83,8 +83,8 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
         public GUIComponent() {
             super(Material.BARRIER, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
-                        menu.getButtonBuilder().chatInput("conditions.craft_limit.set").state(state -> state.icon(Material.BARRIER).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
-                            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftLimitCondition.class).getLimit())));
+                        menu.getButtonBuilder().chatInput("conditions.craft_limit.set").state(state -> state.icon(Material.BARRIER).render((holder, cache, btn, slot, itemStack) -> {
+                            return CallbackButtonRender.Result.of(Placeholder.parsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftLimitCondition.class).getLimit())));
                         })).inputAction((guiHandler, player, s, strings) -> {
                             var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
                             try {

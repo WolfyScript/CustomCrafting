@@ -22,19 +22,17 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook;
 
+import com.wolfyscript.utilities.bukkit.gui.GUIHolder;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
-import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
 import com.wolfyscript.utilities.bukkit.gui.button.Button;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonType;
-import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.io.IOException;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.customcrafting.data.CCCache;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -52,19 +50,29 @@ class ButtonCategoryMain extends Button<CCCache> {
     }
 
     @Override
-    public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
+    public ButtonInteractionResult execute(GUIHolder<CCCache> holder, int slot) {
         if (category != null) {
-            var knowledgeBook = guiHandler.getCustomCache().getRecipeBookCache();
+            var knowledgeBook = holder.getGuiHandler().getCustomCache().getRecipeBookCache();
             knowledgeBook.setCategory(category);
-            guiHandler.openWindow(ClusterRecipeBook.CATEGORY_OVERVIEW);
+            holder.getGuiHandler().openWindow(ClusterRecipeBook.CATEGORY_OVERVIEW);
         }
-        return true;
+        return ButtonInteractionResult.cancel(true);
     }
 
     @Override
-    public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
+    public void postExecute(GUIHolder<CCCache> holder, ItemStack itemStack, int slot) throws IOException {
+
+    }
+
+    @Override
+    public void preRender(GUIHolder<CCCache> holder, ItemStack itemStack, int slot) {
+
+    }
+
+    @Override
+    public void render(GUIHolder<CCCache> holder, Inventory queueInventory, int slot) {
         if (category != null) {
-            inventory.setItem(slot, category.createItemStack(customCrafting));
+            queueInventory.setItem(slot, category.createItemStack(customCrafting));
         }
     }
 
@@ -78,13 +86,4 @@ class ButtonCategoryMain extends Button<CCCache> {
 
     }
 
-    @Override
-    public void postExecute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, ItemStack itemStack, int slot, InventoryInteractEvent event) throws IOException {
-
-    }
-
-    @Override
-    public void preRender(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, ItemStack itemStack, int slot, boolean help) {
-
-    }
 }

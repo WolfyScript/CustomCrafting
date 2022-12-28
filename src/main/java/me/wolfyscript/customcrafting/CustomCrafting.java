@@ -195,7 +195,7 @@ public class CustomCrafting extends JavaPlugin {
         if (!isPaper) {
             getLogger().warning("Paper not detected! Not using performance improvements.");
         }
-        api = WolfyCoreBukkit.getInstance().getAPI(this, false);
+        api = WolfyCoreBukkit.getInstance().getOrCreate(this);
 
         HoconMapper mapper = new HoconMapper(new HoconFactory()
                 .disable(HoconGenerator.Feature.ROOT_OBJECT_BRACKETS)

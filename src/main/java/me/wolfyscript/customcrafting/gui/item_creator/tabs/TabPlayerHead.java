@@ -30,6 +30,8 @@ import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonItemInput;
 import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
+import com.wolfyscript.utilities.common.gui.GUIClickInteractionDetails;
 import java.util.UUID;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
@@ -53,18 +55,18 @@ public class TabPlayerHead extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.PLAYER_HEAD, this);
-        creator.getButtonBuilder().itemInput("player_head.texture.input").state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, btn, i, event) -> {
-            if (event instanceof InventoryClickEvent) {
-                return ((InventoryClickEvent) event).getCurrentItem().getType().equals(Material.PLAYER_HEAD);
+        creator.getButtonBuilder().itemInput("player_head.texture.input").state(state -> state.icon(Material.AIR).action((holder, cache, btn, slot, details) -> {
+            if (details instanceof GUIClickInteractionDetails clickDetails) {
+                // TODO: Item Type Check return ((InventoryClickEvent) event).getCurrentItem().getType().equals(Material.PLAYER_HEAD);
             }
-            return true;
+            return ButtonInteractionResult.cancel(false);
         })).register();
-        creator.getButtonBuilder().action("player_head.texture.apply").state(state -> state.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().action("player_head.texture.apply").state(state -> state.icon(Material.GREEN_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
-            if (inventory.getItem(38) != null && inventory.getItem(38).getType().equals(Material.PLAYER_HEAD)) {
-                items.getItem().setPlayerHeadValue(new ItemBuilder(inventory.getItem(38)).getPlayerHeadValue());
+            if (holder.getInventory().getItem(38) != null && holder.getInventory().getItem(38).getType().equals(Material.PLAYER_HEAD)) {
+                items.getItem().setPlayerHeadValue(new ItemBuilder(creator.getWolfyUtils(), holder.getInventory().getItem(38)).getPlayerHeadValue());
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
         creator.getButtonBuilder().chatInput("player_head.owner").state(state -> state.icon(Material.NAME_TAG)).inputAction((guiHandler, player, s, args) -> {
             var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();

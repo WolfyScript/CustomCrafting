@@ -27,6 +27,7 @@ import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
@@ -49,8 +50,8 @@ public class TabRarity extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.DIAMOND, this);
-        creator.getButtonBuilder().chatInput("rarity.set").state(state -> state.icon(Material.GREEN_CONCRETE).render((cache, guiHandler, player, inventory, btn, stack, b) -> CallbackButtonRender.UpdateResult.of(Placeholder.component("var",
-                Component.text(guiHandler.getCustomCache().getItems().getItem().getWeight()).append(
+        creator.getButtonBuilder().chatInput("rarity.set").state(state -> state.icon(Material.GREEN_CONCRETE).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.component("var",
+                Component.text(holder.getGuiHandler().getCustomCache().getItems().getItem().getWeight()).append(
                         Component.text("(").color(NamedTextColor.DARK_GRAY)
                                 .append(Component.text(cache.getItems().getItem().getWeight() * 100).color(NamedTextColor.GRAY))
                                 .append(Component.text(")"))
@@ -62,9 +63,9 @@ public class TabRarity extends ItemCreatorTab {
             }
             return false;
         }).register();
-        creator.getButtonBuilder().action("rarity.reset").state(state -> state.icon(Material.RED_CONCRETE_POWDER).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+        creator.getButtonBuilder().action("rarity.reset").state(state -> state.icon(Material.RED_CONCRETE_POWDER).action((holder, cache, btn, slot, details) -> {
             cache.getItems().getItem().setWeight(1.0d);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

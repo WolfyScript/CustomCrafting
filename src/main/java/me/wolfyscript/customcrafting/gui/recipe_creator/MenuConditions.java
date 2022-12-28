@@ -28,6 +28,7 @@ import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -54,46 +55,46 @@ public class MenuConditions extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action(BACK).state(s -> s.key(ClusterMain.BACK_BOTTOM).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
-            guiHandler.openPreviousWindow();
-            return true;
+        getButtonBuilder().action(BACK).state(s -> s.key(ClusterMain.BACK_BOTTOM).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openPreviousWindow();
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action(ADD).state(s -> s.icon(PlayerHeadUtils.getViaURL("10c97e4b68aaaae8472e341b1d872b93b36d4eb6ea89ecec26a66e6c4e178")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
-            guiHandler.openWindow(MenuConditionsAdd.KEY);
-            return true;
+        getButtonBuilder().action(ADD).state(s -> s.icon(PlayerHeadUtils.getViaURL("10c97e4b68aaaae8472e341b1d872b93b36d4eb6ea89ecec26a66e6c4e178")).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openWindow(MenuConditionsAdd.KEY);
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action(PAGE_UP).state(s -> s.icon(PlayerHeadUtils.getViaURL("3f46abad924b22372bc966a6d517d2f1b8b57fdd262b4e04f48352e683fff92")).action((cache, guiHandler, player, inventory, btn, slot, event) -> true)).register();
-        getButtonBuilder().action(PAGE_DOWN).state(s -> s.icon(PlayerHeadUtils.getViaURL("be9ae7a4be65fcbaee65181389a2f7d47e2e326db59ea3eb789a92c85ea46")).action((cache, guiHandler, player, inventory, btn, slot, event) -> true)).register();
-        getButtonBuilder().action(TOGGLE_MODE).state(s -> s.icon(Material.LEVER).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+        getButtonBuilder().action(PAGE_UP).state(s -> s.icon(PlayerHeadUtils.getViaURL("3f46abad924b22372bc966a6d517d2f1b8b57fdd262b4e04f48352e683fff92")).action((holder, cache, btn, slot, details) -> ButtonInteractionResult.cancel(true))).register();
+        getButtonBuilder().action(PAGE_DOWN).state(s -> s.icon(PlayerHeadUtils.getViaURL("be9ae7a4be65fcbaee65181389a2f7d47e2e326db59ea3eb789a92c85ea46")).action((holder, cache, btn, slot, details) -> ButtonInteractionResult.cancel(true))).register();
+        getButtonBuilder().action(TOGGLE_MODE).state(s -> s.icon(Material.LEVER).action((holder, cache, btn, slot, details) -> {
             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByKey(cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition());
             if (condition != null) {
                 condition.toggleOption();
             }
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> {
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> {
             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByKey(cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition());
             if (condition != null) {
-                return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("mode", condition.getOption().getDisplayString(api)));
+                return CallbackButtonRender.Result.of(Placeholder.parsed("mode", condition.getOption().getDisplayString(api)));
             }
-            return CallbackButtonRender.UpdateResult.of();
+            return CallbackButtonRender.Result.of();
         })).register();
-        getButtonBuilder().action(REMOVE).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, btn, inventory, slot, event) -> {
+        getButtonBuilder().action(REMOVE).state(s -> s.icon(Material.BARRIER).action((holder, cache, button, slot, details) -> {
             var condition = cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition();
             if (condition != null) {
                 cache.getRecipeCreatorCache().getRecipeCache().getConditions().removeCondition(condition);
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
         Condition.getGuiComponents().forEach((key, abstractGUIComponent) -> abstractGUIComponent.init(this, api));
     }
 
     private void registerConditionSelectBtn(NamespacedKey key) {
-        getButtonBuilder().action("icon_" + key.toString("_")).state(state -> state.key("select").icon(Condition.getGuiComponent(key).getIcon()).action((cache, guiHandler, player, guiInventory, button, i, inventoryInteractEvent) -> {
+        getButtonBuilder().action("icon_" + key.toString("_")).state(state -> state.key("select").icon(Condition.getGuiComponent(key).getIcon()).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getConditionsCache().setSelectedCondition(key);
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> {
             Condition.AbstractGUIComponent<?> condition = Condition.getGuiComponent(key);
-            return CallbackButtonRender.UpdateResult.of(Placeholder.component("name", condition.getDisplayName()), TagResolverUtil.entries(condition.getDescriptionComponents()));
+            return CallbackButtonRender.Result.of(Placeholder.component("name", condition.getDisplayName()), TagResolverUtil.entries(condition.getDescriptionComponents()));
         })).register();
     }
 

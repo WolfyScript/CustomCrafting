@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -41,9 +42,9 @@ public abstract class RecipeCreator extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action(BACK).state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
-            guiHandler.openCluster("none");
-            return true;
+        getButtonBuilder().action(BACK).state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openCluster("none");
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

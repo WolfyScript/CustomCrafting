@@ -189,7 +189,7 @@ public class Result extends RecipeItemStack {
     }
 
     public ItemStack getItem(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block) {
-        return getItem(recipeData, getItem(player, block).orElse(new CustomItem(Material.AIR)), player, block);
+        return getItem(recipeData, getItem(player, block).orElse(new CustomItem(CustomCrafting.inst().getApi(), Material.AIR)), player, block);
     }
 
     public ItemStack getItem(RecipeData<?> recipeData, CustomItem chosenItem, @Nullable Player player, @Nullable Block block) {

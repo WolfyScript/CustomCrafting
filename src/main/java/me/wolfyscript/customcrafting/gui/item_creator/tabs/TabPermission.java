@@ -28,6 +28,7 @@ import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
@@ -49,16 +50,16 @@ public class TabPermission extends ItemCreatorTab {
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         GuiMenuComponent.ButtonBuilder<CCCache> bB = creator.getButtonBuilder();
         ButtonOption.register(bB, Material.BARRIER, this);
-        bB.chatInput("permission.set").state(state -> state.icon(Material.GREEN_CONCRETE).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
-            String perm = guiHandler.getCustomCache().getItems().getItem().getPermission();
-            return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("var", perm.isEmpty() ? "none" : perm));
+        bB.chatInput("permission.set").state(state -> state.icon(Material.GREEN_CONCRETE).render((holder, cache, btn, slot, itemStack) -> {
+            String perm = holder.getGuiHandler().getCustomCache().getItems().getItem().getPermission();
+            return CallbackButtonRender.Result.of(Placeholder.unparsed("var", perm.isEmpty() ? "none" : perm));
         })).inputAction((guiHandler, player, s, strings) -> {
             guiHandler.getCustomCache().getItems().getItem().setPermission(s.replace(" ", "."));
             return false;
         }).register();
-        bB.action("permission.remove").state(state -> state.icon(Material.RED_CONCRETE_POWDER).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
-            guiHandler.getCustomCache().getItems().getItem().setPermission("");
-            return true;
+        bB.action("permission.remove").state(state -> state.icon(Material.RED_CONCRETE_POWDER).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().getCustomCache().getItems().getItem().setPermission("");
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.gui.item_creator;
 
 import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import org.bukkit.Material;
@@ -30,10 +31,10 @@ import org.bukkit.Material;
 public class ButtonOption {
 
     public static void register(GuiMenuComponent.ButtonBuilder<CCCache> builder, Material material, ItemCreatorTab tab) {
-        builder.action(tab.getOptionButton()).state(state -> state.icon(material).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+        builder.action(tab.getOptionButton()).state(state -> state.icon(material).action((holder, cache, btn, slot, details) -> {
             cache.setSubSetting("");
             cache.getItems().setCurrentTab(tab);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

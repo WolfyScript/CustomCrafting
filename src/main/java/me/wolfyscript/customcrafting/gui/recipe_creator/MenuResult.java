@@ -28,6 +28,7 @@ import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
@@ -48,7 +49,7 @@ public class MenuResult extends CCWindow {
     }
 
     private void registerButtonContainerItemResult(int variantSlot) {
-        getButtonBuilder().itemInput("variant_container_" + variantSlot).state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inv, button, slot, event) -> {
+        getButtonBuilder().itemInput("variant_container_" + variantSlot).state(state -> state.icon(Material.AIR).action((holder, cache, btn, slot, details) -> {
             if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
                 if (!ItemUtils.isAirOrNull(inv.getItem(slot))) {
                     cache.getItems().setVariant(variantSlot, CustomItem.getReferenceByItemStack(inv.getItem(slot)));
@@ -58,14 +59,14 @@ public class MenuResult extends CCWindow {
                 return true;
             }
             return false;
-        }).postAction((cache, guiHandler, player, guiInventory, button, itemStack, i, event) -> {
+        }).postAction((holder, cache, btn, slot, itemStack, details) -> {
             if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
                 return;
             }
             cache.getRecipeCreatorCache().getRecipeCache().getResult().put(variantSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
-        }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
+        }).render((holder, cache, btn, slot, itemStack) -> {
             Result result = cache.getRecipeCreatorCache().getRecipeCache().getResult();
-            return CallbackButtonRender.UpdateResult.of(result != null ? result.getItemStack(variantSlot) : ItemUtils.AIR);
+            return CallbackButtonRender.Result.of(result != null ? result.getItemStack(variantSlot) : ItemUtils.AIR);
         })).register();
     }
 
@@ -74,15 +75,15 @@ public class MenuResult extends CCWindow {
         for (int i = 0; i < 45; i++) {
             registerButtonContainerItemResult(i);
         }
-        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inv, btn, i, event) -> {
+        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getRecipeCache().getResult().buildChoices();
-            guiHandler.openPreviousWindow();
-            return true;
+            holder.getGuiHandler().openPreviousWindow();
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action("tags").state(s -> s.key(ClusterRecipeCreator.TAGS).icon(Material.NAME_TAG).action((cache, guiHandler, player, inv, btn, i, event) -> {
+        getButtonBuilder().action("tags").state(s -> s.key(ClusterRecipeCreator.TAGS).icon(Material.NAME_TAG).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getTagSettingsCache().setRecipeItemStack(cache.getRecipeCreatorCache().getRecipeCache().getResult());
-            guiHandler.openWindow("tag_settings");
-            return true;
+            holder.getGuiHandler().openWindow("tag_settings");
+            return ButtonInteractionResult.cancel(true);
         })).register();
         getButtonBuilder().dummy("target").state(s -> s.icon(Material.ARROW)).register();
         getButtonBuilder().dummy("extensions").state(s -> s.icon(Material.COMMAND_BLOCK)).register();

@@ -54,7 +54,7 @@ public class LocalStorageLoader extends ResourceLoader {
     private static final String RECIPES_FOLDER = "recipes";
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
-        super(customCrafting, new BukkitNamespacedKey(customCrafting, "local_loader"));
+        super(customCrafting, new BukkitNamespacedKey(customCrafting.getApi(), "local_loader"));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class LocalStorageLoader extends ResourceLoader {
      */
     private NamespacedKey keyFromFile(String namespace, Path path) {
         String pathString = path.toString();
-        return new BukkitNamespacedKey(customCrafting, namespace + "/" + pathString.substring(0, pathString.lastIndexOf(".")));
+        return new BukkitNamespacedKey(customCrafting.getApi(), namespace + "/" + pathString.substring(0, pathString.lastIndexOf(".")));
     }
 
     private void loadItemsInNamespace(String namespace) {
@@ -329,7 +329,7 @@ public class LocalStorageLoader extends ResourceLoader {
         protected void loadOldOrLegacyRecipeFiles(RecipeLoader<?> loader, List<File> files, String namespace) {
             for (File file : files) {
                 var name = file.getName();
-                var namespacedKey = new BukkitNamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
+                var namespacedKey = new BukkitNamespacedKey(customCrafting.getApi(), namespace + "/" + name.substring(0, name.lastIndexOf(".")));
                 if (!customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     try {
                         customCrafting.getRegistries().getRecipes().register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));

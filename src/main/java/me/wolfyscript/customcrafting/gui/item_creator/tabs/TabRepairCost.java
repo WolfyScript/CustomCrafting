@@ -28,6 +28,7 @@ import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import com.wolfyscript.utilities.tuple.Pair;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
@@ -62,14 +63,14 @@ public class TabRepairCost extends ItemCreatorTabVanilla {
             }
             return false;
         }).register();
-        creator.getButtonBuilder().action("repair_cost.reset").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().action("repair_cost.reset").state(state -> state.icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             var itemMeta = items.getItem().getItemMeta();
             if (itemMeta instanceof Repairable) {
                 ((Repairable) itemMeta).setRepairCost(0);
             }
             items.getItem().setItemMeta(itemMeta);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

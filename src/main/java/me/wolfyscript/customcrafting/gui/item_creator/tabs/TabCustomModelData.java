@@ -29,6 +29,7 @@ import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import com.wolfyscript.utilities.tuple.Pair;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
@@ -51,9 +52,9 @@ public class TabCustomModelData extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.REDSTONE, this);
-        creator.getButtonBuilder().chatInput("custom_model_data.set").state(state -> state.icon(Material.GREEN_CONCRETE).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
-            var items = guiHandler.getCustomCache().getItems();
-            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("var", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : "<grey><underline>/") + ""));
+        creator.getButtonBuilder().chatInput("custom_model_data.set").state(state -> state.icon(Material.GREEN_CONCRETE).render((holder, cache, btn, slot, itemStack) -> {
+            var items = holder.getGuiHandler().getCustomCache().getItems();
+            return CallbackButtonRender.Result.of(Placeholder.parsed("var", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : "<grey><underline>/") + ""));
         })).inputAction((guiHandler, player, s, strings) -> {
             var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             if (!(itemMeta instanceof Repairable)) {
@@ -70,12 +71,12 @@ public class TabCustomModelData extends ItemCreatorTab {
             }
             return false;
         }).register();
-        creator.getButtonBuilder().action("custom_model_data.reset").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().action("custom_model_data.reset").state(state -> state.icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             var itemMeta = items.getItem().getItemMeta();
             itemMeta.setCustomModelData(null);
             items.getItem().setItemMeta(itemMeta);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

@@ -72,8 +72,8 @@ public class PermissionCondition extends Condition<PermissionCondition> {
         public GUIComponent() {
             super(Material.REDSTONE, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, wolfyUtilities) -> {
-                        menu.getButtonBuilder().chatInput("conditions.permission.set").state(state -> state.icon(Material.REDSTONE).render((cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-                            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("value", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(PermissionCondition.class).getPermission()));
+                        menu.getButtonBuilder().chatInput("conditions.permission.set").state(state -> state.icon(Material.REDSTONE).render((holder, cache, btn, slot, itemStack) -> {
+                            return CallbackButtonRender.Result.of(Placeholder.parsed("value", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(PermissionCondition.class).getPermission()));
                         })).inputAction((guiHandler, player, s, strings) -> {
                             guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(PermissionCondition.class).setPermission(s.trim());
                             return false;

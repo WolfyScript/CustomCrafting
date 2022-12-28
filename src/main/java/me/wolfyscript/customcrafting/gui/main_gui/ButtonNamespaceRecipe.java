@@ -28,6 +28,8 @@ import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
+import com.wolfyscript.utilities.common.gui.GUIClickInteractionDetails;
 import java.util.HashMap;
 import java.util.Map;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -47,11 +49,11 @@ public class ButtonNamespaceRecipe {
     }
 
     static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, int slot, CustomCrafting customCrafting) {
-        buttonBuilder.action(key(slot)).state(state -> state.key("namespace").icon(Material.ENDER_CHEST).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+        buttonBuilder.action(key(slot)).state(state -> state.key("namespace").icon(Material.ENDER_CHEST).action((holder, cache, btn, btnSlot, details) -> {
             String namespace = cache.getRecipeList().getNamespaceForButtonInSlot(slot);
-            if (!namespace.isEmpty() && event instanceof InventoryClickEvent clickEvent) {
+            if (!namespace.isEmpty() && details instanceof GUIClickInteractionDetails clickEvent) {
                 if (!clickEvent.isShiftClick()) {
-                    if (guiInventory.getWindow() instanceof MenuListRecipes) {
+                    if (holder.getWindow() instanceof MenuListRecipes) {
                         cache.getRecipeList().setNamespace(namespace);
                         cache.getRecipeList().setPage(0);
                     }
@@ -70,9 +72,9 @@ public class ButtonNamespaceRecipe {
                     }
                 }
             }
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
-            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("namespace", cache.getRecipeList().getNamespaceForButtonInSlot(slot)));
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, btnSlot, itemStack) -> {
+            return CallbackButtonRender.Result.of(Placeholder.parsed("namespace", cache.getRecipeList().getNamespaceForButtonInSlot(slot)));
         })).register();
     }
 

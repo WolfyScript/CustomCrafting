@@ -46,7 +46,7 @@ public class ResultExtensionAdvancement extends ResultExtension {
     private boolean nearWorkstation = false;
 
     public ResultExtensionAdvancement() {
-        super(new BukkitNamespacedKey(CustomCrafting.inst(), "advancement"));
+        super(new BukkitNamespacedKey(CustomCrafting.inst().getApi(), "advancement"));
     }
 
     public ResultExtensionAdvancement(ResultExtensionAdvancement extension) {

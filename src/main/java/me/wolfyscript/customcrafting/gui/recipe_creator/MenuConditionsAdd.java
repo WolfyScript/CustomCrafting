@@ -27,6 +27,7 @@ import com.wolfyscript.utilities.bukkit.TagResolverUtil;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.Map;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -52,11 +53,11 @@ public class MenuConditionsAdd extends CCWindow {
     }
 
     private void registerConditionAddBtn(NamespacedKey key, Condition.AbstractGUIComponent<?> condition) {
-        getButtonBuilder().action("icon_" + key.toString("_")).state(state -> state.key("icon").icon(condition.getIcon()).action((cache, guiHandler, player, guiInventory, button, i, inventoryInteractEvent) -> {
+        getButtonBuilder().action("icon_" + key.toString("_")).state(state -> state.key("icon").icon(condition.getIcon()).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getRecipeCache().getConditions().setCondition(customCrafting.getRegistries().getRecipeConditions().create(key));
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
-            return CallbackButtonRender.UpdateResult.of(Placeholder.component("name", condition.getDisplayName()), TagResolverUtil.entries(condition.getDescriptionComponents()));
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> {
+            return CallbackButtonRender.Result.of(Placeholder.component("name", condition.getDisplayName()), TagResolverUtil.entries(condition.getDescriptionComponents()));
         })).register();
     }
 

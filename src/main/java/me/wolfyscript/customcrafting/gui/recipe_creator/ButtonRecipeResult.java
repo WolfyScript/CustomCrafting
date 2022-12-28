@@ -28,34 +28,36 @@ import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
+import com.wolfyscript.utilities.common.gui.ClickType;
+import com.wolfyscript.utilities.common.gui.GUIClickInteractionDetails;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 class ButtonRecipeResult {
 
     static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder) {
-        buttonBuilder.itemInput("recipe.result").state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+        buttonBuilder.itemInput("recipe.result").state(state -> state.icon(Material.AIR).action((holder, cache, btn, slot, details) -> {
             Result result = cache.getRecipeCreatorCache().getRecipeCache().getResult();
-            if (event instanceof InventoryClickEvent clickEvent && clickEvent.getSlot() == slot && clickEvent.isRightClick() && clickEvent.isShiftClick()) {
+            if (details instanceof GUIClickInteractionDetails clickEvent && clickEvent.getSlot() == slot && clickEvent.isRightClick() && clickEvent.isShiftClick()) {
                 //Since shift clicking now updates all the available ItemInputButtons we only use the first button that was clicked.
-                guiHandler.openWindow("result");
-                return true;
+                holder.getGuiHandler().openWindow("result");
+                return ButtonInteractionResult.cancel(true);
             }
-            return result.getItems().isEmpty() && !result.getTags().isEmpty();
-        }).postAction((cache, guiHandler, player, inventory, btn, itemStack, i, event) -> {
+            return ButtonInteractionResult.cancel(result.getItems().isEmpty() && !result.getTags().isEmpty());
+        }).postAction((holder, cache, btn, slot, itemStack, details) -> {
             Result result = cache.getRecipeCreatorCache().getRecipeCache().getResult();
-            if ((result.getItems().isEmpty() && !result.getTags().isEmpty()) || event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
+            if ((result.getItems().isEmpty() && !result.getTags().isEmpty()) || details instanceof GUIClickInteractionDetails clickEvent && clickEvent.getClickType() == ClickType.SHIFT_SECONDARY) {
                 return;
             }
             result.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
             result.buildChoices();
-        }).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
+        }).render((holder, cache, btn, slot, itemStack) -> {
             Result result = cache.getRecipeCreatorCache().getRecipeCache().getResult();
-            return CallbackButtonRender.UpdateResult.of(result != null ? result.getItemStack() : new ItemStack(Material.AIR));
+            return CallbackButtonRender.Result.of(result != null ? result.getItemStack() : new ItemStack(Material.AIR));
         })).register();
     }
 }

@@ -44,7 +44,7 @@ public class SoundResultExtension extends ResultExtension {
     private boolean onBlock = true;
 
     public SoundResultExtension() {
-        super(new BukkitNamespacedKey(CustomCrafting.inst(), "sound"));
+        super(new BukkitNamespacedKey(CustomCrafting.inst().getApi(), "sound"));
     }
 
     public SoundResultExtension(SoundResultExtension extension) {

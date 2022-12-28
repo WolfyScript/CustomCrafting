@@ -70,7 +70,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
-    private static final CustomItem placeHolderPotion = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lAny kind of potion!"));
+    private static final CustomItem placeHolderPotion = new CustomItem(CustomCrafting.inst().getApi(), Material.POTION).setDisplayName(ChatColor.convert("&6&lAny kind of potion!"));
 
     Ingredient allowedItems; //The CustomItems that can be used. Needs to be a potion of course.
     private Ingredient ingredients; //The top ingredient of the recipe. Always required.
@@ -436,7 +436,7 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         if (!this.getResult().isEmpty()) {
             ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(1))).setVariants(guiHandler, this.getResult());
         } else {
-            CustomItem modifications = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lResulting Potion"));
+            CustomItem modifications = new CustomItem(customCrafting.getApi(), Material.POTION).setDisplayName(ChatColor.convert("&6&lResulting Potion"));
             modifications.addLoreLine("");
             if (resetEffects) {
                 modifications.addLoreLine("&4All effects will be removed!");

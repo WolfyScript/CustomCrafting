@@ -49,7 +49,7 @@ public class CommandResultExtension extends ResultExtension {
 
     @JsonCreator
     public CommandResultExtension(@JacksonInject("customcrafting") CustomCrafting customCrafting) {
-        super(new BukkitNamespacedKey(customCrafting, "command"));
+        super(new BukkitNamespacedKey(customCrafting.getApi(), "command"));
         this.customCrafting = customCrafting;
     }
 

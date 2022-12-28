@@ -27,6 +27,7 @@ import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,10 +61,10 @@ public class TabEnchants extends ItemCreatorTabVanilla {
         ButtonOption.register(creator.getButtonBuilder(), Material.ENCHANTED_BOOK, this);
 
         new ButtonChatInput.Builder<>(creator, KEY + ".add")
-                .state(state -> state.icon(Material.ENCHANTED_BOOK).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
-                    var chat = guiInventory.getWindow().getChat();
-                    chat.sendMessage(player, chat.translated("msg.input.wui_command"));
-                    return true;
+                .state(state -> state.icon(Material.ENCHANTED_BOOK).action((holder, cache, btn, slot, details) -> {
+                    var chat = holder.getGuiHandler().getWindow().getChat();
+                    chat.sendMessage(holder.getPlayer(), chat.translated("msg.input.wui_command"));
+                    return ButtonInteractionResult.cancel(true);
                 }))
                 .tabComplete((guiHandler, player, args) -> {
                     if (args.length == 1) {
@@ -97,10 +98,10 @@ public class TabEnchants extends ItemCreatorTabVanilla {
                 })
                 .register();
         new ButtonChatInput.Builder<>(creator, KEY + ".remove")
-                .state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
-                    var chat = guiInventory.getWindow().getChat();
-                    chat.sendMessage(player, chat.translated("msg.input.wui_command"));
-                    return true;
+                .state(state -> state.icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
+                    var chat = holder.getGuiHandler().getWindow().getChat();
+                    chat.sendMessage(holder.getPlayer(), chat.translated("msg.input.wui_command"));
+                    return ButtonInteractionResult.cancel(true);
                 }))
                 .tabComplete((guiHandler, player, args) -> {
                     if (args.length > 0) {

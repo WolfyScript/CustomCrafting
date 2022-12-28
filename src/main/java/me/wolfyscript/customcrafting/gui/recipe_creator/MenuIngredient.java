@@ -24,17 +24,20 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
+import com.wolfyscript.utilities.common.gui.ClickType;
+import com.wolfyscript.utilities.common.gui.GUIClickInteractionDetails;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class MenuIngredient extends CCWindow {
@@ -49,24 +52,25 @@ public class MenuIngredient extends CCWindow {
     }
 
     private void registerButtonContainerItemIngredient(int ingredSlot) {
-       getButtonBuilder().itemInput("item_container_" + ingredSlot).state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inv, button, invSlot, event) -> {
-           if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
-               if (!ItemUtils.isAirOrNull(inv.getItem(invSlot))) {
-                   cache.getItems().setVariant(ingredSlot, CustomItem.getReferenceByItemStack(inv.getItem(invSlot)));
+       getButtonBuilder().itemInput("item_container_" + ingredSlot).state(state -> state.icon(Material.AIR).action((holder, cache, btn, slot, details) -> {
+           if (details instanceof GUIClickInteractionDetails clickDetails && clickDetails.isShiftClick() && clickDetails.isRightClick()) {
+               final var inventory = holder.getInventory();
+               if (!ItemUtils.isAirOrNull(inventory.getItem(slot))) {
+                   cache.getItems().setVariant(ingredSlot, CustomItem.getReferenceByItemStack(inventory.getItem(slot)));
                    cache.setApplyItem(APPLY_ITEM);
-                   guiHandler.openWindow(ClusterRecipeCreator.ITEM_EDITOR);
+                   holder.getGuiHandler().openWindow(ClusterRecipeCreator.ITEM_EDITOR);
                }
-               return true;
+               return ButtonInteractionResult.cancel(true);
            }
-           return false;
-       }).postAction((cache, guiHandler, player, guiInventory, button, itemStack, i, event) -> {
-           if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
+           return ButtonInteractionResult.cancel(false);
+       }).postAction((holder, cache, btn, slot, itemStack, details) -> {
+           if (details instanceof GUIClickInteractionDetails clickEvent && clickEvent.getClickType() == ClickType.SHIFT_SECONDARY) {
                return;
            }
            cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(ingredSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
-       }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
+       }).render((holder, cache, btn, slot, itemStack) -> {
            var data = cache.getRecipeCreatorCache().getIngredientCache().getIngredient();
-           return CallbackButtonRender.UpdateResult.of(data != null ? data.getItemStack(ingredSlot) : ItemUtils.AIR);
+           return CallbackButtonRender.Result.of(data != null ? data.getItemStack(ingredSlot) : ItemUtils.AIR);
        })).register();
     }
 
@@ -75,23 +79,23 @@ public class MenuIngredient extends CCWindow {
         for (int i = 0; i < 36; i++) {
             registerButtonContainerItemIngredient(i);
         }
-        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inv, btn, i, event) -> {
+        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((holder, cache, btn, slot, details) -> {
             var creatorCache = cache.getRecipeCreatorCache();
             creatorCache.getRecipeCache().setIngredient(creatorCache.getIngredientCache().getSlot(), creatorCache.getIngredientCache().getIngredient());
-            guiHandler.openPreviousWindow();
-            return true;
+            holder.getGuiHandler().openPreviousWindow();
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action("tags").state(s -> s.key(ClusterRecipeCreator.TAGS).icon(Material.NAME_TAG).action((cache, guiHandler, player, inv, btn, i, event) -> {
+        getButtonBuilder().action("tags").state(s -> s.key(ClusterRecipeCreator.TAGS).icon(Material.NAME_TAG).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getTagSettingsCache().setRecipeItemStack(cache.getRecipeCreatorCache().getIngredientCache().getIngredient());
-            guiHandler.openWindow("tag_settings");
-            return true;
+            holder.getGuiHandler().openWindow("tag_settings");
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().toggle(REPLACE_WITH_REMAINS).stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getIngredientCache().getIngredient().isReplaceWithRemains()).enabledState(state -> state.subKey("enabled").icon(Material.BUCKET).action((cache, guiHandler, player, inv, btn, i, event) -> {
+        getButtonBuilder().toggle(REPLACE_WITH_REMAINS).stateFunction((holder, cache, slot) -> cache.getRecipeCreatorCache().getIngredientCache().getIngredient().isReplaceWithRemains()).enabledState(state -> state.subKey("enabled").icon(Material.BUCKET).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getIngredientCache().getIngredient().setReplaceWithRemains(false);
-            return true;
-        })).disabledState(state -> state.subKey("disabled").icon(Material.BUCKET).action((cache, guiHandler, player, inv, btn, i, event) -> {
+            return ButtonInteractionResult.cancel(true);
+        })).disabledState(state -> state.subKey("disabled").icon(Material.BUCKET).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getIngredientCache().getIngredient().setReplaceWithRemains(true);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

@@ -31,6 +31,7 @@ import com.wolfyscript.utilities.bukkit.compatibility.plugins.itemsadder.ItemsAd
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
@@ -71,60 +72,60 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
         ButtonOption.register(creator.getButtonBuilder(), Material.CRAFTING_TABLE, this);
         creator.getButtonBuilder().dummy("elite_workbench.particles").state(state -> state.icon(Material.FIREWORK_ROCKET)).register();
         creator.getButtonBuilder().multiChoice("elite_workbench.grid_size")
-                .stateFunction((cache, guiHandler, player, guiInventory, i) ->
+                .stateFunction((holder, cache, btn, slot) ->
                         cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(settings -> settings.getGridSize() - 2)
                                 // Get old elite crafting table settings
                                 .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).getGridSize() - 2))
-                .addState(state -> state.subKey("size_2").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+                .addState(state -> state.subKey("size_2").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((holder, cache, btn, slot, details) -> {
                     var items = cache.getItems();
                     changeGridSize(items, 3);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 }))
-                .addState(state -> state.subKey("size_3").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+                .addState(state -> state.subKey("size_3").icon(PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839")).action((holder, cache, btn, slot, details) -> {
                     var items = cache.getItems();
                     changeGridSize(items, 4);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 }))
-                .addState(state -> state.subKey("size_4").icon(PlayerHeadUtils.getViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+                .addState(state -> state.subKey("size_4").icon(PlayerHeadUtils.getViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424")).action((holder, cache, btn, slot, details) -> {
                     var items = cache.getItems();
                     changeGridSize(items, 5);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 }))
                 // Deprecated states
-                .addState(state -> state.subKey("size_5").icon(PlayerHeadUtils.getViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+                .addState(state -> state.subKey("size_5").icon(PlayerHeadUtils.getViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c")).action((holder, cache, btn, slot, details) -> {
                     var items = cache.getItems();
                     changeGridSize(items, 6);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 }))
-                .addState(state -> state.subKey("size_6").icon(PlayerHeadUtils.getViaURL("faff2eb498e5c6a04484f0c9f785b448479ab213df95ec91176a308a12add70")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+                .addState(state -> state.subKey("size_6").icon(PlayerHeadUtils.getViaURL("faff2eb498e5c6a04484f0c9f785b448479ab213df95ec91176a308a12add70")).action((holder, cache, btn, slot, details) -> {
                     var items = cache.getItems();
                     changeGridSize(items, 2);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 })).register();
-        creator.getButtonBuilder().toggle("elite_workbench.toggle").stateFunction((cache, guiHandler, player, guiInventory, i) ->
+        creator.getButtonBuilder().toggle("elite_workbench.toggle").stateFunction((holder, cache, slot) ->
                 cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(EliteCraftingTableSettings::isEnabled)
                         // Get old elite crafting table settings
-                        .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isEnabled())).enabledState(state -> state.subKey("elite_workbench.toggle.enabled").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+                        .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isEnabled())).enabledState(state -> state.subKey("elite_workbench.toggle.enabled").icon(Material.GREEN_CONCRETE).action((holder, cache, btn, slot, details) -> {
                     var items = cache.getItems();
                     setEnable(items, false);
-                    return true;
-                })).disabledState(state -> state.subKey("elite_workbench.toggle.disabled").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+                    return ButtonInteractionResult.cancel(true);
+                })).disabledState(state -> state.subKey("elite_workbench.toggle.disabled").icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
                     var items = cache.getItems();
                     setEnable(items, true);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 })).register();
-        creator.getButtonBuilder().toggle("elite_workbench.advanced_recipes").stateFunction((cache, guiHandler, player, guiInventory, i) ->
+        creator.getButtonBuilder().toggle("elite_workbench.advanced_recipes").stateFunction((holder, cache, slot) ->
                 cache.getItems().getItem().getData(EliteCraftingTableSettings.class).map(EliteCraftingTableSettings::isAdvancedRecipes)
                         // Get old elite crafting table settings
                         .orElse(((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isAdvancedRecipes()))
-                .enabledState(state -> state.subKey("elite_workbench.advanced_recipes.enabled").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+                .enabledState(state -> state.subKey("elite_workbench.advanced_recipes.enabled").icon(Material.GREEN_CONCRETE).action((holder, cache, btn, slot, details) -> {
                     var items = cache.getItems();
                     setAdvancedRecipes(items, false);
-                    return true;
-                })).disabledState(state -> state.subKey("elite_workbench.advanced_recipes.disabled").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+                    return ButtonInteractionResult.cancel(true);
+                })).disabledState(state -> state.subKey("elite_workbench.advanced_recipes.disabled").icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
                     var items = cache.getItems();
                     setAdvancedRecipes(items, true);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 })).register();
     }
 

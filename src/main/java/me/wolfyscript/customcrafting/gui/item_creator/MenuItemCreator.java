@@ -36,6 +36,7 @@ import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
 import com.wolfyscript.utilities.bukkit.world.items.references.WolfyUtilitiesRef;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,32 +106,32 @@ public class MenuItemCreator extends CCWindow {
     @Override
     public void onInit() {
         var btnB = getButtonBuilder();
-        btnB.action(BACK).state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
-            guiHandler.openCluster(cache.getItems().isRecipeItem() ? "recipe_creator" : "none");
-            return true;
+        btnB.action(BACK).state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openCluster(cache.getItems().isRecipeItem() ? "recipe_creator" : "none");
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        btnB.itemInput(ITEM_INPUT).state(s -> s.icon(Material.AIR).postAction((cache, guiHandler, player, guiInventory, btn, stack, slot, event) -> {
+        btnB.itemInput(ITEM_INPUT).state(s -> s.icon(Material.AIR).postAction((holder, cache, btn, slot, itemStack, details) -> {
             var items = cache.getItems();
-            CustomItem reference = CustomItem.getReferenceByItemStack(stack != null ? stack : ItemUtils.AIR);
+            CustomItem reference = CustomItem.getReferenceByItemStack(itemStack != null ? itemStack : ItemUtils.AIR);
             if (ItemUtils.isAirOrNull(reference.getItemStack())) {
-                reference = new CustomItem(stack != null ? stack : ItemUtils.AIR);
+                reference = new CustomItem(holder.getGuiHandler().getWolfyUtils(), itemStack != null ? itemStack : ItemUtils.AIR);
             }
             items.setItem(reference);
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(guiHandler.getCustomCache().getItems().getItem().getItemStack()))).register();
-        btnB.action(SAVE_ITEM).state(s -> s.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        }).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(holder.getGuiHandler().getCustomCache().getItems().getItem().getItemStack()))).register();
+        btnB.action(SAVE_ITEM).state(s -> s.icon(Material.WRITABLE_BOOK).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             if (!ItemUtils.isAirOrNull(items.getItem().getItemStack()) && items.getNamespacedKey() != null) {
-                saveItem(items, player, items.getNamespacedKey());
+                saveItem(items, holder.getPlayer(), items.getNamespacedKey());
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        btnB.action(SAVE_ITEM_AS).state(s -> s.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
+        btnB.action(SAVE_ITEM_AS).state(s -> s.icon(Material.WRITABLE_BOOK).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 List<String[]> namespacedKeys = api.getRegistries().getCustomItems().get(NamespacedKeyUtils.NAMESPACE).stream().map(customItem -> customItem.getNamespacedKey().getKey().split("/")).toList();
                 List<String> namespaces = namespacedKeys.stream().filter(strings -> strings.length > 0).map(strings -> strings[0]).toList();
                 List<String> keys = namespacedKeys.stream().filter(strings -> strings.length > 1).map(strings -> strings[1]).toList();
-                guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
+                holder.getGuiHandler().setChatTabComplete((guiHandler1, player1, args) -> {
                     if (args.length == 2) {
                         return StringUtil.copyPartialMatches(args[1], keys, Lists.newArrayList("<key>"));
                     }
@@ -139,12 +140,12 @@ public class MenuItemCreator extends CCWindow {
                     }
                     return Collections.emptyList();
                 });
-                openChat(guiHandler, translatedMsgKey("save.input.line1"), (guiHandler1, player1, s1, args) -> !saveItem(items, player1, ChatUtils.getNamespacedKey(player1, s1, args)));
-                getChat().sendMessage(player, getChat().translated("msg.input.wui_command"));
+                openChat(holder.getGuiHandler(), translatedMsgKey("save.input.line1"), (guiHandler1, player1, s1, args) -> !saveItem(items, player1, ChatUtils.getNamespacedKey(player1, s1, args)));
+                getChat().sendMessage(holder.getPlayer(), getChat().translated("msg.input.wui_command"));
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        btnB.action(APPLY_ITEM).state(s -> s.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        btnB.action(APPLY_ITEM).state(s -> s.icon(Material.GREEN_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 var customItem = cache.getItems().getItem();
@@ -153,21 +154,21 @@ public class MenuItemCreator extends CCWindow {
                     customItem = api.getRegistries().getCustomItems().get(items.getNamespacedKey());
                 }
                 cache.applyItem(customItem);
-                guiHandler.openCluster("recipe_creator");
+                holder.getGuiHandler().openCluster("recipe_creator");
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        btnB.action(PAGE_NEXT).state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        btnB.action(PAGE_NEXT).state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             items.setPage(items.getPage() + 1);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        btnB.action(PAGE_PREVIOUS).state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        btnB.action(PAGE_PREVIOUS).state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             if (items.getPage() > 0) {
                 items.setPage(items.getPage() - 1);
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
         registerReferences(btnB);
         tabs.clear();
@@ -175,9 +176,9 @@ public class MenuItemCreator extends CCWindow {
     }
 
     private void registerReferences(ButtonBuilder<CCCache> btnB) {
-        btnB.dummy(REFERENCE_WOLFYUTILITIES).state(s -> s.icon(Material.CRAFTING_TABLE).render((cache, guiHandler, player, inv, btn, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((WolfyUtilitiesRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getNamespacedKey().toString())))).register();
-        btnB.dummy(REFERENCE_ORAXEN).state(s -> s.icon(Material.DIAMOND).render((cache, guiHandler, player, inv, btn, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((OraxenRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID())))).register();
-        btnB.dummy(REFERENCE_ITEMSADDER).state(s -> s.icon(Material.GRASS_BLOCK).render((cache, guiHandler, player, inv, btn, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((ItemsAdderRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID())))).register();
+        btnB.dummy(REFERENCE_WOLFYUTILITIES).state(s -> s.icon(Material.CRAFTING_TABLE).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.unparsed("item_key", ((WolfyUtilitiesRef) holder.getGuiHandler().getCustomCache().getItems().getItem().getApiReference()).getNamespacedKey().toString())))).register();
+        btnB.dummy(REFERENCE_ORAXEN).state(s -> s.icon(Material.DIAMOND).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.unparsed("item_key", ((OraxenRef) holder.getGuiHandler().getCustomCache().getItems().getItem().getApiReference()).getItemID())))).register();
+        btnB.dummy(REFERENCE_ITEMSADDER).state(s -> s.icon(Material.GRASS_BLOCK).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.unparsed("item_key", ((ItemsAdderRef) holder.getGuiHandler().getCustomCache().getItems().getItem().getApiReference()).getItemID())))).register();
         btnB.dummy(REFERENCE_MYTHICMOBS).state(s -> s.icon(Material.WITHER_SKELETON_SKULL)).register();
     }
 

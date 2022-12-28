@@ -26,6 +26,8 @@ import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
+import com.wolfyscript.utilities.common.gui.GUIClickInteractionDetails;
 import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
@@ -42,11 +44,11 @@ public class OverviewFilters extends Overview {
     @Override
     public void onInit() {
         super.onInit();
-        getButtonBuilder().action(ADD).state(state->state.icon(PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777")).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
+        getButtonBuilder().action(ADD).state(state->state.icon(PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777")).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeBookEditor().setFilter(new CategoryFilter());
             cache.getRecipeBookEditor().setCategoryID("");
-            guiHandler.openWindow("filter");
-            return true;
+            holder.getGuiHandler().openWindow("filter");
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 
@@ -64,24 +66,24 @@ public class OverviewFilters extends Overview {
             getButtonBuilder()
                     .action(id)
                     .state(state -> state.icon(Material.AIR)
-                            .render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(filter.createItemStack(customCrafting)))
-                            .action((cache, guiHandler, player, guiInventory, btn, i1, event) -> {
-                                if (event instanceof InventoryClickEvent clickEvent) {
-                                    var recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
+                            .render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(filter.createItemStack(customCrafting)))
+                            .action((holder, cache, btn, slot, details) -> {
+                                if (details instanceof GUIClickInteractionDetails clickEvent) {
+                                    var recipeBookEditor = holder.getGuiHandler().getCustomCache().getRecipeBookEditor();
                                     var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
                                     if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
                                         //Delete Filter
                                         recipeBook.removeFilter(filter.getId());
-                                        return true;
+                                        return ButtonInteractionResult.cancel(true);
                                     } else if (clickEvent.isLeftClick()) {
                                         //Edit Category
                                         recipeBookEditor.setCategoryID(filter.getId());
                                         recipeBookEditor.setFilter(new CategoryFilter(filter));
-                                        guiHandler.openWindow("filter");
-                                        return true;
+                                        holder.getGuiHandler().openWindow("filter");
+                                        return ButtonInteractionResult.cancel(true);
                                     }
                                 }
-                                return true;
+                                return ButtonInteractionResult.cancel(true);
                             })
                     )
                     .register();

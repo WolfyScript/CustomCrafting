@@ -26,6 +26,7 @@ import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
@@ -51,11 +52,11 @@ public class EliteCraftingCluster extends CCCluster {
         registerGuiWindow(new CraftingWindow6(this, customCrafting));
         setEntry(new BukkitNamespacedKey(KEY, "crafting_3"));
 
-        getButtonBuilder().action(RECIPE_BOOK.getKey()).state(state -> state.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
-            ButtonContainerIngredient.resetButtons(guiHandler);
+        getButtonBuilder().action(RECIPE_BOOK.getKey()).state(state -> state.icon(Material.KNOWLEDGE_BOOK).action((holder, cache, btn, slot, details) -> {
+            ButtonContainerIngredient.resetButtons(holder.getGuiHandler());
             cache.getRecipeBookCache().setEliteCraftingTable(cache.getEliteWorkbench());
-            PlayerUtil.openRecipeBook(player);
-            return true;
+            PlayerUtil.openRecipeBook(holder.getPlayer());
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 }

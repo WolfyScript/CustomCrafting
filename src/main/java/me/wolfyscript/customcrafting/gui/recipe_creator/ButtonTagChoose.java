@@ -26,7 +26,9 @@ import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -40,15 +42,15 @@ class ButtonTagChoose {
     }
 
     static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, Tag<Material> tag) {
-        buttonBuilder.action(key(tag)).state(state -> state.key("tag").icon(Material.NAME_TAG).action((cache, guiHandler, player, guiInventory, btn, slot, event) -> {
+        buttonBuilder.action(key(tag)).state(state -> state.key("tag").icon(Material.NAME_TAG).action((holder, cache, btn, slot, details) -> {
             var recipeItemStack = cache.getRecipeCreatorCache().getTagSettingsCache().getRecipeItemStack();
             if (recipeItemStack != null) {
                 recipeItemStack.getTags().add(BukkitNamespacedKey.fromBukkit(tag.getKey()));
             }
-            guiHandler.openPreviousWindow();
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
-            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("namespaced_key", BukkitNamespacedKey.fromBukkit(tag.getKey()).toString()));
+            holder.getGuiHandler().openPreviousWindow();
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> {
+            return CallbackButtonRender.Result.of(Placeholder.parsed("namespaced_key", BukkitNamespacedKey.fromBukkit(tag.getKey()).toString()));
         })).register();
     }
 }

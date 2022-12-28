@@ -27,6 +27,7 @@ import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
@@ -49,7 +50,7 @@ public class TabPotion extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.POTION, this);
-        creator.getButtonBuilder().action("potion.add").state(state -> state.icon(PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().action("potion.add").state(state -> state.icon(PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777")).action((holder, cache, btn, slot, details) -> {
             cache.getPotionEffectCache().setApplyPotionEffect((potionEffectCache1, cache1, potionEffect) -> {
                 var itemMeta = cache.getItems().getItem().getItemMeta();
                 if (itemMeta instanceof PotionMeta) {
@@ -58,10 +59,10 @@ public class TabPotion extends ItemCreatorTabVanilla {
                 cache.getItems().getItem().setItemMeta(itemMeta);
             });
             cache.getPotionEffectCache().setRecipePotionEffect(false);
-            guiHandler.openWindow(ClusterPotionCreator.POTION_CREATOR);
-            return true;
+            holder.getGuiHandler().openWindow(ClusterPotionCreator.POTION_CREATOR);
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        creator.getButtonBuilder().action("potion.remove").state(state -> state.icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().action("potion.remove").state(state -> state.icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, type) -> {
                 var itemMeta = cache.getItems().getItem().getItemMeta();
@@ -71,8 +72,8 @@ public class TabPotion extends ItemCreatorTabVanilla {
                 cache.getItems().getItem().setItemMeta(itemMeta);
             });
             potionEffectCache.setOpenedFrom("item_creator", "main_menu");
-            guiHandler.openWindow(ClusterPotionCreator.POTION_EFFECT_TYPE_SELECTION);
-            return true;
+            holder.getGuiHandler().openWindow(ClusterPotionCreator.POTION_EFFECT_TYPE_SELECTION);
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

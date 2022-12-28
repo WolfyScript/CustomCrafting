@@ -25,6 +25,8 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
+import com.wolfyscript.utilities.common.gui.GUIClickInteractionDetails;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,9 +60,9 @@ public class ButtonRecipeListWorkstationFilter {
     }
 
     static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder) {
-        buttonBuilder.action(KEY).state(state -> state.icon(Material.COMPASS).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
+        buttonBuilder.action(KEY).state(state -> state.icon(Material.COMPASS).action((holder, cache, btn, slot, details) -> {
             var currentType = cache.getRecipeList().getFilterType();
-            if (event instanceof InventoryClickEvent clickEvent) {
+            if (details instanceof GUIClickInteractionDetails clickEvent) {
                 var nextIndex = FILTER_KEYS.indexOf(currentType);
                 if (clickEvent.isLeftClick()) {
                     if (++nextIndex >= FILTER_KEYS.size()) {
@@ -71,11 +73,11 @@ public class ButtonRecipeListWorkstationFilter {
                 }
                 cache.getRecipeList().setFilterType(FILTER_KEYS.get(nextIndex));
             }
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> {
             RecipeType<?> type = cache.getRecipeList().getFilterType();
             itemStack.setType(FILTERS.get(type).getType());
-            return CallbackButtonRender.UpdateResult.of(itemStack, Placeholder.parsed("type", type != null ? type.getType().toString().replace("CRAFTING", "").replace("_CRAFTING", "").replace("_", " ") : "ALL"));
+            return CallbackButtonRender.Result.of(itemStack, Placeholder.parsed("type", type != null ? type.getType().toString().replace("CRAFTING", "").replace("_CRAFTING", "").replace("_", " ") : "ALL"));
         })).register();
     }
 

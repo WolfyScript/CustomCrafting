@@ -23,12 +23,14 @@
 package me.wolfyscript.customcrafting.gui.cauldron;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.gui.GUIHolder;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
-import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.Map;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -72,12 +74,13 @@ public class CauldronWorkstationMenu extends CCWindow {
         for (int i = 0; i < INGREDIENT_AMOUNT; i++) {
             int recipeSlot = i;
             getButtonBuilder().itemInput("crafting.slot_" + i).state(state -> state.icon(Material.AIR)
-                    .action((cache, guiHandler, player, guiInventory, btn, i1, event) -> false)
-                    .postAction((cache, guiHandler, player, guiInventory, btn, itemStack, i1, event) -> {
+                    .action((holder, cache, btn, slot, details) -> ButtonInteractionResult.cancel(false))
+                    .postAction((holder, cache, btn, slot, itemStack, details) -> {
                         CacheCauldronWorkstation cacheCauldron = cache.getCauldronWorkstation();
                         cacheCauldron.setPreCookEvent(null);
                         cacheCauldron.getInput().set(recipeSlot, itemStack);
                         cacheCauldron.getBlock().flatMap(block -> cacheCauldron.getBlockData().flatMap(CauldronBlockData::getCauldronStatus)).ifPresent(status -> {
+                            final var player = holder.getPlayer();
                             for (CustomRecipeCauldron recipeCauldron : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.CAULDRON, player)) {
                                 if (recipeCauldron.checkRecipe(cacheCauldron.getInput(), status)) {
                                     CauldronPreCookEvent preCookEvent = new CauldronPreCookEvent(customCrafting, recipeCauldron, player, status.getBlock());
@@ -90,31 +93,32 @@ public class CauldronWorkstationMenu extends CCWindow {
                                 }
                             }
                         });
-                    }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i1) -> {
+                    }).render((holder, cache, btn, slot, itemStack) -> {
                         CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
                         ItemStack stack = cauldronWorkstation.getInput().get(recipeSlot);
                         if (!ItemUtils.isAirOrNull(stack)) {
-                            return CallbackButtonRender.UpdateResult.of(stack);
+                            return CallbackButtonRender.Result.of(stack);
                         }
-                        return CallbackButtonRender.UpdateResult.of(new ItemStack(Material.AIR));
+                        return CallbackButtonRender.Result.of(new ItemStack(Material.AIR));
                     })).register();
         }
         for (int resultSlot = 0; resultSlot < 4; resultSlot++) {
             int finalResultSlot = resultSlot;
             getButtonBuilder().itemInput("result_" + resultSlot).state(state -> state.icon(Material.AIR)
-                    .action((cache, guiHandler, player, inventory, btn, slot, event) -> false)
-                    .postAction((cache, guiHandler, player, inventory, btn, itemStack, i, event) -> {
+                    .action((holder, cache, btn, slot, details) -> ButtonInteractionResult.cancel(false))
+                    .postAction((holder, cache, btn, slot, itemStack, details) -> {
                         cache.getCauldronWorkstation().getBlockData().ifPresent(cauldronBlockData -> cauldronBlockData.getResult()[finalResultSlot] = itemStack);
                     })
-                    .render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
+                    .render((holder, cache, btn, slot, itemStack) -> {
                         ItemStack result = cache.getCauldronWorkstation().getBlockData().map(cauldronBlockData -> cauldronBlockData.getResult()[finalResultSlot]).orElse(ItemUtils.AIR);
-                        return CallbackButtonRender.UpdateResult.of(result);
+                        return CallbackButtonRender.Result.of(result);
                     })).register();
         }
         getButtonBuilder().toggle("start")
-                .enabledState(state -> state.subKey("enabled").icon(Material.LIME_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
+                .enabledState(state -> state.subKey("enabled").icon(Material.LIME_CONCRETE).action((holder, cache, btn, slot, details) -> {
                     CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
                     cauldronWorkstation.getBlockData().ifPresent(cauldronBlockData -> {
+                        final var player = holder.getPlayer();
                         if (cauldronBlockData.isResultEmpty()) {
                             cauldronBlockData.initNewRecipe(cauldronWorkstation);
                             cauldronWorkstation.setPreCookEvent(null);
@@ -133,14 +137,14 @@ public class CauldronWorkstationMenu extends CCWindow {
                                         player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.6f, 1f);
                                     }
                                 });
-                                guiHandler.close();
+                                holder.getGuiHandler().close();
                             }
                         }
                     });
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 }))
-                .disabledState(state -> state.subKey("disabled").icon(Material.GRAY_CONCRETE).action((cache, guiHandler, player, guiInventory, btn, i, event) -> true))
-                .defaultState(false).stateFunction((cache, guiHandler, player, guiInventory, i) -> {
+                .disabledState(state -> state.subKey("disabled").icon(Material.GRAY_CONCRETE).action((holder, cache, btn, slot, details) -> ButtonInteractionResult.cancel(true)))
+                .defaultState(false).stateFunction((holder, cache, slot) -> {
                     CacheCauldronWorkstation cauldronWorkstation = cache.getCauldronWorkstation();
                     return cauldronWorkstation.getBlockData().map(CauldronBlockData::isResultEmpty).orElse(true) && cauldronWorkstation.getPreCookEvent().isPresent();
                 }).register();
@@ -149,23 +153,21 @@ public class CauldronWorkstationMenu extends CCWindow {
         getButtonBuilder().dummy("signal_fire").state(s -> s.icon(Material.HAY_BLOCK)).register();
 
         getButtonBuilder().dummy(INDICATOR_LAVA).state(s -> s.icon(Material.ORANGE_STAINED_GLASS_PANE)
-                .render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
+                .render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
         getButtonBuilder().dummy(INDICATOR_WATER).state(s -> s.icon(Material.BLUE_STAINED_GLASS_PANE)
-                .render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
+                .render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
     }
 
     @Override
-    public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
-        CacheCauldronWorkstation cacheCauldronWorkstation = guiHandler.getCustomCache().getCauldronWorkstation();
+    public Component onUpdateTitle(GUIHolder<CCCache> holder) {
+        CacheCauldronWorkstation cacheCauldronWorkstation = holder.getGuiHandler().getCustomCache().getCauldronWorkstation();
         Optional<CauldronBlockData> optionalCauldronBlockData = cacheCauldronWorkstation.getBlockData();
-        String menu = "main_menu";
-        if (optionalCauldronBlockData.isPresent() && !optionalCauldronBlockData.get().isResultEmpty()) {
-            menu = "result_menu";
-        }
-        String title = customCrafting.getConfigHandler().getConfig().getString("workstation.cauldron.gui." + menu + ".title", "<translate:inventories.cauldron.cauldron.default_title>");
+        final Player player = holder.getPlayer();
+        final String menu = optionalCauldronBlockData.isPresent() && !optionalCauldronBlockData.get().isResultEmpty() ? "result_menu" : "main_menu";
+        final String title = customCrafting.getConfigHandler().getConfig().getString("workstation.cauldron.gui." + menu + ".title", "<translate:inventories.cauldron.cauldron.default_title>");
         final TagResolver papiResolver = TagResolverUtil.papi(player);
         final TagResolver langResolver = TagResolver.resolver("translate", (args, context) -> Tag.selfClosingInserting(getChat().translated(args.popOr("The <translate> tag requires exactly one argument! The path to the language entry!").value(), papiResolver)));
-        TagResolver recipeTypeTitle = Placeholder.component("title", getChat().getMiniMessage().deserialize(title, papiResolver, langResolver));
+        final TagResolver recipeTypeTitle = Placeholder.component("title", getChat().getMiniMessage().deserialize(title, papiResolver, langResolver));
         return wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", recipeTypeTitle, TagResolverUtil.papi(player));
     }
 
@@ -233,10 +235,10 @@ public class CauldronWorkstationMenu extends CCWindow {
     }
 
     @Override
-    public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
-        Player player = guiHandler.getPlayer();
+    public boolean onClose(GUIHolder<CCCache> holder) {
+        Player player = holder.getPlayer();
         World world = player.getWorld();
-        CCCache cache = guiHandler.getCustomCache();
+        CCCache cache = holder.getGuiHandler().getCustomCache();
 
         //Reset cache
         CacheCauldronWorkstation cacheCauldronWorkstation = cache.getCauldronWorkstation();

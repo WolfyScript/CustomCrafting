@@ -57,25 +57,25 @@ public class ClusterRecipeView extends CCCluster {
 
         var btnB = getButtonBuilder();
         //We change the behaviour of the buttons without a new language entry. Instead, it uses the lang keys from the recipe book cluster.
-        btnB.dummy(ClusterRecipeBook.COOKING_ICON.getKey()).state(s -> s.key(ClusterRecipeBook.COOKING_ICON).icon(Material.FURNACE).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> cache.getCacheRecipeView().getRecipe().map(customRecipe -> {
+        btnB.dummy(ClusterRecipeBook.COOKING_ICON.getKey()).state(s -> s.key(ClusterRecipeBook.COOKING_ICON).icon(Material.FURNACE).render((holder, cache, btn, slot, itemStack) -> cache.getCacheRecipeView().getRecipe().map(customRecipe -> {
             RecipeType<?> recipeType = customRecipe.getRecipeType();
             itemStack.setType(Material.matchMaterial(recipeType.name()));
             TagResolver typePlaceholder = Placeholder.unparsed("type", StringUtils.capitalize(recipeType.getId().replace("_", " ")));
             if (customRecipe instanceof CustomRecipeCooking<?, ?> cookingRecipe) {
-                return CallbackButtonRender.UpdateResult.of(TagResolver.resolver(typePlaceholder, Placeholder.unparsed("time", String.valueOf(cookingRecipe.getCookingTime())), Placeholder.unparsed("xp", String.valueOf(cookingRecipe.getExp()))));
+                return CallbackButtonRender.Result.of(TagResolver.resolver(typePlaceholder, Placeholder.unparsed("time", String.valueOf(cookingRecipe.getCookingTime())), Placeholder.unparsed("xp", String.valueOf(cookingRecipe.getExp()))));
             }
-            return CallbackButtonRender.UpdateResult.of(typePlaceholder);
-        }).orElseGet(CallbackButtonRender.UpdateResult::of))).register();
-        btnB.dummy("anvil.durability").state(s -> s.key(new BukkitNamespacedKey(ClusterRecipeBook.KEY, "cooking.icon")).icon(Material.ANVIL).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("var", String.valueOf(((CustomRecipeAnvil) guiHandler.getCustomCache().getRecipeBookCache().getCurrentRecipe()).getDurability()))))).register();
-        btnB.dummy("cauldron.water.enabled").state(s -> s.key(new BukkitNamespacedKey(ClusterRecipeBook.KEY, "cauldron.water.enabled")).icon(PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6")).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> guiHandler.getCustomCache().getCacheRecipeView().getRecipe().map(customRecipe -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("lvl", String.valueOf(((CustomRecipeCauldron) customRecipe).getFluidLevel())))).orElseGet(CallbackButtonRender.UpdateResult::of))).register();
-        btnB.dummy("brewing.icon").state(s -> s.key(new BukkitNamespacedKey(ClusterRecipeBook.KEY, "cooking.icon")).icon(Material.BREWING_STAND).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> guiHandler.getCustomCache().getCacheRecipeView().getRecipe().map(customRecipe -> {
+            return CallbackButtonRender.Result.of(typePlaceholder);
+        }).orElseGet(CallbackButtonRender.Result::of))).register();
+        btnB.dummy("anvil.durability").state(s -> s.key(new BukkitNamespacedKey(ClusterRecipeBook.KEY, "cooking.icon")).icon(Material.ANVIL).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.unparsed("var", String.valueOf(((CustomRecipeAnvil) holder.getGuiHandler().getCustomCache().getRecipeBookCache().getCurrentRecipe()).getDurability()))))).register();
+        btnB.dummy("cauldron.water.enabled").state(s -> s.key(new BukkitNamespacedKey(ClusterRecipeBook.KEY, "cauldron.water.enabled")).icon(PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6")).render((holder, cache, btn, slot, itemStack) -> holder.getGuiHandler().getCustomCache().getCacheRecipeView().getRecipe().map(customRecipe -> CallbackButtonRender.Result.of(Placeholder.unparsed("lvl", String.valueOf(((CustomRecipeCauldron) customRecipe).getFluidLevel())))).orElseGet(CallbackButtonRender.Result::of))).register();
+        btnB.dummy("brewing.icon").state(s -> s.key(new BukkitNamespacedKey(ClusterRecipeBook.KEY, "cooking.icon")).icon(Material.BREWING_STAND).render((holder, cache, btn, slot, itemStack) -> holder.getGuiHandler().getCustomCache().getCacheRecipeView().getRecipe().map(customRecipe -> {
             if (customRecipe instanceof CustomRecipeBrewing recipeBrewing) {
-                return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(recipeBrewing.getBrewTime())));
+                return CallbackButtonRender.Result.of(Placeholder.unparsed("time", String.valueOf(recipeBrewing.getBrewTime())));
             }
             return null;
-        }).orElseGet(CallbackButtonRender.UpdateResult::of))).register();
-        btnB.dummy("brewing.potion_duration").state(s -> s.key(new BukkitNamespacedKey(ClusterRecipeBook.KEY, "brewing.potion_duration")).icon(Material.CLOCK).render((cache, guiHandler, player, inv, btn, stack, i) -> guiHandler.getCustomCache().getCacheRecipeView().getRecipe().map(customRecipe -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("value", String.valueOf(((CustomRecipeBrewing) customRecipe).getDurationChange())))).orElseGet(CallbackButtonRender.UpdateResult::of))).register();
-        btnB.dummy("brewing.potion_amplifier").state(s -> s.key(new BukkitNamespacedKey(ClusterRecipeBook.KEY, "brewing.potion_amplifier")).icon(Material.IRON_SWORD).render((cache, guiHandler, player, inv, btn, stack, i) -> guiHandler.getCustomCache().getCacheRecipeView().getRecipe().map(customRecipe -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("value", String.valueOf(((CustomRecipeBrewing) customRecipe).getAmplifierChange())))).orElseGet(CallbackButtonRender.UpdateResult::of))).register();
+        }).orElseGet(CallbackButtonRender.Result::of))).register();
+        btnB.dummy("brewing.potion_duration").state(s -> s.key(new BukkitNamespacedKey(ClusterRecipeBook.KEY, "brewing.potion_duration")).icon(Material.CLOCK).render((holder, cache, btn, slot, itemStack) -> holder.getGuiHandler().getCustomCache().getCacheRecipeView().getRecipe().map(customRecipe -> CallbackButtonRender.Result.of(Placeholder.unparsed("value", String.valueOf(((CustomRecipeBrewing) customRecipe).getDurationChange())))).orElseGet(CallbackButtonRender.Result::of))).register();
+        btnB.dummy("brewing.potion_amplifier").state(s -> s.key(new BukkitNamespacedKey(ClusterRecipeBook.KEY, "brewing.potion_amplifier")).icon(Material.IRON_SWORD).render((holder, cache, btn, slot, itemStack) -> holder.getGuiHandler().getCustomCache().getCacheRecipeView().getRecipe().map(customRecipe -> CallbackButtonRender.Result.of(Placeholder.unparsed("value", String.valueOf(((CustomRecipeBrewing) customRecipe).getAmplifierChange())))).orElseGet(CallbackButtonRender.Result::of))).register();
         for (int i = 0; i < 37; i++) {
             registerButton(new ButtonContainerIngredient(customCrafting, i));
         }

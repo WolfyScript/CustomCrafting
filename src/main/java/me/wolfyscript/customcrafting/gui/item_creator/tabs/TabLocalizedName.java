@@ -28,8 +28,10 @@ import com.wolfyscript.utilities.bukkit.chat.ChatColor;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
@@ -50,19 +52,19 @@ public class TabLocalizedName extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.NAME_TAG, this);
-        creator.getButtonBuilder().chatInput("localized_name.set").state(state -> state.icon(Material.NAME_TAG).render((cache, guiHandler, player, inventory, btn, itemStack, i) -> {
-            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("var", guiHandler.getCustomCache().getItems().getItem().getItemMeta().getLocalizedName()));
+        creator.getButtonBuilder().chatInput("localized_name.set").state(state -> state.icon(Material.NAME_TAG).render((holder, cache, button, slot, itemStack) -> {
+            return CallbackButtonRender.Result.of(Placeholder.parsed("var", cache.getItems().getItem().getItemMeta().getLocalizedName()));
         })).inputAction((guiHandler, player, s, strings) -> {
             var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             itemMeta.setLocalizedName(ChatColor.convert(s));
             guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
             return false;
         }).register();
-        creator.getButtonBuilder().action("localized_name.remove").state(state -> state.icon(Material.NAME_TAG).action((cache, guiHandler, player, inventory, btn, i, inventoryClickEvent) -> {
-            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+        creator.getButtonBuilder().action("localized_name.remove").state(state -> state.icon(Material.NAME_TAG).action((holder, cache, btn, slot, details) -> {
+            var itemMeta = holder.getGuiHandler().getCustomCache().getItems().getItem().getItemMeta();
             itemMeta.setLocalizedName(null);
-            guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
-            return true;
+            holder.getGuiHandler().getCustomCache().getItems().getItem().setItemMeta(itemMeta);
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

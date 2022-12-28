@@ -24,6 +24,8 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import org.bukkit.Material;
@@ -45,26 +47,26 @@ public class RecipeCreatorSmithing extends RecipeCreator {
         ButtonRecipeIngredient.register(getButtonBuilder(), 0);
         ButtonRecipeIngredient.register(getButtonBuilder(), 1);
         ButtonRecipeResult.register(getButtonBuilder());
-        btnB.toggle(CHANGE_MATERIAL).enabledState(s -> s.subKey("enabled").icon(Material.PAPER).action((cache, handler, player, inv, btn, i, e) -> {
+        btnB.toggle(CHANGE_MATERIAL).enabledState(s -> s.subKey("enabled").icon(Material.PAPER).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(false);
-            return true;
-        })).disabledState(s -> s.subKey("disabled").icon(Material.WRITABLE_BOOK).action((cache, handler, player, inv, btn, i, e) -> {
+            return ButtonInteractionResult.cancel(true);
+        })).disabledState(s -> s.subKey("disabled").icon(Material.WRITABLE_BOOK).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(true);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        btnB.toggle(PRESERVE_ENCHANTS).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveEnchants()).enabledState(s -> s.subKey("enabled").icon(Material.ENCHANTED_BOOK).action((cache, handler, player, inv, btn, i, e) -> {
+        btnB.toggle(PRESERVE_ENCHANTS).stateFunction((holder, cache, slot) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveEnchants()).enabledState(s -> s.subKey("enabled").icon(Material.ENCHANTED_BOOK).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(false);
-            return true;
-        })).disabledState(s -> s.subKey("disabled").icon(Material.BOOK).action((cache, handler, player, inv, btn, i, e) -> {
+            return ButtonInteractionResult.cancel(true);
+        })).disabledState(s -> s.subKey("disabled").icon(Material.BOOK).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(true);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        btnB.toggle(PRESERVE_DAMAGE).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveDamage()).enabledState(s -> s.subKey("enabled").icon(Material.LIME_CONCRETE).action((cache, handler, player, inv, btn, i, e) -> {
+        btnB.toggle(PRESERVE_DAMAGE).stateFunction((holder, cache, slot) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveDamage()).enabledState(s -> s.subKey("enabled").icon(Material.LIME_CONCRETE).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(false);
-            return true;
-        })).disabledState(s -> s.subKey("disabled").icon(Material.RED_CONCRETE).action((cache, handler, player, inv, btn, i, e) -> {
+            return ButtonInteractionResult.cancel(true);
+        })).disabledState(s -> s.subKey("disabled").icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(true);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

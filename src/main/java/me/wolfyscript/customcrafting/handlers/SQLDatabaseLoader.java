@@ -54,7 +54,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     private final SQLDataBase dataBase;
 
     public SQLDatabaseLoader(CustomCrafting customCrafting) {
-        super(customCrafting, new BukkitNamespacedKey(customCrafting, "database_loader"));
+        super(customCrafting, new BukkitNamespacedKey(customCrafting.getApi(), "database_loader"));
         DatabaseSettings settings = config.getDatabaseSettings();
         this.dataBase = new SQLDataBase(api, settings.getHost(), settings.getSchema(), settings.getUsername(), settings.getPassword(), settings.getPort());
         init();
@@ -150,7 +150,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
             while (resultSet.next()) {
                 String namespace = resultSet.getString("rNamespace");
                 String key = resultSet.getString("rKey");
-                NamespacedKey namespacedKey = new BukkitNamespacedKey(customCrafting, namespace + "/" + key);
+                NamespacedKey namespacedKey = new BukkitNamespacedKey(customCrafting.getApi(), namespace + "/" + key);
                 if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     CustomRecipe<?> recipe = getRecipe(namespacedKey);
                     if (recipe != null) {
@@ -181,10 +181,10 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                 String key = resultSet.getString("rKey");
                 String data = resultSet.getString("rData");
                 if (namespace != null && key != null && data != null && !data.equals("{}")) {
-                    NamespacedKey namespacedKey = new BukkitNamespacedKey(customCrafting, namespace + "/" + key);
+                    NamespacedKey namespacedKey = new BukkitNamespacedKey(customCrafting.getApi(), namespace + "/" + key);
                     if (isReplaceData() || !api.getRegistries().getCustomItems().has(namespacedKey)) {
                         try {
-                            api.getRegistries().getCustomItems().register(new BukkitNamespacedKey(customCrafting, namespace + "/" + key), customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readValue(data, CustomItem.class));
+                            api.getRegistries().getCustomItems().register(new BukkitNamespacedKey(customCrafting.getApi(), namespace + "/" + key), customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readValue(data, CustomItem.class));
                         } catch (JsonProcessingException e) {
                             api.getConsole().info(PREFIX + "Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
                         }

@@ -92,7 +92,7 @@ public class CraftDelayCondition extends Condition<CraftDelayCondition> {
             super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), getLangKey(KEY.getKey(), "description"),
                     (menu, api) -> {
                         menu.getButtonBuilder().chatInput("conditions.craft_delay.set")
-                                .state(state -> state.icon(Material.CLOCK).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftDelayCondition.class).getDelay())))))
+                                .state(state -> state.icon(Material.CLOCK).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.unparsed("value", String.valueOf(cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftDelayCondition.class).getDelay())))))
                                 .inputAction((guiHandler, player, s, strings) -> {
                                     var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
                                     try {

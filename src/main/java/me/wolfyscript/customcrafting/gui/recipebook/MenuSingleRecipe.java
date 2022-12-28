@@ -24,10 +24,10 @@ package me.wolfyscript.customcrafting.gui.recipebook;
 
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.gui.GUIHolder;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
-import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -57,20 +57,20 @@ public class MenuSingleRecipe extends CCWindow {
 
     }
     @Override
-    public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
-        Optional<CustomRecipe<?>> recipeOptional = guiHandler.getCustomCache().getCacheRecipeView().getRecipe();
+    public Component onUpdateTitle(GUIHolder<CCCache> holder) {
+        Optional<CustomRecipe<?>> recipeOptional = holder.getGuiHandler().getCustomCache().getCacheRecipeView().getRecipe();
         if (recipeOptional.isPresent()) {
             CustomRecipe<?> customRecipe = recipeOptional.get();
-            final TagResolver papiResolver = TagResolverUtil.papi(player);
+            final TagResolver papiResolver = TagResolverUtil.papi(holder.getPlayer());
             final TagResolver langResolver = TagResolver.resolver("translate", (args, context) -> {
                 String text = args.popOr("The <translate> tag requires exactly one argument! The path to the language entry!").value();
                 return Tag.selfClosingInserting(getChat().translated(text, papiResolver));
             });
             String text = customCrafting.getConfigHandler().getConfig().getRecipeBookTypeName(customRecipe.getRecipeType());
             TagResolver recipeTypeTitle = Placeholder.component("recipe_type_title", getChat().getMiniMessage().deserialize(text, papiResolver, langResolver));
-            return wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", recipeTypeTitle, TagResolverUtil.papi(player));
+            return wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", recipeTypeTitle, TagResolverUtil.papi(holder.getPlayer()));
         }
-        return super.onUpdateTitle(player, inventory, guiHandler);
+        return super.onUpdateTitle(holder);
     }
 
     @Override
@@ -95,10 +95,10 @@ public class MenuSingleRecipe extends CCWindow {
     }
 
     @Override
-    public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
-        ButtonContainerIngredient.removeTasks(guiHandler, ClusterRecipeView.KEY);
-        guiHandler.getCustomCache().getCacheRecipeView().setRecipe(null);
-        guiHandler.getHistory(getCluster()).remove(0);
-        return super.onClose(guiHandler, guiInventory, transaction);
+    public boolean onClose(GUIHolder<CCCache> holder) {
+        ButtonContainerIngredient.removeTasks(holder.getGuiHandler(), ClusterRecipeView.KEY);
+        holder.getGuiHandler().getCustomCache().getCacheRecipeView().setRecipe(null);
+        holder.getGuiHandler().getHistory(getCluster()).remove(0);
+        return super.onClose(holder);
     }
 }

@@ -50,10 +50,10 @@ public class CCRegistries {
         this.recipes = new RegistryRecipes(customCrafting, registries);
         this.itemCreatorTabs = new RegistryItemCreatorTabs(customCrafting, registries);
         this.recipeConditions = new TypeRegistryRecipeConditions(customCrafting, registries);
-        this.recipeMergeAdapters = new TypeRegistrySimple<>(new BukkitNamespacedKey(customCrafting, "recipe/merge_adapters"), registries);
-        this.recipeResultExtensions = new TypeRegistrySimple<>(new BukkitNamespacedKey(customCrafting, "recipe/result_extensions"), registries);
-        this.recipeTypes = new RegistrySimple<>(new BukkitNamespacedKey(customCrafting, "recipe/types"), registries, (Class<RecipeType<?>>) (Object) RecipeType.class);
-        this.anvilRecipeRepairTasks = new TypeRegistrySimple<>(new BukkitNamespacedKey(customCrafting, "recipe/anvil/repair_tasks"), registries);
+        this.recipeMergeAdapters = new TypeRegistrySimple<>(new BukkitNamespacedKey(customCrafting.getApi(), "recipe/merge_adapters"), registries);
+        this.recipeResultExtensions = new TypeRegistrySimple<>(new BukkitNamespacedKey(customCrafting.getApi(), "recipe/result_extensions"), registries);
+        this.recipeTypes = new RegistrySimple<>(new BukkitNamespacedKey(customCrafting.getApi(), "recipe/types"), registries, (Class<RecipeType<?>>) (Object) RecipeType.class);
+        this.anvilRecipeRepairTasks = new TypeRegistrySimple<>(new BukkitNamespacedKey(customCrafting.getApi(), "recipe/anvil/repair_tasks"), registries);
     }
 
     public TypeRegistryRecipeConditions getRecipeConditions() {

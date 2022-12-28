@@ -307,7 +307,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     @JsonIgnore
     @Deprecated
     public CustomItem getHandItem() {
-        return new CustomItem(Material.AIR);
+        return new CustomItem(customCrafting.getApi(), Material.AIR);
     }
 
     @JsonIgnore

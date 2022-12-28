@@ -25,7 +25,9 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -50,33 +52,33 @@ public class MenuListRecipes extends CCWindow {
     @Override
     public void onInit() {
         getButtonBuilder().action("back").state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"))
-                .action((cache, guiHandler, player, guiInventory, btn, slot, inventoryInteractEvent) -> {
+                .action((holder, cache, btn, slot, details) -> {
                     cache.getRecipeList().setPage(0);
                     for (int i = 0; i < 45; i++) {
                         cache.getRecipeList().setCustomRecipeForButtonInSlot(slot, null);
                         cache.getRecipeList().setRecipeForButtonInSlot(slot, null);
                     }
                     if (cache.getRecipeList().getNamespace() == null) {
-                        guiHandler.openPreviousWindow();
-                        return true;
+                        holder.getGuiHandler().openPreviousWindow();
+                        return ButtonInteractionResult.cancel(true);
                     }
                     if (cache.getRecipeList().getFolder() == null) {
                         cache.getRecipeList().setNamespace(null);
                     } else {
                         cache.getRecipeList().setFolder(null);
                     }
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 })).register();
-        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, guiInv, btn, i, event) -> {
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeList().setPage(cache.getRecipeList().getPage() + 1);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, guiInv, btn, i, event) -> {
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((holder, cache, btn, slot, details) -> {
             int page = cache.getRecipeList().getPage();
             if (page > 0) {
                 cache.getRecipeList().setPage(--page);
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
         ButtonRecipeListWorkstationFilter.register(getButtonBuilder());
         for (int i = 0; i < 45; i++) {

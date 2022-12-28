@@ -29,6 +29,8 @@ import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.item_builder.ItemBuilder;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
+import com.wolfyscript.utilities.common.gui.GUIClickInteractionDetails;
 import java.util.HashMap;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -64,12 +66,13 @@ class ButtonContainerRecipeList {
     }
 
     static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, int slot, CustomCrafting customCrafting) {
-        buttonBuilder.action(key(slot)).state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, button, i, event) -> {
-            if (!(event instanceof InventoryClickEvent clickEvent)) return true;
+        buttonBuilder.action(key(slot)).state(state -> state.icon(Material.AIR).action((holder, cache, btn, btnSlot, details) -> {
+            if (!(details instanceof GUIClickInteractionDetails clickDetails)) return ButtonInteractionResult.cancel(true);
+            final var guiHandler = holder.getGuiHandler();
             CustomRecipe<?> customRecipe = cache.getRecipeList().getCustomRecipeForButtonInSlot(slot);
-            if (clickEvent.isShiftClick() && customRecipe != null) {
-                var window = inventory.getWindow();
-                if (clickEvent.isLeftClick()) {
+            if (clickDetails.isShiftClick() && customRecipe != null) {
+                var window = holder.getWindow();
+                if (clickDetails.isLeftClick()) {
                     try {
                         cache.setSetting(Setting.RECIPE_CREATOR);
                         cache.getRecipeCreatorCache().setRecipeType(customRecipe.getRecipeType());
@@ -80,11 +83,11 @@ class ButtonContainerRecipeList {
                     }
                 } else {
                     window.sendMessage(guiHandler, window.translatedMsgKey("delete.confirm", Placeholder.unparsed("recipe", customRecipe.getNamespacedKey().toString())));
-                    var confirmComp = window.translatedMsgKey("delete.confirmed").style(b -> b.clickEvent(window.getChat().executable(player, true, (wolfyUtilities, player1) -> {
+                    var confirmComp = window.translatedMsgKey("delete.confirmed").style(b -> b.clickEvent(window.getChat().executable(holder.getPlayer(), true, (wolfyUtilities, player1) -> {
                         guiHandler.openCluster();
                         Bukkit.getScheduler().runTask(customCrafting, () -> customRecipe.delete(player1));
                     })).hoverEvent(window.translatedMsgKey("delete.confirm_hover")));
-                    var declineComp = window.translatedMsgKey("delete.declined").style(b -> b.clickEvent(window.getChat().executable(player, true, (wolfyUtilities, player1) -> guiHandler.openCluster())).hoverEvent(window.translatedMsgKey("delete.decline_hover")));
+                    var declineComp = window.translatedMsgKey("delete.declined").style(b -> b.clickEvent(window.getChat().executable(holder.getPlayer(), true, (wolfyUtilities, player1) -> guiHandler.openCluster())).hoverEvent(window.translatedMsgKey("delete.decline_hover")));
                     window.sendMessage(guiHandler, confirmComp.append(Component.text(" – ")).append(declineComp));
                 }
             } else if (customRecipe != null) {
@@ -92,13 +95,13 @@ class ButtonContainerRecipeList {
             } else {
                 customCrafting.getDisableRecipesHandler().toggleBukkitRecipe(((Keyed) cache.getRecipeList().getCustomRecipeForButtonInSlot(slot)).getKey());
             }
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> {
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, btnSlot, itemStack) -> {
             final var bukkitSerializer = BukkitComponentSerializer.legacy();
-            final var langAPI = guiHandler.getWolfyUtils().getLanguageAPI();
+            final var langAPI = holder.getGuiHandler().getWolfyUtils().getLanguageAPI();
             CustomRecipe<?> recipe = cache.getRecipeList().getCustomRecipeForButtonInSlot(slot);
             if (recipe != null) {
-                var itemB = new ItemBuilder(new ItemStack(recipe.getResult().getItemStack()));
+                var itemB = new ItemBuilder(customCrafting.getApi(), new ItemStack(recipe.getResult().getItemStack()));
                 if (recipe.getResult().isEmpty()) {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName(ChatColor.BOLD + ChatColor.GRAY.toString() + recipe.getNamespacedKey());
                 }
@@ -112,16 +115,16 @@ class ButtonContainerRecipeList {
                 itemB.addLoreLine(bukkitSerializer.serialize(Component.text(recipe.getRecipeType().name(), NamedTextColor.DARK_GRAY)));
                 itemB.addLoreLine(bukkitSerializer.serialize(langAPI.getComponent("inventories.none.recipe_list.items.lores.edit")));
                 itemB.addLoreLine(bukkitSerializer.serialize(langAPI.getComponent("inventories.none.recipe_list.items.lores.delete")));
-                return CallbackButtonRender.UpdateResult.of(itemB.create());
+                return CallbackButtonRender.Result.of(itemB.create());
             } else {
                 Recipe bukkitRecipe = cache.getRecipeList().getRecipeForButtonInSlot(slot);
                 if (bukkitRecipe != null) {
                     ItemBuilder itemB;
                     if (ItemUtils.isAirOrNull(bukkitRecipe.getResult())) {
-                        itemB = new ItemBuilder(Material.STONE);
+                        itemB = new ItemBuilder(customCrafting.getApi(), Material.STONE);
                         itemB.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName(ChatColor.BOLD + ChatColor.GRAY.toString() + ((Keyed) bukkitRecipe).getKey());
                     } else {
-                        itemB = new ItemBuilder(bukkitRecipe.getResult());
+                        itemB = new ItemBuilder(customCrafting.getApi(), bukkitRecipe.getResult());
                     }
                     itemB.addLoreLine(ChatColor.DARK_GRAY.toString() + ((Keyed) bukkitRecipe).getKey());
                     if (customCrafting.getDisableRecipesHandler().isBukkitRecipeDisabled(((Keyed) bukkitRecipe).getKey())) {
@@ -129,10 +132,10 @@ class ButtonContainerRecipeList {
                     } else {
                         itemB.addLoreLine(bukkitSerializer.serialize(langAPI.getComponent("inventories.none.recipe_list.items.lores.enabled")));
                     }
-                    return CallbackButtonRender.UpdateResult.of(itemB.create());
+                    return CallbackButtonRender.Result.of(itemB.create());
                 }
             }
-            return CallbackButtonRender.UpdateResult.of();
+            return CallbackButtonRender.Result.of();
         })).register();
     }
 }

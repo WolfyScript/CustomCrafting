@@ -23,10 +23,11 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import com.wolfyscript.utilities.bukkit.gui.GUIHolder;
 import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.Button;
-import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -80,23 +81,23 @@ public class MenuCategoryOverview extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action(BACK).state(state -> state.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
-            ButtonContainerIngredient.resetButtons(guiHandler);
-            ButtonContainerRecipeBook.resetButtons(guiHandler);
-            guiHandler.openPreviousWindow();
-            return true;
+        getButtonBuilder().action(BACK).state(state -> state.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((holder, cache, btn, slot, details) -> {
+            ButtonContainerIngredient.resetButtons(holder.getGuiHandler());
+            ButtonContainerRecipeBook.resetButtons(holder.getGuiHandler());
+            holder.getGuiHandler().openPreviousWindow();
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 
     @Override
-    public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
-        var recipeBookCache = guiHandler.getCustomCache().getRecipeBookCache();
+    public Component onUpdateTitle(GUIHolder<CCCache> holder) {
+        var recipeBookCache = holder.getGuiHandler().getCustomCache().getRecipeBookCache();
         var categoryName = recipeBookCache.getCategory().getName();
         var miniMsg = customCrafting.getApi().getChat().getMiniMessage();
         if (categoryName.contains("§")) {
             categoryName = miniMsg.serialize(BukkitComponentSerializer.legacy().deserialize(categoryName));
         }
-        return this.wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", TagResolverUtil.papi(player), Placeholder.parsed("category_name", wolfyUtilities.getLanguageAPI().replaceKeys(categoryName)));
+        return this.wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", TagResolverUtil.papi(holder.getPlayer()), Placeholder.parsed("category_name", wolfyUtilities.getLanguageAPI().replaceKeys(categoryName)));
     }
 
     @Override
@@ -138,10 +139,10 @@ public class MenuCategoryOverview extends CCWindow {
     }
 
     @Override
-    public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
-        ButtonContainerIngredient.removeTasks(guiHandler);
-        ButtonContainerRecipeBook.resetButtons(guiHandler);
-        guiHandler.getCustomCache().getRecipeBookCache().setEliteCraftingTable(null);
-        return super.onClose(guiHandler, guiInventory, transaction);
+    public boolean onClose(GUIHolder<CCCache> holder) {
+        ButtonContainerIngredient.removeTasks(holder.getGuiHandler());
+        ButtonContainerRecipeBook.resetButtons(holder.getGuiHandler());
+        holder.getGuiHandler().getCustomCache().getRecipeBookCache().setEliteCraftingTable(null);
+        return super.onClose(holder);
     }
 }

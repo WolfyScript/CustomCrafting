@@ -51,7 +51,7 @@ public class CCCache extends CustomCache {
 
     private final RecipeBookEditor recipeBookEditor = new RecipeBookEditor();
 
-    private final Items items = new Items();
+    private final Items items;
     private final RecipeList recipeList = new RecipeList();
 
     private final PotionEffects potionEffectCache = new PotionEffects();
@@ -74,7 +74,7 @@ public class CCCache extends CustomCache {
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
         this.applyItem = null;
-
+        this.items = new Items(customCrafting);
         this.recipeBookCache = new RecipeBookCache(customCrafting);
 
         this.recipeCreatorCache = new RecipeCreatorCache(customCrafting);

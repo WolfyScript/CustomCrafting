@@ -31,6 +31,6 @@ import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 public final class RegistryItemCreatorTabs extends RegistrySimple<ItemCreatorTab> {
 
     RegistryItemCreatorTabs(CustomCrafting customCrafting, Registries registries) {
-        super(new BukkitNamespacedKey(customCrafting, "item_creator_tabs"), registries, ItemCreatorTab.class);
+        super(new BukkitNamespacedKey(customCrafting.getApi(), "item_creator_tabs"), registries, ItemCreatorTab.class);
     }
 }

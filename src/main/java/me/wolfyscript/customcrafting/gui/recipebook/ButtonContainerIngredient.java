@@ -24,14 +24,15 @@ package me.wolfyscript.customcrafting.gui.recipebook;
 
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.GUIHolder;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
 import com.wolfyscript.utilities.bukkit.gui.button.Button;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonType;
-import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -116,23 +117,14 @@ public class ButtonContainerIngredient extends Button<CCCache> {
     }
 
     @Override
-    public void postExecute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, ItemStack itemStack, int slot, InventoryInteractEvent event) throws IOException {
-
-    }
-
-    @Override
-    public void preRender(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, ItemStack itemStack, int slot, boolean help) {
-
-    }
-
-    @Override
-    public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
-        CCCache cache = guiHandler.getCustomCache();
+    public ButtonInteractionResult execute(GUIHolder<CCCache> holder, int slot) {
+        GuiHandler<CCCache> guiHandler = holder.getGuiHandler();
+        CCCache cache = holder.getGuiHandler().getCustomCache();
         var book = cache.getRecipeBookCache();
         if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             var customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
             if (!customItem.equals(book.getResearchItem())) {
-                List<CustomRecipe<?>> recipes = plugin.getRegistries().getRecipes().getAvailable(customItem.create(), player);
+                List<CustomRecipe<?>> recipes = plugin.getRegistries().getRecipes().getAvailable(customItem.create(), holder.getPlayer());
                 if (!recipes.isEmpty()) {
                     resetButtons(guiHandler);
                     book.setSubFolderPage(0);
@@ -142,13 +134,24 @@ public class ButtonContainerIngredient extends Button<CCCache> {
                 }
             }
         }
-        return true;
+        return ButtonInteractionResult.cancel(true);
     }
 
     @Override
-    public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
+    public void postExecute(GUIHolder<CCCache> holder, ItemStack itemStack, int slot) throws IOException {
+
+    }
+
+    @Override
+    public void preRender(GUIHolder<CCCache> holder, ItemStack itemStack, int slot) {
+
+    }
+
+    @Override
+    public void render(GUIHolder<CCCache> holder, Inventory queueInventory, int slot) {
+        final var guiHandler = holder.getGuiHandler();
         List<CustomItem> variants = getVariantsMap(guiHandler);
-        inventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).create());
+        queueInventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).create());
         if (variants.size() > 1) {
             //Only use tasks if there are multiple display items
             final int openPage = guiHandler.getCustomCache().getRecipeBookCache().getSubFolderPage();
@@ -156,10 +159,10 @@ public class ButtonContainerIngredient extends Button<CCCache> {
             synchronized (tasks) {
                 tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
                     var recipeBook = guiHandler.getCustomCache().getRecipeBookCache();
-                    if (player != null && slot < inventory.getSize() && !variants.isEmpty() && recipeBook.getSubFolder() != 0 && openPage == recipeBook.getSubFolderPage() && openRecipe.equals(recipeBook.getCurrentRecipe().getNamespacedKey())) {
+                    if (holder.getPlayer() != null && slot < queueInventory.getSize() && !variants.isEmpty() && recipeBook.getSubFolder() != 0 && openPage == recipeBook.getSubFolderPage() && openRecipe.equals(recipeBook.getCurrentRecipe().getNamespacedKey())) {
                         int variant = getTiming(guiHandler);
                         variant = ++variant < variants.size() ? variant : 0;
-                        guiInventory.setItem(slot, variants.get(variant).create());
+                        queueInventory.setItem(slot, variants.get(variant).create());
                         setTiming(guiHandler, variant);
                         return false;
                     }

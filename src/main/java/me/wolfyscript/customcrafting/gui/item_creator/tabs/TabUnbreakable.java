@@ -27,6 +27,7 @@ import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
@@ -44,21 +45,21 @@ public class TabUnbreakable extends ItemCreatorTabVanilla {
 
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
-        creator.getButtonBuilder().toggle(KEY).stateFunction((cache, guiHandler, player, guiInventory, i) -> {
+        creator.getButtonBuilder().toggle(KEY).stateFunction((holder, cache, slot) -> {
             CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.getItemMeta().isUnbreakable();
-        }).enabledState(state -> state.subKey("enabled").icon(Material.BEDROCK).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        }).enabledState(state -> state.subKey("enabled").icon(Material.BEDROCK).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             var itemMeta = items.getItem().getItemMeta();
             itemMeta.setUnbreakable(false);
             items.getItem().setItemMeta(itemMeta);
-            return true;
-        })).disabledState(state -> state.subKey("disabled").icon(Material.GLASS).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            return ButtonInteractionResult.cancel(true);
+        })).disabledState(state -> state.subKey("disabled").icon(Material.GLASS).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             var itemMeta = items.getItem().getItemMeta();
             itemMeta.setUnbreakable(true);
             items.getItem().setItemMeta(itemMeta);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

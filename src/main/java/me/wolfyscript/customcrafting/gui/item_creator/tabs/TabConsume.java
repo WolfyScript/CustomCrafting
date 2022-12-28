@@ -30,8 +30,10 @@ import com.wolfyscript.utilities.bukkit.gui.button.ButtonDummy;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonItemInput;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import com.wolfyscript.utilities.tuple.Pair;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -55,8 +57,8 @@ public class TabConsume extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.ITEM_FRAME, this);
-        creator.getButtonBuilder().chatInput(KEY + ".durability_cost.enabled").state(state -> state.icon(Material.DROPPER).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
-            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("var", String.valueOf(guiHandler.getCustomCache().getItems().getItem().getDurabilityCost())));
+        creator.getButtonBuilder().chatInput(KEY + ".durability_cost.enabled").state(state -> state.icon(Material.DROPPER).render((holder, cache, btn, slot, itemStack) -> {
+            return CallbackButtonRender.Result.of(Placeholder.parsed("var", String.valueOf(holder.getGuiHandler().getCustomCache().getItems().getItem().getDurabilityCost())));
         })).inputAction((guiHandler, player, s, strings) -> {
             try {
                 int value = Integer.parseInt(s);
@@ -70,28 +72,28 @@ public class TabConsume extends ItemCreatorTab {
         }).register();
         creator.getButtonBuilder().dummy(KEY + ".durability_cost.disabled").state(state -> state.icon(Material.DROPPER)).register();
 
-        creator.getButtonBuilder().toggle(KEY + ".consume_item").stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().isConsumed())
-                .enabledState(state -> state.subKey("consume.consume_item.enabled").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().toggle(KEY + ".consume_item").stateFunction((holder, cache, slot) -> cache.getItems().getItem().isConsumed())
+                .enabledState(state -> state.subKey("consume.consume_item.enabled").icon(Material.GREEN_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             items.getItem().setConsumed(false);
-            return true;
-        })).disabledState(state -> state.subKey(KEY + ".consume_item.disabled").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            return ButtonInteractionResult.cancel(true);
+        })).disabledState(state -> state.subKey(KEY + ".consume_item.disabled").icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             items.getItem().setConsumed(true);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
 
         creator.getButtonBuilder().dummy(KEY + ".replacement.enabled").state(state -> state.icon(Material.GREEN_CONCRETE)).register();
         creator.getButtonBuilder().dummy(KEY + ".replacement.disabled").state(state -> state.icon(Material.RED_CONCRETE)).register();
 
-        creator.getButtonBuilder().itemInput(KEY + ".replacement").state(state -> state.icon(Material.AIR).postAction((cache, guiHandler, player, guiInventory, button, itemStack, slot, inventoryInteractEvent) -> {
-            ItemStack replacement = guiInventory.getItem(slot);
+        creator.getButtonBuilder().itemInput(KEY + ".replacement").state(state -> state.icon(Material.AIR).postAction((holder, cache, btn, slot, itemStack, details) -> {
+            ItemStack replacement = holder.getInventory().getItem(slot);
             if (replacement != null) {
                 cache.getItems().getItem().setReplacement(CustomItem.getReferenceByItemStack(replacement).getApiReference());
             } else {
                 cache.getItems().getItem().setReplacement(null);
             }
-        }).render((cache, guiHandler, player, guiInventory, button, itemStack, i) -> guiHandler.getCustomCache().getItems().getItem().hasReplacement() ? CallbackButtonRender.UpdateResult.of(CustomItem.with(cache.getItems().getItem().getReplacement()).create()) : CallbackButtonRender.UpdateResult.of(new ItemStack(Material.AIR)))).register();
+        }).render((holder, cache, btn, slot, itemStack) -> holder.getGuiHandler().getCustomCache().getItems().getItem().hasReplacement() ? CallbackButtonRender.Result.of(CustomItem.with(cache.getItems().getItem().getReplacement()).create()) : CallbackButtonRender.Result.of(new ItemStack(Material.AIR)))).register();
     }
 
     @Override

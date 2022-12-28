@@ -318,7 +318,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         } else if (getMode().equals(CustomRecipeAnvil.Mode.DURABILITY)) {
             ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(34))).setVariants(guiHandler, inputLeft);
         } else {
-            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(34))).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(34))).setVariants(guiHandler, Collections.singletonList(new CustomItem(customCrafting.getApi(), Material.AIR)));
         }
     }
 

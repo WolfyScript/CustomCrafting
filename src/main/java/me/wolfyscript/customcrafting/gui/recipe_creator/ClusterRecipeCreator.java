@@ -25,8 +25,12 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
+import com.wolfyscript.utilities.common.gui.GUIClickInteractionDetails;
+import com.wolfyscript.utilities.common.gui.GUIInteractionDetails;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -115,21 +119,21 @@ public class ClusterRecipeCreator extends CCCluster {
         registerGuiWindow(new MenuTagChooseList(this, customCrafting));
         registerGuiWindow(new MenuItemEditor(this, customCrafting));
 
-        getButtonBuilder().action(CONDITIONS.getKey()).state(state -> state.icon(Material.CYAN_CONCRETE_POWDER).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-            guiHandler.openWindow("conditions");
-            return true;
+        getButtonBuilder().action(CONDITIONS.getKey()).state(state -> state.icon(Material.CYAN_CONCRETE_POWDER).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openWindow("conditions");
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action(TAGS.getKey()).state(state -> state.icon(Material.NAME_TAG).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-            guiHandler.openWindow("tag_settings");
-            return true;
+        getButtonBuilder().action(TAGS.getKey()).state(state -> state.icon(Material.NAME_TAG).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openWindow("tag_settings");
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().chatInput(GROUP.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-                    if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().isRightClick()) {
+        getButtonBuilder().chatInput(GROUP.getKey()).state(state -> state.icon(Material.BOOKSHELF).action((holder, cache, btn, slot, details) -> {
+                    if (details instanceof GUIClickInteractionDetails clickDetails && clickDetails.isRightClick()) {
                         cache.getRecipeCreatorCache().getRecipeCache().setGroup("");
-                        return false;
+                        return ButtonInteractionResult.cancel(false);
                     }
-                    return true;
-                }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("group", cache.getRecipeCreatorCache().getRecipeCache().getGroup()))))
+                    return ButtonInteractionResult.cancel(true);
+                }).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.parsed("group", cache.getRecipeCreatorCache().getRecipeCache().getGroup()))))
                 .inputAction((guiHandler, player, s, args) -> {
                     if (args.length > 0) {
                         guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().setGroup(args[0]);
@@ -143,24 +147,24 @@ public class ClusterRecipeCreator extends CCCluster {
 
         getButtonBuilder().multiChoice(VANILLA_BOOK.getKey())
                 // State: vanilla = true, auto_discover = true
-                .addState(state -> state.subKey("vanilla_book_discover").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, button, i, event) -> {
+                .addState(state -> state.subKey("vanilla_book_discover").icon(Material.GRASS_BLOCK).action((holder, cache, btn, slot, details) -> {
                     cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(true);
                     cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(false);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 }))
                 // State: vanilla = true, auto_discover = false
-                .addState(state -> state.subKey("vanilla_book_no_discover").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, button, i, event) -> {
+                .addState(state -> state.subKey("vanilla_book_no_discover").icon(Material.GRASS_BLOCK).action((holder, cache, btn, slot, details) -> {
                     cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(false);
                     cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(false);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 }))
                 // State: vanilla = false, auto_discover = false
-                .addState(state -> state.subKey("no_vanilla_book").icon(Material.GRASS_BLOCK).action((cache, handler, player, inventory, button, i, event) -> {
+                .addState(state -> state.subKey("no_vanilla_book").icon(Material.GRASS_BLOCK).action((holder, cache, btn, slot, details) -> {
                     cache.getRecipeCreatorCache().getRecipeCache().setVanillaBook(true);
                     cache.getRecipeCreatorCache().getRecipeCache().setAutoDiscover(true);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 }))
-                .stateFunction((cache, guiHandler, player, inventory, i) -> {
+                .stateFunction((holder, cache, button, slot) -> {
                     RecipeCache<?> recipeCache = cache.getRecipeCreatorCache().getRecipeCache();
                     if (recipeCache.isVanillaBook() && recipeCache.isAutoDiscover()) {
                         return 0;
@@ -168,24 +172,24 @@ public class ClusterRecipeCreator extends CCCluster {
                     return recipeCache.isVanillaBook() ? 1 : 2;
                 }).register();
 
-        getButtonBuilder().toggle(ClusterRecipeCreator.EXACT_META.getKey()).stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getRecipeCache().isCheckNBT())
-                .enabledState(state -> state.subKey("enabled").icon(Material.ITEM_FRAME).action((cache, guiHandler, player, guiInventory, button, i, inventoryInteractEvent) -> {
+        getButtonBuilder().toggle(ClusterRecipeCreator.EXACT_META.getKey()).stateFunction((holder, cache, slot) -> cache.getRecipeCreatorCache().getRecipeCache().isCheckNBT())
+                .enabledState(state -> state.subKey("enabled").icon(Material.ITEM_FRAME).action((holder, cache, btn, slot, details) -> {
                     cache.getRecipeCreatorCache().getRecipeCache().setCheckNBT(false);
-                    return true;
-                })).disabledState(state -> state.subKey("disabled").icon(Material.PAPER).action((cache, guiHandler, player, guiInventory, button, i, inventoryInteractEvent) -> {
+                    return ButtonInteractionResult.cancel(true);
+                })).disabledState(state -> state.subKey("disabled").icon(Material.PAPER).action((holder, cache, btn, slot, details) -> {
                     cache.getRecipeCreatorCache().getRecipeCache().setCheckNBT(true);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 })).register();
-        getButtonBuilder().toggle(ClusterRecipeCreator.HIDDEN.getKey()).stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getRecipeCache().isHidden())
-                .enabledState(state -> state.subKey("enabled").icon(PlayerHeadUtils.getViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98")).action((cache, guiHandler, player, guiInventory, button, i, event) -> {
+        getButtonBuilder().toggle(ClusterRecipeCreator.HIDDEN.getKey()).stateFunction((holder, cache, slot) -> cache.getRecipeCreatorCache().getRecipeCache().isHidden())
+                .enabledState(state -> state.subKey("enabled").icon(PlayerHeadUtils.getViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98")).action((holder, cache, btn, slot, details) -> {
                     cache.getRecipeCreatorCache().getRecipeCache().setHidden(false);
-                    return true;
-                })).disabledState(state -> state.subKey("disabled").icon(PlayerHeadUtils.getViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85")).action((cache, guiHandler, player, guiInventory, button, i, inventoryInteractEvent) -> {
+                    return ButtonInteractionResult.cancel(true);
+                })).disabledState(state -> state.subKey("disabled").icon(PlayerHeadUtils.getViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85")).action((holder, cache, btn, slot, details) -> {
                     cache.getRecipeCreatorCache().getRecipeCache().setHidden(true);
-                    return true;
+                    return ButtonInteractionResult.cancel(true);
                 })).register();
 
-        getButtonBuilder().action(ClusterRecipeCreator.PRIORITY.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("b8ea57c7551c6ab33b8fed354b43df523f1e357c4b4f551143c34ddeac5b6c8d")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+        getButtonBuilder().action(ClusterRecipeCreator.PRIORITY.getKey()).state(state -> state.icon(PlayerHeadUtils.getViaURL("b8ea57c7551c6ab33b8fed354b43df523f1e357c4b4f551143c34ddeac5b6c8d")).action((holder, cache, btn, slot, details) -> {
             RecipePriority priority = cache.getRecipeCreatorCache().getRecipeCache().getPriority();
             int order;
             order = priority.getOrder();
@@ -195,32 +199,34 @@ public class ClusterRecipeCreator extends CCCluster {
                 order = -2;
             }
             cache.getRecipeCreatorCache().getRecipeCache().setPriority(RecipePriority.getByOrder(order));
-            return true;
-        }).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> {
             RecipePriority priority = cache.getRecipeCreatorCache().getRecipeCache().getPriority();
             if (priority != null) {
-                return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("pri", priority.name()));
+                return CallbackButtonRender.Result.of(Placeholder.parsed("pri", priority.name()));
             }
-            return CallbackButtonRender.UpdateResult.of();
+            return CallbackButtonRender.Result.of();
         })).register();
         registerSaveButtons();
     }
 
     private void registerSaveButtons() {
-        getButtonBuilder().action(SAVE.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, btn, i, event) -> {
-            if (guiHandler.getWindow() instanceof RecipeCreator && !cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, player, guiHandler)) {
-                getChat().sendMessage(player, translatedMsgKey("save.empty"));
+        getButtonBuilder().action(SAVE.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((holder, cache, btn, slot, details) -> {
+            if (holder.getGuiHandler().getWindow() instanceof RecipeCreator && !cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, holder.getPlayer(), holder.getGuiHandler())) {
+                getChat().sendMessage(holder.getPlayer(), translatedMsgKey("save.empty"));
             }
-            return true;
-        }).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> {
+            return ButtonInteractionResult.cancel(true);
+        }).render((holder, cache, btn, slot, itemStack) -> {
             NamespacedKey namespacedKey = cache.getRecipeCreatorCache().getRecipeCache().getKey();
             if (namespacedKey != null) {
-                return CallbackButtonRender.UpdateResult.of(itemStack, Placeholder.unparsed("recipe_folder", namespacedKey.getKeyComponent().getFolder()), Placeholder.unparsed("recipe_key", namespacedKey.getKeyComponent().getObject()));
+                return CallbackButtonRender.Result.of(itemStack, Placeholder.unparsed("recipe_folder", namespacedKey.getKeyComponent().getFolder()), Placeholder.unparsed("recipe_key", namespacedKey.getKeyComponent().getObject()));
             }
-            return CallbackButtonRender.UpdateResult.of(itemStack);
+            return CallbackButtonRender.Result.of(itemStack);
         })).register();
-        getButtonBuilder().action(SAVE_AS.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
-            if (guiHandler.getWindow() instanceof RecipeCreator) {
+        getButtonBuilder().action(SAVE_AS.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((holder, cache, btn, slot, details) -> {
+            if (holder.getGuiHandler().getWindow() instanceof RecipeCreator) {
+                final var guiHandler = holder.getGuiHandler();
+                final var player = holder.getPlayer();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();
                     if (args.length > 0) {
@@ -252,7 +258,7 @@ public class ClusterRecipeCreator extends CCCluster {
                 });
                 getChat().sendMessage(player, getChat().translated("msg.input.wui_command"));
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 }

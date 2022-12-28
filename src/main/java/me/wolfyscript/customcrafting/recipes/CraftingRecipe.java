@@ -261,7 +261,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         });
         builder.setRecipeAssembler(inventory -> {
             if (inventory.getHolder() instanceof Player player)
-                return Optional.ofNullable(getResult().getItem(player).orElse(new CustomItem(Material.AIR)).create());
+                return Optional.ofNullable(getResult().getItem(player).orElse(new CustomItem(customCrafting.getApi(), Material.AIR)).create());
             return Optional.of(new ItemStack(Material.AIR));
         });
         builder.setRemainingItemsFunction(inventory -> {

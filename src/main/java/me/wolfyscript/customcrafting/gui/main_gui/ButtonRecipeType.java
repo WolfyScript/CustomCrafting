@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.GuiMenuComponent;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -34,11 +35,11 @@ import org.bukkit.inventory.ItemStack;
 class ButtonRecipeType {
 
     static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, String key, RecipeType<?> recipeType, ItemStack icon) {
-        buttonBuilder.action(key).state(state -> state.icon(icon).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+        buttonBuilder.action(key).state(state -> state.icon(icon).action((holder, cache, btn, slot, details) -> {
             cache.getRecipeCreatorCache().setRecipeType(recipeType);
             cache.setSetting(Setting.RECIPE_CREATOR);
-            guiHandler.openWindow(new BukkitNamespacedKey("recipe_creator", recipeType.getCreatorID()));
-            return true;
+            holder.getGuiHandler().openWindow(new BukkitNamespacedKey("recipe_creator", recipeType.getCreatorID()));
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

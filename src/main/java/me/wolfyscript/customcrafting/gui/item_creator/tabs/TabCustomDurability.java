@@ -27,8 +27,10 @@ import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
@@ -49,13 +51,13 @@ public class TabCustomDurability extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.DIAMOND_SWORD, this);
-        creator.getButtonBuilder().action("custom_durability.remove").state(state -> state.icon(Material.RED_CONCRETE_POWDER).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().action("custom_durability.remove").state(state -> state.icon(Material.RED_CONCRETE_POWDER).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             items.getItem().removeCustomDurability();
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        creator.getButtonBuilder().chatInput("custom_durability.set_durability").state(state -> state.icon(Material.GREEN_CONCRETE).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
-            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("var", String.valueOf(guiHandler.getCustomCache().getItems().getItem().getCustomDurability())));
+        creator.getButtonBuilder().chatInput("custom_durability.set_durability").state(state -> state.icon(Material.GREEN_CONCRETE).render((holder, cache, btn, slot, itemStack) -> {
+            return CallbackButtonRender.Result.of(Placeholder.parsed("var", String.valueOf(holder.getGuiHandler().getCustomCache().getItems().getItem().getCustomDurability())));
         })).inputAction((guiHandler, player, s, strings) -> {
             try {
                 guiHandler.getCustomCache().getItems().getItem().setCustomDurability(Integer.parseInt(strings[0]));
@@ -65,9 +67,9 @@ public class TabCustomDurability extends ItemCreatorTab {
             guiHandler.openCluster();
             return false;
         }).register();
-        creator.getButtonBuilder().chatInput("custom_durability.set_damage").state(state -> state.icon(Material.RED_CONCRETE).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
-            var items = guiHandler.getCustomCache().getItems();
-            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("var", String.valueOf(items.getItem().getCustomDamage())));
+        creator.getButtonBuilder().chatInput("custom_durability.set_damage").state(state -> state.icon(Material.RED_CONCRETE).render((holder, cache, btn, slot, itemStack) -> {
+            var items = holder.getGuiHandler().getCustomCache().getItems();
+            return CallbackButtonRender.Result.of(Placeholder.parsed("var", String.valueOf(items.getItem().getCustomDamage())));
         })).inputAction((guiHandler, player, s, strings) -> {
             try {
                 guiHandler.getCustomCache().getItems().getItem().setCustomDamage(Integer.parseInt(strings[0]));
@@ -77,9 +79,9 @@ public class TabCustomDurability extends ItemCreatorTab {
             guiHandler.openCluster();
             return false;
         }).register();
-        creator.getButtonBuilder().chatInput("custom_durability.set_tag").state(state -> state.icon(Material.NAME_TAG).render((cache, guiHandler, player, inventory, itemStack, btn, slot) -> {
-            var items = guiHandler.getCustomCache().getItems();
-            return CallbackButtonRender.UpdateResult.of(Placeholder.parsed("var", items.getItem().getCustomDurabilityTag()));
+        creator.getButtonBuilder().chatInput("custom_durability.set_tag").state(state -> state.icon(Material.NAME_TAG).render((holder, cache, btn, slot, itemStack) -> {
+            var items = holder.getGuiHandler().getCustomCache().getItems();
+            return CallbackButtonRender.Result.of(Placeholder.parsed("var", items.getItem().getCustomDurabilityTag()));
         })).inputAction((guiHandler, player, s, strings) -> {
             try {
                 guiHandler.getCustomCache().getItems().getItem().setCustomDurabilityTag(s);

@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -41,23 +42,23 @@ public class MenuItemEditor extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inv, btn, i, event) -> {
+        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((holder, cache, btn, slot, details) -> {
             if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                 cache.getItems().setRecipeItem(false);
                 cache.setApplyItem(null);
-                guiHandler.openPreviousWindow();
+                holder.getGuiHandler().openPreviousWindow();
             } else {
-                guiHandler.openCluster(ClusterMain.KEY);
+                holder.getGuiHandler().openCluster(ClusterMain.KEY);
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action("create_item").state(s -> s.icon(Material.ITEM_FRAME).action((cache, guiHandler, player, guiInventory, btn, i, inventoryInteractEvent) -> {
-            guiHandler.openWindow(ClusterItemCreator.MAIN_MENU);
-            return true;
+        getButtonBuilder().action("create_item").state(s -> s.icon(Material.ITEM_FRAME).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openWindow(ClusterItemCreator.MAIN_MENU);
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action(ClusterMain.ITEM_LIST.getKey()).state(s -> s.key(ClusterMain.ITEM_LIST).icon(Material.BOOKSHELF).action((cache, guiHandler, player, inv, btn, i, event) -> {
-            guiHandler.openWindow(ClusterMain.ITEM_LIST);
-            return true;
+        getButtonBuilder().action(ClusterMain.ITEM_LIST.getKey()).state(s -> s.key(ClusterMain.ITEM_LIST).icon(Material.BOOKSHELF).action((holder, cache, btn, slot, details) -> {
+            holder.getGuiHandler().openWindow(ClusterMain.ITEM_LIST);
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

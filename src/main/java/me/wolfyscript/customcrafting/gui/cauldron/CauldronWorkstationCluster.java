@@ -25,6 +25,8 @@ package me.wolfyscript.customcrafting.gui.cauldron;
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.gui.InventoryAPI;
+import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonAction;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
@@ -48,10 +50,10 @@ public class CauldronWorkstationCluster extends CCCluster {
         
         registerGuiWindow(new CauldronWorkstationMenu(this, customCrafting));
 
-        getButtonBuilder().action(CAULDRON_MAIN.getKey()).state(state -> state.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
-            ButtonContainerIngredient.resetButtons(guiHandler);
-            PlayerUtil.openRecipeBook(player);
-            return true;
+        getButtonBuilder().action(CAULDRON_MAIN.getKey()).state(state -> state.icon(Material.KNOWLEDGE_BOOK).action((holder, cache, btn, slot, details) -> {
+            ButtonContainerIngredient.resetButtons(holder.getGuiHandler());
+            PlayerUtil.openRecipeBook(holder.getPlayer());
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 }

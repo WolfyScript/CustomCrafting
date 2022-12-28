@@ -24,18 +24,20 @@ package me.wolfyscript.customcrafting.gui.recipebook;
 
 import com.wolfyscript.utilities.NamespacedKey;
 import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
+import com.wolfyscript.utilities.bukkit.gui.GUIHolder;
 import com.wolfyscript.utilities.bukkit.gui.GuiCluster;
 import com.wolfyscript.utilities.bukkit.gui.GuiHandler;
 import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
 import com.wolfyscript.utilities.bukkit.gui.button.Button;
-import com.wolfyscript.utilities.bukkit.nms.api.inventory.GUIInventory;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -84,21 +86,12 @@ class ButtonContainerRecipeBook extends Button<CCCache> {
     }
 
     @Override
-    public void postExecute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, ItemStack itemStack, int slot, InventoryInteractEvent event) throws IOException {
-
-    }
-
-    @Override
-    public void preRender(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, ItemStack itemStack, int slot, boolean help) {
-
-    }
-
-    @Override
-    public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
+    public ButtonInteractionResult execute(GUIHolder<CCCache> holder, int slot) {
+        final var guiHandler = holder.getGuiHandler();
         var cache = guiHandler.getCustomCache();
         var book = cache.getRecipeBookCache();
-        var customItem = new CustomItem(Material.AIR);
-        List<CustomRecipe<?>> recipes = getRecipeContainer(guiHandler).getRecipes(player);
+        var customItem = new CustomItem(CustomCrafting.inst().getApi(), Material.AIR);
+        List<CustomRecipe<?>> recipes = getRecipeContainer(guiHandler).getRecipes(holder.getPlayer());
         if (!recipes.isEmpty()) {
             book.setSubFolderPage(0);
             book.addResearchItem(customItem);
@@ -107,14 +100,25 @@ class ButtonContainerRecipeBook extends Button<CCCache> {
             resetButtons(guiHandler);
         }
         guiHandler.openWindow(ClusterRecipeBook.RECIPE_BOOK);
-        return true;
+        return ButtonInteractionResult.cancel(true);
     }
 
     @Override
-    public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
-        final List<ItemStack> displayItems = getRecipeContainer(guiHandler).getDisplayItems(player);
+    public void postExecute(GUIHolder<CCCache> holder, ItemStack itemStack, int slot) throws IOException {
+
+    }
+
+    @Override
+    public void preRender(GUIHolder<CCCache> holder, ItemStack itemStack, int slot) {
+
+    }
+
+    @Override
+    public void render(GUIHolder<CCCache> holder, Inventory queueInventory, int slot) {
+        final var guiHandler = holder.getGuiHandler();
+        final List<ItemStack> displayItems = getRecipeContainer(guiHandler).getDisplayItems(holder.getPlayer());
         final int timing = getTiming(guiHandler);
-        inventory.setItem(slot, timing < displayItems.size() ? displayItems.get(timing) : new ItemStack(Material.STONE));
+        queueInventory.setItem(slot, timing < displayItems.size() ? displayItems.get(timing) : new ItemStack(Material.STONE));
         if (displayItems.size() > 1) {
             //Only use tasks if there are multiple display items
             final var bookCache = guiHandler.getCustomCache().getRecipeBookCache();
@@ -124,10 +128,10 @@ class ButtonContainerRecipeBook extends Button<CCCache> {
                 tasks.computeIfAbsent(guiHandler, thatGuiHandler ->
                         () -> {
                             var newBookCache = thatGuiHandler.getCustomCache().getRecipeBookCache();
-                            if (slot < inventory.getSize() && !displayItems.isEmpty() && openedPage == newBookCache.getPage() && currentFilter.map(filter -> newBookCache.getCategoryFilter().map(filter::equals).orElse(false)).orElse(true)) {
+                            if (slot < queueInventory.getSize() && !displayItems.isEmpty() && openedPage == newBookCache.getPage() && currentFilter.map(filter -> newBookCache.getCategoryFilter().map(filter::equals).orElse(false)).orElse(true)) {
                                 int variant = getTiming(thatGuiHandler);
                                 variant = variant < displayItems.size() - 1 ? ++variant : 0;
-                                guiInventory.setItem(slot, displayItems.get(variant));
+                                queueInventory.setItem(slot, displayItems.get(variant));
                                 setTiming(thatGuiHandler, variant);
                                 return false;
                             }

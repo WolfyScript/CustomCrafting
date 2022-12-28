@@ -28,6 +28,7 @@ import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
@@ -44,14 +45,14 @@ public class MenuPotionEffectTypeSelection extends CCWindow {
     @Override
     public void onInit() {
 
-        getButtonBuilder().action("back").state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
-            PotionEffects potionEffectCache = guiHandler.getCustomCache().getPotionEffectCache();
+        getButtonBuilder().action("back").state(state -> state.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((holder, cache, btn, slot, details) -> {
+            PotionEffects potionEffectCache = holder.getGuiHandler().getCustomCache().getPotionEffectCache();
             if (!potionEffectCache.getOpenedFromCluster().isEmpty()) {
-                guiHandler.openWindow(new BukkitNamespacedKey(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow()));
+                holder.getGuiHandler().openWindow(new BukkitNamespacedKey(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow()));
             } else {
-                guiHandler.openWindow(potionEffectCache.getOpenedFromWindow());
+                holder.getGuiHandler().openWindow(potionEffectCache.getOpenedFromWindow());
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
 
         for (PotionEffectType type : PotionEffectType.values()) {

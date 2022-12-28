@@ -46,7 +46,7 @@ public class RecipeCreatorCooking extends RecipeCreator {
         super.onInit();
         ButtonRecipeIngredient.register(getButtonBuilder(), 0);
         ButtonRecipeResult.register(getButtonBuilder());
-        getButtonBuilder().chatInput(XP).state(state -> state.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getCookingCache().getExp()))))).inputAction((guiHandler, player, s, args) -> {
+        getButtonBuilder().chatInput(XP).state(state -> state.icon(Material.EXPERIENCE_BOTTLE).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getCookingCache().getExp()))))).inputAction((guiHandler, player, s, args) -> {
             float xp;
             try {
                 xp = Float.parseFloat(args[0]);
@@ -57,7 +57,7 @@ public class RecipeCreatorCooking extends RecipeCreator {
             guiHandler.getCustomCache().getRecipeCreatorCache().getCookingCache().setExp(xp);
             return false;
         }).register();
-        getButtonBuilder().chatInput(COOKING_TIME).state(state -> state.icon(Material.COAL).render((cache, guiHandler, player, guiInventory, btn, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("time", String.valueOf(cache.getRecipeCreatorCache().getCookingCache().getCookingTime()))))).inputAction((guiHandler, player, s, args) -> {
+        getButtonBuilder().chatInput(COOKING_TIME).state(state -> state.icon(Material.COAL).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.unparsed("time", String.valueOf(cache.getRecipeCreatorCache().getCookingCache().getCookingTime()))))).inputAction((guiHandler, player, s, args) -> {
             int time;
             try {
                 time = Short.parseShort(args[0]);

@@ -28,6 +28,7 @@ import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonAction;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonChatInput;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
@@ -57,10 +58,10 @@ public class TabLore extends ItemCreatorTabVanilla {
             guiHandler.getCustomCache().getItems().getItem().addLoreLine(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s, Placeholder.component("emtpy", Component.empty()))));
             return false;
         }).register();
-        creator.getButtonBuilder().action(KEY + ".edit").state(state -> state.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, btn, i, event) -> {
-            loreChatEditor.send(player);
-            guiHandler.close();
-            return true;
+        creator.getButtonBuilder().action(KEY + ".edit").state(state -> state.icon(Material.WRITABLE_BOOK).action((holder, cache, btn, slot, details) -> {
+            loreChatEditor.send(holder.getPlayer());
+            holder.getGuiHandler().close();
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

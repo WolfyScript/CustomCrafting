@@ -72,7 +72,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     private final Set<String> GROUPS = new HashSet<>();
 
     RegistryRecipes(CustomCrafting customCrafting, Registries registries) {
-        super(new BukkitNamespacedKey(customCrafting, "recipe/recipes"), registries);
+        super(new BukkitNamespacedKey(customCrafting.getApi(), "recipe/recipes"), registries);
         this.customCrafting = customCrafting;
     }
 

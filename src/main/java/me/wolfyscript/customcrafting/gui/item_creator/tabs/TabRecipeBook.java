@@ -26,6 +26,7 @@ import com.wolfyscript.utilities.bukkit.BukkitNamespacedKey;
 import com.wolfyscript.utilities.bukkit.WolfyUtilsBukkit;
 import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.configs.customitem.RecipeBookSettings;
@@ -48,17 +49,17 @@ public class TabRecipeBook extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.KNOWLEDGE_BOOK, this);
-        creator.getButtonBuilder().toggle("knowledge_book.toggle").stateFunction((cache, guiHandler, player, guiInventory, i) ->
+        creator.getButtonBuilder().toggle("knowledge_book.toggle").stateFunction((holder, cache, slot) ->
                 cache.getItems().getItem().getData(RecipeBookSettings.class).map(RecipeBookSettings::isEnabled)
                         // Get old recipe book settings
-                        .orElse(((RecipeBookData) cache.getItems().getItem().getCustomData(CustomCrafting.RECIPE_BOOK_DATA)).isEnabled())).enabledState(state -> state.subKey("knowledge_book.toggle.enabled").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+                        .orElse(((RecipeBookData) cache.getItems().getItem().getCustomData(CustomCrafting.RECIPE_BOOK_DATA)).isEnabled())).enabledState(state -> state.subKey("knowledge_book.toggle.enabled").icon(Material.GREEN_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             items.getItem().computeDataIfAbsent(RecipeBookSettings.class, id -> new RecipeBookSettings(creator.getCustomCrafting())).setEnabled(false);
-            return true;
-        })).disabledState(state -> state.subKey("knowledge_book.toggle.disabled").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            return ButtonInteractionResult.cancel(true);
+        })).disabledState(state -> state.subKey("knowledge_book.toggle.disabled").icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             items.getItem().computeDataIfAbsent(RecipeBookSettings.class, id -> new RecipeBookSettings(creator.getCustomCrafting())).setEnabled(true);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

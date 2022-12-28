@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 public final class TypeRegistryRecipeConditions extends TypeRegistrySimple<Condition<?>> {
 
     TypeRegistryRecipeConditions(CustomCrafting customCrafting, Registries registries) {
-        super(new BukkitNamespacedKey(customCrafting, "recipe/conditions"), registries);
+        super(new BukkitNamespacedKey(customCrafting.getApi(), "recipe/conditions"), registries);
     }
 
     /**

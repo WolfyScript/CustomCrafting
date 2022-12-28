@@ -28,6 +28,7 @@ import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.callback.CallbackButtonRender;
 import com.wolfyscript.utilities.bukkit.world.inventory.InventoryUtils;
 import com.wolfyscript.utilities.bukkit.world.inventory.ItemUtils;
+import com.wolfyscript.utilities.common.gui.GUIClickInteractionDetails;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
@@ -40,9 +41,9 @@ import org.bukkit.inventory.ItemStack;
 class ButtonSlotResult {
 
     static void register(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder, CustomCrafting customCrafting) {
-        buttonBuilder.itemInput("result_slot").state(state -> state.icon(Material.AIR).action((cache, guiHandler, player, inventory, btn, slot, event) -> {
+        buttonBuilder.itemInput("result_slot").state(state -> state.icon(Material.AIR).action((holder, cache, btn, slot, details) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
-            if (event instanceof InventoryClickEvent clickEvent && inventory.getWindow() instanceof CraftingWindow) {
+            if (details instanceof GUIClickInteractionDetails clickEvent && holder.getWindow() instanceof CraftingWindow) {
                 if (!CraftingWindow.RESULT_SLOTS.contains(slot)) {
                     return true;
                 }
@@ -63,7 +64,7 @@ class ButtonSlotResult {
                     }
                     return false;
                 } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK) && !ItemUtils.isAirOrNull(cacheEliteCraftingTable.getResult()) && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
-                    if (inventory.getWindow() instanceof CraftingWindow craftingWindow && (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(cacheEliteCraftingTable.getResult()))) {
+                    if (holder.getWindow() instanceof CraftingWindow craftingWindow && (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(cacheEliteCraftingTable.getResult()))) {
                         customCrafting.getCraftManager().get(event.getWhoClicked().getUniqueId()).ifPresent(craftingData -> {
                             customCrafting.getCraftManager().consumeRecipe(clickEvent);
                             cacheEliteCraftingTable.setResult(null);
@@ -75,18 +76,18 @@ class ButtonSlotResult {
                 }
             }
             return true;
-        }).postAction((cache, guiHandler, player, inventory, btn, itemStack, slot, event) -> {
+        }).postAction((holder, cache, btn, slot, itemStack, details) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
-            if (inventory.getWindow() instanceof CraftingWindow) {
+            if (holder.getWindow() instanceof CraftingWindow) {
                 cacheEliteCraftingTable.setResult(null);
             }
-        }).preRender((cache, guiHandler, player, inventory, btn, itemStack, slot, b) -> {
+        }).preRender((holder, cache, btn, slot, itemStack) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
-            ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), player, inventory, true, cacheEliteCraftingTable.isAdvancedCraftingRecipes());
+            ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), holder.getPlayer(), holder.getInventory(), true, cacheEliteCraftingTable.isAdvancedCraftingRecipes());
             cacheEliteCraftingTable.setResult(result);
-        }).render((cache, guiHandler, player, inventory, btn, itemStack, slot) -> {
+        }).render((holder, cache, btn, slot, itemStack) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
-            return CallbackButtonRender.UpdateResult.of(cacheEliteCraftingTable.getResult() != null ? cacheEliteCraftingTable.getResult() : new ItemStack(Material.AIR));
+            return CallbackButtonRender.Result.of(cacheEliteCraftingTable.getResult() != null ? cacheEliteCraftingTable.getResult() : new ItemStack(Material.AIR));
         })).register();
     }
 }

@@ -28,6 +28,7 @@ import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonState;
 import com.wolfyscript.utilities.bukkit.gui.button.ButtonToggle;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
@@ -47,24 +48,24 @@ public class TabVanilla extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilsBukkit api) {
         ButtonOption.register(creator.getButtonBuilder(), Material.GRASS_BLOCK, this);
-        creator.getButtonBuilder().toggle("vanilla.block_recipes").stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().isBlockVanillaRecipes())
-                .enabledState(state -> state.subKey("enabled").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().toggle("vanilla.block_recipes").stateFunction((holder, cache, slot) -> cache.getItems().getItem().isBlockVanillaRecipes())
+                .enabledState(state -> state.subKey("enabled").icon(Material.GREEN_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             items.getItem().setBlockVanillaRecipes(false);
-            return true;
-        })).disabledState(state -> state.subKey("disabled").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            return ButtonInteractionResult.cancel(true);
+        })).disabledState(state -> state.subKey("disabled").icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             items.getItem().setBlockVanillaRecipes(true);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        creator.getButtonBuilder().toggle("vanilla.block_placement").enabledState(state -> state.subKey("enabled").icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        creator.getButtonBuilder().toggle("vanilla.block_placement").enabledState(state -> state.subKey("enabled").icon(Material.GREEN_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             items.getItem().setBlockPlacement(false);
-            return true;
-        })).disabledState(state -> state.subKey("disabled").icon(Material.RED_CONCRETE).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+            return ButtonInteractionResult.cancel(true);
+        })).disabledState(state -> state.subKey("disabled").icon(Material.RED_CONCRETE).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             items.getItem().setBlockPlacement(true);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

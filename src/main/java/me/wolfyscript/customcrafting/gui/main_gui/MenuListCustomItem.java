@@ -27,6 +27,7 @@ import com.wolfyscript.utilities.bukkit.gui.GuiUpdate;
 import com.wolfyscript.utilities.bukkit.gui.GuiWindow;
 import com.wolfyscript.utilities.bukkit.world.inventory.PlayerHeadUtils;
 import com.wolfyscript.utilities.bukkit.world.items.CustomItem;
+import com.wolfyscript.utilities.common.gui.ButtonInteractionResult;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,31 +46,31 @@ public class MenuListCustomItem extends CCWindow {
 
     @Override
     public void onInit() {
-        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             if (items.getListNamespace() != null) {
                 items.setListNamespace(null);
             } else if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
-                List<? extends GuiWindow<?>> history = guiHandler.getHistory(guiHandler.getCluster());
+                List<? extends GuiWindow<?>> history = holder.getGuiHandler().getHistory(holder.getGuiHandler().getCluster());
                 history.remove(history.size() - 1);
-                guiHandler.openCluster(ClusterRecipeCreator.KEY);
+                holder.getGuiHandler().openCluster(ClusterRecipeCreator.KEY);
             } else {
-                guiHandler.openPreviousWindow();
+                holder.getGuiHandler().openPreviousWindow();
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        getButtonBuilder().action("next_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             items.setListPage(cache.getItems().getListPage() + 1);
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
-        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((cache, guiHandler, player, inventory, btn, i, event) -> {
+        getButtonBuilder().action("previous_page").state(s -> s.icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d")).action((holder, cache, btn, slot, details) -> {
             var items = cache.getItems();
             int page = cache.getItems().getListPage();
             if (page > 0) {
                 items.setListPage(--page);
             }
-            return true;
+            return ButtonInteractionResult.cancel(true);
         })).register();
     }
 

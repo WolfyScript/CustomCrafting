@@ -43,7 +43,7 @@ public class RecipeCreatorGrindstone extends RecipeCreator {
         ButtonRecipeIngredient.register(getButtonBuilder(), 1);
         ButtonRecipeResult.register(getButtonBuilder());
         getButtonBuilder().dummy("grindstone").state(s -> s.icon(Material.GRINDSTONE)).register();
-        getButtonBuilder().chatInput("xp").state(s -> s.icon(Material.EXPERIENCE_BOTTLE).render((cache, guiHandler, player, guiInventory, btn, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getGrindingCache().getXp()))))).inputAction((guiHandler, player, msg, args) -> {
+        getButtonBuilder().chatInput("xp").state(s -> s.icon(Material.EXPERIENCE_BOTTLE).render((holder, cache, btn, slot, itemStack) -> CallbackButtonRender.Result.of(Placeholder.unparsed("xp", String.valueOf(cache.getRecipeCreatorCache().getGrindingCache().getXp()))))).inputAction((guiHandler, player, msg, args) -> {
             int xp;
             try {
                 xp = Integer.parseInt(args[0]);
