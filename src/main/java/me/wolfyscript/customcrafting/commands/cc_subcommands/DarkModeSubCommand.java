@@ -46,9 +46,9 @@ public class DarkModeSubCommand extends AbstractSubCommand {
             PlayerUtil.getStore(p).setDarkMode(!PlayerUtil.getStore(p).isDarkMode());
             WolfyUtilities api = customCrafting.getApi();
             if (PlayerUtil.getStore(p).isDarkMode()) {
-                api.getChat().sendMessage(p, "$commands.darkmode.enabled$");
+                api.getChat().sendMessage(p, api.getChat().translated("commands.darkmode.enabled"));
             } else {
-                api.getChat().sendMessage(p, "$commands.darkmode.disabled$");
+                api.getChat().sendMessage(p, api.getChat().translated("commands.darkmode.disabled"));
             }
         }
         return true;

@@ -25,8 +25,11 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,15 +50,15 @@ public class LockDownSubCommand extends AbstractSubCommand {
             customCrafting.getConfigHandler().getConfig().toggleLockDown();
             if (sender instanceof Player) {
                 if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
-                    api.getChat().sendMessage((Player) sender, "$commands.lockdown.enabled$");
+                    api.getChat().sendMessage((Player) sender, api.getChat().translated("commands.lockdown.enabled"));
                 } else {
-                    api.getChat().sendMessage((Player) sender, "$commands.lockdown.disabled$");
+                    api.getChat().sendMessage((Player) sender, api.getChat().translated("commands.lockdown.disabled"));
                 }
-            } else {
+            } else if (sender instanceof ConsoleCommandSender consoleSender) {
                 if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
-                    api.getConsole().info("$commands.lockdown.enabled$");
+                    consoleSender.sendMessage(BukkitComponentSerializer.legacy().serialize(api.getChat().translated("commands.lockdown.enabled")));
                 } else {
-                    api.getConsole().info("$commands.lockdown.disabled$");
+                    consoleSender.sendMessage(BukkitComponentSerializer.legacy().serialize(api.getChat().translated("commands.lockdown.disabled")));
                 }
             }
         }
