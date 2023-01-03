@@ -25,8 +25,9 @@ package me.wolfyscript.customcrafting.recipes.items.target;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
@@ -44,11 +45,11 @@ import org.jetbrains.annotations.Nullable;
 @JsonTypeResolver(KeyedTypeResolver.class)
 @JsonTypeIdResolver(KeyedTypeIdResolver.class)
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "key")
-@JsonPropertyOrder("key")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonPropertyOrder(value = { "key" })
 public abstract class MergeAdapter implements Keyed {
 
-    @JsonProperty("key")
+    @JsonInclude
     protected final NamespacedKey key;
 
     /**
@@ -68,7 +69,7 @@ public abstract class MergeAdapter implements Keyed {
         this.slots = adapter.slots.clone();
     }
 
-    @JsonIgnore
+    @JsonGetter("key")
     @Override
     public NamespacedKey getNamespacedKey() {
         return key;
