@@ -62,7 +62,7 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
     private boolean replaceLore = false;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private ValueProvider<Integer> insertAtIndex = null;
-    private List<ElementOption> lines;
+    private List<ElementOptionComponentBukkit> lines;
     private List<? extends ValueProvider<String>> extra;
     private boolean addExtraFirst = false;
 
@@ -80,11 +80,11 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
         this.extra = adapter.extra;
     }
 
-    public void setLines(List<ElementOption> lines) {
+    public void setLines(List<ElementOptionComponentBukkit> lines) {
         this.lines = lines;
     }
 
-    public List<ElementOption> getLines() {
+    public List<ElementOptionComponentBukkit> getLines() {
         return lines;
     }
 
@@ -147,7 +147,9 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
             if (meta.hasLore()) {
                 List<String> targetedLore = meta.getLore();
                 assert targetedLore != null;
-                finalLore.addAll(ElementOption.constructComponentBasedListFromSource(lines, targetedLore, evalContext, miniMessage, papiResolver, langResolver));
+                for (ElementOptionComponentBukkit line : lines) {
+                    finalLore.addAll(line.readFromSource(targetedLore, evalContext, miniMessage, papiResolver, langResolver));
+                }
             }
         }
         List<String> resultLore = resultMeta.hasLore() ? resultMeta.getLore() : new ArrayList<>();
