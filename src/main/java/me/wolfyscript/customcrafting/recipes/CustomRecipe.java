@@ -127,7 +127,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
             this.conditions = new Conditions(customCrafting);
         }
         this.vanillaBook = node.path(KEY_VANILLA_BOOK).asBoolean(true);
-        this.autoDiscover = node.path(KEY_VANILLA_BOOK).asBoolean(true);
+        this.autoDiscover = node.path(KEY_AUTO_DISCOVER).asBoolean(true);
         this.hidden = node.path(KEY_HIDDEN).asBoolean(false);
         //Sets the result of the recipe if one exists in the config
         if (node.has(KEY_RESULT) && !(this instanceof CustomRecipeStonecutter)) {
