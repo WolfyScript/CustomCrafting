@@ -63,7 +63,7 @@ public class Conditions {
 
     @JsonCreator
     private Conditions(JsonNode node) {
-        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection
+        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection (v5)
         var injectableValues = new InjectableValues.Std();
         injectableValues.addValue("customcrafting", this.customCrafting);
         var jsonReader = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().reader(injectableValues);

@@ -75,7 +75,7 @@ public class CauldronBlockData extends CustomBlockData {
         super(ID);
         this.pos = pos;
         this.chunkStorage = chunkStorage;
-        this.customCrafting = CustomCrafting.inst(); //TODO: Somehow use Guice to inject this?! Together with Jackson serialization...
+        this.customCrafting = CustomCrafting.inst(); //TODO: Somehow use Guice to inject this?! Together with Jackson serialization... (v5)
         this.result = new ItemStack[4];
         reset();
         resetResult();

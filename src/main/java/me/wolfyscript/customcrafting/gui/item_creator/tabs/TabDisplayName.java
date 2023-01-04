@@ -55,7 +55,7 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
                     if (creator.getCustomCrafting().isPaper()) {
                         CustomItem customItem = guiHandler.getCustomCache().getItems().getItem();
                         ItemMeta itemMeta = customItem.getItemStack().getItemMeta();
-                        // Need to use the non-relocated MiniMessage! TODO: v5.0 | No longer shade & relocate Adventure!
+                        // TODO: Need to use the non-relocated MiniMessage! (v5) No longer shade & relocate Adventure
                         itemMeta.displayName(MiniMessage.miniMessage().deserialize(s));
                         customItem.setItemMeta(itemMeta);
                     } else {

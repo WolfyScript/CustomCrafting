@@ -70,7 +70,7 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "display_lore"));
         this.replaceLore = false;
         this.extra = new ArrayList<>();
-        this.customCrafting = CustomCrafting.inst(); // TODO: inject instead!
+        this.customCrafting = CustomCrafting.inst(); // TODO: inject instead! (v5)
         this.miniMessage = customCrafting.getApi().getChat().getMiniMessage();
     }
 
@@ -147,32 +147,7 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
             if (meta.hasLore()) {
                 List<String> targetedLore = meta.getLore();
                 assert targetedLore != null;
-                for (ElementOption line : lines) {
-                    if (line.condition().map(boolOperator -> boolOperator.evaluate(evalContext)).orElse(true)) {
-                        line.index().ifPresentOrElse(indexProvider -> {
-                            int index = indexProvider.getValue(evalContext);
-                            if (index < 0) {
-                                index = targetedLore.size() + (index % targetedLore.size()); //Convert the negative index to a positive reverted index, that starts from the end.
-                            }
-                            index = index % targetedLore.size(); //Prevent out of bounds
-                            if (targetedLore.size() > index) {
-                                String targetValue = targetedLore.get(index);
-                                line.value().ifPresentOrElse(valueProvider -> {
-                                    if (Objects.equals(miniMessage.deserialize(valueProvider.getValue(evalContext), papiResolver, langResolver), BukkitComponentSerializer.legacy().deserialize(targetValue))) {
-                                        finalLore.add(targetValue);
-                                    }
-                                }, () -> finalLore.add(targetValue));
-                            }
-                        }, () -> line.value().ifPresentOrElse(valueProvider -> {
-                            Component value = miniMessage.deserialize(valueProvider.getValue(evalContext), papiResolver, langResolver);
-                            for (String targetValue : targetedLore) {
-                                if (Objects.equals(value, BukkitComponentSerializer.legacy().deserialize(targetValue))) {
-                                    finalLore.add(targetValue);
-                                }
-                            }
-                        }, () -> finalLore.addAll(targetedLore)));
-                    }
-                }
+                finalLore.addAll(ElementOption.constructComponentBasedListFromSource(lines, targetedLore, evalContext, miniMessage, papiResolver, langResolver));
             }
         }
         List<String> resultLore = resultMeta.hasLore() ? resultMeta.getLore() : new ArrayList<>();
@@ -206,52 +181,4 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
         return new DisplayLoreMergeAdapter(this);
     }
 
-    public static class ElementOption {
-
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        private ValueProvider<Integer> index;
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        private BoolOperator condition;
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        private ValueProvider<String> value;
-
-        public Optional<ValueProvider<Integer>> index() {
-            return Optional.ofNullable(index);
-        }
-
-        @JsonGetter
-        ValueProvider<Integer> getIndex() {
-            return index;
-        }
-
-        public void setIndex(ValueProvider<Integer> index) {
-            this.index = index;
-        }
-
-        public Optional<BoolOperator> condition() {
-            return Optional.ofNullable(condition);
-        }
-
-        public void setCondition(BoolOperator condition) {
-            this.condition = condition;
-        }
-
-        @JsonGetter
-        public BoolOperator getCondition() {
-            return condition;
-        }
-
-        public Optional<ValueProvider<String>> value() {
-            return Optional.ofNullable(value);
-        }
-
-        public void setValue(ValueProvider<String> value) {
-            this.value = value;
-        }
-
-        @JsonGetter
-        ValueProvider<String> getValue() {
-            return value;
-        }
-    }
 }
