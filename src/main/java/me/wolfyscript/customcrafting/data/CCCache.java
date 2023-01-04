@@ -70,7 +70,7 @@ public class CCCache extends CustomCache {
 
     public CCCache() {
         super();
-        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection
+        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection (v5)
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
         this.applyItem = null;

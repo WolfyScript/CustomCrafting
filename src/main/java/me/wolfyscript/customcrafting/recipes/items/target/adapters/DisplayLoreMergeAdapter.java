@@ -70,7 +70,7 @@ public class DisplayLoreMergeAdapter extends MergeAdapter {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "display_lore"));
         this.replaceLore = false;
         this.extra = new ArrayList<>();
-        this.customCrafting = CustomCrafting.inst(); // TODO: inject instead!
+        this.customCrafting = CustomCrafting.inst(); // TODO: inject instead! (v5)
         this.miniMessage = customCrafting.getApi().getChat().getMiniMessage();
     }
 

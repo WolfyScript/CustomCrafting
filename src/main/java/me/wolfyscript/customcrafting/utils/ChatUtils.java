@@ -205,7 +205,7 @@ public class ChatUtils {
                     var itemMeta = cache.getItems().getItem().getItemMeta();
                     return itemMeta != null && itemMeta.hasLore() ? itemMeta.lore() : List.of();
                 },
-                // This is quite inefficient! We need to convert to the shaded version of Adventure! TODO: v5.0 | No longer shade & relocate Adventure!
+                // TODO: This is quite inefficient! We need to convert to the non-shaded version of Adventure! (v5)
                 (guiHandler, player, cache, line) -> miniM.deserialize(paperMiniMsg.serialize(line)),
                 (guiHandler, player, cache, msg, args) -> paperMiniMsg.deserialize(msg)
         ).onAdd((guiHandler, player, cache, index, entry) -> {

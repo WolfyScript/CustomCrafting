@@ -83,13 +83,13 @@ public class BookMetaMergeAdapter extends MergeAdapter {
 
     public BookMetaMergeAdapter() {
         super(new NamespacedKey(CustomCrafting.inst(), "book"));
-        this.customCrafting = CustomCrafting.inst(); // TODO: inject instead!
+        this.customCrafting = CustomCrafting.inst(); // TODO: inject instead (v5)!
         this.miniMessage = customCrafting.getApi().getChat().getMiniMessage();
     }
 
     public BookMetaMergeAdapter(MergeAdapter adapter) {
         super(adapter);
-        this.customCrafting = CustomCrafting.inst(); // TODO: inject instead!
+        this.customCrafting = CustomCrafting.inst(); // TODO: inject instead (v5)!
         this.miniMessage = customCrafting.getApi().getChat().getMiniMessage();
     }
 
@@ -232,10 +232,12 @@ public class BookMetaMergeAdapter extends MergeAdapter {
         if (!(resultMeta instanceof BookMeta resultBookMeta)) return result;
         final TagResolver papiResolver = TagResolverUtil.papi(player);
         final TagResolver langResolver = TagResolver.resolver("translate", (args, context) -> {
-            String text = args.popOr("The <translate> tag requires exactly one argument! The path to the language entry!").value();
+            String text = args.popOr("The <translate> tag requires exactly one argum/data get entity @s SelectedItement! The path to the language entry!").value();
             return Tag.selfClosingInserting(customCrafting.getApi().getChat().translated(text, papiResolver));
         });
         final EvalContext evalContext = player == null ? new EvalContext() : new EvalContextPlayer(player);
+
+        // TODO: Paper specific Adventure support (v5)
 
         List<String> updatedPages = new ArrayList<>();
         StringBuilder title = new StringBuilder();
