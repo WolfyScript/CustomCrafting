@@ -115,6 +115,10 @@ public class LocalStorageLoader extends ResourceLoader {
      */
     private NamespacedKey keyFromFile(String namespace, Path path) {
         String pathString = path.toString();
+        if (!File.separator.equals("/")) {
+            // #205: Required to work with Windows file separators (And possibly other separators).
+            pathString = pathString.replace(File.separatorChar, '/');
+        }
         return new NamespacedKey(customCrafting, namespace + "/" + pathString.substring(0, pathString.lastIndexOf(".")));
     }
 
