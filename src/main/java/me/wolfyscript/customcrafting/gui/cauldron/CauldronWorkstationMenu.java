@@ -30,6 +30,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.InteractionUtils;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
@@ -50,6 +51,8 @@ import org.bukkit.Note;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -72,11 +75,15 @@ public class CauldronWorkstationMenu extends CCWindow {
         for (int i = 0; i < INGREDIENT_AMOUNT; i++) {
             int recipeSlot = i;
             getButtonBuilder().itemInput("crafting.slot_" + i).state(state -> state.icon(Material.AIR)
-                    .action((cache, guiHandler, player, guiInventory, i1, event) -> false)
+                    .action((cache, guiHandler, player, guiInventory, slot, event) -> {
+                        CacheCauldronWorkstation cacheCauldron = cache.getCauldronWorkstation();
+                        InteractionUtils.applyItemFromInteractionEvent(event, itemStack -> cacheCauldron.getInput().set(recipeSlot, itemStack));
+                        return false;
+                    })
                     .postAction((cache, guiHandler, player, guiInventory, itemStack, i1, event) -> {
                         CacheCauldronWorkstation cacheCauldron = cache.getCauldronWorkstation();
                         cacheCauldron.setPreCookEvent(null);
-                        cacheCauldron.getInput().set(recipeSlot, itemStack);
+                        //cacheCauldron.getInput().set(recipeSlot, itemStack); // Does not properly work when multiple interactions are send in a single tick. (e.g. Inventory Profiles Next Mod)
                         cacheCauldron.getBlock().flatMap(block -> cacheCauldron.getBlockData().flatMap(CauldronBlockData::getCauldronStatus)).ifPresent(status -> {
                             for (CustomRecipeCauldron recipeCauldron : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.CAULDRON, player)) {
                                 if (recipeCauldron.checkRecipe(cacheCauldron.getInput(), status)) {
