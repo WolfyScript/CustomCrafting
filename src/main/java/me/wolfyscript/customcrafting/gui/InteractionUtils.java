@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.gui;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -37,7 +40,7 @@ public class InteractionUtils {
      * @param event The event from which to get the changed stack.
      * @param applyItemStack The function to apply the stack.
      */
-    public static boolean applyItemFromInteractionEvent(InventoryInteractEvent event, Consumer<ItemStack> applyItemStack) {
+    public static boolean applyItemFromInteractionEvent(int clickedSlot, InventoryInteractEvent event, Set<Integer> draggableSlots, Consumer<ItemStack> applyItemStack) {
         if (event instanceof InventoryClickEvent clickEvent) {
             ItemStack cursor = clickEvent.getCursor();
             ItemStack current = clickEvent.getCurrentItem();
@@ -76,8 +79,13 @@ public class InteractionUtils {
             }
             return false;
         } else if (event instanceof InventoryDragEvent dragEvent) {
-            dragEvent.setCancelled(true); // Do not handle drag events! Too complicated (For now... TODO: (v5) might include it).
-            return true;
+            if (draggableSlots.containsAll(dragEvent.getInventorySlots())) {
+                applyItemStack.accept(dragEvent.getNewItems().get(clickedSlot));
+                return false;
+            } else {
+                // Do not handle drag events that span across other gui slots.
+                dragEvent.setCancelled(true);
+            }
         }
         return true;
     }

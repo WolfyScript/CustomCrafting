@@ -23,8 +23,10 @@
 package me.wolfyscript.customcrafting.gui.cauldron;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
@@ -48,6 +50,7 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
+import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -61,6 +64,7 @@ public class CauldronWorkstationMenu extends CCWindow {
 
     protected static final int INGREDIENT_AMOUNT = 6;
     protected static final String RESULT = "result_slot";
+    protected static final Set<Integer> INGREDIENT_SLOTS = Set.of(10, 12, 14, 20, 22, 30);
 
     private static final String INDICATOR_LAVA = "indicator.lava";
     private static final String INDICATOR_WATER = "indicator.water";
@@ -77,7 +81,7 @@ public class CauldronWorkstationMenu extends CCWindow {
             getButtonBuilder().itemInput("crafting.slot_" + i).state(state -> state.icon(Material.AIR)
                     .action((cache, guiHandler, player, guiInventory, slot, event) -> {
                         CacheCauldronWorkstation cacheCauldron = cache.getCauldronWorkstation();
-                        return InteractionUtils.applyItemFromInteractionEvent(event, itemStack -> cacheCauldron.getInput().set(recipeSlot, itemStack));
+                        return InteractionUtils.applyItemFromInteractionEvent(slot, event, INGREDIENT_SLOTS, itemStack -> cacheCauldron.getInput().set(recipeSlot, itemStack));
                     })
                     .postAction((cache, guiHandler, player, guiInventory, itemStack, i1, event) -> {
                         CacheCauldronWorkstation cacheCauldron = cache.getCauldronWorkstation();

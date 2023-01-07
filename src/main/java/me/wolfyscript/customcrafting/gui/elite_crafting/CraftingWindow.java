@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.gui.elite_crafting;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
@@ -48,6 +50,43 @@ abstract class CraftingWindow extends CCWindow {
     protected static final String RESULT = "result_slot";
     static final List<Integer> RESULT_SLOTS = List.of(16, 25, 43);
     protected final int gridSize;
+    protected static final Set<Integer> CRAFTING_SLOTS_2 = Set.of(
+            3, 4,
+            12, 13
+    );
+    protected static final Set<Integer> CRAFTING_SLOTS_3 = Set.of(
+            2, 3, 4,
+            11, 12, 13,
+            20, 21, 22
+    );
+    protected static final Set<Integer> CRAFTING_SLOTS_4 = Set.of(
+            1, 2, 3, 4,
+            10, 11, 12, 13,
+            19, 20, 21, 22,
+            28, 29, 30, 31
+    );
+    protected static final Set<Integer> CRAFTING_SLOTS_5 = Set.of(
+            1, 2, 3, 4, 5,
+            10, 11, 12, 13, 14,
+            19, 20, 21, 22, 23,
+            28, 29, 30, 31, 32,
+            37, 38, 39, 40, 41
+    );
+    protected static final Set<Integer> CRAFTING_SLOTS_6 = Set.of(
+            0, 1, 2, 3, 4, 5,
+            9, 10, 11, 12, 13, 14,
+            18, 19, 20, 21, 22, 23,
+            27, 28, 29, 30, 31, 32,
+            36, 37, 38, 39, 40, 41,
+            45, 46, 47, 48, 49, 50
+    );
+    protected static final Map<Byte, Set<Integer>> CRAFTING_SLOTS_MAP = Map.of(
+            (byte) 2, CRAFTING_SLOTS_2,
+            (byte) 3, CRAFTING_SLOTS_3,
+            (byte) 4, CRAFTING_SLOTS_4,
+            (byte) 5, CRAFTING_SLOTS_5,
+            (byte) 6, CRAFTING_SLOTS_6
+    );
 
     protected CraftingWindow(GuiCluster<CCCache> cluster, String namespace, int size, CustomCrafting customCrafting, int gridSize) {
         super(cluster, namespace, size, customCrafting);
@@ -66,9 +105,7 @@ abstract class CraftingWindow extends CCWindow {
                         }
                         CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
                         if (cacheEliteCraftingTable.getContents() != null) {
-                            return InteractionUtils.applyItemFromInteractionEvent(event, itemStack -> {
-                                cacheEliteCraftingTable.getContents()[recipeSlot] = inventory.getItem(slot);
-                            });
+                            return InteractionUtils.applyItemFromInteractionEvent(slot, event, CRAFTING_SLOTS_MAP.get(cacheEliteCraftingTable.getCurrentGridSize()), itemStack -> cacheEliteCraftingTable.getContents()[recipeSlot] = inventory.getItem(slot));
                         }
                         return true;
                     }).postAction((cache, guiHandler, player, inventory, itemStack, slot, inventoryInteractEvent) -> {
