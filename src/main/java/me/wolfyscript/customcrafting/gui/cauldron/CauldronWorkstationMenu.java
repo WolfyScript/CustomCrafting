@@ -77,8 +77,7 @@ public class CauldronWorkstationMenu extends CCWindow {
             getButtonBuilder().itemInput("crafting.slot_" + i).state(state -> state.icon(Material.AIR)
                     .action((cache, guiHandler, player, guiInventory, slot, event) -> {
                         CacheCauldronWorkstation cacheCauldron = cache.getCauldronWorkstation();
-                        InteractionUtils.applyItemFromInteractionEvent(event, itemStack -> cacheCauldron.getInput().set(recipeSlot, itemStack));
-                        return false;
+                        return InteractionUtils.applyItemFromInteractionEvent(event, itemStack -> cacheCauldron.getInput().set(recipeSlot, itemStack));
                     })
                     .postAction((cache, guiHandler, player, guiInventory, itemStack, i1, event) -> {
                         CacheCauldronWorkstation cacheCauldron = cache.getCauldronWorkstation();

@@ -61,17 +61,19 @@ abstract class CraftingWindow extends CCWindow {
             final int recipeSlot = i;
             getButtonBuilder().itemInput("crafting.slot_" + recipeSlot).state(state -> state.icon(Material.AIR)
                     .action((cache, guiHandler, player, inventory, slot, event) -> {
+                        if (cache.getEliteWorkbench() == null || event instanceof InventoryClickEvent clickEvent && CraftingWindow.RESULT_SLOTS.contains(clickEvent.getSlot())) {
+                            return true;
+                        }
                         CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
                         if (cacheEliteCraftingTable.getContents() != null) {
-                            InteractionUtils.applyItemFromInteractionEvent(event, itemStack -> {
+                            return InteractionUtils.applyItemFromInteractionEvent(event, itemStack -> {
                                 cacheEliteCraftingTable.getContents()[recipeSlot] = inventory.getItem(slot);
                             });
                         }
-                        return cache.getEliteWorkbench() == null || event instanceof InventoryClickEvent clickEvent && CraftingWindow.RESULT_SLOTS.contains(clickEvent.getSlot());
+                        return true;
                     }).postAction((cache, guiHandler, player, inventory, itemStack, slot, inventoryInteractEvent) -> {
                         CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
                         if (cacheEliteCraftingTable.getContents() != null) {
-                            cacheEliteCraftingTable.getContents()[recipeSlot] = inventory.getItem(slot);
                             ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), player, inventory, true, cacheEliteCraftingTable.isAdvancedCraftingRecipes());
                             cacheEliteCraftingTable.setResult(result);
                         } else {

@@ -37,7 +37,7 @@ public class InteractionUtils {
      * @param event The event from which to get the changed stack.
      * @param applyItemStack The function to apply the stack.
      */
-    public static void applyItemFromInteractionEvent(InventoryInteractEvent event, Consumer<ItemStack> applyItemStack) {
+    public static boolean applyItemFromInteractionEvent(InventoryInteractEvent event, Consumer<ItemStack> applyItemStack) {
         if (event instanceof InventoryClickEvent clickEvent) {
             ItemStack cursor = clickEvent.getCursor();
             ItemStack current = clickEvent.getCurrentItem();
@@ -50,7 +50,6 @@ public class InteractionUtils {
                         clickEvent.setCurrentItem(stack);
                     } else {
                         stack = current;
-                        //stack.setAmount(stack.getAmount() + 1); // This is not required. Let MC handle it.
                     }
                     applyItemStack.accept(stack);
                 }
@@ -62,28 +61,25 @@ public class InteractionUtils {
                         clickEvent.setCurrentItem(stack);
                     } else {
                         stack = current;
-                        // stack.setAmount(Math.min(stack.getMaxStackSize(), stack.getAmount()) + cursor.getAmount()); // Let MC handle it.
                     }
                     applyItemStack.accept(stack);
                 }
                 case PLACE_ALL -> {
-                    ItemStack stack;
                     if (ItemUtils.isAirOrNull(current)) {
-                        stack = cursor.clone();
+                        applyItemStack.accept(cursor.clone());
                     } else {
-                        stack = current;
-                        // stack.setAmount(Math.min(stack.getMaxStackSize(), stack.getAmount() + cursor.getAmount())); // Let MC handle it.
+                        applyItemStack.accept(current);
                     }
-                    applyItemStack.accept(stack);
                 }
                 case PICKUP_ONE, PICKUP_HALF, PICKUP_SOME, COLLECT_TO_CURSOR -> applyItemStack.accept(current);
                 case PICKUP_ALL -> applyItemStack.accept(null);
             }
+            return false;
         } else if (event instanceof InventoryDragEvent dragEvent) {
             dragEvent.setCancelled(true); // Do not handle drag events! Too complicated (For now... TODO: (v5) might include it).
+            return true;
         }
-
-
+        return true;
     }
 
 }
