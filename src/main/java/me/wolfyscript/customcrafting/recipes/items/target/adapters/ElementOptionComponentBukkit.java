@@ -24,60 +24,26 @@ package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Objects;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.MiniMessage;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import me.wolfyscript.utilities.util.eval.context.EvalContext;
-import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
-import me.wolfyscript.utilities.util.eval.value_providers.ValueProvider;
 
-public abstract class ElementOption<O, C> {
+public class ElementOptionComponentBukkit extends ElementOption<String, String> {
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private ValueProvider<Integer> index;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private BoolOperator condition;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private ValueProvider<C> value;
-
-    public Optional<ValueProvider<Integer>> index() {
-        return Optional.ofNullable(index);
+    public boolean isEqual(String value, EvalContext evalContext, MiniMessage miniMessage, TagResolver... tagResolvers) {
+        return value().map(valueProvider -> Objects.equals(miniMessage.deserialize(valueProvider.getValue(evalContext), tagResolvers), BukkitComponentSerializer.legacy().deserialize(value))).orElse(true);
     }
 
-    @JsonGetter
-    ValueProvider<Integer> getIndex() {
-        return index;
+    @Override
+    public boolean isEqual(String value, EvalContext evalContext) {
+        return isEqual(value, evalContext, CustomCrafting.inst().getApi().getChat().getMiniMessage(), TagResolver.empty());
     }
 
-    public void setIndex(ValueProvider<Integer> index) {
-        this.index = index;
-    }
-
-    public Optional<BoolOperator> condition() {
-        return Optional.ofNullable(condition);
-    }
-
-    public void setCondition(BoolOperator condition) {
-        this.condition = condition;
-    }
-
-    @JsonGetter
-    public BoolOperator getCondition() {
-        return condition;
-    }
-
-    public Optional<ValueProvider<C>> value() {
-        return Optional.ofNullable(value);
-    }
-
-    public void setValue(ValueProvider<C> value) {
-        this.value = value;
-    }
-
-    public abstract boolean isEqual(O value, EvalContext evalContext);
-
-    public List<O> readFromSource(List<O> source, EvalContext evalContext) {
-        List<O> result = new ArrayList<>();
+    public List<String> readFromSource(List<String> source, EvalContext evalContext, MiniMessage miniMessage, TagResolver... tagResolvers) {
+        List<String> result = new ArrayList<>();
         if (condition().map(boolOperator -> boolOperator.evaluate(evalContext)).orElse(true)) {
             index().ifPresentOrElse(indexProvider -> {
                 int index = indexProvider.getValue(evalContext);
@@ -86,16 +52,16 @@ public abstract class ElementOption<O, C> {
                 }
                 index = index % source.size(); //Prevent out of bounds
                 if (source.size() > index) {
-                    O targetValue = source.get(index);
+                    String targetValue = source.get(index);
                     value().ifPresentOrElse(valueProvider -> {
-                        if (isEqual(targetValue, evalContext)) {
+                        if (isEqual(targetValue, evalContext, miniMessage, tagResolvers)) {
                             result.add(targetValue);
                         }
                     }, () -> result.add(targetValue));
                 }
             }, () -> value().ifPresentOrElse(valueProvider -> {
-                for (O targetValue : source) {
-                    if (isEqual(targetValue, evalContext)) {
+                for (String targetValue : source) {
+                    if (isEqual(targetValue, evalContext, miniMessage, tagResolvers)) {
                         result.add(targetValue);
                     }
                 }
@@ -103,11 +69,4 @@ public abstract class ElementOption<O, C> {
         }
         return result;
     }
-
-    @JsonGetter
-    protected ValueProvider<C> getValue() {
-        return value;
-    }
-
 }
-

@@ -64,7 +64,7 @@ public class BookMetaMergeAdapter extends MergeAdapter {
     private BoolOperator copyPages = new BoolOperatorConst(false);
     private BoolOperator replacePages = new BoolOperatorConst(false);
     private ValueProvider<Integer> insertAtPage = null;
-    private List<ElementOption> pages = new ArrayList<>();
+    private List<ElementOptionComponentBukkit> pages = new ArrayList<>();
     private List<? extends ValueProvider<String>> extraPages = new ArrayList<>();
     private BoolOperator addExtraPagesFirst = new BoolOperatorConst(false);
     // Title options
@@ -109,11 +109,11 @@ public class BookMetaMergeAdapter extends MergeAdapter {
         this.replacePages = replacePages;
     }
 
-    public List<ElementOption> getPages() {
+    public List<ElementOptionComponentBukkit> getPages() {
         return pages;
     }
 
-    public void setPages(List<ElementOption> pages) {
+    public void setPages(List<ElementOptionComponentBukkit> pages) {
         this.pages = pages;
     }
 
@@ -252,7 +252,9 @@ public class BookMetaMergeAdapter extends MergeAdapter {
 
             List<String> targetPages = new ArrayList<>(bookMeta.getPages());
             if (bookMeta.hasPages() && copyPages.evaluate(evalContext)) {
-                updatedPages.addAll(ElementOption.constructComponentBasedListFromSource(pages, targetPages, evalContext, miniMessage, papiResolver, langResolver));
+                for (ElementOptionComponentBukkit page : pages) {
+                    page.readFromSource(targetPages, evalContext, miniMessage, papiResolver, langResolver);
+                }
             }
             if (bookMeta.hasTitle()) {
                 title.append(bookMeta.getTitle());
