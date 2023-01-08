@@ -73,8 +73,6 @@ public class InteractionUtils {
                         applyItemStack.accept(current);
                     }
                 }
-                case PICKUP_ONE, PICKUP_HALF, PICKUP_SOME, COLLECT_TO_CURSOR -> applyItemStack.accept(current);
-                case PICKUP_ALL -> applyItemStack.accept(null);
                 case MOVE_TO_OTHER_INVENTORY -> {
                     if (Objects.equals(clickEvent.getClickedInventory(), clickEvent.getView().getBottomInventory())) {
                         // Cancel the event when trying to shift-click the items from the bottom to the top inventory.
@@ -82,6 +80,26 @@ public class InteractionUtils {
                     }
                     applyItemStack.accept(current);
                 }
+                case DROP_ONE_SLOT -> {
+                    // Other than the PICKUP_ALL, DROP_ALL is not called when there is only 1 item.
+                    // So we need to update the stack manually if that is the case.
+                    if (!ItemUtils.isAirOrNull(current) && current.getAmount() == 1) {
+                        applyItemStack.accept(null);
+                    } else {
+                        applyItemStack.accept(current);
+                    }
+                }
+                // Swap means there is both a current and cursor item. The current stack will be swapped with the cursor stack.
+                case SWAP_WITH_CURSOR -> applyItemStack.accept(cursor);
+                // These actions cause the slot to be cleared.
+                // So reset the stack.
+                case PICKUP_ALL, DROP_ALL_SLOT -> applyItemStack.accept(null);
+                // All these actions will keep remaining items in the slot, so lets just use the current stack.
+                // The stack will be updated, as it is a reference to the stack in the inventory.
+                case PICKUP_ONE, PICKUP_HALF, PICKUP_SOME, COLLECT_TO_CURSOR, DROP_ALL_CURSOR -> applyItemStack.accept(current);
+                // Hotbar swaps work all the same, so lets take the hotbar stack.
+                case HOTBAR_SWAP, HOTBAR_MOVE_AND_READD -> applyItemStack.accept(event.getWhoClicked().getInventory().getItem(clickEvent.getHotbarButton()));
+                default -> { /* Should not happen */ }
             }
             return false;
         } else if (event instanceof InventoryDragEvent dragEvent) {
