@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.gui;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -36,7 +37,7 @@ public class InteractionUtils {
     /**
      * Used to apply ItemStack changes from the InventoryInteractEvent.
      *
-     * @param event The event from which to get the changed stack.
+     * @param event          The event from which to get the changed stack.
      * @param applyItemStack The function to apply the stack.
      */
     public static boolean applyItemFromInteractionEvent(int clickedSlot, InventoryInteractEvent event, Set<Integer> draggableSlots, Consumer<ItemStack> applyItemStack) {
@@ -44,30 +45,9 @@ public class InteractionUtils {
             ItemStack cursor = clickEvent.getCursor();
             ItemStack current = clickEvent.getCurrentItem();
             switch (clickEvent.getAction()) {
-                case PLACE_ONE -> {
-                    ItemStack stack;
-                    if (ItemUtils.isAirOrNull(current)) {
-                        // Current is null, so no reference to the inventory stack.
-                        stack = cursor.clone();
-                        stack.setAmount(1);
-                        clickEvent.setCurrentItem(stack);
-                    } else {
-                        stack = current;
-                    }
-                    applyItemStack.accept(stack);
-                }
-                case PLACE_SOME -> {
-                    ItemStack stack;
-                    if (ItemUtils.isAirOrNull(current)) {
-                        // Current is null, so no reference to the inventory stack.
-                        stack = cursor.clone();
-                        stack.setAmount(Math.min(stack.getMaxStackSize(), cursor.getAmount()));
-                        clickEvent.setCurrentItem(stack);
-                    } else {
-                        stack = current;
-                    }
-                    applyItemStack.accept(stack);
-                }
+                case PLACE_ONE -> applyItemStack.accept(placeStack(clickEvent, stack -> 1));
+                case PLACE_SOME ->
+                        applyItemStack.accept(placeStack(clickEvent, stack -> Math.min(stack.getMaxStackSize(), stack.getAmount())));
                 case PLACE_ALL -> {
                     if (ItemUtils.isAirOrNull(current)) {
                         // Slot is empty so no reference to the inventory stack.
@@ -100,9 +80,11 @@ public class InteractionUtils {
                 case PICKUP_ALL, DROP_ALL_SLOT -> applyItemStack.accept(null);
                 // All these actions will keep remaining items in the slot, so lets just use the current stack.
                 // The stack will be updated, as it is a reference to the stack in the inventory.
-                case PICKUP_ONE, PICKUP_HALF, PICKUP_SOME, COLLECT_TO_CURSOR, DROP_ALL_CURSOR -> applyItemStack.accept(current);
+                case PICKUP_ONE, PICKUP_HALF, PICKUP_SOME, COLLECT_TO_CURSOR, DROP_ALL_CURSOR ->
+                        applyItemStack.accept(current);
                 // Hotbar swaps work all the same, so lets take the hotbar stack.
-                case HOTBAR_SWAP, HOTBAR_MOVE_AND_READD -> applyItemStack.accept(event.getWhoClicked().getInventory().getItem(clickEvent.getHotbarButton()));
+                case HOTBAR_SWAP, HOTBAR_MOVE_AND_READD ->
+                        applyItemStack.accept(event.getWhoClicked().getInventory().getItem(clickEvent.getHotbarButton()));
                 default -> { /* Should not happen inside GUIs. (Like dropping the cursor, cloning it, 'unknown', or 'nothing') */ }
             }
             return false;
@@ -117,5 +99,15 @@ public class InteractionUtils {
         }
         return true;
     }
+
+    private static ItemStack placeStack(InventoryClickEvent clickEvent, Function<ItemStack, Integer> amount) {
+        if (!ItemUtils.isAirOrNull(clickEvent.getCurrentItem())) return clickEvent.getCurrentItem();
+        // Current is null, so no reference to the inventory stack.
+        ItemStack stack = clickEvent.getCursor().clone();
+        stack.setAmount(amount.apply(stack));
+        clickEvent.setCurrentItem(stack);
+        return stack;
+    }
+
 
 }
