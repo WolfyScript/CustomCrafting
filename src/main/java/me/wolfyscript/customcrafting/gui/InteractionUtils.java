@@ -22,8 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui;
 
-import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -76,6 +75,13 @@ public class InteractionUtils {
                 }
                 case PICKUP_ONE, PICKUP_HALF, PICKUP_SOME, COLLECT_TO_CURSOR -> applyItemStack.accept(current);
                 case PICKUP_ALL -> applyItemStack.accept(null);
+                case MOVE_TO_OTHER_INVENTORY -> {
+                    if (Objects.equals(clickEvent.getClickedInventory(), clickEvent.getView().getBottomInventory())) {
+                        // Cancel the event when trying to shift-click the items from the bottom to the top inventory.
+                        return true;
+                    }
+                    applyItemStack.accept(current);
+                }
             }
             return false;
         } else if (event instanceof InventoryDragEvent dragEvent) {
