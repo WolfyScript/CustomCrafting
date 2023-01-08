@@ -47,6 +47,7 @@ public class InteractionUtils {
                 case PLACE_ONE -> {
                     ItemStack stack;
                     if (ItemUtils.isAirOrNull(current)) {
+                        // Current is null, so no reference to the inventory stack.
                         stack = cursor.clone();
                         stack.setAmount(1);
                         clickEvent.setCurrentItem(stack);
@@ -58,6 +59,7 @@ public class InteractionUtils {
                 case PLACE_SOME -> {
                     ItemStack stack;
                     if (ItemUtils.isAirOrNull(current)) {
+                        // Current is null, so no reference to the inventory stack.
                         stack = cursor.clone();
                         stack.setAmount(Math.min(stack.getMaxStackSize(), cursor.getAmount()));
                         clickEvent.setCurrentItem(stack);
@@ -68,6 +70,8 @@ public class InteractionUtils {
                 }
                 case PLACE_ALL -> {
                     if (ItemUtils.isAirOrNull(current)) {
+                        // Slot is empty so no reference to the inventory stack.
+                        // Need to copy the current cursor, because the reference would be cleared.
                         applyItemStack.accept(cursor.clone());
                     } else {
                         applyItemStack.accept(current);
@@ -99,7 +103,7 @@ public class InteractionUtils {
                 case PICKUP_ONE, PICKUP_HALF, PICKUP_SOME, COLLECT_TO_CURSOR, DROP_ALL_CURSOR -> applyItemStack.accept(current);
                 // Hotbar swaps work all the same, so lets take the hotbar stack.
                 case HOTBAR_SWAP, HOTBAR_MOVE_AND_READD -> applyItemStack.accept(event.getWhoClicked().getInventory().getItem(clickEvent.getHotbarButton()));
-                default -> { /* Should not happen */ }
+                default -> { /* Should not happen inside GUIs. (Like dropping the cursor, cloning it, 'unknown', or 'nothing') */ }
             }
             return false;
         } else if (event instanceof InventoryDragEvent dragEvent) {
