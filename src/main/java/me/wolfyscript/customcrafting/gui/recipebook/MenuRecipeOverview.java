@@ -58,7 +58,6 @@ public class MenuRecipeOverview extends CCWindow {
     private static final String NEXT_RECIPE = "next_recipe";
     private static final String PREVIOUS_RECIPE = "previous_recipe";
     private final BukkitTask ingredientTask;
-    private final BukkitTask containerTask;
 
     MenuRecipeOverview(ClusterRecipeBook cluster, CustomCrafting customCrafting) {
         super(cluster, ClusterRecipeBook.RECIPE_BOOK.getKey(), 54, customCrafting);
@@ -69,19 +68,10 @@ public class MenuRecipeOverview extends CCWindow {
                     Bukkit.getScheduler().runTask(customCrafting, () -> cBtn.getTasks().removeIf(Supplier::get));
                 }
             }
-        }, 1, 25);
-        this.containerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
-            for (int i = 0; i < 45; i++) {
-                Button<CCCache> mainContainerBtn = cluster.getButton("recipe_book.container_" + i);
-                if (mainContainerBtn instanceof ButtonContainerRecipeBook cBtn) {
-                    Bukkit.getScheduler().runTask(customCrafting, () -> cBtn.getTasks().removeIf(Supplier::get));
-                }
-            }
-        }, 1, 25);
+        }, 1, 30);
     }
 
     public void reset() {
-        this.containerTask.cancel();
         this.ingredientTask.cancel();
     }
 

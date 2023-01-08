@@ -50,19 +50,10 @@ import org.jetbrains.annotations.Nullable;
 public class MenuCategoryOverview extends CCWindow {
 
     private static final String BACK = "back";
-    private final BukkitTask ingredientTask;
     private final BukkitTask containerTask;
 
     MenuCategoryOverview(ClusterRecipeBook cluster, CustomCrafting customCrafting) {
         super(cluster, ClusterRecipeBook.CATEGORY_OVERVIEW.getKey(), 54, customCrafting);
-        this.ingredientTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
-            for (int i = 0; i < 37; i++) {
-                Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
-                if (btn instanceof ButtonContainerIngredient cBtn) {
-                    Bukkit.getScheduler().runTask(customCrafting, () -> cBtn.getTasks().removeIf(Supplier::get));
-                }
-            }
-        }, 1, 25);
         this.containerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 45; i++) {
                 Button<CCCache> mainContainerBtn = cluster.getButton("recipe_book.container_" + i);
@@ -70,12 +61,11 @@ public class MenuCategoryOverview extends CCWindow {
                     Bukkit.getScheduler().runTask(customCrafting, () -> cBtn.getTasks().removeIf(Supplier::get));
                 }
             }
-        }, 1, 25);
+        }, 1, 30);
     }
 
     public void reset() {
         this.containerTask.cancel();
-        this.ingredientTask.cancel();
     }
 
     @Override
