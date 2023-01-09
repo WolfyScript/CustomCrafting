@@ -42,31 +42,32 @@ public class InteractionUtils {
      */
     public static boolean applyItemFromInteractionEvent(int clickedSlot, InventoryInteractEvent event, Set<Integer> draggableSlots, Consumer<ItemStack> applyItemStack) {
         if (event instanceof InventoryClickEvent clickEvent) {
-            ItemStack cursor = clickEvent.getCursor();
-            ItemStack current = clickEvent.getCurrentItem();
             switch (clickEvent.getAction()) {
                 case PLACE_ONE -> applyItemStack.accept(placeStack(clickEvent, stack -> 1));
                 case PLACE_SOME ->
                         applyItemStack.accept(placeStack(clickEvent, stack -> Math.min(stack.getMaxStackSize(), stack.getAmount())));
                 case PLACE_ALL -> {
+                    ItemStack current = clickEvent.getCurrentItem();
                     if (ItemUtils.isAirOrNull(current)) {
                         // Slot is empty so no reference to the inventory stack.
                         // Need to copy the current cursor, because the reference would be cleared.
-                        applyItemStack.accept(cursor.clone());
+                        applyItemStack.accept(clickEvent.getCursor().clone());
                     } else {
                         applyItemStack.accept(current);
                     }
                 }
                 case MOVE_TO_OTHER_INVENTORY -> {
+                    ItemStack current = clickEvent.getCurrentItem();
                     if (Objects.equals(clickEvent.getClickedInventory(), clickEvent.getView().getBottomInventory())) {
                         // Cancel the event when trying to shift-click the items from the bottom to the top inventory.
                         return true;
                     }
                     applyItemStack.accept(current);
                 }
+                // Other than the PICKUP_ALL, DROP_ALL is not called when there is only 1 item.
+                // So we need to update the stack manually if that is the case.
                 case DROP_ONE_SLOT -> {
-                    // Other than the PICKUP_ALL, DROP_ALL is not called when there is only 1 item.
-                    // So we need to update the stack manually if that is the case.
+                    ItemStack current = clickEvent.getCurrentItem();
                     if (!ItemUtils.isAirOrNull(current) && current.getAmount() == 1) {
                         applyItemStack.accept(null);
                     } else {
@@ -74,14 +75,14 @@ public class InteractionUtils {
                     }
                 }
                 // Swap means there is both a current and cursor item. The current stack will be swapped with the cursor stack.
-                case SWAP_WITH_CURSOR -> applyItemStack.accept(cursor);
+                case SWAP_WITH_CURSOR -> applyItemStack.accept(clickEvent.getCursor());
                 // These actions cause the slot to be cleared.
                 // So reset the stack.
                 case PICKUP_ALL, DROP_ALL_SLOT -> applyItemStack.accept(null);
                 // All these actions will keep remaining items in the slot, so lets just use the current stack.
                 // The stack will be updated, as it is a reference to the stack in the inventory.
                 case PICKUP_ONE, PICKUP_HALF, PICKUP_SOME, COLLECT_TO_CURSOR, DROP_ALL_CURSOR ->
-                        applyItemStack.accept(current);
+                        applyItemStack.accept(clickEvent.getCurrentItem());
                 // Hotbar swaps work all the same, so lets take the hotbar stack.
                 case HOTBAR_SWAP, HOTBAR_MOVE_AND_READD ->
                         applyItemStack.accept(event.getWhoClicked().getInventory().getItem(clickEvent.getHotbarButton()));
