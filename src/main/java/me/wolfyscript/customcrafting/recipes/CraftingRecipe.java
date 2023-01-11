@@ -77,6 +77,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     private final S settings;
 
+    @Deprecated
     protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node);
         this.ingredients = List.of();

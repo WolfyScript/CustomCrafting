@@ -86,6 +86,8 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected static final String KEY_HIDDEN = "hidden";
     protected static final String ERROR_MSG_KEY = "Not a valid key! The key cannot be null!";
 
+    protected final boolean loadedFromOldOrLegacy;
+
     @JsonProperty("@type")
     protected RecipeType<C> type;
     @JsonIgnore
@@ -112,7 +114,9 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
      * @param node          The json node read from the recipe file.
      * @deprecated Used only for deserializing recipes from old json files.
      */
+    @Deprecated
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
+        this.loadedFromOldOrLegacy = true;
         this.type = RecipeType.valueOfRecipe(this);
         this.namespacedKey = Objects.requireNonNull(namespacedKey, ERROR_MSG_KEY);
         this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection (v5)
@@ -141,6 +145,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     }
 
     protected CustomRecipe(NamespacedKey key, CustomCrafting customCrafting, RecipeType<C> type) {
+        this.loadedFromOldOrLegacy = false;
         this.type = type == null ? RecipeType.valueOfRecipe(this) : type;
         Preconditions.checkArgument(this.type != null, "Error constructing Recipe Object \"" + getClass().getName() + "\": Missing RecipeType!");
         this.namespacedKey = Objects.requireNonNull(key, ERROR_MSG_KEY);
@@ -165,6 +170,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
      * @param customRecipe The other CustomRecipe. Can be from another type, but must have the same ResultTarget.
      */
     protected CustomRecipe(CustomRecipe<C> customRecipe) {
+        this.loadedFromOldOrLegacy = customRecipe.loadedFromOldOrLegacy;
         this.type = customRecipe.type;
         this.customCrafting = customRecipe.customCrafting;
         this.mapper = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper();
