@@ -38,7 +38,7 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
 
     static boolean valid(CustomRecipe<?> recipe) {
         return RecipeType.Container.CRAFTING.isInstance(recipe) || RecipeType.Container.ELITE_CRAFTING.isInstance(recipe) || switch (recipe.getRecipeType().getType()) {
-            case BREWING_STAND, GRINDSTONE -> true;
+            case BREWING_STAND, GRINDSTONE, CAULDRON -> true;
             default -> false;
         };
     }
