@@ -109,7 +109,7 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
 
         @Override
         public boolean shouldRender(RecipeType<?> type) {
-            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.BREWING_STAND || type == RecipeType.GRINDSTONE;
+            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.BREWING_STAND || type == RecipeType.GRINDSTONE || type == RecipeType.CAULDRON;
         }
     }
 }
