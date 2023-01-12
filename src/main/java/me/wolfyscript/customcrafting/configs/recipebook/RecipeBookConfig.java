@@ -24,7 +24,6 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -40,7 +39,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"categoryAlign", "categories", "filters"})
+@JsonPropertyOrder({"categoryAlign", "variantCycle", "categories", "filters"})
 public class RecipeBookConfig {
 
     private final Map<String, Category> categoryMap = new HashMap<>();
@@ -48,6 +47,7 @@ public class RecipeBookConfig {
     private List<String> sortedCategories;
     private List<String> sortedFilters;
     private CategoryAlign categoryAlign = new CategoryAlign();
+    private VariationCycle variationCycle = new VariationCycle();
     @JsonIgnore
     private boolean shouldSave = true;
 
@@ -153,6 +153,14 @@ public class RecipeBookConfig {
         this.categoryAlign = categoryAlign;
     }
 
+    public VariationCycle getVariationCycle() {
+        return variationCycle;
+    }
+
+    public void setVariationCycle(VariationCycle variationCycle) {
+        this.variationCycle = variationCycle;
+    }
+
     public void index(CustomCrafting customCrafting) {
         customCrafting.getApi().getConsole().info("Indexing Recipe Book...");
         Collection<CategoryFilter> filterValues = this.filters.values();
@@ -254,6 +262,28 @@ public class RecipeBookConfig {
 
         public void setCustomSlots(Map<String, Integer> customSlots) {
             this.customSlots = customSlots;
+        }
+    }
+
+    public static class VariationCycle {
+
+        private int periodIngredient = 30;
+        private int periodRecipe = 30;
+
+        public int getPeriodIngredient() {
+            return periodIngredient;
+        }
+
+        public void setPeriodIngredient(int periodIngredient) {
+            this.periodIngredient = periodIngredient;
+        }
+
+        public int getPeriodRecipe() {
+            return periodRecipe;
+        }
+
+        public void setPeriodRecipe(int periodRecipe) {
+            this.periodRecipe = periodRecipe;
         }
     }
 
