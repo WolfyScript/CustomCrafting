@@ -24,6 +24,18 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -49,19 +61,6 @@ import me.wolfyscript.utilities.util.RecipeUtil;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @JsonPropertyOrder(value = {"@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions", "symmetry", "keepShapeAsIs", "shape", "ingredients"})
 public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
@@ -282,39 +281,28 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     }
 
     protected CraftingData checkShape(@NotNull CraftManager.MatrixData matrixData, int[] shape) {
-        Map<Integer, IngredientData> dataMap = new HashMap<>();
+        final var dataArray = new IngredientData[getMaxGridDimension() * getInternalShape().getHeight()]; // Cut memory by not allocating the rows at the end, that don't contain any ingredients.
+        final var matrixOffset = matrixData.getOffsetX() + (matrixData.getOffsetY() * matrixData.getGridSize());
         var i = 0;
-        ItemStack[] matrix = keepShapeAsIs ? matrixData.getOriginalMatrix() : matrixData.getMatrix();
-        for (ItemStack invItem : matrix) {
+        for (ItemStack invItem : keepShapeAsIs ? matrixData.getOriginalMatrix() : matrixData.getMatrix()) {
             int recipeSlot = shape[i];
             if (invItem != null) {
-                if (recipeSlot >= 0) {
-                    var ingredient = ingredients.get(recipeSlot);
-                    if (ingredient != null) {
-                        Optional<CustomItem> item = ingredient.check(invItem, this.checkAllNBT);
-                        if (item.isPresent()) {
-                            //In order to index the ingredients for the correct inventory slot we need to reverse the shape offset.
-                            int estimatedSlot;
-                            if (keepShapeAsIs) {
-                                estimatedSlot = i;
-                            } else {
-                                int row = i / getInternalShape().getWidth();
-                                int offset = keepShapeAsIs ? 0 : matrixData.getOffsetX() + (matrixData.getOffsetY() * matrixData.getGridSize());
-                                estimatedSlot = i + offset + (row * (matrixData.getGridSize() - matrixData.getWidth()));
-                            }
-                            dataMap.put(estimatedSlot, new IngredientData(recipeSlot, ingredient, item.get(), new ItemStack(invItem)));
-                            i++;
-                            continue;
-                        }
-                    }
-                }
-                return null;
+                if (recipeSlot < 0) return null;
+                Ingredient ingredient = ingredients.get(recipeSlot);
+                if (ingredient == null) return null;
+                Optional<CustomItem> item = ingredient.check(invItem, this.checkAllNBT);
+                if (item.isEmpty()) return null;
+                //In order to index the ingredients for the correct inventory slot we need to reverse the shape offset.
+                dataArray[recipeSlot] = new IngredientData(
+                        i + (keepShapeAsIs ? 0 : (matrixOffset + ((i / getInternalShape().getWidth()) * (matrixData.getGridSize() - matrixData.getWidth())))),
+                        recipeSlot, ingredient, item.get(), new ItemStack(invItem)
+                );
             } else if (recipeSlot >= 0) {
                 return null;
             }
             i++;
         }
-        return new CraftingData(this, dataMap);
+        return new CraftingData(this, dataArray);
     }
 
     @Override

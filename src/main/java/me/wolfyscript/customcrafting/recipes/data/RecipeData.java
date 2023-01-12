@@ -22,6 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
@@ -58,10 +63,10 @@ import java.util.Map;
 public abstract class RecipeData<R extends CustomRecipe<?>> {
 
     protected final R recipe;
-    protected final Map<Integer, IngredientData> indexedBySlot;
+    protected final IngredientData[] indexedBySlot;
     protected Result result;
 
-    protected RecipeData(R recipe, Map<Integer, IngredientData> indexedBySlot) {
+    protected RecipeData(R recipe, IngredientData[] indexedBySlot) {
         this.result = recipe.getResult();
         this.recipe = recipe;
         this.indexedBySlot = indexedBySlot;
@@ -79,8 +84,24 @@ public abstract class RecipeData<R extends CustomRecipe<?>> {
         this.result = result;
     }
 
+    /**
+     * The slots indexed by the data <b>Matrix Slot (CraftingInventory slots)</b> and not the recipe slot!
+     *
+     * @return The map with Matrix Slot keys and data values.
+     * @deprecated Use {@link #getNonNullIngredients()} and use {@link IngredientData#matrixSlot()}
+     */
+    @Deprecated
     public Map<Integer, IngredientData> getIndexedBySlot() {
-        return Map.copyOf(indexedBySlot);
+        return getNonNullIngredients().collect(Collectors.toMap(IngredientData::matrixSlot, Function.identity()));
+    }
+
+    /**
+     * Returns a stream consisting of the non-null IngredientData.
+     *
+     * @return A stream of non-null IngredientData.
+     */
+    public Stream<IngredientData> getNonNullIngredients() {
+        return Arrays.stream(indexedBySlot).filter(Objects::nonNull);
     }
 
     /**
@@ -96,7 +117,7 @@ public abstract class RecipeData<R extends CustomRecipe<?>> {
      */
     @Nullable
     public IngredientData getBySlot(int slot) {
-        return indexedBySlot.values().stream().filter(data -> data.recipeSlot() == slot).findFirst().orElse(null);
+        return slot > 0 && slot < indexedBySlot.length ? indexedBySlot[slot] : null;
     }
 
     /**
