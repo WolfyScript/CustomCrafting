@@ -27,6 +27,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
@@ -43,8 +44,11 @@ import org.jetbrains.annotations.Nullable;
 @JsonPropertyOrder({"id", "icon", "name", "description", "auto"})
 public class Category extends CategorySettings {
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected final List<RecipeContainer> containers;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final Map<CategoryFilter, List<RecipeContainer>> indexedFilters = new HashMap<>();
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private boolean auto;
 
     public Category() {

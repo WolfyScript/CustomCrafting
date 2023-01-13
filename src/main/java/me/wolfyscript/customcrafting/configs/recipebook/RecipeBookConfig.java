@@ -27,6 +27,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.node.ObjectNode;
@@ -39,7 +40,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"categoryAlign", "variantCycle", "categories", "filters"})
+@JsonPropertyOrder({"categoryAlign", "variationCycle", "categories", "filters"})
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RecipeBookConfig {
 
     private final Map<String, Category> categoryMap = new HashMap<>();
@@ -217,6 +219,7 @@ public class RecipeBookConfig {
         private AlignItems align = AlignItems.LEFT;
         private int maxPerRow = 9;
         private int minRows = 2;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
         private Map<String, Integer> customSlots = new HashMap<>();
 
         public CategoryAlign() { }
