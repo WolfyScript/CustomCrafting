@@ -46,7 +46,7 @@ public class ConditionCustomPlayerCheck extends Condition<ConditionCustomPlayerC
     @Override
     public boolean isApplicable(CustomRecipe<?> recipe) {
         return RecipeType.Container.CRAFTING.isInstance(recipe) || RecipeType.Container.ELITE_CRAFTING.isInstance(recipe) || switch (recipe.getRecipeType().getType()) {
-            case BREWING_STAND, GRINDSTONE -> true;
+            case BREWING_STAND, GRINDSTONE, CAULDRON -> true;
             default -> false;
         };
     }
@@ -73,7 +73,7 @@ public class ConditionCustomPlayerCheck extends Condition<ConditionCustomPlayerC
 
         @Override
         public boolean shouldRender(RecipeType<?> type) {
-            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.GRINDSTONE;
+            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.GRINDSTONE || type == RecipeType.CAULDRON;
         }
     }
 }
