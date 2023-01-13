@@ -66,6 +66,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
     @JsonIgnore
     private boolean hasAllowedEmptyIngredient;
 
+    @Deprecated
     protected AbstractRecipeShapeless(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node, gridSize, settingsType);
 

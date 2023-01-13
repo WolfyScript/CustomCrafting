@@ -79,6 +79,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private String[] shape;
     private final Symmetry symmetry;
 
+    @Deprecated
     protected AbstractRecipeShaped(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node, gridSize, settingsType);
         this.symmetry = Symmetry.ofLegacy(node.path(MIRROR_KEY));
