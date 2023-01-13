@@ -48,13 +48,13 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class CategorySettings {
 
-    protected Set<String> groups;
-    protected Set<String> folders;
-    protected Set<NamespacedKey> recipes;
     private String id = "";
-    private ItemStack icon;
-    private String name;
-    private List<String> description;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) protected Set<String> groups;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) protected Set<String> folders;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) protected Set<NamespacedKey> recipes;
+    @JsonInclude(JsonInclude.Include.NON_NULL) private ItemStack icon;
+    @JsonInclude(JsonInclude.Include.NON_NULL) private String name;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<String> description;
 
     protected CategorySettings() {
         this.name = "";

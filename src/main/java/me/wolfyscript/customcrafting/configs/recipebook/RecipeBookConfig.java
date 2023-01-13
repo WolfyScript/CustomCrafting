@@ -24,10 +24,10 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.node.ObjectNode;
@@ -40,7 +40,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"categoryAlign", "categories", "filters"})
+@JsonPropertyOrder({"categoryAlign", "variationCycle", "categories", "filters"})
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RecipeBookConfig {
 
     private final Map<String, Category> categoryMap = new HashMap<>();
@@ -48,6 +49,7 @@ public class RecipeBookConfig {
     private List<String> sortedCategories;
     private List<String> sortedFilters;
     private CategoryAlign categoryAlign = new CategoryAlign();
+    private VariationCycle variationCycle = new VariationCycle();
     @JsonIgnore
     private boolean shouldSave = true;
 
@@ -153,6 +155,14 @@ public class RecipeBookConfig {
         this.categoryAlign = categoryAlign;
     }
 
+    public VariationCycle getVariationCycle() {
+        return variationCycle;
+    }
+
+    public void setVariationCycle(VariationCycle variationCycle) {
+        this.variationCycle = variationCycle;
+    }
+
     public void index(CustomCrafting customCrafting) {
         customCrafting.getApi().getConsole().info("Indexing Recipe Book...");
         Collection<CategoryFilter> filterValues = this.filters.values();
@@ -209,6 +219,7 @@ public class RecipeBookConfig {
         private AlignItems align = AlignItems.LEFT;
         private int maxPerRow = 9;
         private int minRows = 2;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
         private Map<String, Integer> customSlots = new HashMap<>();
 
         public CategoryAlign() { }
@@ -254,6 +265,28 @@ public class RecipeBookConfig {
 
         public void setCustomSlots(Map<String, Integer> customSlots) {
             this.customSlots = customSlots;
+        }
+    }
+
+    public static class VariationCycle {
+
+        private int periodIngredient = 30;
+        private int periodRecipe = 30;
+
+        public int getPeriodIngredient() {
+            return periodIngredient;
+        }
+
+        public void setPeriodIngredient(int periodIngredient) {
+            this.periodIngredient = periodIngredient;
+        }
+
+        public int getPeriodRecipe() {
+            return periodRecipe;
+        }
+
+        public void setPeriodRecipe(int periodRecipe) {
+            this.periodRecipe = periodRecipe;
         }
     }
 

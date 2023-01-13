@@ -61,7 +61,7 @@ public class MenuCategoryOverview extends CCWindow {
                     Bukkit.getScheduler().runTask(customCrafting, () -> cBtn.getTasks().removeIf(Supplier::get));
                 }
             }
-        }, 1, 30);
+        }, 1, customCrafting.getConfigHandler().getRecipeBookConfig().getVariationCycle().getPeriodRecipe());
     }
 
     public void reset() {

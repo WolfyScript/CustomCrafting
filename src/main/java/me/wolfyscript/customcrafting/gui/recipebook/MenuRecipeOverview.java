@@ -68,7 +68,7 @@ public class MenuRecipeOverview extends CCWindow {
                     Bukkit.getScheduler().runTask(customCrafting, () -> cBtn.getTasks().removeIf(Supplier::get));
                 }
             }
-        }, 1, 30);
+        }, 1, customCrafting.getConfigHandler().getRecipeBookConfig().getVariationCycle().getPeriodIngredient());
     }
 
     public void reset() {
@@ -77,7 +77,6 @@ public class MenuRecipeOverview extends CCWindow {
 
     @Override
     public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
-
         var recipeBookCache = guiHandler.getCustomCache().getRecipeBookCache();
         if (recipeBookCache.getSubFolder() > 0) {
             List<CustomRecipe<?>> recipes = recipeBookCache.getSubFolderRecipes();
