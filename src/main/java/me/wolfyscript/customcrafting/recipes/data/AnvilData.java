@@ -31,8 +31,8 @@ public class AnvilData extends RecipeData<CustomRecipeAnvil> {
 
     private boolean usedResult;
 
-    public AnvilData(CustomRecipeAnvil recipe, Map<Integer, IngredientData> dataMap) {
-        super(recipe, dataMap);
+    public AnvilData(CustomRecipeAnvil recipe, IngredientData[] data) {
+        super(recipe, data);
         this.usedResult = false;
     }
 

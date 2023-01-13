@@ -22,6 +22,11 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -51,13 +56,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.inventory.meta.Damageable;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 public class SmithingListener implements Listener {
 
@@ -90,10 +88,10 @@ public class SmithingListener implements Listener {
                         assert base != null;
                         assert addition != null;
                         Result result = recipe.getResult();
-                        SmithingData data = new SmithingData(recipe, Map.of(
-                                0, new IngredientData(0, recipe.getBase(), optionalBase.get(), inv.getItem(0)),
-                                1, new IngredientData(1, recipe.getAddition(), optionalAddition.get(), inv.getItem(1))
-                        ));
+                        SmithingData data = new SmithingData(recipe, new IngredientData[]{
+                                new IngredientData(0, 0, recipe.getBase(), optionalBase.get(), inv.getItem(0)),
+                                new IngredientData(1, 1, recipe.getAddition(), optionalAddition.get(), inv.getItem(1))}
+                        );
                         preCraftedRecipes.put(player.getUniqueId(), data);
                         //Process result
                         ItemStack endResult = result.getItem(data, player, inv.getLocation() != null ? inv.getLocation().getBlock() : null);

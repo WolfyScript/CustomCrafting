@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class CraftingData extends RecipeData<CraftingRecipe<?, ?>> {
 
-    public CraftingData(CraftingRecipe<?, ?> recipe, Map<Integer, IngredientData> ingredients) {
+    public CraftingData(CraftingRecipe<?, ?> recipe, IngredientData[] ingredients) {
         super(recipe, ingredients);
     }
 

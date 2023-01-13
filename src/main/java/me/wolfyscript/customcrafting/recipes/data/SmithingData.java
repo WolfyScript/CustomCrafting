@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class SmithingData extends RecipeData<CustomRecipeSmithing> {
 
-    public SmithingData(CustomRecipeSmithing recipe, Map<Integer, IngredientData> ingredients) {
+    public SmithingData(CustomRecipeSmithing recipe, IngredientData[] ingredients) {
         super(recipe, ingredients);
     }
 

@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
+import java.lang.reflect.Array;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -77,9 +78,9 @@ public class AnvilListener implements Listener {
                 continue;
             }
             //Recipe is valid at this point!
-            AnvilData anvilData = new AnvilData(recipe, Map.of(
-                    0, new IngredientData(0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft),
-                    1, new IngredientData(1, recipe.getInputRight(), finalInputRight.orElse(null), inputRight))
+            AnvilData anvilData = new AnvilData(recipe, new IngredientData[] {
+                    new IngredientData(0, 0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft),
+                    new IngredientData(1, 1, recipe.getInputRight(), finalInputRight.orElse(null), inputRight)}
             );
             //Set the result depending on what is configured!
             final CustomItem resultItem = recipe.getRepairTask().computeResult(recipe, event, anvilData, player, inputLeft, inputRight);

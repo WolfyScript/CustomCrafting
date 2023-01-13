@@ -35,5 +35,5 @@ import org.bukkit.inventory.ItemStack;
  * - the CustomItem that was chosen from that Ingredient,<br>
  * - and the created ItemStack of the CustomItem.
  */
-public record IngredientData(int recipeSlot, Ingredient ingredient, CustomItem customItem, ItemStack itemStack) {
+public record IngredientData(int matrixSlot, int recipeSlot, Ingredient ingredient, CustomItem customItem, ItemStack itemStack) {
 }

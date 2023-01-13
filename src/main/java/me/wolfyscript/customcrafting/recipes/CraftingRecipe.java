@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderCrafting;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -161,7 +162,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     }
 
     public void removeMatrix(@Nullable Player player, @Nullable Inventory inventory, int totalAmount, CraftingData craftingData) {
-        craftingData.getIndexedBySlot().forEach((slot, data) -> {
+        craftingData.getNonNullIngredients().forEach((data) -> {
             var item = data.customItem();
             if (item != null) {
                 item.remove(data.itemStack(), totalAmount, inventory, player, player != null ? player.getLocation() : null, data.ingredient().isReplaceWithRemains());
@@ -171,27 +172,21 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     public ItemStack[] shrinkMatrix(@Nullable Player player, @Nullable Inventory inventory, int totalAmount, CraftingData craftingData, int gridDimension) {
         ItemStack[] matrix = new ItemStack[gridDimension * gridDimension];
-        craftingData.getIndexedBySlot().forEach((slot, data) -> {
-            matrix[slot] = data.customItem().shrink(data.itemStack(), totalAmount, data.ingredient().isReplaceWithRemains(), inventory, player, null);
-        });
+        craftingData.getNonNullIngredients().forEach((data) -> matrix[data.matrixSlot()] = data.customItem().shrink(data.itemStack(), totalAmount, data.ingredient().isReplaceWithRemains(), inventory, player, null));
         return matrix;
     }
 
     public int getAmountCraftable(CraftingData craftingData) {
-        int totalAmount = -1;
-        for (IngredientData value : craftingData.getIndexedBySlot().values()) {
+        return craftingData.getNonNullIngredients().map(value -> {
             var item = value.customItem();
             if (item != null) {
                 var input = value.itemStack();
                 if (input != null) {
-                    int possible = input.getAmount() / item.getAmount();
-                    if (possible < totalAmount || totalAmount == -1) {
-                        totalAmount = possible;
-                    }
+                    return input.getAmount() / item.getAmount();
                 }
             }
-        }
-        return totalAmount;
+            return 0;
+        }).min(Comparator.comparingInt(o -> o)).orElse(0);
     }
 
     @Override
@@ -267,14 +262,10 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         });
         builder.setRemainingItemsFunction(inventory -> {
             if (!isDisabled() && inventory.getHolder() instanceof Player player) {
-                craftManager.get(player.getUniqueId()).ifPresent(craftingData -> {
-                    for (int i = 0; i < inventory.getMatrix().length; i++) {
-                        IngredientData ingredientData = craftingData.getIndexedBySlot().get(i);
-                        if (ingredientData != null) {
-                            inventory.setItem(i+1, ingredientData.customItem().shrink(inventory.getMatrix()[i], 1, ingredientData.ingredient().isReplaceWithRemains(), inventory, player, player.getLocation()));
-                        }
-                    }
-                });
+                craftManager.get(player.getUniqueId()).ifPresent(craftingData -> craftingData.getNonNullIngredients().forEach(ingredientData -> {
+                    int slot = ingredientData.matrixSlot() + 1;
+                    inventory.setItem(slot + 1, ingredientData.customItem().shrink(inventory.getMatrix()[slot], 1, ingredientData.ingredient().isReplaceWithRemains(), inventory, player, player.getLocation()));
+                }));
             }
             return Optional.of(new ArrayList<>());
         });

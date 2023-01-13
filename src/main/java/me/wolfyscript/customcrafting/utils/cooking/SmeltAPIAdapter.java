@@ -64,7 +64,7 @@ public abstract class SmeltAPIAdapter {
             Optional<CustomItem> customSource = cookingRecipe.getSource().check(source, cookingRecipe.isCheckNBT());
             if (customSource.isPresent()) {
                 if (cookingRecipe.checkConditions(new Conditions.Data(null, block, null))) {
-                    var data = new IngredientData(0, cookingRecipe.getSource(), customSource.get(), source);
+                    var data = new IngredientData(0, 0, cookingRecipe.getSource(), customSource.get(), source);
                     return new Pair<>(switch (cookingRecipe.getRecipeType().getType()) {
                         case FURNACE -> new FurnaceRecipeData((CustomRecipeFurnace) cookingRecipe, data);
                         case SMOKER -> new SmokerRecipeData((CustomRecipeSmoking) cookingRecipe, data);

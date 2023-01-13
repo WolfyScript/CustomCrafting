@@ -26,6 +26,17 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Streams;
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
@@ -43,17 +54,6 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
@@ -150,58 +150,60 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @Override
     public CraftingData check(CraftManager.MatrixData matrixData) {
-        final Map<Integer, IngredientData> dataMap = new HashMap<>();
-        final List<Integer> selectedSlots = new LinkedList<>();
-        final Multimap<Integer, Integer> checkedSlots = HashMultimap.create(ingredients.size(), ingredients.size());
+        final IngredientData[] dataArray = new IngredientData[ingredients.size()];
+        final List<Integer> selectedSlots = new ArrayList<>();
+        final Multimap<Integer, Integer> checkedIndicesPerSlot = HashMultimap.create(ingredients.size(), ingredients.size());
         final ItemStack[] matrix = matrixData.getItems();
         /*
         Previous implementation had the issue that it didn't go through all possible variations and therefore failed to verify the recipe if the items weren't arranged correctly.
         The new implementation should fix that. Of course at the cost of more calculation time... For 9 ingredients not that big of a deal, but for 36, well... that's why 3x3 recipe grids should be the max size possible.
          */
-        for (int i = 0; i < matrix.length; i++) { //First we go through all the items in the grid.
-            var checked = checkedSlots.get(i);
-            var recipeSlot = checkIngredientNew(i, matrixData, selectedSlots, checked, dataMap, matrix[i]); //Get the slot of the ingredient or -1 if non is found.
+        for (int i = 0; i < matrix.length; ) { //First we go through all the items in the grid.
+            final Collection<Integer> checkedIndices = checkedIndicesPerSlot.get(i);
+            final int recipeSlot = checkIngredient(i, matrixData, selectedSlots, checkedIndices, dataArray, matrix[i]); //Get the slot of the ingredient or -1 if non is found.
             if (recipeSlot == -1) {
-                if (i == 0 || checked.size() == indexes.size()) { //We can directly end the check if it fails for the first slot.
+                // Invalid ingredient. Does not match current matrix stack.
+                if (i == 0 || checkedIndices.size() == indexes.size()) { //We can directly end the check if it fails for the first slot.
                     return null;
                 }
                 if (selectedSlots.size() > i) {
                     selectedSlots.remove(i); //Add the previous selected recipe slot back into the queue.
                 }
-                i -= 2; //Go back one inventory slot
+                i--; //Go back to previous slot and recheck it.
                 continue;
             } else if (selectedSlots.size() > i) {
-                selectedSlots.set(i, recipeSlot);//Add the previous selected recipe slot back into the queue, so we don't miss it.
+                selectedSlots.set(i, recipeSlot); //Add the previous selected recipe slot back into the queue, so we don't miss it.
             } else {
-                selectedSlots.add(recipeSlot);//Add the newly found slot to the used slots.
+                selectedSlots.add(recipeSlot); //Add the newly found slot to the used slots.
             }
-            checkedSlots.put(i, recipeSlot);
+            checkedIndicesPerSlot.put(i, recipeSlot); // Ingredient matches current matrix stack, goto next slot
+            i++;
         }
         if ((selectedSlots.size() == ingredients.size())) {
-            return new CraftingData(this, dataMap);
+            return new CraftingData(this, dataArray);
         }
         if (hasAllowedEmptyIngredient && matrixData.getStrippedSize() == selectedSlots.size()) { //The empty ingredients can be very tricky in shapeless recipes and shouldn't be used... but might as well implement it anyway.
             if (indexes.stream().filter(index -> !selectedSlots.contains(index)).allMatch(index -> ingredients.get(index).isAllowEmpty())) {
-                return new CraftingData(this, dataMap);
+                return new CraftingData(this, dataArray);
             }
         }
         return null;
     }
 
-    protected Integer checkIngredientNew(int pos, CraftManager.MatrixData matrixData, List<Integer> selectedSlots, Collection<Integer> checkedSlots, Map<Integer, IngredientData> dataMap, ItemStack item) {
+    protected int checkIngredient(int pos, CraftManager.MatrixData matrixData, List<Integer> selectedSlots, Collection<Integer> checkedIndices, IngredientData[] dataArray, ItemStack item) {
         for (int key : indexes) {
-            if (!selectedSlots.contains(key) && !checkedSlots.contains(key)) {
-                var ingredient = ingredients.get(key);
-                Optional<CustomItem> validItem = ingredient.check(item, isCheckNBT());
-                if (validItem.isPresent()) {
+            if (!selectedSlots.contains(key) && !checkedIndices.contains(key)) {
+                final var ingredient = ingredients.get(key);
+                final var checkResult = ingredient.check(item, isCheckNBT());
+                if (checkResult.isPresent()) {
                     //For shapeless we can't actually determine the exact inventory slot of the ingredient (without massively increasing complexity), but we can make an estimate using the same tactic as with shaped recipes.
                     //Though, Items will still be slightly rearranged in the matrix.
-                    int row = pos / maxGridDimension;
-                    int offset = matrixData.getOffsetX() + (matrixData.getOffsetY() * matrixData.getGridSize());
-                    dataMap.put(pos + offset + (row * (matrixData.getGridSize() - matrixData.getWidth())), new IngredientData(key, ingredient, validItem.get(), new ItemStack(item)));
+                    dataArray[key] = new IngredientData(
+                            pos + (matrixData.getOffsetX() + (matrixData.getOffsetY() * matrixData.getGridSize())) + ((pos / maxGridDimension) * (matrixData.getGridSize() - matrixData.getWidth())),
+                            key, ingredient, checkResult.get(), new ItemStack(item)
+                    );
                     return key;
                 }
-                //Check failed. Let's add the key back into the queue. (To the end, so we don't check it again and again...)
             }
         }
         return -1;
