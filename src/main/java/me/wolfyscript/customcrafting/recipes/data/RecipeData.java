@@ -117,7 +117,7 @@ public abstract class RecipeData<R extends CustomRecipe<?>> {
      */
     @Nullable
     public IngredientData getBySlot(int slot) {
-        return slot > 0 && slot < indexedBySlot.length ? indexedBySlot[slot] : null;
+        return slot >= 0 && slot < indexedBySlot.length ? indexedBySlot[slot] : null;
     }
 
     /**
