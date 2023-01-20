@@ -104,11 +104,10 @@ public class InteractionUtils {
     private static ItemStack placeStack(InventoryClickEvent clickEvent, Function<ItemStack, Integer> amount) {
         if (!ItemUtils.isAirOrNull(clickEvent.getCurrentItem())) return clickEvent.getCurrentItem();
         // Current is null, so no reference to the inventory stack.
-        ItemStack stack = clickEvent.getCursor().clone();
+        ItemStack stack = new ItemStack(Objects.requireNonNull(clickEvent.getCursor()));
         stack.setAmount(amount.apply(stack));
         clickEvent.setCurrentItem(stack);
         return stack;
     }
-
 
 }
