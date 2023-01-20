@@ -110,6 +110,7 @@ import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtensionAdva
 import me.wolfyscript.customcrafting.recipes.items.extension.SoundResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.BannerMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.BlockEntityMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.BookMetaMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.DisplayLoreMergeAdapter;
@@ -286,6 +287,7 @@ public class CustomCrafting extends JavaPlugin {
         if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 9, 6))) {
             resultMergeAdapters.register(new BookMetaMergeAdapter());
             resultMergeAdapters.register(new BannerMergeAdapter());
+            resultMergeAdapters.register(new BlockEntityMergeAdapter());
         }
 
         getLogger().info("Registering Recipe Conditions");
