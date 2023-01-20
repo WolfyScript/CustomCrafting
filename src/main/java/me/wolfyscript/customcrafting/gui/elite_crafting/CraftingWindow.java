@@ -105,7 +105,7 @@ abstract class CraftingWindow extends CCWindow {
                         }
                         CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
                         if (cacheEliteCraftingTable.getContents() != null) {
-                            return InteractionUtils.applyItemFromInteractionEvent(slot, event, CRAFTING_SLOTS_MAP.get(cacheEliteCraftingTable.getCurrentGridSize()), itemStack -> cacheEliteCraftingTable.getContents()[recipeSlot] = inventory.getItem(slot));
+                            return InteractionUtils.applyItemFromInteractionEvent(slot, event, CRAFTING_SLOTS_MAP.get(cacheEliteCraftingTable.getCurrentGridSize()), itemStack -> cacheEliteCraftingTable.getContents()[recipeSlot] = itemStack);
                         }
                         return true;
                     }).postAction((cache, guiHandler, player, inventory, itemStack, slot, inventoryInteractEvent) -> {
