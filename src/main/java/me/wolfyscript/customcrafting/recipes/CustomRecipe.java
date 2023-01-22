@@ -246,7 +246,9 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     }
 
     public void setGroup(String group) {
-        this.group = Objects.requireNonNullElse(group, "");
+        group = Objects.requireNonNull(group, "");
+        Preconditions.checkArgument(!group.contains("§")); // Do not allow legacy color codes in group id! This is an internal id, not something displayed to players!
+        this.group = group;
     }
 
     public Conditions getConditions() {
