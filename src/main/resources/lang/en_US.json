@@ -2052,6 +2052,9 @@
       "global_messages": {
         "override": "<white>Type the folder and key of the recipe",
         "valid_number": "<red>Type in a valid number!</red>",
+        "group_id": {
+          "invalid" : "<red>The group contains an invalid character. Please note that color codes are not necessary as the ids are only used internally!"
+        },
         "save": {
           "input": "<white>Type in the <hover:show_text:'Recipes are saved as follows: <yellow>/data/<folder>/recipes/<recipe_name>.conf</yellow><br><br>The folder can be used to group your recipes and nested folders are allowed!<br>Input your folder and name like this: <yellow>/wui <folder> <name></yellow><br><br><red>Make sure the folder and name only contain: <br> - lowercase letters,<br> - numbers,<br> - underscores,<br> - or dashes!<br>Use <yellow>/wui </yellow>to get input assistance, like tab completions!</red>'><yellow>folder and recipe name</yellow></hover>, under which to save the recipe",
           "key": {

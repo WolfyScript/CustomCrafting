@@ -132,6 +132,10 @@ public class ClusterRecipeCreator extends CCCluster {
                 }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("group", cache.getRecipeCreatorCache().getRecipeCache().getGroup()))))
                 .inputAction((guiHandler, player, s, args) -> {
                     if (args.length > 0) {
+                        if (args[0].contains("§")) { // Do not allow legacy color codes in group id! This is an internal id, not something displayed to players!
+                            getChat().sendMessage(player, translatedMsgKey("group_id.invalid"));
+                            return true;
+                        }
                         guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().setGroup(args[0]);
                     }
                     return false;
