@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
@@ -29,6 +32,7 @@ import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.node.ObjectNode;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
@@ -75,7 +79,30 @@ public class ItemLoader {
                 }
             });
         } else {
-            ingredient = getObjectMapper().convertValue(node, Ingredient.class);
+            if (node.has("var0")) {
+                // Looks like the old format is used (v1.6.5.x or newer, before the major rewrite)
+                // It uses var0, var1, etc. for variants. Each variant can only have a single item.
+                List<APIReference> referenceList = new ArrayList<>();
+                node.fields().forEachRemaining(entry -> {
+                    try {
+                        // Load the api reference manually, because the old results only have one item reference.
+                        APIReference converted = getObjectMapper().reader().readValue(entry.getValue(), APIReference.class);
+                        if (converted != null) {
+                            referenceList.add(converted);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                if (!referenceList.isEmpty()) {
+                    ingredient = new Ingredient(referenceList, Set.of());
+                } else {
+                    ingredient = null;
+                }
+            } else {
+                // The new format of ingredients
+                ingredient = getObjectMapper().convertValue(node, Ingredient.class);
+            }
         }
         if (ingredient != null) {
             ingredient.buildChoices();
@@ -118,13 +145,31 @@ public class ItemLoader {
         } else {
             var injects = new InjectableValues.Std();
             injects.addValue("customcrafting", customCrafting);
-            Result desResult = null;
-            try {
-                desResult = getObjectMapper().reader(injects).readValue(node, Result.class);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                result = desResult;
+            if (node.has("item")) {
+                // Looks like the old format is used (v1.6.5.x or newer, before the major rewrite)
+                APIReference converted = null;
+                try {
+                    // Load the api reference manually, because the old results only have one item reference.
+                    converted = getObjectMapper().reader(injects).readValue(node, APIReference.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (converted != null) {
+                        result = new Result(converted);
+                    } else {
+                        result = null;
+                    }
+                }
+            } else {
+                // Let's assume it is the new type of result
+                Result desResult = null;
+                try {
+                    desResult = getObjectMapper().reader(injects).readValue(node, Result.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    result = desResult;
+                }
             }
         }
         if (result != null) {
