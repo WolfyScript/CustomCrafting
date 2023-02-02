@@ -29,13 +29,15 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
-import me.wolfyscript.customcrafting.utils.CauldronUtils;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.gui.cauldron.CauldronWorkstationCluster;
+import me.wolfyscript.customcrafting.utils.CauldronUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -57,33 +59,41 @@ public class CauldronListener implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (customCrafting.getConfigHandler().getConfig().getCauldronInteraction() == MainConfig.CauldronInteraction.NORMAL) {
             if (event.getPlayer().isSneaking()) return;
-        } else if (!event.getPlayer().isSneaking()) return;
+        } else if (!event.getPlayer().isSneaking()) {
+            return;
+        } else if (!ItemUtils.isAirOrNull(event.getItem())) {
+            return;
+        }
         Block clicked = event.getClickedBlock();
         if (clicked != null && CauldronUtils.isCauldron(clicked.getType()) && event.getPlayer().hasPermission("customcrafting.workstation.cauldron.interact")) {
             ItemStack usedItem = event.getItem();
             if (usedItem != null) {
                 Material type = usedItem.getType();
-                if (type.equals(Material.POTION) || type.equals(Material.GLASS_BOTTLE) || type.equals(Material.WATER_BUCKET) || type.equals(Material.BUCKET) || type.equals(Material.LAVA_BUCKET)) return;
+                if (type.equals(Material.POTION) || type.equals(Material.GLASS_BOTTLE) || type.equals(Material.WATER_BUCKET) || type.equals(Material.BUCKET) || type.equals(Material.LAVA_BUCKET))
+                    return;
             }
-            WorldStorage worldStorage = ((WolfyCoreBukkit)api.getCore()).getPersistentStorage().getOrCreateWorldStorage(clicked.getWorld());
-            BlockStorage blockStorage = worldStorage.getOrCreateAndSetBlockStorage(clicked.getLocation());
-            if (blockStorage.getData(CauldronBlockData.ID, CauldronBlockData.class).isEmpty()) {
-                var cauldronBlockData = new CauldronBlockData(blockStorage.getPos(), blockStorage.getChunkStorage());
-                blockStorage.addOrSetData(cauldronBlockData);
-                cauldronBlockData.onLoad();
-                blockStorage.getChunkStorage().updateBlock(blockStorage.getPos());
-            }
-            blockStorage.getData(CauldronBlockData.ID, CauldronBlockData.class).ifPresent(cauldronBlockData -> {
-                if (cauldronBlockData.getRecipe().isEmpty() && cauldronBlockData.getPassedTicks() <= 0) {
-                    GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(event.getPlayer());
-                    CacheCauldronWorkstation cauldronWorkstation = guiHandler.getCustomCache().getCauldronWorkstation();
-                    cauldronWorkstation.setBlockData(cauldronBlockData);
-                    cauldronWorkstation.setBlock(clicked);
-                    guiHandler.openCluster(CauldronWorkstationCluster.KEY);
-                    event.setCancelled(true);
-                }
-            });
+            if (getCreateAndOpenGUI(clicked, event.getPlayer())) event.setCancelled(true);
         }
+    }
+
+    private boolean getCreateAndOpenGUI(Block clicked, final Player player) {
+        WorldStorage worldStorage = ((WolfyCoreBukkit) api.getCore()).getPersistentStorage().getOrCreateWorldStorage(clicked.getWorld());
+        BlockStorage blockStorage = worldStorage.getOrCreateAndSetBlockStorage(clicked.getLocation());
+        if (blockStorage.getData(CauldronBlockData.ID, CauldronBlockData.class).isEmpty()) {
+            var cauldronBlockData = new CauldronBlockData(blockStorage.getPos(), blockStorage.getChunkStorage());
+            blockStorage.addOrSetData(cauldronBlockData);
+            cauldronBlockData.onLoad();
+            blockStorage.getChunkStorage().updateBlock(blockStorage.getPos());
+        }
+        return blockStorage.getData(CauldronBlockData.ID, CauldronBlockData.class).map(cauldronBlockData -> {
+            if (cauldronBlockData.getRecipe().isPresent() || cauldronBlockData.getPassedTicks() > 0) return false;
+            GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
+            CacheCauldronWorkstation cauldronWorkstation = guiHandler.getCustomCache().getCauldronWorkstation();
+            cauldronWorkstation.setBlockData(cauldronBlockData);
+            cauldronWorkstation.setBlock(clicked);
+            guiHandler.openCluster(CauldronWorkstationCluster.KEY);
+            return true;
+        }).orElse(false);
     }
 
 }
