@@ -42,7 +42,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class CauldronListener implements Listener {
 
@@ -57,23 +56,21 @@ public class CauldronListener implements Listener {
     @EventHandler
     public void onInteractWithCauldron(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if (customCrafting.getConfigHandler().getConfig().getCauldronInteraction() == MainConfig.CauldronInteraction.NORMAL) {
-            if (event.getPlayer().isSneaking()) return;
-        } else if (!event.getPlayer().isSneaking()) {
-            return;
-        } else if (!ItemUtils.isAirOrNull(event.getItem())) {
+        MainConfig.CauldronInteraction interaction = customCrafting.getConfigHandler().getConfig().getCauldronInteraction();
+        if ((interaction == MainConfig.CauldronInteraction.SNEAKING && (!event.getPlayer().isSneaking() || ItemUtils.isAirOrNull(event.getItem()))) ||
+                (interaction == MainConfig.CauldronInteraction.NORMAL && event.getPlayer().isSneaking())
+        ) {
             return;
         }
         Block clicked = event.getClickedBlock();
-        if (clicked != null && CauldronUtils.isCauldron(clicked.getType()) && event.getPlayer().hasPermission("customcrafting.workstation.cauldron.interact")) {
-            ItemStack usedItem = event.getItem();
-            if (usedItem != null) {
-                Material type = usedItem.getType();
-                if (type.equals(Material.POTION) || type.equals(Material.GLASS_BOTTLE) || type.equals(Material.WATER_BUCKET) || type.equals(Material.BUCKET) || type.equals(Material.LAVA_BUCKET))
-                    return;
-            }
-            if (getCreateAndOpenGUI(clicked, event.getPlayer())) event.setCancelled(true);
+        if (clicked == null || !CauldronUtils.isCauldron(clicked.getType()) || !event.getPlayer().hasPermission("customcrafting.workstation.cauldron.interact"))
+            return;
+        if (event.getItem() != null) {
+            Material type = event.getItem().getType();
+            if (type == Material.POTION || type == Material.GLASS_BOTTLE || type == Material.WATER_BUCKET || type == Material.BUCKET || type == Material.LAVA_BUCKET)
+                return;
         }
+        if (getCreateAndOpenGUI(clicked, event.getPlayer())) event.setCancelled(true);
     }
 
     private boolean getCreateAndOpenGUI(Block clicked, final Player player) {
