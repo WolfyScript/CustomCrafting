@@ -26,12 +26,12 @@ import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
 import com.wolfyscript.utilities.bukkit.persistent.world.BlockStorage;
 import com.wolfyscript.utilities.bukkit.persistent.world.WorldStorage;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
 import me.wolfyscript.customcrafting.utils.CauldronUtils;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.gui.cauldron.CauldronWorkstationCluster;
-import me.wolfyscript.utilities.api.Permissions;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import org.bukkit.Material;
@@ -54,7 +54,10 @@ public class CauldronListener implements Listener {
 
     @EventHandler
     public void onInteractWithCauldron(PlayerInteractEvent event) {
-        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getPlayer().isSneaking()) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (customCrafting.getConfigHandler().getConfig().getCauldronInteraction() == MainConfig.CauldronInteraction.NORMAL) {
+            if (event.getPlayer().isSneaking()) return;
+        } else if (!event.getPlayer().isSneaking()) return;
         Block clicked = event.getClickedBlock();
         if (clicked != null && CauldronUtils.isCauldron(clicked.getType()) && event.getPlayer().hasPermission("customcrafting.workstation.cauldron.interact")) {
             ItemStack usedItem = event.getItem();
