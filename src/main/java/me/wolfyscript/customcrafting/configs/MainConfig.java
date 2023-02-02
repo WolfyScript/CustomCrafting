@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.configs;
 
+import java.util.Locale;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
@@ -31,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class MainConfig extends YamlConfiguration {
 
@@ -159,6 +161,10 @@ public class MainConfig extends YamlConfiguration {
         set("recipes.lockdown", lockdown);
     }
 
+    public boolean isBrewingRecipes() {
+        return getBoolean("recipes.brewing");
+    }
+
     public LocalStorageSettings getLocalStorageSettings() {
         ConfigurationSection section = getConfigurationSection("local_storage");
         return section != null ? new LocalStorageSettings(section) : null;
@@ -169,8 +175,19 @@ public class MainConfig extends YamlConfiguration {
         return section != null ? new DatabaseSettings(section) : null;
     }
 
-    public boolean isBrewingRecipes() {
-        return getBoolean("recipes.brewing");
+    public CauldronInteraction getCauldronInteraction() {
+        return CauldronInteraction.valueOf(getString("workstation.cauldron.interaction", "NORMAL").toUpperCase(Locale.ROOT));
+    }
+
+    public void setCauldronInteraction(CauldronInteraction interaction) {
+        set("workstation.cauldron.interaction", interaction.toString());
+    }
+
+    public enum CauldronInteraction {
+
+        NORMAL,
+        SNEAKING
+
     }
 
 }
