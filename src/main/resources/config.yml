@@ -104,10 +104,7 @@ recipe_book:
 
 workstation:
   cauldron:
-    sound:
-      valid_recipe:
-      start:
-      finished:
+    interaction: NORMAL
     gui:
       main_menu:
         title: "<translate:inventories.cauldron.cauldron.default_title>"
