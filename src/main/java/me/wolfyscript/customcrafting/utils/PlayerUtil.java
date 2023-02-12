@@ -66,7 +66,7 @@ public class PlayerUtil {
         bookCache.setPrepareRecipe(true);
         if (categories.getSortedCategories().size() == 1) {
             bookCache.setCategory(categories.getCategory(0));
-            invAPI.openGui(player, ClusterRecipeBook.RECIPE_BOOK);
+            invAPI.openGui(player, ClusterRecipeBook.CATEGORY_OVERVIEW);
         } else if (!categories.getSortedCategories().isEmpty()) {
             invAPI.openCluster(player, ClusterRecipeBook.KEY);
         }
