@@ -26,11 +26,9 @@ import com.wolfyscript.jackson.dataformat.hocon.HoconMapper;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
+import me.wolfyscript.lib.net.kyori.adventure.text.event.ClickEvent;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.chat.ClickData;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.version.WUVersion;
-import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,13 +84,19 @@ public class UpdateChecker {
     }
 
     protected void sendOutdatedMsg(@Nullable Player player) {
-        if (player != null) {
-            api.getChat().sendMessage(player, "$msg.player.outdated.msg$");
-            api.getChat().sendActionMessage(player,
-                    new ClickData("$msg.player.outdated.msg2$", null),
-                    new ClickData("$msg.player.outdated.link$", null,
-                            new me.wolfyscript.utilities.api.chat.ClickEvent(ClickEvent.Action.OPEN_URL, RESOURCE_URL + id)));
+        if (player == null) {
+            return;
         }
+
+        var chat = api.getChat();
+
+        chat.sendMessage(player, chat.translated("msg.player.outdated.msg"));
+        chat.sendMessage(player,
+            chat.translated("msg.player.outdated.msg2")
+                .append(chat.translated("msg.player.outdated.link")
+                    .clickEvent(ClickEvent.openUrl(RESOURCE_URL + id))
+                )
+        );
     }
 
     public boolean isOutdated() {
