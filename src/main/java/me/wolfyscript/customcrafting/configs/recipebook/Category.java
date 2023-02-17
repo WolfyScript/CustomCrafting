@@ -49,12 +49,11 @@ public class Category extends CategorySettings {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final Map<CategoryFilter, List<RecipeContainer>> indexedFilters = new HashMap<>();
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    private boolean auto;
+    private boolean auto = false;
 
     public Category() {
         super();
         this.containers = new ArrayList<>();
-        this.auto = recipes.isEmpty() && folders.isEmpty();
     }
 
     public Category(Category category) {
