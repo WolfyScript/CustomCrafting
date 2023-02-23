@@ -31,6 +31,8 @@ import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.InteractionUtils;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -111,7 +113,14 @@ abstract class CraftingWindow extends CCWindow {
                     }).postAction((cache, guiHandler, player, inventory, itemStack, slot, inventoryInteractEvent) -> {
                         CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
                         if (cacheEliteCraftingTable.getContents() != null) {
-                            ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), player, inventory, true, cacheEliteCraftingTable.isAdvancedCraftingRecipes());
+                            ItemStack result = customCrafting.getCraftManager().preCheckCraftingTable(
+                                    cacheEliteCraftingTable.getContents(),
+                                    player,
+                                    inventory,
+                                    Conditions.Data.of(player).setBlock(player.getTargetBlock(8)).setInventoryView(player.getOpenInventory()).setEliteCraftingTableSettings(cacheEliteCraftingTable.getSettings()),
+                                    RecipeType.Container.ELITE_CRAFTING,
+                                    cacheEliteCraftingTable.isAdvancedCraftingRecipes() ? RecipeType.Container.CRAFTING : null
+                            );
                             cacheEliteCraftingTable.setResult(result);
                         } else {
                             cacheEliteCraftingTable.setResult(new ItemStack(Material.AIR));

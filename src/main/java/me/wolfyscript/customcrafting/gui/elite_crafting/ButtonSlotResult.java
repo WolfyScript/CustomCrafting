@@ -25,6 +25,8 @@ package me.wolfyscript.customcrafting.gui.elite_crafting;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -80,7 +82,14 @@ class ButtonSlotResult extends ItemInputButton<CCCache> {
             }
         }, (cache, guiHandler, player, inventory, itemStack, slot, b) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
-            ItemStack result = customCrafting.getCraftManager().preCheckRecipe(cacheEliteCraftingTable.getContents(), player, inventory, true, cacheEliteCraftingTable.isAdvancedCraftingRecipes());
+            ItemStack result = customCrafting.getCraftManager().preCheckCraftingTable(
+                    cacheEliteCraftingTable.getContents(),
+                    player,
+                    inventory,
+                    Conditions.Data.of(player).setBlock(player.getTargetBlock(8)).setInventoryView(player.getOpenInventory()).setEliteCraftingTableSettings(cacheEliteCraftingTable.getSettings()),
+                    RecipeType.Container.ELITE_CRAFTING,
+                    cacheEliteCraftingTable.isAdvancedCraftingRecipes() ? RecipeType.Container.CRAFTING : null
+            );
             cacheEliteCraftingTable.setResult(result);
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();

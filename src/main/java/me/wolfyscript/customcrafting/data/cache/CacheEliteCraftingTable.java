@@ -84,6 +84,10 @@ public class CacheEliteCraftingTable {
         return settings != null ? settings.isAdvancedRecipes() : data != null && data.isAdvancedRecipes();
     }
 
+    public EliteCraftingTableSettings getSettings() {
+        return settings;
+    }
+
     public CustomItem getCustomItem() {
         return customItem;
     }
