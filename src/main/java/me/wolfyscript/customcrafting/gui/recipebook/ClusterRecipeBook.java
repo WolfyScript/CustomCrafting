@@ -55,7 +55,7 @@ public class ClusterRecipeBook extends CCCluster {
     public static final String KEY = "recipe_book";
 
     public static final NamespacedKey MAIN_MENU = new NamespacedKey(KEY, "main_menu");
-    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(KEY, "recipe_book");
+    public static final NamespacedKey RECIPE_OVERVIEW = new NamespacedKey(KEY, "recipe_book");
     public static final NamespacedKey CATEGORY_OVERVIEW = new NamespacedKey(KEY, "category_overview");
 
     public static final NamespacedKey BACK_TO_LIST = new NamespacedKey(KEY, "back_to_list");

@@ -60,7 +60,7 @@ public class MenuRecipeOverview extends CCWindow {
     private final BukkitTask ingredientTask;
 
     MenuRecipeOverview(ClusterRecipeBook cluster, CustomCrafting customCrafting) {
-        super(cluster, ClusterRecipeBook.RECIPE_BOOK.getKey(), 54, customCrafting);
+        super(cluster, ClusterRecipeBook.RECIPE_OVERVIEW.getKey(), 54, customCrafting);
         this.ingredientTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 37; i++) {
                 Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);

@@ -76,7 +76,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
         dataHandler.load();
         configHandler.getRecipeBookConfig().index(customCrafting);
         sendMessage(sender, Component.text("Reloading GUIs", NamedTextColor.YELLOW));
-        ((MenuRecipeOverview) invAPI.getGuiWindow(ClusterRecipeBook.RECIPE_BOOK)).reset();
+        ((MenuRecipeOverview) invAPI.getGuiWindow(ClusterRecipeBook.RECIPE_OVERVIEW)).reset();
         ((MenuCategoryOverview) invAPI.getGuiWindow(ClusterRecipeBook.CATEGORY_OVERVIEW)).reset();
         invAPI.reset();
         sendMessage(sender, Component.text("Reload done!", NamedTextColor.GREEN));
