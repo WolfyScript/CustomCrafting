@@ -1422,7 +1422,7 @@
                 "message": "<yellow>Type in the durability cost, which will be subtracted from the item when used in the crafting grid</yellow>"
               },
               "disabled": {
-                "name": "<grey>Durab</grey>ility cost: <dark_red><b>Disabled</b></dark_red>",
+                "name": "<grey>Durability cost: <dark_red><b>Disabled</b></dark_red></grey>",
                 "lore": [
                   "<red>Item must not be stackable!</red>",
                   "<red>Replacement must be disabled!</red>"
