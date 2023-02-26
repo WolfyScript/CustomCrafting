@@ -31,10 +31,10 @@ import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.registry.RegistryRecipes;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -61,6 +61,7 @@ public class RecipeLookupCommand extends AbstractSubCommand {
             if (args[0].contains(":")) {
                 NamespacedKey key = NamespacedKey.of(args[0]);
                 if (key != null) {
+                    var chat = api.getChat();
                     CustomRecipe<?> customRecipe = registryRecipes.get(key);
                     if (customRecipe != null) {
                         if (customRecipe.checkCondition("permission", Conditions.Data.of(player))) { //Make sure the player has access to the recipe
@@ -71,9 +72,9 @@ public class RecipeLookupCommand extends AbstractSubCommand {
                             Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(ClusterRecipeView.RECIPE_SINGLE), 1);
                             return true;
                         }
-                        api.getChat().sendMessage((Player) sender, "$commands.recipes.invalid_recipe_permission$", new Pair<>("%recipe%", args[0]));
+                        chat.sendMessage(player, chat.translated("commands.recipes.invalid_recipe_permission", Placeholder.unparsed("recipe", args[0])));
                     } else {
-                        api.getChat().sendMessage((Player) sender, "$commands.recipes.invalid_recipe$", new Pair<>("%recipe%", args[0]));
+                        chat.sendMessage(player, chat.translated("commands.recipes.invalid_recipe", Placeholder.unparsed("recipe", args[0])));
                     }
                 }
             }

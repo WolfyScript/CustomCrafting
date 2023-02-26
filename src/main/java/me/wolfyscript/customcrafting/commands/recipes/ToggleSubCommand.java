@@ -26,7 +26,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
@@ -47,18 +47,19 @@ public class ToggleSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes_toggle") && args.length > 0) {
+        if (sender instanceof Player player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes_toggle") && args.length > 0) {
             String id = args[0];
             if (id.contains(":")) {
+                var chat = api.getChat();
                 var namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
                 if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey)) {
-                    api.getChat().sendMessage((Player) sender, "$commands.recipes.toggle.enabled$", new Pair<>("%recipe%", args[0]));
+                    chat.sendMessage(player, chat.translated("commands.recipes.toggle.enabled", Placeholder.unparsed("recipe", args[0])));
                     customCrafting.getDisableRecipesHandler().getRecipes().remove(namespacedKey);
                 } else {
-                    api.getChat().sendMessage((Player) sender, "$commands.recipes.toggle.disabled$", new Pair<>("%recipe%", args[0]));
+                    chat.sendMessage(player, chat.translated("commands.recipes.toggle.disabled", Placeholder.unparsed("recipe", args[0])));
                     customCrafting.getDisableRecipesHandler().getRecipes().add(namespacedKey);
                     if (namespacedKey != null) {
-                        Bukkit.getOnlinePlayers().forEach(player -> player.undiscoverRecipe(new NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey())));
+                        Bukkit.getOnlinePlayers().forEach(player1 -> player1.undiscoverRecipe(new NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey())));
                     }
                 }
             }

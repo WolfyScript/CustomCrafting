@@ -30,10 +30,10 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -57,6 +57,7 @@ public class EditSubCommand extends AbstractSubCommand {
             if (args[0].contains(":")) {
                 NamespacedKey key = NamespacedKey.of(args[0]);
                 if (key != null) {
+                    var chat = api.getChat();
                     CustomRecipe<?> customRecipe = customCrafting.getRegistries().getRecipes().get(key);
                     if (customRecipe != null) {
                         GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
@@ -68,10 +69,10 @@ public class EditSubCommand extends AbstractSubCommand {
                             creatorCache.loadRecipeIntoCache(customRecipe);
                             Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey(ClusterRecipeCreator.KEY, creatorCache.getRecipeType().getCreatorID())), 1);
                         } catch (IllegalArgumentException ex) {
-                            api.getChat().sendMessage((Player) sender, "$commands.recipes.edit.invalid_recipe$", new Pair<>("%recipe%", args[0]));
+                            chat.sendMessage(player, chat.translated("commands.recipes.edit.invalid_recipe", Placeholder.unparsed("recipe", args[0])));
                         }
                     } else {
-                        api.getChat().sendMessage((Player) sender, "$commands.recipes.invalid_recipe$", new Pair<>("%recipe%", args[0]));
+                        chat.sendMessage(player, chat.translated("commands.recipes.invalid_recipe", Placeholder.unparsed("recipe", args[0])));
                     }
                 }
             }
