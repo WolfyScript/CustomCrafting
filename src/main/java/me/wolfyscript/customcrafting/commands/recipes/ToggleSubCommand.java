@@ -47,21 +47,26 @@ public class ToggleSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes_toggle") && args.length > 0) {
-            String id = args[0];
-            if (id.contains(":")) {
-                var chat = api.getChat();
-                var namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
-                if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey)) {
-                    chat.sendMessage(player, chat.translated("commands.recipes.toggle.enabled", Placeholder.unparsed("recipe", args[0])));
-                    customCrafting.getDisableRecipesHandler().getRecipes().remove(namespacedKey);
-                } else {
-                    chat.sendMessage(player, chat.translated("commands.recipes.toggle.disabled", Placeholder.unparsed("recipe", args[0])));
-                    customCrafting.getDisableRecipesHandler().getRecipes().add(namespacedKey);
-                    if (namespacedKey != null) {
-                        Bukkit.getOnlinePlayers().forEach(player1 -> player1.undiscoverRecipe(new NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey())));
+        if (sender instanceof Player player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes_toggle")) {
+            var chat = api.getChat();
+            if (args.length > 0) {
+                try {
+                    var namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(args[0]);
+                    if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey)) {
+                        chat.sendMessage(player, chat.translated("commands.recipes.toggle.enabled", Placeholder.unparsed("recipe", args[0])));
+                        customCrafting.getDisableRecipesHandler().getRecipes().remove(namespacedKey);
+                    } else {
+                        chat.sendMessage(player, chat.translated("commands.recipes.toggle.disabled", Placeholder.unparsed("recipe", args[0])));
+                        customCrafting.getDisableRecipesHandler().getRecipes().add(namespacedKey);
+                        if (namespacedKey != null) {
+                            Bukkit.getOnlinePlayers().forEach(player1->player1.undiscoverRecipe(new NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey())));
+                        }
                     }
+                } catch (IllegalArgumentException ex) {
+                    chat.sendMessage(player, chat.translated("commands.recipes.invalid_recipe", Placeholder.unparsed("recipe", args[0])));
                 }
+            } else {
+                chat.sendMessage(player, chat.translated("commands.recipes.toggle.invalid_usage"));
             }
         }
         return true;

@@ -29,7 +29,6 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.net.kyori.adventure.text.event.ClickEvent;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -49,25 +48,32 @@ public class DeleteSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes_delete") && args.length > 0) {
-            WolfyUtilities api = customCrafting.getApi();
-            NamespacedKey key = NamespacedKey.of(args[0]);
-            if (key != null) {
-                var chat = api.getChat();
-                CustomRecipe<?> customRecipe = customCrafting.getRegistries().getRecipes().get(key);
-                if (customRecipe != null) {
-                    chat.sendMessage(player, chat.translated("commands.recipes.delete.confirm", Placeholder.unparsed("recipe", customRecipe.getNamespacedKey().toString())));
-                    chat.sendMessage(player,
-                        chat.translated("commands.recipes.delete.confirmation")
-                            .clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(customCrafting, () -> customRecipe.delete(player))))
-                            .append(
-                                chat.translated("commands.recipes.delete.cancel")
-                                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/recipes delete "))
-                            )
-                    );
-                } else {
+        if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes_delete")) {
+            var chat = api.getChat();
+            if (args.length > 0) {
+                try {
+                    NamespacedKey key = NamespacedKey.of(args[0]);
+                    if (key != null) {
+                        CustomRecipe<?> customRecipe = customCrafting.getRegistries().getRecipes().get(key);
+                        if (customRecipe != null) {
+                            chat.sendMessage(player, chat.translated("commands.recipes.delete.confirm", Placeholder.unparsed("recipe", customRecipe.getNamespacedKey().toString())));
+                            chat.sendMessage(player,
+                                chat.translated("commands.recipes.delete.confirmation")
+                                    .clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(customCrafting, () -> customRecipe.delete(player))))
+                                    .append(
+                                        chat.translated("commands.recipes.delete.cancel")
+                                            .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/recipes delete "))
+                                    )
+                            );
+                        } else {
+                            chat.sendMessage(player, chat.translated("commands.recipes.invalid_recipe", Placeholder.unparsed("recipe", args[0])));
+                        }
+                    }
+                } catch (IllegalArgumentException ex) {
                     chat.sendMessage(player, chat.translated("commands.recipes.invalid_recipe", Placeholder.unparsed("recipe", args[0])));
                 }
+            } else {
+                chat.sendMessage(player, chat.translated("commands.recipes.delete.invalid_usage"));
             }
         }
         return true;

@@ -31,7 +31,6 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
@@ -52,29 +51,34 @@ public class EditSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes_edit") && args.length > 0) {
-            WolfyUtilities api = customCrafting.getApi();
-            if (args[0].contains(":")) {
-                NamespacedKey key = NamespacedKey.of(args[0]);
-                if (key != null) {
-                    var chat = api.getChat();
-                    CustomRecipe<?> customRecipe = customCrafting.getRegistries().getRecipes().get(key);
-                    if (customRecipe != null) {
-                        GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
-                        CCCache cache = guiHandler.getCustomCache();
-                        cache.setSetting(Setting.RECIPE_CREATOR);
-                        var creatorCache = cache.getRecipeCreatorCache();
-                        creatorCache.setRecipeType(customRecipe.getRecipeType());
-                        try {
-                            creatorCache.loadRecipeIntoCache(customRecipe);
-                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey(ClusterRecipeCreator.KEY, creatorCache.getRecipeType().getCreatorID())), 1);
-                        } catch (IllegalArgumentException ex) {
-                            chat.sendMessage(player, chat.translated("commands.recipes.edit.invalid_recipe", Placeholder.unparsed("recipe", args[0])));
+        if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes_edit")) {
+            var chat = api.getChat();
+            if (args.length > 0) {
+                try {
+                    NamespacedKey key = NamespacedKey.of(args[0]);
+                    if (key != null) {
+                        CustomRecipe<?> customRecipe = customCrafting.getRegistries().getRecipes().get(key);
+                        if (customRecipe != null) {
+                            GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
+                            CCCache cache = guiHandler.getCustomCache();
+                            cache.setSetting(Setting.RECIPE_CREATOR);
+                            var creatorCache = cache.getRecipeCreatorCache();
+                            creatorCache.setRecipeType(customRecipe.getRecipeType());
+                            try {
+                                creatorCache.loadRecipeIntoCache(customRecipe);
+                                Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey(ClusterRecipeCreator.KEY, creatorCache.getRecipeType().getCreatorID())), 1);
+                            } catch (IllegalArgumentException ex) {
+                                chat.sendMessage(player, chat.translated("commands.recipes.edit.invalid_recipe", Placeholder.unparsed("recipe", args[0])));
+                            }
+                        } else {
+                            chat.sendMessage(player, chat.translated("commands.recipes.invalid_recipe", Placeholder.unparsed("recipe", args[0])));
                         }
-                    } else {
-                        chat.sendMessage(player, chat.translated("commands.recipes.invalid_recipe", Placeholder.unparsed("recipe", args[0])));
                     }
+                } catch (IllegalArgumentException ex) {
+                    chat.sendMessage(player, chat.translated("commands.recipes.invalid_recipe", Placeholder.unparsed("recipe", args[0])));
                 }
+            } else {
+                chat.sendMessage(player, chat.translated("commands.recipes.edit.invalid_usage"));
             }
         }
         return true;
