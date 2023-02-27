@@ -22,7 +22,18 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import com.google.common.base.Preconditions;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
@@ -33,21 +44,12 @@ import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.node.ObjectNode;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class Conditions {
 
@@ -85,7 +87,8 @@ public class Conditions {
         } else {
             Map<NamespacedKey, Condition<?>> values = new HashMap<>();
             try {
-                Set<Condition<?>> conditions = jsonReader.forType(new TypeReference<Set<Condition<?>>>() {}).readValue(node.path("values"));
+                Set<Condition<?>> conditions = jsonReader.forType(new TypeReference<Set<Condition<?>>>() {
+                }).readValue(node.path("values"));
                 values = conditions.stream().collect(Collectors.toMap(Condition::getNamespacedKey, condition -> condition));
             } catch (IOException e) {
                 this.customCrafting.getApi().getConsole().getLogger().log(Level.SEVERE, "Failed to deserialize conditions!");
@@ -175,37 +178,40 @@ public class Conditions {
         private Player player;
         private Block block;
         private InventoryView inventoryView;
+        private EliteCraftingTableSettings eliteCraftingTableSettings;
 
-        @Deprecated
-        public Data(@Nullable Player player, Block block, @Nullable InventoryView inventoryView) {
+        private Data(Player player) {
+            Preconditions.checkNotNull(player);
             this.player = player;
+        }
+
+        private Data(Block block) {
+            Preconditions.checkNotNull(block);
             this.block = block;
-            this.inventoryView = inventoryView;
         }
 
-        @Deprecated
-        public Data(Player player, Block block) {
-            this(player, block, null);
-        }
-
-        @Deprecated
-        public Data(Player player) {
-            this(player, null, null);
-        }
-
-        public static Data of(@Nullable Player player, Block block, @Nullable InventoryView inventoryView) {
-            return new Data(player, block, inventoryView);
-        }
-
-        public static Data of(Block block, @Nullable InventoryView inventoryView) {
-            return new Data(null, block, inventoryView);
-        }
-
-        public static Data of(Player player) {
+        public static Data of(@NotNull Player player) {
             return new Data(player);
         }
 
+        public static Data of(@NotNull Block block) {
+            return new Data(block);
+        }
+
+        @Deprecated
+        public static Data of(@Nullable Player player, @NotNull Block block, @Nullable InventoryView inventoryView) {
+            Data data = player == null ? of(block) : of(player);
+            if (inventoryView != null) data.setInventoryView(inventoryView);
+            return data;
+        }
+
+        @Deprecated
+        public static Data of(@NotNull Block block, @Nullable InventoryView inventoryView) {
+            return inventoryView == null ? of(block) : of(block).setInventoryView(inventoryView);
+        }
+
         public static Data of(@Nullable Player player, @Nullable InventoryView inventoryView) {
+            Data data;
             Block block = null;
             if (inventoryView != null) {
                 Location topInvLoc = inventoryView.getTopInventory().getLocation();
@@ -216,7 +222,16 @@ public class Conditions {
                 //Previously the player#getTargetedBlock method was used. But this performs better (no raytracing)
                 block = player.getLocation().getBlock();
             }
-            return new Data(player, block, inventoryView);
+            if (block != null) {
+                data = of(block);
+            } else if (player != null) {
+                data = of(player);
+            } else {
+                throw new IllegalArgumentException("Condition Data must at least have a player or block!");
+            }
+            if (inventoryView != null)
+                return data.setInventoryView(inventoryView);
+            return data;
         }
 
         @Nullable
@@ -224,16 +239,8 @@ public class Conditions {
             return player;
         }
 
-        public void setPlayer(@Nullable Player player) {
-            this.player = player;
-        }
-
         public Block getBlock() {
             return block;
-        }
-
-        public void setBlock(Block block) {
-            this.block = block;
         }
 
         @Nullable
@@ -241,8 +248,48 @@ public class Conditions {
             return inventoryView;
         }
 
-        public void setInventoryView(@Nullable InventoryView inventoryView) {
-            this.inventoryView = inventoryView;
+        public Optional<Block> block() {
+            return Optional.ofNullable(block);
+        }
+
+        public Optional<Player> player() {
+            return Optional.ofNullable(player);
+        }
+
+        public Optional<InventoryView> inventoryView() {
+            return Optional.ofNullable(inventoryView);
+        }
+
+        public Optional<EliteCraftingTableSettings> eliteCraftingTableSettings() {
+            return Optional.ofNullable(eliteCraftingTableSettings);
+        }
+
+        public Data setPlayer(Player player) {
+            if (player != null) {
+                this.player = player;
+            }
+            return this;
+        }
+
+        public Data setBlock(Block block) {
+            if (block != null) {
+                this.block = block;
+            }
+            return this;
+        }
+
+        public Data setInventoryView(InventoryView inventoryView) {
+            if (inventoryView != null) {
+                this.inventoryView = inventoryView;
+            }
+            return this;
+        }
+
+        public Data setEliteCraftingTableSettings(EliteCraftingTableSettings eliteCraftingTableSettings) {
+            if (eliteCraftingTableSettings != null) {
+                this.eliteCraftingTableSettings = eliteCraftingTableSettings;
+            }
+            return this;
         }
     }
 

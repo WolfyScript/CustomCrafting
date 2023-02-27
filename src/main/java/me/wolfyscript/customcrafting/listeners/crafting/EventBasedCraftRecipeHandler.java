@@ -24,6 +24,8 @@ package me.wolfyscript.customcrafting.listeners.crafting;
 
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -35,7 +37,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -89,7 +90,13 @@ public class EventBasedCraftRecipeHandler implements Listener {
         var player = (Player) e.getView().getPlayer();
         try {
             ItemStack[] matrix = e.getInventory().getMatrix();
-            ItemStack result = craftManager.preCheckRecipe(matrix, player, e.getInventory(), false, true);
+            ItemStack result = craftManager.preCheckCraftingTable(
+                    matrix,
+                    player,
+                    e.getInventory(),
+                    Conditions.Data.of(player).setInventoryView(player.getOpenInventory()).setBlock(e.getInventory().getLocation() == null ? player.getLocation().getBlock() : e.getInventory().getLocation().getBlock()),
+                    RecipeType.Container.CRAFTING
+            );
             if (!ItemUtils.isAirOrNull(result)) {
                 e.getInventory().setResult(result);
                 Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);

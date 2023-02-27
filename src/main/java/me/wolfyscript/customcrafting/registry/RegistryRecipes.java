@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -506,6 +507,11 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         return recipes.filter(recipe -> !recipe.isHidden() && !recipe.isDisabled()).sorted(Comparator.comparing(CustomRecipe::getPriority)).collect(Collectors.toList());
     }
 
+    public Stream<? extends CraftingRecipe<?,?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, RecipeType.Container.CraftingContainer<?>... types) {
+        return Arrays.stream(types).filter(Objects::nonNull).flatMap(container -> get(container).stream()).filter(recipe -> recipe.fitsDimensions(matrixData)).sorted(Comparator.comparing(CustomRecipe::getPriority));
+    }
+
+    @Deprecated
     public Stream<CraftingRecipe<?, ?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
         List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
         if (elite) {

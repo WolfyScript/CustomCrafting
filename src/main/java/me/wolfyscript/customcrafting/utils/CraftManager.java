@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.utils;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.wolfyscript.utilities.bukkit.nms.inventory.NMSInventoryUtils;
 import java.util.Arrays;
@@ -37,6 +38,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
@@ -57,7 +59,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class CraftManager {
+public final class CraftManager {
 
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
     private final Map<InventoryView, MatrixData> currentMatrixData = new HashMap<>();
@@ -85,15 +87,56 @@ public class CraftManager {
      * @param advanced  If the workstation is an Advanced Crafting Table.
      * @return The result ItemStack of the valid {@link CraftingRecipe}.
      */
+    @Deprecated
     public ItemStack preCheckRecipe(ItemStack[] matrix, Player player, Inventory inventory, boolean elite, boolean advanced) {
+        return preCheckCraftingTable(matrix, player, inventory, Conditions.Data.of(player, player.getOpenInventory()), elite ? RecipeType.Container.ELITE_CRAFTING : null, advanced ? RecipeType.Container.CRAFTING : null);
+    }
+
+    /**
+     * Checks for a possible {@link CraftingRecipe} and returns the result ItemStack of the {@link CraftingRecipe} that is valid.
+     *
+     * @param matrix    The matrix of the crafting grid.
+     * @param player    The player that executed the craft.
+     * @param inventory The inventory this craft was called from.
+     * @return The result ItemStack of the valid {@link CraftingRecipe}.
+     */
+    public ItemStack preCheckCraftingTable(ItemStack[] matrix, Player player, Inventory inventory, Conditions.Data data, RecipeType.Container.CraftingContainer<?>... types) {
+        Preconditions.checkArgument(data.getPlayer() != null, "Cannot check recipe with missing player!");
+        Preconditions.checkArgument(data.getInventoryView() != null, "Cannot check recipe with missing inventory view!");
         remove(player.getUniqueId());
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
             return null;
         }
         var matrixData = getIngredients(matrix);
-        //Previously the player#getTargetedBlock method was used. But this performs better (no raytracing)
-        var targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getLocation().getBlock();
-        return customCrafting.getRegistries().getRecipes().getSimilarCraftingRecipes(matrixData, elite, advanced).map(recipe -> checkRecipe(recipe, matrixData, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().orElse(null);
+        return customCrafting.getRegistries().getRecipes().getSimilarCraftingRecipes(matrixData, types).map(recipe -> checkRecipe(recipe, matrixData, inventory, data)).filter(Objects::nonNull).findFirst().orElse(null);
+    }
+
+    /**
+     * Checks one single {@link CraftingRecipe} and returns the {@link CustomItem} if it's valid.
+     *
+     * @param recipe    The {@link CraftingRecipe} to check.
+     * @param inventory The inventory of the workstation or player.
+     * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
+     */
+    @Nullable
+    public ItemStack checkRecipe(CraftingRecipe<?, ?> recipe, MatrixData flatMatrix, Inventory inventory, Conditions.Data data) {
+        if (recipe.isDisabled() || !recipe.checkConditions(data))
+            return null; //No longer call Event if recipe is disabled or invalid!
+        var craftingData = recipe.check(flatMatrix);
+        if (craftingData == null) return null;
+
+        var player = data.getPlayer();
+        var customPreCraftEvent = new CustomPreCraftEvent(recipe, player, inventory, flatMatrix);
+        Bukkit.getPluginManager().callEvent(customPreCraftEvent);
+        if (customPreCraftEvent.isCancelled()) return null;
+
+        Result result = customPreCraftEvent.getResult();
+        craftingData.setResult(result);
+        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 9, 0))) {
+            NMSInventoryUtils.setCurrentRecipe(inventory, recipe.getNamespacedKey());
+        }
+        put(player.getUniqueId(), craftingData);
+        return result.getItem(craftingData, player, data.getBlock());
     }
 
     /**
@@ -106,6 +149,7 @@ public class CraftManager {
      * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
      */
     @Nullable
+    @Deprecated
     public ItemStack checkRecipe(CraftingRecipe<?, ?> recipe, MatrixData flatMatrix, Player player, Block block, Inventory inventory) {
         if (!recipe.isDisabled() && recipe.checkConditions(Conditions.Data.of(player, block, player.getOpenInventory()))) {
             var craftingData = recipe.check(flatMatrix);
