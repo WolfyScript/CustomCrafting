@@ -74,7 +74,7 @@ import java.util.Objects;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "@type")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonPropertyOrder(value = {"@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions"})
-public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
+public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, Comparable<CustomRecipe<C>> {
 
     protected static final String KEY_RESULT = "result";
     protected static final String KEY_GROUP = "group";
@@ -378,6 +378,11 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     public abstract void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event);
 
     public abstract void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster);
+
+    @Override
+    public int compareTo(@NotNull CustomRecipe<C> other) {
+        return getPriority().compareTo(other.getPriority());
+    }
 
     /**
      * Writes the recipe to json using the specified generator and provider.
