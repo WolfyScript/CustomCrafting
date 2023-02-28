@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
+import com.google.common.base.Preconditions;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
@@ -30,6 +31,7 @@ import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -80,7 +82,8 @@ public abstract class RecipeData<R extends CustomRecipe<?>> {
         return result;
     }
 
-    public void setResult(Result result) {
+    public void setResult(@NotNull Result result) {
+        Preconditions.checkNotNull(result, "Cannot set null result to RecipeData!");
         this.result = result;
     }
 
