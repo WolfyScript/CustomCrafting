@@ -145,7 +145,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @Override
     public CraftingData check(CraftManager.MatrixData matrixData) {
-        if (!fitsDimensions(matrixData)) return null;
+        if (isDisabled() || !fitsDimensions(matrixData)) return null;
         final IngredientData[] dataArray = new IngredientData[ingredients.size()];
         final List<Integer> selectedSlots = new ArrayList<>();
         final Multimap<Integer, Integer> checkedIndicesPerSlot = HashMultimap.create(ingredients.size(), ingredients.size());
