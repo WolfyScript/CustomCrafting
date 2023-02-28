@@ -309,53 +309,51 @@ public final class CraftManager {
      * @return The newly generated MatrixData representing the shape and stripped ingredients.
      */
     public MatrixData getIngredients(ItemStack[] ingredients) {
-        List<List<ItemStack>> items = new LinkedList<>();
-        List<ItemStack> ingredList = Lists.newArrayList(ingredients);
         int gridSize = gridSize(ingredients);
+        ItemStack[][] itemMatrix = new ItemStack[gridSize][gridSize];
         for (int y = 0; y < gridSize; y++) {
-            items.add(ingredList.subList(y * gridSize, gridSize + y * gridSize));
+            itemMatrix[y] = Arrays.copyOfRange(ingredients, y * gridSize, gridSize + y * gridSize);
         }
-        //Go through each row beginning from the top, removing empty rows, until you hit a non-empty row.
-        int yPosOfFirstOccurrence = 0;
-        ListIterator<List<ItemStack>> iterator = items.listIterator();
-        while (iterator.hasNext()) {
-            if (!iterator.next().stream().allMatch(Objects::isNull)) break;
-            yPosOfFirstOccurrence++;
-            iterator.remove();
-        }
-        //Go through each row beginning from the bottom, removing empty rows, until you hit a non-empty row.
-        iterator = items.listIterator(items.size());
-        while (iterator.hasPrevious()) {
-            if (!iterator.previous().stream().allMatch(Objects::isNull)) break;
-            iterator.remove();
-        }
-        //Check for the first empty column from the left.
-        var leftPos = gridSize;
-        for (List<ItemStack> itemsY : items) {
-            var size = itemsY.size();
-            for (int i = 0; i < size; i++) {
-                if (itemsY.get(i) != null) {
-                    leftPos = Math.min(leftPos, i);
-                    break;
-                }
+        int top = 0;
+        int bottom = gridSize;
+        int left = 0;
+        int right = gridSize;
+        topCheck:
+        for (; top < gridSize; top++) {
+            for (ItemStack stack : itemMatrix[top]) {
+                if (stack != null) break topCheck;
             }
-            if (leftPos == 0) break;
         }
-        //Check for the first empty column from the right.
-        var rightPos = 0;
-        for (List<ItemStack> itemsY : items) {
-            var size = itemsY.size();
-            for (int i = size - 1; i > 0; i--) {
-                if (itemsY.get(i) != null) {
-                    rightPos = Math.max(rightPos, i);
-                    break;
-                }
+        bottomCheck:
+        for (; bottom > 0; bottom--) {
+            for (ItemStack stack : itemMatrix[bottom - 1]) {
+                if (stack != null) break bottomCheck;
             }
-            if (rightPos == gridSize) break;
         }
-        var finalLeftPos = leftPos;
-        var finalRightPos = rightPos + 1;
-        return new MatrixData(ingredients, items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).toArray(ItemStack[]::new), items.size(), finalRightPos - finalLeftPos, gridSize, finalLeftPos, yPosOfFirstOccurrence);
+        if (top > bottom)
+            return new MatrixData(ingredients, new ItemStack[0], 0, 0, gridSize, 0, 0); // No item inside the grid, do not do further calculations!
+        itemMatrix = Arrays.copyOfRange(itemMatrix, top, bottom);
+        leftCheck:
+        for (; left < gridSize; left++) {
+            for (ItemStack[] row : itemMatrix) {
+                if (row[left] != null) break leftCheck;
+            }
+        }
+        rightCheck:
+        for (; right > 0; right--) {
+            for (ItemStack[] row : itemMatrix) {
+                if (row[right - 1] != null) break rightCheck;
+            }
+        }
+        var width = right > left ? right - left : 0; // It should already be caught by the (top > bottom) check, but just make sure.
+        var flatList = new ItemStack[itemMatrix.length * width];
+        var index = 0;
+        for (ItemStack[] row : itemMatrix) {
+            for (int i = left; i < right && i < row.length; i++) {
+                flatList[index++] = row[i];
+            }
+        }
+        return new MatrixData(ingredients, flatList, itemMatrix.length, width, gridSize, left, top);
     }
 
     /**
