@@ -39,23 +39,25 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> extends Registry<T> {
 
     /**
      * This Registry contains all the recipes of this plugin.
      */
+    @Deprecated(forRemoval = true)
     RecipeRegistry RECIPES = new RecipeRegistry();
+    @Deprecated(forRemoval = true)
     ItemCreatorTabRegistry ITEM_CREATOR_TABS = new ItemCreatorTabRegistry();
 
     /**
      * The custom Registry for the Recipes of CustomCrafting.
      * Providing a lot of functionality to get the recipes you need.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     final class RecipeRegistry extends WrapperRegistry<CustomRecipe<?>> {
 
-        @Deprecated
+        @Deprecated(forRemoval = true)
         private RecipeRegistry() {
             super(() -> CustomCrafting.inst().getRegistries().getRecipes());
         }
@@ -219,7 +221,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
 
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     final class ItemCreatorTabRegistry extends WrapperRegistry<ItemCreatorTab> {
 
         public ItemCreatorTabRegistry() {
