@@ -33,6 +33,7 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -90,36 +91,32 @@ public class EventBasedCraftRecipeHandler implements Listener {
         var player = (Player) e.getView().getPlayer();
         try {
             ItemStack[] matrix = e.getInventory().getMatrix();
-            ItemStack result = craftManager.preCheckCraftingTable(
-                    matrix,
-                    player,
-                    e.getInventory(),
-                    Conditions.Data.of(player).setInventoryView(player.getOpenInventory()).setBlock(e.getInventory().getLocation() == null ? player.getLocation().getBlock() : e.getInventory().getLocation().getBlock()),
-                    RecipeType.Container.CRAFTING
-            );
-            if (!ItemUtils.isAirOrNull(result)) {
-                e.getInventory().setResult(result);
-                Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
-                return;
-            }
-            //No valid custom recipes found
-            if (!(e.getRecipe() instanceof Keyed)) return;
-            //Vanilla Recipe is available.
-            //Check for custom recipe that overrides the vanilla recipe
-            var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
-            if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey) || customCrafting.getRegistries().getRecipes().getAdvancedCrafting(namespacedKey) != null) {
-                //Recipe is disabled or it is a custom recipe!
-                e.getInventory().setResult(ItemUtils.AIR);
-                Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
-                return;
-            }
-            //Check for items that are not allowed in vanilla recipes.
-            //If one is found, then cancel the recipe.
-            if (Stream.of(matrix).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
-                e.getInventory().setResult(ItemUtils.AIR);
-            }
-            //At this point the vanilla recipe is valid and can be crafted
-            Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
+            Block block = e.getInventory().getLocation() == null ? player.getLocation().getBlock() : e.getInventory().getLocation().getBlock();
+            craftManager.checkCraftingMatrix(matrix, Conditions.Data.of(player).setInventoryView(e.getView()).setBlock(block), RecipeType.Container.CRAFTING)
+                    .map(craftingData -> craftingData.getResult().getItem(craftingData, player, block))
+                    .ifPresentOrElse(result -> {
+                        e.getInventory().setResult(result);
+                        Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
+                    }, () -> {
+                        //No valid custom recipes found
+                        if (!(e.getRecipe() instanceof Keyed)) return;
+                        //Vanilla Recipe is available.
+                        //Check for custom recipe that overrides the vanilla recipe
+                        var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
+                        if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey) || customCrafting.getRegistries().getRecipes().getAdvancedCrafting(namespacedKey) != null) {
+                            //Recipe is disabled or it is a custom recipe!
+                            e.getInventory().setResult(ItemUtils.AIR);
+                            Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
+                            return;
+                        }
+                        //Check for items that are not allowed in vanilla recipes.
+                        //If one is found, then cancel the recipe.
+                        if (Stream.of(matrix).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
+                            e.getInventory().setResult(ItemUtils.AIR);
+                        }
+                        //At this point the vanilla recipe is valid and can be crafted
+                        Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
+                    });
         } catch (Exception ex) {
             customCrafting.getLogger().severe("-------- [Error occurred while crafting Recipe!] --------");
             ex.printStackTrace();

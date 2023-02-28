@@ -32,6 +32,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -82,15 +83,13 @@ class ButtonSlotResult extends ItemInputButton<CCCache> {
             }
         }, (cache, guiHandler, player, inventory, itemStack, slot, b) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
-            ItemStack result = customCrafting.getCraftManager().preCheckCraftingTable(
+            Block block = player.getTargetBlock(8);
+            cacheEliteCraftingTable.setResult(customCrafting.getCraftManager().checkCraftingMatrix(
                     cacheEliteCraftingTable.getContents(),
-                    player,
-                    inventory,
-                    Conditions.Data.of(player).setBlock(player.getTargetBlock(8)).setInventoryView(player.getOpenInventory()).setEliteCraftingTableSettings(cacheEliteCraftingTable.getSettings()),
+                    Conditions.Data.of(player).setBlock(block).setInventoryView(player.getOpenInventory()).setEliteCraftingTableSettings(cacheEliteCraftingTable.getSettings()),
                     RecipeType.Container.ELITE_CRAFTING,
                     cacheEliteCraftingTable.isAdvancedCraftingRecipes() ? RecipeType.Container.CRAFTING : null
-            );
-            cacheEliteCraftingTable.setResult(result);
+            ).map(data -> data.getResult().getItem(data, player, block)).orElse(null));
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
             return cacheEliteCraftingTable.getResult() != null ? cacheEliteCraftingTable.getResult() : new ItemStack(Material.AIR);
