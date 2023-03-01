@@ -83,7 +83,7 @@ class ButtonSlotResult extends ItemInputButton<CCCache> {
             }
         }, (cache, guiHandler, player, inventory, itemStack, slot, b) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
-            Block block = player.getTargetBlock(8);
+            Block block = player.getTargetBlock(null, 8);
             cacheEliteCraftingTable.setResult(customCrafting.getCraftManager().checkCraftingMatrix(
                     cacheEliteCraftingTable.getContents(),
                     Conditions.Data.of(player).setBlock(block).setInventoryView(player.getOpenInventory()).setEliteCraftingTableSettings(cacheEliteCraftingTable.getSettings()),

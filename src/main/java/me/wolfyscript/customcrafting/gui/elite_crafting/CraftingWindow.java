@@ -114,7 +114,7 @@ abstract class CraftingWindow extends CCWindow {
                     }).postAction((cache, guiHandler, player, inventory, itemStack, slot, inventoryInteractEvent) -> {
                         CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
                         if (cacheEliteCraftingTable.getContents() != null) {
-                            Block targetBlock = player.getTargetBlock(8);
+                            Block targetBlock = player.getTargetBlock(null, 8);
                             customCrafting.getCraftManager().checkCraftingMatrix(
                                             cacheEliteCraftingTable.getContents(),
                                             Conditions.Data.of(player).setBlock(targetBlock).setInventoryView(player.getOpenInventory()).setEliteCraftingTableSettings(cacheEliteCraftingTable.getSettings()),
