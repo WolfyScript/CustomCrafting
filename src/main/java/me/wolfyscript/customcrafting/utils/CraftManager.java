@@ -68,7 +68,7 @@ public final class CraftManager {
     }
 
     public MatrixData getMatrixData(InventoryView view, CraftingInventory craftingInventory) {
-        return currentMatrixData.computeIfAbsent(view, inventory1 -> getIngredients(craftingInventory.getMatrix()));
+        return currentMatrixData.computeIfAbsent(view, inventory1 -> MatrixData.of(craftingInventory.getMatrix()));
     }
 
     public void clearCurrentMatrixData(InventoryView view) {
@@ -86,7 +86,7 @@ public final class CraftManager {
     public Optional<CraftingData> checkCraftingMatrix(ItemStack[] matrix, Conditions.Data data, RecipeType.Container.CraftingContainer<?>... types) {
         data.player().ifPresent(player -> remove(player.getUniqueId()));
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) return Optional.empty();
-        var matrixData = getIngredients(matrix);
+        var matrixData = MatrixData.of(matrix);
         return customCrafting.getRegistries().getRecipes().get(types)
                 .sorted() // Possibility for parallel stream when enough recipes are registered to amortize the overhead. (Things like the PreCraftEvent might interfere. TODO: Experimental Feature)
                 .map(recipe -> tryRecipe(recipe, matrixData, data))
@@ -137,7 +137,7 @@ public final class CraftManager {
         var data = Conditions.Data.of(player, player.getOpenInventory());
         data.player().ifPresent(player1 -> remove(player1.getUniqueId()));
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) return null;
-        var matrixData = getIngredients(matrix);
+        var matrixData = MatrixData.of(matrix);
         return customCrafting.getRegistries().getRecipes().get(elite ? RecipeType.Container.ELITE_CRAFTING : null, advanced ? RecipeType.Container.CRAFTING : null)
                 .sorted()
                 .map(recipe -> checkRecipe(recipe, matrixData, data))
@@ -291,7 +291,7 @@ public final class CraftManager {
         return Optional.ofNullable(preCraftedRecipes.get(uuid));
     }
 
-    private int gridSize(ItemStack[] ingredients) {
+    private static int gridSize(ItemStack[] ingredients) {
         return switch (ingredients.length) {
             case 4 -> 2;
             case 9 -> 3;
@@ -311,52 +311,9 @@ public final class CraftManager {
      * @param ingredients The ingredients to generate the data for.
      * @return The newly generated MatrixData representing the shape and stripped ingredients.
      */
+    @Deprecated
     public MatrixData getIngredients(ItemStack[] ingredients) {
-        int gridSize = gridSize(ingredients);
-        ItemStack[][] itemMatrix = new ItemStack[gridSize][gridSize];
-        for (int y = 0; y < gridSize; y++) {
-            itemMatrix[y] = Arrays.copyOfRange(ingredients, y * gridSize, gridSize + y * gridSize);
-        }
-        int top = 0;
-        int bottom = gridSize;
-        int left = 0;
-        int right = gridSize;
-        topCheck:
-        for (; top < gridSize; top++) {
-            for (ItemStack stack : itemMatrix[top]) {
-                if (stack != null) break topCheck;
-            }
-        }
-        bottomCheck:
-        for (; bottom > 0; bottom--) {
-            for (ItemStack stack : itemMatrix[bottom - 1]) {
-                if (stack != null) break bottomCheck;
-            }
-        }
-        if (top > bottom)
-            return new MatrixData(ingredients, new ItemStack[0], 0, 0, gridSize, 0, 0); // No item inside the grid, do not do further calculations!
-        itemMatrix = Arrays.copyOfRange(itemMatrix, top, bottom);
-        leftCheck:
-        for (; left < gridSize; left++) {
-            for (ItemStack[] row : itemMatrix) {
-                if (row[left] != null) break leftCheck;
-            }
-        }
-        rightCheck:
-        for (; right > 0; right--) {
-            for (ItemStack[] row : itemMatrix) {
-                if (row[right - 1] != null) break rightCheck;
-            }
-        }
-        var width = right > left ? right - left : 0; // It should already be caught by the (top > bottom) check, but just make sure.
-        var flatList = new ItemStack[itemMatrix.length * width];
-        var index = 0;
-        for (ItemStack[] row : itemMatrix) {
-            for (int i = left; i < right && i < row.length; i++) {
-                flatList[index++] = row[i];
-            }
-        }
-        return new MatrixData(ingredients, flatList, itemMatrix.length, width, gridSize, left, top);
+        return MatrixData.of(ingredients);
     }
 
     /**
@@ -462,6 +419,54 @@ public final class CraftManager {
 
         public ItemStack[] getOriginalMatrix() {
             return originalMatrix;
+        }
+
+        public static MatrixData of(ItemStack[] ingredients) {
+            int gridSize = gridSize(ingredients);
+            ItemStack[][] itemMatrix = new ItemStack[gridSize][gridSize];
+            for (int y = 0; y < gridSize; y++) {
+                itemMatrix[y] = Arrays.copyOfRange(ingredients, y * gridSize, gridSize + y * gridSize);
+            }
+            int top = 0;
+            int bottom = gridSize;
+            int left = 0;
+            int right = gridSize;
+            topCheck:
+            for (; top < gridSize; top++) {
+                for (ItemStack stack : itemMatrix[top]) {
+                    if (stack != null) break topCheck;
+                }
+            }
+            bottomCheck:
+            for (; bottom > 0; bottom--) {
+                for (ItemStack stack : itemMatrix[bottom - 1]) {
+                    if (stack != null) break bottomCheck;
+                }
+            }
+            if (top > bottom)
+                return new MatrixData(ingredients, new ItemStack[0], 0, 0, gridSize, 0, 0); // No item inside the grid, do not do further calculations!
+            itemMatrix = Arrays.copyOfRange(itemMatrix, top, bottom);
+            leftCheck:
+            for (; left < gridSize; left++) {
+                for (ItemStack[] row : itemMatrix) {
+                    if (row[left] != null) break leftCheck;
+                }
+            }
+            rightCheck:
+            for (; right > 0; right--) {
+                for (ItemStack[] row : itemMatrix) {
+                    if (row[right - 1] != null) break rightCheck;
+                }
+            }
+            var width = right > left ? right - left : 0; // It should already be caught by the (top > bottom) check, but just make sure.
+            var flatList = new ItemStack[itemMatrix.length * width];
+            var index = 0;
+            for (ItemStack[] row : itemMatrix) {
+                for (int i = left; i < right && i < row.length; i++) {
+                    flatList[index++] = row[i];
+                }
+            }
+            return new MatrixData(ingredients, flatList, itemMatrix.length, width, gridSize, left, top);
         }
 
         @Override
