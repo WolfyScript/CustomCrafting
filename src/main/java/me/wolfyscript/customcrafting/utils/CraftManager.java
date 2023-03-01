@@ -460,11 +460,8 @@ public final class CraftManager {
             }
             var width = right > left ? right - left : 0; // It should already be caught by the (top > bottom) check, but just make sure.
             var flatList = new ItemStack[itemMatrix.length * width];
-            var index = 0;
-            for (ItemStack[] row : itemMatrix) {
-                for (int i = left; i < right && i < row.length; i++) {
-                    flatList[index++] = row[i];
-                }
+            for (int i = 0; i < itemMatrix.length; i++) {
+                System.arraycopy(itemMatrix[i], left, flatList, i*width, width);
             }
             return new MatrixData(ingredients, flatList, itemMatrix.length, width, gridSize, left, top);
         }
