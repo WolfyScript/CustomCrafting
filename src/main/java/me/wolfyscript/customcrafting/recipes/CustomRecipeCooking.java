@@ -144,7 +144,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         builder.setCookingTime(getCookingTime());
         builder.setRecipeMatcher((inventory, world) -> {
             Location location = inventory.getLocation();
-            if (location != null && !checkConditions(new Conditions.Data(null, location.getBlock(), null))) return false;
+            if (location != null && !checkConditions(Conditions.Data.of(null, location.getBlock(), null))) return false;
             return getSource().test(inventory.getItem(0), isCheckNBT());
         });
         builder.setRecipeAssembler(inventory -> java.util.Optional.ofNullable(getResult().getItemStack()));

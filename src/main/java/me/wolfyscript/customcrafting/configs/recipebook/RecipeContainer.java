@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
+import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.recipes.AbstractRecipeShapeless;
@@ -84,7 +85,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
      * @return The recipes of this container the player has access to.
      */
     public List<CustomRecipe<?>> getRecipes(Player player) {
-        return recipes.getAvailable(cachedRecipes, player); //Possible strict caching in the future?! return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
+        return recipes.filterAvailable(cachedRecipes.stream()).filter(recipe -> recipe.checkCondition("permission", Conditions.Data.of(player))).collect(Collectors.toList()); //Possible strict caching in the future?! return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
     }
 
     /**

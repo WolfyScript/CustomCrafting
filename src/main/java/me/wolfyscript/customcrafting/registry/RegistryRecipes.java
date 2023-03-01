@@ -432,9 +432,25 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         return (List<T>) BY_RECIPE_TYPE_CONTAINER.computeIfAbsent(type, container -> values().stream().filter(container::isInstance).map(container::cast).collect(Collectors.toList()));
     }
 
+    @SafeVarargs
+    public final <T extends CustomRecipe<?>> Stream<? extends T> get(RecipeType.Container<? extends T>... types) {
+        return Arrays.stream(types).filter(Objects::nonNull).flatMap(container -> get(container).stream());
+    }
+
     public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCrafting(NamespacedKey recipeKey) {
         CustomRecipe<?> customRecipe = get(recipeKey);
         return RecipeType.Container.CRAFTING.isInstance(customRecipe) ? RecipeType.Container.CRAFTING.cast(customRecipe) : null;
+    }
+
+    /**
+     * Filters the Recipes stream from disabled or hidden recipes, and sorts the list according to the {@link me.wolfyscript.customcrafting.recipes.RecipePriority}!
+     *
+     * @param recipes The Stream of Recipes to filter.
+     * @param <T>     The type of the {@link CustomRecipe}
+     * @return A filtered {@link List} containing only visible and enabled recipes.
+     */
+    public <T extends CustomRecipe<?>> Stream<T> filterAvailable(Stream<T> recipes) {
+        return recipes.filter(recipe -> !recipe.isHidden() && !recipe.isDisabled());
     }
 
     /**
@@ -444,7 +460,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * @return The recipes that are available and are not hidden or disabled.
      */
     public List<CustomRecipe<?>> getAvailable() {
-        return getAvailable(values().stream());
+        return filterAvailable(values().stream()).sorted().toList();
     }
 
     /**
@@ -454,6 +470,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * @param player The player to get the recipes for.
      * @return The recipes that are available and the player has permission to view.
      */
+    @Deprecated
     public List<CustomRecipe<?>> getAvailable(Player player) {
         return getAvailable(getAvailable(), player);
     }
@@ -466,7 +483,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * @return A list only including the {@link CustomRecipe}s of the specified {@link RecipeType}, which are enabled and visible.
      */
     public <T extends CustomRecipe<?>> List<T> getAvailable(RecipeType<T> type) {
-        return getAvailable(get(type.getRecipeClass()).stream());
+        return filterAvailable(get(type.getRecipeClass()).stream()).sorted().toList();
     }
 
     /**
@@ -477,6 +494,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * @param player The player to get the recipes for.
      * @return A list only including the {@link CustomRecipe}s of the specified {@link RecipeType}, which are enabled, visible and the Player has permission to view.
      */
+    @Deprecated
     public <T extends CustomRecipe<?>> List<T> getAvailable(RecipeType<T> type, Player player) {
         return getAvailable(getAvailable(type), player);
     }
@@ -488,30 +506,17 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * @param player The player to get the recipes for.
      * @return All the recipes, that have the specified Result, are not hidden, and the player has permission to view.
      */
+    @Deprecated
     public List<CustomRecipe<?>> getAvailable(ItemStack result, Player player) {
         return getAvailable(player).stream().filter(recipe -> recipe.findResultItem(result)).collect(Collectors.toList());
     }
 
-    public synchronized <T extends CustomRecipe<?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
-        return getAvailable(recipes.stream().filter(recipe -> recipe.checkCondition("permission", Conditions.Data.of(player))));
-    }
-
-    /**
-     * Filters the Recipes stream from disabled or hidden recipes, and sorts the list according to the {@link me.wolfyscript.customcrafting.recipes.RecipePriority}!
-     *
-     * @param recipes The Stream of Recipes to filter.
-     * @param <T>     The type of the {@link CustomRecipe}
-     * @return A filtered {@link List} containing only visible and enabled recipes.
-     */
-    private <T extends CustomRecipe<?>> List<T> getAvailable(Stream<T> recipes) {
-        return recipes.filter(recipe -> !recipe.isHidden() && !recipe.isDisabled()).sorted(Comparator.comparing(CustomRecipe::getPriority)).collect(Collectors.toList());
-    }
-
-    public Stream<? extends CraftingRecipe<?,?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, RecipeType.Container.CraftingContainer<?>... types) {
-        return Arrays.stream(types).filter(Objects::nonNull).flatMap(container -> get(container).stream()).filter(recipe -> recipe.fitsDimensions(matrixData)).sorted(Comparator.comparing(CustomRecipe::getPriority));
-    }
-
     @Deprecated
+    public synchronized <T extends CustomRecipe<?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
+        return filterAvailable(recipes.stream()).filter(recipe -> recipe.checkCondition("permission", Conditions.Data.of(player))).sorted().toList();
+    }
+
+    @Deprecated(forRemoval = true)
     public Stream<CraftingRecipe<?, ?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
         List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
         if (elite) {

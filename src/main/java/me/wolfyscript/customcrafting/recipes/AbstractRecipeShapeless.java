@@ -27,15 +27,10 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Streams;
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
@@ -150,6 +145,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @Override
     public CraftingData check(CraftManager.MatrixData matrixData) {
+        if (isDisabled() || !fitsDimensions(matrixData)) return null;
         final IngredientData[] dataArray = new IngredientData[ingredients.size()];
         final List<Integer> selectedSlots = new ArrayList<>();
         final Multimap<Integer, Integer> checkedIndicesPerSlot = HashMultimap.create(ingredients.size(), ingredients.size());

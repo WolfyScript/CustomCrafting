@@ -22,14 +22,10 @@
 
 package me.wolfyscript.customcrafting.utils;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
+import com.google.common.base.Functions;
 import com.wolfyscript.utilities.bukkit.nms.inventory.NMSInventoryUtils;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -64,17 +60,65 @@ public final class CraftManager {
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
     private final Map<InventoryView, MatrixData> currentMatrixData = new HashMap<>();
     private final CustomCrafting customCrafting;
+    private final boolean storeCurrentRecipeViaNMS;
 
     public CraftManager(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
+        storeCurrentRecipeViaNMS = ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 9, 0));
     }
 
     public MatrixData getMatrixData(InventoryView view, CraftingInventory craftingInventory) {
-        return currentMatrixData.computeIfAbsent(view, inventory1 -> getIngredients(craftingInventory.getMatrix()));
+        return currentMatrixData.computeIfAbsent(view, inventory1 -> MatrixData.of(craftingInventory.getMatrix()));
     }
 
     public void clearCurrentMatrixData(InventoryView view) {
         currentMatrixData.remove(view);
+    }
+
+    /**
+     * Checks for a possible {@link CraftingRecipe} and returns the result ItemStack of the {@link CraftingRecipe} that is valid.
+     *
+     * @param matrix The matrix of the crafting grid.
+     * @param data   The context data, that is used for conditions, stats, etc.
+     * @param types  The types of crafting containers to include.
+     * @return The result ItemStack of the valid {@link CraftingRecipe}.
+     */
+    public Optional<CraftingData> checkCraftingMatrix(ItemStack[] matrix, Conditions.Data data, RecipeType.Container.CraftingContainer<?>... types) {
+        data.player().ifPresent(player -> remove(player.getUniqueId()));
+        if (customCrafting.getConfigHandler().getConfig().isLockedDown()) return Optional.empty();
+        var matrixData = MatrixData.of(matrix);
+        return customCrafting.getRegistries().getRecipes().get(types)
+                .sorted() // Possibility for parallel stream when enough recipes are registered to amortize the overhead. (Things like the PreCraftEvent might interfere. TODO: Experimental Feature)
+                .map(recipe -> tryRecipe(recipe, matrixData, data))
+                .filter(Optional::isPresent)
+                .findFirst()
+                .flatMap(Functions.identity());
+    }
+
+    /**
+     * Checks one single {@link CraftingRecipe} and returns the {@link CustomItem} if it's valid.
+     *
+     * @param recipe The {@link CraftingRecipe} to check.
+     * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
+     */
+    public Optional<CraftingData> tryRecipe(CraftingRecipe<?, ?> recipe, MatrixData matrixData, Conditions.Data data) {
+        if (!recipe.checkConditions(data))
+            return Optional.empty(); //No longer call Event if recipe is disabled or invalid!
+        var craftingData = recipe.check(matrixData);
+        if (craftingData == null) return Optional.empty();
+
+        var inventory = data.inventoryView().map(InventoryView::getTopInventory).orElse(null);
+        var customPreCraftEvent = new CustomPreCraftEvent(recipe, data.getPlayer(), inventory, matrixData);
+        Bukkit.getPluginManager().callEvent(customPreCraftEvent);
+        if (customPreCraftEvent.isCancelled()) return Optional.empty();
+
+        Result result = customPreCraftEvent.getResult();
+        craftingData.setResult(result);
+        if (storeCurrentRecipeViaNMS) {
+            NMSInventoryUtils.setCurrentRecipe(inventory, recipe.getNamespacedKey());
+        }
+        data.player().ifPresent(player1 -> put(player1.getUniqueId(), craftingData));
+        return Optional.of(craftingData);
     }
 
     /**
@@ -86,57 +130,31 @@ public final class CraftManager {
      * @param elite     If the workstation is an Elite Crafting Table.
      * @param advanced  If the workstation is an Advanced Crafting Table.
      * @return The result ItemStack of the valid {@link CraftingRecipe}.
+     * @deprecated Replaced by {@link #checkCraftingMatrix(ItemStack[], Conditions.Data, RecipeType.Container.CraftingContainer[])}
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public ItemStack preCheckRecipe(ItemStack[] matrix, Player player, Inventory inventory, boolean elite, boolean advanced) {
-        return preCheckCraftingTable(matrix, player, inventory, Conditions.Data.of(player, player.getOpenInventory()), elite ? RecipeType.Container.ELITE_CRAFTING : null, advanced ? RecipeType.Container.CRAFTING : null);
-    }
-
-    /**
-     * Checks for a possible {@link CraftingRecipe} and returns the result ItemStack of the {@link CraftingRecipe} that is valid.
-     *
-     * @param matrix    The matrix of the crafting grid.
-     * @param player    The player that executed the craft.
-     * @param inventory The inventory this craft was called from.
-     * @return The result ItemStack of the valid {@link CraftingRecipe}.
-     */
-    public ItemStack preCheckCraftingTable(ItemStack[] matrix, Player player, Inventory inventory, Conditions.Data data, RecipeType.Container.CraftingContainer<?>... types) {
-        Preconditions.checkArgument(data.getPlayer() != null, "Cannot check recipe with missing player!");
-        Preconditions.checkArgument(data.getInventoryView() != null, "Cannot check recipe with missing inventory view!");
-        remove(player.getUniqueId());
-        if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
-            return null;
-        }
-        var matrixData = getIngredients(matrix);
-        return customCrafting.getRegistries().getRecipes().getSimilarCraftingRecipes(matrixData, types).map(recipe -> checkRecipe(recipe, matrixData, inventory, data)).filter(Objects::nonNull).findFirst().orElse(null);
+        var data = Conditions.Data.of(player, player.getOpenInventory());
+        data.player().ifPresent(player1 -> remove(player1.getUniqueId()));
+        if (customCrafting.getConfigHandler().getConfig().isLockedDown()) return null;
+        var matrixData = MatrixData.of(matrix);
+        return customCrafting.getRegistries().getRecipes().get(elite ? RecipeType.Container.ELITE_CRAFTING : null, advanced ? RecipeType.Container.CRAFTING : null)
+                .sorted()
+                .map(recipe -> checkRecipe(recipe, matrixData, data))
+                .filter(Objects::nonNull).findFirst().orElse(null);
     }
 
     /**
      * Checks one single {@link CraftingRecipe} and returns the {@link CustomItem} if it's valid.
      *
-     * @param recipe    The {@link CraftingRecipe} to check.
-     * @param inventory The inventory of the workstation or player.
+     * @param recipe The {@link CraftingRecipe} to check.
      * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
+     * @deprecated Replaced by {@link #tryRecipe(CraftingRecipe, MatrixData, Conditions.Data)}
      */
     @Nullable
-    public ItemStack checkRecipe(CraftingRecipe<?, ?> recipe, MatrixData flatMatrix, Inventory inventory, Conditions.Data data) {
-        if (recipe.isDisabled() || !recipe.checkConditions(data))
-            return null; //No longer call Event if recipe is disabled or invalid!
-        var craftingData = recipe.check(flatMatrix);
-        if (craftingData == null) return null;
-
-        var player = data.getPlayer();
-        var customPreCraftEvent = new CustomPreCraftEvent(recipe, player, inventory, flatMatrix);
-        Bukkit.getPluginManager().callEvent(customPreCraftEvent);
-        if (customPreCraftEvent.isCancelled()) return null;
-
-        Result result = customPreCraftEvent.getResult();
-        craftingData.setResult(result);
-        if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 9, 0))) {
-            NMSInventoryUtils.setCurrentRecipe(inventory, recipe.getNamespacedKey());
-        }
-        put(player.getUniqueId(), craftingData);
-        return result.getItem(craftingData, player, data.getBlock());
+    @Deprecated(forRemoval = true)
+    public ItemStack checkRecipe(CraftingRecipe<?, ?> recipe, MatrixData matrixData, Conditions.Data data) {
+        return tryRecipe(recipe, matrixData, data).map(craftingData -> craftingData.getResult().getItem(craftingData, data.getPlayer(), data.getBlock())).orElse(null);
     }
 
     /**
@@ -149,25 +167,9 @@ public final class CraftManager {
      * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
      */
     @Nullable
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public ItemStack checkRecipe(CraftingRecipe<?, ?> recipe, MatrixData flatMatrix, Player player, Block block, Inventory inventory) {
-        if (!recipe.isDisabled() && recipe.checkConditions(Conditions.Data.of(player, block, player.getOpenInventory()))) {
-            var craftingData = recipe.check(flatMatrix);
-            if (craftingData != null) {
-                var customPreCraftEvent = new CustomPreCraftEvent(recipe, player, inventory, flatMatrix);
-                Bukkit.getPluginManager().callEvent(customPreCraftEvent);
-                if (!customPreCraftEvent.isCancelled()) {
-                    Result result = customPreCraftEvent.getResult();
-                    craftingData.setResult(result);
-                    if (ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 9, 0))) {
-                        NMSInventoryUtils.setCurrentRecipe(inventory, recipe.getNamespacedKey());
-                    }
-                    put(player.getUniqueId(), craftingData);
-                    return result.getItem(craftingData, player, block);
-                }
-            }
-        }
-        return null; //No longer call Event if recipe is disabled or invalid!
+        return checkRecipe(recipe, flatMatrix, Conditions.Data.of(player, block, player.getOpenInventory()));
     }
 
     /**
@@ -175,6 +177,7 @@ public final class CraftManager {
      *
      * @param event The {@link InventoryClickEvent} that caused this click.
      */
+    @Deprecated(forRemoval = true)
     public void consumeRecipe(InventoryClickEvent event) {
         var player = (Player) event.getWhoClicked();
         if (event.getClickedInventory() != null && has(player.getUniqueId())) {
@@ -288,7 +291,7 @@ public final class CraftManager {
         return Optional.ofNullable(preCraftedRecipes.get(uuid));
     }
 
-    private int gridSize(ItemStack[] ingredients) {
+    private static int gridSize(ItemStack[] ingredients) {
         return switch (ingredients.length) {
             case 4 -> 2;
             case 9 -> 3;
@@ -308,54 +311,9 @@ public final class CraftManager {
      * @param ingredients The ingredients to generate the data for.
      * @return The newly generated MatrixData representing the shape and stripped ingredients.
      */
+    @Deprecated
     public MatrixData getIngredients(ItemStack[] ingredients) {
-        List<List<ItemStack>> items = new LinkedList<>();
-        List<ItemStack> ingredList = Lists.newArrayList(ingredients);
-        int gridSize = gridSize(ingredients);
-        for (int y = 0; y < gridSize; y++) {
-            items.add(ingredList.subList(y * gridSize, gridSize + y * gridSize));
-        }
-        //Go through each row beginning from the top, removing empty rows, until you hit a non-empty row.
-        int yPosOfFirstOccurrence = 0;
-        ListIterator<List<ItemStack>> iterator = items.listIterator();
-        while (iterator.hasNext()) {
-            if (!iterator.next().stream().allMatch(Objects::isNull)) break;
-            yPosOfFirstOccurrence++;
-            iterator.remove();
-        }
-        //Go through each row beginning from the bottom, removing empty rows, until you hit a non-empty row.
-        iterator = items.listIterator(items.size());
-        while (iterator.hasPrevious()) {
-            if (!iterator.previous().stream().allMatch(Objects::isNull)) break;
-            iterator.remove();
-        }
-        //Check for the first empty column from the left.
-        var leftPos = gridSize;
-        for (List<ItemStack> itemsY : items) {
-            var size = itemsY.size();
-            for (int i = 0; i < size; i++) {
-                if (itemsY.get(i) != null) {
-                    leftPos = Math.min(leftPos, i);
-                    break;
-                }
-            }
-            if (leftPos == 0) break;
-        }
-        //Check for the first empty column from the right.
-        var rightPos = 0;
-        for (List<ItemStack> itemsY : items) {
-            var size = itemsY.size();
-            for (int i = size - 1; i > 0; i--) {
-                if (itemsY.get(i) != null) {
-                    rightPos = Math.max(rightPos, i);
-                    break;
-                }
-            }
-            if (rightPos == gridSize) break;
-        }
-        var finalLeftPos = leftPos;
-        var finalRightPos = rightPos + 1;
-        return new MatrixData(ingredients, items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).toArray(ItemStack[]::new), items.size(), finalRightPos - finalLeftPos, gridSize, finalLeftPos, yPosOfFirstOccurrence);
+        return MatrixData.of(ingredients);
     }
 
     /**
@@ -461,6 +419,51 @@ public final class CraftManager {
 
         public ItemStack[] getOriginalMatrix() {
             return originalMatrix;
+        }
+
+        public static MatrixData of(ItemStack[] ingredients) {
+            int gridSize = gridSize(ingredients);
+            ItemStack[][] itemMatrix = new ItemStack[gridSize][gridSize];
+            for (int y = 0; y < gridSize; y++) {
+                itemMatrix[y] = Arrays.copyOfRange(ingredients, y * gridSize, gridSize + y * gridSize);
+            }
+            int top = 0;
+            int bottom = gridSize;
+            int left = 0;
+            int right = gridSize;
+            topCheck:
+            for (; top < gridSize; top++) {
+                for (ItemStack stack : itemMatrix[top]) {
+                    if (stack != null) break topCheck;
+                }
+            }
+            bottomCheck:
+            for (; bottom > 0; bottom--) {
+                for (ItemStack stack : itemMatrix[bottom - 1]) {
+                    if (stack != null) break bottomCheck;
+                }
+            }
+            if (top > bottom)
+                return new MatrixData(ingredients, new ItemStack[0], 0, 0, gridSize, 0, 0); // No item inside the grid, do not do further calculations!
+            itemMatrix = Arrays.copyOfRange(itemMatrix, top, bottom);
+            leftCheck:
+            for (; left < gridSize; left++) {
+                for (ItemStack[] row : itemMatrix) {
+                    if (row[left] != null) break leftCheck;
+                }
+            }
+            rightCheck:
+            for (; right > 0; right--) {
+                for (ItemStack[] row : itemMatrix) {
+                    if (row[right - 1] != null) break rightCheck;
+                }
+            }
+            var width = right > left ? right - left : 0; // It should already be caught by the (top > bottom) check, but just make sure.
+            var flatList = new ItemStack[itemMatrix.length * width];
+            for (int i = 0; i < itemMatrix.length; i++) {
+                System.arraycopy(itemMatrix[i], left, flatList, i*width, width);
+            }
+            return new MatrixData(ingredients, flatList, itemMatrix.length, width, gridSize, left, top);
         }
 
         @Override

@@ -42,6 +42,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
@@ -113,15 +114,15 @@ abstract class CraftingWindow extends CCWindow {
                     }).postAction((cache, guiHandler, player, inventory, itemStack, slot, inventoryInteractEvent) -> {
                         CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
                         if (cacheEliteCraftingTable.getContents() != null) {
-                            ItemStack result = customCrafting.getCraftManager().preCheckCraftingTable(
-                                    cacheEliteCraftingTable.getContents(),
-                                    player,
-                                    inventory,
-                                    Conditions.Data.of(player).setBlock(player.getTargetBlock(8)).setInventoryView(player.getOpenInventory()).setEliteCraftingTableSettings(cacheEliteCraftingTable.getSettings()),
-                                    RecipeType.Container.ELITE_CRAFTING,
-                                    cacheEliteCraftingTable.isAdvancedCraftingRecipes() ? RecipeType.Container.CRAFTING : null
-                            );
-                            cacheEliteCraftingTable.setResult(result);
+                            Block targetBlock = player.getTargetBlock(8);
+                            customCrafting.getCraftManager().checkCraftingMatrix(
+                                            cacheEliteCraftingTable.getContents(),
+                                            Conditions.Data.of(player).setBlock(targetBlock).setInventoryView(player.getOpenInventory()).setEliteCraftingTableSettings(cacheEliteCraftingTable.getSettings()),
+                                            RecipeType.Container.ELITE_CRAFTING,
+                                            cacheEliteCraftingTable.isAdvancedCraftingRecipes() ? RecipeType.Container.CRAFTING : null
+                                    )
+                                    .map(data -> data.getResult().getItem(data, player, targetBlock))
+                                    .ifPresent(cacheEliteCraftingTable::setResult);
                         } else {
                             cacheEliteCraftingTable.setResult(new ItemStack(Material.AIR));
                         }
