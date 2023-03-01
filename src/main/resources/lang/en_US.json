@@ -184,16 +184,22 @@
     },
     "recipes": {
       "toggle": {
+        "invalid_usage": "<dark_red>Usage: </dark_red><red>/recipes toggle <recipe></red>",
         "enabled": "<yellow>Enabled recipe <green>%recipe%</green></yellow>",
         "disabled": "<yellow>Disabled recipe <red>%recipe%</red></yellow>"
       },
       "edit": {
+        "invalid_usage": "<dark_red>Usage: </dark_red><red>/recipes edit <recipe></red>",
         "invalid_recipe": "<red>Unsupported recipe type!</red>"
       },
       "delete": {
+        "invalid_usage": "<dark_red>Usage: </dark_red><red>/recipes delete <recipe></red>",
         "confirm": "<yellow>Do you really want to delete <gold>%recipe%? </gold></yellow>",
         "confirmation": "<grey>[<green>YES</green>]</grey> ",
         "cancel": "<grey>[<red>NO</red>]</grey>"
+      },
+      "lookup": {
+        "invalid_usage": "<dark_red>Usage: </dark_red><red>/recipes lookup <recipe></red>"
       },
       "invalid_recipe": "<red>The recipe <yellow>%recipe%</yellow> does not exist!</red>"
     },
