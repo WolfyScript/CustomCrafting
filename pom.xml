@@ -110,6 +110,19 @@
             <version>3.0.0</version>
             <scope>compile</scope>
         </dependency>
+        <!-- Oraxen -->
+        <dependency>
+            <groupId>com.github.oraxen</groupId>
+            <artifactId>oraxen</artifactId>
+            <version>1.152.0</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>
