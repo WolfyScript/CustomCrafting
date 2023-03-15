@@ -328,14 +328,17 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
             int ingredientIndex = 0;
             for (int r = columnOffset; r < maxGridDimension; r++) {
                 for (int c = rowOffset; c < maxGridDimension; c++) {
+                    final int currentIndex = i++;
                     if (c < rowLimit && r < columnLimit && ingredientIndex < ingredients.size()) {
-                        var ingredient = ingredients.get(ingredientIndex);
-                        if (ingredient != null) {
-                            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i))).setVariants(guiHandler, ingredient);
+                        var ingredient = ingredients.get(ingredientIndex++);
+                        var btn = ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(currentIndex)));
+                        if (btn == null) continue;
+                        if (ingredient == null) {
+                            btn.removeVariants(guiHandler);
+                            continue;
                         }
-                        ingredientIndex++;
+                        btn.setVariants(guiHandler, ingredient);
                     }
-                    i++;
                 }
                 i += rowOffset;
             }

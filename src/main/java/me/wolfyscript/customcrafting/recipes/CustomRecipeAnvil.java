@@ -313,12 +313,12 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         Ingredient inputRight = getInputRight();
         ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(10))).setVariants(guiHandler, inputLeft);
         ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(13))).setVariants(guiHandler, inputRight);
-        if (getMode().equals(CustomRecipeAnvil.Mode.RESULT)) {
-            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(34))).setVariants(guiHandler, getResult());
-        } else if (getMode().equals(CustomRecipeAnvil.Mode.DURABILITY)) {
-            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(34))).setVariants(guiHandler, inputLeft);
-        } else {
-            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(34))).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
+        var resultBtn = ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(34)));
+        if (resultBtn == null) return;
+        switch (getRepairTask().getMode()) {
+            case RESULT -> resultBtn.setVariants(guiHandler, getResult());
+            case DURABILITY -> resultBtn.setVariants(guiHandler, inputLeft);
+            case NONE -> resultBtn.setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
         }
     }
 
