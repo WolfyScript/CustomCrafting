@@ -38,6 +38,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -61,7 +62,7 @@ public class GrindStoneListener implements Listener {
         this.customCrafting = customCrafting;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onTakeOutResult(InventoryClickEvent event) {
         if (event.getClickedInventory() == null || event.getAction().equals(InventoryAction.NOTHING) || !event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE))
             return;
@@ -134,7 +135,7 @@ public class GrindStoneListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onClick(InventoryClickEvent event) {
         if (event.getClickedInventory() == null || !event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE))
             return;
@@ -220,7 +221,7 @@ public class GrindStoneListener implements Listener {
         return !itemStack.getEnchantments().isEmpty() && (ItemUtils.isAirOrNull(other) || itemStack.isSimilar(other));
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onDrag(InventoryDragEvent event) {
         if (!event.getInventory().getType().equals(InventoryType.GRINDSTONE) || event.getInventorySlots().isEmpty())
             return;
