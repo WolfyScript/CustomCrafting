@@ -110,7 +110,7 @@ public abstract class SmeltAPIAdapter {
             }
 
             CustomItem customItem = data.getBySlot(0).customItem();
-            ItemStack shrunken = customItem.shrink(smelting, 1, true, null, null, block.getLocation());
+            ItemStack shrunken = customItem.shrink(smelting, 1, data.getBySlot(0).ingredient().isReplaceWithRemains(), null, null, block.getLocation());
             shrunken.setAmount(shrunken.getAmount());
             inventory.setSmelting(shrunken);
             result.executeExtensions(block.getLocation(), true, null);
