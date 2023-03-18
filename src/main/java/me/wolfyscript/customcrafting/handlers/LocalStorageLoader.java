@@ -341,7 +341,7 @@ public class LocalStorageLoader extends ResourceLoader {
                         loaded.add(namespacedKey);
                     } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException |
                              IllegalAccessException e) {
-                        ChatUtils.sendRecipeItemLoadingError("[LOCAL] ", namespacedKey.getNamespace(), namespacedKey.getKey(), e);
+                        ChatUtils.sendRecipeItemLoadingError("[LOCAL_OLD] ", namespacedKey.getNamespace(), namespacedKey.getKey(), e);
                         skippedError.add(namespacedKey);
                     }
                 } else {

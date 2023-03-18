@@ -22,6 +22,12 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
+import io.th0rgal.oraxen.api.OraxenItems;
+import io.th0rgal.oraxen.mechanics.provided.gameplay.durability.DurabilityMechanic;
+import io.th0rgal.oraxen.mechanics.provided.gameplay.durability.DurabilityMechanicFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
@@ -29,27 +35,39 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
-import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
 public class DamageMergeAdapter extends MergeAdapter {
 
+    private final List<DamagePluginAdapter> adapters = new ArrayList<>();
     private boolean repairBonus = false;
     private int additionalDamage = 0;
+    private final WolfyUtilCore core;
 
     public DamageMergeAdapter() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "damage"));
+        this.core = WolfyUtilCore.getInstance();
+        initAdapters();
     }
 
     public DamageMergeAdapter(DamageMergeAdapter adapter) {
         super(adapter);
         this.additionalDamage = adapter.additionalDamage;
         this.repairBonus = adapter.repairBonus;
+        this.core = WolfyUtilCore.getInstance();
+        initAdapters();
+    }
+
+    private void initAdapters() {
+        core.getCompatibilityManager().getPlugins().runIfAvailable("Oraxen", intgrtn -> adapters.add(new OraxenAdapter()));
+        core.getCompatibilityManager().getPlugins().runIfAvailable("ItemsAdder", intgrtn -> adapters.add(new ItemsAdderAdapter()));
     }
 
     public int getAdditionalDamage() {
@@ -62,33 +80,101 @@ public class DamageMergeAdapter extends MergeAdapter {
 
     @Override
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
-        ItemsAdderIntegration iAIntegration = WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
-        if (iAIntegration != null) {
-            CustomStack customStack = iAIntegration.getByItemStack(result);
-            if (customStack != null) {
-                final int maxDur = customStack.getMaxDurability();
-                customStack.setDurability(maxDur - calculateDamage(recipeData, maxDur));
-                return result;
-            }
-        }
-        var meta = result.getItemMeta();
-        ((Damageable) meta).setDamage(calculateDamage(recipeData, result.getType().getMaxDurability()));
-        result.setItemMeta(meta);
-        return result;
+        return tryApplyToPluginItem(recipeData, result).orElseGet(() -> {
+            var meta = result.getItemMeta();
+            ((Damageable) meta).setDamage(calculateDamage(recipeData, result.getType().getMaxDurability()));
+            result.setItemMeta(meta);
+            return result;
+        });
     }
 
     private int calculateDamage(RecipeData<?> recipeData, final int maxDur) {
         int totalDurability = 0;
         for (IngredientData data : recipeData.getBySlots(slots)) {
-            if (data.itemStack().getItemMeta() instanceof Damageable damageable) {
-                totalDurability += maxDur - damageable.getDamage();
-            }
+            totalDurability += maxDur - tryGetDamageFromPlugins(data.itemStack()).orElseGet(() -> data.itemStack().getItemMeta() instanceof Damageable damageable ? damageable.getDamage() : 0);
         }
-        return Math.min(Math.max((maxDur - totalDurability) + additionalDamage - (repairBonus ? (int) Math.floor(maxDur / 20d) : 0), 0), maxDur);
+        return Math.min(
+                Math.max(
+                        (maxDur - totalDurability) + additionalDamage - (repairBonus ? (int) Math.floor(maxDur / 20d) : 0),
+                        0
+                ),
+                maxDur
+        );
+    }
+
+    private Optional<Integer> tryGetDamageFromPlugins(ItemStack itemStack) {
+        for (DamagePluginAdapter adapter : adapters) {
+            Optional<Integer> damage = adapter.getDamage(itemStack);
+            if (damage.isPresent()) return damage;
+        }
+        return Optional.empty();
+    }
+
+    private Optional<ItemStack> tryApplyToPluginItem(RecipeData<?> data, ItemStack result) {
+        for (DamagePluginAdapter adapter : adapters) {
+            Optional<ItemStack> damage = adapter.tryToApplyDamage(data, result);
+            if (damage.isPresent()) return damage;
+        }
+        return Optional.empty();
     }
 
     @Override
     public MergeAdapter clone() {
         return new DamageMergeAdapter(this);
     }
+
+
+    private interface DamagePluginAdapter {
+
+        Optional<Integer> getDamage(ItemStack stack);
+
+        Optional<ItemStack> tryToApplyDamage(RecipeData<?> recipeData, ItemStack result);
+
+    }
+
+    private class ItemsAdderAdapter implements DamagePluginAdapter {
+
+        private final ItemsAdderIntegration integration;
+
+        ItemsAdderAdapter() {
+            this.integration = core.getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
+        }
+
+        @Override
+        public Optional<Integer> getDamage(ItemStack stack) {
+            return integration.getStackByItemStack(stack).map(customStack -> customStack.getMaxDurability() - customStack.getDurability());
+        }
+
+        @Override
+        public Optional<ItemStack> tryToApplyDamage(RecipeData<?> recipeData, ItemStack result) {
+            return integration.getStackByItemStack(result).map(customStack -> {
+                final int maxDur = customStack.getMaxDurability();
+                customStack.setDurability(maxDur - calculateDamage(recipeData, maxDur));
+                return result;
+            });
+        }
+    }
+
+    private class OraxenAdapter implements DamagePluginAdapter {
+
+        @Override
+        public Optional<Integer> getDamage(ItemStack stack) {
+            PersistentDataContainer persistentDataContainer = stack.getItemMeta().getPersistentDataContainer();
+            Integer dur = persistentDataContainer.get(DurabilityMechanic.DURAB_KEY, PersistentDataType.INTEGER);
+            if (dur != null && DurabilityMechanicFactory.get().getMechanic(OraxenItems.getIdByItem(stack)) instanceof DurabilityMechanic durabilityMechanic) {
+                return Optional.of(durabilityMechanic.getItemMaxDurability() - dur);
+            }
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<ItemStack> tryToApplyDamage(RecipeData<?> recipeData, ItemStack result) {
+            if (DurabilityMechanicFactory.get().getMechanic(OraxenItems.getIdByItem(result)) instanceof DurabilityMechanic durabilityMechanic) {
+                durabilityMechanic.changeDurability(result, calculateDamage(recipeData, durabilityMechanic.getItemMaxDurability()));
+                return Optional.of(result);
+            }
+            return Optional.empty();
+        }
+    }
+
 }
