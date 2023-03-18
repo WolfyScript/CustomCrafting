@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.commands.recipes;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeView;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
@@ -67,6 +68,7 @@ public class RecipeLookupCommand extends AbstractSubCommand {
                                 GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
                                 CCCache cache = guiHandler.getCustomCache();
                                 cache.getCacheRecipeView().setRecipe(customRecipe);
+                                ButtonContainerIngredient.resetButtons(guiHandler, ClusterRecipeView.KEY);
                                 customRecipe.prepareMenu(guiHandler, guiHandler.getInvAPI().getGuiCluster(ClusterRecipeView.KEY));
                                 Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(ClusterRecipeView.RECIPE_SINGLE), 1);
                                 return true;

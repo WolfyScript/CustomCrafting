@@ -195,9 +195,13 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
             ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(maxIngredients))).setVariants(guiHandler, this.getResult());
             for (int i = 0; i < maxIngredients && i < ingredients.size(); i++) {
                 var ingredient = ingredients.get(i);
-                if (ingredient != null) {
-                    ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i))).setVariants(guiHandler, ingredient);
+                var btn = ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i)));
+                if (btn == null) continue;
+                if (ingredient == null) {
+                    btn.removeVariants(guiHandler);
+                    continue;
                 }
+                btn.setVariants(guiHandler, ingredient);
             }
         }
     }
