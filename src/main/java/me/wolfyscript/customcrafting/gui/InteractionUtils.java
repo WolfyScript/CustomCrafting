@@ -79,9 +79,17 @@ public class InteractionUtils {
                 // These actions cause the slot to be cleared.
                 // So reset the stack.
                 case PICKUP_ALL, DROP_ALL_SLOT -> applyItemStack.accept(null);
+                // This interaction may cause the slot to clear if there is only a single item in the slot, so make sure it is cleared.
+                case PICKUP_HALF -> {
+                    if (clickEvent.getCurrentItem().getAmount() <= 1) {
+                        applyItemStack.accept(null);
+                    } else {
+                        applyItemStack.accept(clickEvent.getCurrentItem());
+                    }
+                }
                 // All these actions will keep remaining items in the slot, so lets just use the current stack.
                 // The stack will be updated, as it is a reference to the stack in the inventory.
-                case PICKUP_ONE, PICKUP_HALF, PICKUP_SOME, COLLECT_TO_CURSOR, DROP_ALL_CURSOR ->
+                case PICKUP_ONE, PICKUP_SOME, COLLECT_TO_CURSOR, DROP_ALL_CURSOR ->
                         applyItemStack.accept(clickEvent.getCurrentItem());
                 // Hotbar swaps work all the same, so lets take the hotbar stack.
                 case HOTBAR_SWAP, HOTBAR_MOVE_AND_READD ->
