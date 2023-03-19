@@ -267,8 +267,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         builder.setRemainingItemsFunction(inventory -> {
             if (!isDisabled() && inventory.getHolder() instanceof Player player) {
                 craftManager.get(player.getUniqueId()).ifPresent(craftingData -> craftingData.getNonNullIngredients().forEach(ingredientData -> {
-                    int slot = ingredientData.matrixSlot() + 1;
-                    inventory.setItem(slot + 1, ingredientData.customItem().shrink(inventory.getMatrix()[slot], 1, ingredientData.ingredient().isReplaceWithRemains(), inventory, player, player.getLocation()));
+                    inventory.setItem(ingredientData.matrixSlot() + 1, ingredientData.customItem().shrink(ingredientData.itemStack(), 1, ingredientData.ingredient().isReplaceWithRemains(), inventory, player, player.getLocation()));
                 }));
             }
             return Optional.of(new ArrayList<>());
