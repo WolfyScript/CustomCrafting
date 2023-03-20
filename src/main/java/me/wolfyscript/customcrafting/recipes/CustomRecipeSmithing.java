@@ -23,15 +23,22 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
@@ -56,6 +63,9 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     private boolean preserveEnchants;
     private boolean preserveDamage;
     private boolean onlyChangeMaterial; //Only changes the material of the item. Useful to make vanilla style recipes.
+
+    @JsonIgnore
+    private List<MergeAdapter> internalMergeAdapters = new ArrayList<>(2);
 
     public CustomRecipeSmithing(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
@@ -93,6 +103,11 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         this.onlyChangeMaterial = customRecipeSmithing.isOnlyChangeMaterial();
     }
 
+    @JsonIgnore
+    public List<MergeAdapter> getInternalMergeAdapters() {
+        return Collections.unmodifiableList(internalMergeAdapters);
+    }
+
     @Override
     public Ingredient getIngredient(int slot) {
         return slot == 0 ? getBase() : getAddition();
@@ -122,6 +137,9 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     public void setPreserveEnchants(boolean preserveEnchants) {
         this.preserveEnchants = preserveEnchants;
+        if (!onlyChangeMaterial && preserveEnchants) {
+            internalMergeAdapters.add(new EnchantMergeAdapter());
+        }
     }
 
     public boolean isPreserveDamage() {
@@ -130,6 +148,9 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     public void setPreserveDamage(boolean preserveDamage) {
         this.preserveDamage = preserveDamage;
+        if (!onlyChangeMaterial && preserveEnchants) {
+            internalMergeAdapters.add(new DamageMergeAdapter());
+        }
     }
 
     public boolean isOnlyChangeMaterial() {
@@ -138,6 +159,9 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     public void setOnlyChangeMaterial(boolean onlyChangeMaterial) {
         this.onlyChangeMaterial = onlyChangeMaterial;
+        if (onlyChangeMaterial) {
+            internalMergeAdapters.clear();
+        }
     }
 
     @Override
