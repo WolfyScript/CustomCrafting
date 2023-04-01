@@ -153,11 +153,12 @@ public class CauldronBlockData extends CustomBlockData {
             if (event.isCancelled()) {
                 passedTicks = 0;
             } else {
-                if (event.getRecipe().getFluidLevel() > 0 && block.getBlockData() instanceof Levelled levelled) {
-                    int newLevel = levelled.getLevel() - event.getRecipe().getFluidLevel();
+                if (event.getRecipe().getFluidLevel() > 0) {
+                    int level = CauldronUtils.getLevel(block);
+                    int newLevel = level - event.getRecipe().getFluidLevel();
                     if (newLevel <= 0) {
                         block.setType(Material.CAULDRON);
-                    } else {
+                    } else if (block.getBlockData() instanceof Levelled levelled) {
                         levelled.setLevel(newLevel);
                         block.setBlockData(levelled);
                     }
