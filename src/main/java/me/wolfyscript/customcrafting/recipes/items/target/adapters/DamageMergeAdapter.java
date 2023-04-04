@@ -66,8 +66,10 @@ public class DamageMergeAdapter extends MergeAdapter {
     }
 
     private void initAdapters() {
+        adapters.clear();
         core.getCompatibilityManager().getPlugins().runIfAvailable("Oraxen", intgrtn -> adapters.add(new OraxenAdapter()));
         core.getCompatibilityManager().getPlugins().runIfAvailable("ItemsAdder", intgrtn -> adapters.add(new ItemsAdderAdapter()));
+        core.getCompatibilityManager().getPlugins().runIfAvailable("eco", intgratn -> adapters.add(new EcoArmorAdapter()));
     }
 
     public int getAdditionalDamage() {
@@ -174,6 +176,40 @@ public class DamageMergeAdapter extends MergeAdapter {
                 return Optional.of(result);
             }
             return Optional.empty();
+        }
+    }
+
+    private class EcoArmorAdapter implements DamagePluginAdapter {
+
+        private static final org.bukkit.NamespacedKey EFFECTIVE_DURABILITY = new org.bukkit.NamespacedKey("ecoarmor", "effective-durability");
+
+        @Override
+        public Optional<Integer> getDamage(ItemStack stack) {
+            return getEffectiveMaxDur(stack).map(effectiveMaxDur -> {
+                if (stack.getItemMeta() instanceof Damageable damageable) {
+                    int damage = damageable.getDamage();
+                    double dmgPercent = (double) damage / stack.getType().getMaxDurability();
+                    return (int) Math.floor(effectiveMaxDur.doubleValue() * dmgPercent);
+                }
+                return null;
+            });
+        }
+
+        @Override
+        public Optional<ItemStack> tryToApplyDamage(RecipeData<?> recipeData, ItemStack result) {
+            return getEffectiveMaxDur(result).map(effectiveMaxDur -> {
+                int dmg = calculateDamage(recipeData, effectiveMaxDur);
+                if (result.getItemMeta() instanceof Damageable damageable) {
+                    damageable.setDamage(dmg);
+                    result.setItemMeta(damageable);
+                }
+                return result;
+            });
+        }
+
+        private Optional<Integer> getEffectiveMaxDur(ItemStack stack) {
+            PersistentDataContainer persistentDataContainer = stack.getItemMeta().getPersistentDataContainer();
+            return Optional.ofNullable(persistentDataContainer.get(EFFECTIVE_DURABILITY, PersistentDataType.INTEGER));
         }
     }
 
