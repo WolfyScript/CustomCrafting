@@ -66,6 +66,7 @@ public class DamageMergeAdapter extends MergeAdapter {
     }
 
     private void initAdapters() {
+        adapters.clear();
         core.getCompatibilityManager().getPlugins().runIfAvailable("Oraxen", intgrtn -> adapters.add(new OraxenAdapter()));
         core.getCompatibilityManager().getPlugins().runIfAvailable("ItemsAdder", intgrtn -> adapters.add(new ItemsAdderAdapter()));
         core.getCompatibilityManager().getPlugins().runIfAvailable("eco", intgratn -> adapters.add(new EcoArmorAdapter()));
