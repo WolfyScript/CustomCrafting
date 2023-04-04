@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,16 +35,17 @@ import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.SmithingData;
 import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.utilities.api.WolfyUtilCore;
+import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
-import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -94,7 +96,9 @@ public class SmithingListener implements Listener {
                         );
                         preCraftedRecipes.put(player.getUniqueId(), data);
                         //Process result
-                        ItemStack endResult = result.getItem(data, player, inv.getLocation() != null ? inv.getLocation().getBlock() : null);
+                        Block block = inv.getLocation() != null ? inv.getLocation().getBlock() : null;
+                        CustomItem chosenResult = result.getItem(player, block).orElse(new CustomItem(Material.AIR));
+                        ItemStack endResult = result.getItem(data, chosenResult, player, block);
                         if (recipe.isOnlyChangeMaterial()) {
                             //Take the base item and just change the material.
                             var baseCopy = base.clone();
@@ -102,16 +106,13 @@ public class SmithingListener implements Listener {
                             baseCopy.setAmount(endResult.getAmount());
                             event.setResult(baseCopy);
                         } else {
-                            //Manual result processing & transferring data.
-                            if (recipe.isPreserveEnchants()) {
-                                endResult.addUnsafeEnchantments(base.getEnchantments());
-                            }
-                            if (recipe.isPreserveDamage() && endResult.getItemMeta() instanceof Damageable resultDamageable) {
-                                //Copy damage from base item to result
-                                if (base.hasItemMeta() && base.getItemMeta() instanceof Damageable damageable) {
-                                    int damage = damageable.getDamage();
-                                    applyDamageToItem(damage, endResult, resultDamageable);
-                                }
+                            List<MergeAdapter> adapters = recipe.getInternalMergeAdapters();
+                            if (!adapters.isEmpty()) {
+                                MergeOption option = new MergeOption(new int[]{0});
+                                option.setAdapters(adapters);
+                                // This acts as if we appended an extra merge adapter to the end of the result.
+                                // This makes it possible to implement the logic just once and not both in smithing listener and merge adapter.
+                                option.merge(data, player, block, chosenResult, endResult);
                             }
                             event.setResult(endResult);
                         }
@@ -120,20 +121,6 @@ public class SmithingListener implements Listener {
                 }
             }
         }
-    }
-
-    private void applyDamageToItem(int damage, ItemStack endResult, Damageable resultDamageable) {
-        ItemsAdderIntegration iAIntegration = WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
-        if (iAIntegration != null) {
-            CustomStack customStack = iAIntegration.getByItemStack(endResult);
-            if (customStack != null) {
-                final int maxDur = customStack.getMaxDurability();
-                customStack.setDurability(maxDur - damage);
-                return;
-            }
-        }
-        resultDamageable.setDamage(damage);
-        endResult.setItemMeta(resultDamageable);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
