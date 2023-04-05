@@ -143,52 +143,13 @@ public class GrindStoneListener implements Listener {
         var action = event.getAction();
         var inventory = event.getClickedInventory();
         if (event.getSlot() != 2) {
-            //Place in items and click empty result slot
-            final ItemStack cursor = event.getCursor(); //And the item in the cursor
-            final ItemStack currentItem = event.getCurrentItem(); //We want to get the item in the slot
-
             if (event.getAction().toString().startsWith("PICKUP_") || action.equals(InventoryAction.COLLECT_TO_CURSOR) || action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) {
                 return;
             }
-            ItemStack calculatedCursor = cursor;
-            ItemStack calculatedCurrentItem = currentItem;
-            //Place item when the item is valid
-            event.setCancelled(true);
-            if (event.isRightClick()) {
-                //Dropping one item or pick up half
-                if (action.equals(InventoryAction.PICKUP_HALF) || action.equals(InventoryAction.PICKUP_SOME)) return;
-                //Dropping one item
-                if (ItemUtils.isAirOrNull(currentItem)) {
-                    calculatedCurrentItem = cursor.clone();
-                    calculatedCurrentItem.setAmount(1);
-                    calculatedCursor = cursor.clone();
-                    calculatedCursor.setAmount(cursor.getAmount() - 1);
-                } else if (currentItem.isSimilar(cursor) && currentItem.getAmount() < currentItem.getMaxStackSize() && cursor.getAmount() > 0) {
-                    calculatedCurrentItem = currentItem.clone();
-                    calculatedCurrentItem.setAmount(currentItem.getAmount() + 1);
-                    calculatedCursor = cursor.clone();
-                    calculatedCursor.setAmount(cursor.getAmount() - 1);
-                }
-            } else {
-                //Placing an item
-                if (ItemUtils.isAirOrNull(cursor)) return; //Make sure cursor contains item
-                if (!ItemUtils.isAirOrNull(currentItem)) {
-                    if (currentItem.isSimilar(cursor) || cursor.isSimilar(currentItem)) {
-                        int possibleAmount = currentItem.getMaxStackSize() - currentItem.getAmount();
-                        calculatedCurrentItem = currentItem.clone();
-                        calculatedCurrentItem.setAmount(currentItem.getAmount() + (Math.min(cursor.getAmount(), possibleAmount)));
-                        calculatedCursor = cursor.clone();
-                        calculatedCursor.setAmount(cursor.getAmount() - possibleAmount);
-                    } else if (!ItemUtils.isAirOrNull(cursor)) {
-                        calculatedCursor = currentItem.clone();
-                        calculatedCurrentItem = cursor.clone();
-                    }
-                } else {
-                    calculatedCursor = null;
-                    calculatedCurrentItem = cursor.clone();
-                }
-            }
-            Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(calculatedCurrentItem, inventory.getItem(event.getSlot() == 0 ? 1 : 0), event.getSlot(), player, event.getView());
+
+            InventoryUtils.calculateClickedSlot(event);
+
+            Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(inventory.getItem(0), inventory.getItem(1), event.getSlot(), player, event.getView());
             GrindstoneData data = null;
             if (checkResult != null) { //There exists a valid recipe with that ingredient
                 data = checkResult.getValue();
