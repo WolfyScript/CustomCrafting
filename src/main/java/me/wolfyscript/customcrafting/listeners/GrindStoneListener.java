@@ -153,13 +153,6 @@ public class GrindStoneListener implements Listener {
             GrindstoneData data = null;
             if (checkResult != null) { //There exists a valid recipe with that ingredient
                 data = checkResult.getValue();
-                if (!canBePlacedIntoGrindstone(calculatedCurrentItem, inventory.getItem(event.getSlot() == 0 ? 1 : 0))) {
-                    //Item cannot be placed into the inventory in vanilla. Using custom calculation.
-                    event.setCurrentItem(calculatedCurrentItem);
-                    event.getWhoClicked().setItemOnCursor(calculatedCursor);
-                } else { //Use the vanilla item calculation instead.
-                    event.setCancelled(false);
-                }
                 if (data == null) {
                     //The recipe isn't completed yet!
                     inventory.setItem(2, null);
@@ -167,14 +160,16 @@ public class GrindStoneListener implements Listener {
                 }
                 inventory.setItem(2, checkResult.getKey().create());
                 player.updateInventory();
+                preCraftedRecipes.put(player.getUniqueId(), data);
                 Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
             } else {
-                //No Recipe found! Using the vanilla behaviour
-                customCrafting.getApi().getRegistries().getCustomItems().getByItemStack(calculatedCurrentItem).ifPresentOrElse(customItem -> {
-                    if (customItem.isBlockVanillaRecipes()) event.setCancelled(true);
-                }, () -> event.setCancelled(false));
+                for (ItemStack itemStack : new ItemStack[]{inventory.getItem(0), inventory.getItem(1)}) {
+                    if (customCrafting.getApi().getRegistries().getCustomItems().getByItemStack(itemStack).map(CustomItem::isBlockVanillaRecipes).orElse(false)) {
+                        inventory.setItem(2, null);
+                        break;
+                    }
+                }
             }
-            preCraftedRecipes.put(player.getUniqueId(), data);
         }
     }
 
