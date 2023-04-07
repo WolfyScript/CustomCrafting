@@ -37,6 +37,8 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
@@ -94,6 +96,9 @@ public class GrindStoneListener implements Listener {
                     cursor.setAmount(cursor.getAmount() + result.getAmount());
                 }
             } else return;
+
+            inventory.getLocation().getWorld().playSound(inventory.getLocation(), Sound.BLOCK_GRINDSTONE_USE, SoundCategory.BLOCKS, 1f, 1f);
+
             if (grindstoneData.getRecipe().getXp() > 0) { //Spawn xp
                 ExperienceOrb orb = (ExperienceOrb) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.EXPERIENCE_ORB);
                 orb.setExperience(grindstoneData.getRecipe().getXp());
