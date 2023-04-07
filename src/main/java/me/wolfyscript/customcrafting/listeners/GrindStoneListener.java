@@ -44,6 +44,8 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.GrindstoneInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
@@ -144,6 +146,8 @@ public class GrindStoneListener implements Listener {
     public void onDrag(InventoryDragEvent event) {
         if (!event.getInventory().getType().equals(InventoryType.GRINDSTONE) || event.getInventorySlots().isEmpty())
             return;
+        InventoryView view = event.getView();
+        if (event.getRawSlots().stream().noneMatch(integer -> view.getInventory(integer) instanceof GrindstoneInventory)) return;
         event.setCancelled(true);
     }
 
