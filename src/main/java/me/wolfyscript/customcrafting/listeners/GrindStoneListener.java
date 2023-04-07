@@ -22,7 +22,10 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
+import java.util.HashMap;
+import java.util.UUID;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.GrindstoneData;
@@ -43,17 +46,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.GrindstoneInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class GrindStoneListener implements Listener {
 
