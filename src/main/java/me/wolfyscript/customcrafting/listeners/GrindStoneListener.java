@@ -141,10 +141,6 @@ public class GrindStoneListener implements Listener {
         Bukkit.getScheduler().runTask(customCrafting, player::updateInventory); // This is required for actions to be visible in the Grindstone inventory, otherwise it's very glitchy.
     }
 
-    private boolean canBePlacedIntoGrindstone(ItemStack itemStack, ItemStack other) {
-        return !itemStack.getEnchantments().isEmpty() && (ItemUtils.isAirOrNull(other) || itemStack.isSimilar(other));
-    }
-
     @EventHandler(ignoreCancelled = true)
     public void onDrag(InventoryDragEvent event) {
         if (!event.getInventory().getType().equals(InventoryType.GRINDSTONE) || event.getInventorySlots().isEmpty())
