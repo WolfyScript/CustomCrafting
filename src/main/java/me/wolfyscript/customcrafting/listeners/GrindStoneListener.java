@@ -107,13 +107,13 @@ public class GrindStoneListener implements Listener {
             if (!ItemUtils.isAirOrNull(inputTop)) {
                 ItemStack itemTop = inventory.getItem(0);
                 if (!ItemUtils.isAirOrNull(itemTop)) {
-                    inputTop.remove(itemTop, 1, inventory);
+                    inventory.setItem(0, inputTop.shrink(itemTop, 1, grindstoneData.getBySlot(0).ingredient().isReplaceWithRemains(), inventory, player, null));
                 }
             }
             if (!ItemUtils.isAirOrNull(inputBottom)) {
                 ItemStack itemBottom = inventory.getItem(1);
                 if (!ItemUtils.isAirOrNull(itemBottom)) {
-                    inputBottom.remove(itemBottom, 1, inventory);
+                    inventory.setItem(1, inputBottom.shrink(itemBottom, 1, grindstoneData.getBySlot(1).ingredient().isReplaceWithRemains(), inventory, player, null));
                 }
             }
             //Remove crafted recipe.
