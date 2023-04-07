@@ -72,13 +72,11 @@ public class GrindStoneListener implements Listener {
         var action = event.getAction();
         var inventory = event.getClickedInventory();
         if (event.getSlot() == 2 && !ItemUtils.isAirOrNull(inventory.getItem(2)) && (action.toString().startsWith("PICKUP_") || action.equals(InventoryAction.COLLECT_TO_CURSOR) || action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY))) {
-            //Take out item!
             if (preCraftedRecipes.get(player.getUniqueId()) == null) {
                 //Vanilla Recipe
                 return;
             }
             event.setCancelled(true);
-            var grindstoneData = preCraftedRecipes.get(player.getUniqueId());
 
             //Result taken out and placed on cursor or into the inventory.
             ItemStack result = event.getCurrentItem();
@@ -99,13 +97,13 @@ public class GrindStoneListener implements Listener {
 
             inventory.getLocation().getWorld().playSound(inventory.getLocation(), Sound.BLOCK_GRINDSTONE_USE, SoundCategory.BLOCKS, 1f, 1f);
 
+            var grindstoneData = preCraftedRecipes.get(player.getUniqueId());
             if (grindstoneData.getRecipe().getXp() > 0) { //Spawn xp
                 ExperienceOrb orb = (ExperienceOrb) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.EXPERIENCE_ORB);
                 orb.setExperience(grindstoneData.getRecipe().getXp());
             }
             grindstoneData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
 
-            //Custom Recipe
             CustomItem inputTop = grindstoneData.getInputTop();
             CustomItem inputBottom = grindstoneData.getInputBottom();
 
@@ -146,7 +144,8 @@ public class GrindStoneListener implements Listener {
         if (!event.getInventory().getType().equals(InventoryType.GRINDSTONE) || event.getInventorySlots().isEmpty())
             return;
         InventoryView view = event.getView();
-        if (event.getRawSlots().stream().noneMatch(integer -> view.getInventory(integer) instanceof GrindstoneInventory)) return;
+        if (event.getRawSlots().stream().noneMatch(integer -> view.getInventory(integer) instanceof GrindstoneInventory))
+            return;
         event.setCancelled(true);
     }
 
@@ -155,12 +154,12 @@ public class GrindStoneListener implements Listener {
         if (data != null) {
             inventory.setItem(2, data.getResult().getItem(player).orElse(new CustomItem(Material.AIR)).create());
             preCraftedRecipes.put(player.getUniqueId(), data);
-        } else {
-            for (ItemStack itemStack : new ItemStack[]{inventory.getItem(0), inventory.getItem(1)}) {
-                if (customCrafting.getApi().getRegistries().getCustomItems().getByItemStack(itemStack).map(CustomItem::isBlockVanillaRecipes).orElse(false)) {
-                    inventory.setItem(2, null);
-                    break;
-                }
+            return;
+        }
+        for (ItemStack itemStack : new ItemStack[]{inventory.getItem(0), inventory.getItem(1)}) {
+            if (customCrafting.getApi().getRegistries().getCustomItems().getByItemStack(itemStack).map(CustomItem::isBlockVanillaRecipes).orElse(false)) {
+                inventory.setItem(2, null);
+                return;
             }
         }
     }
