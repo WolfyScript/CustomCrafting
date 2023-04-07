@@ -411,15 +411,16 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         var cluster = guiWindow.getCluster();
         CCPlayerData playerStore = PlayerUtil.getStore(event.getPlayer());
 
-        int slot = 10;
-        for (int i = 5; i > -1; i--) {
-            event.setButton(slot, ButtonContainerIngredient.key(cluster, i));
-            slot += i == 3 ? 9-3 : i == 1 ? 9-1 : 2;
-        }
+        event.setButton(10, ButtonContainerIngredient.key(cluster, 5));
+        event.setButton(12, ButtonContainerIngredient.key(cluster, 4));
+        event.setButton(14, ButtonContainerIngredient.key(cluster, 3));
+        event.setButton(20, ButtonContainerIngredient.key(cluster, 2));
+        event.setButton(22, ButtonContainerIngredient.key(cluster, 1));
+        event.setButton(30, ButtonContainerIngredient.key(cluster, 0));
 
         List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getNamespacedKey().equals(PermissionCondition.KEY)).toList();
         int startSlot = 9 / (conditions.size() + 1);
-        slot = 0;
+        int slot = 0;
         for (Condition<?> condition : conditions) {
             event.setButton(36 + startSlot + slot, new NamespacedKey(ClusterRecipeBook.KEY, "conditions." + condition.getId()));
             slot += 2;
