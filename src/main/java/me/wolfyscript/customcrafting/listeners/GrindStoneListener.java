@@ -137,7 +137,7 @@ public class GrindStoneListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() == null || !event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE))
+        if (event.getClickedInventory() == null || !event.getView().getTopInventory().getType().equals(InventoryType.GRINDSTONE))
             return;
         var player = (Player) event.getWhoClicked();
         var action = event.getAction();
@@ -184,46 +184,43 @@ public class GrindStoneListener implements Listener {
         event.setCancelled(true);
     }
 
-    public Pair<CustomItem, GrindstoneData> checkRecipe(ItemStack item, ItemStack itemOther, int slot, Player player, InventoryView invView) {
-        preCraftedRecipes.remove(player.getUniqueId());
-        final var finalInputTop = new AtomicReference<CustomItem>();
-        final var finalInputBottom = new AtomicReference<CustomItem>();
-        final var recipeComplete = new AtomicBoolean(false);
-
-        return customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.GRINDSTONE, player).stream().filter(customRecipeGrindstone -> {
-            if (!customRecipeGrindstone.checkConditions(Conditions.Data.of(player, invView))) return false;
-            Ingredient ingredient = slot == 0 ? customRecipeGrindstone.getInputTop() : customRecipeGrindstone.getInputBottom();
-            Optional<CustomItem> checkInput = ingredient.check(item, customRecipeGrindstone.isCheckNBT());
-            if (checkInput.isEmpty()) return false; //Item is invalid! Go to next recipe!
-            //Check the other ingredient
-            Ingredient ingredientOther = slot == 0 ? customRecipeGrindstone.getInputBottom() : customRecipeGrindstone.getInputTop();
-            if (!ItemUtils.isAirOrNull(itemOther)) {
-                //Another item exists in the other slot! Check if current and other item are a valid recipe
-                Optional<CustomItem> optionalOther = ingredientOther.check(itemOther, customRecipeGrindstone.isCheckNBT());
-                if (optionalOther.isEmpty()) return false; //Other existing Item is invalid!
-                if (slot == 0) {
-                    finalInputBottom.set(optionalOther.get());
-                } else {
-                    finalInputTop.set(optionalOther.get());
+    private void processGrindstone(Inventory inventory, Player player, InventoryInteractEvent event) {
+        GrindstoneData data = lookForValidRecipe(inventory.getItem(0), inventory.getItem(1), player, event.getView());
+        if (data != null) {
+            inventory.setItem(2, data.getResult().getItem(player).orElse(new CustomItem(Material.AIR)).create());
+            preCraftedRecipes.put(player.getUniqueId(), data);
+        } else {
+            for (ItemStack itemStack : new ItemStack[]{inventory.getItem(0), inventory.getItem(1)}) {
+                if (customCrafting.getApi().getRegistries().getCustomItems().getByItemStack(itemStack).map(CustomItem::isBlockVanillaRecipes).orElse(false)) {
+                    inventory.setItem(2, null);
+                    break;
                 }
-            } else if (!ingredientOther.isEmpty())
-                return true; //Other slot is empty! check if current item is in a recipe, that has other ingredients! This recipe is not yet valid!
-            if (slot == 0) {
-                finalInputTop.set(checkInput.get());
-            } else {
-                finalInputBottom.set(checkInput.get());
             }
-            recipeComplete.set(true);
-            return true;
-        }).findFirst().map(recipe -> {
-            if (recipeComplete.get()) {
-                return new Pair<>(recipe.getResult().getItem(player).orElse(new CustomItem(Material.AIR)), new GrindstoneData(recipe, true,
-                        new IngredientData(0, 0, recipe.getInputTop(), finalInputTop.get(), slot == 0 ? item : itemOther),
-                        new IngredientData(1, 1, recipe.getInputBottom(), finalInputBottom.get(), slot == 0 ? itemOther : item))
-                );
-            }
-            return new Pair<>(new CustomItem(Material.AIR), (GrindstoneData) null);
-        }).orElse(null);
+        }
+    }
+
+    private GrindstoneData lookForValidRecipe(ItemStack topStack, ItemStack bottomStack, Player player, InventoryView invView) {
+        preCraftedRecipes.remove(player.getUniqueId());
+        for (CustomRecipeGrindstone recipe : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.GRINDSTONE, player)) {
+            if (!recipe.checkConditions(Conditions.Data.of(player, invView))) continue;
+
+            Pair<Boolean, CustomItem> checkTop = checkIngredientSlot(recipe, recipe.getInputTop(), topStack);
+            if (!checkTop.getKey()) continue;
+            Pair<Boolean, CustomItem> checkBottom = checkIngredientSlot(recipe, recipe.getInputBottom(), bottomStack);
+            if (!checkBottom.getKey()) continue;
+
+            return new GrindstoneData(recipe, true,
+                    new IngredientData(0, 0, recipe.getInputTop(), checkTop.getValue(), topStack),
+                    new IngredientData(1, 1, recipe.getInputBottom(), checkBottom.getValue(), bottomStack));
+        }
+        return null;
+    }
+
+    private Pair<Boolean, CustomItem> checkIngredientSlot(CustomRecipeGrindstone recipe, Ingredient ingredient, ItemStack stack) {
+        if (ItemUtils.isAirOrNull(stack)) {
+            return new Pair<>(ingredient.isEmpty() || ingredient.isAllowEmpty(), null);
+        }
+        return ingredient.check(stack, recipe.isCheckNBT()).map(customItem -> new Pair<>(true, customItem)).orElseGet(() -> new Pair<>(false, null));
     }
 
 }
