@@ -116,22 +116,10 @@ public class GrindStoneListener implements Listener {
                     inventory.setItem(1, inputBottom.shrink(itemBottom, 1, grindstoneData.getBySlot(1).ingredient().isReplaceWithRemains(), inventory, player, null));
                 }
             }
-            //Remove crafted recipe.
+            // Invalidate crafted recipe and check for new recipe
             preCraftedRecipes.remove(player.getUniqueId());
-
+            processGrindstone(inventory, player, event);
             player.updateInventory();
-
-            //Check for new recipe!
-            Bukkit.getScheduler().runTask(customCrafting, () -> {
-                Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(inventory.getItem(0), inventory.getItem(1), 0, player, event.getView());
-                if (checkResult != null && checkResult.getValue().getRecipe() != null) {
-                    preCraftedRecipes.put(player.getUniqueId(), checkResult.getValue());
-                    inventory.setItem(2, checkResult.getKey().create());
-                } else {
-                    inventory.setItem(2, null);
-                }
-                player.updateInventory();
-            });
         }
     }
 
@@ -140,37 +128,12 @@ public class GrindStoneListener implements Listener {
         if (event.getClickedInventory() == null || !event.getView().getTopInventory().getType().equals(InventoryType.GRINDSTONE))
             return;
         var player = (Player) event.getWhoClicked();
-        var action = event.getAction();
-        var inventory = event.getClickedInventory();
-        if (event.getSlot() != 2) {
-            if (event.getAction().toString().startsWith("PICKUP_") || action.equals(InventoryAction.COLLECT_TO_CURSOR) || action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) {
-                return;
-            }
-
-            InventoryUtils.calculateClickedSlot(event);
-
-            Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(inventory.getItem(0), inventory.getItem(1), event.getSlot(), player, event.getView());
-            GrindstoneData data = null;
-            if (checkResult != null) { //There exists a valid recipe with that ingredient
-                data = checkResult.getValue();
-                if (data == null) {
-                    //The recipe isn't completed yet!
-                    inventory.setItem(2, null);
-                    return;
-                }
-                inventory.setItem(2, checkResult.getKey().create());
-                player.updateInventory();
-                preCraftedRecipes.put(player.getUniqueId(), data);
-                Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
-            } else {
-                for (ItemStack itemStack : new ItemStack[]{inventory.getItem(0), inventory.getItem(1)}) {
-                    if (customCrafting.getApi().getRegistries().getCustomItems().getByItemStack(itemStack).map(CustomItem::isBlockVanillaRecipes).orElse(false)) {
-                        inventory.setItem(2, null);
-                        break;
-                    }
-                }
-            }
+        var inventory = event.getView().getTopInventory();
+        if (event.getClickedInventory().getType() == InventoryType.GRINDSTONE && event.getSlot() != 2) {
+            InventoryUtils.calculateClickedSlot(event); // Different from the vanilla behaviour this allows the player to place every item into the Grindstone
         }
+        processGrindstone(inventory, player, event);
+        Bukkit.getScheduler().runTask(customCrafting, player::updateInventory); // This is required for actions to be visible in the Grindstone inventory, otherwise it's very glitchy.
     }
 
     private boolean canBePlacedIntoGrindstone(ItemStack itemStack, ItemStack other) {
