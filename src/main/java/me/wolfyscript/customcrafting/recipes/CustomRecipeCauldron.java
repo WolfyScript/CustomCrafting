@@ -281,24 +281,18 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     public boolean checkRecipe(List<ItemStack> items, CauldronBlockData.CauldronStatus status) {
         if (!checkRecipeStatus(status)) return false;
-        int inputI = 0;
+        int ingredientIndex = 0;
         for (Ingredient ingredient : ingredients) {
-            ItemStack input = items.get(inputI);
+            ItemStack input = items.get(ingredientIndex);
             Optional<CustomItem> checkResult = ingredient.check(input, isCheckNBT());
             if (checkResult.isPresent()) {
-                if (checkResult.get().getAmount() == input.getAmount()) {
-                    inputI++;
-                    continue;
-                }
-                return false;
-            }
-            if (!ingredient.isAllowEmpty()) {
-                return false;
-            }
+                if (checkResult.get().getAmount() != input.getAmount()) return false;
+                ingredientIndex++;
+            } else if (!ingredient.isAllowEmpty()) return false;
         }
-        if (inputI < items.size()) {
+        if (ingredientIndex < items.size()) {
             // Make sure that there are no input items left.
-            return items.subList(inputI, items.size()).stream().allMatch(ItemUtils::isAirOrNull);
+            return items.subList(ingredientIndex, items.size()).stream().allMatch(ItemUtils::isAirOrNull);
         }
         return true;
     }

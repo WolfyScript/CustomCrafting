@@ -42,6 +42,8 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.version.MinecraftVersions;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -270,7 +272,12 @@ public class CauldronBlockData extends CustomBlockData {
 
         public CauldronStatus(Block block) {
             this.block = block;
-            this.hasLava = block.getType().equals(Material.LAVA_CAULDRON);
+            if (ServerVersion.isBefore(MinecraftVersions.v1_17)) {
+                // Lava Cauldrons do not exist in pre 1.17
+                this.hasLava = false;
+            } else {
+                this.hasLava = block.getType().equals(Material.LAVA_CAULDRON);
+            }
             this.hasWater = !hasLava && block.getType().equals(Material.WATER_CAULDRON);
             final Block blockBelow = block.getLocation().subtract(0, 1, 0).getBlock();
             this.hasCampfire = blockBelow.getType().equals(Material.CAMPFIRE);

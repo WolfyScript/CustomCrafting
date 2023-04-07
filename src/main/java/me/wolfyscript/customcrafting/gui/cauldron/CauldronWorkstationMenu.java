@@ -200,9 +200,9 @@ public class CauldronWorkstationMenu extends CCWindow {
             CauldronBlockData blockData = optionalCauldronBlockData.get();
             if (!blockData.isResultEmpty()) {
                 event.setButton(21, "result_0");
-                event.setButton(22, "result_1");
+                event.setButton(23, "result_1");
                 event.setButton(30, "result_2");
-                event.setButton(31, "result_3");
+                event.setButton(32, "result_3");
                 return;
             }
 
