@@ -49,6 +49,8 @@ public class Patreon {
         addPatron(new Patron("Teddy", Tier.WOLFRAM));
         addPatron(new Patron("霜神CreamGod", Tier.WOLFRAM));
         addPatron(new Patron("lance fector", Tier.WOLFRAM));
+        addPatron(new Patron("Noah Strijbos", Tier.WOLFRAM));
+        addPatron(new Patron("Kyle Kangas", Tier.WOLFRAM));
     }
 
     public void printPatreonCredits() {
