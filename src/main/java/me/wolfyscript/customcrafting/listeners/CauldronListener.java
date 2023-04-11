@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
-import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
 import com.wolfyscript.utilities.bukkit.persistent.world.BlockStorage;
 import com.wolfyscript.utilities.bukkit.persistent.world.WorldStorage;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -74,7 +73,7 @@ public class CauldronListener implements Listener {
     }
 
     private boolean getCreateAndOpenGUI(Block clicked, final Player player) {
-        WorldStorage worldStorage = ((WolfyCoreBukkit) api.getCore()).getPersistentStorage().getOrCreateWorldStorage(clicked.getWorld());
+        WorldStorage worldStorage = api.getCore().getPersistentStorage().getOrCreateWorldStorage(clicked.getWorld());
         BlockStorage blockStorage = worldStorage.getOrCreateAndSetBlockStorage(clicked.getLocation());
         if (blockStorage.getData(CauldronBlockData.ID, CauldronBlockData.class).isEmpty()) {
             var cauldronBlockData = new CauldronBlockData(blockStorage.getPos(), blockStorage.getChunkStorage());
