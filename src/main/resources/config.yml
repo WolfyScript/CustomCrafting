@@ -68,7 +68,7 @@ database:
 
 data:
   # Toggle if the stacktrace should be printed out if a recipe or item fails to load.
-  print_stacktrace: false
+  print_stacktrace: true
   # Do not change this number! It is used for internal conversion of items between Bukkit versions to make sure they are up-to-date.
   bukkit_version: 0
   # Do not change this number! It is used to update configs of recipes and items to new formats!
