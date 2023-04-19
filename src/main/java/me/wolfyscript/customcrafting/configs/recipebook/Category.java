@@ -23,43 +23,47 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import com.google.common.base.Preconditions;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
-import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 @JsonPropertyOrder({"id", "icon", "name", "description", "auto"})
 public class Category extends CategorySettings {
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    protected final List<RecipeContainer> containers;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final Map<CategoryFilter, List<RecipeContainer>> indexedFilters = new HashMap<>();
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String title;
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private boolean auto = false;
+    @JsonIgnore
+    protected final List<RecipeContainer> containers;
+    @JsonIgnore
+    private final Map<CategoryFilter, List<RecipeContainer>> indexedFilters = new HashMap<>();
 
     public Category() {
         super();
-        this.containers = new ArrayList<>();
+        this.containers = new ObjectArrayList<>();
+        this.title = getName();
     }
 
     public Category(Category category) {
         super(category);
         this.auto = category.auto;
-        this.containers = new ArrayList<>();
+        this.title = category.title;
+        this.containers = new ObjectArrayList<>();
     }
 
     void index(CustomCrafting customCrafting, Collection<CategoryFilter> filters) {
@@ -74,14 +78,12 @@ public class Category extends CategorySettings {
         }
         containers.clear();
         //Construct containers based on settings
-        List<RecipeContainer> recipeContainers = new ArrayList<>();
-        recipeContainers.addAll(this.groups.stream().map(s -> new RecipeContainer(customCrafting, s)).toList());
-        recipeContainers.addAll(this.folders.stream().flatMap(s -> registry.get("customcrafting", s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(customRecipe -> new RecipeContainer(customCrafting, customRecipe))).toList());
-        recipeContainers.addAll(this.recipes.stream().map(namespacedKey -> {
-            CustomRecipe<?> recipe = registry.get(namespacedKey);
-            return recipe == null ? null : new RecipeContainer(customCrafting, recipe);
-        }).filter(Objects::nonNull).toList());
-        containers.addAll(recipeContainers.stream().distinct().sorted().toList());
+        List<RecipeContainer> updatedContainers = new ObjectArrayList<>();
+        this.recipes.stream().map(namespacedKey -> customCrafting.getRegistries().getRecipes().has(namespacedKey) ? new RecipeContainer(customCrafting, namespacedKey) : null).filter(Objects::nonNull).forEach(updatedContainers::add);
+        this.groups.stream().map(group -> new RecipeContainer(customCrafting, group)).forEach(updatedContainers::add);
+        this.folders.stream().flatMap(folder -> registry.get(NamespacedKeyUtils.NAMESPACE, folder).stream().map(customRecipe -> new RecipeContainer(customCrafting, customRecipe))).forEach(updatedContainers::add);
+        this.namespaces.stream().flatMap(namespace -> registry.get(namespace).stream().map(customRecipe -> new RecipeContainer(customCrafting, customRecipe))).forEach(updatedContainers::add);
+        containers.addAll(updatedContainers.stream().distinct().toList());
 
         //Index filters for quick filtering on runtime.
         filters.forEach(this::indexFilters);
@@ -110,8 +112,8 @@ public class Category extends CategorySettings {
      * @param filter The filter to get the containers for; or null to get an unfiltered list.
      * @return The list of filtered containers; or unfiltered list of containers.
      */
-    private List<RecipeContainer> getContainers(@Nullable CategoryFilter filter) {
-        return !indexedFilters.isEmpty() && filter != null ? indexedFilters.getOrDefault(filter, new ArrayList<>()) : containers;
+    private Collection<RecipeContainer> getContainers(@Nullable CategoryFilter filter) {
+        return !indexedFilters.isEmpty() && filter != null ? indexedFilters.getOrDefault(filter, List.of()) : containers;
     }
 
     @JsonGetter("auto")
@@ -131,5 +133,21 @@ public class Category extends CategorySettings {
         if (!auto) {
             writeData(byteBuf);
         }
+    }
+
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+        if (title == null) { // Preserve old behaviour of the name
+            title = getName();
+        }
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }
