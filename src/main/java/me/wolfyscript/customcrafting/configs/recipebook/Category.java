@@ -65,10 +65,12 @@ public class Category extends CategorySettings {
     void index(CustomCrafting customCrafting, Collection<CategoryFilter> filters) {
         var registry = customCrafting.getRegistries().getRecipes();
         if (auto) {
+            this.recipes.clear();
             this.folders.clear();
             this.groups.clear();
-            this.folders.addAll(registry.folders("customcrafting"));
             this.groups.addAll(registry.groups());
+            this.namespaces.clear();
+            this.namespaces.addAll(registry.namespaces());
         }
         containers.clear();
         //Construct containers based on settings
