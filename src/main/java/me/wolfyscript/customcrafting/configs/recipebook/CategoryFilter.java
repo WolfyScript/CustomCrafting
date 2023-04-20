@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
+import java.util.Locale;
+import java.util.Objects;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,11 +31,14 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.inventory.CreativeModeTab;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
 
 @JsonPropertyOrder({"id", "icon", "name", "description"})
 public class CategoryFilter extends CategorySettings {
@@ -41,31 +46,48 @@ public class CategoryFilter extends CategorySettings {
     @JsonIgnore
     private final Set<Material> totalMaterials;
     protected Set<CreativeModeTab> creativeModeTabs;
-    protected Set<Material> materials;
+    protected Set<Material> items;
+    protected Set<Tag<Material>> tags;
 
     public CategoryFilter() {
         super();
         this.creativeModeTabs = new HashSet<>();
-        this.materials = new HashSet<>();
+        this.items = new HashSet<>();
         this.totalMaterials = new HashSet<>();
+        this.tags = new HashSet<>();
     }
 
     public CategoryFilter(CategoryFilter category) {
         super(category);
         this.creativeModeTabs = new HashSet<>(category.creativeModeTabs);
-        this.materials = new HashSet<>(category.materials);
+        this.items = new HashSet<>(category.items);
         this.totalMaterials = new HashSet<>();
+        this.tags = new HashSet<>(category.tags);
     }
 
     @JsonGetter
-    public Set<Material> getMaterials() {
-        return materials;
+    public Set<Material> getItems() {
+        return items;
+    }
+
+    @JsonAlias("materials")
+    @JsonSetter
+    public void setItems(Set<String> materials) {
+        this.items = materials.stream().map(Material::matchMaterial).filter(Objects::nonNull).collect(Collectors.toSet());
+        this.totalMaterials.addAll(this.items);
     }
 
     @JsonSetter
-    public void setMaterials(Set<Material> materials) {
-        this.materials = materials;
-        this.totalMaterials.addAll(materials);
+    public void setTags(Set<String> tags) {
+        this.tags = tags.stream().map(s -> {
+            NamespacedKey namespacedKey = NamespacedKey.fromString(s);
+            return Bukkit.getTag("items", namespacedKey != null ? namespacedKey : NamespacedKey.minecraft(s.toLowerCase(Locale.ROOT).replace(" ", "_")), Material.class);
+        }).filter(Objects::nonNull).collect(Collectors.toSet());
+    }
+
+    @JsonGetter
+    private Set<String> getTags() {
+        return tags.stream().map(materialTag -> materialTag.getKey().toString()).collect(Collectors.toSet());
     }
 
     @JsonGetter
