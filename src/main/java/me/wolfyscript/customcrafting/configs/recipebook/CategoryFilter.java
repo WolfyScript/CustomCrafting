@@ -48,7 +48,7 @@ public class CategoryFilter extends CategorySettings {
     protected Set<CreativeModeTab> creativeModeTabs;
     protected Set<Material> items;
     protected Set<Tag<Material>> tags;
-    private ContentSortation sort = new ContentSortation(ContentSortation.DefaultSortAlgo.INSERTION, ContentSortation.Order.ASCENDING);
+    private ContentSortation sort = new ContentSortation(ContentSortation.DefaultSortAlgo.NONE, ContentSortation.Order.ASCENDING);
 
     public CategoryFilter() {
         super();

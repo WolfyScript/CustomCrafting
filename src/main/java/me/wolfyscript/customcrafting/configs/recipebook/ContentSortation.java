@@ -96,7 +96,7 @@ public class ContentSortation {
 
     public void sortRecipeContainers(List<RecipeContainer> containers) {
         Comparator<RecipeContainer> comparator = switch (getDefaultSortAlgo()) {
-            case INSERTION -> /* Keep the insertion order */ null;
+            case NONE -> /* Keep the insertion order */ null;
             case ID -> Comparator.naturalOrder();
             case ID_GROUPS_FIRST -> ContentSortation.ID_GROUP_FIRST;
             case ID_RECIPES_FIRST -> ContentSortation.ID_RECIPE_FIRST;
@@ -130,7 +130,7 @@ public class ContentSortation {
         /**
          * Keeps the order in which recipes/groups were added to the recipe book.
          */
-        INSERTION,
+        NONE,
         /**
          * Treats recipe and group ids the same way and uses Strings natural ordering.
          */
