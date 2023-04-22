@@ -53,7 +53,7 @@ public class Category extends CategorySettings {
     protected final List<RecipeContainer> containers;
     @JsonIgnore
     private final Map<CategoryFilter, List<RecipeContainer>> indexedFilters = new HashMap<>();
-    private ContentSortation sort;
+    private ContentSortation sort = new ContentSortation(ContentSortation.DefaultSortAlgo.ID, ContentSortation.Order.ASCENDING);
 
     public Category() {
         super();
