@@ -27,16 +27,20 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
 public class ContentSortation {
 
     private final DefaultSortAlgo defaultSortAlgo;
     private final Order order;
-    private final Object2IntMap<NamespacedKey> recipeOrdering;
-    private final Object2IntMap<String> groupOrdering;
+    @JsonIgnore private final Object2IntMap<NamespacedKey> recipeOrdering;
+    @JsonIgnore private final Object2IntMap<String> groupOrdering;
 
     public static final Comparator<RecipeContainer> ID_GROUP_FIRST = (o1, o2) -> {
         if (o1.getGroup() != null) {
@@ -57,14 +61,20 @@ public class ContentSortation {
 
     @JsonCreator
     public ContentSortation(@JsonProperty("defaultSort") DefaultSortAlgo defaultSortAlgo,
-                            @JsonProperty("order") Order order,
-                            @JsonProperty("recipes") Map<NamespacedKey, Integer> recipeOrdering,
-                            @JsonProperty("groups") Map<String, Integer> groupOrdering) {
+                            @JsonProperty("order") Order order) {
         this.defaultSortAlgo = defaultSortAlgo;
         this.order = order;
         this.recipeOrdering = new Object2IntOpenHashMap<>();
-        this.recipeOrdering.putAll(recipeOrdering);
         this.groupOrdering = new Object2IntOpenHashMap<>();
+    }
+
+    @JsonSetter("recipes")
+    public void addRecipeOrdering(Map<NamespacedKey, Integer> recipeOrdering) {
+        this.recipeOrdering.putAll(recipeOrdering);
+    }
+
+    @JsonSetter("groups")
+    public void addGroupOrdering(Map<String, Integer> groupOrdering) {
         this.groupOrdering.putAll(groupOrdering);
     }
 
