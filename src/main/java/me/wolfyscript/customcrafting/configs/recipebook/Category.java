@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -52,6 +53,7 @@ public class Category extends CategorySettings {
     protected final List<RecipeContainer> containers;
     @JsonIgnore
     private final Map<CategoryFilter, List<RecipeContainer>> indexedFilters = new HashMap<>();
+    private ContentSortation sort;
 
     public Category() {
         super();
@@ -84,14 +86,16 @@ public class Category extends CategorySettings {
         this.folders.stream().flatMap(folder -> registry.get(NamespacedKeyUtils.NAMESPACE, folder).stream().map(customRecipe -> new RecipeContainer(customCrafting, customRecipe))).forEach(updatedContainers::add);
         this.namespaces.stream().flatMap(namespace -> registry.get(namespace).stream().map(customRecipe -> new RecipeContainer(customCrafting, customRecipe))).forEach(updatedContainers::add);
         containers.addAll(updatedContainers.stream().distinct().toList());
-
+        sort.sortRecipeContainers(containers);
         //Index filters for quick filtering on runtime.
         filters.forEach(this::indexFilters);
     }
 
     public void indexFilters(CategoryFilter filter) {
         Preconditions.checkNotNull(filter, "Filter cannot be null! Cannot filter containers with null Filter!");
-        indexedFilters.put(filter, containers.stream().filter(filter::filter).toList());
+        List<RecipeContainer> filterContainers = containers.stream().filter(filter::filter).collect(Collectors.toList());
+        filter.getSort().sortRecipeContainers(filterContainers);
+        indexedFilters.put(filter, filterContainers);
     }
 
     public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter) {
@@ -114,6 +118,14 @@ public class Category extends CategorySettings {
      */
     private Collection<RecipeContainer> getContainers(@Nullable CategoryFilter filter) {
         return !indexedFilters.isEmpty() && filter != null ? indexedFilters.getOrDefault(filter, List.of()) : containers;
+    }
+
+    public void setSort(ContentSortation sort) {
+        this.sort = sort;
+    }
+
+    public ContentSortation getSort() {
+        return sort;
     }
 
     @JsonGetter("auto")
@@ -150,4 +162,5 @@ public class Category extends CategorySettings {
     public String getTitle() {
         return title;
     }
+
 }

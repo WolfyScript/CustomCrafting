@@ -48,6 +48,7 @@ public class CategoryFilter extends CategorySettings {
     protected Set<CreativeModeTab> creativeModeTabs;
     protected Set<Material> items;
     protected Set<Tag<Material>> tags;
+    private ContentSortation sort;
 
     public CategoryFilter() {
         super();
@@ -63,6 +64,14 @@ public class CategoryFilter extends CategorySettings {
         this.items = new HashSet<>(category.items);
         this.totalMaterials = new HashSet<>();
         this.tags = new HashSet<>(category.tags);
+    }
+
+    public void setSort(ContentSortation sort) {
+        this.sort = sort;
+    }
+
+    public ContentSortation getSort() {
+        return sort;
     }
 
     @JsonGetter
@@ -119,4 +128,5 @@ public class CategoryFilter extends CategorySettings {
         writeStringArray(totalMaterials.stream().map(material -> material.getKey().toString()).toList(), byteBuf);
 
     }
+
 }
