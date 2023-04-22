@@ -100,7 +100,7 @@ public abstract class CategorySettings {
     @JsonSetter("icon")
     private void setJsonIconStack(JsonNode icon) {
         if (icon.isTextual()) {
-            this.icon = new ItemStack(Objects.requireNonNull(Material.matchMaterial(icon.asText())));
+            this.icon = new ItemStack(Objects.requireNonNull(Material.matchMaterial(icon.asText()), icon.asText() + " is not a valid item!"));
         } else if (icon.isObject()) {
             this.icon = CustomCrafting.inst().getApi().getJacksonMapperUtil().getGlobalMapper().convertValue(icon, ItemStack.class);
         } else {
