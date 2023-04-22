@@ -118,7 +118,7 @@ public class CategoryFilter extends CategorySettings {
         if (container.getRecipe() != null && ((!recipes.isEmpty() && !recipes.contains(container.getRecipe())) || (!folders.isEmpty() && !folders.contains(container.getRecipe().getNamespace())))) {
             return false;
         }
-        return container.isValid(totalMaterials);
+        return tags.stream().anyMatch(materialTag -> container.isValid(materialTag.getValues())) || container.isValid(totalMaterials);
     }
 
     @Override
