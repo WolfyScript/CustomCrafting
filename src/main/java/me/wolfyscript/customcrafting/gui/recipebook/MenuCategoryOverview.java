@@ -81,12 +81,12 @@ public class MenuCategoryOverview extends CCWindow {
     @Override
     public Component onUpdateTitle(Player player, @Nullable GUIInventory<CCCache> inventory, GuiHandler<CCCache> guiHandler) {
         var recipeBookCache = guiHandler.getCustomCache().getRecipeBookCache();
-        var categoryName = recipeBookCache.getCategory().getName();
+        var categoryTitle = recipeBookCache.getCategory().getTitle();
         var miniMsg = customCrafting.getApi().getChat().getMiniMessage();
-        if (categoryName.contains("§")) {
-            categoryName = miniMsg.serialize(BukkitComponentSerializer.legacy().deserialize(categoryName));
+        if (categoryTitle.contains("§")) {
+            categoryTitle = miniMsg.serialize(BukkitComponentSerializer.legacy().deserialize(categoryTitle));
         }
-        return this.wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", TagResolverUtil.papi(player), Placeholder.parsed("category_name", wolfyUtilities.getLanguageAPI().replaceKeys(categoryName)));
+        return this.wolfyUtilities.getLanguageAPI().getComponent("inventories." + getNamespacedKey().getNamespace() + "." + getNamespacedKey().getKey() + ".gui_name", TagResolverUtil.papi(player), Placeholder.parsed("category_name", wolfyUtilities.getLanguageAPI().replaceKeys(categoryTitle)));
     }
 
     @Override

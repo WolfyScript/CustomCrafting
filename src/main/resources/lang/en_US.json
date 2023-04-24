@@ -33,17 +33,44 @@
       }
     },
     "filter": {
-      "brewing": {
-        "name": "<grey>\u274F</grey> <gold><b>Brewing</b></gold>"
+      "search": {
+        "name": "<grey>\u274F</grey> <gold><b>Browse</b></gold>"
       },
       "building_blocks": {
         "name": "<grey>\u274F</grey> <gold><b>Building Blocks</b></gold>"
       },
-      "decorations": {
-        "name": "<grey>\u274F</grey> <gold><b>Decorations</b></gold>"
+      "colored_blocks" : {
+        "name": "<grey>\u274F</grey> <gold><b>Colored Blocks</b></gold>"
+      },
+      "natural_blocks" : {
+        "name": "<grey>\u274F</grey> <gold><b>Natural Blocks</b></gold>"
+      },
+      "functional_blocks" : {
+        "name": "<grey>\u274F</grey> <gold><b>Functional Blocks</b></gold>"
+      },
+      "redstone_blocks" : {
+        "name": "<grey>\u274F</grey> <gold><b>Redstone Blocks</b></gold>"
+      },
+      "tools_and_utilities" : {
+        "name": "<grey>\u274F</grey> <gold><b>Tools & Utilities</b></gold>"
       },
       "combat": {
         "name": "<grey>\u274F</grey> <gold><b>Combat</b></gold>"
+      },
+      "food_and_drinks": {
+        "name": "<grey>\u274F</grey> <gold><b>Food & Drinks</b></gold>"
+      },
+      "ingredients": {
+        "name": "<grey>\u274F</grey> <gold><b>Ingredients</b></gold>"
+      },
+      "spawn_eggs": {
+        "name": "<grey>\u274F</grey> <gold><b>Spawn Eggs</b></gold>"
+      },
+      "brewing": {
+        "name": "<grey>\u274F</grey> <gold><b>Brewing</b></gold>"
+      },
+      "decorations": {
+        "name": "<grey>\u274F</grey> <gold><b>Decorations</b></gold>"
       },
       "tools": {
         "name": "<grey>\u274F</grey> <gold><b>Tools</b></gold>"
@@ -59,9 +86,6 @@
       },
       "misc": {
         "name": "<grey>\u274F</grey> <gold><b>Misc</b></gold>"
-      },
-      "search": {
-        "name": "<grey>\u274F</grey> <gold><b>Browse</b></gold>"
       }
     }
   },

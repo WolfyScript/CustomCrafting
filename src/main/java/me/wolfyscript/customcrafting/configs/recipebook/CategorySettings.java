@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
+import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -34,12 +34,10 @@ import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -49,30 +47,36 @@ import java.util.Set;
 public abstract class CategorySettings {
 
     private String id = "";
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) protected Set<String> groups;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) protected Set<String> folders;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) protected Set<NamespacedKey> recipes;
     @JsonInclude(JsonInclude.Include.NON_NULL) private ItemStack icon;
     @JsonInclude(JsonInclude.Include.NON_NULL) private String name;
     @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<String> description;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) protected Set<NamespacedKey> recipes;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) protected Set<String> groups;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) protected Set<String> folders;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) protected Set<String> namespaces;
+
     protected CategorySettings() {
-        this.name = "";
         this.icon = new ItemStack(Material.CHEST);
-        this.groups = new HashSet<>();
-        this.folders = new HashSet<>();
+        this.name = "";
         this.description = new ArrayList<>();
-        this.recipes = new HashSet<>();
+
+        this.recipes = new ObjectAVLTreeSet<>();
+        this.groups = new ObjectAVLTreeSet<>();
+        this.folders = new ObjectAVLTreeSet<>();
+        this.namespaces = new ObjectAVLTreeSet<>();
     }
 
     protected CategorySettings(CategorySettings category) {
         this.id = category.id;
-        this.name = category.name;
         this.icon = category.getIconStack();
-        this.groups = new HashSet<>(category.groups);
-        this.folders = new HashSet<>(category.folders);
+        this.name = category.name;
         this.description = new ArrayList<>(category.getDescription());
-        this.recipes = new HashSet<>(category.getRecipes());
+
+        this.recipes = new ObjectAVLTreeSet<>(category.recipes);
+        this.groups = new ObjectAVLTreeSet<>(category.groups);
+        this.folders = new ObjectAVLTreeSet<>(category.folders);
+        this.namespaces = new ObjectAVLTreeSet<>(category.namespaces);
     }
 
     @JsonGetter
@@ -96,7 +100,7 @@ public abstract class CategorySettings {
     @JsonSetter("icon")
     private void setJsonIconStack(JsonNode icon) {
         if (icon.isTextual()) {
-            this.icon = new ItemStack(Objects.requireNonNull(Material.matchMaterial(icon.asText())));
+            this.icon = new ItemStack(Objects.requireNonNull(Material.matchMaterial(icon.asText()), icon.asText() + " is not a valid item!"));
         } else if (icon.isObject()) {
             this.icon = CustomCrafting.inst().getApi().getJacksonMapperUtil().getGlobalMapper().convertValue(icon, ItemStack.class);
         } else {
@@ -154,16 +158,24 @@ public abstract class CategorySettings {
         this.groups = groups;
     }
 
-    @JsonAlias("namespaces")
     @JsonGetter
     public Set<String> getFolders() {
         return folders;
     }
 
-    @JsonAlias("namespaces")
     @JsonSetter
     public void setFolders(Set<String> folders) {
         this.folders = folders;
+    }
+
+    @JsonSetter
+    public Set<String> getNamespaces() {
+        return namespaces;
+    }
+
+    @JsonSetter
+    public void setNamespaces(Set<String> namespaces) {
+        this.namespaces = namespaces;
     }
 
     @JsonGetter
