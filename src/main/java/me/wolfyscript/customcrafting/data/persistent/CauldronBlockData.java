@@ -71,6 +71,7 @@ public class CauldronBlockData extends CustomBlockData {
     private int passedTicks;
     private BukkitTask ticker;
     private ItemStack[] result;
+    private boolean hasViewer = false;
 
     @JsonCreator
     public CauldronBlockData(@JacksonInject Vector pos, @JacksonInject ChunkStorage chunkStorage) {
@@ -91,6 +92,14 @@ public class CauldronBlockData extends CustomBlockData {
             this.passedTicks = 0;
             this.ticker = Bukkit.getScheduler().runTaskTimer(customCrafting, this::tick, 1, 1);
         });
+    }
+
+    public boolean hasViewer() {
+        return hasViewer;
+    }
+
+    public void setHasViewer(boolean hasViewer) {
+        this.hasViewer = hasViewer;
     }
 
     public int getPassedTicks() {
