@@ -345,13 +345,14 @@ public class CustomCrafting extends JavaPlugin {
     @Override
     public void onEnable() {
         this.api.initialize();
+        this.configHandler = new ConfigHandler(this);
+        this.configHandler.load();
+
         writeBanner();
         this.patreon.initialize();
         this.patreon.printPatreonCredits();
         writeSeparator();
 
-        this.configHandler = new ConfigHandler(this);
-        this.configHandler.load();
         this.pluginCompatibility.init();
         this.dataHandler = new DataHandler(this);
         this.disableRecipesHandler = new DisableRecipesHandler(this);
@@ -388,9 +389,12 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         getLogger().info("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         getLogger().info("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        getLogger().info(() -> "    Version    | v" + version.getVersion());
-        getLogger().info(() -> "    WolfyUtils | v" + ServerVersion.getWUVersion().getVersion());
-        getLogger().info(() -> "    Bukkit     | " + Bukkit.getVersion() + "(API: " + Bukkit.getBukkitVersion() + ")");
+        getLogger().info(() -> "    Version      | v" + version.getVersion());
+        getLogger().info(() -> "    WolfyUtils   | v" + ServerVersion.getWUVersion().getVersion());
+        getLogger().info(() -> "    Bukkit       | " + Bukkit.getVersion() + "(API: " + Bukkit.getBukkitVersion() + ")");
+        if (!getConfigHandler().getConfig().isPrintingStacktrace()) {
+            getLogger().warning(() -> "    Print Errors | false (Required for Support! Enable `data.print_stacktrace` in config.yml!)");
+        }
     }
 
     public void writeSeparator() {
