@@ -251,7 +251,6 @@ public class CauldronWorkstationMenu extends CCWindow {
         //Reset cache
         CacheCauldronWorkstation cacheCauldronWorkstation = cache.getCauldronWorkstation();
         cacheCauldronWorkstation.setPreCookEvent(null);
-        cacheCauldronWorkstation.setBlockData(null);
         cacheCauldronWorkstation.setBlock(null);
         for (ItemStack itemStack : cacheCauldronWorkstation.getInput()) {
             if (itemStack != null && !itemStack.getType().equals(Material.AIR)) {
@@ -260,6 +259,9 @@ public class CauldronWorkstationMenu extends CCWindow {
             }
         }
         cacheCauldronWorkstation.resetInput();
+
+        cacheCauldronWorkstation.getBlockData().ifPresent(cauldronBlockData -> cauldronBlockData.setHasViewer(false));
+        cacheCauldronWorkstation.setBlockData(null);
         return false;
     }
 
