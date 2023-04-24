@@ -31,9 +31,11 @@ import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.gui.cauldron.CauldronWorkstationCluster;
 import me.wolfyscript.customcrafting.utils.CauldronUtils;
+import me.wolfyscript.lib.net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -41,6 +43,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class CauldronListener implements Listener {
 
@@ -54,6 +57,7 @@ public class CauldronListener implements Listener {
 
     @EventHandler
     public void onInteractWithCauldron(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         MainConfig.CauldronInteraction interaction = customCrafting.getConfigHandler().getConfig().getCauldronInteraction();
         if ((interaction == MainConfig.CauldronInteraction.SNEAKING && (!event.getPlayer().isSneaking() || !ItemUtils.isAirOrNull(event.getItem()))) ||
@@ -81,8 +85,18 @@ public class CauldronListener implements Listener {
             cauldronBlockData.onLoad();
             blockStorage.getChunkStorage().updateBlock(blockStorage.getPos());
         }
+        if (!player.hasPermission(api.getInventoryAPI(CCCache.class).getGuiWindow(CauldronWorkstationCluster.CAULDRON_MAIN).getPermission())) {
+            return true;
+        }
         return blockStorage.getData(CauldronBlockData.ID, CauldronBlockData.class).map(cauldronBlockData -> {
+            if (cauldronBlockData.hasViewer()) {
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, BungeeComponentSerializer.get().serialize(
+                        customCrafting.getApi().getChat().getMiniMessage().deserialize("<red>Another player is currently viewing this Cauldron"))
+                );
+                return true;
+            }
             if (cauldronBlockData.getRecipe().isPresent() || cauldronBlockData.getPassedTicks() > 0) return false;
+            cauldronBlockData.setHasViewer(true);
             GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
             CacheCauldronWorkstation cauldronWorkstation = guiHandler.getCustomCache().getCauldronWorkstation();
             cauldronWorkstation.setBlockData(cauldronBlockData);
