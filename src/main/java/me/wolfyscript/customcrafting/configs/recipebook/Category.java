@@ -42,7 +42,7 @@ import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-@JsonPropertyOrder({"id", "icon", "name", "description", "auto"})
+@JsonPropertyOrder({"id", "title", "icon", "name", "description", "auto"})
 public class Category extends CategorySettings {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -147,20 +147,12 @@ public class Category extends CategorySettings {
         }
     }
 
-    @Override
-    public void setName(String name) {
-        super.setName(name);
-        if (title == null) { // Preserve old behaviour of the name
-            title = getName();
-        }
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
 
     public String getTitle() {
-        return title;
+        return title == null || title.isBlank() ? getName() : title;
     }
 
 }
