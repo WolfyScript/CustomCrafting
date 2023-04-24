@@ -60,6 +60,10 @@ public class PlayerUtil {
             bookCache.setResearchItems(new ArrayList<>());
             bookCache.setSubFolderPage(0);
             bookCache.setPage(0);
+            if (bookCache.getCategory() != null) {
+                invAPI.openGui(player, ClusterRecipeBook.CATEGORY_OVERVIEW);
+                return;
+            }
         }
 
         // Open directly to the category if we only have one
