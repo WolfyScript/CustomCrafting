@@ -61,8 +61,7 @@ public class CauldronListener implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         MainConfig.CauldronInteraction interaction = customCrafting.getConfigHandler().getConfig().getCauldronInteraction();
         if ((interaction == MainConfig.CauldronInteraction.SNEAKING && (!event.getPlayer().isSneaking() || !ItemUtils.isAirOrNull(event.getItem()))) ||
-                (interaction == MainConfig.CauldronInteraction.NORMAL && event.getPlayer().isSneaking())
-        ) {
+                (interaction == MainConfig.CauldronInteraction.NORMAL && event.getPlayer().isSneaking())) {
             return;
         }
         Block clicked = event.getClickedBlock();
