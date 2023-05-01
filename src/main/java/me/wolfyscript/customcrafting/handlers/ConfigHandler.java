@@ -130,7 +130,6 @@ public class ConfigHandler {
         customCrafting.saveResource(recipePath + file + ".conf", true);
     }
 
-
     public void loadLang() {
         var chosenLang = mainConfig.getString("language");
         //Export all the available languages
@@ -151,9 +150,6 @@ public class ConfigHandler {
     }
 
     public void save() throws IOException {
-        if (this.recipeBookConfig != null && this.recipeBookConfig.isShouldSave()) {
-            customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.conf"), this.recipeBookConfig);
-        }
         getConfig().save();
     }
 
