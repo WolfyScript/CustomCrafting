@@ -20,7 +20,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.listeners;
+package me.wolfyscript.customcrafting.listeners.smithing;
 
 import java.util.HashMap;
 import java.util.List;

@@ -81,7 +81,7 @@ import me.wolfyscript.customcrafting.listeners.FurnaceListener;
 import me.wolfyscript.customcrafting.listeners.GrindStoneListener;
 import me.wolfyscript.customcrafting.listeners.PlayerListener;
 import me.wolfyscript.customcrafting.listeners.RecipeBookListener;
-import me.wolfyscript.customcrafting.listeners.SmithingListener;
+import me.wolfyscript.customcrafting.listeners.smithing.SmithingListener;
 import me.wolfyscript.customcrafting.listeners.crafting.CraftListener;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
