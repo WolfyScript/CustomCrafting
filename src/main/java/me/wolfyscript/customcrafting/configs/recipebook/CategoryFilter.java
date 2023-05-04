@@ -74,13 +74,13 @@ public class CategoryFilter extends CategorySettings {
         return sort;
     }
 
-    @JsonGetter
-    public Set<Material> getItems() {
-        return items;
+    @JsonGetter("items")
+    public Set<String> getItems() {
+        return items.stream().map(material -> material.getKey().toString().replace("minecraft:", "")).collect(Collectors.toSet());
     }
 
     @JsonAlias("materials")
-    @JsonSetter
+    @JsonSetter("items")
     public void setItems(Set<String> materials) {
         this.items = materials.stream().map(Material::matchMaterial).filter(Objects::nonNull).collect(Collectors.toSet());
         this.totalMaterials.addAll(this.items);
