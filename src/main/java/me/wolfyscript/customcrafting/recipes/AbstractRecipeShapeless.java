@@ -142,6 +142,54 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         return hasAllowedEmptyIngredient ? (matrixData.getStrippedSize() >= nonEmptyIngredientSize && matrixData.getStrippedSize() <= ingredients.size()) : matrixData.getStrippedSize() == nonEmptyIngredientSize;
     }
 
+    /**
+     * <p>
+     * Checks if the recipe matches the given matrix data.
+     * </p>
+     * <p>
+     *     The shapeless recipe algorithm tries to efficiently determine if the correct ingredients are used.<br>
+     *     <b>Problem: </b><br>
+     *     Shapeless recipes may have multiple ingredients with multiple variations.
+     *     So an item in the matrix may match multiple ingredients.
+     *     <br>
+     *     <b>Solution:</b><br>
+     *     The current algorithm acts as a tree that tries to eliminate the paths that cannot occur as far as possible.
+     *     <p>
+     *     It begins at the first slot in the matrix (root) and continuos until it matches the last slot.
+     *     </p>
+     *     <p>
+     *     For each slot it matches the item in that slot to the ingredients:
+     *     <ul>
+     *         <li>The ingredient is marked as checked for the current slot.</li>
+     *         <li>
+     *             In case there is a valid ingredient:
+     *             <ol>
+     *                 <li>The ingredient is mapped to the current slot.</li>
+     *                 <li>The ingredient/slot pair is stored in the queue.</li>
+     *                 <li>continuos to the next slot.</li>
+     *             </ol>
+     *         </li>
+     *         <li>
+     *            Otherwise:
+     *            <ul>
+     *                <li>If this slot is the first slot in the matrix (root) it jumps out of the loop.</li>
+     *                <li>
+     *                    Else:
+     *                    <ul>
+     *                        <li>Goes back to the previous slot and rechecks it.</li>
+     *                    </ul>
+     *                </li>
+     *            </ul>
+     *         </li>
+     *     </ul>
+     *
+     *     </p>
+     * </p>
+     *
+     *
+     * @param matrixData The cache of the matrix.
+     * @return The data of the matching recipe, or null if not valid.
+     */
     @Override
     public CraftingData check(CraftManager.MatrixData matrixData) {
         if (isDisabled() || !fitsDimensions(matrixData)) return null;
@@ -149,10 +197,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         final ItemStack[] matrix = matrixData.getItems();
         final IntList selectedSlots = new IntArrayList(matrix.length);
         final int[] checkedIndicesPerSlot = new int[matrix.length];
-        /*
-        Previous implementation had the issue that it didn't go through all possible variations and therefore failed to verify the recipe if the items weren't arranged correctly.
-        The new implementation should fix that. Of course at the cost of more calculation time... For 9 ingredients not that big of a deal, but for 36, well... that's why 3x3 recipe grids should be the max size possible.
-         */
+
         for (int i = 0; i < matrix.length; ) { //First we go through all the items in the grid.
             final int checkedIndices = checkedIndicesPerSlot[i];
             final int recipeSlot = checkIngredient(i, matrixData, selectedSlots, checkedIndices, dataArray, matrix[i]); //Get the slot of the ingredient or -1 if non is found.
@@ -197,6 +242,22 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         return Integer.bitCount(bitSet);
     }
 
+    /**
+     * <p>
+     * Checks the ingredient at the given position of the matrix and compares it to the available ingredients.
+     * The ingredients that are already matched against another slot, or were already matched against this position, are skipped.
+     * </p>
+     * <p><b>Side-effect:</b>
+     * Once a match is found it is written into the dataArray to cache it (which will be used for the merge operations and shrink methods).
+     * </p>
+     * @param pos The position (slot) in the matrix.
+     * @param matrixData The cached contents of the matrix.
+     * @param selectedSlots The slots that are already matched to an ingredient.
+     * @param checkedIndices The ingredient indices already matched against to this position (slot).
+     * @param dataArray The cache data for the final recipe data.
+     * @param item The item at the given position in the matrix.
+     * @return The ingredient index that matches this position.
+     */
     protected int checkIngredient(int pos, CraftManager.MatrixData matrixData, List<Integer> selectedSlots, Integer checkedIndices, IngredientData[] dataArray, ItemStack item) {
         for (int key : indexes) {
             if (!selectedSlots.contains(key) && !getBit(checkedIndices, key)) {
