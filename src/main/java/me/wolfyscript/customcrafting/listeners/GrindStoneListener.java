@@ -64,8 +64,8 @@ public class GrindStoneListener implements Listener {
         this.customCrafting = customCrafting;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onTakeOutResult(InventoryClickEvent event) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onCollectResult(InventoryClickEvent event) {
         if (event.getClickedInventory() == null || event.getAction().equals(InventoryAction.NOTHING) || !event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE))
             return;
         var player = (Player) event.getWhoClicked();
