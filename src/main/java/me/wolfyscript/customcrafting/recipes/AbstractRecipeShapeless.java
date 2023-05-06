@@ -148,22 +148,24 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
      * </p>
      * <p>
      *     The shapeless recipe algorithm tries to efficiently determine if the correct ingredients are used.<br>
-     *     <b>Problem: </b><br>
-     *     Shapeless recipes may have multiple ingredients with multiple variations.
-     *     So an item in the matrix may match multiple ingredients.
-     *     <br>
-     *     <b>Solution:</b><br>
-     *     The current algorithm acts as a tree that tries to eliminate the paths that cannot occur as far as possible.
      *     <p>
-     *     It begins at the first slot in the matrix (root) and continuos until it matches the last slot.
+     *         <h3>Problem:</h3>
+     *         Shapeless recipes may have multiple ingredients with multiple variations.
+     *         So an item in the matrix may match multiple ingredients.
+     *         Due to the non-deterministic initial order of the ingredients in the matrix, the proper order of used ingredients need to be determined when matching it.
+     *     </p>
+     *     <p>
+     *         <h3>Solution:</h3>
+     *         The current algorithm acts as a tree that tries to eliminate the paths that cannot occur as far as possible.
+     *         It begins at the first slot in the matrix (root) and continuos until it matches the last slot.
      *     </p>
      *     <p>
      *     For each slot it matches the item in that slot to the ingredients:
      *     <ul>
-     *         <li>The ingredient is marked as checked for the current slot.</li>
      *         <li>
      *             In case there is a valid ingredient:
      *             <ol>
+     *                 <li>The ingredient is marked as checked for the current slot.</li>
      *                 <li>The ingredient is mapped to the current slot.</li>
      *                 <li>The ingredient/slot pair is stored in the queue.</li>
      *                 <li>continuos to the next slot.</li>
