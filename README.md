@@ -26,5 +26,5 @@ For any questions join the [Discord](https://discord.gg/qGhDTSr).
 
 ## Check out my partner!
 <a href="https://billing.kinetichosting.net/aff.php?aff=345">
-  <img width="600px" src="https://user-images.githubusercontent.com/41468455/237019976-6b66b7f4-3d26-4b2f-b858-463ffe675531.png" alt="Kinetic Hosting 15% off your first month with code WOLFYSCRIPT"/>
+  <img width="700px" src="https://user-images.githubusercontent.com/41468455/237019976-6b66b7f4-3d26-4b2f-b858-463ffe675531.png" alt="Kinetic Hosting 15% off your first month with code WOLFYSCRIPT"/>
 </a>
