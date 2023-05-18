@@ -81,6 +81,7 @@ import me.wolfyscript.customcrafting.listeners.FurnaceListener;
 import me.wolfyscript.customcrafting.listeners.GrindStoneListener;
 import me.wolfyscript.customcrafting.listeners.PlayerListener;
 import me.wolfyscript.customcrafting.listeners.RecipeBookListener;
+import me.wolfyscript.customcrafting.listeners.smithing.Smithing1_20Listener;
 import me.wolfyscript.customcrafting.listeners.smithing.SmithingListener;
 import me.wolfyscript.customcrafting.listeners.crafting.CraftListener;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
@@ -137,6 +138,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
+import me.wolfyscript.utilities.util.version.MinecraftVersion;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
@@ -412,7 +414,11 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new GrindStoneListener(this), this);
         pM.registerEvents(new BrewingStandListener(api, this), this);
         pM.registerEvents(new RecipeBookListener(), this);
-        pM.registerEvents(new SmithingListener(this), this);
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 19, 4))) {
+            pM.registerEvents(new Smithing1_20Listener(this), this);
+        } else {
+            pM.registerEvents(new SmithingListener(this), this);
+        }
     }
 
     private void registerCommands() {
