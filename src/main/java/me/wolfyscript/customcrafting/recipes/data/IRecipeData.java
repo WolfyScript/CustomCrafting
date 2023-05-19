@@ -22,73 +22,21 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
-import com.google.common.base.Preconditions;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+public interface IRecipeData<R extends CustomRecipe<?>> {
 
-/**
- * This object contains data of pre-crafted recipes like the recipe, ingredients and their slot ({@link IngredientData}), and the {@link Result}.
- * <p>
- * It indexes at which place of the inventory which CustomItem is used, so it can use the CustomItem consume options, and other options a user might have saved in the item.
- * <br>
- * The indexed Ingredients are used to target specific items, which are then used inside the {@link MergeOption}s.
- * </p>
- * <br>
- * Depending on the type of the recipe they might be:
- * <ul>
- *     <li>{@link CraftingData}</li>
- *     <li>{@link CookingRecipeData}
- *     <ul>
- *         <li>{@link FurnaceRecipeData}</li>
- *         <li>{@link BlastingRecipeData}</li>
- *         <li>{@link SmokerRecipeData}</li>
- *     </ul>
- *     </li>
- *     <li>{@link SmithingData}</li>
- *     <li>{@link AnvilData}</li>
- * </ul>
- *
- * @param <R> The type of the Recipe which this data stores.
- */
-public abstract class RecipeData<R extends CustomRecipe<?>> implements IRecipeData<R> {
+    R getRecipe();
 
-    protected final R recipe;
-    protected final IngredientData[] indexedBySlot;
-    protected Result result;
+    Result getResult();
 
-    protected RecipeData(R recipe, IngredientData[] indexedBySlot) {
-        this.result = recipe.getResult();
-        this.recipe = recipe;
-        this.indexedBySlot = indexedBySlot;
-    }
-
-    @Override
-    public R getRecipe() {
-        return recipe;
-    }
-
-    @Override
-    public Result getResult() {
-        return result;
-    }
-
-    @Override
-    public void setResult(@NotNull Result result) {
-        Preconditions.checkNotNull(result, "Cannot set null result to RecipeData!");
-        this.result = result;
-    }
+    void setResult(@NotNull Result result);
 
     /**
      * The slots indexed by the data <b>Matrix Slot (CraftingInventory slots)</b> and not the recipe slot!
@@ -97,20 +45,14 @@ public abstract class RecipeData<R extends CustomRecipe<?>> implements IRecipeDa
      * @deprecated Use {@link #getNonNullIngredients()} and use {@link IngredientData#matrixSlot()}
      */
     @Deprecated
-    @Override
-    public Map<Integer, IngredientData> getIndexedBySlot() {
-        return getNonNullIngredients().collect(Collectors.toMap(IngredientData::matrixSlot, Function.identity()));
-    }
+    Map<Integer, IngredientData> getIndexedBySlot();
 
     /**
      * Returns a stream consisting of the non-null IngredientData.
      *
      * @return A stream of non-null IngredientData.
      */
-    @Override
-    public Stream<IngredientData> getNonNullIngredients() {
-        return Arrays.stream(indexedBySlot).filter(Objects::nonNull);
-    }
+    Stream<IngredientData> getNonNullIngredients();
 
     /**
      * The slots indicate the index (position) of the Ingredient inside the recipe.
@@ -123,11 +65,7 @@ public abstract class RecipeData<R extends CustomRecipe<?>> implements IRecipeDa
      * @param slot The recipe slot to get the {@link IngredientData} for.
      * @return The {@link IngredientData} of the specified recipe slot.
      */
-    @Nullable
-    @Override
-    public IngredientData getBySlot(int slot) {
-        return slot >= 0 && slot < indexedBySlot.length ? indexedBySlot[slot] : null;
-    }
+    @Nullable IngredientData getBySlot(int slot);
 
     /**
      * The slots indicate the index (position) of the Ingredient inside the recipe.
@@ -140,15 +78,6 @@ public abstract class RecipeData<R extends CustomRecipe<?>> implements IRecipeDa
      * @param slots The recipe slots to get the {@link IngredientData} for.
      * @return A list of {@link IngredientData} of the specified recipe slots.
      */
-    @Override
-    public List<IngredientData> getBySlots(int[] slots) {
-        List<IngredientData> list = new ArrayList<>();
-        for (int slot : slots) {
-            IngredientData data = getBySlot(slot);
-            if (data != null) {
-                list.add(data);
-            }
-        }
-        return list;
-    }
+    List<IngredientData> getBySlots(int[] slots);
+
 }

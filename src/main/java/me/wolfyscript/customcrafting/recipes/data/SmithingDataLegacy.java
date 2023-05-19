@@ -22,28 +22,25 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithingLegacy;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
-import java.util.Map;
+public class SmithingDataLegacy extends RecipeData<CustomRecipeSmithingLegacy> implements ISmithingData<CustomRecipeSmithingLegacy> {
 
-public class SmithingData extends RecipeData<CustomRecipeSmithing> implements ISmithingData<CustomRecipeSmithing>{
-
-    public SmithingData(CustomRecipeSmithing recipe, IngredientData[] ingredients) {
+    public SmithingDataLegacy(CustomRecipeSmithingLegacy recipe, IngredientData[] ingredients) {
         super(recipe, ingredients);
     }
 
     @Override
     public CustomItem getTemplate() {
-        return getBySlot(0).customItem();
+        return null;
     }
 
     public CustomItem getBase() {
-        return getBySlot(1).customItem();
+        return getBySlot(0).customItem();
     }
 
     public CustomItem getAddition() {
-        return getBySlot(2).customItem();
+        return getBySlot(1).customItem();
     }
 }

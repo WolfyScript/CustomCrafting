@@ -329,6 +329,10 @@ public class CustomCrafting extends JavaPlugin {
         recipeTypes.register(RecipeType.CAULDRON);
         recipeTypes.register(RecipeType.GRINDSTONE);
         recipeTypes.register(RecipeType.BREWING_STAND);
+
+        if (WolfyUtilCore.getInstance().getCompatibilityManager().has1_20Features()) {
+            recipeTypes.register(RecipeType.SMITHING_TRANSFORM);
+        }
         recipeTypes.register(RecipeType.SMITHING);
 
         getLogger().info("Registering Anvil Recipe Tasks");
@@ -391,12 +395,14 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         getLogger().info("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         getLogger().info("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        getLogger().info(() -> "    Version      | v" + version.getVersion());
-        getLogger().info(() -> "    WolfyUtils   | v" + ServerVersion.getWUVersion().getVersion());
-        getLogger().info(() -> "    Bukkit       | " + Bukkit.getVersion() + "(API: " + Bukkit.getBukkitVersion() + ")");
+        getLogger().info("    Version      | v" + version.getVersion());
+        getLogger().info("    WolfyUtils   | v" + ServerVersion.getWUVersion().getVersion());
+        getLogger().info("    Bukkit       | " + Bukkit.getVersion() + "(API: " + Bukkit.getBukkitVersion() + ")");
         if (!getConfigHandler().getConfig().isPrintingStacktrace()) {
-            getLogger().warning(() -> "    Print Errors | false (Required for Support! Enable `data.print_stacktrace` in config.yml!)");
+            getLogger().warning("    Print Errors | false (Required for Support! Enable `data.print_stacktrace` in config.yml!)");
         }
+        boolean has1_20Features = WolfyUtilCore.getInstance().getCompatibilityManager().has1_20Features();
+        getLogger().info("    1.20 Pack    | " + (has1_20Features ? "Enabled" : "Disabled"));
     }
 
     public void writeSeparator() {
@@ -414,7 +420,7 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new GrindStoneListener(this), this);
         pM.registerEvents(new BrewingStandListener(api, this), this);
         pM.registerEvents(new RecipeBookListener(), this);
-        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 19, 4))) {
+        if (WolfyUtilCore.getInstance().getCompatibilityManager().has1_20Features()) {
             pM.registerEvents(new Smithing1_20Listener(this), this);
         } else {
             pM.registerEvents(new SmithingListener(this), this);
