@@ -52,7 +52,7 @@
         <dependency>
             <groupId>com.wolfyscript.wolfyutils.spigot</groupId>
             <artifactId>wolfyutils-spigot</artifactId>
-            <version>4.16.10.1</version>
+            <version>4.16.11-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!--
@@ -114,7 +114,7 @@
         <dependency>
             <groupId>com.github.oraxen</groupId>
             <artifactId>oraxen</artifactId>
-            <version>1.152.0</version>
+            <version>1.156.0</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
