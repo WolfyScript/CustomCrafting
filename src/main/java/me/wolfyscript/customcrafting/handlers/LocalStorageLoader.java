@@ -125,6 +125,8 @@ public class LocalStorageLoader extends ResourceLoader {
     private void loadItemsInNamespace(String namespace) {
         var customItems = customCrafting.getApi().getRegistries().getCustomItems();
         readFiles(namespace, ITEMS_FOLDER, (relative, file, attrs) -> {
+            String fileName = file.toFile().getName();
+            if (fileName.startsWith(".") || (!fileName.endsWith(".json") && !fileName.endsWith(".conf"))) return FileVisitResult.CONTINUE;
             var namespacedKey = keyFromFile(namespace, relative);
             if (isReplaceData() || !customItems.has(namespacedKey)) {
                 try {
@@ -255,6 +257,8 @@ public class LocalStorageLoader extends ResourceLoader {
         private void loadRecipesInNamespace(String namespace) {
             var injectableValues = new InjectableValues.Std();
             readFiles(namespace, RECIPES_FOLDER, (relative, file, attrs) -> {
+                String fileName = file.toFile().getName();
+                if (fileName.startsWith(".") || (!fileName.endsWith(".json") && !fileName.endsWith(".conf"))) return FileVisitResult.CONTINUE;
                 var namespacedKey = keyFromFile(namespace, relative);
                 if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     try {
@@ -334,6 +338,7 @@ public class LocalStorageLoader extends ResourceLoader {
         protected void loadOldOrLegacyRecipeFiles(RecipeLoader<?> loader, List<File> files, String namespace) {
             for (File file : files) {
                 var name = file.getName();
+                if (name.startsWith(".") || (!name.endsWith(".json") && !name.endsWith(".conf"))) continue;
                 var namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
                 if (!customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     try {
