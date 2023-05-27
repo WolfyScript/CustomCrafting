@@ -162,7 +162,7 @@ public class DamageMergeAdapter extends MergeAdapter {
         @Override
         public Optional<Integer> getDamage(ItemStack stack) {
             PersistentDataContainer persistentDataContainer = stack.getItemMeta().getPersistentDataContainer();
-            Integer dur = persistentDataContainer.get(DurabilityMechanic.DURAB_KEY, PersistentDataType.INTEGER);
+            Integer dur = persistentDataContainer.get(DurabilityMechanic.DURABILITY_KEY, PersistentDataType.INTEGER);
             if (dur != null && DurabilityMechanicFactory.get().getMechanic(OraxenItems.getIdByItem(stack)) instanceof DurabilityMechanic durabilityMechanic) {
                 return Optional.of(durabilityMechanic.getItemMaxDurability() - dur);
             }
