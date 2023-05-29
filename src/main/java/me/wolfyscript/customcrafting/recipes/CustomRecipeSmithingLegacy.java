@@ -119,12 +119,20 @@ public class CustomRecipeSmithingLegacy extends CustomRecipe<CustomRecipeSmithin
     public SmithingDataLegacy check(Player player, InventoryView view, ItemStack base, ItemStack addition) {
         if (!checkConditions(Conditions.Data.of(player, view))) return null;
 
-        return getBase().check(base, isCheckNBT())
-                .flatMap(baseCustom -> getAddition().check(addition, isCheckNBT())
-                        .map(additionCustom -> new SmithingDataLegacy(this, new IngredientData[]{
-                                new IngredientData(0, 0, getBase(), baseCustom, base),
-                                new IngredientData(1, 1, getAddition(), additionCustom, addition)}
-                        ))).orElse(null);
+        IngredientData baseData = null;
+        IngredientData additionData = null;
+
+        Optional<CustomItem> baseCustom = getBase().check(base, isCheckNBT());
+        if (baseCustom.isPresent()) {
+            baseData = new IngredientData(1, 1, getBase(), baseCustom.get(), base);
+        } else if (!getBase().isAllowEmpty()) return null;
+
+        Optional<CustomItem> additionCustom = getAddition().check(addition, isCheckNBT());
+        if (additionCustom.isPresent()) {
+            additionData = new IngredientData(1, 1, getAddition(), additionCustom.get(), base);
+        } else if (!getAddition().isAllowEmpty()) return null;
+
+        return new SmithingDataLegacy(this, new IngredientData[]{ baseData, additionData});
     }
 
     @Override

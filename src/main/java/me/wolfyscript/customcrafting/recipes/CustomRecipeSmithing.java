@@ -51,6 +51,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -122,15 +123,26 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     public SmithingData check(Player player, InventoryView view, ItemStack template, ItemStack base, ItemStack addition) {
         if (!checkConditions(Conditions.Data.of(player, view))) return null;
 
-        return getTemplate().flatMap(ingredient -> ingredient.check(template, isCheckNBT()))
-                .flatMap(templateCustom -> getBase().check(base, isCheckNBT())
-                        .flatMap(baseCustom -> getAddition().check(addition, isCheckNBT())
-                                .map(additionCustom -> new SmithingData(this, new IngredientData[]{
-                                        new IngredientData(0, 0, getTemplate().get(), templateCustom, template),
-                                        new IngredientData(1, 1, getBase(), baseCustom, base),
-                                        new IngredientData(2, 2, getAddition(), additionCustom, addition)}
-                                ))))
-                .orElse(null);
+        IngredientData templateData = null;
+        IngredientData baseData = null;
+        IngredientData additionData = null;
+
+        Optional<CustomItem> templateCustom = getTemplate().check(template, isCheckNBT());
+        if (templateCustom.isPresent()) {
+            templateData = new IngredientData(0, 0, getTemplate(), templateCustom.get(), template);
+        } else if (!getTemplate().isAllowEmpty()) return null;
+
+        Optional<CustomItem> baseCustom = getBase().check(base, isCheckNBT());
+        if (baseCustom.isPresent()) {
+            baseData = new IngredientData(1, 1, getBase(), baseCustom.get(), base);
+        } else if (!getBase().isAllowEmpty()) return null;
+
+        Optional<CustomItem> additionCustom = getAddition().check(addition, isCheckNBT());
+        if (additionCustom.isPresent()) {
+            additionData = new IngredientData(1, 1, getAddition(), additionCustom.get(), base);
+        } else if (!getAddition().isAllowEmpty()) return null;
+
+        return new SmithingData(this, new IngredientData[]{ templateData, baseData, additionData});
     }
 
 
@@ -159,12 +171,8 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonGetter("template")
-    private Ingredient getJsonTemplate() {
+    public Ingredient getTemplate() {
         return template;
-    }
-
-    public Optional<Ingredient> getTemplate() {
-        return Optional.ofNullable(template);
     }
 
     @JsonSetter("template")
