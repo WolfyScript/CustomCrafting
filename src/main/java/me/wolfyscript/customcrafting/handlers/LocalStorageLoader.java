@@ -32,7 +32,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -125,6 +124,7 @@ public class LocalStorageLoader extends ResourceLoader {
     private void loadItemsInNamespace(String namespace) {
         var customItems = customCrafting.getApi().getRegistries().getCustomItems();
         readFiles(namespace, ITEMS_FOLDER, (relative, file, attrs) -> {
+            if (isValidFile(file.toFile())) return FileVisitResult.CONTINUE;
             var namespacedKey = keyFromFile(namespace, relative);
             if (isReplaceData() || !customItems.has(namespacedKey)) {
                 try {
@@ -255,6 +255,7 @@ public class LocalStorageLoader extends ResourceLoader {
         private void loadRecipesInNamespace(String namespace) {
             var injectableValues = new InjectableValues.Std();
             readFiles(namespace, RECIPES_FOLDER, (relative, file, attrs) -> {
+                if (isValidFile(file.toFile())) return FileVisitResult.CONTINUE;
                 var namespacedKey = keyFromFile(namespace, relative);
                 if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     try {
@@ -334,6 +335,7 @@ public class LocalStorageLoader extends ResourceLoader {
         protected void loadOldOrLegacyRecipeFiles(RecipeLoader<?> loader, List<File> files, String namespace) {
             for (File file : files) {
                 var name = file.getName();
+                if (isValidFile(file)) continue;
                 var namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
                 if (!customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     try {
