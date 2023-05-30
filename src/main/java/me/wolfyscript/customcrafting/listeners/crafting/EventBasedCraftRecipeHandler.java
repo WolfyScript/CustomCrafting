@@ -67,20 +67,12 @@ public class EventBasedCraftRecipeHandler implements Listener {
                 event.setCancelled(true);
                 var player = (Player) event.getWhoClicked();
                 if (event.isShiftClick() || ItemUtils.isAirOrNull(cursor) || cursor.getAmount() + resultItem.getAmount() <= cursor.getMaxStackSize()) {
-                    //Clear Matrix to prevent duplication and buggy behaviour.
-                    //This must not update the inventory yet, as that would call the PrepareItemCraftEvent, invalidating the recipe and preventing consumption of the recipe!
-                    //But clearing it later can cause other issues too!
-                    //So lets just set the items to AIR and amount to 0...
-                    inventory.clear();
+                    // At this point do not change the inventory! Because that would call the PrepareItemCraftEvent, invalidating the recipe and preventing consumption of the recipe!
                     final int count = craftManager.collectResult(event, craftingData, player);
-                    //...do all the calculations & item replacements...
-                    //...and finally update the inventory.
+                    ItemStack[] matrix = craftingData.getRecipe().shrinkMatrix(player, inventory, count, craftingData, inventory.getMatrix().length == 9 ? 3 : 2);
+                    // Now all calculations are done, so we can update the inventory
+                    inventory.setMatrix(matrix);
                     player.updateInventory();
-                    //Reset Matrix with the re-calculated items. (1 tick later, to not cause duplication!)
-                    //This will result in a short flicker of the items in the inventory... still better than duplications, so the flickering won't be fixed!
-                    Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                        inventory.setMatrix(craftingData.getRecipe().shrinkMatrix(player, inventory, count, craftingData, inventory.getMatrix().length == 9 ? 3 : 2));
-                    }, 1);
                 }
             });
         }
