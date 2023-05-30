@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
+import java.io.File;
 import java.io.IOException;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
@@ -32,7 +33,6 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -165,4 +165,10 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
     public int compareTo(@NotNull ResourceLoader other) {
         return Integer.compare(other.priority, priority);
     }
+
+    public static boolean isValidFile(File file) {
+        String fileName = file.getName();
+        return fileName.startsWith(".") || (!fileName.endsWith(".json") && !fileName.endsWith(".conf"));
+    }
+
 }

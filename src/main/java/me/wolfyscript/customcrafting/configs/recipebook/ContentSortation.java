@@ -29,7 +29,9 @@ import java.util.List;
 import java.util.Map;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -73,9 +75,21 @@ public class ContentSortation {
         this.recipeOrdering.putAll(recipeOrdering);
     }
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonGetter("recipes")
+    private Map<NamespacedKey, Integer> getRecipeOrder() {
+        return this.recipeOrdering;
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSetter("groups")
     public void addGroupOrdering(Map<String, Integer> groupOrdering) {
         this.groupOrdering.putAll(groupOrdering);
+    }
+
+    @JsonGetter("groups")
+    private Map<String, Integer> getGroupOrder() {
+        return this.groupOrdering;
     }
 
     public DefaultSortAlgo getDefaultSortAlgo() {
@@ -86,14 +100,17 @@ public class ContentSortation {
         return order;
     }
 
+    @JsonIgnore
     public Object2IntMap<NamespacedKey> getRecipeOrdering() {
         return recipeOrdering;
     }
 
+    @JsonIgnore
     public Object2IntMap<String> getGroupOrdering() {
         return groupOrdering;
     }
 
+    @JsonIgnore
     public void sortRecipeContainers(List<RecipeContainer> containers) {
         Comparator<RecipeContainer> comparator = switch (getDefaultSortAlgo()) {
             case NONE -> /* Keep the insertion order */ null;
