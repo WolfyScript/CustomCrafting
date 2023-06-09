@@ -24,17 +24,22 @@ package me.wolfyscript.customcrafting.gui;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class InteractionUtils {
+
+    private static final WeakHashMap<InventoryEvent, Integer> CACHE_COLLECT_TO_CURSOR = new WeakHashMap<>();
 
     /**
      * Used to apply ItemStack changes from the InventoryInteractEvent.
@@ -99,8 +104,28 @@ public class InteractionUtils {
                 }
                 // All these actions will keep remaining items in the slot, so lets just use the current stack.
                 // The stack will be updated, as it is a reference to the stack in the inventory.
-                case PICKUP_ONE, PICKUP_SOME, COLLECT_TO_CURSOR, DROP_ALL_CURSOR ->
+                case PICKUP_ONE, PICKUP_SOME, DROP_ALL_CURSOR -> applyItemStack.accept(clickEvent.getCurrentItem());
+                case COLLECT_TO_CURSOR -> {
+                    /*
+                     * # issue: We need to determine which slots are cleared completely and which slots
+                     *      are updated, because there are remaining items.
+                     *      So we need to keep track of the collected amount to figure that out, since Spigot has no API for that.
+                     *      This requires WolfyUtils v4.16.12 to properly function.
+                     */
+                    if (clickedSlot == clickEvent.getSlot()) {
+                        CACHE_COLLECT_TO_CURSOR.put(event, clickEvent.getCursor().getAmount());
                         applyItemStack.accept(clickEvent.getCurrentItem());
+                        break;
+                    }
+                    ItemStack item = clickEvent.getClickedInventory().getItem(clickedSlot);
+                    if (item == null) break;
+                    int total = CACHE_COLLECT_TO_CURSOR.compute(event, (inventoryEvent, count) -> count == null ? item.getAmount() : (count + item.getAmount()));
+                    if (total > clickEvent.getCursor().getMaxStackSize()) {
+                        applyItemStack.accept(clickEvent.getClickedInventory().getItem(clickedSlot));
+                        break;
+                    }
+                    applyItemStack.accept(null);
+                }
                 // Hotbar swaps work all the same, so lets take the hotbar stack.
                 case HOTBAR_SWAP, HOTBAR_MOVE_AND_READD ->
                         applyItemStack.accept(event.getWhoClicked().getInventory().getItem(clickEvent.getHotbarButton()));
