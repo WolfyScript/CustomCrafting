@@ -64,6 +64,14 @@ public class InteractionUtils {
                         // Cancel the event when trying to shift-click the items from the bottom to the top inventory.
                         return true;
                     }
+                    /*
+                     * # issue: WolfyUtils calls all the ItemInputButtons on Shift-interaction,
+                     *      we need to only update the clicked slot when moving stack into bottom inventory,
+                     *      but still update all when stacks are moved into the GUI (top inventory), due to non-deterministic stack placement!
+                     */
+                    if (clickEvent.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && Objects.equals(clickEvent.getClickedInventory(), event.getView().getTopInventory()) && clickedSlot != clickEvent.getSlot()) {
+                        return false; // The event should not be cancelled yet.
+                    }
                     applyItemStack.accept(current);
                 }
                 // Other than the PICKUP_ALL, DROP_ALL is not called when there is only 1 item.
