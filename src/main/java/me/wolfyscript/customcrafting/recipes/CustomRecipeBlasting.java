@@ -27,10 +27,11 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderBlasting;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.BlastingRecipe;
+import org.bukkit.inventory.RecipeChoice;
 
 public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasting, BlastingRecipe> {
 
@@ -55,7 +56,9 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
     @Override
     public BlastingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            registerRecipeIntoMinecraft(new FunctionalRecipeBuilderBlasting(getNamespacedKey(), getResult().getItemStack(), getRecipeChoice()));
+            BlastingRecipe placeholderRecipe = new BlastingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), "cc_placeholder." + getNamespacedKey().getKey()), getResult().getItemStack(), new RecipeChoice.MaterialChoice(getResult().getItemStack().getType()), getExp(), getCookingTime());
+            Bukkit.addRecipe(placeholderRecipe);
+            return new BlastingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
         }
         return null;
     }
