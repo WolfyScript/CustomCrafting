@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import java.util.function.Function;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
@@ -29,8 +30,10 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderSmelting;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.RecipeChoice;
 
 public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace, FurnaceRecipe> {
 
@@ -55,8 +58,10 @@ public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace
     @Override
     public FurnaceRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            registerRecipeIntoMinecraft(new FunctionalRecipeBuilderSmelting(getNamespacedKey(), getResult().getItemStack(), getRecipeChoice()));
-            return null;
+            FurnaceRecipe placeholderRecipe = new FurnaceRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), "cc_placeholder." + getNamespacedKey().getKey()), getResult().getItemStack(), new RecipeChoice.MaterialChoice(getResult().getItemStack().getType()), getExp(), getCookingTime());
+            Bukkit.addRecipe(placeholderRecipe);
+            //registerRecipeIntoMinecraft(new FunctionalRecipeBuilderSmelting(getNamespacedKey(), getResult().getItemStack(), getRecipeChoice()));
+            return new FurnaceRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
         }
         return null;
     }
