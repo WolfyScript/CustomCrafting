@@ -33,6 +33,7 @@ import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.Tag;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -45,6 +46,8 @@ import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.reflection.InventoryUpdate;
+import me.wolfyscript.utilities.util.version.MinecraftVersion;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -161,7 +164,11 @@ public class MenuRecipeOverview extends CCWindow {
                     //A new prepare can be queued by using book.setPrepareRecipe(true)
                     recipeBookCache.applyRecipeToButtons(event.getGuiHandler(), customRecipe);
                     recipeBookCache.setPrepareRecipe(false);
-                    InventoryUpdate.updateInventory(wolfyUtilities.getCore(), player, onUpdateTitle(player, event.getInventory(), event.getGuiHandler()));
+                    if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+                        player.getOpenInventory().setTitle(BukkitComponentSerializer.legacy().serialize(onUpdateTitle(player, event.getInventory(), event.getGuiHandler())));
+                    } else {
+                        InventoryUpdate.updateInventory(wolfyUtilities.getCore(), player, onUpdateTitle(player, event.getInventory(), event.getGuiHandler()));
+                    }
                 }
                 customRecipe.renderMenu(this, event);
                 boolean elite = RecipeType.Container.ELITE_CRAFTING.isInstance(customRecipe);
