@@ -59,8 +59,8 @@ public abstract class SmeltAPIAdapter {
 
     public abstract Pair<CookingRecipeData<?>, Boolean> process(FurnaceSmeltEvent blockEvent, Block block, Furnace furnace);
 
-    protected Pair<CookingRecipeData<?>, Boolean> processRecipe(ItemStack source, NamespacedKey recipeKey, Block block) {
-        if (customCrafting.getRegistries().getRecipes().get(recipeKey) instanceof CustomRecipeCooking<?, ?> cookingRecipe && cookingRecipe.validType(block.getType())) {
+    protected Pair<CookingRecipeData<?>, Boolean> processRecipe(CustomRecipeCooking<?,?> cookingRecipe, ItemStack source, Block block) {
+        if (cookingRecipe.validType(block.getType())) {
             Optional<CustomItem> customSource = cookingRecipe.getSource().check(source, cookingRecipe.isCheckNBT());
             if (customSource.isPresent()) {
                 if (cookingRecipe.checkConditions(Conditions.Data.of(null, block, null))) {
@@ -73,6 +73,13 @@ public abstract class SmeltAPIAdapter {
                     }, true);
                 }
             }
+        }
+        return new Pair<>(null, true);
+    }
+
+    protected Pair<CookingRecipeData<?>, Boolean> processRecipe(ItemStack source, NamespacedKey recipeKey, Block block) {
+        if (customCrafting.getRegistries().getRecipes().get(recipeKey) instanceof CustomRecipeCooking<?, ?> cookingRecipe) {
+            return processRecipe(cookingRecipe, source, block);
         }
         return new Pair<>(null, true);
     }
@@ -92,6 +99,7 @@ public abstract class SmeltAPIAdapter {
             if (ItemUtils.isAirOrNull(smelting)) return;
 
             var data = manager.cachedRecipeData.get(block).getKey();
+            if (data == null) return;
             var result = data.getResult();
             var currentResultItem = inventory.getResult();
 
