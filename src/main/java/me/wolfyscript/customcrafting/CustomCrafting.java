@@ -77,7 +77,8 @@ import me.wolfyscript.customcrafting.listeners.AnvilListener;
 import me.wolfyscript.customcrafting.listeners.BrewingStandListener;
 import me.wolfyscript.customcrafting.listeners.CauldronListener;
 import me.wolfyscript.customcrafting.listeners.EliteWorkbenchListener;
-import me.wolfyscript.customcrafting.listeners.FurnaceListener;
+import me.wolfyscript.customcrafting.listeners.cooking.CampfireListener;
+import me.wolfyscript.customcrafting.listeners.cooking.FurnaceListener;
 import me.wolfyscript.customcrafting.listeners.GrindStoneListener;
 import me.wolfyscript.customcrafting.listeners.PlayerListener;
 import me.wolfyscript.customcrafting.listeners.RecipeBookListener;
@@ -137,6 +138,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
+import me.wolfyscript.utilities.util.version.MinecraftVersion;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
@@ -413,6 +415,9 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new BrewingStandListener(api, this), this);
         pM.registerEvents(new RecipeBookListener(), this);
         pM.registerEvents(new SmithingListener(this), this);
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            pM.registerEvents(new CampfireListener(this), this);
+        }
     }
 
     private void registerCommands() {
