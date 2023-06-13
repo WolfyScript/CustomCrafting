@@ -99,11 +99,11 @@ public abstract class SmeltAPIAdapter {
             if (ItemUtils.isAirOrNull(smelting)) return;
 
             var data = manager.cachedRecipeData.get(block).getKey();
+            Bukkit.getScheduler().runTaskLater(customCrafting, () -> manager.clearCache(block), 1); //Clearing the cached data after 1 tick (event should be done).
             if (data == null) return;
             var result = data.getResult();
             var currentResultItem = inventory.getResult();
 
-            Bukkit.getScheduler().runTaskLater(customCrafting, () -> manager.clearCache(block), 1); //Clearing the cached data after 1 tick (event should be done).
             ItemStack itemResult = result.getItem(data, null, block);
             //Need to set the result to air to bypass the vanilla result computation (See net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity#burn).
             event.setResult(new ItemStack(Material.AIR));

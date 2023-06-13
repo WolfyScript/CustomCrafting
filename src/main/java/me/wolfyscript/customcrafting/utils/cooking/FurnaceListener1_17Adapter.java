@@ -54,6 +54,7 @@ public class FurnaceListener1_17Adapter implements Listener {
 
     @EventHandler
     public void onStartSmelt(FurnaceStartSmeltEvent event) {
+        manager.clearCache(event.getBlock());
         customCrafting.getRegistries().getRecipes().get((RecipeType<? extends CustomRecipeCooking<?, ?>>) switch (event.getBlock().getType()) {
                     case BLAST_FURNACE -> RecipeType.BLAST_FURNACE;
                     case SMOKER -> RecipeType.SMOKER;
@@ -81,6 +82,7 @@ public class FurnaceListener1_17Adapter implements Listener {
                                 CustomItem customItem = CustomItem.getByItemStack(event.getSource());
                                 if (customItem != null && customItem.isBlockVanillaRecipes()) {
                                     event.setTotalCookTime(Integer.MAX_VALUE); //"Cancel" the process if it is.
+                                    manager.cacheRecipeData(event.getBlock(), new Pair<>(null, false));
                                 }
                                 return;
                             }

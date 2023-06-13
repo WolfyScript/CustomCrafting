@@ -120,6 +120,7 @@ public class FurnaceListener implements Listener {
             manager.getAdapter().applyResult(event);
             return;
         }
+        Bukkit.getScheduler().runTask(customCrafting, () -> manager.clearCache(event.getBlock()));
         //Similar to the check in the FurnaceStartSmeltEvent.
         //This is needed in 1.16 as the FurnaceStartSmeltEvent doesn't exist.
         //Check if the CustomItem is allowed in Vanilla recipes
@@ -140,6 +141,7 @@ public class FurnaceListener implements Listener {
         var location = event.getClickedInventory().getLocation();
         if (location == null) return;
         if (!(location.getBlock().getState() instanceof Furnace)) return;
+        manager.clearCache(location.getBlock());
 
         if (!ItemUtils.isAirOrNull(inventory.getResult())) { //Make sure to only give exp if the result is actually there.
             // Keep this for backwards compatibility and handle existing custom recipe exp.

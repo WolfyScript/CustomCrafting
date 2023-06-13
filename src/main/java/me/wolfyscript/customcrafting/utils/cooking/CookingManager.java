@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.utils.cooking;
 
+import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
 import me.wolfyscript.utilities.util.Pair;
@@ -62,7 +63,7 @@ public class CookingManager {
         cachedRecipeData.put(block, data);
     }
 
-    void clearCache(Block block) {
+    public void clearCache(Block block) {
         cachedRecipeData.remove(block);
     }
 
@@ -88,6 +89,10 @@ public class CookingManager {
      */
     public Pair<CookingRecipeData<?>, Boolean> getCustomRecipeCache(FurnaceSmeltEvent event) {
         return cachedRecipeData.computeIfAbsent(event.getBlock(), block -> checkEvent(event));
+    }
+
+    public Optional<Pair<CookingRecipeData<?>, Boolean>> getCustomRecipeCache(Block block) {
+        return Optional.ofNullable(cachedRecipeData.get(block));
     }
 
 }
