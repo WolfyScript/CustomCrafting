@@ -34,7 +34,7 @@ import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
-import me.wolfyscript.customcrafting.recipes.data.SmithingData;
+import me.wolfyscript.customcrafting.recipes.data.SmithingDataLegacy;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
@@ -43,11 +43,8 @@ import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeA
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -57,18 +54,17 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
+@Deprecated
+public class CustomRecipeSmithingLegacy extends CustomRecipe<CustomRecipeSmithingLegacy> {
 
     private static final String KEY_BASE = "base";
     private static final String KEY_ADDITION = "addition";
 
-    private Ingredient template;
     private Ingredient base;
     private Ingredient addition;
 
@@ -79,9 +75,9 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     @JsonIgnore
     private List<MergeAdapter> internalMergeAdapters = new ArrayList<>(2);
 
-    public CustomRecipeSmithing(NamespacedKey namespacedKey, JsonNode node) {
+    public CustomRecipeSmithingLegacy(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.type = RecipeType.SMITHING_TRANSFORM;
+        this.type = RecipeType.SMITHING;
         setBase(ItemLoader.loadIngredient(node.path(KEY_BASE)));
         setAddition(ItemLoader.loadIngredient(node.path(KEY_ADDITION)));
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
@@ -90,8 +86,8 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     }
 
     @JsonCreator
-    public CustomRecipeSmithing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
-        super(key, customCrafting, RecipeType.SMITHING_TRANSFORM);
+    public CustomRecipeSmithingLegacy(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        super(key, customCrafting, RecipeType.SMITHING);
         this.base = new Ingredient();
         this.addition = new Ingredient();
         this.result = new Result();
@@ -101,11 +97,11 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     }
 
     @Deprecated
-    public CustomRecipeSmithing(NamespacedKey key) {
+    public CustomRecipeSmithingLegacy(NamespacedKey key) {
         this(key, CustomCrafting.inst());
     }
 
-    private CustomRecipeSmithing(CustomRecipeSmithing customRecipeSmithing) {
+    private CustomRecipeSmithingLegacy(CustomRecipeSmithingLegacy customRecipeSmithing) {
         super(customRecipeSmithing);
         this.result = customRecipeSmithing.getResult();
         this.base = customRecipeSmithing.getBase();
@@ -120,17 +116,11 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         return Collections.unmodifiableList(internalMergeAdapters);
     }
 
-    public SmithingData check(Player player, InventoryView view, ItemStack template, ItemStack base, ItemStack addition) {
+    public SmithingDataLegacy check(Player player, InventoryView view, ItemStack base, ItemStack addition) {
         if (!checkConditions(Conditions.Data.of(player, view))) return null;
 
-        IngredientData templateData = null;
         IngredientData baseData = null;
         IngredientData additionData = null;
-
-        Optional<CustomItem> templateCustom = getTemplate().check(template, isCheckNBT());
-        if (templateCustom.isPresent()) {
-            templateData = new IngredientData(0, 0, getTemplate(), templateCustom.get(), template);
-        } else if (!getTemplate().isAllowEmpty()) return null;
 
         Optional<CustomItem> baseCustom = getBase().check(base, isCheckNBT());
         if (baseCustom.isPresent()) {
@@ -142,9 +132,8 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
             additionData = new IngredientData(1, 1, getAddition(), additionCustom.get(), base);
         } else if (!getAddition().isAllowEmpty()) return null;
 
-        return new SmithingData(this, new IngredientData[]{ templateData, baseData, additionData});
+        return new SmithingDataLegacy(this, new IngredientData[]{ baseData, additionData});
     }
-
 
     @Override
     public Ingredient getIngredient(int slot) {
@@ -167,24 +156,6 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     public void setBase(@NotNull Ingredient base) {
         Preconditions.checkArgument(!base.isEmpty(), "Invalid Base ingredient! Recipe must have non-air base ingredient!");
         this.base = base;
-    }
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonGetter("template")
-    public Ingredient getTemplate() {
-        return template;
-    }
-
-    @JsonSetter("template")
-    public void setTemplate(Ingredient template) {
-        if (customCrafting.getApi().getCore().getCompatibilityManager().has1_20Features()) {
-            if (template == null || template.isEmpty()) {
-                customCrafting.getLogger().warning("Smithing recipe '" + namespacedKey + "' has no template ingredient set! Using Netherite Upgrade Template instead!");
-                this.template = new Ingredient(new ItemStack(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE));
-            } else {
-                this.template = template;
-            }
-        }
     }
 
     public boolean isPreserveEnchants() {
@@ -221,8 +192,8 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     }
 
     @Override
-    public CustomRecipeSmithing clone() {
-        return new CustomRecipeSmithing(this);
+    public CustomRecipeSmithingLegacy clone() {
+        return new CustomRecipeSmithingLegacy(this);
     }
 
     @Override

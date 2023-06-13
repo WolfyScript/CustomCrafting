@@ -58,7 +58,9 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
     RecipeType<CustomRecipeCauldron> CAULDRON = new RecipeTypeImpl<>(Type.CAULDRON, CustomRecipeCauldron.class);
     RecipeType<CustomRecipeGrindstone> GRINDSTONE = new RecipeTypeImpl<>(Type.GRINDSTONE, CustomRecipeGrindstone.class);
     RecipeType<CustomRecipeBrewing> BREWING_STAND = new RecipeTypeImpl<>(Type.BREWING_STAND, CustomRecipeBrewing.class);
-    RecipeType<CustomRecipeSmithing> SMITHING = new RecipeTypeImpl<>(Type.SMITHING, CustomRecipeSmithing.class);
+    // Smithing
+    RecipeType<CustomRecipeSmithingLegacy> SMITHING = new RecipeTypeImpl<>(Type.SMITHING, CustomRecipeSmithingLegacy.class);
+    RecipeType<CustomRecipeSmithing> SMITHING_TRANSFORM = new RecipeTypeImpl<>(Type.SMITHING_TRANSFORM, CustomRecipeSmithing.class);
 
     static Set<RecipeType<? extends CustomRecipe<?>>> values() {
         return Set.copyOf(RecipeTypeImpl.values.values());
@@ -270,7 +272,8 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         CAULDRON,
         GRINDSTONE,
         BREWING_STAND,
-        SMITHING,
+        @Deprecated SMITHING,
+        SMITHING_TRANSFORM,
         CUSTOM
     }
 
