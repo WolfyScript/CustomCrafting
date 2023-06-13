@@ -402,8 +402,6 @@ public class CustomCrafting extends JavaPlugin {
         if (!getConfigHandler().getConfig().isPrintingStacktrace()) {
             getLogger().warning("    Print Errors | false (Required for Support! Enable `data.print_stacktrace` in config.yml!)");
         }
-        boolean has1_20Features = WolfyUtilCore.getInstance().getCompatibilityManager().has1_20Features();
-        getLogger().info("    1.20 Pack    | " + (has1_20Features ? "Enabled" : "Disabled"));
     }
 
     public void writeSeparator() {
@@ -421,7 +419,7 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new GrindStoneListener(this), this);
         pM.registerEvents(new BrewingStandListener(api, this), this);
         pM.registerEvents(new RecipeBookListener(), this);
-        if (WolfyUtilCore.getInstance().getCompatibilityManager().has1_20Features()) {
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1,20,0))) {
             pM.registerEvents(new Smithing1_20Listener(this), this);
         } else {
             pM.registerEvents(new SmithingListener(this), this);
