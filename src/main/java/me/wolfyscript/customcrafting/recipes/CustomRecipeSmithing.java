@@ -57,13 +57,17 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.version.MinecraftVersion;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.SmithingTransformRecipe;
 import org.jetbrains.annotations.NotNull;
 
-public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
+public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> implements ICustomVanillaRecipe<SmithingTransformRecipe> {
 
     private static final String KEY_BASE = "base";
     private static final String KEY_ADDITION = "addition";
@@ -81,7 +85,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     public CustomRecipeSmithing(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.type = RecipeType.SMITHING_TRANSFORM;
+        this.type = RecipeType.SMITHING;
         setBase(ItemLoader.loadIngredient(node.path(KEY_BASE)));
         setAddition(ItemLoader.loadIngredient(node.path(KEY_ADDITION)));
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
@@ -91,7 +95,8 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     @JsonCreator
     public CustomRecipeSmithing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
-        super(key, customCrafting, RecipeType.SMITHING_TRANSFORM);
+        super(key, customCrafting, RecipeType.SMITHING);
+        this.template = new Ingredient();
         this.base = new Ingredient();
         this.addition = new Ingredient();
         this.result = new Result();
@@ -142,7 +147,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
             additionData = new IngredientData(1, 1, getAddition(), additionCustom.get(), base);
         } else if (!getAddition().isAllowEmpty()) return null;
 
-        return new SmithingData(this, new IngredientData[]{ templateData, baseData, additionData});
+        return new SmithingData(this, new IngredientData[]{templateData, baseData, additionData});
     }
 
 
@@ -177,13 +182,13 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     @JsonSetter("template")
     public void setTemplate(Ingredient template) {
-        if (customCrafting.getApi().getCore().getCompatibilityManager().has1_20Features()) {
-            if (template == null || template.isEmpty()) {
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            if (template == null) {
                 customCrafting.getLogger().warning("Smithing recipe '" + namespacedKey + "' has no template ingredient set! Using Netherite Upgrade Template instead!");
-                this.template = new Ingredient(new ItemStack(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE));
-            } else {
-                this.template = template;
+                customCrafting.getLogger().warning("Specify an empty ingredient to allow the recipe to work without template!");
+                template = new Ingredient(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE);
             }
+            this.template = template;
         }
     }
 
@@ -250,5 +255,40 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         gen.writeObjectField(KEY_RESULT, result);
         gen.writeObjectField(KEY_BASE, base);
         gen.writeObjectField(KEY_ADDITION, addition);
+    }
+
+    @Override
+    public SmithingTransformRecipe getVanillaRecipe() {
+        /*
+         Smithing recipes need to be registered into minecraft, so that you can place the ingredients into the inventory.
+         ExactChoices cannot be used as those would rely on vanilla MC to compare the items. So we'll just use MaterialChoices to use our own checks.
+         */
+        return new SmithingTransformRecipe(
+                new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), "cc_placeholder." + getNamespacedKey().getKey()),
+                getResult().getItemStack(),
+                getTemplate() == null ? new RecipeChoice.MaterialChoice() : new RecipeChoice.MaterialChoice(getTemplate().getChoicesStream().map(customItem -> customItem.create().getType()).toList()),
+                getBase() == null ? new RecipeChoice.MaterialChoice() : new RecipeChoice.MaterialChoice(getBase().getChoicesStream().map(customItem -> customItem.create().getType()).toList()),
+                getAddition() == null ? new RecipeChoice.MaterialChoice() : new RecipeChoice.MaterialChoice(getAddition().getChoicesStream().map(customItem -> customItem.create().getType()).toList())
+        );
+    }
+
+    @Override
+    public boolean isVisibleVanillaBook() {
+        return vanillaBook;
+    }
+
+    @Override
+    public void setVisibleVanillaBook(boolean vanillaBook) {
+        this.vanillaBook = vanillaBook;
+    }
+
+    @Override
+    public boolean isAutoDiscover() {
+        return autoDiscover;
+    }
+
+    @Override
+    public void setAutoDiscover(boolean autoDiscover) {
+        this.autoDiscover = autoDiscover;
     }
 }
