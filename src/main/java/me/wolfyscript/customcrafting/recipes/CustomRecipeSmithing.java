@@ -268,9 +268,9 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
         return new SmithingTransformRecipe(
                 new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), "cc_placeholder." + getNamespacedKey().getKey()),
                 getResult().getItemStack(),
-                getTemplate() == null ? new RecipeChoice.MaterialChoice() : new RecipeChoice.MaterialChoice(getTemplate().getChoicesStream().map(customItem -> customItem.create().getType()).toList()),
-                getBase() == null ? new RecipeChoice.MaterialChoice() : new RecipeChoice.MaterialChoice(getBase().getChoicesStream().map(customItem -> customItem.create().getType()).toList()),
-                getAddition() == null ? new RecipeChoice.MaterialChoice() : new RecipeChoice.MaterialChoice(getAddition().getChoicesStream().map(customItem -> customItem.create().getType()).toList())
+                getTemplate() == null || getTemplate().isEmpty() ? new RecipeChoice.MaterialChoice(Material.AIR) : new RecipeChoice.MaterialChoice(getTemplate().getChoicesStream().map(customItem -> customItem.create().getType()).toList()),
+                getBase() == null || getBase().isEmpty() ? new RecipeChoice.MaterialChoice(Material.AIR) : new RecipeChoice.MaterialChoice(getBase().getChoicesStream().map(customItem -> customItem.create().getType()).toList()),
+                getAddition() == null || getAddition().isEmpty() ? new RecipeChoice.MaterialChoice(Material.AIR) : new RecipeChoice.MaterialChoice(getAddition().getChoicesStream().map(customItem -> customItem.create().getType()).toList())
         );
     }
 
