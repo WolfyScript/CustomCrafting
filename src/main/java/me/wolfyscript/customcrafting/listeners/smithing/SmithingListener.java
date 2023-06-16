@@ -29,11 +29,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithingLegacy;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
-import me.wolfyscript.customcrafting.recipes.data.SmithingDataLegacy;
+import me.wolfyscript.customcrafting.recipes.data.SmithingData;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
@@ -57,11 +57,10 @@ import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.SmithingRecipe;
-import org.bukkit.inventory.meta.Damageable;
 
 public class SmithingListener implements Listener {
 
-    private final HashMap<UUID, SmithingDataLegacy> preCraftedRecipes = new HashMap<>();
+    private final HashMap<UUID, SmithingData> preCraftedRecipes = new HashMap<>();
     private final CustomCrafting customCrafting;
 
     public SmithingListener(CustomCrafting customCrafting) {
@@ -80,7 +79,7 @@ public class SmithingListener implements Listener {
             }
         }
         preCraftedRecipes.put(player.getUniqueId(), null);
-        for (CustomRecipeSmithingLegacy recipe : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.SMITHING, player)) {
+        for (CustomRecipeSmithing recipe : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.SMITHING, player)) {
             if (recipe.checkConditions(Conditions.Data.of(player, event.getView()))) {
                 Optional<CustomItem> optionalBase = recipe.getBase().check(base, recipe.isCheckNBT());
                 if (optionalBase.isPresent()) {
@@ -90,9 +89,10 @@ public class SmithingListener implements Listener {
                         assert base != null;
                         assert addition != null;
                         Result result = recipe.getResult();
-                        SmithingDataLegacy data = new SmithingDataLegacy(recipe, new IngredientData[]{
+                        SmithingData data = new SmithingData(recipe, new IngredientData[]{
                                 new IngredientData(0, 0, recipe.getBase(), optionalBase.get(), inv.getItem(0)),
-                                new IngredientData(1, 1, recipe.getAddition(), optionalAddition.get(), inv.getItem(1))}
+                                null,
+                                new IngredientData(2, 2, recipe.getAddition(), optionalAddition.get(), inv.getItem(1))}
                         );
                         preCraftedRecipes.put(player.getUniqueId(), data);
                         //Process result

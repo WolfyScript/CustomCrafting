@@ -330,10 +330,6 @@ public class CustomCrafting extends JavaPlugin {
         recipeTypes.register(RecipeType.CAULDRON);
         recipeTypes.register(RecipeType.GRINDSTONE);
         recipeTypes.register(RecipeType.BREWING_STAND);
-
-        if (WolfyUtilCore.getInstance().getCompatibilityManager().has1_20Features()) {
-            recipeTypes.register(RecipeType.SMITHING_TRANSFORM);
-        }
         recipeTypes.register(RecipeType.SMITHING);
 
         getLogger().info("Registering Anvil Recipe Tasks");

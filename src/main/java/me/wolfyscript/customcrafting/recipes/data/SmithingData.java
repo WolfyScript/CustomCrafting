@@ -23,7 +23,6 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
-import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithingLegacy;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
 import java.util.Map;

@@ -29,7 +29,6 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
-import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithingLegacy;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.data.ISmithingData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
@@ -82,11 +81,6 @@ public class Smithing1_20Listener implements Listener {
         var template = inv.getItem(0);
         var base = inv.getItem(1);
         var addition = inv.getItem(2);
-        if (ItemUtils.isAirOrNull(template)) {
-            // Do not allow recipes with empty template, because that wouldn't (and never will) be correct behaviour.
-            event.setResult(null);
-            return;
-        }
         if (!ItemUtils.isAirOrNull(event.getResult())) {
             if (Stream.of(inv.getStorageContents()).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())
                 || Bukkit.getRecipesFor(event.getResult()).stream()
@@ -96,23 +90,15 @@ public class Smithing1_20Listener implements Listener {
         }
         preCraftedRecipes.put(player.getUniqueId(), null);
 
-        customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.SMITHING_TRANSFORM).stream()
+        customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.SMITHING).stream()
                 .map(recipe -> recipe.check(player, event.getView(), template, base, addition))
                 .filter(Objects::nonNull)
                 .findFirst()
-                .ifPresentOrElse(data -> {
-                            preCraftedRecipes.put(player.getUniqueId(), data);
-                            CustomRecipeSmithing recipe = data.getRecipe();
-                            applyResult(event, inv, player, base, recipe.getResult(), recipe.isOnlyChangeMaterial(), recipe.getInternalMergeAdapters(), data);
-                        }, () -> customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.SMITHING).stream()
-                                .map(recipe -> recipe.check(player, event.getView(), base, addition))
-                                .filter(Objects::nonNull).findFirst()
-                                .ifPresent(data -> {
-                                    preCraftedRecipes.put(player.getUniqueId(), data);
-                                    CustomRecipeSmithingLegacy recipe = data.getRecipe();
-                                    applyResult(event, inv, player, base, recipe.getResult(), recipe.isOnlyChangeMaterial(), recipe.getInternalMergeAdapters(), data);
-                                })
-                );
+                .ifPresent(data -> {
+                    preCraftedRecipes.put(player.getUniqueId(), data);
+                    CustomRecipeSmithing recipe = data.getRecipe();
+                    applyResult(event, inv, player, base, recipe.getResult(), recipe.isOnlyChangeMaterial(), recipe.getInternalMergeAdapters(), data);
+                });
     }
 
     private static void applyResult(PrepareSmithingEvent event, SmithingInventory inv, Player player, ItemStack base, Result result, boolean onlyChangeMaterial, List<MergeAdapter> adapters, RecipeData<?> data) {
