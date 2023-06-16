@@ -26,6 +26,8 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.util.version.MinecraftVersion;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Material;
 
 public class RecipeCreatorSmithing extends RecipeCreator {
@@ -44,6 +46,7 @@ public class RecipeCreatorSmithing extends RecipeCreator {
         var btnB = getButtonBuilder();
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeIngredient(1));
+        registerButton(new ButtonRecipeIngredient(2));
         registerButton(new ButtonRecipeResult());
         btnB.toggle(CHANGE_MATERIAL).enabledState(s -> s.subKey("enabled").icon(Material.PAPER).action((cache, handler, player, inv, i, e) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(false);
@@ -79,7 +82,10 @@ public class RecipeCreatorSmithing extends RecipeCreator {
         event.setButton(5, ClusterRecipeCreator.PRIORITY);
         event.setButton(7, ClusterRecipeCreator.EXACT_META);
         event.setButton(19, "recipe.ingredient_0");
-        event.setButton(22, "recipe.ingredient_1");
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            event.setButton(20, "recipe.ingredient_1");
+        }
+        event.setButton(21, "recipe.ingredient_2");
         event.setButton(25, "recipe.result");
 
         event.setButton(37, PRESERVE_ENCHANTS);
