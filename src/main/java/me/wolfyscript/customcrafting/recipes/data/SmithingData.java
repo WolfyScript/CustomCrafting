@@ -35,7 +35,7 @@ public class SmithingData extends RecipeData<CustomRecipeSmithing> implements IS
 
     @Override
     public CustomItem getTemplate() {
-        return getBySlot(0).customItem();
+        return getBySlot(0) == null ? null : getBySlot(0).customItem();
     }
 
     public CustomItem getBase() {
