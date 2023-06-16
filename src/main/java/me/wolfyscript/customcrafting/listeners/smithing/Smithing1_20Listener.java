@@ -94,10 +94,13 @@ public class Smithing1_20Listener implements Listener {
                 .map(recipe -> recipe.check(player, event.getView(), template, base, addition))
                 .filter(Objects::nonNull)
                 .findFirst()
-                .ifPresent(data -> {
+                .ifPresentOrElse(data -> {
                     preCraftedRecipes.put(player.getUniqueId(), data);
                     CustomRecipeSmithing recipe = data.getRecipe();
                     applyResult(event, inv, player, base, recipe.getResult(), recipe.isOnlyChangeMaterial(), recipe.getInternalMergeAdapters(), data);
+                }, () -> {
+                    // TODO: Check for other registered recipes including vanilla ones!
+                    event.setResult(null);
                 });
     }
 
