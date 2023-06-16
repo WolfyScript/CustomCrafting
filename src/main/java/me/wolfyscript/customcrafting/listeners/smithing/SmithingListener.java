@@ -25,14 +25,12 @@ package me.wolfyscript.customcrafting.listeners.smithing;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
-import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
-import me.wolfyscript.customcrafting.recipes.data.IngredientData;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.data.SmithingData;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
@@ -79,47 +77,38 @@ public class SmithingListener implements Listener {
             }
         }
         preCraftedRecipes.put(player.getUniqueId(), null);
-        for (CustomRecipeSmithing recipe : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.SMITHING, player)) {
-            if (recipe.checkConditions(Conditions.Data.of(player, event.getView()))) {
-                Optional<CustomItem> optionalBase = recipe.getBase().check(base, recipe.isCheckNBT());
-                if (optionalBase.isPresent()) {
-                    Optional<CustomItem> optionalAddition = recipe.getAddition().check(addition, recipe.isCheckNBT());
-                    if (optionalAddition.isPresent()) {
-                        //Recipe is valid
-                        assert base != null;
-                        assert addition != null;
-                        Result result = recipe.getResult();
-                        SmithingData data = new SmithingData(recipe, new IngredientData[]{
-                                new IngredientData(0, 0, recipe.getBase(), optionalBase.get(), inv.getItem(0)),
-                                null,
-                                new IngredientData(2, 2, recipe.getAddition(), optionalAddition.get(), inv.getItem(1))}
-                        );
-                        preCraftedRecipes.put(player.getUniqueId(), data);
-                        //Process result
-                        Block block = inv.getLocation() != null ? inv.getLocation().getBlock() : null;
-                        CustomItem chosenResult = result.getItem(player, block).orElse(new CustomItem(Material.AIR));
-                        ItemStack endResult = result.getItem(data, chosenResult, player, block);
-                        if (recipe.isOnlyChangeMaterial()) {
-                            //Take the base item and just change the material.
-                            var baseCopy = base.clone();
-                            baseCopy.setType(endResult.getType());
-                            baseCopy.setAmount(endResult.getAmount());
-                            event.setResult(baseCopy);
-                        } else {
-                            List<MergeAdapter> adapters = recipe.getInternalMergeAdapters();
-                            if (!adapters.isEmpty()) {
-                                MergeOption option = new MergeOption(new int[]{0});
-                                option.setAdapters(adapters);
-                                // This acts as if we appended an extra merge adapter to the end of the result.
-                                // This makes it possible to implement the logic just once and not both in smithing listener and merge adapter.
-                                option.merge(data, player, block, chosenResult, endResult);
-                            }
-                            event.setResult(endResult);
-                        }
-                        break;
-                    }
-                }
+
+        customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.SMITHING).stream()
+                .map(recipe -> recipe.check(player, event.getView(), null, base, addition))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .ifPresent(data -> {
+                    preCraftedRecipes.put(player.getUniqueId(), data);
+                    CustomRecipeSmithing recipe = data.getRecipe();
+                    applyResult(event, inv, player, base, recipe.getResult(), recipe.isOnlyChangeMaterial(), recipe.getInternalMergeAdapters(), data);
+                });
+    }
+
+    private static void applyResult(PrepareSmithingEvent event, SmithingInventory inv, Player player, ItemStack base, Result result, boolean onlyChangeMaterial, List<MergeAdapter> adapters, RecipeData<?> data) {
+        //Process result
+        Block block = inv.getLocation() != null ? inv.getLocation().getBlock() : null;
+        CustomItem chosenResult = result.getItem(player, block).orElse(new CustomItem(Material.AIR));
+        ItemStack endResult = result.getItem(data, chosenResult, player, block);
+        if (onlyChangeMaterial) {
+            //Take the base item and just change the material.
+            var baseCopy = base.clone();
+            baseCopy.setType(endResult.getType());
+            baseCopy.setAmount(endResult.getAmount());
+            event.setResult(baseCopy);
+        } else {
+            if (!adapters.isEmpty()) {
+                MergeOption option = new MergeOption(new int[]{data.getRecipe() instanceof CustomRecipeSmithing ? 1 : 0});
+                option.setAdapters(adapters);
+                // This acts as if we appended an extra merge adapter to the end of the result.
+                // This makes it possible to implement the logic just once and not both in smithing listener and merge adapter.
+                option.merge(data, player, block, chosenResult, endResult);
             }
+            event.setResult(endResult);
         }
     }
 
