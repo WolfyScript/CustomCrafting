@@ -132,10 +132,12 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
         IngredientData baseData = null;
         IngredientData additionData = null;
 
-        Optional<CustomItem> templateCustom = getTemplate().check(template, isCheckNBT());
-        if (templateCustom.isPresent()) {
-            templateData = new IngredientData(0, 0, getTemplate(), templateCustom.get(), template);
-        } else if (!getTemplate().isAllowEmpty()) return null;
+        if (getTemplate() != null) {
+            Optional<CustomItem> templateCustom = getTemplate().check(template, isCheckNBT());
+            if (templateCustom.isPresent()) {
+                templateData = new IngredientData(0, 0, getTemplate(), templateCustom.get(), template);
+            } else if (!getTemplate().isAllowEmpty()) return null;
+        }
 
         Optional<CustomItem> baseCustom = getBase().check(base, isCheckNBT());
         if (baseCustom.isPresent()) {
