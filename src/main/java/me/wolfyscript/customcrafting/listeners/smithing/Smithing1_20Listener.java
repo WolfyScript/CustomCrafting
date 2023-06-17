@@ -35,11 +35,13 @@ import me.wolfyscript.customcrafting.recipes.data.SmithingData;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -97,10 +99,21 @@ public class Smithing1_20Listener implements Listener {
                 .ifPresentOrElse(data -> {
                     preCraftedRecipes.put(player.getUniqueId(), data);
                     CustomRecipeSmithing recipe = data.getRecipe();
+                    customCrafting.getApi().getNmsUtil().getRecipeUtil().setCurrentRecipe(event.getView(), new NamespacedKey(recipe.getNamespacedKey().getNamespace(), "cc_placeholder." + recipe.getNamespacedKey().getKey()));
                     applyResult(event, inv, player, base, recipe.getResult(), recipe.isOnlyChangeMaterial(), recipe.getInternalMergeAdapters(), data);
+                    player.updateInventory();
                 }, () -> {
-                    // TODO: Check for other registered recipes including vanilla ones!
-                    event.setResult(null);
+                    if (ItemUtils.isAirOrNull(event.getResult())) return;
+                    Bukkit.getRecipesFor(event.getResult()).stream()
+                            .filter(recipe -> recipe instanceof SmithingRecipe smithingRecipe && !smithingRecipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE))
+                            .findFirst().ifPresentOrElse(recipe -> {
+                                // Valid vanilla recipe exists!
+                                if (recipe instanceof Keyed keyed) {
+                                    customCrafting.getApi().getNmsUtil().getRecipeUtil().setCurrentRecipe(event.getView(), NamespacedKey.fromBukkit(keyed.getKey()));
+                                }
+                            }, () -> {
+                                event.setResult(null);
+                            });
                 });
     }
 
