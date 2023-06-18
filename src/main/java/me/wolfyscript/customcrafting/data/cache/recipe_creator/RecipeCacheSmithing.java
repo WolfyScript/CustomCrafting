@@ -79,6 +79,10 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
     @Override
     protected CustomRecipeSmithing create(CustomRecipeSmithing recipe) {
         CustomRecipeSmithing recipeSmithing = super.create(recipe);
+        // make sure ingredients are properly set before applying
+        setTemplate(template);
+        setBase(base);
+        setAddition(addition);
         recipeSmithing.setTemplate(template);
         recipeSmithing.setBase(base);
         recipeSmithing.setAddition(addition);
