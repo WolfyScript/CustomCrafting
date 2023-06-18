@@ -22,7 +22,9 @@
 
 package me.wolfyscript.customcrafting.utils.cooking;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
 import me.wolfyscript.utilities.util.Pair;
@@ -36,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CookingManager {
 
     private final CustomCrafting plugin;
-    final Map<Block, Pair<CookingRecipeData<?>, Boolean>> cachedRecipeData = new ConcurrentHashMap<>();
+    final Map<BlockPositionData, Pair<CookingRecipeData<?>, Boolean>> cachedRecipeData = new ConcurrentHashMap<>();
     private final SmeltAPIAdapter smeltAdapter;
 
     public CookingManager(CustomCrafting plugin) {
@@ -60,11 +62,11 @@ public class CookingManager {
     }
 
     void cacheRecipeData(Block block, Pair<CookingRecipeData<?>, Boolean> data) {
-        cachedRecipeData.put(block, data);
+        cachedRecipeData.put(new BlockPositionData(block), data);
     }
 
     public void clearCache(Block block) {
-        cachedRecipeData.remove(block);
+        cachedRecipeData.remove(new BlockPositionData(block));
     }
 
     /**
@@ -88,11 +90,31 @@ public class CookingManager {
      * @return The {@link CookingRecipeData} of the custom recipe. Null if the event doesn't contain a custom recipe.
      */
     public Pair<CookingRecipeData<?>, Boolean> getCustomRecipeCache(FurnaceSmeltEvent event) {
-        return cachedRecipeData.computeIfAbsent(event.getBlock(), block -> checkEvent(event));
+        return cachedRecipeData.computeIfAbsent(new BlockPositionData(event.getBlock()), block -> checkEvent(event));
     }
 
     public Optional<Pair<CookingRecipeData<?>, Boolean>> getCustomRecipeCache(Block block) {
-        return Optional.ofNullable(cachedRecipeData.get(block));
+        return Optional.ofNullable(cachedRecipeData.get(new BlockPositionData(block)));
+    }
+
+    private record BlockPositionData(int x, int y, int z, UUID world) {
+
+        BlockPositionData(Block block) {
+            this(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            BlockPositionData that = (BlockPositionData) o;
+            return x == that.x && y == that.y && Objects.equals(world, that.world);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x, y, world);
+        }
     }
 
 }
