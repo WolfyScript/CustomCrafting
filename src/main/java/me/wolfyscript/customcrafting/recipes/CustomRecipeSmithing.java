@@ -266,7 +266,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
          ExactChoices cannot be used as those would rely on vanilla MC to compare the items. So we'll just use MaterialChoices to use our own checks.
          */
         return new SmithingTransformRecipe(
-                new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), "cc_placeholder." + getNamespacedKey().getKey()),
+                ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(),
                 getResult().getItemStack(),
                 getTemplate() == null || getTemplate().isEmpty() ? new RecipeChoice.MaterialChoice(Material.AIR) : new RecipeChoice.MaterialChoice(getTemplate().getChoicesStream().map(customItem -> customItem.create().getType()).toList()),
                 getBase() == null || getBase().isEmpty() ? new RecipeChoice.MaterialChoice(Material.AIR) : new RecipeChoice.MaterialChoice(getBase().getChoicesStream().map(customItem -> customItem.create().getType()).toList()),

@@ -66,7 +66,7 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
     @Override
     public SmokingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            SmokingRecipe placeholderRecipe = new SmokingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), "cc_placeholder." + getNamespacedKey().getKey()), getResult().getItemStack(), new RecipeChoice.MaterialChoice(getResult().getItemStack().getType()), getExp(), getCookingTime());
+            SmokingRecipe placeholderRecipe = new SmokingRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), new RecipeChoice.MaterialChoice(getResult().getItemStack().getType()), getExp(), getCookingTime());
             Bukkit.addRecipe(placeholderRecipe);
             return new SmokingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
         }

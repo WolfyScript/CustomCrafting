@@ -61,7 +61,7 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
         if (!getSource().isEmpty()) {
             // Spigot 1.20 introduced a new CampfireStartSmelt Event which we can use instead of NMS.
             if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
-                return new CampfireRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), "cc_placeholder." + getNamespacedKey().getKey()),
+                return new CampfireRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(),
                         getResult().getItemStack(),
                         new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).toList()), getExp(),
                         getCookingTime()

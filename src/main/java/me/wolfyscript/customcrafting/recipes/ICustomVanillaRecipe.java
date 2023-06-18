@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.Recipe;
 
 public interface ICustomVanillaRecipe<T extends Recipe> {
@@ -41,5 +42,9 @@ public interface ICustomVanillaRecipe<T extends Recipe> {
 
     @JsonIgnore
     void setAutoDiscover(boolean autoDiscover);
+
+    static NamespacedKey toPlaceholder(NamespacedKey recipeID) {
+        return new NamespacedKey(recipeID.getNamespace(), "cc_placeholder." + recipeID.getKey());
+    }
 
 }
