@@ -82,7 +82,6 @@ import me.wolfyscript.customcrafting.listeners.cooking.FurnaceListener;
 import me.wolfyscript.customcrafting.listeners.GrindStoneListener;
 import me.wolfyscript.customcrafting.listeners.PlayerListener;
 import me.wolfyscript.customcrafting.listeners.RecipeBookListener;
-import me.wolfyscript.customcrafting.listeners.smithing.Smithing1_20Listener;
 import me.wolfyscript.customcrafting.listeners.smithing.SmithingListener;
 import me.wolfyscript.customcrafting.listeners.crafting.CraftListener;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
@@ -415,11 +414,7 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new GrindStoneListener(this), this);
         pM.registerEvents(new BrewingStandListener(api, this), this);
         pM.registerEvents(new RecipeBookListener(), this);
-        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1,20,0))) {
-            pM.registerEvents(new Smithing1_20Listener(this), this);
-        } else {
-            pM.registerEvents(new SmithingListener(this), this);
-        }
+        pM.registerEvents(new SmithingListener(this), this);
         if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
             pM.registerEvents(new CampfireListener(this), this);
         }
