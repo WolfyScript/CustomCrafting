@@ -182,9 +182,8 @@ public class SmithingListener implements Listener {
                 inventory.getLocation().getWorld().playSound(inventory.getLocation(), Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.BLOCKS, 1, 1);
             }
             preCraftedRecipes.remove(player.getUniqueId());
-            var smithingEvent = new PrepareSmithingEvent(event.getView(), null);
-            Bukkit.getPluginManager().callEvent(smithingEvent);
-            inventory.setItem(RESULT_SLOT, smithingEvent.getResult());
+
+            inventory.setItem(RESULT_SLOT, smithingData.getResult().getItem(smithingData, player, inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getLocation().getBlock()));
         }
     }
 
