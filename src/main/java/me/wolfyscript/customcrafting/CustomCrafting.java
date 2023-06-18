@@ -77,6 +77,7 @@ import me.wolfyscript.customcrafting.listeners.AnvilListener;
 import me.wolfyscript.customcrafting.listeners.BrewingStandListener;
 import me.wolfyscript.customcrafting.listeners.CauldronListener;
 import me.wolfyscript.customcrafting.listeners.EliteWorkbenchListener;
+import me.wolfyscript.customcrafting.listeners.RecipeDiscoverListener;
 import me.wolfyscript.customcrafting.listeners.cooking.CampfireListener;
 import me.wolfyscript.customcrafting.listeners.cooking.FurnaceListener;
 import me.wolfyscript.customcrafting.listeners.GrindStoneListener;
@@ -406,6 +407,7 @@ public class CustomCrafting extends JavaPlugin {
     private void registerListeners() {
         var pM = Bukkit.getPluginManager();
         pM.registerEvents(new PlayerListener(this), this);
+        pM.registerEvents(new RecipeDiscoverListener(this), this);
         pM.registerEvents(new CraftListener(this), this);
         pM.registerEvents(new FurnaceListener(this, cookingManager), this);
         pM.registerEvents(new AnvilListener(this), this);

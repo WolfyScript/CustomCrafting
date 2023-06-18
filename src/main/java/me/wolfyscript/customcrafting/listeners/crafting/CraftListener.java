@@ -60,31 +60,4 @@ public class CraftListener implements Listener {
             event.setCancelled(true);
         }
     }
-
-    @EventHandler
-    public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
-        org.bukkit.NamespacedKey key = event.getRecipe();
-        if (key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(NamespacedKey.fromBukkit(key));
-            if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
-                event.setCancelled(recipe.isHidden() || recipe.isDisabled());
-            } else {
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    /**
-     * Automatically discovers available custom recipes for players.
-     */
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        var player = event.getPlayer();
-        List<org.bukkit.NamespacedKey> discoveredCustomRecipes = player.getDiscoveredRecipes().stream().filter(namespacedKey -> namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).toList();
-        customCrafting.getRegistries().getRecipes().getAvailable(player).stream()
-                .filter(recipe -> recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isAutoDiscover())
-                .map(recipe -> new org.bukkit.NamespacedKey(recipe.getNamespacedKey().getNamespace(), recipe.getNamespacedKey().getKey()))
-                .filter(namespacedKey -> !discoveredCustomRecipes.contains(namespacedKey))
-                .forEach(player::discoverRecipe);
-    }
 }
