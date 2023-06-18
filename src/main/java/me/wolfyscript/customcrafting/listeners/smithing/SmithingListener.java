@@ -141,7 +141,7 @@ public class SmithingListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onTakeOutItem(InventoryClickEvent event) {
+    public void onCollectResult(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
         if (!event.getClickedInventory().getType().equals(InventoryType.SMITHING)) return;
         var player = (Player) event.getWhoClicked();
