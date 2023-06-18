@@ -31,6 +31,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 
+/**
+ * In versions 1.16+ paper provides a recipe getter for the FurnaceSmeltEvent that we can use.
+ */
 public class PaperSmeltAPIAdapter extends SmeltAPIAdapter {
 
     public PaperSmeltAPIAdapter(CustomCrafting customCrafting, CookingManager manager) {

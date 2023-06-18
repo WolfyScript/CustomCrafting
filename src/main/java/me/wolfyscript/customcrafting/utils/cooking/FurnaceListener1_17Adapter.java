@@ -41,6 +41,8 @@ import org.bukkit.inventory.Recipe;
 
 /**
  * Uses the new {@link FurnaceStartSmeltEvent} to more efficiently handle custom cooking recipes.
+ * This overrides the {@link BukkitSmeltAPIAdapter} and {@link PaperSmeltAPIAdapter}, as those are just called if no data is cached yet.
+ * But this listener caches data before the other adapters can be called. Therefor it is a lot more efficient in 1.17+.
  */
 public class FurnaceListener1_17Adapter implements Listener {
 

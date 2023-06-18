@@ -144,7 +144,7 @@ public class FurnaceListener implements Listener {
         manager.clearCache(location.getBlock());
 
         if (!ItemUtils.isAirOrNull(inventory.getResult())) { //Make sure to only give exp if the result is actually there.
-            // Keep this for backwards compatibility and handle existing custom recipe exp.
+            // @Deprecated: Keep this for backwards compatibility and handle existing custom recipe exp.
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 Furnace blockState = (Furnace) location.getBlock().getState();
                 PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
@@ -160,6 +160,7 @@ public class FurnaceListener implements Listener {
         }
     }
 
+    @Deprecated
     private void awardRecipeExperience(PersistentDataContainer usedRecipes, NamespacedKey bukkitRecipeKey, Location location) {
         CustomRecipe<?> recipeFurnace = customCrafting.getRegistries().getRecipes().get(me.wolfyscript.utilities.util.NamespacedKey.fromBukkit(bukkitRecipeKey));
         if (recipeFurnace instanceof CustomRecipeCooking<?, ?> furnaceRecipe) {
@@ -178,6 +179,7 @@ public class FurnaceListener implements Listener {
         }
     }
 
+    @Deprecated
     public static void awardExp(Location loc, int expLevels) {
         while (expLevels > 0) {
             int totalXp = getExperienceValue(expLevels);
@@ -186,6 +188,7 @@ public class FurnaceListener implements Listener {
         }
     }
 
+    @Deprecated
     public static int getExperienceValue(int expLevels) {
         if (expLevels > 162670129) {
             return expLevels - 100000;
