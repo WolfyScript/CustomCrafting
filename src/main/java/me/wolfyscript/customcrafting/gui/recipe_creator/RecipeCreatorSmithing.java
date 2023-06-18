@@ -81,9 +81,11 @@ public class RecipeCreatorSmithing extends RecipeCreator {
         event.setButton(3, ClusterRecipeCreator.CONDITIONS);
         event.setButton(5, ClusterRecipeCreator.PRIORITY);
         event.setButton(7, ClusterRecipeCreator.EXACT_META);
-        event.setButton(19, "recipe.ingredient_0");
         if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            event.setButton(19, "recipe.ingredient_0");
             event.setButton(20, "recipe.ingredient_1");
+        } else {
+            event.setButton(19, "recipe.ingredient_1");
         }
         event.setButton(21, "recipe.ingredient_2");
         event.setButton(25, "recipe.result");
