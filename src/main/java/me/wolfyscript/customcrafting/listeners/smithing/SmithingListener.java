@@ -55,7 +55,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
@@ -66,10 +65,10 @@ public class SmithingListener implements Listener {
     private final HashMap<UUID, SmithingData> preCraftedRecipes = new HashMap<>();
     private final CustomCrafting customCrafting;
 
-    private final boolean IS_1_20 = ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0));
-    private final int RESULT_SLOT = IS_1_20 ? 3 : 2;
-    private final int BASE_SLOT = IS_1_20 ? 1 : 0;
-    private final int ADDITION_SLOT = IS_1_20 ? 2 : 1;
+    private static final boolean IS_1_20 = ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0));
+    private static final int RESULT_SLOT = IS_1_20 ? 3 : 2;
+    private static final int BASE_SLOT = IS_1_20 ? 1 : 0;
+    private static final int ADDITION_SLOT = IS_1_20 ? 2 : 1;
 
     public SmithingListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
@@ -79,9 +78,6 @@ public class SmithingListener implements Listener {
     public void onPrepare(PrepareSmithingEvent event) {
         SmithingInventory inv = event.getInventory();
         var player = (Player) event.getView().getPlayer();
-        var template = IS_1_20 ? inv.getItem(0) : null;
-        var base = inv.getItem(BASE_SLOT);
-        var addition = inv.getItem(ADDITION_SLOT);
 
         if (!ItemUtils.isAirOrNull(event.getResult())) {
             if (Stream.of(inv.getStorageContents()).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())
@@ -90,6 +86,10 @@ public class SmithingListener implements Listener {
                 event.setResult(null);
             }
         }
+
+        var template = IS_1_20 ? inv.getItem(0) : null;
+        var base = inv.getItem(BASE_SLOT);
+        var addition = inv.getItem(ADDITION_SLOT);
         preCraftedRecipes.put(player.getUniqueId(), null);
 
         customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.SMITHING).stream()
@@ -130,9 +130,9 @@ public class SmithingListener implements Listener {
             event.setResult(baseCopy);
         } else {
             if (!adapters.isEmpty()) {
-                MergeOption option = new MergeOption(new int[]{data.getRecipe() instanceof CustomRecipeSmithing ? 1 : 0});
+                MergeOption option = new MergeOption(new int[]{BASE_SLOT});
                 option.setAdapters(adapters);
-                // This acts as if we appended an extra merge adapter to the end of the result.
+                // This acts as if we appended extra merge adapters to the end of the result.
                 // This makes it possible to implement the logic just once and not both in smithing listener and merge adapter.
                 option.merge(data, player, block, chosenResult, endResult);
             }
