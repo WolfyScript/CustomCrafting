@@ -22,9 +22,6 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderShaped;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
@@ -68,18 +65,11 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
     @Override
     public org.bukkit.inventory.ShapedRecipe getVanillaRecipe() {
         if (!getResult().isEmpty() && !ingredients.isEmpty()) {
-            if (customCrafting.getConfigHandler().getConfig().isNMSBasedCrafting()) {
-                FunctionalRecipeBuilderShaped builder = new FunctionalRecipeBuilderShaped(getNamespacedKey(), getResult().getItemStack(), getInternalShape().getWidth(), getInternalShape().getHeight());
-                applySettingsToFunctionalRecipe(builder);
-                builder.setChoices(getIngredients().stream().map(ingredient -> ingredient.isEmpty() ? null : new RecipeChoice.ExactChoice(ingredient.getBukkitChoices())).collect(Collectors.toCollection(ArrayList::new)));
-                builder.createAndRegister();
-            } else {
-                var recipe = new org.bukkit.inventory.ShapedRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack());
-                recipe.shape(getShape());
-                mappedIngredients.forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().stream().map(CustomItem::getItemStack).distinct().toList())));
-                recipe.setGroup(getGroup());
-                return recipe;
-            }
+            var recipe = new org.bukkit.inventory.ShapedRecipe(getNamespacedKey().bukkit(), getResult().getItemStack());
+            recipe.shape(getShape());
+            mappedIngredients.forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().stream().map(CustomItem::getItemStack).distinct().toList())));
+            recipe.setGroup(getGroup());
+            return recipe;
         }
         return null;
     }
