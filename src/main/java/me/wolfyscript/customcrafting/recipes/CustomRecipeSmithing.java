@@ -132,7 +132,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
         IngredientData baseData = null;
         IngredientData additionData = null;
 
-        if (getTemplate() != null) {
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0)) && getTemplate() != null) {
             Optional<CustomItem> templateCustom = getTemplate().check(template, isCheckNBT());
             if (templateCustom.isPresent()) {
                 templateData = new IngredientData(0, 0, getTemplate(), templateCustom.get(), template);
