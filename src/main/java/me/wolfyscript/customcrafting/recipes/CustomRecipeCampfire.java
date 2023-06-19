@@ -22,15 +22,12 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderCampfire;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.version.MinecraftVersion;
-import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.inventory.CampfireRecipe;
 import org.bukkit.inventory.ItemStack;
@@ -59,16 +56,11 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
     @Override
     public CampfireRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            // Spigot 1.20 introduced a new CampfireStartSmelt Event which we can use instead of NMS.
-            if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
-                return new CampfireRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(),
-                        getResult().getItemStack(),
-                        new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).toList()), getExp(),
-                        getCookingTime()
-                );
-            }
-            // For older versions fallback to NMS
-            registerRecipeIntoMinecraft(new FunctionalRecipeBuilderCampfire(getNamespacedKey(), getResult().getItemStack(), getRecipeChoice()));
+            return new CampfireRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(),
+                    getResult().getItemStack(),
+                    new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).toList()), getExp(),
+                    getCookingTime()
+            );
         }
         return null;
     }
