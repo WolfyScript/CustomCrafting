@@ -22,25 +22,19 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderShapeless;
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.List;
 import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
-import me.wolfyscript.customcrafting.recipes.data.CraftingData;
-import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
-import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 
@@ -72,21 +66,35 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
     @Override
     public org.bukkit.inventory.ShapelessRecipe getVanillaRecipe() {
         if (!getResult().isEmpty()) {
-            if (customCrafting.getConfigHandler().getConfig().isNMSBasedCrafting()) {
-                FunctionalRecipeBuilderShapeless builder = new FunctionalRecipeBuilderShapeless(getNamespacedKey(), getResult().getItemStack());
-                applySettingsToFunctionalRecipe(builder);
-                builder.setChoices(getIngredients().stream().map(ingredient -> ingredient.isEmpty() ? null : new RecipeChoice.ExactChoice(ingredient.getBukkitChoices())).collect(Collectors.toCollection(ArrayList::new)));
-                builder.createAndRegister();
-            } else {
-                var shapelessRecipe = new org.bukkit.inventory.ShapelessRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack());
-                for (Ingredient value : ingredients) {
-                    shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().stream().map(CustomItem::getItemStack).distinct().toList()));
-                }
-                shapelessRecipe.setGroup(getGroup());
-                return shapelessRecipe;
+            // Register placeholder recipe
+            var placeholderShapelessRecipe = new org.bukkit.inventory.ShapelessRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack());
+            for (Ingredient value : ingredients) {
+                placeholderShapelessRecipe.addIngredient(getMaterialRecipeChoiceFor(value));
             }
+            placeholderShapelessRecipe.setGroup(getGroup());
+            Bukkit.addRecipe(placeholderShapelessRecipe);
+
+            // Return display recipe
+            var shapelessRecipe = new org.bukkit.inventory.ShapelessRecipe(getNamespacedKey().bukkit(), getResult().getItemStack());
+            for (Ingredient value : ingredients) {
+                shapelessRecipe.addIngredient(getExactRecipeChoiceFor(value));
+            }
+            shapelessRecipe.setGroup(getGroup());
+            return shapelessRecipe;
         }
         return null;
+    }
+
+    private static RecipeChoice.ExactChoice getExactRecipeChoiceFor(Ingredient ingredient) {
+        List<ItemStack> choices = ingredient.getChoices().stream().map(CustomItem::create).distinct().collect(Collectors.toList());
+        if (ingredient.isAllowEmpty()) choices.add(new ItemStack(Material.AIR));
+        return new RecipeChoice.ExactChoice(choices);
+    }
+
+    private static RecipeChoice.MaterialChoice getMaterialRecipeChoiceFor(Ingredient ingredient) {
+        List<Material> choices = ingredient.getChoices().stream().map(customItem -> customItem.create().getType()).distinct().collect(Collectors.toList());
+        if (ingredient.isAllowEmpty()) choices.add(Material.AIR);
+        return new RecipeChoice.MaterialChoice(choices);
     }
 
     @Override

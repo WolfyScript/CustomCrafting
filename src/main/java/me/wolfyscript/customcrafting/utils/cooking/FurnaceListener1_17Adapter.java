@@ -22,17 +22,27 @@
 
 package me.wolfyscript.customcrafting.utils.cooking;
 
+import com.wolfyscript.utilities.bukkit.nms.inventory.NMSInventoryUtils;
+import java.util.Iterator;
+import java.util.Objects;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
+import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceStartSmeltEvent;
+import org.bukkit.inventory.CookingRecipe;
+import org.bukkit.inventory.Recipe;
 
 /**
  * Uses the new {@link FurnaceStartSmeltEvent} to more efficiently handle custom cooking recipes.
+ * This overrides the {@link BukkitSmeltAPIAdapter} and {@link PaperSmeltAPIAdapter}, as those are just called if no data is cached yet.
+ * But this listener caches data before the other adapters can be called. Therefor it is a lot more efficient in 1.17+.
  */
 public class FurnaceListener1_17Adapter implements Listener {
 
@@ -46,19 +56,43 @@ public class FurnaceListener1_17Adapter implements Listener {
 
     @EventHandler
     public void onStartSmelt(FurnaceStartSmeltEvent event) {
-        var recipe = event.getRecipe();
-        if (recipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            var data = manager.getAdapter().processRecipe(event.getSource(), NamespacedKey.fromBukkit(recipe.getKey()), event.getBlock());
-            //Update the cache to the new Custom Recipe.
-            manager.cacheRecipeData(event.getBlock(), data);
-        } else {
-            //Update the cache with the vanilla recipe
-            manager.cacheRecipeData(event.getBlock(), new Pair<>(null, false));
-            //Check if the CustomItem is allowed in Vanilla recipes
-            CustomItem customItem = CustomItem.getByItemStack(event.getSource());
-            if (customItem != null && customItem.isBlockVanillaRecipes()) {
-                event.setTotalCookTime(0); //"Cancel" the process if it is.
-            }
-        }
+        manager.clearCache(event.getBlock());
+        customCrafting.getRegistries().getRecipes().get((RecipeType<? extends CustomRecipeCooking<?, ?>>) switch (event.getBlock().getType()) {
+                    case BLAST_FURNACE -> RecipeType.BLAST_FURNACE;
+                    case SMOKER -> RecipeType.SMOKER;
+                    default -> RecipeType.FURNACE;
+                }).stream()
+                .map(recipe1 -> manager.getAdapter().processRecipe(recipe1, event.getSource(), event.getBlock()).getKey())
+                .filter(Objects::nonNull)
+                .findFirst()
+                .ifPresentOrElse(data -> {
+                    manager.cacheRecipeData(event.getBlock(), new Pair<>(data, true));
+                    NMSInventoryUtils.setCurrentRecipe(((Furnace) event.getBlock().getState()).getInventory(), data.getRecipe().getNamespacedKey());
+                }, () -> {
+                    manager.clearCache(event.getBlock());
+                    Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(switch (event.getBlock().getType()) {
+                        case BLAST_FURNACE -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.BLASTING;
+                        case SMOKER -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.SMOKING;
+                        default -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.SMELTING;
+                    });
+                    while (recipeIterator.hasNext()) {
+                        if (recipeIterator.next() instanceof CookingRecipe<?> recipe && !recipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
+                            if (recipe.getInputChoice().test(event.getSource())) {
+                                NMSInventoryUtils.setCurrentRecipe(((Furnace) event.getBlock().getState()).getInventory(), new NamespacedKey(recipe.getKey().getNamespace(), recipe.getKey().getKey()));
+
+                                //Check if the CustomItem is allowed in Vanilla recipes
+                                CustomItem customItem = CustomItem.getByItemStack(event.getSource());
+                                if (customItem != null && customItem.isBlockVanillaRecipes()) {
+                                    event.setTotalCookTime(Integer.MAX_VALUE); //"Cancel" the process if it is.
+                                    manager.cacheRecipeData(event.getBlock(), new Pair<>(null, false));
+                                }
+                                return;
+                            }
+                        }
+                    }
+                    NMSInventoryUtils.setCurrentRecipe(((Furnace) event.getBlock().getState()).getInventory(), null);
+                    event.setTotalCookTime(Integer.MAX_VALUE);
+                });
     }
+
 }

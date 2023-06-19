@@ -58,6 +58,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
     RecipeType<CustomRecipeCauldron> CAULDRON = new RecipeTypeImpl<>(Type.CAULDRON, CustomRecipeCauldron.class);
     RecipeType<CustomRecipeGrindstone> GRINDSTONE = new RecipeTypeImpl<>(Type.GRINDSTONE, CustomRecipeGrindstone.class);
     RecipeType<CustomRecipeBrewing> BREWING_STAND = new RecipeTypeImpl<>(Type.BREWING_STAND, CustomRecipeBrewing.class);
+    // Smithing
     RecipeType<CustomRecipeSmithing> SMITHING = new RecipeTypeImpl<>(Type.SMITHING, CustomRecipeSmithing.class);
 
     static Set<RecipeType<? extends CustomRecipe<?>>> values() {
@@ -270,7 +271,8 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         CAULDRON,
         GRINDSTONE,
         BREWING_STAND,
-        SMITHING,
+        @Deprecated SMITHING,
+        SMITHING_LEGACY,
         CUSTOM
     }
 

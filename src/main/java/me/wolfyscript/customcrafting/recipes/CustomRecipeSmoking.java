@@ -27,9 +27,10 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderSmoking;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmokingRecipe;
 
 public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking, SmokingRecipe> {
@@ -65,7 +66,9 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
     @Override
     public SmokingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            registerRecipeIntoMinecraft(new FunctionalRecipeBuilderSmoking(getNamespacedKey(), getResult().getItemStack(), getRecipeChoice()));
+            SmokingRecipe placeholderRecipe = new SmokingRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), new RecipeChoice.MaterialChoice(getResult().getItemStack().getType()), getExp(), getCookingTime());
+            Bukkit.addRecipe(placeholderRecipe);
+            return new SmokingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
         }
         return null;
     }

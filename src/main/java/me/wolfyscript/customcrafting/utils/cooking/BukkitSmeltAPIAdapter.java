@@ -36,6 +36,9 @@ import org.bukkit.inventory.Recipe;
 
 import java.util.Iterator;
 
+/**
+ * Versions prior to 1.17 don't have the FurnaceStartSmeltEvent, so the recipe must be determined manually.
+ */
 public class BukkitSmeltAPIAdapter extends SmeltAPIAdapter {
 
     public BukkitSmeltAPIAdapter(CustomCrafting customCrafting, CookingManager manager) {
