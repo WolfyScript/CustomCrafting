@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -273,13 +274,14 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
          Smithing recipes need to be registered into minecraft, so that you can place the ingredients into the inventory.
          ExactChoices cannot be used as those would rely on vanilla MC to compare the items. So we'll just use MaterialChoices to use our own checks.
          */
-        return new SmithingTransformRecipe(
-                ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(),
-                getResult().getItemStack(),
-                getTemplate() == null || getTemplate().isEmpty() ? new RecipeChoice.MaterialChoice(Material.AIR) : new RecipeChoice.MaterialChoice(getTemplate().getChoicesStream().map(customItem -> customItem.create().getType()).toList()),
-                getBase() == null || getBase().isEmpty() ? new RecipeChoice.MaterialChoice(Material.AIR) : new RecipeChoice.MaterialChoice(getBase().getChoicesStream().map(customItem -> customItem.create().getType()).toList()),
-                getAddition() == null || getAddition().isEmpty() ? new RecipeChoice.MaterialChoice(Material.AIR) : new RecipeChoice.MaterialChoice(getAddition().getChoicesStream().map(customItem -> customItem.create().getType()).toList())
-        );
+        return new SmithingTransformRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), getRecipeChoiceFor(getTemplate()), getRecipeChoiceFor(getBase()), getRecipeChoiceFor(getAddition()));
+    }
+
+    private static RecipeChoice getRecipeChoiceFor(Ingredient ingredient) {
+        if (ingredient == null || ingredient.isEmpty()) return new RecipeChoice.MaterialChoice(Material.AIR);
+        List<Material> choices = ingredient.getChoicesStream().map(customItem -> customItem.create().getType()).collect(Collectors.toList());
+        if (ingredient.isAllowEmpty()) choices.add(Material.AIR);
+        return new RecipeChoice.MaterialChoice(choices);
     }
 
     @Override
