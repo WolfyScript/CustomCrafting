@@ -42,7 +42,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
-
 public class EventBasedCraftRecipeHandler implements Listener {
 
     private final CustomCrafting customCrafting;
@@ -90,11 +89,20 @@ public class EventBasedCraftRecipeHandler implements Listener {
                         e.getInventory().setResult(result);
                         Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
                     }, () -> {
-                        //No valid custom recipes found
+                        // No valid custom recipes found
                         if (!(e.getRecipe() instanceof Keyed)) return;
-                        //Vanilla Recipe is available.
-                        //Check for custom recipe that overrides the vanilla recipe
+
                         var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
+                        // We need placeholder recipes that simply use material choices, because otherwise we can get duplication issues and buggy behaviour like flickering.
+                        // Here we need to disable those placeholder recipes and check for a vanilla recipe the placeholder may override.
+                        if (namespacedKey.getKey().startsWith("cc_placeholder.")) {
+                            // TODO: Can't determine the vanilla recipe! We may need NMS for that in the future. For now simply override vanilla recipes.
+                            e.getInventory().setResult(ItemUtils.AIR);
+                            Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
+                            return;
+                        }
+
+                        //Check for custom recipe that overrides the vanilla recipe
                         if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey) || customCrafting.getRegistries().getRecipes().getAdvancedCrafting(namespacedKey) != null) {
                             //Recipe is disabled or it is a custom recipe!
                             e.getInventory().setResult(ItemUtils.AIR);
