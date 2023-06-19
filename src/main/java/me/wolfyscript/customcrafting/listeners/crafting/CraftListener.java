@@ -45,13 +45,7 @@ public class CraftListener implements Listener {
     public CraftListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
         this.craftManager = customCrafting.getCraftManager();
-
-        if (customCrafting.getConfigHandler().getConfig().isNMSBasedCrafting()) {
-            customCrafting.getLogger().warning("Using Experimental NMS Based Crafting Recipes. If you encounter any issues, please disable it!");
-            Bukkit.getPluginManager().registerEvents(new NMSBasedCraftRecipeHandler(customCrafting, craftManager), customCrafting);
-        } else {
-            Bukkit.getPluginManager().registerEvents(new EventBasedCraftRecipeHandler(customCrafting, craftManager), customCrafting);
-        }
+        Bukkit.getPluginManager().registerEvents(new EventBasedCraftRecipeHandler(customCrafting, craftManager), customCrafting);
     }
 
     @EventHandler
