@@ -35,6 +35,9 @@ import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
+/**
+ * In Spigot 1.20 we have access to the CampfireStartEvent that we can use to make sure the correct recipe is used and cancel invalid recipes.
+ */
 public class Campfire1_20Listener implements Listener {
 
     private CustomCrafting customCrafting;

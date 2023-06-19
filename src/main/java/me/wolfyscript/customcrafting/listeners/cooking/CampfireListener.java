@@ -43,6 +43,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.Recipe;
 
+/**
+ * Handles campfire recipes without any NMS (which was used in previous versions of CC).
+ * It checks for a valid recipe on interaction and when the recipe is done cooking.
+ * The interaction does not determine the result of the recipe, that is done when the recipe is done cooking.
+ */
 public class CampfireListener implements Listener {
 
     private CustomCrafting customCrafting;
