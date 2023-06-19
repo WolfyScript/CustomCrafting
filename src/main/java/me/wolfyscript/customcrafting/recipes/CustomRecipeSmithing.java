@@ -234,18 +234,26 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(10))).setVariants(guiHandler, getBase());
-        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(13))).setVariants(guiHandler, getAddition());
-        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(23))).setVariants(guiHandler, this.getResult());
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(0))).setVariants(guiHandler, getTemplate());
+        }
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(1))).setVariants(guiHandler, getBase());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(2))).setVariants(guiHandler, getAddition());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(3))).setVariants(guiHandler, this.getResult());
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         var cluster = guiWindow.getCluster();
-        event.setButton(19, ButtonContainerIngredient.key(cluster, 10));
-        event.setButton(21, ButtonContainerIngredient.key(cluster, 13));
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            event.setButton(19, ButtonContainerIngredient.key(cluster, 0));
+            event.setButton(20, ButtonContainerIngredient.key(cluster, 1));
+        } else {
+            event.setButton(19, ButtonContainerIngredient.key(cluster, 1));
+        }
+        event.setButton(21, ButtonContainerIngredient.key(cluster, 2));
         event.setButton(23, new NamespacedKey(ClusterRecipeBook.KEY, "smithing"));
-        event.setButton(25, ButtonContainerIngredient.key(cluster, 23));
+        event.setButton(25, ButtonContainerIngredient.key(cluster, 3));
     }
 
     @Override
