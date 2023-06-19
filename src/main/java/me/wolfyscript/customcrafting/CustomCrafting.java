@@ -78,6 +78,7 @@ import me.wolfyscript.customcrafting.listeners.BrewingStandListener;
 import me.wolfyscript.customcrafting.listeners.CauldronListener;
 import me.wolfyscript.customcrafting.listeners.EliteWorkbenchListener;
 import me.wolfyscript.customcrafting.listeners.RecipeDiscoverListener;
+import me.wolfyscript.customcrafting.listeners.cooking.Campfire1_20Listener;
 import me.wolfyscript.customcrafting.listeners.cooking.CampfireListener;
 import me.wolfyscript.customcrafting.listeners.cooking.FurnaceListener;
 import me.wolfyscript.customcrafting.listeners.GrindStoneListener;
@@ -418,8 +419,9 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new RecipeBookListener(), this);
         pM.registerEvents(new SmithingListener(this), this);
         if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
-            pM.registerEvents(new CampfireListener(this), this);
+            pM.registerEvents(new Campfire1_20Listener(this), this);
         }
+        pM.registerEvents(new CampfireListener(this), this);
     }
 
     private void registerCommands() {
