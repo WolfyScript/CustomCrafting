@@ -22,7 +22,10 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
@@ -30,6 +33,9 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 
 public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeShaped, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapedRecipe> {
@@ -65,13 +71,33 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
     @Override
     public org.bukkit.inventory.ShapedRecipe getVanillaRecipe() {
         if (!getResult().isEmpty() && !ingredients.isEmpty()) {
+            // Register placeholder recipe
+            var placeholderRecipe = new org.bukkit.inventory.ShapedRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack());
+            placeholderRecipe.shape(getShape());
+            mappedIngredients.forEach((character, items) -> placeholderRecipe.setIngredient(character, getMaterialRecipeChoiceFor(items)));
+            placeholderRecipe.setGroup(getGroup());
+            Bukkit.addRecipe(placeholderRecipe);
+
+            // Return display recipe
             var recipe = new org.bukkit.inventory.ShapedRecipe(getNamespacedKey().bukkit(), getResult().getItemStack());
             recipe.shape(getShape());
-            mappedIngredients.forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().stream().map(CustomItem::getItemStack).distinct().toList())));
+            mappedIngredients.forEach((character, items) -> recipe.setIngredient(character, getExactRecipeChoiceFor(items)));
             recipe.setGroup(getGroup());
             return recipe;
         }
         return null;
+    }
+
+    private static RecipeChoice.ExactChoice getExactRecipeChoiceFor(Ingredient ingredient) {
+        List<ItemStack> choices = ingredient.getChoices().stream().map(CustomItem::create).distinct().collect(Collectors.toList());
+        if (ingredient.isAllowEmpty()) choices.add(new ItemStack(Material.AIR));
+        return new RecipeChoice.ExactChoice(choices);
+    }
+
+    private static RecipeChoice.MaterialChoice getMaterialRecipeChoiceFor(Ingredient ingredient) {
+        List<Material> choices = ingredient.getChoices().stream().map(customItem -> customItem.create().getType()).distinct().collect(Collectors.toList());
+        if (ingredient.isAllowEmpty()) choices.add(Material.AIR);
+        return new RecipeChoice.MaterialChoice(choices);
     }
 
     @Override
