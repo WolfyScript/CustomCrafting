@@ -96,6 +96,8 @@ public class DisableRecipesHandler {
         recipes.add(namespacedKey);
         if (recipe instanceof ICustomVanillaRecipe<?>) {
             Bukkit.removeRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()));
+            Bukkit.removeRecipe(ICustomVanillaRecipe.toDisplayKey(namespacedKey).bukkit());
+            Bukkit.removeRecipe(ICustomVanillaRecipe.toPlaceholder(namespacedKey).bukkit());
         }
         saveDisabledRecipes();
     }
