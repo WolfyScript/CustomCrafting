@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.listeners.crafting;
 
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.CraftManager;
@@ -95,7 +96,7 @@ public class EventBasedCraftRecipeHandler implements Listener {
                         var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
                         // We need placeholder recipes that simply use material choices, because otherwise we can get duplication issues and buggy behaviour like flickering.
                         // Here we need to disable those placeholder recipes and check for a vanilla recipe the placeholder may override.
-                        if (namespacedKey.getKey().startsWith("cc_placeholder.")) {
+                        if (ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(((Keyed) e.getRecipe()).getKey())) {
                             // TODO: Can't determine the vanilla recipe! We may need NMS for that in the future. For now simply override vanilla recipes.
                             e.getInventory().setResult(ItemUtils.AIR);
                             Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);

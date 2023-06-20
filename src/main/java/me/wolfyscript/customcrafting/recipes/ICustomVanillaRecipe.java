@@ -28,6 +28,9 @@ import org.bukkit.inventory.Recipe;
 
 public interface ICustomVanillaRecipe<T extends Recipe> {
 
+    String PLACEHOLDER_PREFIX = "cc_placeholder.";
+    String DISPLAY_PREFIX = "cc_display.";
+
     @JsonIgnore
     T getVanillaRecipe();
 
@@ -44,7 +47,27 @@ public interface ICustomVanillaRecipe<T extends Recipe> {
     void setAutoDiscover(boolean autoDiscover);
 
     static NamespacedKey toPlaceholder(NamespacedKey recipeID) {
-        return new NamespacedKey(recipeID.getNamespace(), "cc_placeholder." + recipeID.getKey());
+        return new NamespacedKey(recipeID.getNamespace(), PLACEHOLDER_PREFIX + recipeID.getKey());
+    }
+
+    static NamespacedKey toDisplayKey(NamespacedKey recipeID) {
+        return new NamespacedKey(recipeID.getNamespace(), DISPLAY_PREFIX + recipeID.getKey());
+    }
+
+    static boolean isPlaceholderRecipe(org.bukkit.NamespacedKey bukkitKey) {
+        return bukkitKey.getKey().startsWith(PLACEHOLDER_PREFIX);
+    }
+
+    static boolean isDisplayRecipe(org.bukkit.NamespacedKey bukkitKey) {
+        return bukkitKey.getKey().startsWith(DISPLAY_PREFIX);
+    }
+
+    static boolean isPlaceholderOrDisplayRecipe(org.bukkit.NamespacedKey bukkitKey) {
+        return isPlaceholderRecipe(bukkitKey) || isDisplayRecipe(bukkitKey);
+    }
+
+    static NamespacedKey toOriginalKey(org.bukkit.NamespacedKey bukkitKey) {
+        return new NamespacedKey(bukkitKey.getNamespace(), bukkitKey.getKey().replace(PLACEHOLDER_PREFIX, "").replace(DISPLAY_PREFIX, ""));
     }
 
 }

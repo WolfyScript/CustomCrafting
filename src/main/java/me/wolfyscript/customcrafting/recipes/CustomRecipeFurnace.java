@@ -61,7 +61,7 @@ public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace
             FurnaceRecipe placeholderRecipe = new FurnaceRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), new RecipeChoice.MaterialChoice(getResult().getItemStack().getType()), getExp(), getCookingTime());
             Bukkit.addRecipe(placeholderRecipe);
             //registerRecipeIntoMinecraft(new FunctionalRecipeBuilderSmelting(getNamespacedKey(), getResult().getItemStack(), getRecipeChoice()));
-            return new FurnaceRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+            return new FurnaceRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
         }
         return null;
     }

@@ -105,7 +105,7 @@ public class SmithingListener implements Listener {
                 }, () -> {
                     if (ItemUtils.isAirOrNull(event.getResult())) return;
                     Bukkit.getRecipesFor(event.getResult()).stream()
-                            .filter(recipe -> recipe instanceof SmithingRecipe smithingRecipe && !smithingRecipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE))
+                            .filter(recipe -> recipe instanceof SmithingRecipe smithingRecipe && !ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(smithingRecipe.getKey()))
                             .findFirst().ifPresentOrElse(recipe -> {
                                 // Valid vanilla recipe exists!
                                 if (recipe instanceof Keyed keyed) {
