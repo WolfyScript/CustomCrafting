@@ -28,6 +28,9 @@ import org.bukkit.inventory.Recipe;
 
 public interface ICustomVanillaRecipe<T extends Recipe> {
 
+    String PLACEHOLDER_PREFIX = "cc_placeholder.";
+    String DISPLAY_PREFIX = "cc_display.";
+
     @JsonIgnore
     T getVanillaRecipe();
 
