@@ -104,16 +104,11 @@ public class SmithingListener implements Listener {
                     applyResult(event, inv, player, base, recipe.getResult(), recipe.isOnlyChangeMaterial(), recipe.getInternalMergeAdapters(), data);
                 }, () -> {
                     if (ItemUtils.isAirOrNull(event.getResult())) return;
-                    Bukkit.getRecipesFor(event.getResult()).stream()
-                            .filter(recipe -> recipe instanceof SmithingRecipe smithingRecipe && !ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(smithingRecipe.getKey()))
-                            .findFirst().ifPresentOrElse(recipe -> {
-                                // Valid vanilla recipe exists!
-                                if (recipe instanceof Keyed keyed) {
-                                    customCrafting.getApi().getNmsUtil().getRecipeUtil().setCurrentRecipe(event.getView(), NamespacedKey.fromBukkit(keyed.getKey()));
-                                }
-                            }, () -> {
-                                event.setResult(null);
-                            });
+                    SmithingRecipe recipe = (SmithingRecipe) inv.getRecipe();
+                    if (recipe == null || ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
+                        event.setResult(null);
+                        customCrafting.getApi().getNmsUtil().getRecipeUtil().setCurrentRecipe(event.getView(), null);
+                    }
                 });
     }
 
