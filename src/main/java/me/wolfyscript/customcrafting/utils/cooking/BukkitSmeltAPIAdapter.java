@@ -23,10 +23,9 @@
 package me.wolfyscript.customcrafting.utils.cooking;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.nms.inventory.RecipeType;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
@@ -36,6 +35,9 @@ import org.bukkit.inventory.Recipe;
 
 import java.util.Iterator;
 
+/**
+ * Versions prior to 1.17 don't have the FurnaceStartSmeltEvent, so the recipe must be determined manually.
+ */
 public class BukkitSmeltAPIAdapter extends SmeltAPIAdapter {
 
     public BukkitSmeltAPIAdapter(CustomCrafting customCrafting, CookingManager manager) {
@@ -51,9 +53,9 @@ public class BukkitSmeltAPIAdapter extends SmeltAPIAdapter {
         });
         boolean customRecipe = false;
         while (recipeIterator.hasNext()) {
-            if (recipeIterator.next() instanceof CookingRecipe<?> recipe && recipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) && recipe.getResult().isSimilar(event.getResult())) {
+            if (recipeIterator.next() instanceof CookingRecipe<?> recipe && ICustomVanillaRecipe.isPlaceholderRecipe(recipe.getKey()) && recipe.getResult().isSimilar(event.getResult())) {
                 customRecipe = true;
-                Pair<CookingRecipeData<?>, Boolean> data = processRecipe(event.getSource(), NamespacedKey.fromBukkit(recipe.getKey()), block);
+                Pair<CookingRecipeData<?>, Boolean> data = processRecipe(event.getSource(), ICustomVanillaRecipe.toOriginalKey(recipe.getKey()), block);
                 if (data.getKey() != null) {
                     return data;
                 }

@@ -77,11 +77,14 @@ import me.wolfyscript.customcrafting.listeners.AnvilListener;
 import me.wolfyscript.customcrafting.listeners.BrewingStandListener;
 import me.wolfyscript.customcrafting.listeners.CauldronListener;
 import me.wolfyscript.customcrafting.listeners.EliteWorkbenchListener;
-import me.wolfyscript.customcrafting.listeners.FurnaceListener;
+import me.wolfyscript.customcrafting.listeners.RecipeDiscoverListener;
+import me.wolfyscript.customcrafting.listeners.cooking.Campfire1_20Listener;
+import me.wolfyscript.customcrafting.listeners.cooking.CampfireListener;
+import me.wolfyscript.customcrafting.listeners.cooking.FurnaceListener;
 import me.wolfyscript.customcrafting.listeners.GrindStoneListener;
 import me.wolfyscript.customcrafting.listeners.PlayerListener;
 import me.wolfyscript.customcrafting.listeners.RecipeBookListener;
-import me.wolfyscript.customcrafting.listeners.SmithingListener;
+import me.wolfyscript.customcrafting.listeners.smithing.SmithingListener;
 import me.wolfyscript.customcrafting.listeners.crafting.CraftListener;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -137,6 +140,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
+import me.wolfyscript.utilities.util.version.MinecraftVersion;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
@@ -389,11 +393,11 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         getLogger().info("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         getLogger().info("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        getLogger().info(() -> "    Version      | v" + version.getVersion());
-        getLogger().info(() -> "    WolfyUtils   | v" + ServerVersion.getWUVersion().getVersion());
-        getLogger().info(() -> "    Bukkit       | " + Bukkit.getVersion() + "(API: " + Bukkit.getBukkitVersion() + ")");
+        getLogger().info("    Version      | v" + version.getVersion());
+        getLogger().info("    WolfyUtils   | v" + ServerVersion.getWUVersion().getVersion());
+        getLogger().info("    Bukkit       | " + Bukkit.getVersion() + "(API: " + Bukkit.getBukkitVersion() + ")");
         if (!getConfigHandler().getConfig().isPrintingStacktrace()) {
-            getLogger().warning(() -> "    Print Errors | false (Required for Support! Enable `data.print_stacktrace` in config.yml!)");
+            getLogger().warning("    Print Errors | false (Required for Support! Enable `data.print_stacktrace` in config.yml!)");
         }
     }
 
@@ -404,6 +408,7 @@ public class CustomCrafting extends JavaPlugin {
     private void registerListeners() {
         var pM = Bukkit.getPluginManager();
         pM.registerEvents(new PlayerListener(this), this);
+        pM.registerEvents(new RecipeDiscoverListener(this), this);
         pM.registerEvents(new CraftListener(this), this);
         pM.registerEvents(new FurnaceListener(this, cookingManager), this);
         pM.registerEvents(new AnvilListener(this), this);
@@ -413,6 +418,10 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new BrewingStandListener(api, this), this);
         pM.registerEvents(new RecipeBookListener(), this);
         pM.registerEvents(new SmithingListener(this), this);
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            pM.registerEvents(new Campfire1_20Listener(this), this);
+        }
+        pM.registerEvents(new CampfireListener(this), this);
     }
 
     private void registerCommands() {
