@@ -26,8 +26,6 @@ import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -44,12 +42,12 @@ public class RecipeDiscoverListener implements Listener {
     @EventHandler
     public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
         org.bukkit.NamespacedKey key = event.getRecipe();
-        if (key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            if (key.getKey().startsWith("cc_placeholder.")) {
-                event.setCancelled(true);
-                return;
-            }
-            CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(NamespacedKey.fromBukkit(key));
+        if (ICustomVanillaRecipe.isPlaceholderRecipe(key)) {
+            event.setCancelled(true);
+            return;
+        }
+        if (ICustomVanillaRecipe.isDisplayRecipe(key)) {
+            CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(ICustomVanillaRecipe.toOriginalKey(key));
             if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
                 event.setCancelled(recipe.isHidden() || recipe.isDisabled());
             } else {
@@ -64,10 +62,10 @@ public class RecipeDiscoverListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
-        List<org.bukkit.NamespacedKey> discoveredCustomRecipes = player.getDiscoveredRecipes().stream().filter(namespacedKey -> namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).toList();
+        List<org.bukkit.NamespacedKey> discoveredCustomRecipes = player.getDiscoveredRecipes().stream().filter(ICustomVanillaRecipe::isDisplayRecipe).toList();
         customCrafting.getRegistries().getRecipes().getAvailable(player).stream()
                 .filter(recipe -> recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isAutoDiscover())
-                .map(recipe -> new org.bukkit.NamespacedKey(recipe.getNamespacedKey().getNamespace(), recipe.getNamespacedKey().getKey()))
+                .map(recipe -> ICustomVanillaRecipe.toDisplayKey(recipe.getNamespacedKey()).bukkit())
                 .filter(namespacedKey -> !discoveredCustomRecipes.contains(namespacedKey))
                 .forEach(player::discoverRecipe);
     }
