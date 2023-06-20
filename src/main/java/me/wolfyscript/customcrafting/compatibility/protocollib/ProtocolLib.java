@@ -76,8 +76,9 @@ public class ProtocolLib {
 
     private void registerServerSide() {
         recipeFilter = minecraftKey -> {
-            if (minecraftKey.getPrefix().equals(NamespacedKeyUtils.NAMESPACE)) {
-                CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(NamespacedKey.of(minecraftKey.getFullKey()));
+            if (minecraftKey.getKey().startsWith(ICustomVanillaRecipe.PLACEHOLDER_PREFIX)) return false;
+            if (minecraftKey.getKey().startsWith(ICustomVanillaRecipe.DISPLAY_PREFIX)) {
+                CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(new NamespacedKey(minecraftKey.getPrefix(), minecraftKey.getKey().replace(ICustomVanillaRecipe.PLACEHOLDER_PREFIX, "").replace(ICustomVanillaRecipe.DISPLAY_PREFIX, "")));
                 if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
                     return !recipe.isHidden() && !recipe.isDisabled();
                 }

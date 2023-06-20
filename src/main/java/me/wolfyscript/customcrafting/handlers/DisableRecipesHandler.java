@@ -141,7 +141,7 @@ public class DisableRecipesHandler {
             for (Player player1 : Bukkit.getOnlinePlayers()) {
                 player1.undiscoverRecipe(namespacedKey);
             }
-            if (!namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
+            if (!ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(namespacedKey)) {
                 recipes.add(NamespacedKey.fromBukkit(namespacedKey));
                 //Cache the recipe if it is a Bukkit recipe, so we can add it again at runtime, without the requirement to reload everything.
                 cachedRecipes.put(namespacedKey, bukkitRecipe);

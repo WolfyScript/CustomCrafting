@@ -27,8 +27,8 @@ import java.util.Iterator;
 import java.util.Objects;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
@@ -76,7 +76,7 @@ public class FurnaceListener1_17Adapter implements Listener {
                         default -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.SMELTING;
                     });
                     while (recipeIterator.hasNext()) {
-                        if (recipeIterator.next() instanceof CookingRecipe<?> recipe && !recipe.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
+                        if (recipeIterator.next() instanceof CookingRecipe<?> recipe && !ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
                             if (recipe.getInputChoice().test(event.getSource())) {
                                 NMSInventoryUtils.setCurrentRecipe(((Furnace) event.getBlock().getState()).getInventory(), new NamespacedKey(recipe.getKey().getNamespace(), recipe.getKey().getKey()));
 
