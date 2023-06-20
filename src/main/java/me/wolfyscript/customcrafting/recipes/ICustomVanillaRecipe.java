@@ -66,4 +66,8 @@ public interface ICustomVanillaRecipe<T extends Recipe> {
         return isPlaceholderRecipe(bukkitKey) || isDisplayRecipe(bukkitKey);
     }
 
+    static NamespacedKey toOriginalKey(org.bukkit.NamespacedKey bukkitKey) {
+        return new NamespacedKey(bukkitKey.getNamespace(), bukkitKey.getKey().replace(PLACEHOLDER_PREFIX, "").replace(DISPLAY_PREFIX, ""));
+    }
+
 }
