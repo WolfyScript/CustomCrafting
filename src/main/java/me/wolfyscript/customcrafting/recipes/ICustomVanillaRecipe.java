@@ -47,7 +47,23 @@ public interface ICustomVanillaRecipe<T extends Recipe> {
     void setAutoDiscover(boolean autoDiscover);
 
     static NamespacedKey toPlaceholder(NamespacedKey recipeID) {
-        return new NamespacedKey(recipeID.getNamespace(), "cc_placeholder." + recipeID.getKey());
+        return new NamespacedKey(recipeID.getNamespace(), PLACEHOLDER_PREFIX + recipeID.getKey());
+    }
+
+    static NamespacedKey toDisplayKey(NamespacedKey recipeID) {
+        return new NamespacedKey(recipeID.getNamespace(), DISPLAY_PREFIX + recipeID.getKey());
+    }
+
+    static boolean isPlaceholderRecipe(org.bukkit.NamespacedKey bukkitKey) {
+        return bukkitKey.getKey().startsWith(PLACEHOLDER_PREFIX);
+    }
+
+    static boolean isDisplayRecipe(org.bukkit.NamespacedKey bukkitKey) {
+        return bukkitKey.getKey().startsWith(DISPLAY_PREFIX);
+    }
+
+    static boolean isPlaceholderOrDisplayRecipe(org.bukkit.NamespacedKey bukkitKey) {
+        return isPlaceholderRecipe(bukkitKey) || isDisplayRecipe(bukkitKey);
     }
 
 }
