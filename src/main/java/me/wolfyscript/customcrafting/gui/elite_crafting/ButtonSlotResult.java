@@ -44,7 +44,7 @@ class ButtonSlotResult extends ItemInputButton<CCCache> {
         super("result_slot", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
             if (event instanceof InventoryClickEvent clickEvent && inventory.getWindow() instanceof CraftingWindow) {
-                if (!CraftingWindow.RESULT_SLOTS.contains(slot)) {
+                if (!CraftingWindow.RESULT_SLOTS.contains(slot) || slot != clickEvent.getSlot()) { // # issue: We don't want to cause a recipe consumption when the result button wasn't actually clicked!
                     return true;
                 }
                 if (clickEvent.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getView().getBottomInventory().equals(clickEvent.getClickedInventory())) {
