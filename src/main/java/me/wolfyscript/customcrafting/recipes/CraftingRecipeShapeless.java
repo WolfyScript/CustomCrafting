@@ -75,7 +75,7 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
             Bukkit.addRecipe(placeholderShapelessRecipe);
 
             // Return display recipe
-            var shapelessRecipe = new org.bukkit.inventory.ShapelessRecipe(getNamespacedKey().bukkit(), getResult().getItemStack());
+            var shapelessRecipe = new org.bukkit.inventory.ShapelessRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().getItemStack());
             for (Ingredient value : ingredients) {
                 shapelessRecipe.addIngredient(getExactRecipeChoiceFor(value));
             }
