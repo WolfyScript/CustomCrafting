@@ -60,7 +60,7 @@ public class CampfireListener implements Listener {
     @EventHandler
     public void onInteractCampfire(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if (event.getClickedBlock() == null) return;
+        if (event.getClickedBlock() == null || (event.getClickedBlock().getType() != Material.CAMPFIRE && event.getClickedBlock().getType() != Material.SOUL_CAMPFIRE)) return;
         if (ItemUtils.isAirOrNull(event.getItem())) return;
         Campfire campfire = (Campfire) event.getClickedBlock().getState();
         getFirstEmptySlot(campfire).ifPresent(slot -> customCrafting.getRegistries().getRecipes().get(RecipeType.CAMPFIRE).stream()
