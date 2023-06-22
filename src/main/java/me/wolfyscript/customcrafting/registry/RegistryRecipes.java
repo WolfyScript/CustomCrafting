@@ -516,18 +516,6 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         return filterAvailable(recipes.stream()).filter(recipe -> recipe.checkCondition("permission", Conditions.Data.of(player))).sorted().toList();
     }
 
-    @Deprecated(forRemoval = true)
-    public Stream<CraftingRecipe<?, ?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
-        List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
-        if (elite) {
-            craftingRecipes.addAll(get(RecipeType.Container.ELITE_CRAFTING));
-        }
-        if (advanced) {
-            craftingRecipes.addAll(get(RecipeType.Container.CRAFTING));
-        }
-        return craftingRecipes.stream().filter(recipe -> recipe.fitsDimensions(matrixData)).sorted(Comparator.comparing(CustomRecipe::getPriority));
-    }
-
     public int size() {
         return this.map.size();
     }
