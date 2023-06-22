@@ -137,6 +137,18 @@ public class MenuRecipeOverview extends CCWindow {
         })).register();
     }
 
+    void updateTitle(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory) {
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            try {
+                player.getOpenInventory().setTitle(BukkitComponentSerializer.legacy().serialize(onUpdateTitle(player, inventory, guiHandler)));
+            } catch (IllegalArgumentException exception) {
+                // EMPTY! This shouldn't happen, just make sure to catch it.
+            }
+        } else {
+            InventoryUpdate.updateInventory(wolfyUtilities.getCore(), player, onUpdateTitle(player, inventory, guiHandler));
+        }
+    }
+
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
