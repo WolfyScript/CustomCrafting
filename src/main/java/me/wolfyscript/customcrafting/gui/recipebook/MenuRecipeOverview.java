@@ -117,6 +117,7 @@ public class MenuRecipeOverview extends CCWindow {
             if (nextPage < book.getSubFolderRecipes().size()) {
                 book.setSubFolderPage(nextPage);
                 book.setPrepareRecipe(true);
+                updateTitle(guiHandler, player, guiInventory);
             }
             return true;
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
@@ -129,6 +130,7 @@ public class MenuRecipeOverview extends CCWindow {
             if (book.getSubFolderPage() > 0) {
                 book.setSubFolderPage(book.getSubFolderPage() - 1);
                 book.setPrepareRecipe(true);
+                updateTitle(guiHandler, player, guiInventory);
             }
             return true;
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
