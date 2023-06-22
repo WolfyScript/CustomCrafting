@@ -176,11 +176,6 @@ public class MenuRecipeOverview extends CCWindow {
                     //A new prepare can be queued by using book.setPrepareRecipe(true)
                     recipeBookCache.applyRecipeToButtons(event.getGuiHandler(), customRecipe);
                     recipeBookCache.setPrepareRecipe(false);
-                    if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
-                        player.getOpenInventory().setTitle(BukkitComponentSerializer.legacy().serialize(onUpdateTitle(player, event.getInventory(), event.getGuiHandler())));
-                    } else {
-                        InventoryUpdate.updateInventory(wolfyUtilities.getCore(), player, onUpdateTitle(player, event.getInventory(), event.getGuiHandler()));
-                    }
                 }
                 customRecipe.renderMenu(this, event);
                 boolean elite = RecipeType.Container.ELITE_CRAFTING.isInstance(customRecipe);
