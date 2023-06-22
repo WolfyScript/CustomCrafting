@@ -128,6 +128,9 @@ public class ClusterRecipeBook extends CCCluster {
                         }
                         if (!book.getSubFolderRecipes().isEmpty()) {
                             book.setPrepareRecipe(true);
+                            if (guiInventory.getWindow() instanceof MenuRecipeOverview menuRecipeOverview) {
+                                menuRecipeOverview.updateTitle(guiHandler, player, guiInventory);
+                            }
                         }
                         return true;
                     }

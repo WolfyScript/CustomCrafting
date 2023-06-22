@@ -117,6 +117,7 @@ public class MenuRecipeOverview extends CCWindow {
             if (nextPage < book.getSubFolderRecipes().size()) {
                 book.setSubFolderPage(nextPage);
                 book.setPrepareRecipe(true);
+                updateTitle(guiHandler, player, guiInventory);
             }
             return true;
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
@@ -129,12 +130,25 @@ public class MenuRecipeOverview extends CCWindow {
             if (book.getSubFolderPage() > 0) {
                 book.setSubFolderPage(book.getSubFolderPage() - 1);
                 book.setPrepareRecipe(true);
+                updateTitle(guiHandler, player, guiInventory);
             }
             return true;
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
             var book = guiHandler.getCustomCache().getRecipeBookCache();
             return CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("page", String.valueOf(book.getSubFolderPage() + 1)), Placeholder.unparsed("max_pages", String.valueOf(book.getSubFolderRecipes().size())));
         })).register();
+    }
+
+    void updateTitle(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory) {
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            try {
+                player.getOpenInventory().setTitle(BukkitComponentSerializer.legacy().serialize(onUpdateTitle(player, inventory, guiHandler)));
+            } catch (IllegalArgumentException exception) {
+                // EMPTY! This shouldn't happen, just make sure to catch it.
+            }
+        } else {
+            InventoryUpdate.updateInventory(wolfyUtilities.getCore(), player, onUpdateTitle(player, inventory, guiHandler));
+        }
     }
 
     @Override
@@ -164,11 +178,6 @@ public class MenuRecipeOverview extends CCWindow {
                     //A new prepare can be queued by using book.setPrepareRecipe(true)
                     recipeBookCache.applyRecipeToButtons(event.getGuiHandler(), customRecipe);
                     recipeBookCache.setPrepareRecipe(false);
-                    if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
-                        player.getOpenInventory().setTitle(BukkitComponentSerializer.legacy().serialize(onUpdateTitle(player, event.getInventory(), event.getGuiHandler())));
-                    } else {
-                        InventoryUpdate.updateInventory(wolfyUtilities.getCore(), player, onUpdateTitle(player, event.getInventory(), event.getGuiHandler()));
-                    }
                 }
                 customRecipe.renderMenu(this, event);
                 boolean elite = RecipeType.Container.ELITE_CRAFTING.isInstance(customRecipe);
