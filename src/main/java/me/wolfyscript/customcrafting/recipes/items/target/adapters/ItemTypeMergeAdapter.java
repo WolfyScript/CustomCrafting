@@ -44,6 +44,7 @@ import org.jetbrains.annotations.Nullable;
 public class ItemTypeMergeAdapter extends MergeAdapter {
 
     private static final String TYPE_MAPPINGS = "typeMappings";
+    private static final String DEFAULT_TYPE = "defaultType";
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "item_type");
 
@@ -51,14 +52,25 @@ public class ItemTypeMergeAdapter extends MergeAdapter {
     private Material defaultType;
 
     @JsonCreator
-    public ItemTypeMergeAdapter(@JsonProperty(TYPE_MAPPINGS) Map<String, String> typeMappings) {
+    public ItemTypeMergeAdapter(@JsonProperty(DEFAULT_TYPE) String defaultType, @JsonProperty(TYPE_MAPPINGS) Map<String, String> typeMappings) {
         super(KEY);
+        this.defaultType = Material.matchMaterial(defaultType);
         this.typeMappings = readTypeMappings(typeMappings);
     }
 
     public ItemTypeMergeAdapter(ItemTypeMergeAdapter adapter) {
         super(adapter);
         this.typeMappings = Map.copyOf(adapter.typeMappings);
+    }
+
+    @JsonIgnore
+    public static String getDefaultType() {
+        return DEFAULT_TYPE;
+    }
+
+    @JsonGetter(DEFAULT_TYPE)
+    private String writeDefaultType() {
+        return defaultType.getKey().toString();
     }
 
     @JsonGetter(TYPE_MAPPINGS)
@@ -88,7 +100,12 @@ public class ItemTypeMergeAdapter extends MergeAdapter {
             if (typeMappings.isEmpty()) {
                 result.setType(type);
             } else {
-
+                Material mappedType = typeMappings.get(type);
+                if (mappedType == null) {
+                    result.setType(defaultType);
+                } else {
+                    result.setType(mappedType);
+                }
             }
         }
         return result;
