@@ -73,6 +73,11 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     private static final String KEY_BASE = "base";
     private static final String KEY_ADDITION = "addition";
 
+    private static final boolean IS_1_20 = ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0));
+    public static final int RESULT_SLOT = IS_1_20 ? 3 : 2;
+    public static final int BASE_SLOT = IS_1_20 ? 1 : 0;
+    public static final int ADDITION_SLOT = IS_1_20 ? 2 : 1;
+
     private Ingredient template;
     private Ingredient base;
     private Ingredient addition;
@@ -97,7 +102,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     @JsonCreator
     public CustomRecipeSmithing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
         super(key, customCrafting, RecipeType.SMITHING);
-        this.template = new Ingredient();
+        this.template = ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0)) ? new Ingredient(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE) : new Ingredient();
         this.base = new Ingredient();
         this.addition = new Ingredient();
         this.result = new Result();
@@ -142,12 +147,12 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
 
         Optional<CustomItem> baseCustom = getBase().check(base, isCheckNBT());
         if (baseCustom.isPresent()) {
-            baseData = new IngredientData(1, 1, getBase(), baseCustom.get(), base);
+            baseData = new IngredientData(BASE_SLOT, BASE_SLOT, getBase(), baseCustom.get(), base);
         } else if (!getBase().isAllowEmpty()) return null;
 
         Optional<CustomItem> additionCustom = getAddition().check(addition, isCheckNBT());
         if (additionCustom.isPresent()) {
-            additionData = new IngredientData(1, 1, getAddition(), additionCustom.get(), base);
+            additionData = new IngredientData(ADDITION_SLOT, ADDITION_SLOT, getAddition(), additionCustom.get(), base);
         } else if (!getAddition().isAllowEmpty()) return null;
 
         return new SmithingData(this, new IngredientData[]{templateData, baseData, additionData});
