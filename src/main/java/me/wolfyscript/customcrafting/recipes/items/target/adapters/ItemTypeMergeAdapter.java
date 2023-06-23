@@ -56,6 +56,7 @@ public class ItemTypeMergeAdapter extends MergeAdapter {
     @JsonCreator
     public ItemTypeMergeAdapter() {
         super(KEY);
+        this.typeMappings = Collections.emptyMap();
     }
 
     public ItemTypeMergeAdapter(ItemTypeMergeAdapter adapter) {
