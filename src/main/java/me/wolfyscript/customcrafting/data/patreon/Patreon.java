@@ -50,6 +50,8 @@ public class Patreon {
         addPatron(new Patron("Invictus_Vulpes ", Tier.WOLFRAM));
         addPatron(new Patron("Anthony Quesada", Tier.WOLFRAM));
         addPatron(new Patron("Glitch", Tier.WOLFRAM));
+        addPatron(new Patron("JorshStark", Tier.WOLFRAM));
+        addPatron(new Patron("lonemmart", Tier.WOLFRAM));
     }
 
     public void printPatreonCredits() {
