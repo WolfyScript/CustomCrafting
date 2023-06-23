@@ -105,25 +105,27 @@ public class ProtocolLib {
             }
         });
 
-        protocolManager.addPacketListener(new PacketAdapter(customCrafting, ListenerPriority.HIGH, PacketType.Play.Client.AUTO_RECIPE) {
-            @Override
-            public void onPacketReceiving(PacketEvent event) {
-                //Call the PrepareItemCraftEvent one more time, if the recipe is a custom recipe, to update the last ingredient in the grid
-                //Issue #136 – Items disappear when using recipe book on crafting table.
-                NamespacedKey recipeId = NamespacedKey.of(event.getPacket().getMinecraftKeys().read(0).getFullKey());
-                if (customCrafting.getRegistries().getRecipes().has(recipeId)) {
-                    Player player = event.getPlayer();
-                    if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory craftingInventory) {
-                        Runnable callPreEvent = () -> Bukkit.getPluginManager().callEvent(new PrepareItemCraftEvent(craftingInventory, event.getPlayer().getOpenInventory(), false));
-                        if (event.isAsync()) {
-                            Bukkit.getScheduler().runTask(customCrafting, callPreEvent);
-                        } else {
-                            callPreEvent.run();
+        if (!customCrafting.isPaper()) {
+            protocolManager.addPacketListener(new PacketAdapter(customCrafting, ListenerPriority.HIGH, PacketType.Play.Client.AUTO_RECIPE) {
+                @Override
+                public void onPacketReceiving(PacketEvent event) {
+                    //Call the PrepareItemCraftEvent one more time, if the recipe is a custom recipe, to update the last ingredient in the grid
+                    //Issue #136 – Items disappear when using recipe book on crafting table.
+                    NamespacedKey recipeId = NamespacedKey.of(event.getPacket().getMinecraftKeys().read(0).getFullKey());
+                    if (customCrafting.getRegistries().getRecipes().has(recipeId)) {
+                        Player player = event.getPlayer();
+                        if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory craftingInventory) {
+                            Runnable callPreEvent = () -> Bukkit.getPluginManager().callEvent(new PrepareItemCraftEvent(craftingInventory, event.getPlayer().getOpenInventory(), false));
+                            if (event.isAsync()) {
+                                Bukkit.getScheduler().runTask(customCrafting, callPreEvent);
+                            } else {
+                                callPreEvent.run();
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
         //Prevent spam clicking of the recipe book, which might cause lag when players are using auto-clickers
         if (!customCrafting.getApi().getCore().getCompatibilityManager().getPlugins().hasIntegration("ItemsAdder")) {
