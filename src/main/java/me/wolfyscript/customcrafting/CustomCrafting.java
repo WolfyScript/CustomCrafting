@@ -122,6 +122,7 @@ import me.wolfyscript.customcrafting.recipes.items.target.adapters.DisplayNameMe
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantedBookMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.FireworkRocketMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.ItemTypeMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.NBTMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.PlaceholderAPIMergeAdapter;
 import me.wolfyscript.customcrafting.registry.CCRegistries;
@@ -295,6 +296,7 @@ public class CustomCrafting extends JavaPlugin {
             resultMergeAdapters.register(new BlockEntityMergeAdapter());
             resultMergeAdapters.register(new CompassMergeAdapter());
         }
+        resultMergeAdapters.register(ItemTypeMergeAdapter.KEY, ItemTypeMergeAdapter.class);
 
         getLogger().info("Registering Recipe Conditions");
         var recipeConditions = getRegistries().getRecipeConditions();
