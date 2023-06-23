@@ -113,13 +113,7 @@ public class ItemTypeMergeAdapter extends MergeAdapter {
                 result.setType(type);
             } else {
                 Material mappedType = typeMappings.get(type);
-                if (mappedType == null) {
-                    if (defaultType != null) {
-                        result.setType(defaultType);
-                    }
-                } else {
-                    result.setType(mappedType);
-                }
+                result.setType(Objects.requireNonNullElseGet(mappedType, () -> Objects.requireNonNullElse(defaultType, type)));
             }
         }
         return result;
