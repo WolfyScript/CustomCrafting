@@ -22,17 +22,32 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
+import com.destroystokyo.paper.event.player.PlayerRecipeBookClickEvent;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeView;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.Objects;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.CraftingInventory;
 
 public class RecipeBookListener implements Listener {
+
+    private CustomCrafting customCrafting;
+
+    public RecipeBookListener(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
+        if (customCrafting.isPaper()) {
+            Bukkit.getPluginManager().registerEvents(new PaperListener(), customCrafting);
+        }
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onClickBottomInv(InventoryClickEvent event) {
@@ -43,4 +58,17 @@ public class RecipeBookListener implements Listener {
             }
         }
     }
+
+    public class PaperListener implements Listener {
+
+        @EventHandler
+        public void onRecipeBookClick(PlayerRecipeBookClickEvent event) {
+            if (!ICustomVanillaRecipe.isDisplayRecipe(event.getRecipe())) return;
+            if (event.getPlayer().getOpenInventory().getTopInventory() instanceof CraftingInventory craftingInventory) {
+                Bukkit.getScheduler().runTask(customCrafting, () -> Bukkit.getPluginManager().callEvent(new PrepareItemCraftEvent(craftingInventory, event.getPlayer().getOpenInventory(), false)));
+            }
+        }
+
+    }
+
 }
