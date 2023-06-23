@@ -38,23 +38,20 @@ import com.comphenix.protocol.reflect.fuzzy.FuzzyMethodContract;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.Converters;
 import com.comphenix.protocol.wrappers.MinecraftKey;
-import java.util.function.UnaryOperator;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.inventory.CraftingInventory;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.CraftingInventory;
 
 public class ProtocolLib {
 
@@ -108,27 +105,25 @@ public class ProtocolLib {
             }
         });
 
-        if (!customCrafting.getConfigHandler().getConfig().isNMSBasedCrafting()) {
-            protocolManager.addPacketListener(new PacketAdapter(customCrafting, ListenerPriority.HIGH, PacketType.Play.Client.AUTO_RECIPE) {
-                @Override
-                public void onPacketReceiving(PacketEvent event) {
-                    //Call the PrepareItemCraftEvent one more time, if the recipe is a custom recipe, to update the last ingredient in the grid
-                    //Issue #136 – Items disappear when using recipe book on crafting table.
-                    NamespacedKey recipeId = NamespacedKey.of(event.getPacket().getMinecraftKeys().read(0).getFullKey());
-                    if (customCrafting.getRegistries().getRecipes().has(recipeId)) {
-                        Player player = event.getPlayer();
-                        if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory craftingInventory) {
-                            Runnable callPreEvent = () -> Bukkit.getPluginManager().callEvent(new PrepareItemCraftEvent(craftingInventory, event.getPlayer().getOpenInventory(), false));
-                            if (event.isAsync()) {
-                                Bukkit.getScheduler().runTask(customCrafting, callPreEvent);
-                            } else {
-                                callPreEvent.run();
-                            }
+        protocolManager.addPacketListener(new PacketAdapter(customCrafting, ListenerPriority.HIGH, PacketType.Play.Client.AUTO_RECIPE) {
+            @Override
+            public void onPacketReceiving(PacketEvent event) {
+                //Call the PrepareItemCraftEvent one more time, if the recipe is a custom recipe, to update the last ingredient in the grid
+                //Issue #136 – Items disappear when using recipe book on crafting table.
+                NamespacedKey recipeId = NamespacedKey.of(event.getPacket().getMinecraftKeys().read(0).getFullKey());
+                if (customCrafting.getRegistries().getRecipes().has(recipeId)) {
+                    Player player = event.getPlayer();
+                    if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory craftingInventory) {
+                        Runnable callPreEvent = () -> Bukkit.getPluginManager().callEvent(new PrepareItemCraftEvent(craftingInventory, event.getPlayer().getOpenInventory(), false));
+                        if (event.isAsync()) {
+                            Bukkit.getScheduler().runTask(customCrafting, callPreEvent);
+                        } else {
+                            callPreEvent.run();
                         }
                     }
                 }
-            });
-        }
+            }
+        });
 
         //Prevent spam clicking of the recipe book, which might cause lag when players are using auto-clickers
         if (!customCrafting.getApi().getCore().getCompatibilityManager().getPlugins().hasIntegration("ItemsAdder")) {
