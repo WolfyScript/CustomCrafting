@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
-import com.wolfyscript.utilities.bukkit.WolfyCoreBukkit;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
@@ -32,6 +31,7 @@ import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
 import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -154,7 +154,7 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
 
     @Override
     public boolean shouldRender(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
-        return item.getType().isBlock() || (customItem.getApiReference() instanceof ItemsAdderRef iaRef && ((WolfyCoreBukkit) update.getGuiHandler().getWolfyUtils().getCore()).getCompatibilityManager().getPlugins().evaluateIfAvailable("ItemsAdder", ItemsAdderIntegration.class, ia -> ia.getStackInstance(iaRef.getItemID()).map(CustomStack::isBlock).orElse(false)));
+        return item.getType().isBlock() || (customItem.getApiReference() instanceof ItemsAdderRef iaRef && ((WolfyUtilCore) update.getGuiHandler().getWolfyUtils().getCore()).getCompatibilityManager().getPlugins().evaluateIfAvailable("ItemsAdder", ItemsAdderIntegration.class, ia -> ia.getStackInstance(iaRef.getItemID()).map(CustomStack::isBlock).orElse(false)));
     }
 
     @Override

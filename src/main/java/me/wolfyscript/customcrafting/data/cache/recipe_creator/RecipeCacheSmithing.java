@@ -30,6 +30,7 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 
     private Ingredient base;
     private Ingredient addition;
+    private Ingredient template;
 
     private boolean preserveEnchants;
     private boolean preserveDamage;
@@ -45,6 +46,7 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
     RecipeCacheSmithing(CustomCrafting customCrafting, CustomRecipeSmithing recipe) {
         super(customCrafting, recipe);
         this.base = recipe.getBase().clone();
+        this.template = recipe.getTemplate() != null ? recipe.getTemplate().clone() : null;
         this.addition = recipe.getAddition().clone();
         this.preserveEnchants = recipe.isPreserveEnchants();
         this.preserveDamage = recipe.isPreserveDamage();
@@ -52,26 +54,36 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 
     @Override
     public void setIngredient(int slot, Ingredient ingredient) {
-        if (slot == 0) {
-            setBase(ingredient);
-        } else {
-            setAddition(ingredient);
+        switch (slot) {
+            case 0 -> setTemplate(ingredient);
+            case 1 -> setBase(ingredient);
+            case 2 -> setAddition(ingredient);
         }
     }
 
     @Override
     public Ingredient getIngredient(int slot) {
-        return slot == 0 ? getBase() : getAddition();
+        return switch (slot) {
+            case 0 -> getTemplate();
+            case 1 -> getBase();
+            case 2 -> getAddition();
+            default -> throw new IllegalStateException("Unexpected Ingredient Slot: " + slot);
+        };
     }
 
     @Override
     protected CustomRecipeSmithing constructRecipe() {
-        return create(new CustomRecipeSmithing(key));
+        return create(new CustomRecipeSmithing(key, customCrafting));
     }
 
     @Override
     protected CustomRecipeSmithing create(CustomRecipeSmithing recipe) {
         CustomRecipeSmithing recipeSmithing = super.create(recipe);
+        // make sure ingredients are properly set before applying
+        setTemplate(template);
+        setBase(base);
+        setAddition(addition);
+        recipeSmithing.setTemplate(template);
         recipeSmithing.setBase(base);
         recipeSmithing.setAddition(addition);
 
@@ -81,12 +93,28 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
         return recipeSmithing;
     }
 
+    public void setTemplate(Ingredient template) {
+        this.template = template;
+        if (template == null || template.isEmpty()) {
+            this.template = new Ingredient();
+            this.template.setAllowEmpty(true);
+        }
+    }
+
+    public Ingredient getTemplate() {
+        return template;
+    }
+
     public Ingredient getBase() {
         return base;
     }
 
     public void setBase(Ingredient base) {
         this.base = base;
+        if (base == null || base.isEmpty()) {
+            this.base = new Ingredient();
+            this.base.setAllowEmpty(true);
+        }
     }
 
     public Ingredient getAddition() {
@@ -95,6 +123,10 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 
     public void setAddition(Ingredient addition) {
         this.addition = addition;
+        if (addition == null || addition.isEmpty()) {
+            this.addition = new Ingredient();
+            this.addition.setAllowEmpty(true);
+        }
     }
 
     public boolean isPreserveEnchants() {

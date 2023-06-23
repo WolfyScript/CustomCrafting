@@ -38,23 +38,20 @@ import com.comphenix.protocol.reflect.fuzzy.FuzzyMethodContract;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.Converters;
 import com.comphenix.protocol.wrappers.MinecraftKey;
-import java.util.function.UnaryOperator;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.inventory.CraftingInventory;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.CraftingInventory;
 
 public class ProtocolLib {
 
@@ -76,8 +73,9 @@ public class ProtocolLib {
 
     private void registerServerSide() {
         recipeFilter = minecraftKey -> {
-            if (minecraftKey.getPrefix().equals(NamespacedKeyUtils.NAMESPACE)) {
-                CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(NamespacedKey.of(minecraftKey.getFullKey()));
+            if (minecraftKey.getKey().startsWith(ICustomVanillaRecipe.PLACEHOLDER_PREFIX)) return false;
+            if (minecraftKey.getKey().startsWith(ICustomVanillaRecipe.DISPLAY_PREFIX)) {
+                CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(new NamespacedKey(minecraftKey.getPrefix(), minecraftKey.getKey().replace(ICustomVanillaRecipe.PLACEHOLDER_PREFIX, "").replace(ICustomVanillaRecipe.DISPLAY_PREFIX, "")));
                 if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
                     return !recipe.isHidden() && !recipe.isDisabled();
                 }
@@ -107,7 +105,7 @@ public class ProtocolLib {
             }
         });
 
-        if (!customCrafting.getConfigHandler().getConfig().isNMSBasedCrafting()) {
+        if (!customCrafting.isPaper()) {
             protocolManager.addPacketListener(new PacketAdapter(customCrafting, ListenerPriority.HIGH, PacketType.Play.Client.AUTO_RECIPE) {
                 @Override
                 public void onPacketReceiving(PacketEvent event) {

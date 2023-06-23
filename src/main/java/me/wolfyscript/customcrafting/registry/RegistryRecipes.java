@@ -26,7 +26,6 @@ package me.wolfyscript.customcrafting.registry;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -43,7 +42,6 @@ import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
-import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.registry.Registries;
 import me.wolfyscript.utilities.registry.RegistrySimple;
@@ -121,17 +119,13 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         remove(namespacedKey);
         super.register(namespacedKey, value);
         if (value instanceof ICustomVanillaRecipe<?> vanillaRecipe && !value.isDisabled()) {
-            if (customCrafting.getConfigHandler().getConfig().isNMSBasedCrafting()) {
-                vanillaRecipe.getVanillaRecipe();
-            } else {
-                try {
-                    Recipe bukkitRecipe = vanillaRecipe.getVanillaRecipe();
-                    if (bukkitRecipe != null && !Bukkit.addRecipe(bukkitRecipe)) {
-                        customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
-                    }
-                } catch (IllegalArgumentException | IllegalStateException ex) {
-                    customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
+            try {
+                Recipe bukkitRecipe = vanillaRecipe.getVanillaRecipe();
+                if (bukkitRecipe != null && !Bukkit.addRecipe(bukkitRecipe)) {
+                    customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
                 }
+            } catch (IllegalArgumentException | IllegalStateException ex) {
+                customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
             }
         }
         clearCache(namespacedKey);
@@ -200,7 +194,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      *  "/&lt;root_dir&gt;/&lt;sec_dir&gt;/&lt;third_dir&gt;/"
      * ]</pre>
      *
-     * @param namespace   The namespace to index the folders for.
+     * @param namespace The namespace to index the folders for.
      * @return A list of all available folders and sub folders.
      */
     public List<String> dirs(String namespace) {
@@ -232,8 +226,8 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * "/&lt;root_dir&gt;/&lt;sec_dir&gt;/"
      * ]</pre>
      *
-     * @param namespace   The namespace to index the folders for.
-     * @param maxDepth    The max depth of directory levels.
+     * @param namespace The namespace to index the folders for.
+     * @param maxDepth  The max depth of directory levels.
      * @return A list of all available folders and sub folders.
      */
     public List<String> dirs(String namespace, int maxDepth) {
@@ -322,10 +316,10 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         boolean hasRoot = directory.startsWith("/");
         // Clear the folder, so it is in proper format.
         final String dir = (
-                includeRoot ?
-                        (!hasRoot ? "/" + directory : directory) :
-                        (hasRoot ? directory.substring(1) : directory)
-        ) + (!directory.endsWith("/") ? "/" : "");
+                                   includeRoot ?
+                                           (!hasRoot ? "/" + directory : directory) :
+                                           (hasRoot ? directory.substring(1) : directory)
+                           ) + (!directory.endsWith("/") ? "/" : "");
         return dirs(namespace, 64, includeRoot).stream().filter(sub -> sub.startsWith(dir) && (sub.length() != dir.length() || includeRoot)).toList();
     }
 
@@ -371,7 +365,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
     private String cleanDir(String dir) {
         // Clear the folder, so it is in proper format.
-        return  (!dir.startsWith("/") ? "/" + dir : dir) + (!dir.endsWith("/") ? "/" : "");
+        return (!dir.startsWith("/") ? "/" + dir : dir) + (!dir.endsWith("/") ? "/" : "");
     }
 
     /**
@@ -514,18 +508,6 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     @Deprecated
     public synchronized <T extends CustomRecipe<?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
         return filterAvailable(recipes.stream()).filter(recipe -> recipe.checkCondition("permission", Conditions.Data.of(player))).sorted().toList();
-    }
-
-    @Deprecated(forRemoval = true)
-    public Stream<CraftingRecipe<?, ?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
-        List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
-        if (elite) {
-            craftingRecipes.addAll(get(RecipeType.Container.ELITE_CRAFTING));
-        }
-        if (advanced) {
-            craftingRecipes.addAll(get(RecipeType.Container.CRAFTING));
-        }
-        return craftingRecipes.stream().filter(recipe -> recipe.fitsDimensions(matrixData)).sorted(Comparator.comparing(CustomRecipe::getPriority));
     }
 
     public int size() {

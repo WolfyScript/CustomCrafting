@@ -65,6 +65,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
     public static final NamespacedKey RECIPES = new NamespacedKey(KEY, "recipes");
     public static final NamespacedKey FOLDERS = new NamespacedKey(KEY, "folders");
     public static final NamespacedKey GROUPS = new NamespacedKey(KEY, "groups");
+    public static final NamespacedKey NAMESPACES = new NamespacedKey(KEY, "namespaces");
 
     public ClusterRecipeBookEditor(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
@@ -129,7 +130,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
                     cache.getRecipeBookEditor().getCategorySetting().getFolders().add(newEntry);
                 })
                 .onRemove((guiHandler, player, cache, index, entry) -> cache.getRecipeBookEditor().getCategorySetting().getFolders().remove(entry))
-                .setTabComplete((guiHandler, sender, args) -> StringUtil.copyPartialMatches(args[0], customCrafting.getRegistries().getRecipes().folders(NamespacedKeyUtils.NAMESPACE), new ArrayList<>()));
+                .setTabComplete((guiHandler, sender, args) -> StringUtil.copyPartialMatches(args[0], customCrafting.getRegistries().getRecipes().dirs(NamespacedKeyUtils.NAMESPACE), new ArrayList<>()));
 
         this.groupsChatEditor = new CollectionEditor<>(getInventoryAPI(), (guiHandler, player, cache) -> cache.getRecipeBookEditor().getCategorySetting().getGroups(), (guiHandler, player, cache, group) -> BukkitComponentSerializer.legacy().deserialize(group), (guiHandler, player, cache, msg, args) -> {
             if (args.length > 0) {

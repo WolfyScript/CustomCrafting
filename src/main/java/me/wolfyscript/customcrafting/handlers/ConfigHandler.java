@@ -33,6 +33,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.apache.commons.io.FileUtils;
+import org.bukkit.util.FileUtil;
 
 public class ConfigHandler {
 
@@ -61,7 +63,13 @@ public class ConfigHandler {
             mainConfig.load();
         }
         loadLang();
-        loadRecipeBookConfig();
+        try {
+            loadRecipeBookConfig();
+        } catch (IOException e) {
+            customCrafting.getLogger().severe("Failed to load recipe_book.conf");
+            e.printStackTrace();
+            this.recipeBookConfig = new RecipeBookConfig(false);
+        }
         renameOldRecipesFolder();
         try {
             loadDefaults();
@@ -70,19 +78,17 @@ public class ConfigHandler {
         }
     }
 
-    public void loadRecipeBookConfig() {
+    public void loadRecipeBookConfig() throws IOException {
         var recipeBookFileJson = new File(customCrafting.getDataFolder(), "recipe_book.json");
         var recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.conf");
         if (!recipeBookFileJson.exists() && !recipeBookFile.exists()) {
             customCrafting.saveResource("recipe_book.conf", true);
+        } else if (recipeBookFileJson.exists() && !recipeBookFile.exists()) {
+            // The old json file is used and there is no hocon file available, so let's rename it.
+            FileUtils.moveFile(recipeBookFileJson, recipeBookFile);
         }
-        try {
-            this.recipeBookConfig = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readValue(recipeBookFile.exists() ? recipeBookFile : recipeBookFileJson, RecipeBookConfig.class);
-        } catch (IOException e) {
-            customCrafting.getLogger().severe("Failed to load recipe_book.conf");
-            e.printStackTrace();
-            this.recipeBookConfig = new RecipeBookConfig(false);
-        }
+        // At this point both json and hocon file might be present (due to previous conversion logic), so just load the hocon variant.
+        this.recipeBookConfig = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readValue(recipeBookFile, RecipeBookConfig.class);
     }
 
     public void renameOldRecipesFolder() {
@@ -124,7 +130,6 @@ public class ConfigHandler {
         customCrafting.saveResource(recipePath + file + ".conf", true);
     }
 
-
     public void loadLang() {
         var chosenLang = mainConfig.getString("language");
         //Export all the available languages
@@ -145,9 +150,6 @@ public class ConfigHandler {
     }
 
     public void save() throws IOException {
-        if (this.recipeBookConfig != null && this.recipeBookConfig.isShouldSave()) {
-            customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.conf"), this.recipeBookConfig);
-        }
         getConfig().save();
     }
 

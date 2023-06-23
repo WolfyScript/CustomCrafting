@@ -20,29 +20,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.recipes.data;
+package me.wolfyscript.customcrafting.configs.recipebook;
 
-import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+public enum RecipeContainerType {
 
-import java.util.Map;
+    RECIPE,
+    GROUP,
 
-public class SmithingData extends RecipeData<CustomRecipeSmithing> implements ISmithingData<CustomRecipeSmithing>{
-
-    public SmithingData(CustomRecipeSmithing recipe, IngredientData[] ingredients) {
-        super(recipe, ingredients);
-    }
-
-    @Override
-    public CustomItem getTemplate() {
-        return getBySlot(0) == null ? null : getBySlot(0).customItem();
-    }
-
-    public CustomItem getBase() {
-        return getBySlot(1).customItem();
-    }
-
-    public CustomItem getAddition() {
-        return getBySlot(2).customItem();
-    }
 }

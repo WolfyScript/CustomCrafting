@@ -51,6 +51,7 @@ import java.util.UUID;
 
 public class RecipeContainer implements Comparable<RecipeContainer> {
 
+    private final RecipeContainerType type;
     private final RegistryRecipes recipes;
     private final List<CustomRecipe<?>> cachedRecipes;
     //private final Map<UUID, List<ICustomRecipe<?, ?>>> cachedPlayerRecipes = new HashMap<>();
@@ -61,6 +62,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
 
     public RecipeContainer(CustomCrafting customCrafting, String group) {
         this.recipes = customCrafting.getRegistries().getRecipes();
+        this.type = RecipeContainerType.GROUP;
         this.group = group;
         this.recipe = null;
         this.cachedRecipes = recipes.getGroup(group);
@@ -68,6 +70,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
 
     public RecipeContainer(CustomCrafting customCrafting, NamespacedKey recipe) {
         this.recipes = customCrafting.getRegistries().getRecipes();
+        this.type = RecipeContainerType.RECIPE;
         this.group = null;
         this.recipe = recipe;
         this.cachedRecipes = Collections.singletonList(recipes.get(recipe));
@@ -75,9 +78,17 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
 
     public RecipeContainer(CustomCrafting customCrafting, CustomRecipe<?> recipe) {
         this.recipes = customCrafting.getRegistries().getRecipes();
-        this.group = null;
-        this.recipe = recipe.getNamespacedKey();
-        this.cachedRecipes = Collections.singletonList(recipe);
+        if (recipe.getGroup().isEmpty()) {
+            this.type = RecipeContainerType.RECIPE;
+            this.recipe = recipe.getNamespacedKey();
+            this.group = null;
+            this.cachedRecipes = Collections.singletonList(recipe);
+        } else {
+            this.type = RecipeContainerType.GROUP;
+            this.recipe = null;
+            this.group = recipe.getGroup();
+            this.cachedRecipes = recipes.getGroup(group);
+        }
     }
 
     /**
@@ -148,12 +159,14 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RecipeContainer that = (RecipeContainer) o;
-        return Objects.equals(group, that.group) && Objects.equals(recipe, that.recipe);
+        if (type != that.type) return false;
+        if (type == RecipeContainerType.GROUP) return Objects.equals(group, that.group);
+        return Objects.equals(recipe, that.recipe);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(group, recipe);
+        return Objects.hash(type, group, recipe);
     }
 
     @Override

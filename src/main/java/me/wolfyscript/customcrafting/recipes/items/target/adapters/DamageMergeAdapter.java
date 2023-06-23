@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
+import io.th0rgal.oraxen.OraxenPlugin;
 import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.durability.DurabilityMechanic;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.durability.DurabilityMechanicFactory;
@@ -159,10 +160,12 @@ public class DamageMergeAdapter extends MergeAdapter {
 
     private class OraxenAdapter implements DamagePluginAdapter {
 
+        public static final org.bukkit.NamespacedKey DURABILITY_KEY = new org.bukkit.NamespacedKey(OraxenPlugin.get(), "durability");
+
         @Override
         public Optional<Integer> getDamage(ItemStack stack) {
             PersistentDataContainer persistentDataContainer = stack.getItemMeta().getPersistentDataContainer();
-            Integer dur = persistentDataContainer.get(DurabilityMechanic.DURAB_KEY, PersistentDataType.INTEGER);
+            Integer dur = persistentDataContainer.get(DURABILITY_KEY, PersistentDataType.INTEGER);
             if (dur != null && DurabilityMechanicFactory.get().getMechanic(OraxenItems.getIdByItem(stack)) instanceof DurabilityMechanic durabilityMechanic) {
                 return Optional.of(durabilityMechanic.getItemMaxDurability() - dur);
             }
