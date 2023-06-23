@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -32,7 +33,8 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -46,21 +48,24 @@ public class ItemTypeMergeAdapter extends MergeAdapter {
     private static final String TYPE_MAPPINGS = "typeMappings";
     private static final String DEFAULT_TYPE = "defaultType";
 
-    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "item_type");
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "item");
 
-    private final Map<Material, Material> typeMappings;
+    private Map<Material, Material> typeMappings;
     private Material defaultType;
 
     @JsonCreator
-    public ItemTypeMergeAdapter(@JsonProperty(DEFAULT_TYPE) String defaultType, @JsonProperty(TYPE_MAPPINGS) Map<String, String> typeMappings) {
+    public ItemTypeMergeAdapter() {
         super(KEY);
-        this.defaultType = Material.matchMaterial(defaultType);
-        this.typeMappings = readTypeMappings(typeMappings);
     }
 
     public ItemTypeMergeAdapter(ItemTypeMergeAdapter adapter) {
         super(adapter);
         this.typeMappings = Map.copyOf(adapter.typeMappings);
+    }
+
+    @JsonSetter(DEFAULT_TYPE)
+    private void setDefaultType(String defaultType) {
+        this.defaultType = defaultType == null ? null : Material.matchMaterial(defaultType);
     }
 
     @JsonIgnore
@@ -69,8 +74,9 @@ public class ItemTypeMergeAdapter extends MergeAdapter {
     }
 
     @JsonGetter(DEFAULT_TYPE)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String writeDefaultType() {
-        return defaultType.getKey().toString();
+        return defaultType == null ? null : defaultType.getKey().toString();
     }
 
     @JsonGetter(TYPE_MAPPINGS)
@@ -78,13 +84,18 @@ public class ItemTypeMergeAdapter extends MergeAdapter {
         return this.typeMappings.entrySet().stream().map(entry -> Map.entry(entry.getKey().getKey().toString(), entry.getValue().getKey().toString())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private Map<Material, Material> readTypeMappings(Map<String, String> typeMappingsStrings) {
-        return typeMappingsStrings.entrySet().stream().map(entry -> {
+    @JsonSetter(TYPE_MAPPINGS)
+    private void readTypeMappings(Map<String, String> typeMappingsStrings) {
+        if (typeMappingsStrings == null) {
+            this.typeMappings = Collections.emptyMap();
+            return;
+        }
+        this.typeMappings = typeMappingsStrings.entrySet().stream().map(entry -> {
             Material key = Material.matchMaterial(entry.getKey());
             Material value = Material.matchMaterial(entry.getValue());
             if (key == null || value == null) return null;
             return Map.entry(key, value);
-        }).filter(Objects::nonNull).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }).filter(Objects::nonNull).collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     @JsonIgnore
@@ -102,7 +113,9 @@ public class ItemTypeMergeAdapter extends MergeAdapter {
             } else {
                 Material mappedType = typeMappings.get(type);
                 if (mappedType == null) {
-                    result.setType(defaultType);
+                    if (defaultType != null) {
+                        result.setType(defaultType);
+                    }
                 } else {
                     result.setType(mappedType);
                 }
