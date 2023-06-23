@@ -108,6 +108,12 @@ public class ItemTypeMergeAdapter extends MergeAdapter {
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
         IngredientData ingredientData = recipeData.getBySlot(slots[0]);
         if (ingredientData != null) {
+            if (ingredientData.itemStack() == null) {
+                if (defaultType != null) {
+                    result.setType(defaultType);
+                }
+                return result;
+            }
             Material type = ingredientData.itemStack().getType();
             if (typeMappings.isEmpty()) {
                 result.setType(type);
