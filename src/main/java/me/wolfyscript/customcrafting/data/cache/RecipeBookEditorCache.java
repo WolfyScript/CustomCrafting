@@ -25,10 +25,11 @@ package me.wolfyscript.customcrafting.data.cache;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 
 import java.util.regex.Pattern;
 
-public class RecipeBookEditor {
+public class RecipeBookEditorCache {
 
     private static final Pattern VALID_ID = Pattern.compile("[a-z0-9/._-]+");
     private boolean switchCategories;
@@ -37,10 +38,45 @@ public class RecipeBookEditor {
     private Category category;
     private CategoryFilter categoryFilter;
 
-    public RecipeBookEditor() {
+    private int categoriesPage = 0;
+    private int filtersPage = 0;
+
+    private RecipeBookConfig editorConfigCopy;
+
+    public RecipeBookEditorCache() {
         this.categoryID = "";
         this.switchCategories = false;
         this.category = null;
+    }
+
+    public void setEditorConfigCopy(RecipeBookConfig original) {
+        if (this.editorConfigCopy == null) {
+            this.editorConfigCopy = new RecipeBookConfig(original);
+        }
+    }
+
+    public void resetEditorConfigCopy() {
+        this.editorConfigCopy = null;
+    }
+
+    public RecipeBookConfig getEditorConfigCopy() {
+        return editorConfigCopy;
+    }
+
+    public void setCategoriesPage(int categoriesPage) {
+        this.categoriesPage = categoriesPage;
+    }
+
+    public int getCategoriesPage() {
+        return categoriesPage;
+    }
+
+    public void setFiltersPage(int filtersPage) {
+        this.filtersPage = filtersPage;
+    }
+
+    public int getFiltersPage() {
+        return filtersPage;
     }
 
     public String getCategoryID() {
