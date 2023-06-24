@@ -155,7 +155,13 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
             additionData = new IngredientData(ADDITION_SLOT, ADDITION_SLOT, getAddition(), additionCustom.get(), base);
         } else if (!getAddition().isAllowEmpty()) return null;
 
-        return new SmithingData(this, new IngredientData[]{templateData, baseData, additionData});
+        IngredientData[] ingredientData;
+        if (IS_1_20) {
+            ingredientData = new IngredientData[]{ templateData, baseData, additionData };
+        } else {
+            ingredientData = new IngredientData[]{ baseData, additionData };
+        }
+        return new SmithingData(this, ingredientData);
     }
 
 
