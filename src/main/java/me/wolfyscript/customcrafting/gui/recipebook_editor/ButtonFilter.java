@@ -35,7 +35,7 @@ class ButtonFilter extends ActionButton<CCCache> {
     ButtonFilter(CategoryFilter filter, CustomCrafting customCrafting) {
         super("filter_" + filter.getId(), new ButtonState<>("filter", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent clickEvent) {
-                var recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
+                var recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditorCache();
                 var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
                 if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
                     //Delete Filter

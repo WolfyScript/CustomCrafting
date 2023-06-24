@@ -41,10 +41,10 @@ public class EditCategory extends EditCategorySetting {
     public void onInit() {
         super.onInit();
         getButtonBuilder().toggle(AUTO).enabledState(s -> s.subKey("enabled").icon(Material.COMMAND_BLOCK).action((cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeBookEditor().getCategory().setAuto(false);
+            cache.getRecipeBookEditorCache().getCategory().setAuto(false);
             return true;
         })).disabledState(s -> s.subKey("disabled").icon(Material.PLAYER_HEAD).action((cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeBookEditor().getCategory().setAuto(true);
+            cache.getRecipeBookEditorCache().getCategory().setAuto(true);
             return true;
         })).register();
     }
@@ -52,10 +52,10 @@ public class EditCategory extends EditCategorySetting {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        ((ToggleButton<CCCache>) getButton(AUTO)).setState(update.getGuiHandler(), update.getGuiHandler().getCustomCache().getRecipeBookEditor().getCategory().isAuto());
+        ((ToggleButton<CCCache>) getButton(AUTO)).setState(update.getGuiHandler(), update.getGuiHandler().getCustomCache().getRecipeBookEditorCache().getCategory().isAuto());
 
         update.setButton(22, AUTO);
-        if (!update.getGuiHandler().getCustomCache().getRecipeBookEditor().getCategory().isAuto()) {
+        if (!update.getGuiHandler().getCustomCache().getRecipeBookEditorCache().getCategory().isAuto()) {
             update.setButton(29, ClusterRecipeBookEditor.RECIPES);
             update.setButton(33, ClusterRecipeBookEditor.FOLDERS);
             update.setButton(40, ClusterRecipeBookEditor.GROUPS);

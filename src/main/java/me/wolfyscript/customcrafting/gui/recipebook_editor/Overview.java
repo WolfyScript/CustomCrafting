@@ -24,11 +24,14 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 public abstract class Overview extends CCWindow {
@@ -46,8 +49,14 @@ public abstract class Overview extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        update.setButton(0, ClusterMain.BACK);
-        update.setButton(47, ClusterRecipeBookEditor.PREVIOUS_PAGE);
-        update.setButton(51, ClusterRecipeBookEditor.NEXT_PAGE);
+        if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
+            CCPlayerData store = PlayerUtil.getStore(update.getPlayer());
+            NamespacedKey white = store.getLightBackground();
+            for (int i = 36; i < 45; i++) {
+                update.setButton(i, white);
+            }
+        }
+
+        update.setButton(45, ClusterMain.BACK_BOTTOM);
     }
 }

@@ -35,7 +35,7 @@ class ButtonCategory extends ActionButton<CCCache> {
     ButtonCategory(Category category, CustomCrafting customCrafting) {
         super("category_" + category.getId(), new ButtonState<>("category", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent clickEvent) {
-                var recipeBookEditor = cache.getRecipeBookEditor();
+                var recipeBookEditor = cache.getRecipeBookEditorCache();
                 var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
                 if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
                     //Delete Category

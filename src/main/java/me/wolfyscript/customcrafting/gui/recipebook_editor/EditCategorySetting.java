@@ -42,11 +42,11 @@ public abstract class EditCategorySetting extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        update.setButton(0, ClusterRecipeBookEditor.BACK);
+        update.setButton(45, ClusterRecipeBookEditor.BACK);
         update.setButton(11, ClusterRecipeBookEditor.NAME);
         update.setButton(13, ClusterRecipeBookEditor.ICON);
         update.setButton(15, ClusterRecipeBookEditor.DESCRIPTION_EDIT);
-        if (update.getGuiHandler().getCustomCache().getRecipeBookEditor().hasCategoryID()) {
+        if (update.getGuiHandler().getCustomCache().getRecipeBookEditorCache().hasCategoryID()) {
             update.setButton(52, ClusterRecipeBookEditor.SAVE);
         }
         update.setButton(53, ClusterRecipeBookEditor.SAVE_AS);

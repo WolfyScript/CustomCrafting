@@ -27,9 +27,9 @@ import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
+import me.wolfyscript.customcrafting.data.cache.RecipeBookEditorCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.api.inventory.gui.GuiMenuComponent;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
@@ -41,23 +41,72 @@ import java.util.List;
 
 class ButtonSaveCategory extends ActionButton<CCCache> {
 
+    public static void registerSaveBtn(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder) {
+        buttonBuilder.action(ClusterRecipeBookEditor.SAVE.getKey())
+                .state(builder -> builder.icon(Material.WRITABLE_BOOK)
+                        .action((cache, guiHandler, player, guiInventory, i, event) -> {
+                            var recipeBookEditor = cache.getRecipeBookEditorCache();
+                            WolfyUtilities api = guiHandler.getApi();
+
+                            if (saveCategorySetting(recipeBookEditor)) {
+                                guiHandler.openPreviousWindow();
+                            } else {
+                                api.getChat().sendKey(player, ClusterRecipeBookEditor.KEY, "save.error");
+                            }
+                            return true;
+                        })
+                )
+                .register();
+    }
+
+    public static void registerSaveAs(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder) {
+        buttonBuilder.action(ClusterRecipeBookEditor.SAVE_AS.getKey())
+                .state(builder -> builder.icon(Material.WRITABLE_BOOK)
+                        .action((cache, guiHandler, player, inventory, i, event) -> {
+                            var recipeBookEditor = cache.getRecipeBookEditorCache();
+                            WolfyUtilities api = guiHandler.getApi();
+                            guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
+                                List<String> results = new ArrayList<>();
+                                if (args.length == 1) {
+                                    StringUtil.copyPartialMatches(args[0], recipeBookEditor.getEditorConfigCopy().getCategories().keySet(), results);
+                                }
+                                Collections.sort(results);
+                                return results;
+                            });
+                            inventory.getWindow().openChat(guiHandler, inventory.getWindow().getCluster().translatedMsgKey("save.input"), (guiHandler1, player1, s, args) -> {
+                                if (s != null && !s.isEmpty() && recipeBookEditor.setCategoryID(s)) {
+                                    if (saveCategorySetting(recipeBookEditor)) {
+                                        guiHandler1.openPreviousWindow();
+                                        return true;
+                                    }
+                                    api.getChat().sendKey(player1, ClusterRecipeBookEditor.KEY, "save.error");
+                                }
+                                return false;
+                            });
+                            return true;
+                        })
+                )
+                .register();
+    }
+
+
     ButtonSaveCategory(boolean saveAs, CustomCrafting customCrafting) {
         super(saveAs ? ClusterRecipeBookEditor.SAVE_AS.getKey() : ClusterRecipeBookEditor.SAVE.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
-            var recipeBookEditor = cache.getRecipeBookEditor();
+            var recipeBookEditor = cache.getRecipeBookEditorCache();
             WolfyUtilities api = guiHandler.getApi();
 
             if (saveAs) {
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();
                     if (args.length == 1) {
-                        StringUtil.copyPartialMatches(args[0], customCrafting.getConfigHandler().getRecipeBookConfig().getCategories().keySet(), results);
+                        StringUtil.copyPartialMatches(args[0], recipeBookEditor.getEditorConfigCopy().getCategories().keySet(), results);
                     }
                     Collections.sort(results);
                     return results;
                 });
                 inventory.getWindow().openChat(guiHandler, inventory.getWindow().getCluster().translatedMsgKey("save.input"), (guiHandler1, player1, s, args) -> {
                     if (s != null && !s.isEmpty() && recipeBookEditor.setCategoryID(s)) {
-                        if (saveCategorySetting(recipeBookEditor, customCrafting)) {
+                        if (saveCategorySetting(recipeBookEditor)) {
                             guiHandler1.openPreviousWindow();
                             return true;
                         }
@@ -67,7 +116,7 @@ class ButtonSaveCategory extends ActionButton<CCCache> {
                 });
                 return true;
             } else if (recipeBookEditor.hasCategoryID()) {
-                if (saveCategorySetting(recipeBookEditor, customCrafting)) {
+                if (saveCategorySetting(recipeBookEditor)) {
                     guiHandler.openPreviousWindow();
                 } else {
                     api.getChat().sendKey(player, ClusterRecipeBookEditor.KEY, "save.error");
@@ -77,20 +126,20 @@ class ButtonSaveCategory extends ActionButton<CCCache> {
         });
     }
 
-    private static boolean saveCategorySetting(RecipeBookEditor recipeBookEditor, CustomCrafting customCrafting) {
-        var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
-        CategorySettings category = recipeBookEditor.getCategorySetting();
+    private static boolean saveCategorySetting(RecipeBookEditorCache recipeBookEditorCache) {
+        var recipeBook = recipeBookEditorCache.getEditorConfigCopy();
+        CategorySettings category = recipeBookEditorCache.getCategorySetting();
         if (ItemUtils.isAirOrNull(category.getIconStack())) {
             return false;
         }
         if (category instanceof CategoryFilter filter) {
-            recipeBook.registerFilter(recipeBookEditor.getCategoryID(), filter);
-            recipeBookEditor.setFilter(null);
+            recipeBook.registerFilter(recipeBookEditorCache.getCategoryID(), filter);
+            recipeBookEditorCache.setFilter(null);
         } else {
-            recipeBook.registerCategory(recipeBookEditor.getCategoryID(), (Category) category);
-            recipeBookEditor.setCategory(null);
+            recipeBook.registerCategory(recipeBookEditorCache.getCategoryID(), (Category) category);
+            recipeBookEditorCache.setCategory(null);
         }
-        recipeBookEditor.setCategoryID("");
+        recipeBookEditorCache.setCategoryID("");
         return true;
     }
 }

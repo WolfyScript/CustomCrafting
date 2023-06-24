@@ -30,7 +30,7 @@ import me.wolfyscript.customcrafting.data.cache.CacheRecipeView;
 import me.wolfyscript.customcrafting.data.cache.ChatLists;
 import me.wolfyscript.customcrafting.data.cache.ParticleCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookCache;
-import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
+import me.wolfyscript.customcrafting.data.cache.RecipeBookEditorCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeList;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
@@ -49,7 +49,7 @@ public class CCCache extends CustomCache {
     private Setting setting;
     private String subSetting;
 
-    private final RecipeBookEditor recipeBookEditor = new RecipeBookEditor();
+    private final RecipeBookEditorCache recipeBookEditorCache = new RecipeBookEditorCache();
 
     private final Items items = new Items();
     private final RecipeList recipeList = new RecipeList();
@@ -162,8 +162,8 @@ public class CCCache extends CustomCache {
         return brewingGUICache;
     }
 
-    public RecipeBookEditor getRecipeBookEditor() {
-        return recipeBookEditor;
+    public RecipeBookEditorCache getRecipeBookEditorCache() {
+        return recipeBookEditorCache;
     }
 
     public RecipeCreatorCache getRecipeCreatorCache() {
