@@ -24,6 +24,12 @@ Before creating an issue, please go to the wiki. It should clear up frequently a
 
 For any questions join the [Discord](https://discord.gg/qGhDTSr).
 
+![recipe_types](https://github.com/WolfyScript/CustomCrafting/assets/41468455/f36d3d23-c094-4a47-9b45-370f2f314d21)
+![customization](https://github.com/WolfyScript/CustomCrafting/assets/41468455/a471eb10-0af5-4780-a120-8ba4c7602c3f)
+![advanced_settings](https://github.com/WolfyScript/CustomCrafting/assets/41468455/3f4aea41-6852-441a-98e8-db55b2c02771)
+![dependencies_updates](https://github.com/WolfyScript/CustomCrafting/assets/41468455/c795f2b8-af0f-456f-a449-f16cfd03cf1c)
+[![](https://bstats.org/signatures/bukkit/CustomCrafting.svg)](https://bstats.org/plugin/bukkit/CustomCrafting/3211)
+
 ## Check out my partner!
 <a href="https://billing.kinetichosting.net/aff.php?aff=345">
   <img width="700px" src="https://user-images.githubusercontent.com/41468455/237019976-6b66b7f4-3d26-4b2f-b858-463ffe675531.png" alt="Kinetic Hosting 15% off your first month with code WOLFYSCRIPT"/>
