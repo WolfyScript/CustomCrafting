@@ -39,8 +39,8 @@
 
     <repositories>
         <repository>
-            <id>wolfyscript-private</id>
-            <url>https://maven.wolfyscript.com/repository/private/</url>
+            <id>wolfyscript-public</id>
+            <url>https://maven.wolfyscript.com/repository/public/</url>
         </repository>
         <repository>
             <id>dmulloy2-repo</id>
