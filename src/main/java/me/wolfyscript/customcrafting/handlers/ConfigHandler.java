@@ -25,8 +25,11 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 
 import java.io.File;
@@ -159,5 +162,20 @@ public class ConfigHandler {
 
     public RecipeBookConfig getRecipeBookConfig() {
         return recipeBookConfig;
+    }
+
+    public void saveNewRecipeBookConfig(RecipeBookConfig editorCopy, GuiWindow<CCCache> window, GuiHandler<CCCache> guiHandler) {
+        try {
+            File recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.conf");
+            if (!recipeBookFile.renameTo(new File(customCrafting.getDataFolder(), "recipe_book_backup.conf"))) {
+                window.sendMessage(guiHandler, window.getCluster().translatedMsgKey("save.failed_backup"));
+            }
+            customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().writer(customCrafting.getConfigHandler().getConfig().isPrettyPrinting() ? new DefaultPrettyPrinter() : null)
+                    .writeValue(recipeBookFile, editorCopy);
+            recipeBookConfig = editorCopy;
+            window.sendMessage(guiHandler, window.getCluster().translatedMsgKey("save.success"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
