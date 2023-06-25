@@ -3527,6 +3527,13 @@
       "category": {
         "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Edit Category</dark_grey>]</grey>",
         "items": {
+          "delete": {
+            "name": "<grey>▷</grey> <red><b>Delete Category",
+            "lore": [
+              "<grey>Delete the currently selected category!",
+              "<grey>Category ID: <yellow><id>"
+            ]
+          },
           "auto": {
             "enabled": {
               "name": "<gold><b>AUTO</b></gold>",
@@ -3555,6 +3562,13 @@
       "filter": {
         "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Edit Filter</dark_grey>]</grey>",
         "items": {
+          "delete": {
+            "name": "<grey>▷</grey> <red><b>Delete Filter",
+            "lore": [
+              "<grey>Delete the currently selected filter!",
+              "<grey>Filter ID: <yellow><id>"
+            ]
+          }
         }
       }
     },
