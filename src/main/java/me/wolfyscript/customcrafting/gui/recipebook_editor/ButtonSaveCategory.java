@@ -28,8 +28,10 @@ import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookEditorCache;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiMenuComponent;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
@@ -41,7 +43,7 @@ import java.util.List;
 
 class ButtonSaveCategory extends ActionButton<CCCache> {
 
-    public static void registerSaveBtn(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder) {
+    public static void registerSave(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder) {
         buttonBuilder.action(ClusterRecipeBookEditor.SAVE.getKey())
                 .state(builder -> builder.icon(Material.WRITABLE_BOOK)
                         .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("id", cache.getRecipeBookEditorCache().getCategoryID())))
