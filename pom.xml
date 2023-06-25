@@ -28,7 +28,7 @@
 
     <groupId>com.wolfyscript.customcrafting</groupId>
     <artifactId>customcrafting-spigot</artifactId>
-    <version>4.16.8-beta.3</version>
+    <version>4.16.8.0</version>
 
     <properties>
         <!-- Generic properties -->
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>com.wolfyscript.wolfyutils.spigot</groupId>
             <artifactId>wolfyutils-spigot</artifactId>
-            <version>4.16.12-SNAPSHOT</version>
+            <version>4.16.12-beta.1</version>
             <scope>provided</scope>
         </dependency>
         <!--
