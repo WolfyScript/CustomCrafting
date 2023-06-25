@@ -24,14 +24,17 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import org.bukkit.Material;
 
 public class EditCategory extends EditCategorySetting {
 
     private static final String AUTO = "auto";
+    private static final String DELETE = "delete";
 
     public EditCategory(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "category", customCrafting);
@@ -47,6 +50,18 @@ public class EditCategory extends EditCategorySetting {
             cache.getRecipeBookEditorCache().getCategory().setAuto(true);
             return true;
         })).register();
+
+        getButtonBuilder().action(DELETE).state(builder -> builder.icon(Material.TNT)
+                .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("id", cache.getRecipeBookEditorCache().getCategoryID())))
+                .action((cache, guiHandler, player, guiInventory, i, event) -> {
+                    cache.getRecipeBookEditorCache().getEditorConfigCopy().removeCategory(cache.getRecipeBookEditorCache().getCategoryID());
+                    cache.getRecipeBookEditorCache().setCategory(null);
+                    cache.getRecipeBookEditorCache().setCategoryID("");
+                    guiHandler.openPreviousWindow();
+                    return true;
+                })
+        ).register();
+
     }
 
     @Override
@@ -54,6 +69,7 @@ public class EditCategory extends EditCategorySetting {
         super.onUpdateAsync(update);
         ((ToggleButton<CCCache>) getButton(AUTO)).setState(update.getGuiHandler(), update.getGuiHandler().getCustomCache().getRecipeBookEditorCache().getCategory().isAuto());
 
+        update.setButton(0, DELETE);
         update.setButton(22, AUTO);
         if (!update.getGuiHandler().getCustomCache().getRecipeBookEditorCache().getCategory().isAuto()) {
             update.setButton(29, ClusterRecipeBookEditor.RECIPES);

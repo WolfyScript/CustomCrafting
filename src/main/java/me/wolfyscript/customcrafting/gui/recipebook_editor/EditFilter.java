@@ -24,18 +24,39 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
+import org.bukkit.Material;
 
 public class EditFilter extends EditCategorySetting {
+
+    private static final String DELETE = "delete";
 
     public EditFilter(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "filter", customCrafting);
     }
 
     @Override
+    public void onInit() {
+        super.onInit();
+        getButtonBuilder().action(DELETE).state(builder -> builder.icon(Material.TNT)
+                .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("id", cache.getRecipeBookEditorCache().getCategoryID())))
+                .action((cache, guiHandler, player, guiInventory, i, event) -> {
+                    cache.getRecipeBookEditorCache().getEditorConfigCopy().removeFilter(cache.getRecipeBookEditorCache().getCategoryID());
+                    cache.getRecipeBookEditorCache().setFilter(null);
+                    cache.getRecipeBookEditorCache().setCategoryID("");
+                    guiHandler.openPreviousWindow();
+                    return true;
+                })
+        ).register();
+    }
+
+    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
+        update.setButton(0, DELETE);
         update.setButton(29, ClusterRecipeBookEditor.RECIPES);
         update.setButton(33, ClusterRecipeBookEditor.FOLDERS);
         update.setButton(40, ClusterRecipeBookEditor.GROUPS);
