@@ -23,8 +23,6 @@
 package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
-import java.util.ArrayList;
-import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
@@ -44,6 +42,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClusterRecipeBookEditor extends CCCluster {
 
@@ -176,10 +177,18 @@ public class ClusterRecipeBookEditor extends CCCluster {
             var categorySettings = guiHandler.getCustomCache().getRecipeBookEditorCache().getCategorySetting();
             return CallbackButtonRender.UpdateResult.of(categorySettings != null ? categorySettings.getIconStack() : new ItemStack(Material.AIR));
         })).register();
-        btnBld.chatInput(NAME.getKey()).state(state -> state.icon(Material.NAME_TAG).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("name", guiHandler.getCustomCache().getRecipeBookEditorCache().getCategorySetting().getName())))).inputAction((guiHandler, player, s, strings) -> {
-            guiHandler.getCustomCache().getRecipeBookEditorCache().getCategorySetting().setName(s);
-            return false;
-        }).register();
+        btnBld.chatInput(NAME.getKey()).state(state -> state.icon(Material.NAME_TAG)
+                        .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("name", guiHandler.getCustomCache().getRecipeBookEditorCache().getCategorySetting().getName())))
+                        .action((cache, guiHandler, player, guiInventory, i, event) -> {
+                            getChat().sendMessage(player, getChat().translated("msg.input.mini_message"));
+                            getChat().sendMessage(player, getChat().translated("msg.input.wui_command"));
+                            return true;
+                        })
+                )
+                .inputAction((guiHandler, player, s, strings) -> {
+                    guiHandler.getCustomCache().getRecipeBookEditorCache().getCategorySetting().setName(s);
+                    return false;
+                }).register();
         btnBld.action(DESCRIPTION_EDIT.getKey()).state(state -> state.icon(Material.WRITTEN_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             descriptionChatEditor.send(player);
             Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
