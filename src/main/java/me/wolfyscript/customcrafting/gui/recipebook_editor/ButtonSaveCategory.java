@@ -44,6 +44,7 @@ class ButtonSaveCategory extends ActionButton<CCCache> {
     public static void registerSaveBtn(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder) {
         buttonBuilder.action(ClusterRecipeBookEditor.SAVE.getKey())
                 .state(builder -> builder.icon(Material.WRITABLE_BOOK)
+                        .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("id", cache.getRecipeBookEditorCache().getCategoryID())))
                         .action((cache, guiHandler, player, guiInventory, i, event) -> {
                             var recipeBookEditor = cache.getRecipeBookEditorCache();
                             WolfyUtilities api = guiHandler.getApi();
