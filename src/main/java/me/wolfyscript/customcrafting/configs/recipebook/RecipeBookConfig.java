@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"categoryAlign", "variationCycle", "categories", "filters"})
@@ -66,6 +67,15 @@ public class RecipeBookConfig {
     public RecipeBookConfig(boolean shouldSave) {
         this();
         this.shouldSave = shouldSave;
+    }
+
+    public RecipeBookConfig(RecipeBookConfig original) {
+        this.sortedCategories = new ArrayList<>(original.getSortedCategories());
+        this.sortedFilters = new ArrayList<>(original.getSortedFilters());
+        this.categoryMap.putAll(original.categoryMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new Category(entry.getValue()))));
+        this.filters.putAll(original.filters.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new CategoryFilter(entry.getValue()))));
+        this.categoryAlign = new CategoryAlign(original.categoryAlign);
+        this.variationCycle = new VariationCycle(original.variationCycle);
     }
 
     @JsonIgnore
@@ -224,6 +234,13 @@ public class RecipeBookConfig {
 
         public CategoryAlign() { }
 
+        public CategoryAlign(CategoryAlign original) {
+            this.align = original.getAlign();
+            this.maxPerRow = original.getMaxPerRow();
+            this.minRows = original.getMinRows();
+            this.customSlots.putAll(original.customSlots);
+        }
+
         @JsonIgnore
         public int getRequiredRows() {
             return Math.max(minRows, Math.min(5, (int) Math.ceil(categoryMap.size() / (double) maxPerRow)));
@@ -272,6 +289,13 @@ public class RecipeBookConfig {
 
         private int periodIngredient = 30;
         private int periodRecipe = 30;
+
+        public VariationCycle(VariationCycle original) {
+            this.periodIngredient = original.getPeriodIngredient();
+            this.periodRecipe = original.getPeriodRecipe();
+        }
+
+        public VariationCycle() {}
 
         public int getPeriodIngredient() {
             return periodIngredient;

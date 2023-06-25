@@ -103,6 +103,7 @@ public class MenuMain extends CCWindow {
             return true;
         })).register();
         builder.action(RECIPE_BOOK_EDITOR).state(s -> s.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, inv, i, inventoryInteractEvent) -> {
+            cache.getRecipeBookEditorCache().setEditorConfigCopy(customCrafting.getConfigHandler().getRecipeBookConfig());
             guiHandler.openCluster(ClusterRecipeBookEditor.KEY);
             return true;
         })).register();

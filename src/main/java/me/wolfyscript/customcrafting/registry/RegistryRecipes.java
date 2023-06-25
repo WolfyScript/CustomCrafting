@@ -365,7 +365,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
     private String cleanDir(String dir) {
         // Clear the folder, so it is in proper format.
-        return (!dir.startsWith("/") ? "/" + dir : dir) + (!dir.endsWith("/") ? "/" : "");
+        return (!dir.startsWith("/") ? "/" : "") + dir + (!dir.endsWith("/") ? "/" : "");
     }
 
     /**
@@ -376,15 +376,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      * @return A list of all recipes in the folder inside the namespace.
      */
     public List<CustomRecipe<?>> get(String namespace, String folder) {
-        return BY_NAMESPACE_AND_FOLDER.computeIfAbsent(namespace, s -> {
-            Map<String, List<CustomRecipe<?>>> folderIndex = new HashMap<>();
-            get(s).forEach(recipe -> {
-                String key = recipe.getNamespacedKey().getKey();
-                String recipeFolder = key.contains("/") ? key.substring(0, key.lastIndexOf("/")) : "";
-                folderIndex.computeIfAbsent(recipeFolder, s1 -> new LinkedList<>()).add(recipe);
-            });
-            return folderIndex;
-        }).getOrDefault(folder, new LinkedList<>());
+        return getFromDir(namespace, folder);
     }
 
     /**

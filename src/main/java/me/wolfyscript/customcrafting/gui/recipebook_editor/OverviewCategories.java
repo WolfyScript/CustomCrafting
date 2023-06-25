@@ -36,6 +36,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class OverviewCategories extends Overview {
 
+    public static final String NEXT_PAGE = "next_page";
+    public static final String PREVIOUS_PAGE = "previous_page";
+
     public OverviewCategories(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "categories", customCrafting);
     }
@@ -43,50 +46,77 @@ public class OverviewCategories extends Overview {
     @Override
     public void onInit() {
         super.onInit();
+        getButtonBuilder().action(PREVIOUS_PAGE)
+                .state(state -> state.key(ClusterRecipeBookEditor.PREVIOUS_PAGE).icon(PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"))
+                        .action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                            cache.getRecipeBookEditorCache().setCategoriesPage(Math.max(cache.getRecipeBookEditorCache().getCategoriesPage() - 1, 0));
+                            return true;
+                        })).register();
+        getButtonBuilder().action(NEXT_PAGE)
+                .state(state -> state.key(ClusterRecipeBookEditor.NEXT_PAGE).icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"))
+                        .action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                            cache.getRecipeBookEditorCache().setCategoriesPage(Math.min(cache.getRecipeBookEditorCache().getCategoriesPage() + 1, 2));
+                            return true;
+                        })).register();
         registerButton(new ActionButton<>(ADD, PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeBookEditor().setCategory(new Category());
-            cache.getRecipeBookEditor().setCategoryID("");
+            cache.getRecipeBookEditorCache().setCategory(new Category());
+            cache.getRecipeBookEditorCache().setCategoryID("");
             guiHandler.openWindow("category");
             return true;
         }));
+        for (int i = 0; i < 18; i++) {
+            final int iCopy = i;
+            getButtonBuilder().action("edit_cat_index_" + i)
+                    .state(builder -> builder.key("edit_category").icon(Material.PAPER)
+                            .action((cache, guiHandler, player, guiInventory, slot, event) -> {
+                                if (event instanceof InventoryClickEvent clickEvent) {
+                                    var recipeBookEditor = cache.getRecipeBookEditorCache();
+                                    var recipeBook = recipeBookEditor.getEditorConfigCopy();
+                                    int index = recipeBookEditor.getCategoriesPage() + iCopy;
+                                    Category category = recipeBook.getCategory(index);
+                                    if (clickEvent.isShiftClick()) {
+                                        EditorUtils.shiftElement(clickEvent.isLeftClick(), index, recipeBook.getSortedCategories());
+                                        return true;
+                                    }
+                                    if (clickEvent.isLeftClick()) {
+                                        recipeBookEditor.setCategoryID(category.getId());
+                                        recipeBookEditor.setCategory(new Category(category));
+                                        guiHandler.openWindow("category");
+                                        return true;
+                                    }
+                                }
+                                return true;
+                            })
+                    )
+                    .register();
+        }
     }
 
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        var recipeBookConfig = customCrafting.getConfigHandler().getRecipeBookConfig();
-        update.setButton(49, ADD);
+        var editorCache = update.getGuiHandler().getCustomCache().getRecipeBookEditorCache();
+        var recipeBookConfig = editorCache.getEditorConfigCopy();
+        int page = editorCache.getCategoriesPage();
+        update.setButton(40, ADD);
+        update.setButton(38, PREVIOUS_PAGE);
+        update.setButton(42, NEXT_PAGE);
 
         List<String> categories = recipeBookConfig.getSortedCategories();
-        for (int i = 0; i < categories.size() && i + 9 < 45; i++) {
+        for (int i = page * 18, slot = 0; i < categories.size() && slot < 18; i++, slot++) {
             var category = recipeBookConfig.getCategory(categories.get(i));
             if (category != null) {
                 String id = "category_" + category.getId();
                 getButtonBuilder()
                         .action(id)
                         .state(state -> state.icon(Material.AIR)
-                                .render((cache, guiHandler, player, guiInventory, itemStack, slot) -> CallbackButtonRender.UpdateResult.of(category.createItemStack(customCrafting)))
-                                .action((cache, guiHandler, player, guiInventory, i1, event) -> {
-                                    if (event instanceof InventoryClickEvent clickEvent) {
-                                        var recipeBookEditor = cache.getRecipeBookEditor();
-                                        var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
-                                        if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
-                                            //Delete Category
-                                            recipeBook.removeCategory(category.getId());
-                                            return true;
-                                        } else if (clickEvent.isLeftClick()) {
-                                            //Edit Category
-                                            recipeBookEditor.setCategoryID(category.getId());
-                                            recipeBookEditor.setCategory(new Category(category));
-                                            guiHandler.openWindow("category");
-                                            return true;
-                                        }
-                                    }
-                                    return true;
-                                })
+                                .render((cache, guiHandler, player, guiInventory, itemStack, slot2) -> CallbackButtonRender.UpdateResult.of(category.createItemStack(customCrafting)))
+                                .action((cache, guiHandler, player, guiInventory, i1, event) -> true)
                         )
                         .register();
-                update.setButton(i + 9, "category_" + category.getId());
+                int finalSlot =  slot + (slot >= 9 ? 9 : 0);
+                update.setButton(finalSlot, "category_" + category.getId());
+                update.setButton(finalSlot + 9, "edit_cat_index_" + slot);
             }
         }
     }

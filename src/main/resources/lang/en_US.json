@@ -147,8 +147,8 @@
       ]
     },
     "input":{
-      "mini_message" : "<#00ccff>Use <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>MiniMessage uses tags instead of the legacy color codes!<br>These tags can be used to specify: <br>* Colors: <#FD6684><_colorname_></#FD6684><br>    <#FD6684>\\<green></#FD6684>: <green>Green</green><br>    <#FD6684>\\<#5662F6></#FD6684>: <#5662F6>Hex-Color</#5662F6><br>    ... etc.<br><br>* Decorations:<br>    <#FD6684>\\<bold></#FD6684>, <#FD6684>\\<b></#FD6684>: <b>Bold</b>,<br>    <#FD6684>\\<italic></#FD6684>, <#FD6684>\\<em></#FD6684>, <#FD6684>\\<i></#FD6684>: <em>Italic</em>,<br>    <#FD6684>\\<underline></#FD6684>, <#FD6684>\\<u></#FD6684>: <u>Underline</u>,<br>    <#FD6684>\\<strikethrough></#FD6684>, <#FD6684>\\<st></#FD6684>: <st>Strikethrough</st>,<br>    <#FD6684>\\<obfuscated></#FD6684>, <#FD6684>\\<obf></#FD6684>: <obf>Obfuscated</obf><br><br>* Gradients: <#FD6684><gradient:<#50E975>[color1]</#50E975>:<#50E975>[color...]</#50E975>:<#50E975>[phase]</#50E975>></#FD6684><br>    <#FD6684>\\<gradient></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>:<#50E975>red</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459:red>||||||||||||||||||||||||</gradient><br><br>* Fonts: <#FD6684>\\<font:<#50E975>key</#50E975>></#FD6684><br>    <#FD6684>\\<font:<#50E975>uniform</#50E975>></#FD6684>Uniform<#FD6684>\\</font></#FD6684>: <font:uniform>Uniform</font><br>    <#FD6684>\\<font:<#50E975>alt</#50E975>></#FD6684>Alt<#FD6684>\\</font></#FD6684>: <font:alt>Alt</font><br><br>* and more    <br><br><grey>(<green>Click</green>)</grey> <yellow>Open Link to Wiki'><yellow>MiniMessage</yellow></hover></click> for color & formatting!",
-      "wui_command": "<#00ccff>Use the <click:suggest_command:'/wui '><hover:show_text:'<white>Use the <yellow>/wui</yellow> command to input your values, instead of typing it straight into the chat!<br>It provides tab completion & prevents issues with chat plugins!<br><br>Simply write your input after the command with a space in between.<br>Like this: <yellow>/wui <green>your input here</green></yellow><br><br><grey>(<green>Click</green>)</grey> <yellow>Fill in Command'><yellow>/wui</yellow></hover></click> command to input your values!"
+      "mini_message" : "<#00ccff>Use <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>MiniMessage uses tags instead of the legacy color codes!<br>These tags can be used to specify: <br>* Colors: <#FD6684><_colorname_></#FD6684><br>    <#FD6684>\\<green></#FD6684>: <green>Green</green><br>    <#FD6684>\\<#5662F6></#FD6684>: <#5662F6>Hex-Color</#5662F6><br>    ... etc.<br><br>* Decorations:<br>    <#FD6684>\\<bold></#FD6684>, <#FD6684>\\<b></#FD6684>: <b>Bold</b>,<br>    <#FD6684>\\<italic></#FD6684>, <#FD6684>\\<em></#FD6684>, <#FD6684>\\<i></#FD6684>: <em>Italic</em>,<br>    <#FD6684>\\<underline></#FD6684>, <#FD6684>\\<u></#FD6684>: <u>Underline</u>,<br>    <#FD6684>\\<strikethrough></#FD6684>, <#FD6684>\\<st></#FD6684>: <st>Strikethrough</st>,<br>    <#FD6684>\\<obfuscated></#FD6684>, <#FD6684>\\<obf></#FD6684>: <obf>Obfuscated</obf><br><br>* Gradients: <#FD6684><gradient:<#50E975>[color1]</#50E975>:<#50E975>[color...]</#50E975>:<#50E975>[phase]</#50E975>></#FD6684><br>    <#FD6684>\\<gradient></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>:<#50E975>red</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459:red>||||||||||||||||||||||||</gradient><br><br>* Fonts: <#FD6684>\\<font:<#50E975>key</#50E975>></#FD6684><br>    <#FD6684>\\<font:<#50E975>uniform</#50E975>></#FD6684>Uniform<#FD6684>\\</font></#FD6684>: <font:uniform>Uniform</font><br>    <#FD6684>\\<font:<#50E975>alt</#50E975>></#FD6684>Alt<#FD6684>\\</font></#FD6684>: <font:alt>Alt</font><br><br>* and more    <br><br><grey>(<green>Click</green>)</grey> <yellow>Open Link to Wiki'><u><yellow>MiniMessage</yellow></u></hover></click> for color & formatting!",
+      "wui_command": "<#00ccff>Use the <click:suggest_command:'/wui '><hover:show_text:'<white>Use the <yellow>/wui</yellow> command to input your values, instead of typing it straight into the chat!<br>It provides tab completion & prevents issues with chat plugins!<br><br>Simply write your input after the command with a space in between.<br>Like this: <yellow>/wui <green>your input here</green></yellow><br><br><grey>(<green>Click</green>)</grey> <yellow>Fill in Command'><u><yellow>/wui</yellow></u></hover></click> command to input your values!"
     },
     "chat_editor": {
       "list_edit": {
@@ -3374,7 +3374,7 @@
             "",
             "<grey>(<green>Click</green>)</grey> <yellow>Change name"
           ],
-          "message": "<yellow>Type in the Name. <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
+          "message": "<white>Type in the new name!"
         },
         "description": {
           "edit": {
@@ -3391,8 +3391,7 @@
               "...",
               "",
               "<grey>(<green>Click</green>)</grey> <yellow>Edit Description"
-            ],
-            "message": "<yellow>Type in the Description. <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
+            ]
           }
         },
         "recipes": {
@@ -3439,7 +3438,7 @@
         }
       },
       "editor_main": {
-        "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Editor]</dark_grey></grey>",
+        "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Editor</dark_grey>]</grey>",
         "items": {
           "filters": {
             "name": "<grey>➥</grey> <gold><b>Filters</b></gold>",
@@ -3463,8 +3462,7 @@
             "name": "<red>❌</red> <gold><b>Cancel</b></gold>",
             "lore": [
               "<grey>Reverts changes made to the Recipe Book!</grey>",
-              "<red>If you don't revert the changes before</red>",
-              "<red>server stop they will be applied instead!</red>"
+              "<red>All your changes since the last save will be discarded!"
             ]
           },
           "save": {
@@ -3478,15 +3476,14 @@
         }
       },
       "categories": {
-        "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Edit Categories]</dark_grey></grey>",
+        "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Edit Categories</dark_grey>]</grey>",
         "items": {
-          "category": {
-            "name": "%name%",
+          "edit_category": {
+            "name": "<grey>➥</grey> <gold><b>Configure</b></gold>",
             "lore": [
-              "%description%",
-              "<grey>--------------------</grey>",
-              "<grey>[<green>Left Click</green>]</grey> <yellow>Edit Category</yellow>",
-              "<grey>[<red>Shift + Right Click</red>]</grey> <red>Delete Category</red>"
+              "<grey>[<green>Left-Click</green>]</grey> <yellow>Edit Category</yellow>",
+              "<grey>[<green>Shift + Right-Click</green>]</grey> <yellow>Move to Right</yellow>",
+              "<grey>[<green>Shift + Left-Click</green>]</grey> <yellow>Move to Left</yellow>"
             ]
           },
           "add": {
@@ -3499,7 +3496,7 @@
         }
       },
       "filters": {
-        "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Edit Filters]</dark_grey></grey>",
+        "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Edit Filters</dark_grey>]</grey>",
         "items": {
           "filter": {
             "name": "%name%",
@@ -3508,6 +3505,14 @@
               "<grey>--------------------</grey>",
               "<grey>[<green>Left Click</green>]</grey> <yellow>Edit Filter</yellow>",
               "<grey>[<red>Shift + Right Click</red>]</grey> <red>Delete Filter</red>"
+            ]
+          },
+          "edit_filter": {
+            "name": "<grey>➥</grey> <gold><b>Configure</b></gold>",
+            "lore": [
+              "<grey>[<green>Left-Click</green>]</grey> <yellow>Edit Filter</yellow>",
+              "<grey>[<green>Shift + Right-Click</green>]</grey> <yellow>Move to Right</yellow>",
+              "<grey>[<green>Shift + Left-Click</green>]</grey> <yellow>Move to Left</yellow>"
             ]
           },
           "add": {
@@ -3520,8 +3525,15 @@
         }
       },
       "category": {
-        "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Edit Category]</dark_grey></grey>",
+        "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Edit Category</dark_grey>]</grey>",
         "items": {
+          "delete": {
+            "name": "<grey>▷</grey> <red><b>Delete Category",
+            "lore": [
+              "<grey>Delete the currently selected category!",
+              "<grey>Category ID: <yellow><id>"
+            ]
+          },
           "auto": {
             "enabled": {
               "name": "<gold><b>AUTO</b></gold>",
@@ -3548,8 +3560,15 @@
         }
       },
       "filter": {
-        "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Edit Filter]</dark_grey></grey>",
+        "gui_name": "<dark_grey><b>Recipe Book </b></dark_grey><grey>[<dark_grey>Edit Filter</dark_grey>]</grey>",
         "items": {
+          "delete": {
+            "name": "<grey>▷</grey> <red><b>Delete Filter",
+            "lore": [
+              "<grey>Delete the currently selected filter!",
+              "<grey>Filter ID: <yellow><id>"
+            ]
+          }
         }
       }
     },
