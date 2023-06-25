@@ -3374,7 +3374,7 @@
             "",
             "<grey>(<green>Click</green>)</grey> <yellow>Change name"
           ],
-          "message": "<yellow>Type in the Name. <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
+          "message": "<white>Type in the new name!"
         },
         "description": {
           "edit": {
@@ -3391,8 +3391,7 @@
               "...",
               "",
               "<grey>(<green>Click</green>)</grey> <yellow>Edit Description"
-            ],
-            "message": "<yellow>Type in the Description. <grey>(<yellow>Formatting: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
+            ]
           }
         },
         "recipes": {
@@ -3483,10 +3482,10 @@
             "name": "<grey>➥</grey> <gold><b>Configure</b></gold>",
             "lore": [
               "<grey>[<green>Left-Click</green>]</grey> <yellow>Edit Category</yellow>",
-              "<grey>[<red>Shift + Right-Click</red>]</grey> <red>Delete Category</red>"
+              "<grey>[<green>Shift + Right-Click</green>]</grey> <yellow>Move to Right</yellow>",
+              "<grey>[<green>Shift + Left-Click</green>]</grey> <yellow>Move to Left</yellow>"
             ]
           },
-
           "add": {
             "name": "<grey>➥</grey> <gold><b>Add Category</b></gold>",
             "lore": [
