@@ -158,7 +158,7 @@ public class RecipeBookCache {
     }
 
     public CustomItem getResearchItem() {
-        return getResearchItems().get(0);
+        return !getResearchItems().isEmpty() ? getResearchItems().get(0) : null;
     }
 
     public void applyRecipeToButtons(GuiHandler<CCCache> guiHandler, CustomRecipe<?> recipe) {
