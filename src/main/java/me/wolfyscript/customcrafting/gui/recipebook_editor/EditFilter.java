@@ -56,7 +56,11 @@ public class EditFilter extends EditCategorySetting {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        update.setButton(0, DELETE);
+
+
+        if (update.getGuiHandler().getCustomCache().getRecipeBookEditorCache().getCategoryID() != null) {
+            update.setButton(0, DELETE);
+        }
         update.setButton(29, ClusterRecipeBookEditor.RECIPES);
         update.setButton(33, ClusterRecipeBookEditor.FOLDERS);
         update.setButton(40, ClusterRecipeBookEditor.GROUPS);

@@ -43,13 +43,15 @@ public class EditCategory extends EditCategorySetting {
     @Override
     public void onInit() {
         super.onInit();
-        getButtonBuilder().toggle(AUTO).enabledState(s -> s.subKey("enabled").icon(Material.COMMAND_BLOCK).action((cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeBookEditorCache().getCategory().setAuto(false);
-            return true;
-        })).disabledState(s -> s.subKey("disabled").icon(Material.PLAYER_HEAD).action((cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeBookEditorCache().getCategory().setAuto(true);
-            return true;
-        })).register();
+        getButtonBuilder().toggle(AUTO)
+                .stateFunction((cache, guiHandler, player, guiInventory, i) -> cache.getRecipeBookEditorCache().getCategory().isAuto())
+                .enabledState(s -> s.subKey("enabled").icon(Material.COMMAND_BLOCK).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    cache.getRecipeBookEditorCache().getCategory().setAuto(false);
+                    return true;
+                })).disabledState(s -> s.subKey("disabled").icon(Material.PLAYER_HEAD).action((cache, guiHandler, player, inventory, slot, event) -> {
+                    cache.getRecipeBookEditorCache().getCategory().setAuto(true);
+                    return true;
+                })).register();
 
         getButtonBuilder().action(DELETE).state(builder -> builder.icon(Material.TNT)
                 .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("id", cache.getRecipeBookEditorCache().getCategoryID())))
@@ -67,9 +69,9 @@ public class EditCategory extends EditCategorySetting {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        ((ToggleButton<CCCache>) getButton(AUTO)).setState(update.getGuiHandler(), update.getGuiHandler().getCustomCache().getRecipeBookEditorCache().getCategory().isAuto());
-
-        update.setButton(0, DELETE);
+        if (update.getGuiHandler().getCustomCache().getRecipeBookEditorCache().getCategoryID() != null) {
+            update.setButton(0, DELETE);
+        }
         update.setButton(22, AUTO);
         if (!update.getGuiHandler().getCustomCache().getRecipeBookEditorCache().getCategory().isAuto()) {
             update.setButton(29, ClusterRecipeBookEditor.RECIPES);
