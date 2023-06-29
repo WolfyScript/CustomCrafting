@@ -22,19 +22,27 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.MiniMessage;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import me.wolfyscript.utilities.util.eval.context.EvalContext;
+import me.wolfyscript.utilities.util.eval.value_providers.ValueProvider;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class ElementOptionComponentBukkit extends ElementOption<String, String> {
 
     public boolean isEqual(String value, EvalContext evalContext, MiniMessage miniMessage, TagResolver... tagResolvers) {
-        return value().map(valueProvider -> Objects.equals(miniMessage.deserialize(valueProvider.getValue(evalContext), tagResolvers), BukkitComponentSerializer.legacy().deserialize(value))).orElse(true);
+        boolean exclude = exclude().map(shouldExclude -> shouldExclude.evaluate(evalContext)).orElse(false);
+        for (ValueProvider<String> valueProvider : values()) {
+            if (Objects.equals(miniMessage.deserialize(valueProvider.getValue(evalContext), tagResolvers), BukkitComponentSerializer.legacy().deserialize(value))) {
+                return !exclude;
+            }
+        }
+        return exclude;
     }
 
     @Override
@@ -53,19 +61,21 @@ public class ElementOptionComponentBukkit extends ElementOption<String, String> 
                 index = index % source.size(); //Prevent out of bounds
                 if (source.size() > index) {
                     String targetValue = source.get(index);
-                    value().ifPresentOrElse(valueProvider -> {
-                        if (isEqual(targetValue, evalContext, miniMessage, tagResolvers)) {
-                            result.add(targetValue);
-                        }
-                    }, () -> result.add(targetValue));
+                    if (isEqual(targetValue, evalContext, miniMessage, tagResolvers)) {
+                        result.add(targetValue);
+                    }
                 }
-            }, () -> value().ifPresentOrElse(valueProvider -> {
+            }, () -> {
+                if (values().isEmpty()) {
+                    result.addAll(source);
+                    return;
+                }
                 for (String targetValue : source) {
                     if (isEqual(targetValue, evalContext, miniMessage, tagResolvers)) {
                         result.add(targetValue);
                     }
                 }
-            }, () -> result.addAll(source)));
+            });
         }
         return result;
     }

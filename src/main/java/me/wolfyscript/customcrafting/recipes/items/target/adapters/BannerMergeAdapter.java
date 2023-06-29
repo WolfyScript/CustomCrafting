@@ -180,10 +180,14 @@ public class BannerMergeAdapter extends MergeAdapter {
 
         @Override
         public boolean isEqual(Pattern value, EvalContext evalContext) {
-            return value().map(provider -> {
-                PatternOption option = provider.getValue(evalContext);
-                return option.type == value.getPattern() && option.dyeColor == value.getColor();
-            }).orElse(true);
+            boolean exclude = exclude().map(shouldExclude -> shouldExclude.evaluate(evalContext)).orElse(false);
+            for (ValueProvider<PatternOption> valueProvider : values()) {
+                PatternOption option = valueProvider.getValue(evalContext);
+                if (option.type == value.getPattern() && option.dyeColor == value.getColor()) {
+                    return !exclude;
+                }
+            }
+            return exclude;
         }
     }
 

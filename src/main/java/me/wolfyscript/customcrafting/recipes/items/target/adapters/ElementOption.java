@@ -25,8 +25,8 @@ package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
+
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.utilities.util.eval.context.EvalContext;
 import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
 import me.wolfyscript.utilities.util.eval.value_providers.ValueProvider;
@@ -38,7 +38,11 @@ public abstract class ElementOption<O, C> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private BoolOperator condition;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private ValueProvider<C> value;
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+    @JsonAlias("value")
+    private List<ValueProvider<C>> values;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private BoolOperator exclude;
 
     public Optional<ValueProvider<Integer>> index() {
         return Optional.ofNullable(index);
@@ -66,15 +70,48 @@ public abstract class ElementOption<O, C> {
         return condition;
     }
 
+    @Deprecated
     public Optional<ValueProvider<C>> value() {
-        return Optional.ofNullable(value);
+        return Optional.ofNullable(!values.isEmpty() ? values.get(0) : null);
     }
 
+    @Deprecated
+    @JsonIgnore
     public void setValue(ValueProvider<C> value) {
-        this.value = value;
+        if (values.isEmpty()) {
+            values.add(value);
+        } else {
+            this.values.set(0, value);
+        }
+    }
+
+    @JsonGetter
+    private List<ValueProvider<C>> getValues() {
+        return values;
+    }
+
+    public void setValues(List<ValueProvider<C>> values) {
+        this.values = List.copyOf(values);
+    }
+
+    public List<ValueProvider<C>> values() {
+        return values;
+    }
+
+    public void setExclude(BoolOperator exclude) {
+        this.exclude = exclude;
+    }
+
+    public Optional<BoolOperator> exclude() {
+        return Optional.of(exclude);
     }
 
     public abstract boolean isEqual(O value, EvalContext evalContext);
+
+    private boolean checkEquality(O value, EvalContext evalContext) {
+        boolean result = isEqual(value, evalContext);
+        return exclude().map(shouldExclude -> shouldExclude.evaluate(evalContext) != result).orElse(result);
+    }
 
     public List<O> readFromSource(List<O> source, EvalContext evalContext) {
         List<O> result = new ArrayList<>();
@@ -87,26 +124,19 @@ public abstract class ElementOption<O, C> {
                 index = index % source.size(); //Prevent out of bounds
                 if (source.size() > index) {
                     O targetValue = source.get(index);
-                    value().ifPresentOrElse(valueProvider -> {
-                        if (isEqual(targetValue, evalContext)) {
-                            result.add(targetValue);
-                        }
-                    }, () -> result.add(targetValue));
+                    if (checkEquality(targetValue, evalContext)) {
+                        result.add(targetValue);
+                    }
                 }
             }, () -> value().ifPresentOrElse(valueProvider -> {
                 for (O targetValue : source) {
-                    if (isEqual(targetValue, evalContext)) {
+                    if (checkEquality(targetValue, evalContext)) {
                         result.add(targetValue);
                     }
                 }
             }, () -> result.addAll(source)));
         }
         return result;
-    }
-
-    @JsonGetter
-    protected ValueProvider<C> getValue() {
-        return value;
     }
 
 }
