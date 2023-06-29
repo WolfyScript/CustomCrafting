@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CookingManager {
 
     private final CustomCrafting plugin;
-    final Map<BlockPositionData, Pair<CookingRecipeData<?>, Boolean>> cachedRecipeData = new ConcurrentHashMap<>();
+    private final Map<BlockPositionData, Pair<CookingRecipeData<?>, Boolean>> cachedRecipeData = new ConcurrentHashMap<>();
     private final SmeltAPIAdapter smeltAdapter;
 
     public CookingManager(CustomCrafting plugin) {
