@@ -93,12 +93,12 @@ public abstract class SmeltAPIAdapter {
      */
     public void applyResult(FurnaceSmeltEvent event) {
         var block = event.getBlock();
-        if (manager.cachedRecipeData.get(block) != null) {
+        manager.getCustomRecipeCache(block).ifPresent(cachedData -> {
             FurnaceInventory inventory = ((Furnace) event.getBlock().getState()).getInventory();
             ItemStack smelting = inventory.getSmelting();
             if (ItemUtils.isAirOrNull(smelting)) return;
 
-            var data = manager.cachedRecipeData.get(block).getKey();
+            var data = cachedData.getKey();
             Bukkit.getScheduler().runTaskLater(customCrafting, () -> manager.clearCache(block), 1); //Clearing the cached data after 1 tick (event should be done).
             if (data == null) return;
             var result = data.getResult();
@@ -124,7 +124,7 @@ public abstract class SmeltAPIAdapter {
             result.executeExtensions(block.getLocation(), true, null);
             result.removeCachedItem(block);
             block.getState().update(); // Update the state of the block. Just in case!
-        }
+        });
     }
 
 }
