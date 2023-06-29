@@ -65,7 +65,7 @@ public class CampfireListener implements Listener {
             return;
         if (ItemUtils.isAirOrNull(event.getItem())) return;
         Material itemType = event.getItem().getType();
-        if (itemType == Material.WATER_BUCKET || itemType == Material.FLINT_AND_STEEL || itemType.toString().endsWith("_SHOVEL"))
+        if (itemType == Material.FIRE_CHARGE || itemType == Material.WATER_BUCKET || itemType == Material.FLINT_AND_STEEL || itemType.toString().endsWith("_SHOVEL"))
             return;
 
         Campfire campfire = (Campfire) event.getClickedBlock().getState();
