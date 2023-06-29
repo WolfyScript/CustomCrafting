@@ -22,16 +22,12 @@
 
 package me.wolfyscript.customcrafting.listeners.cooking;
 
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.CampfireRecipeData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
@@ -43,6 +39,10 @@ import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.Recipe;
+
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Handles campfire recipes without any NMS (which was used in previous versions of CC).
@@ -57,11 +57,16 @@ public class CampfireListener implements Listener {
         this.customCrafting = customCrafting;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onInteractCampfire(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if (event.getClickedBlock() == null || (event.getClickedBlock().getType() != Material.CAMPFIRE && event.getClickedBlock().getType() != Material.SOUL_CAMPFIRE)) return;
+        if (event.getClickedBlock() == null || (event.getClickedBlock().getType() != Material.CAMPFIRE && event.getClickedBlock().getType() != Material.SOUL_CAMPFIRE))
+            return;
         if (ItemUtils.isAirOrNull(event.getItem())) return;
+        Material itemType = event.getItem().getType();
+        if (itemType == Material.WATER_BUCKET || itemType == Material.FLINT_AND_STEEL || itemType.toString().endsWith("_SHOVEL"))
+            return;
+
         Campfire campfire = (Campfire) event.getClickedBlock().getState();
         getFirstEmptySlot(campfire).ifPresent(slot -> customCrafting.getRegistries().getRecipes().get(RecipeType.CAMPFIRE).stream()
                 .filter(recipe1 -> recipe1.getSource().check(event.getItem(), recipe1.isCheckNBT()).isPresent() && recipe1.checkConditions(Conditions.Data.of(campfire.getBlock())))
