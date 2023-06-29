@@ -32,6 +32,7 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Campfire;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -74,24 +75,31 @@ public class CampfireListener implements Listener {
                 .ifPresentOrElse(
                         recipe1 -> campfire.setCookTimeTotal(slot, recipe1.getCookingTime()),
                         () -> {
+                            boolean isPartOfPlaceholderRecipe = false;
                             Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(me.wolfyscript.utilities.api.nms.inventory.RecipeType.CAMPFIRE_COOKING);
                             while (recipeIterator.hasNext()) {
-                                if (recipeIterator.next() instanceof CookingRecipe<?> recipe && !ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
-                                    if (recipe.getInputChoice().test(event.getItem())) {
-                                        // Found a vanilla or other plugin recipe that matches.
-                                        campfire.setCookTimeTotal(slot, recipe.getCookingTime());
-
-                                        // Check if the CustomItem is allowed in Vanilla recipes
-                                        CustomItem customItem = CustomItem.getByItemStack(event.getItem());
-                                        if (customItem != null && customItem.isBlockVanillaRecipes()) {
-                                            event.setCancelled(true);
-                                        }
-                                        return;
+                                if (recipeIterator.next() instanceof CookingRecipe<?> recipe) {
+                                    if (!recipe.getInputChoice().test(event.getItem())) continue;
+                                    if (ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
+                                        isPartOfPlaceholderRecipe = true;
+                                        continue;
                                     }
+                                    // Found a vanilla or other plugin recipe that matches.
+                                    campfire.setCookTimeTotal(slot, recipe.getCookingTime());
+
+                                    // Check if the CustomItem is allowed in Vanilla recipes
+                                    CustomItem customItem = CustomItem.getByItemStack(event.getItem());
+                                    if (customItem != null && customItem.isBlockVanillaRecipes()) {
+                                        event.setUseInteractedBlock(Event.Result.DENY);
+                                    }
+                                    return;
                                 }
                             }
                             // No non-cc recipe found!
-                            event.setCancelled(true);
+                            // Allow for normal interaction if the item is not used in any recipe.
+                            if (isPartOfPlaceholderRecipe) {
+                                event.setUseInteractedBlock(Event.Result.DENY);
+                            }
                         }));
         campfire.update();
     }
