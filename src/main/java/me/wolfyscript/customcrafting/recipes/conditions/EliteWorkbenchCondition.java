@@ -143,10 +143,10 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                                 return data != null && data.isEnabled();
                             }).map(entry -> NamespacedKeyUtils.toInternal(entry.getKey())).collect(Collectors.toSet());
                             if (args.length == 2) {
-                                return StringUtil.copyPartialMatches(args[1], entries.stream().filter(key -> key.getNamespace().equals(args[0])).map(NamespacedKey::getKey).distinct().toList(), Collections.emptyList());
+                                return StringUtil.copyPartialMatches(args[1], entries.stream().filter(key -> key.getNamespace().equals(args[0])).map(NamespacedKey::getKey).distinct().toList(), new ArrayList<>());
                             }
                             if (args.length >= 1) {
-                                return StringUtil.copyPartialMatches(args[0], entries.stream().map(NamespacedKey::getNamespace).distinct().toList(), Collections.emptyList());
+                                return StringUtil.copyPartialMatches(args[0], entries.stream().map(NamespacedKey::getNamespace).distinct().toList(), new ArrayList<>());
                             }
                             return Collections.emptyList();
                         }));
