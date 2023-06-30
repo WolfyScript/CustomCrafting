@@ -22,8 +22,10 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import com.wolfyscript.utilities.bukkit.items.CustomItemBlockData;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -31,12 +33,12 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
@@ -72,16 +74,13 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
     @Override
     public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
         if (RecipeType.Container.ELITE_CRAFTING.isInstance(recipe)) {
-            if (data.getBlock() != null) {
-                CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
-                if (customItem != null) {
-                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA);
-                    if (eliteWorkbench != null && eliteWorkbench.isEnabled()) {
-                        return eliteWorkbenches.contains(customItem.getNamespacedKey()) && ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isEnabled();
-                    }
-                }
-            }
-            return false;
+            Block block = data.getBlock();
+            return customCrafting.getApi().getCore().getPersistentStorage().getOrCreateWorldStorage(block.getWorld()).getBlock(block.getLocation())
+                    .flatMap(blockStorage -> blockStorage.getData(CustomItemBlockData.ID, CustomItemBlockData.class))
+                    .flatMap(CustomItemBlockData::getCustomItem)
+                    .flatMap(customItem -> customItem.getData(EliteCraftingTableSettings.class)
+                            .map(eliteCraftingTableSettings -> eliteCraftingTableSettings.isEnabled() && eliteWorkbenches.contains(customItem.getNamespacedKey()))
+                    ).orElse(false);
         }
         return true;
     }
