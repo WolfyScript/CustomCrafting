@@ -112,19 +112,7 @@ import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtensionAdvancement;
 import me.wolfyscript.customcrafting.recipes.items.extension.SoundResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.BannerMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.BlockEntityMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.BookMetaMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.CompassMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.DisplayLoreMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.DisplayNameMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantedBookMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.FireworkRocketMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.ItemTypeMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.NBTMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.PlaceholderAPIMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.*;
 import me.wolfyscript.customcrafting.registry.CCRegistries;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.CraftManager;
@@ -295,6 +283,9 @@ public class CustomCrafting extends JavaPlugin {
             resultMergeAdapters.register(new BannerMergeAdapter());
             resultMergeAdapters.register(new BlockEntityMergeAdapter());
             resultMergeAdapters.register(new CompassMergeAdapter());
+        }
+        if (ServerVersion.getVersion().isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            resultMergeAdapters.register(ArmorTrimMergeAdapter.KEY, ArmorTrimMergeAdapter.class);
         }
         resultMergeAdapters.register(ItemTypeMergeAdapter.KEY, ItemTypeMergeAdapter.class);
 
