@@ -103,7 +103,10 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     }
 
     @JsonCreator
-    public CustomRecipeAnvil(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+    public CustomRecipeAnvil(@JsonProperty("key") @JacksonInject("key") NamespacedKey key,
+                             @JacksonInject("customcrafting") CustomCrafting customCrafting,
+                             @JsonProperty("base") Ingredient base,
+                             @JsonProperty("addition") Ingredient addition) {
         super(key, customCrafting, RecipeType.ANVIL);
         this.repairTask = new RepairTaskDefault();
         this.repairCost = 1;
@@ -112,11 +115,14 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         this.blockEnchant = false;
         this.blockRename = false;
         this.blockRepair = false;
+        this.base = base;
+        this.addition = addition;
+        Preconditions.checkArgument(!base.isEmpty() || !addition.isEmpty(), "Recipe must have at least one non-air base or addition!");
     }
 
     @Deprecated
     public CustomRecipeAnvil(NamespacedKey key) {
-        this(key, CustomCrafting.inst());
+        this(key, CustomCrafting.inst(), new Ingredient(), new Ingredient());
     }
 
     public CustomRecipeAnvil(CustomRecipeAnvil recipe) {
@@ -263,13 +269,15 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         this.repairCostMode = repairCostMode;
     }
 
+    @Deprecated(forRemoval = true)
+    @JsonIgnore
     public void setBase(@NotNull Ingredient base) {
-        Preconditions.checkArgument(!base.isEmpty() || !addition.isEmpty(), "Recipe must have at least one non-air base or addition!");
         this.base = base;
     }
 
+    @Deprecated(forRemoval = true)
+    @JsonIgnore
     public void setAddition(@NotNull Ingredient addition) {
-        Preconditions.checkArgument(!addition.isEmpty() || !base.isEmpty(), "Recipe must have at least one non-air base or addition!");
         this.addition = addition;
     }
 
