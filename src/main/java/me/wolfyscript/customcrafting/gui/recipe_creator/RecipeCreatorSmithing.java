@@ -26,15 +26,18 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import me.wolfyscript.utilities.util.version.MinecraftVersion;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 
 public class RecipeCreatorSmithing extends RecipeCreator {
 
     private static final String CHANGE_MATERIAL = "change_material";
     private static final String PRESERVE_ENCHANTS = "preserve_enchants";
     private static final String PRESERVE_DAMAGE = "preserve_damage";
+    private static final String PRESERVE_TRIM = "preserve_trim";
 
     public RecipeCreatorSmithing(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "smithing", 45, customCrafting);
@@ -62,13 +65,22 @@ public class RecipeCreatorSmithing extends RecipeCreator {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(true);
             return true;
         })).register();
-        btnB.toggle(PRESERVE_DAMAGE).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveDamage()).enabledState(s -> s.subKey("enabled").icon(Material.LIME_CONCRETE).action((cache, handler, player, inv, i, e) -> {
+        btnB.toggle(PRESERVE_DAMAGE).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveDamage()).enabledState(s -> s.subKey("enabled").icon(new ItemBuilder(Material.IRON_SWORD).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()).action((cache, handler, player, inv, i, e) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(false);
             return true;
-        })).disabledState(s -> s.subKey("disabled").icon(Material.RED_CONCRETE).action((cache, handler, player, inv, i, e) -> {
+        })).disabledState(s -> s.subKey("disabled").icon(Material.IRON_SWORD).action((cache, handler, player, inv, i, e) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(true);
             return true;
         })).register();
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            btnB.toggle(PRESERVE_TRIM).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveTrim()).enabledState(s -> s.subKey("enabled").icon(new ItemBuilder(Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()).action((cache, handler, player, inv, i, e) -> {
+                cache.getRecipeCreatorCache().getSmithingCache().setPreserveTrim(false);
+                return true;
+            })).disabledState(s -> s.subKey("disabled").icon(Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE).action((cache, handler, player, inv, i, e) -> {
+                cache.getRecipeCreatorCache().getSmithingCache().setPreserveTrim(true);
+                return true;
+            })).register();
+        }
     }
 
     @Override
@@ -92,6 +104,9 @@ public class RecipeCreatorSmithing extends RecipeCreator {
 
         event.setButton(37, PRESERVE_ENCHANTS);
         event.setButton(38, PRESERVE_DAMAGE);
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            event.setButton(39, PRESERVE_TRIM);
+        }
         event.setButton(40, CHANGE_MATERIAL);
 
         event.setButton(42, ClusterRecipeCreator.GROUP);
