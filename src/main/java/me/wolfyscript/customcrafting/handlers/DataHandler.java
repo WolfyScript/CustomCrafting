@@ -48,7 +48,7 @@ public class DataHandler implements Listener {
     public static final String JSON_OBJ_PATH = DATA_FOLDER.getPath() + "/%s/%s/%s.json";
     public static final String HOCON_OBJ_PATH = DATA_FOLDER.getPath() + "/%s/%s/%s.conf";
     private final CustomCrafting customCrafting;
-    private List<Recipe> minecraftRecipes = new ArrayList<>();
+    private List<NamespacedKey> minecraftRecipes = new ArrayList<>();
 
     private final ConfigHandler configHandler;
     private final WolfyUtilities api;
@@ -160,9 +160,13 @@ public class DataHandler implements Listener {
         }
     }
 
-    public List<Recipe> getMinecraftRecipes() {
+    public List<NamespacedKey> getMinecraftRecipes() {
         if (minecraftRecipes.isEmpty()) {
-            minecraftRecipes = Streams.stream(Bukkit.recipeIterator()).filter(recipe -> recipe instanceof Keyed keyed && keyed.getKey().getNamespace().equals("minecraft")).sorted(Comparator.comparing(recipe -> ((Keyed) recipe).getKey().toString())).toList();
+            minecraftRecipes = Streams.stream(Bukkit.recipeIterator())
+                    .map(recipe -> recipe instanceof Keyed keyed ? NamespacedKey.fromBukkit(keyed.getKey()) : null)
+                    .filter(recipe -> recipe != null && recipe.getNamespace().equals("minecraft"))
+                    .sorted()
+                    .toList();
         }
         return minecraftRecipes;
     }
