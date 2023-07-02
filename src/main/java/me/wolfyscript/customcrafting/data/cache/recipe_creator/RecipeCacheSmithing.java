@@ -25,6 +25,8 @@ package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.utilities.util.version.MinecraftVersion;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 
 public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 
@@ -34,12 +36,14 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 
     private boolean preserveEnchants;
     private boolean preserveDamage;
+    private boolean preserveTrim;
     private boolean onlyChangeMaterial;
 
     RecipeCacheSmithing(CustomCrafting customCrafting) {
         super(customCrafting);
         this.preserveEnchants = true;
         this.preserveDamage = true;
+        this.preserveTrim = ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0));
         this.onlyChangeMaterial = false;
     }
 
@@ -50,6 +54,7 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
         this.addition = recipe.getAddition().clone();
         this.preserveEnchants = recipe.isPreserveEnchants();
         this.preserveDamage = recipe.isPreserveDamage();
+        this.preserveTrim = recipe.isPreserveTrim();
     }
 
     @Override
@@ -89,6 +94,7 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 
         recipeSmithing.setPreserveEnchants(preserveEnchants);
         recipeSmithing.setPreserveDamage(preserveDamage);
+        recipeSmithing.setPreserveTrim(preserveTrim);
         recipeSmithing.setOnlyChangeMaterial(onlyChangeMaterial);
         return recipeSmithing;
     }
@@ -147,6 +153,14 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 
     public void setOnlyChangeMaterial(boolean onlyChangeMaterial) {
         this.onlyChangeMaterial = onlyChangeMaterial;
+    }
+
+    public void setPreserveTrim(boolean preserveTrim) {
+        this.preserveTrim = preserveTrim;
+    }
+
+    public boolean isPreserveTrim() {
+        return preserveTrim;
     }
 
     public boolean isOnlyChangeMaterial() {
