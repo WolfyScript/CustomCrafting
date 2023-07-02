@@ -22,51 +22,38 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.MiniMessage;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import me.wolfyscript.utilities.util.eval.context.EvalContext;
+import me.wolfyscript.utilities.util.eval.value_providers.ValueProvider;
+
+import java.util.List;
+import java.util.Objects;
 
 public class ElementOptionComponentBukkit extends ElementOption<String, String> {
 
+    @Deprecated(forRemoval = true)
     public boolean isEqual(String value, EvalContext evalContext, MiniMessage miniMessage, TagResolver... tagResolvers) {
-        return value().map(valueProvider -> Objects.equals(miniMessage.deserialize(valueProvider.getValue(evalContext), tagResolvers), BukkitComponentSerializer.legacy().deserialize(value))).orElse(true);
+        return isComponentEqual(value, evalContext, miniMessage, tagResolvers);
+    }
+
+    public boolean isComponentEqual(String value, EvalContext evalContext, MiniMessage miniMessage, TagResolver... tagResolvers) {
+        for (ValueProvider<String> valueProvider : values()) {
+            if (Objects.equals(miniMessage.deserialize(valueProvider.getValue(evalContext), tagResolvers), BukkitComponentSerializer.legacy().deserialize(value))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean isEqual(String value, EvalContext evalContext) {
-        return isEqual(value, evalContext, CustomCrafting.inst().getApi().getChat().getMiniMessage(), TagResolver.empty());
+        return isComponentEqual(value, evalContext, CustomCrafting.inst().getApi().getChat().getMiniMessage(), TagResolver.empty());
     }
 
     public List<String> readFromSource(List<String> source, EvalContext evalContext, MiniMessage miniMessage, TagResolver... tagResolvers) {
-        List<String> result = new ArrayList<>();
-        if (condition().map(boolOperator -> boolOperator.evaluate(evalContext)).orElse(true)) {
-            index().ifPresentOrElse(indexProvider -> {
-                int index = indexProvider.getValue(evalContext);
-                if (index < 0) {
-                    index = source.size() + (index % source.size()); //Convert the negative index to a positive reverted index, that starts from the end.
-                }
-                index = index % source.size(); //Prevent out of bounds
-                if (source.size() > index) {
-                    String targetValue = source.get(index);
-                    value().ifPresentOrElse(valueProvider -> {
-                        if (isEqual(targetValue, evalContext, miniMessage, tagResolvers)) {
-                            result.add(targetValue);
-                        }
-                    }, () -> result.add(targetValue));
-                }
-            }, () -> value().ifPresentOrElse(valueProvider -> {
-                for (String targetValue : source) {
-                    if (isEqual(targetValue, evalContext, miniMessage, tagResolvers)) {
-                        result.add(targetValue);
-                    }
-                }
-            }, () -> result.addAll(source)));
-        }
-        return result;
+        return readFromSource(source, s -> isComponentEqual(s, evalContext, miniMessage, tagResolvers), evalContext);
     }
 }

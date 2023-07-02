@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
@@ -32,7 +31,6 @@ import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Plac
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiMenuComponent;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.util.StringUtil;
@@ -41,7 +39,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class ButtonSaveCategory extends ActionButton<CCCache> {
+class ButtonSaveCategory {
 
     public static void registerSave(GuiMenuComponent.ButtonBuilder<CCCache> buttonBuilder) {
         buttonBuilder.action(ClusterRecipeBookEditor.SAVE.getKey())
@@ -90,43 +88,6 @@ class ButtonSaveCategory extends ActionButton<CCCache> {
                         })
                 )
                 .register();
-    }
-
-
-    ButtonSaveCategory(boolean saveAs, CustomCrafting customCrafting) {
-        super(saveAs ? ClusterRecipeBookEditor.SAVE_AS.getKey() : ClusterRecipeBookEditor.SAVE.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
-            var recipeBookEditor = cache.getRecipeBookEditorCache();
-            WolfyUtilities api = guiHandler.getApi();
-
-            if (saveAs) {
-                guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
-                    List<String> results = new ArrayList<>();
-                    if (args.length == 1) {
-                        StringUtil.copyPartialMatches(args[0], recipeBookEditor.getEditorConfigCopy().getCategories().keySet(), results);
-                    }
-                    Collections.sort(results);
-                    return results;
-                });
-                inventory.getWindow().openChat(guiHandler, inventory.getWindow().getCluster().translatedMsgKey("save.input"), (guiHandler1, player1, s, args) -> {
-                    if (s != null && !s.isEmpty() && recipeBookEditor.setCategoryID(s)) {
-                        if (saveCategorySetting(recipeBookEditor)) {
-                            guiHandler1.openPreviousWindow();
-                            return true;
-                        }
-                        api.getChat().sendKey(player1, ClusterRecipeBookEditor.KEY, "save.error");
-                    }
-                    return false;
-                });
-                return true;
-            } else if (recipeBookEditor.hasCategoryID()) {
-                if (saveCategorySetting(recipeBookEditor)) {
-                    guiHandler.openPreviousWindow();
-                } else {
-                    api.getChat().sendKey(player, ClusterRecipeBookEditor.KEY, "save.error");
-                }
-            }
-            return true;
-        });
     }
 
     private static boolean saveCategorySetting(RecipeBookEditorCache recipeBookEditorCache) {
