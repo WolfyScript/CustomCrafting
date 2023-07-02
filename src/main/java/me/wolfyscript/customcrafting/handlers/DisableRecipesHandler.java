@@ -169,4 +169,8 @@ public class DisableRecipesHandler {
     public List<Recipe> getCachedVanillaRecipes() {
         return List.copyOf(cachedRecipes.values());
     }
+
+    public Recipe getCachedVanillaRecipe(org.bukkit.NamespacedKey key) {
+        return cachedRecipes.get(key);
+    }
 }
