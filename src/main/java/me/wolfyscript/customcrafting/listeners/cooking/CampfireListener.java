@@ -22,20 +22,17 @@
 
 package me.wolfyscript.customcrafting.listeners.cooking;
 
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Optional;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.CampfireRecipeData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Campfire;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -43,6 +40,10 @@ import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.Recipe;
+
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Handles campfire recipes without any NMS (which was used in previous versions of CC).
@@ -57,11 +58,16 @@ public class CampfireListener implements Listener {
         this.customCrafting = customCrafting;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onInteractCampfire(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if (event.getClickedBlock() == null || (event.getClickedBlock().getType() != Material.CAMPFIRE && event.getClickedBlock().getType() != Material.SOUL_CAMPFIRE)) return;
+        if (event.getClickedBlock() == null || (event.getClickedBlock().getType() != Material.CAMPFIRE && event.getClickedBlock().getType() != Material.SOUL_CAMPFIRE))
+            return;
         if (ItemUtils.isAirOrNull(event.getItem())) return;
+        Material itemType = event.getItem().getType();
+        if (itemType == Material.FIRE_CHARGE || itemType == Material.WATER_BUCKET || itemType == Material.FLINT_AND_STEEL || itemType.toString().endsWith("_SHOVEL"))
+            return;
+
         Campfire campfire = (Campfire) event.getClickedBlock().getState();
         getFirstEmptySlot(campfire).ifPresent(slot -> customCrafting.getRegistries().getRecipes().get(RecipeType.CAMPFIRE).stream()
                 .filter(recipe1 -> recipe1.getSource().check(event.getItem(), recipe1.isCheckNBT()).isPresent() && recipe1.checkConditions(Conditions.Data.of(campfire.getBlock())))
@@ -69,24 +75,31 @@ public class CampfireListener implements Listener {
                 .ifPresentOrElse(
                         recipe1 -> campfire.setCookTimeTotal(slot, recipe1.getCookingTime()),
                         () -> {
+                            boolean isPartOfPlaceholderRecipe = false;
                             Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(me.wolfyscript.utilities.api.nms.inventory.RecipeType.CAMPFIRE_COOKING);
                             while (recipeIterator.hasNext()) {
-                                if (recipeIterator.next() instanceof CookingRecipe<?> recipe && !ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
-                                    if (recipe.getInputChoice().test(event.getItem())) {
-                                        // Found a vanilla or other plugin recipe that matches.
-                                        campfire.setCookTimeTotal(slot, recipe.getCookingTime());
-
-                                        // Check if the CustomItem is allowed in Vanilla recipes
-                                        CustomItem customItem = CustomItem.getByItemStack(event.getItem());
-                                        if (customItem != null && customItem.isBlockVanillaRecipes()) {
-                                            event.setCancelled(true);
-                                        }
-                                        return;
+                                if (recipeIterator.next() instanceof CookingRecipe<?> recipe) {
+                                    if (!recipe.getInputChoice().test(event.getItem())) continue;
+                                    if (ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
+                                        isPartOfPlaceholderRecipe = true;
+                                        continue;
                                     }
+                                    // Found a vanilla or other plugin recipe that matches.
+                                    campfire.setCookTimeTotal(slot, recipe.getCookingTime());
+
+                                    // Check if the CustomItem is allowed in Vanilla recipes
+                                    CustomItem customItem = CustomItem.getByItemStack(event.getItem());
+                                    if (customItem != null && customItem.isBlockVanillaRecipes()) {
+                                        event.setUseInteractedBlock(Event.Result.DENY);
+                                    }
+                                    return;
                                 }
                             }
                             // No non-cc recipe found!
-                            event.setCancelled(true);
+                            // Allow for normal interaction if the item is not used in any recipe.
+                            if (isPartOfPlaceholderRecipe) {
+                                event.setUseInteractedBlock(Event.Result.DENY);
+                            }
                         }));
         campfire.update();
     }
