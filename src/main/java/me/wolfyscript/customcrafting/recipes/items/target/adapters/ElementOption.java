@@ -31,9 +31,9 @@ import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
 import me.wolfyscript.utilities.util.eval.value_providers.ValueProvider;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public abstract class ElementOption<O, C> {
 
@@ -127,52 +127,45 @@ public abstract class ElementOption<O, C> {
 
     public abstract boolean isEqual(O value, EvalContext evalContext);
 
-    private boolean checkEquality(O value, EvalContext evalContext) {
-        return isEqual(value, evalContext);
+    public List<O> readFromSource(List<O> source, EvalContext evalContext) {
+        return readFromSource(source, o -> isEqual(o, evalContext), evalContext);
     }
 
-    public List<O> readFromSource(List<O> source, EvalContext evalContext) {
+    public List<O> readFromSource(List<O> source, Predicate<O> valuePredicate, EvalContext evalContext) {
         List<O> result = new ArrayList<>();
         if (condition().map(boolOperator -> boolOperator.evaluate(evalContext)).orElse(true)) {
             boolean shouldExclude = exclude().map(boolOperator -> boolOperator.evaluate(evalContext)).orElse(false);
             if (!indices.isEmpty()) {
-                IntList indicesUsed = new IntArrayList();
-                for (ValueProvider<Integer> indexProvider : indices) {
-                    int index = indexProvider.getValue(evalContext);
-                    if (index < 0) {
-                        index = source.size() + (index % source.size()); //Convert the negative index to a positive reverted index, that starts from the end.
-                    }
-                    index = index % source.size(); //Prevent out of bounds
-                    if (source.size() > index) {
-                        O targetValue = source.get(index);
-                        if (checkEquality(targetValue, evalContext)) {
-                            indicesUsed.add(index);
-                        } if (values.isEmpty() && shouldExclude) {
+                int sourceSize = source.size();
+                if (shouldExclude) {
+                    IntList indicesUsed = new IntArrayList();
+                    for (ValueProvider<Integer> indexProvider : indices) {
+                        int index = getIndex(indexProvider, evalContext, sourceSize);
+                        if (values.isEmpty() || valuePredicate.test(source.get(index))) {
                             indicesUsed.add(index);
                         }
                     }
-                }
-                indicesUsed.sort(IntComparators.OPPOSITE_COMPARATOR);
-
-                if (shouldExclude) {
+                    indicesUsed.sort(IntComparators.OPPOSITE_COMPARATOR);
                     result.addAll(source);
-                }
-                for (int index : indicesUsed) {
-                    if (shouldExclude) {
+                    for (int index : indicesUsed) {
                         result.remove(index);
-                    } else {
-                        result.add(source.get(index));
                     }
+                    return result;
                 }
-                if (!shouldExclude) {
-                    Collections.reverse(result);
+
+                for (ValueProvider<Integer> indexProvider : indices) {
+                    int index = getIndex(indexProvider, evalContext, sourceSize);
+                    O srcValue = source.get(index);
+                    if (values.isEmpty() || valuePredicate.test(srcValue)) {
+                        result.add(srcValue);
+                    }
                 }
                 return result;
             }
 
             if (!values.isEmpty()) {
                 for (O targetValue : source) {
-                    if (checkEquality(targetValue, evalContext) && !shouldExclude) {
+                    if (valuePredicate.test(targetValue) && !shouldExclude) {
                         result.add(targetValue);
                     }
                 }
@@ -181,6 +174,14 @@ public abstract class ElementOption<O, C> {
             result.addAll(source);
         }
         return result;
+    }
+
+    protected int getIndex(ValueProvider<Integer> indexProvider, EvalContext evalContext, int sourceSize) {
+        int index = indexProvider.getValue(evalContext);
+        if (index < 0) {
+            index = sourceSize + (index % sourceSize); //Convert the negative index to a positive reverted index, that starts from the end.
+        }
+        return index % sourceSize; //Prevent out of bounds
     }
 
 }
