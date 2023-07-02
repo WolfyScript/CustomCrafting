@@ -61,7 +61,7 @@ class ButtonContainerRecipeList extends Button<CCCache> {
 
     private final WolfyUtilities api;
     private final CustomCrafting customCrafting;
-    private final HashMap<GuiHandler<CCCache>, Recipe> recipes = new HashMap<>();
+    private final HashMap<GuiHandler<CCCache>, NamespacedKey> recipes = new HashMap<>();
     private final HashMap<GuiHandler<CCCache>, CustomRecipe<?>> customRecipes = new HashMap<>();
 
     ButtonContainerRecipeList(int slot, CustomCrafting customCrafting) {
@@ -128,7 +128,7 @@ class ButtonContainerRecipeList extends Button<CCCache> {
         } else if (customRecipe != null) {
             customCrafting.getDisableRecipesHandler().toggleRecipe(customRecipe);
         } else {
-            customCrafting.getDisableRecipesHandler().toggleBukkitRecipe(((Keyed) getRecipe(guiHandler)).getKey());
+            customCrafting.getDisableRecipesHandler().toggleBukkitRecipe(getRecipe(guiHandler).bukkit());
         }
         return true;
     }
@@ -157,17 +157,21 @@ class ButtonContainerRecipeList extends Button<CCCache> {
                 inventory.setItem(slot, itemB.create());
             }
         } else {
-            Recipe recipe = getRecipe(guiHandler);
+            org.bukkit.NamespacedKey key = getRecipe(guiHandler).bukkit();
+            Recipe recipe = Bukkit.getRecipe(key);
+            if (recipe == null) {
+                recipe = customCrafting.getDisableRecipesHandler().getCachedVanillaRecipe(key);
+            }
             if (recipe != null) {
                 ItemBuilder itemB;
                 if (ItemUtils.isAirOrNull(recipe.getResult())) {
                     itemB = new ItemBuilder(Material.STONE);
-                    itemB.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName(ChatColor.BOLD + ChatColor.GRAY.toString() + ((Keyed) recipe).getKey());
+                    itemB.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName(ChatColor.BOLD + ChatColor.GRAY.toString() + key);
                 } else {
                     itemB = new ItemBuilder(recipe.getResult());
                 }
-                itemB.addLoreLine(ChatColor.DARK_GRAY.toString() + ((Keyed) recipe).getKey());
-                if (customCrafting.getDisableRecipesHandler().isBukkitRecipeDisabled(((Keyed) recipe).getKey())) {
+                itemB.addLoreLine(ChatColor.DARK_GRAY.toString() + key);
+                if (customCrafting.getDisableRecipesHandler().isBukkitRecipeDisabled(key)) {
                     itemB.addLoreLine(bukkitSerializer.serialize(langAPI.getComponent("inventories.none.recipe_list.items.lores.disabled")));
                 } else {
                     itemB.addLoreLine(bukkitSerializer.serialize(langAPI.getComponent("inventories.none.recipe_list.items.lores.enabled")));
@@ -185,11 +189,11 @@ class ButtonContainerRecipeList extends Button<CCCache> {
         customRecipes.put(guiHandler, recipe);
     }
 
-    public Recipe getRecipe(GuiHandler<CCCache> guiHandler) {
+    public NamespacedKey getRecipe(GuiHandler<CCCache> guiHandler) {
         return recipes.getOrDefault(guiHandler, null);
     }
 
-    public void setRecipe(GuiHandler<CCCache> guiHandler, Recipe recipe) {
+    public void setRecipe(GuiHandler<CCCache> guiHandler, NamespacedKey recipe) {
         recipes.put(guiHandler, recipe);
     }
 }

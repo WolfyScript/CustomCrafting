@@ -31,7 +31,9 @@ import me.wolfyscript.customcrafting.registry.RegistryRecipes;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.inventory.Recipe;
 
@@ -113,9 +115,16 @@ public class MenuListRecipes extends CCWindow {
                 event.setButton(9 + slot, button);
             }
         } else if (namespace.equalsIgnoreCase("minecraft")) {
-            List<Recipe> recipes = customCrafting.getDataHandler().getMinecraftRecipes().stream().sorted(Comparator.comparing(o -> ((Keyed) o).getKey().getKey())).collect(Collectors.toList());
-            recipes.addAll(customCrafting.getDisableRecipesHandler().getCachedVanillaRecipes());
-            recipeListCache.filterVanillaRecipes(recipes);
+            List<NamespacedKey> recipes = customCrafting.getDataHandler().getMinecraftRecipes().stream()
+                    .filter(key -> {
+                        Recipe recipe = Bukkit.getRecipe(key.bukkit());
+                        return recipeListCache.filterBukkitRecipe(recipe);
+                    })
+                    .collect(Collectors.toList());
+            recipes.addAll(customCrafting.getDisableRecipesHandler().getCachedVanillaRecipes().stream()
+                    .filter(recipeListCache::filterBukkitRecipe)
+                    .map(recipe -> NamespacedKey.fromBukkit(((Keyed)recipe).getKey()))
+                    .toList());
             maxPages = recipeListCache.getMaxPages(recipes.size());
             page = recipeListCache.getPage(maxPages);
             for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
