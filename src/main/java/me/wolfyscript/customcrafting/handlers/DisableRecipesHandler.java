@@ -159,7 +159,7 @@ public class DisableRecipesHandler {
      */
     public void enableBukkitRecipe(org.bukkit.NamespacedKey namespacedKey) {
         recipes.remove(NamespacedKey.fromBukkit(namespacedKey));
-        Recipe bukkitRecipe = cachedRecipes.get(namespacedKey);
+        Recipe bukkitRecipe = cachedRecipes.remove(namespacedKey);
         if (bukkitRecipe != null) {
             Bukkit.addRecipe(bukkitRecipe);
         }
@@ -168,5 +168,9 @@ public class DisableRecipesHandler {
 
     public List<Recipe> getCachedVanillaRecipes() {
         return List.copyOf(cachedRecipes.values());
+    }
+
+    public Recipe getCachedVanillaRecipe(org.bukkit.NamespacedKey key) {
+        return cachedRecipes.get(key);
     }
 }

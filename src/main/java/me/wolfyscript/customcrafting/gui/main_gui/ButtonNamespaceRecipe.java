@@ -64,9 +64,9 @@ public class ButtonNamespaceRecipe extends ActionButton<CCCache> {
                     DisableRecipesHandler disableRecipesHandler = customCrafting.getDisableRecipesHandler();
                     if (namespace.equalsIgnoreCase("minecraft")) {
                         if (clickEvent.isLeftClick()) {
-                            customCrafting.getDataHandler().getMinecraftRecipes().forEach(recipe -> disableRecipesHandler.disableBukkitRecipe(((Keyed) recipe).getKey()));
+                            customCrafting.getDataHandler().getMinecraftRecipes().forEach(recipe -> disableRecipesHandler.disableBukkitRecipe(recipe.bukkit()));
                         } else if (clickEvent.isRightClick()) {
-                            customCrafting.getDataHandler().getMinecraftRecipes().forEach(recipe -> disableRecipesHandler.enableBukkitRecipe(((Keyed) recipe).getKey()));
+                            customCrafting.getDataHandler().getMinecraftRecipes().forEach(recipe -> disableRecipesHandler.enableBukkitRecipe(recipe.bukkit()));
                         }
                     } else if (clickEvent.isLeftClick()) {
                         customCrafting.getRegistries().getRecipes().get(namespace).forEach(disableRecipesHandler::disableRecipe);

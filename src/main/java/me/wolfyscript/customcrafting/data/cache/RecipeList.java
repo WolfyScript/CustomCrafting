@@ -22,10 +22,10 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.CampfireRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
@@ -36,6 +36,8 @@ import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.inventory.SmokingRecipe;
 import org.bukkit.inventory.StonecuttingRecipe;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 
 public class RecipeList {
@@ -123,9 +125,13 @@ public class RecipeList {
         }
     }
 
-    public void filterVanillaRecipes(List<Recipe> recipes) {
+    public boolean filterBukkitRecipe(Recipe recipe) {
+        return filterClass == null || filterClass.isInstance(recipe);
+    }
+
+    public void filterVanillaRecipes(List<NamespacedKey> recipes) {
         if (filterClass != null) {
-            recipes.removeIf(recipe -> !filterClass.isInstance(recipe));
+            recipes.removeIf(key -> !filterClass.isInstance(Bukkit.getRecipe(key.bukkit())));
         }
     }
 }
