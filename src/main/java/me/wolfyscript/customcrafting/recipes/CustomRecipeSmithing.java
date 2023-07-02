@@ -39,6 +39,7 @@ import me.wolfyscript.customcrafting.recipes.data.SmithingData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.ArmorTrimMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -84,10 +85,11 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
 
     private boolean preserveEnchants;
     private boolean preserveDamage;
+    private boolean preserveTrim;
     private boolean onlyChangeMaterial; //Only changes the material of the item. Useful to make vanilla style recipes.
 
     @JsonIgnore
-    private List<MergeAdapter> internalMergeAdapters = new ArrayList<>(2);
+    private List<MergeAdapter> internalMergeAdapters = new ArrayList<>(3);
 
     public CustomRecipeSmithing(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
@@ -108,6 +110,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
         this.result = new Result();
         this.preserveEnchants = true;
         this.preserveDamage = true;
+        this.preserveTrim = ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0));
         this.onlyChangeMaterial = false;
     }
 
@@ -123,6 +126,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
         this.addition = customRecipeSmithing.getAddition();
         this.preserveEnchants = customRecipeSmithing.isPreserveEnchants();
         this.preserveDamage = customRecipeSmithing.isPreserveDamage();
+        this.preserveTrim = customRecipeSmithing.isPreserveTrim();
         this.onlyChangeMaterial = customRecipeSmithing.isOnlyChangeMaterial();
     }
 
@@ -214,6 +218,8 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
         this.preserveEnchants = preserveEnchants;
         if (!onlyChangeMaterial && preserveEnchants) {
             internalMergeAdapters.add(new EnchantMergeAdapter());
+        } else if (!preserveEnchants) {
+            internalMergeAdapters.removeIf(mergeAdapter -> mergeAdapter.getClass().equals(EnchantMergeAdapter.class));
         }
     }
 
@@ -225,6 +231,21 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
         this.preserveDamage = preserveDamage;
         if (!onlyChangeMaterial && preserveEnchants) {
             internalMergeAdapters.add(new DamageMergeAdapter());
+        } else if (!preserveDamage) {
+            internalMergeAdapters.removeIf(mergeAdapter -> mergeAdapter.getClass().equals(DamageMergeAdapter.class));
+        }
+    }
+
+    public boolean isPreserveTrim() {
+        return preserveTrim;
+    }
+
+    public void setPreserveTrim(boolean preserveTrim) {
+        this.preserveTrim = preserveTrim;
+        if (!onlyChangeMaterial && preserveTrim) {
+            internalMergeAdapters.add(new ArmorTrimMergeAdapter());
+        } else if (!preserveTrim) {
+            internalMergeAdapters.removeIf(mergeAdapter -> mergeAdapter.getClass().equals(ArmorTrimMergeAdapter.class));
         }
     }
 
