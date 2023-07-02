@@ -2987,6 +2987,27 @@
                 "<dark_grey>[<green>Click</green>]</dark_grey> <yellow>Preserve Damage</yellow>"
               ]
             }
+          },
+          "preserve_trim": {
+            "enabled": {
+              "name": "<green>\u2714</green>  <gold><b>Preserve Trim</b></gold>",
+              "lore": [
+                "<yellow>Copies the trim from</yellow>",
+                "<yellow>the base to the result item.</yellow>",
+                "",
+                "<dark_grey>[<green>Click</green>]</dark_grey> <yellow>Discard Trim</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>\u274C</red>  <gold><b>Discard Trim</b></gold>",
+              "lore": [
+                "<yellow>Leaves the trim of the</yellow>",
+                "<yellow>result as is and discards</yellow>",
+                "<yellow>the base ingredient trim.</yellow>",
+                "",
+                "<dark_grey>[<green>Click</green>]</dark_grey> <yellow>Preserve Trim</yellow>"
+              ]
+            }
           }
         }
       },

@@ -62,6 +62,8 @@ public class ArmorTrimMergeAdapter extends MergeAdapter {
 
     public ArmorTrimMergeAdapter() {
         super(KEY);
+        this.copyPattern = true;
+        this.copyMaterial = true;
     }
 
     public ArmorTrimMergeAdapter(ArmorTrimMergeAdapter adapter) {
@@ -123,7 +125,7 @@ public class ArmorTrimMergeAdapter extends MergeAdapter {
 
     @JsonGetter("defaultMaterial")
     private String getJsonDefaultMaterial() {
-        return defaultMaterial.getKey().toString();
+        return defaultMaterial == null ? null : defaultMaterial.getKey().toString();
     }
 
     @JsonSetter("defaultPattern")
@@ -135,7 +137,7 @@ public class ArmorTrimMergeAdapter extends MergeAdapter {
 
     @JsonGetter("defaultPattern")
     private String getJsonDefaultPattern() {
-        return defaultPattern.getKey().toString();
+        return defaultPattern == null ? null : defaultPattern.getKey().toString();
     }
 
     @JsonSetter("copyPattern")
