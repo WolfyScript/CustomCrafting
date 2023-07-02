@@ -125,6 +125,7 @@ public class MenuListRecipes extends CCWindow {
                     .filter(recipeListCache::filterBukkitRecipe)
                     .map(recipe -> NamespacedKey.fromBukkit(((Keyed)recipe).getKey()))
                     .toList());
+            recipes.sort(Comparator.naturalOrder());
             maxPages = recipeListCache.getMaxPages(recipes.size());
             page = recipeListCache.getPage(maxPages);
             for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
