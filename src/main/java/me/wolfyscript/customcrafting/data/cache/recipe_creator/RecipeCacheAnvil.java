@@ -73,7 +73,7 @@ public class RecipeCacheAnvil extends RecipeCache<CustomRecipeAnvil> {
 
     @Override
     protected CustomRecipeAnvil constructRecipe() {
-        return create(new CustomRecipeAnvil(key));
+        return create(new CustomRecipeAnvil(key, customCrafting, base, addition));
     }
 
     @Override
