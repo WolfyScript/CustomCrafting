@@ -65,10 +65,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.SmithingTransformRecipe;
+import org.bukkit.inventory.SmithingRecipe;
 import org.jetbrains.annotations.NotNull;
 
-public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> implements ICustomVanillaRecipe<SmithingTransformRecipe> {
+public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> implements ICustomVanillaRecipe<SmithingRecipe> {
 
     private static final String KEY_BASE = "base";
     private static final String KEY_ADDITION = "addition";
@@ -280,12 +280,26 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     }
 
     @Override
-    public SmithingTransformRecipe getVanillaRecipe() {
+    public SmithingRecipe getVanillaRecipe() {
         /*
          Smithing recipes need to be registered into minecraft, so that you can place the ingredients into the inventory.
          ExactChoices cannot be used as those would rely on vanilla MC to compare the items. So we'll just use MaterialChoices to use our own checks.
          */
-        return new SmithingTransformRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), getRecipeChoiceFor(getTemplate()), getRecipeChoiceFor(getBase()), getRecipeChoiceFor(getAddition()));
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            return new Instantiate1_20Recipe().create1_20PlaceholderRecipe();
+        }
+        return new SmithingRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), getRecipeChoiceFor(getBase()), getRecipeChoiceFor(getAddition()));
+    }
+
+    /**
+     * A little hack to make it work on pre-1.20 servers without a ClassNotFoundException.
+     */
+    private final class Instantiate1_20Recipe {
+
+        private SmithingRecipe create1_20PlaceholderRecipe() {
+            return new org.bukkit.inventory.SmithingTransformRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), getRecipeChoiceFor(getTemplate()), getRecipeChoiceFor(getBase()), getRecipeChoiceFor(getAddition()));
+        }
+
     }
 
     private static RecipeChoice getRecipeChoiceFor(Ingredient ingredient) {
