@@ -159,7 +159,7 @@ public class DisableRecipesHandler {
      */
     public void enableBukkitRecipe(org.bukkit.NamespacedKey namespacedKey) {
         recipes.remove(NamespacedKey.fromBukkit(namespacedKey));
-        Recipe bukkitRecipe = cachedRecipes.get(namespacedKey);
+        Recipe bukkitRecipe = cachedRecipes.remove(namespacedKey);
         if (bukkitRecipe != null) {
             Bukkit.addRecipe(bukkitRecipe);
         }
