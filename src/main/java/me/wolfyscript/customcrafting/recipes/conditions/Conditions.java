@@ -36,6 +36,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
@@ -55,6 +56,7 @@ public class Conditions {
 
     @JsonIgnore
     private final Map<NamespacedKey, Condition<?>> valuesMap;
+    @JacksonInject("customcrafting")
     private final CustomCrafting customCrafting;
 
     //Conditions initialization
@@ -64,8 +66,8 @@ public class Conditions {
     }
 
     @JsonCreator
-    private Conditions(JsonNode node) {
-        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection (v5)
+    private Conditions(JsonNode node, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
         var injectableValues = new InjectableValues.Std();
         injectableValues.addValue("customcrafting", this.customCrafting);
         var jsonReader = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().reader(injectableValues);
