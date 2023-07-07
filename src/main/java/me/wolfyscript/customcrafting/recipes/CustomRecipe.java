@@ -140,7 +140,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
     }
 
     @JsonCreator
-    protected CustomRecipe(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, CustomCrafting customCrafting) {
+    protected CustomRecipe(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
         this(key, customCrafting, null);
     }
 
