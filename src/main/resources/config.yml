@@ -80,6 +80,11 @@ crafting_table:
   # If the crafting table item should be reset on each server start. This means the config is replaced with a new version.
   reset: true
 
+cooking:
+  # Toggles the vanilla recipe fallback matching, that occurs when the custom recipe check fails
+  # Note: If a custom recipe is using an item used in a vanilla recipe, the vanilla recipe will be overridden.
+  match_vanilla_recipes: true
+
 recipe_book:
   # If the recipe book item should be reset on each server start. This means the config is replaced with a new version.
   reset: true
