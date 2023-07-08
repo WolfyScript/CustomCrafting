@@ -79,7 +79,7 @@ public class FurnaceListener1_17Adapter implements Listener {
                     if (customCrafting.getConfigHandler().getConfig().getFurnacesSettings().isMatchVanillaRecipes()) {
                         // Try to find other vanilla/custom recipe that matches the ingredient used. This may conflict with other plugins.
                         // For that case there is the config option to simply bypass this match & block placeholder/display recipes.
-                        if (!ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(event.getRecipe().getKey())) return;
+                        if (!ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(event.getRecipe().getKey())) return; // if for some reason it isn't a custom recipe, lets just move on
                         Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(switch (event.getBlock().getType()) {
                             case BLAST_FURNACE -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.BLASTING;
                             case SMOKER -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.SMOKING;
