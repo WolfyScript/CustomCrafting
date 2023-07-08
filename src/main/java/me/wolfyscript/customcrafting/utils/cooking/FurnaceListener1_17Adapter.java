@@ -70,28 +70,33 @@ public class FurnaceListener1_17Adapter implements Listener {
                     NMSInventoryUtils.setCurrentRecipe(((Furnace) event.getBlock().getState()).getInventory(), data.getRecipe().getNamespacedKey());
                 }, () -> {
                     manager.clearCache(event.getBlock());
-                    Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(switch (event.getBlock().getType()) {
-                        case BLAST_FURNACE -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.BLASTING;
-                        case SMOKER -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.SMOKING;
-                        default -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.SMELTING;
-                    });
-                    while (recipeIterator.hasNext()) {
-                        if (recipeIterator.next() instanceof CookingRecipe<?> recipe && !ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
-                            if (recipe.getInputChoice().test(event.getSource())) {
-                                NMSInventoryUtils.setCurrentRecipe(((Furnace) event.getBlock().getState()).getInventory(), new NamespacedKey(recipe.getKey().getNamespace(), recipe.getKey().getKey()));
 
-                                //Check if the CustomItem is allowed in Vanilla recipes
-                                CustomItem customItem = CustomItem.getByItemStack(event.getSource());
-                                if (customItem != null && customItem.isBlockVanillaRecipes()) {
-                                    event.setTotalCookTime(Integer.MAX_VALUE); //"Cancel" the process if it is.
-                                    manager.cacheRecipeData(event.getBlock(), new Pair<>(null, false));
+                    CustomItem customItem = CustomItem.getByItemStack(event.getSource());
+                    if (customItem != null && customItem.isBlockVanillaRecipes()) {
+                        event.setTotalCookTime(Integer.MAX_VALUE);
+                        return;
+                    }
+                    if (customCrafting.getConfigHandler().getConfig().getFurnacesSettings().isMatchVanillaRecipes()) {
+                        // Try to find other vanilla/custom recipe that matches the ingredient used. This may conflict with other plugins.
+                        // For that case there is the config option to simply bypass this match & block placeholder/display recipes.
+                        if (!ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(event.getRecipe().getKey())) return;
+                        Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(switch (event.getBlock().getType()) {
+                            case BLAST_FURNACE -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.BLASTING;
+                            case SMOKER -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.SMOKING;
+                            default -> me.wolfyscript.utilities.api.nms.inventory.RecipeType.SMELTING;
+                        });
+                        while (recipeIterator.hasNext()) {
+                            if (recipeIterator.next() instanceof CookingRecipe<?> recipe && !ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
+                                if (recipe.getInputChoice().test(event.getSource())) {
+                                    NMSInventoryUtils.setCurrentRecipe(((Furnace) event.getBlock().getState()).getInventory(), new NamespacedKey(recipe.getKey().getNamespace(), recipe.getKey().getKey()));
+                                    return;
                                 }
-                                return;
                             }
                         }
+                        event.setTotalCookTime(Integer.MAX_VALUE);
+                    } else if (ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(event.getRecipe().getKey())){
+                        event.setTotalCookTime(Integer.MAX_VALUE);
                     }
-                    NMSInventoryUtils.setCurrentRecipe(((Furnace) event.getBlock().getState()).getInventory(), null);
-                    event.setTotalCookTime(Integer.MAX_VALUE);
                 });
     }
 

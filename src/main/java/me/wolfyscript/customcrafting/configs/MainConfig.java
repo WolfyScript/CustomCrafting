@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.player.PlayerInteractEvent;
 
 public class MainConfig extends YamlConfiguration {
 
@@ -174,6 +173,11 @@ public class MainConfig extends YamlConfiguration {
     public DatabaseSettings getDatabaseSettings() {
         ConfigurationSection section = getConfigurationSection("database");
         return section != null ? new DatabaseSettings(section) : null;
+    }
+
+    public CookingSettings getFurnacesSettings() {
+        ConfigurationSection section = getConfigurationSection("cooking");
+        return section != null ? new CookingSettings(section) : null;
     }
 
     public CauldronInteraction getCauldronInteraction() {
