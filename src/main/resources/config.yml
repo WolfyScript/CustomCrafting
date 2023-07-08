@@ -80,6 +80,9 @@ crafting_table:
   # If the crafting table item should be reset on each server start. This means the config is replaced with a new version.
   reset: true
 
+cooking:
+  match_vanilla_recipes: true
+
 recipe_book:
   # If the recipe book item should be reset on each server start. This means the config is replaced with a new version.
   reset: true
