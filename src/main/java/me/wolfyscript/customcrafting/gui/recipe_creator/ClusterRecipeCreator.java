@@ -191,23 +191,26 @@ public class ClusterRecipeCreator extends CCCluster {
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> {
             NamespacedKey namespacedKey = cache.getRecipeCreatorCache().getRecipeCache().getKey();
             if (namespacedKey != null) {
-                return CallbackButtonRender.UpdateResult.of(itemStack, Placeholder.unparsed("recipe_folder", namespacedKey.getKeyComponent().getFolder()), Placeholder.unparsed("recipe_key", namespacedKey.getKeyComponent().getObject()));
+                return CallbackButtonRender.UpdateResult.of(itemStack,
+                        Placeholder.unparsed("recipe_folder", namespacedKey.getKeyComponent().getFolder()),
+                        Placeholder.unparsed("recipe_key", namespacedKey.getKeyComponent().getObject()));
             }
             return CallbackButtonRender.UpdateResult.of(itemStack);
         })).register();
         getButtonBuilder().action(SAVE_AS.getKey()).state(state -> state.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             if (guiHandler.getWindow() instanceof RecipeCreator) {
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
+                    if (args.length == 0) return List.of();
                     List<String> results = new ArrayList<>();
-                    if (args.length > 0) {
-                        var registryRecipes = customCrafting.getRegistries().getRecipes();
-                        if (args.length == 1) {
-                            results.add("<folder>");
-                            StringUtil.copyPartialMatches(args[0], registryRecipes.dirs(NamespacedKeyUtils.NAMESPACE, 64, false), results);
-                        } else if (args.length == 2) {
-                            results.add("<recipe_name>");
-                            StringUtil.copyPartialMatches(args[1], registryRecipes.get(NamespacedKeyUtils.NAMESPACE, args[0]).stream().filter(recipe -> cache.getRecipeCreatorCache().getRecipeType().isInstance(recipe)).map(recipe -> NamespacedKeyUtils.getRelativeKeyObjPath(recipe.getNamespacedKey())).toList(), results);
-                        }
+                    var registryRecipes = customCrafting.getRegistries().getRecipes();
+                    if (args.length == 1) {
+                        results.add("<folder>");
+                        StringUtil.copyPartialMatches(args[0], registryRecipes.dirs(NamespacedKeyUtils.NAMESPACE, 64, false), results);
+                    } else if (args.length == 2) {
+                        results.add("<recipe_name>");
+                        StringUtil.copyPartialMatches(args[1], registryRecipes.getFromDir(NamespacedKeyUtils.NAMESPACE, args[0]).stream()
+                                .filter(recipe -> cache.getRecipeCreatorCache().getRecipeType().isInstance(recipe))
+                                .map(recipe -> NamespacedKeyUtils.getKeyObj(recipe.getNamespacedKey())).toList(), results);
                     }
                     Collections.sort(results);
                     return results;

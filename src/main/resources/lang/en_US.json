@@ -2241,7 +2241,7 @@
                 "lore": [
                   "<dark_grey>[<green>Click</green>]</dark_grey> <grey>Add Elite Workbenches</grey>"
                 ],
-                "message": "<yellow>Type in the folder and key of the elite crafting table item! Usage: <b>folder item_key</b></yellow>"
+                "message": "<white>Type in the folder and key of the elite crafting table item!</white>"
               },
               "list": {
                 "name": "<gold><b>Values</b></gold>",
