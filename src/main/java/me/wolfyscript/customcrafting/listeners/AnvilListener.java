@@ -22,13 +22,12 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.AnvilData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Result;
@@ -79,53 +78,63 @@ public class AnvilListener implements Listener {
         Bukkit.getScheduler().runTask(customCrafting, () -> playerDelay.remove(player.getUniqueId())); // Free player for the next event lifecycle.
         preCraftedRecipes.remove(player.getUniqueId());
 
-        for (CustomRecipeAnvil recipe : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.ANVIL, player)) {
-            Optional<CustomItem> finalInputLeft = Optional.empty();
-            Optional<CustomItem> finalInputRight = Optional.empty();
-            if (recipe.hasInputLeft() && (finalInputLeft = recipe.getInputLeft().check(inputLeft, recipe.isCheckNBT())).isEmpty()
-                    || recipe.hasInputRight() && (inputRight == null || (finalInputRight = recipe.getInputRight().check(inputRight, recipe.isCheckNBT())).isEmpty())) {
-                continue;
-            }
-            //Recipe is valid at this point!
-            AnvilData anvilData = new AnvilData(recipe, new IngredientData[]{
-                    new IngredientData(0, 0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft),
-                    new IngredientData(1, 1, recipe.getInputRight(), finalInputRight.orElse(null), inputRight)}
-            );
-            //Set the result depending on what is configured!
-            final CustomItem resultItem = recipe.getRepairTask().computeResult(recipe, event, anvilData, player, inputLeft, inputRight);
-            int repairCost = Math.max(1, recipe.getRepairCost());
-            var inputMeta = inputLeft.getItemMeta();
-            //Configure the Repair cost
-            if (inputMeta instanceof Repairable repairable) {
-                int itemRepairCost = repairable.getRepairCost();
-                if (recipe.getRepairCostMode().equals(CustomRecipeAnvil.RepairCostMode.ADD)) {
-                    repairCost = repairCost + itemRepairCost;
-                } else if (recipe.getRepairCostMode().equals(CustomRecipeAnvil.RepairCostMode.MULTIPLY)) {
-                    repairCost = recipe.getRepairCost() * (itemRepairCost > 0 ? itemRepairCost : 1);
-                }
-            }
-            //Apply the repair cost to the result.
-            if (recipe.isApplyRepairCost()) {
-                var itemMeta = resultItem.getItemMeta();
-                if (itemMeta instanceof Repairable repairable) {
-                    repairable.setRepairCost(repairCost);
-                    resultItem.setItemMeta(itemMeta);
-                }
-            }
-            // Save current active recipe to consume correct item inputs!
-            preCraftedRecipes.put(player.getUniqueId(), anvilData);
-            final ItemStack finalResult = recipe.getResult().getItem(anvilData, resultItem, player, null);
-            event.setResult(repairCost > 0 ? finalResult : null);
-            inventory.setRepairCost(repairCost);
-            int finalRepairCost = repairCost;
-            Bukkit.getScheduler().runTask(customCrafting, () -> {
-                event.setResult(finalResult);
-                inventory.setItem(2, finalResult);
-                inventory.setRepairCost(finalRepairCost);
-            });
-            player.updateInventory();
-            break;
+        Conditions.Data data = Conditions.Data.of(player, player.getOpenInventory());
+        if (inventory.getLocation() != null) {
+            data.setBlock(inventory.getLocation().getBlock());
         }
+
+        customCrafting.getRegistries().getRecipes().get(RecipeType.ANVIL).stream()
+                .filter(customRecipeAnvil -> !customRecipeAnvil.isDisabled() && customRecipeAnvil.checkConditions(data))
+                .map(recipe -> {
+                    Optional<CustomItem> finalInputLeft = Optional.empty();
+                    Optional<CustomItem> finalInputRight = Optional.empty();
+                    if (recipe.hasInputLeft() && (finalInputLeft = recipe.getInputLeft().check(inputLeft, recipe.isCheckNBT())).isEmpty()) return null;
+                    if (recipe.hasInputRight() && (finalInputRight = recipe.getInputRight().check(inputRight, recipe.isCheckNBT())).isEmpty()) return null;
+                    //Recipe is valid at this point!
+                    return new AnvilData(recipe, new IngredientData[]{
+                            new IngredientData(0, 0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft),
+                            new IngredientData(1, 1, recipe.getInputRight(), finalInputRight.orElse(null), inputRight)}
+                    );
+                })
+                .filter(Objects::nonNull)
+                .findFirst()
+                .ifPresent(anvilData -> {
+                    CustomRecipeAnvil recipe = anvilData.getRecipe();
+                    //Set the result depending on what is configured!
+                    final CustomItem resultItem = recipe.getRepairTask().computeResult(recipe, event, anvilData, player, inputLeft, inputRight);
+                    int repairCost = Math.max(1, recipe.getRepairCost());
+                    var inputMeta = inputLeft.getItemMeta();
+                    //Configure the Repair cost
+                    if (inputMeta instanceof Repairable repairable) {
+                        int itemRepairCost = repairable.getRepairCost();
+                        if (recipe.getRepairCostMode().equals(CustomRecipeAnvil.RepairCostMode.ADD)) {
+                            repairCost = repairCost + itemRepairCost;
+                        } else if (recipe.getRepairCostMode().equals(CustomRecipeAnvil.RepairCostMode.MULTIPLY)) {
+                            repairCost = recipe.getRepairCost() * (itemRepairCost > 0 ? itemRepairCost : 1);
+                        }
+                    }
+                    //Apply the repair cost to the result.
+                    if (recipe.isApplyRepairCost()) {
+                        var itemMeta = resultItem.getItemMeta();
+                        if (itemMeta instanceof Repairable repairable) {
+                            repairable.setRepairCost(repairCost);
+                            resultItem.setItemMeta(itemMeta);
+                        }
+                    }
+                    // Save current active recipe to consume correct item inputs!
+                    preCraftedRecipes.put(player.getUniqueId(), anvilData);
+                    final ItemStack finalResult = recipe.getResult().getItem(anvilData, resultItem, player, null);
+                    event.setResult(repairCost > 0 ? finalResult : null);
+                    inventory.setRepairCost(repairCost);
+                    int finalRepairCost = repairCost;
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
+                        event.setResult(finalResult);
+                        inventory.setItem(2, finalResult);
+                        inventory.setRepairCost(finalRepairCost);
+                        player.updateInventory();
+                    });
+                    player.updateInventory();
+                });
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
