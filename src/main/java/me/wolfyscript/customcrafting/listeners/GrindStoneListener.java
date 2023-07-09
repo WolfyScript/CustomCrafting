@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
@@ -150,35 +152,37 @@ public class GrindStoneListener implements Listener {
     }
 
     private void processGrindstone(Inventory inventory, Player player, InventoryInteractEvent event) {
-        GrindstoneData data = lookForValidRecipe(inventory.getItem(0), inventory.getItem(1), player, event.getView());
-        if (data != null) {
-            inventory.setItem(2, data.getResult().getItem(player).orElse(new CustomItem(Material.AIR)).create());
-            preCraftedRecipes.put(player.getUniqueId(), data);
-            return;
-        }
-        for (ItemStack itemStack : new ItemStack[]{inventory.getItem(0), inventory.getItem(1)}) {
-            if (customCrafting.getApi().getRegistries().getCustomItems().getByItemStack(itemStack).map(CustomItem::isBlockVanillaRecipes).orElse(false)) {
-                inventory.setItem(2, null);
-                return;
-            }
-        }
+        lookForValidRecipe(inventory.getItem(0), inventory.getItem(1), player, event.getView())
+                .ifPresentOrElse(data -> {
+                    inventory.setItem(2, data.getResult().getItem(player).orElse(new CustomItem(Material.AIR)).create());
+                    preCraftedRecipes.put(player.getUniqueId(), data);
+                }, () -> {
+                    for (ItemStack itemStack : new ItemStack[]{inventory.getItem(0), inventory.getItem(1)}) {
+                        if (customCrafting.getApi().getRegistries().getCustomItems().getByItemStack(itemStack).map(CustomItem::isBlockVanillaRecipes).orElse(false)) {
+                            inventory.setItem(2, null);
+                            return;
+                        }
+                    }
+                });
     }
 
-    private GrindstoneData lookForValidRecipe(ItemStack topStack, ItemStack bottomStack, Player player, InventoryView invView) {
+    private Optional<GrindstoneData> lookForValidRecipe(ItemStack topStack, ItemStack bottomStack, Player player, InventoryView invView) {
         preCraftedRecipes.remove(player.getUniqueId());
-        for (CustomRecipeGrindstone recipe : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.GRINDSTONE, player)) {
-            if (!recipe.checkConditions(Conditions.Data.of(player, invView))) continue;
-
-            Pair<Boolean, CustomItem> checkTop = checkIngredientSlot(recipe, recipe.getInputTop(), topStack);
-            if (!checkTop.getKey()) continue;
-            Pair<Boolean, CustomItem> checkBottom = checkIngredientSlot(recipe, recipe.getInputBottom(), bottomStack);
-            if (!checkBottom.getKey()) continue;
-
-            return new GrindstoneData(recipe, true,
-                    new IngredientData(0, 0, recipe.getInputTop(), checkTop.getValue(), topStack),
-                    new IngredientData(1, 1, recipe.getInputBottom(), checkBottom.getValue(), bottomStack));
-        }
-        return null;
+        Conditions.Data data = Conditions.Data.of(player, invView);
+        return customCrafting.getRegistries().getRecipes().get(RecipeType.GRINDSTONE).stream()
+                .sorted()
+                .filter(recipe -> !recipe.isDisabled() && recipe.checkConditions(data))
+                .map(recipe -> {
+                    Pair<Boolean, CustomItem> checkTop = checkIngredientSlot(recipe, recipe.getInputTop(), topStack);
+                    if (!checkTop.getKey()) return null;
+                    Pair<Boolean, CustomItem> checkBottom = checkIngredientSlot(recipe, recipe.getInputBottom(), bottomStack);
+                    if (!checkBottom.getKey()) return null;
+                    return new GrindstoneData(recipe, true,
+                            new IngredientData(0, 0, recipe.getInputTop(), checkTop.getValue(), topStack),
+                            new IngredientData(1, 1, recipe.getInputBottom(), checkBottom.getValue(), bottomStack));
+                })
+                .filter(Objects::nonNull)
+                .findFirst();
     }
 
     private Pair<Boolean, CustomItem> checkIngredientSlot(CustomRecipeGrindstone recipe, Ingredient ingredient, ItemStack stack) {
