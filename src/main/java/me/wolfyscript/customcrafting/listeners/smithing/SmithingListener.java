@@ -89,7 +89,9 @@ public class SmithingListener implements Listener {
         var addition = inv.getItem(CustomRecipeSmithing.ADDITION_SLOT);
         preCraftedRecipes.put(player.getUniqueId(), null);
 
-        customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.SMITHING).stream()
+        customCrafting.getRegistries().getRecipes().get(RecipeType.SMITHING).stream()
+                .sorted()
+                .filter(recipe -> !recipe.isDisabled())
                 .map(recipe -> recipe.check(player, event.getView(), template, base, addition))
                 .filter(Objects::nonNull)
                 .findFirst()
