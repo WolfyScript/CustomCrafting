@@ -84,6 +84,7 @@ public class AnvilListener implements Listener {
         }
 
         customCrafting.getRegistries().getRecipes().get(RecipeType.ANVIL).stream()
+                .sorted()
                 .filter(customRecipeAnvil -> !customRecipeAnvil.isDisabled() && customRecipeAnvil.checkConditions(data))
                 .map(recipe -> {
                     Optional<CustomItem> finalInputLeft = Optional.empty();
