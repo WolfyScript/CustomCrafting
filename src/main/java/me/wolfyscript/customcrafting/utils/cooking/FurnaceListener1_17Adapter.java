@@ -62,6 +62,8 @@ public class FurnaceListener1_17Adapter implements Listener {
                     case SMOKER -> RecipeType.SMOKER;
                     default -> RecipeType.FURNACE;
                 }).stream()
+                .sorted()
+                .filter(recipe -> !recipe.isDisabled())
                 .map(recipe1 -> manager.getAdapter().processRecipe(recipe1, event.getSource(), event.getBlock()).getKey())
                 .filter(Objects::nonNull)
                 .findFirst()
