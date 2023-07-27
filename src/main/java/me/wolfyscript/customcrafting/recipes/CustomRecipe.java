@@ -87,6 +87,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
     protected static final String KEY_HIDDEN = "hidden";
     protected static final String ERROR_MSG_KEY = "Not a valid key! The key cannot be null!";
 
+    @JsonIgnore
     protected final boolean loadedFromOldOrLegacy;
 
     @JsonProperty("@type")
