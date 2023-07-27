@@ -41,7 +41,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDatabaseLoader extends DatabaseLoader {
@@ -58,9 +58,9 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         DatabaseSettings settings = config.getDatabaseSettings();
         this.dataBase = new SQLDataBase(api, settings.getHost(), settings.getSchema(), settings.getUsername(), settings.getPassword(), settings.getPort());
         init();
-        this.loaded = new LinkedList<>();
-        this.skippedError = new LinkedList<>();
-        this.skippedAlreadyExisting = new LinkedList<>();
+        this.loaded = new ArrayList<>();
+        this.skippedError = new ArrayList<>();
+        this.skippedAlreadyExisting = new ArrayList<>();
     }
 
     public void init() {
@@ -224,12 +224,15 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     public CustomRecipe<?> getRecipe(NamespacedKey namespacedKey) {
         ResultSet resultSet = getRecipeData(namespacedKey);
         try {
+            var injectableValues = new InjectableValues.Std();
+            injectableValues.addValue("key", namespacedKey);
+            injectableValues.addValue("customcrafting", customCrafting);
             while (resultSet.next()) {
                 String typeID = resultSet.getString("rType");
                 String data = resultSet.getString("rData");
                 try {
                     if (typeID == null || typeID.isBlank()) {
-                        return objectMapper.reader(new InjectableValues.Std().addValue("customcrafting", customCrafting).addValue("key", namespacedKey)).readValue(data, CustomRecipe.class);
+                        return objectMapper.reader(injectableValues).readValue(data, CustomRecipe.class);
                     }
                     RecipeLoader<?> loader = RecipeType.valueOf(typeID);
                     if (loader == null && RecipeType.Container.valueOf(typeID) instanceof RecipeLoader<?> recipeLoader) {
