@@ -41,6 +41,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -126,7 +127,14 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
         this.group = node.path(KEY_GROUP).asText("");
         this.priority = mapper.convertValue(node.path(KEY_PRIORITY).asText("NORMAL"), RecipePriority.class);
         this.checkAllNBT = node.path(KEY_EXACT_META).asBoolean(false);
-        this.conditions = mapper.convertValue(node.path(KEY_CONDITIONS), Conditions.class);
+        try {
+            var injectableValues = new InjectableValues.Std();
+            injectableValues.addValue("key", namespacedKey);
+            injectableValues.addValue("customcrafting", customCrafting);
+            this.conditions = mapper.reader(injectableValues).readValue(node.path(KEY_CONDITIONS), Conditions.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if (this.conditions == null) {
             this.conditions = new Conditions(customCrafting);
         }
