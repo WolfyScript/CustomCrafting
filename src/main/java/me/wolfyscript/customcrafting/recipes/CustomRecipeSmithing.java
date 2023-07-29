@@ -179,7 +179,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     }
 
     public void setAddition(@NotNull Ingredient addition) {
-        Preconditions.checkArgument(!addition.isEmpty(), "Invalid Addition! Recipe must have non-air addition!");
+        // Preconditions.checkArgument(!addition.isEmpty(), "Invalid Addition! Recipe must have non-air addition!");
         this.addition = addition;
     }
 
@@ -188,7 +188,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     }
 
     public void setBase(@NotNull Ingredient base) {
-        Preconditions.checkArgument(!base.isEmpty(), "Invalid Base ingredient! Recipe must have non-air base ingredient!");
+        // Preconditions.checkArgument(!base.isEmpty(), "Invalid Base ingredient! Recipe must have non-air base ingredient!");
         this.base = base;
     }
 

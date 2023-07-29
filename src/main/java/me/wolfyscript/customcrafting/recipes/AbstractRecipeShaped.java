@@ -228,7 +228,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
 
     public void setIngredient(char key, @NotNull Ingredient ingredient) {
         Preconditions.checkArgument(this.mappedIngredients.containsKey(key), "Invalid ingredient key! Shape does not contain key!");
-        Preconditions.checkArgument(ingredient != null && !ingredient.isEmpty(), "Invalid ingredient! Ingredient must not be null nor empty!");
+        // Preconditions.checkArgument(ingredient != null && !ingredient.isEmpty(), "Invalid ingredient! Ingredient must not be null nor empty!");
         ingredient.buildChoices();
         this.mappedIngredients.put(key, ingredient);
         createFlatIngredients();

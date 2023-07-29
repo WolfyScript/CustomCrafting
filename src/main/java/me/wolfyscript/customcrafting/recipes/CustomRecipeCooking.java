@@ -95,7 +95,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     }
 
     public void setSource(@NotNull Ingredient source) {
-        Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
+        // Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
         this.source = source;
     }
 
