@@ -28,10 +28,12 @@ import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,10 +43,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class LocalStorageLoader extends ResourceLoader {
 
@@ -52,9 +52,13 @@ public class LocalStorageLoader extends ResourceLoader {
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     private static final String ITEMS_FOLDER = "items";
     private static final String RECIPES_FOLDER = "recipes";
+    private final ExecutorService executor;
+    private final Deque<Future<CustomRecipe<?>>> recipeTaskQueue;
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
         super(customCrafting, new NamespacedKey(customCrafting, "local_loader"));
+        executor = Executors.newCachedThreadPool();
+        recipeTaskQueue = new ArrayDeque<>();
     }
 
     @Override
@@ -246,29 +250,48 @@ public class LocalStorageLoader extends ResourceLoader {
 
         @Override
         protected void load() {
+            StopWatch stopWatch = StopWatch.createStarted();
             for (String dir : dirs) {
                 loadRecipesInNamespace(dir); //Load new recipe format files
             }
-            api.getConsole().getLogger().info(String.format("[LOCAL] Loaded %d recipes; Skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
+
+            // Wait for recipes to finish loading, then verify and register them.
+            Future<CustomRecipe<?>> recipeFuture;
+            while ((recipeFuture = recipeTaskQueue.pollLast()) != null) { // last future is longest living future, so most likely finished first.
+                try {
+                    // TODO: verify recipe
+                    CustomRecipe<?> recipe = recipeFuture.get();
+                    customCrafting.getRegistries().getRecipes().register(recipe);
+                    addLoaded(recipe.getNamespacedKey());
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            stopWatch.stop();
+            api.getConsole().getLogger().info(String.format("[LOCAL] Loaded %d recipes in %sms; Skipped: %d error/s, %d already existing", loaded.size(), stopWatch.getTime(TimeUnit.MILLISECONDS), skippedError.size(), skippedAlreadyExisting.size()));
         }
 
         private void loadRecipesInNamespace(String namespace) {
-            var injectableValues = new InjectableValues.Std();
+            TypeReference<CustomRecipe<?>> recipeTypeRef = new TypeReference<>() {};
             readFiles(namespace, RECIPES_FOLDER, (relative, file, attrs) -> {
                 if (isValidFile(file.toFile())) return FileVisitResult.CONTINUE;
-                var namespacedKey = keyFromFile(namespace, relative);
+                final var namespacedKey = keyFromFile(namespace, relative);
                 if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
-                    try {
-                        injectableValues.addValue("key", namespacedKey);
-                        injectableValues.addValue("customcrafting", customCrafting);
-                        customCrafting.getRegistries().getRecipes().register(objectMapper.reader(injectableValues).readValue(file.toFile(), CustomRecipe.class));
-                        loaded.add(namespacedKey);
-                    } catch (IOException e) {
-                        ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
-                        skippedError.add(namespacedKey);
-                    }
+                    Future<CustomRecipe<?>> future = executor.submit(() -> {
+                        try {
+                            var injectableValues = new InjectableValues.Std();
+                            injectableValues.addValue("key", namespacedKey);
+                            injectableValues.addValue("customcrafting", customCrafting);
+                            return objectMapper.reader(injectableValues).forType(recipeTypeRef).readValue(file.toFile());
+                        } catch (IOException e) {
+                            ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
+                            skipError(namespacedKey);
+                        }
+                        return null;
+                    });
+                    recipeTaskQueue.add(future);
                 } else {
-                    skippedAlreadyExisting.add(namespacedKey);
+                    skipExisting(namespacedKey);
                 }
                 return FileVisitResult.CONTINUE;
             });
@@ -363,19 +386,37 @@ public class LocalStorageLoader extends ResourceLoader {
      */
     private abstract static class DataLoader {
 
-        protected List<NamespacedKey> loaded;
-        protected List<NamespacedKey> skippedError;
-        protected List<NamespacedKey> skippedAlreadyExisting;
+        protected final List<NamespacedKey> loaded;
+        protected final List<NamespacedKey> skippedError;
+        protected final List<NamespacedKey> skippedAlreadyExisting;
         protected final String[] dirs;
 
         private DataLoader(String[] dirs) {
             this.dirs = dirs;
-            this.loaded = new LinkedList<>();
-            this.skippedError = new LinkedList<>();
-            this.skippedAlreadyExisting = new LinkedList<>();
+            this.loaded = new ArrayList<>();
+            this.skippedError = new ArrayList<>();
+            this.skippedAlreadyExisting = new ArrayList<>();
         }
 
         protected abstract void load();
+
+        protected void skipError(NamespacedKey namespacedKey) {
+            synchronized (skippedError) {
+                this.skippedError.add(namespacedKey);
+            }
+        }
+
+        protected void skipExisting(NamespacedKey namespacedKey) {
+            synchronized (skippedAlreadyExisting) {
+                this.skippedAlreadyExisting.add(namespacedKey);
+            }
+        }
+
+        protected void addLoaded(NamespacedKey namespacedKey) {
+            synchronized (loaded) {
+                this.loaded.add(namespacedKey);
+            }
+        }
 
     }
 
