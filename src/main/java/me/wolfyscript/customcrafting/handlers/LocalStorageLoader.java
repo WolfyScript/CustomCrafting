@@ -57,7 +57,7 @@ public class LocalStorageLoader extends ResourceLoader {
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
         super(customCrafting, new NamespacedKey(customCrafting, "local_loader"));
-        executor = Executors.newCachedThreadPool();
+        executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         recipeTaskQueue = new ArrayDeque<>();
     }
 
