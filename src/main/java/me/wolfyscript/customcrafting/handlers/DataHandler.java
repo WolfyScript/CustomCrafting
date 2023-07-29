@@ -148,7 +148,8 @@ public class DataHandler implements Listener {
     @EventHandler
     private void dependenciesLoaded(DependenciesLoadedEvent event) {
         customCrafting.writeSeparator();
-        loadRecipesAndItems();
+        //TODO: Handle dependencies
+        // loadRecipesAndItems();
         customCrafting.writeSeparator();
     }
 

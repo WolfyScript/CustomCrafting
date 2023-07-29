@@ -361,9 +361,8 @@ public class CustomCrafting extends JavaPlugin {
         if (WolfyUtilities.isDevEnv()) {
             this.networkHandler.registerPackets();
         }
-        if (api.getCore().getCompatibilityManager().getPlugins().isDoneLoading()) {
-            dataHandler.loadRecipesAndItems();
-        }
+        dataHandler.loadRecipesAndItems();
+
         //All data is loaded. Now test for updates.
         updateChecker.run(null);
         //Load Metrics
