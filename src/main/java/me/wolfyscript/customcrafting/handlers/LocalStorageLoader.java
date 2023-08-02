@@ -112,6 +112,9 @@ public class LocalStorageLoader extends ResourceLoader {
                         stopWatch.getTime(TimeUnit.MILLISECONDS),
                         e.getMessage())
                 );
+                if (!failedRecipes.isEmpty()) {
+                    api.getConsole().getLogger().warning(String.format("[LOCAL] Failed to load %d recipes", failedRecipes.size()));
+                }
                 api.getConsole().getLogger().severe("[LOCAL] Process was interrupted, took longer than 2 Minutes!");
                 e.printStackTrace();
                 return;
@@ -119,6 +122,9 @@ public class LocalStorageLoader extends ResourceLoader {
             stopWatch.stop();
             int recipeCount = customCrafting.getRegistries().getRecipes().values().size();
             api.getConsole().getLogger().info(String.format("[LOCAL] Loaded %d recipes in %sms", recipeCount, stopWatch.getTime(TimeUnit.MILLISECONDS)));
+            if (!failedRecipes.isEmpty()) {
+                api.getConsole().getLogger().warning(String.format("[LOCAL] Failed to load %d recipes", failedRecipes.size()));
+            }
             if (!successful) {
                 api.getConsole().getLogger().severe("[LOCAL] Process was interrupted, took longer than 2 Minutes!");
                 return;
