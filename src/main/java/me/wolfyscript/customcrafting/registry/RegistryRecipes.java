@@ -112,14 +112,16 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         remove(namespacedKey);
         super.register(namespacedKey, value);
         if (value instanceof ICustomVanillaRecipe<?> vanillaRecipe && !value.isDisabled()) {
-            try {
-                Recipe bukkitRecipe = vanillaRecipe.getVanillaRecipe();
-                if (bukkitRecipe != null && !Bukkit.addRecipe(bukkitRecipe)) {
-                    customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
+                try {
+                    Recipe bukkitRecipe = vanillaRecipe.getVanillaRecipe();
+                    if (bukkitRecipe != null && !Bukkit.addRecipe(bukkitRecipe)) {
+                        customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
+                    }
+                } catch (IllegalArgumentException | IllegalStateException ex) {
+                    customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
-            } catch (IllegalArgumentException | IllegalStateException ex) {
-                customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
-            }
+            });
         }
         clearCache(namespacedKey);
     }

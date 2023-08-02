@@ -43,8 +43,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class LocalStorageLoader extends ResourceLoader {
 
@@ -53,12 +57,26 @@ public class LocalStorageLoader extends ResourceLoader {
     private static final String ITEMS_FOLDER = "items";
     private static final String RECIPES_FOLDER = "recipes";
     private final ExecutorService executor;
-    private final Deque<Future<CustomRecipe<?>>> recipeTaskQueue;
+    private final List<CustomRecipe<?>> pendingRecipes;
+    private final List<NamespacedKey> failedRecipes;
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
         super(customCrafting, new NamespacedKey(customCrafting, "local_loader"));
-        executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        recipeTaskQueue = new ArrayDeque<>();
+        this.pendingRecipes = new ArrayList<>();
+        this.failedRecipes = new ArrayList<>();
+        executor = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors());
+    }
+
+    protected void addPendingRecipe(CustomRecipe<?> recipe) {
+        synchronized (pendingRecipes) {
+            pendingRecipes.add(recipe);
+        }
+    }
+
+    protected void markFailed(NamespacedKey recipe) {
+        synchronized (failedRecipes) {
+            failedRecipes.add(recipe);
+        }
     }
 
     @Override
@@ -75,6 +93,7 @@ public class LocalStorageLoader extends ResourceLoader {
             for (String dir : dirs) {
                 loadItemsInNamespace(dir);
             }
+            StopWatch stopWatch = StopWatch.createStarted();
             api.getConsole().info(PREFIX + "$msg.startup.recipes.recipes$");
             new NewDataLoader(dirs).load();
             //Loading old & legacy recipes
@@ -82,8 +101,29 @@ public class LocalStorageLoader extends ResourceLoader {
             new OldDataLoader(dirs).load();
             new LegacyDataLoader(dirs).load();
 
-            api.getConsole().info(PREFIX + "Loaded " + customCrafting.getRegistries().getRecipes().values().size() + " recipes");
-            api.getConsole().info("");
+            executor.shutdown();
+
+            boolean successful;
+            try {
+                successful = executor.awaitTermination(2, TimeUnit.MINUTES);
+            } catch (InterruptedException e) {
+                api.getConsole().getLogger().info(String.format("[LOCAL] Loaded %d recipes in %sms; Process was interrupted: %s!",
+                        customCrafting.getRegistries().getRecipes().values().size(),
+                        stopWatch.getTime(TimeUnit.MILLISECONDS),
+                        e.getMessage())
+                );
+                api.getConsole().getLogger().severe("[LOCAL] Process was interrupted, took longer than 2 Minutes!");
+                e.printStackTrace();
+                return;
+            }
+            stopWatch.stop();
+            int recipeCount = customCrafting.getRegistries().getRecipes().values().size();
+            api.getConsole().getLogger().info(String.format("[LOCAL] Loaded %d recipes in %sms", recipeCount, stopWatch.getTime(TimeUnit.MILLISECONDS)));
+            if (!successful) {
+                api.getConsole().getLogger().severe("[LOCAL] Process was interrupted, took longer than 2 Minutes!");
+                return;
+            }
+            api.getConsole().getLogger().info(String.format("[LOCAL] %d recipes still pending for validation (waiting for dependencies)", pendingRecipes.size()));
         }
     }
 
@@ -250,46 +290,37 @@ public class LocalStorageLoader extends ResourceLoader {
 
         @Override
         protected void load() {
-            StopWatch stopWatch = StopWatch.createStarted();
             for (String dir : dirs) {
                 loadRecipesInNamespace(dir); //Load new recipe format files
             }
-
-            // Wait for recipes to finish loading, then verify and register them.
-            Future<CustomRecipe<?>> recipeFuture;
-            while ((recipeFuture = recipeTaskQueue.pollLast()) != null) { // last future is longest living future, so most likely finished first.
-                try {
-                    // TODO: verify recipe
-                    CustomRecipe<?> recipe = recipeFuture.get();
-                    customCrafting.getRegistries().getRecipes().register(recipe);
-                    addLoaded(recipe.getNamespacedKey());
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            stopWatch.stop();
-            api.getConsole().getLogger().info(String.format("[LOCAL] Loaded %d recipes in %sms; Skipped: %d error/s, %d already existing", loaded.size(), stopWatch.getTime(TimeUnit.MILLISECONDS), skippedError.size(), skippedAlreadyExisting.size()));
         }
 
         private void loadRecipesInNamespace(String namespace) {
-            TypeReference<CustomRecipe<?>> recipeTypeRef = new TypeReference<>() {};
+            TypeReference<CustomRecipe<?>> recipeTypeRef = new TypeReference<>() {
+            };
             readFiles(namespace, RECIPES_FOLDER, (relative, file, attrs) -> {
                 if (isValidFile(file.toFile())) return FileVisitResult.CONTINUE;
                 final var namespacedKey = keyFromFile(namespace, relative);
                 if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
-                    Future<CustomRecipe<?>> future = executor.submit(() -> {
+                    executor.execute(() -> {
                         try {
                             var injectableValues = new InjectableValues.Std();
                             injectableValues.addValue("key", namespacedKey);
                             injectableValues.addValue("customcrafting", customCrafting);
-                            return objectMapper.reader(injectableValues).forType(recipeTypeRef).readValue(file.toFile());
+
+                            CustomRecipe<?> recipe = objectMapper.reader(injectableValues).forType(recipeTypeRef).readValue(file.toFile());
+
+                            if (!true /* TODO: Validate recipe */) { // Initial validation
+                                // validation invalid
+                                addPendingRecipe(recipe);
+                            } else {
+                                customCrafting.getRegistries().getRecipes().register(recipe);
+                            }
                         } catch (IOException e) {
                             ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
-                            skipError(namespacedKey);
+                            markFailed(namespacedKey);
                         }
-                        return null;
                     });
-                    recipeTaskQueue.add(future);
                 } else {
                     skipExisting(namespacedKey);
                 }
@@ -314,7 +345,6 @@ public class LocalStorageLoader extends ResourceLoader {
                     loadAndRegisterOldOrLegacyRecipe(RecipeType.Container.ELITE_CRAFTING, dir);
                 }
             }
-            api.getConsole().getLogger().info(String.format("[LOCAL_LEGACY] Loaded %d recipes; Skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
         }
     }
 
@@ -333,7 +363,6 @@ public class LocalStorageLoader extends ResourceLoader {
                     }
                 }
             }
-            api.getConsole().getLogger().info(String.format("[LOCAL_OLD] Loaded %d recipes; Skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
         }
 
         protected List<File> getOldOrLegacyFiles(String subFolder, String type) {
@@ -399,12 +428,6 @@ public class LocalStorageLoader extends ResourceLoader {
         }
 
         protected abstract void load();
-
-        protected void skipError(NamespacedKey namespacedKey) {
-            synchronized (skippedError) {
-                this.skippedError.add(namespacedKey);
-            }
-        }
 
         protected void skipExisting(NamespacedKey namespacedKey) {
             synchronized (skippedAlreadyExisting) {
