@@ -43,7 +43,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 public class LocalStorageLoader extends ResourceLoader {
@@ -370,9 +369,9 @@ public class LocalStorageLoader extends ResourceLoader {
 
         private DataLoader(String[] dirs) {
             this.dirs = dirs;
-            this.loaded = new LinkedList<>();
-            this.skippedError = new LinkedList<>();
-            this.skippedAlreadyExisting = new LinkedList<>();
+            this.loaded = new ArrayList<>();
+            this.skippedError = new ArrayList<>();
+            this.skippedAlreadyExisting = new ArrayList<>();
         }
 
         protected abstract void load();
