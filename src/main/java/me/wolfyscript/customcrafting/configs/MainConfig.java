@@ -22,15 +22,17 @@
 
 package me.wolfyscript.customcrafting.configs;
 
-import java.util.Locale;
+import java.util.*;
+
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.config.YamlConfiguration;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.concurrent.TimeUnit;
+
+import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class MainConfig extends YamlConfiguration {
@@ -126,6 +128,10 @@ public class MainConfig extends YamlConfiguration {
 
     public boolean isPrintingStacktrace() {
         return getBoolean("data.print_stacktrace");
+    }
+
+    public Pair<Long, TimeUnit> getDataLoadTimeout() {
+        return new Pair<>(getLong("data.load_timeout.timeout"), Objects.requireNonNullElse(TimeUnit.valueOf(getString("data.load_timeout.unit")), TimeUnit.SECONDS));
     }
 
     public Set<String> getDisabledRecipes() {

@@ -26,6 +26,9 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.validator.ValidationContainer;
+import me.wolfyscript.customcrafting.recipes.validator.ValidationContainerImpl;
+import me.wolfyscript.customcrafting.recipes.validator.Validator;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
@@ -33,6 +36,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.io.File;
@@ -43,9 +47,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -57,19 +59,27 @@ public class LocalStorageLoader extends ResourceLoader {
     private static final String ITEMS_FOLDER = "items";
     private static final String RECIPES_FOLDER = "recipes";
     private final ExecutorService executor;
-    private final List<CustomRecipe<?>> pendingRecipes;
     private final List<NamespacedKey> failedRecipes;
+    private final List<ValidationContainer<? extends CustomRecipe<?>>> pendingRecipes;
+    private final List<ValidationContainer<? extends CustomRecipe<?>>> invalidRecipes;
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
         super(customCrafting, new NamespacedKey(customCrafting, "local_loader"));
         this.pendingRecipes = new ArrayList<>();
         this.failedRecipes = new ArrayList<>();
+        this.invalidRecipes = new ArrayList<>();
         executor = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors());
     }
 
-    protected void addPendingRecipe(CustomRecipe<?> recipe) {
+    protected void markPending(ValidationContainer<? extends CustomRecipe<?>> recipe) {
         synchronized (pendingRecipes) {
             pendingRecipes.add(recipe);
+        }
+    }
+
+    protected void markInvalid(ValidationContainer<? extends CustomRecipe<?>> recipe) {
+        synchronized (invalidRecipes) {
+            invalidRecipes.add(recipe);
         }
     }
 
@@ -94,6 +104,7 @@ public class LocalStorageLoader extends ResourceLoader {
                 loadItemsInNamespace(dir);
             }
             StopWatch stopWatch = StopWatch.createStarted();
+
             api.getConsole().info(PREFIX + "$msg.startup.recipes.recipes$");
             new NewDataLoader(dirs).load();
             //Loading old & legacy recipes
@@ -103,9 +114,10 @@ public class LocalStorageLoader extends ResourceLoader {
 
             executor.shutdown();
 
+            Pair<Long, TimeUnit> timeout = config.getDataLoadTimeout();
             boolean successful;
             try {
-                successful = executor.awaitTermination(2, TimeUnit.MINUTES);
+                successful = executor.awaitTermination(timeout.getKey(), timeout.getValue());
             } catch (InterruptedException e) {
                 api.getConsole().getLogger().info(String.format("[LOCAL] Loaded %d recipes in %sms; Process was interrupted: %s!",
                         customCrafting.getRegistries().getRecipes().values().size(),
@@ -115,7 +127,6 @@ public class LocalStorageLoader extends ResourceLoader {
                 if (!failedRecipes.isEmpty()) {
                     api.getConsole().getLogger().warning(String.format("[LOCAL] Failed to load %d recipes", failedRecipes.size()));
                 }
-                api.getConsole().getLogger().severe("[LOCAL] Process was interrupted, took longer than 2 Minutes!");
                 e.printStackTrace();
                 return;
             }
@@ -126,10 +137,71 @@ public class LocalStorageLoader extends ResourceLoader {
                 api.getConsole().getLogger().warning(String.format("[LOCAL] Failed to load %d recipes", failedRecipes.size()));
             }
             if (!successful) {
-                api.getConsole().getLogger().severe("[LOCAL] Process was interrupted, took longer than 2 Minutes!");
+                api.getConsole().getLogger().severe(String.format("[LOCAL] Process was interrupted, took longer than %s %s!", timeout.getKey(), timeout.getValue().toString().toLowerCase()));
                 return;
             }
+
+            printPendingRecipes();
+            printInvalidRecipes();
+        }
+    }
+
+    @Override
+    public void validatePending() {
+        int pendingSize = pendingRecipes.size();
+        int validatedRecipeCount = 0;
+
+        Iterator<ValidationContainer<? extends CustomRecipe<?>>> pendingIterator = pendingRecipes.iterator();
+        while (pendingIterator.hasNext()) {
+            ValidationContainer<? extends CustomRecipe<?>> container = pendingIterator.next();
+            container.revalidate();
+            if (container.type() == ValidationContainer.ResultType.PENDING) continue;
+            pendingIterator.remove();
+            if (container.type() == ValidationContainer.ResultType.INVALID) {
+                markInvalid(container);
+            }
+            if (container.type() == ValidationContainer.ResultType.VALID) {
+                validatedRecipeCount++;
+                container.value().ifPresent(recipe -> customCrafting.getRegistries().getRecipes().register(recipe));
+            }
+        }
+
+        api.getConsole().getLogger().info(String.format("[LOCAL] Validated %d recipes from %d pending recipes", validatedRecipeCount, pendingSize));
+
+        printPendingRecipes();
+        printInvalidRecipes();
+    }
+
+    private void printPendingRecipes() {
+        if (!pendingRecipes.isEmpty()) {
             api.getConsole().getLogger().info(String.format("[LOCAL] %d recipes still pending for validation (waiting for dependencies)", pendingRecipes.size()));
+            for (ValidationContainer<? extends CustomRecipe<?>> pendingRecipe : pendingRecipes) {
+                pendingRecipe.value().ifPresent(recipe -> {
+                    api.getConsole().getLogger().info(recipe.getNamespacedKey().toString());
+                    printValidationContainer(pendingRecipe);
+                });
+            }
+        }
+    }
+
+    private void printInvalidRecipes() {
+        if (!invalidRecipes.isEmpty()) {
+            api.getConsole().getLogger().info(String.format("[LOCAL] %d recipes are invalid!", invalidRecipes.size()));
+            for (ValidationContainer<? extends CustomRecipe<?>> pendingRecipe : invalidRecipes) {
+                pendingRecipe.value().ifPresent(recipe -> {
+                    api.getConsole().getLogger().info(recipe.getNamespacedKey().toString());
+                    printValidationContainer(pendingRecipe);
+                });
+            }
+        }
+    }
+
+    private void printValidationContainer(ValidationContainer<?> container) {
+        for (String fault : container.faults()) {
+            api.getConsole().getLogger().info("    -> " + fault);
+        }
+        for (ValidationContainerImpl<?> child : container.children()) {
+            printValidationContainer(child);
         }
     }
 
@@ -301,6 +373,12 @@ public class LocalStorageLoader extends ResourceLoader {
             }
         }
 
+        private static <T extends CustomRecipe<?>> Optional<ValidationContainer<T>> validateRecipe(T recipe) {
+            Validator<T> validator = (Validator<T>) CustomCrafting.inst().getRegistries().getValidators().get(recipe.getRecipeType().getNamespacedKey());
+            if (validator == null) return Optional.empty();
+            return Optional.of(validator.validate(recipe));
+        }
+
         private void loadRecipesInNamespace(String namespace) {
             TypeReference<CustomRecipe<?>> recipeTypeRef = new TypeReference<>() {
             };
@@ -316,12 +394,14 @@ public class LocalStorageLoader extends ResourceLoader {
 
                             CustomRecipe<?> recipe = objectMapper.reader(injectableValues).forType(recipeTypeRef).readValue(file.toFile());
 
-                            if (!true /* TODO: Validate recipe */) { // Initial validation
-                                // validation invalid
-                                addPendingRecipe(recipe);
-                            } else {
-                                customCrafting.getRegistries().getRecipes().register(recipe);
-                            }
+                            validateRecipe(recipe).ifPresentOrElse(container -> {
+                                switch (container.type()) {
+                                    case INVALID -> markInvalid(container);
+                                    case PENDING -> markPending(container);
+                                    case VALID -> customCrafting.getRegistries().getRecipes().register(recipe);
+                                }
+                            }, () -> customCrafting.getRegistries().getRecipes().register(recipe));
+
                         } catch (IOException e) {
                             ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
                             markFailed(namespacedKey);

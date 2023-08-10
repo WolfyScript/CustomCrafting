@@ -86,6 +86,11 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         api.getConsole().info("");
     }
 
+    @Override
+    public void validatePending() {
+
+    }
+
     /**
      * This does nothing when using the database, since the data is queried and updated
      * when saving single recipes and items.

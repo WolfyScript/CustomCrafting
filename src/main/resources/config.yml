@@ -67,6 +67,9 @@ database:
   password: ""
 
 data:
+  load_timeout:
+    timeout: 10
+    unit: SECONDS
   # Toggle if the stacktrace should be printed out if a recipe or item fails to load.
   print_stacktrace: true
   # Do not change this number! It is used for internal conversion of items between Bukkit versions to make sure they are up-to-date.
