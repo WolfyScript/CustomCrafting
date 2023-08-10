@@ -20,10 +20,43 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.recipes;
+package me.wolfyscript.customcrafting.recipes.validator;
 
-public abstract class RecipeValidator<R extends CustomRecipe<R>> {
+import java.util.List;
+import java.util.Optional;
 
-    public abstract boolean validate(R recipe);
+public interface ValidationContainer<T> {
+    ValidationContainerImpl<T> revalidate();
 
+    List<ValidationContainerImpl<?>> children();
+
+    Optional<T> value();
+
+    ResultType type();
+
+    List<String> faults();
+
+    UpdateStep<T> update();
+
+    interface UpdateStep<T> {
+
+        ValidationContainer<T> owner();
+
+        ValidationContainer.UpdateStep<T> copyFrom(UpdateStep<?> other);
+
+        ValidationContainer.UpdateStep<T> fault(String message);
+
+        ValidationContainer.UpdateStep<T> type(ResultType type);
+
+        ValidationContainer.UpdateStep<T> children(List<ValidationContainer<?>> children);
+
+    }
+
+    enum ResultType {
+
+        VALID,
+        INVALID,
+        PENDING
+
+    }
 }
