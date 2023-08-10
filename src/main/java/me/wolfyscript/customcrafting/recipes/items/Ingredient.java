@@ -22,6 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
+import me.wolfyscript.customcrafting.recipes.validator.ValidationContainer;
+import me.wolfyscript.customcrafting.recipes.validator.ValidationContainerImpl;
+import me.wolfyscript.customcrafting.recipes.validator.Validator;
+import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -30,11 +35,25 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class Ingredient extends RecipeItemStack {
+
+    public static final Validator<Ingredient> VALIDATOR;
+    public static final Validator<Map.Entry<Character, Ingredient>> ENTRY_VALIDATOR;
+
+    static {
+        VALIDATOR = ValidatorBuilder.<Ingredient>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient")).use(RecipeItemStack.validatorFor(Ingredient.class)).build();
+        ENTRY_VALIDATOR = ValidatorBuilder.<Map.Entry<Character, Ingredient>>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient_entry")).def()
+                .validate(entryContainer -> entryContainer.value()
+                        .map(entry -> {
+                            ValidationContainerImpl<Ingredient> result = VALIDATOR.validate(entry.getValue());
+                            ValidationContainer.UpdateStep<Map.Entry<Character, Ingredient>> updateStep = entryContainer.update().copyFrom(result.update());
+                            if (result.type() == ValidationContainer.ResultType.VALID) return updateStep;
+                            return updateStep.fault("Ingredient = '" + entry.getKey() + "'");
+                        })
+                        .orElseGet(() -> entryContainer.update().type(ValidationContainerImpl.ResultType.INVALID))).build();
+    }
 
     private boolean replaceWithRemains = true;
     private boolean allowEmpty = false;

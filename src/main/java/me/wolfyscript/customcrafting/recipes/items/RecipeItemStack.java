@@ -22,7 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
+import me.wolfyscript.customcrafting.recipes.validator.ValidationContainerImpl;
+import me.wolfyscript.customcrafting.recipes.validator.Validator;
+import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
@@ -40,22 +44,50 @@ import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @JsonPropertyOrder({"items", "tags"})
 public abstract class RecipeItemStack {
 
+    private static final String NO_ITEMS_OR_TAGS = "%s does not have any item or tag set!";
+    private static final String MISSING_THIRD_PARTY = "%s depends on missing third-party item! Waiting for it to load!";
+    private static final String EMPTY = "%s is empty! Either the specified Items or Tags couldn't be loaded!";
+    private static final String NULL = "%s cannot be null!";
+
+    static Validator<RecipeItemStack> validatorFor(Class<? extends RecipeItemStack> recipeItemStackType) {
+        return ValidatorBuilder.<RecipeItemStack>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/abstract_itemstack")).def()
+                .validate(resultValidationContainer ->
+                        resultValidationContainer.value().map(value -> {
+                                    value.buildChoices();
+                                    if (value.isEmpty()) {
+                                        if (value.getItems().isEmpty()) return resultValidationContainer.update()
+                                                .type(ValidationContainerImpl.ResultType.INVALID)
+                                                .fault(String.format(NO_ITEMS_OR_TAGS, recipeItemStackType.getSimpleName()));
+
+                                        for (APIReference item : value.getItems()) {
+                                            if (!(item instanceof VanillaRef)) {
+                                                return resultValidationContainer.update()
+                                                        .type(ValidationContainerImpl.ResultType.PENDING)
+                                                        .fault(String.format(MISSING_THIRD_PARTY, recipeItemStackType.getSimpleName()));
+                                            }
+                                        }
+
+                                        return resultValidationContainer.update()
+                                                .type(ValidationContainerImpl.ResultType.INVALID)
+                                                .fault(String.format(EMPTY, recipeItemStackType.getSimpleName()));
+                                    }
+                                    return resultValidationContainer.update().type(ValidationContainerImpl.ResultType.VALID);
+                                })
+                                .orElseGet(() -> resultValidationContainer.update()
+                                        .type(ValidationContainerImpl.ResultType.INVALID)
+                                        .fault(String.format(NULL, recipeItemStackType.getSimpleName()))))
+                .build();
+    }
+
     @JsonIgnore
     protected final List<CustomItem> choices;
-
     private List<APIReference> items;
     private Set<NamespacedKey> tags;
 

@@ -412,4 +412,8 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
         byteBuf.writeCollection(result.getChoices(), (mcByteBuf, customItem) -> mcByteBuf.writeItemStack(customItem.create()));
     }
 
+    @Override
+    public String toString() {
+        return namespacedKey.toString();
+    }
 }

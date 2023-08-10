@@ -24,6 +24,8 @@ package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.validator.Validator;
+import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,6 +33,11 @@ import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class CraftingRecipeEliteShapeless extends AbstractRecipeShapeless<CraftingRecipeEliteShapeless, EliteRecipeSettings> {
+
+    static {
+        //final Validator<CraftingRecipeShaped> VALIDATOR = ValidatorBuilder.<CraftingRecipeShaped>object(RecipeType.ELITE_CRAFTING_SHAPELESS.getNamespacedKey()).use(AbstractRecipeShaped.VALIDATOR).build();
+        //CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     public CraftingRecipeEliteShapeless(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 6, EliteRecipeSettings.class);
