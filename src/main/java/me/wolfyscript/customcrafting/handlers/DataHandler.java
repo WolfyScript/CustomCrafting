@@ -37,6 +37,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Recipe;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -162,9 +163,9 @@ public class DataHandler implements Listener {
 
     public List<NamespacedKey> getMinecraftRecipes() {
         if (minecraftRecipes.isEmpty()) {
-            minecraftRecipes = Streams.stream(Bukkit.recipeIterator())
-                    .map(recipe -> recipe instanceof Keyed keyed ? NamespacedKey.fromBukkit(keyed.getKey()) : null)
-                    .filter(recipe -> recipe != null && recipe.getNamespace().equals("minecraft"))
+            return Streams.stream(Bukkit.recipeIterator())
+                    .filter(recipe -> recipe instanceof Keyed keyed && keyed.getKey().getNamespace().equals("minecraft"))
+                    .map(recipe -> NamespacedKey.fromBukkit(((Keyed) recipe).getKey()))
                     .sorted()
                     .toList();
         }
