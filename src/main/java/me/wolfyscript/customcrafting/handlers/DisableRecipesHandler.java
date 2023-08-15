@@ -32,12 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class DisableRecipesHandler {
 
@@ -45,7 +40,7 @@ public class DisableRecipesHandler {
     private final MainConfig config;
 
     private final Set<NamespacedKey> recipes = new HashSet<>();
-    private final Map<org.bukkit.NamespacedKey, Recipe> cachedRecipes = new HashMap<>();
+    private final Map<org.bukkit.NamespacedKey, Recipe> cachedRecipes = new WeakHashMap<>();
 
     public DisableRecipesHandler(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
