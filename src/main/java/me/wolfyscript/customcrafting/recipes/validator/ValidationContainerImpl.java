@@ -86,9 +86,20 @@ public class ValidationContainerImpl<T> implements ValidationContainer<T> {
 
     @Override
     public String toString() {
-        return "Result[" +
-                "type=" + type + ", " +
-                "message=" + faults + ']';
+        return toString(0, new StringBuilder());
+    }
+
+    private String toString(int level, StringBuilder out) {
+        for (String fault : faults()) {
+            out.append(" ".repeat(level * 2));
+            out.append("> ");
+            out.append(fault);
+            out.append("\n");
+        }
+        for (ValidationContainerImpl<?> child : children()) {
+            child.toString(level + 1, out);
+        }
+        return out.toString();
     }
 
     public class UpdateStepImpl implements UpdateStep<T> {
@@ -111,6 +122,12 @@ public class ValidationContainerImpl<T> implements ValidationContainer<T> {
 
         public UpdateStep<T> fault(String message) {
             ValidationContainerImpl.this.faults.add(message);
+            return this;
+        }
+
+        @Override
+        public UpdateStep<T> clearFaults() {
+            ValidationContainerImpl.this.faults.clear();
             return this;
         }
 

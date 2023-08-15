@@ -32,7 +32,6 @@ import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
-import me.wolfyscript.customcrafting.recipes.validator.ValidationContainerImpl;
 import me.wolfyscript.customcrafting.recipes.validator.Validator;
 import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.CraftManager;
@@ -70,10 +69,12 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private static final String VERTICAL_KEY = "vertical";
     private static final String ROTATION_KEY = "rotation";
 
-    protected static final Validator<AbstractRecipeShaped<?, ?>> VALIDATOR = ValidatorBuilder.<AbstractRecipeShaped<?, ?>>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shaped_crafting")).def()
-            .object(recipe -> recipe.result, resultInitStep -> resultInitStep.use(Result.VALIDATOR))
-            .collection(recipe -> recipe.mappedIngredients.entrySet(), init -> init.def().forEach(initEntry -> initEntry.use(Ingredient.ENTRY_VALIDATOR)))
-            .build();
+    protected static <RT extends AbstractRecipeShaped<?, ?>> Validator<RT> validator() {
+        return ValidatorBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shaped_crafting")).def()
+                .object(recipe -> recipe.result, resultInitStep -> resultInitStep.use(Result.VALIDATOR))
+                .collection(recipe -> recipe.mappedIngredients.entrySet(), init -> init.def().forEach(initEntry -> initEntry.use(Ingredient.ENTRY_VALIDATOR)))
+                .build();
+    }
 
     protected Map<Character, Ingredient> mappedIngredients;
     @JsonIgnore

@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.validator.ValidationContainerImpl;
 import me.wolfyscript.customcrafting.recipes.validator.Validator;
 import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
@@ -52,12 +53,12 @@ import java.util.stream.Stream;
 public abstract class RecipeItemStack {
 
     private static final String NO_ITEMS_OR_TAGS = "%s does not have any item or tag set!";
-    private static final String MISSING_THIRD_PARTY = "%s depends on missing third-party item! Waiting for it to load!";
+    private static final String MISSING_THIRD_PARTY = "%s depends on missing third-party item! (%s)";
     private static final String EMPTY = "%s is empty! Either the specified Items or Tags couldn't be loaded!";
     private static final String NULL = "%s cannot be null!";
 
-    static Validator<RecipeItemStack> validatorFor(Class<? extends RecipeItemStack> recipeItemStackType) {
-        return ValidatorBuilder.<RecipeItemStack>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/abstract_itemstack")).def()
+    static <T extends RecipeItemStack> Validator<T> validatorFor(Class<T> recipeItemStackType) {
+        return ValidatorBuilder.<T>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/abstract_itemstack")).def()
                 .validate(resultValidationContainer ->
                         resultValidationContainer.value().map(value -> {
                                     value.buildChoices();
@@ -70,7 +71,7 @@ public abstract class RecipeItemStack {
                                             if (!(item instanceof VanillaRef)) {
                                                 return resultValidationContainer.update()
                                                         .type(ValidationContainerImpl.ResultType.PENDING)
-                                                        .fault(String.format(MISSING_THIRD_PARTY, recipeItemStackType.getSimpleName()));
+                                                        .fault(String.format(MISSING_THIRD_PARTY, recipeItemStackType.getSimpleName(), item.getClass().getSimpleName()));
                                             }
                                         }
 

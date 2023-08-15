@@ -46,6 +46,8 @@ public interface ValidationContainer<T> {
 
         ValidationContainer.UpdateStep<T> fault(String message);
 
+        ValidationContainer.UpdateStep<T> clearFaults();
+
         ValidationContainer.UpdateStep<T> type(ResultType type);
 
         ValidationContainer.UpdateStep<T> children(List<ValidationContainer<?>> children);

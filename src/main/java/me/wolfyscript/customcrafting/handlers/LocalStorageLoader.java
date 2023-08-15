@@ -178,7 +178,7 @@ public class LocalStorageLoader extends ResourceLoader {
             for (ValidationContainer<? extends CustomRecipe<?>> pendingRecipe : pendingRecipes) {
                 pendingRecipe.value().ifPresent(recipe -> {
                     api.getConsole().getLogger().info(recipe.getNamespacedKey().toString());
-                    printValidationContainer(pendingRecipe);
+                    pendingRecipe.toString().lines().forEach(s -> api.getConsole().getLogger().info(s));
                 });
             }
         }
@@ -187,10 +187,10 @@ public class LocalStorageLoader extends ResourceLoader {
     private void printInvalidRecipes() {
         if (!invalidRecipes.isEmpty()) {
             api.getConsole().getLogger().info(String.format("[LOCAL] %d recipes are invalid!", invalidRecipes.size()));
-            for (ValidationContainer<? extends CustomRecipe<?>> pendingRecipe : invalidRecipes) {
-                pendingRecipe.value().ifPresent(recipe -> {
+            for (ValidationContainer<? extends CustomRecipe<?>> invalidRecipe : invalidRecipes) {
+                invalidRecipe.value().ifPresent(recipe -> {
                     api.getConsole().getLogger().info(recipe.getNamespacedKey().toString());
-                    printValidationContainer(pendingRecipe);
+                    invalidRecipe.toString().lines().forEach(s -> api.getConsole().getLogger().info(s));
                 });
             }
         }

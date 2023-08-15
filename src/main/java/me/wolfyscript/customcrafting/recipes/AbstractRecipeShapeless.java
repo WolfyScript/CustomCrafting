@@ -35,9 +35,13 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.validator.Validator;
+import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
@@ -59,6 +63,13 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
     private int nonEmptyIngredientSize;
     @JsonIgnore
     private boolean hasAllowedEmptyIngredient;
+
+    protected static <RT extends AbstractRecipeShapeless<?,?>> Validator<RT> validator() {
+        return ValidatorBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shapeless_crafting")).def()
+                .object(recipe -> recipe.result, resultInitStep -> resultInitStep.use(Result.VALIDATOR))
+                .collection(recipe -> recipe.ingredients, init -> init.def().forEach(initEntry -> initEntry.use(Ingredient.VALIDATOR)))
+                .build();
+    }
 
     @Deprecated
     protected AbstractRecipeShapeless(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {

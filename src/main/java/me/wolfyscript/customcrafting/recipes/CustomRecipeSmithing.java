@@ -22,13 +22,6 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.google.common.base.Preconditions;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -42,14 +35,12 @@ import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.ArmorTrimMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.validator.ValidationContainer;
+import me.wolfyscript.customcrafting.recipes.validator.ValidationContainerImpl;
+import me.wolfyscript.customcrafting.recipes.validator.Validator;
+import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -69,7 +60,52 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmithingRecipe;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> implements ICustomVanillaRecipe<SmithingRecipe> {
+
+    static {
+        final Validator<CustomRecipeSmithing> VALIDATOR = ValidatorBuilder.<CustomRecipeSmithing>object(RecipeType.SMITHING.getNamespacedKey()).def()
+                .object(recipe -> recipe.result, initStep -> initStep.use(Result.VALIDATOR))
+                .object(recipe -> new Ingredient[]{recipe.template, recipe.base, recipe.addition}, init -> init.def()
+                        .object(i -> i[0], step -> step.def().validate(c -> c.type() == ValidationContainer.ResultType.VALID ? c.update() : c.update().fault("Template:")).object(Function.identity(), iInit -> iInit.use(Ingredient.VALIDATOR)))
+                        .object(i -> i[1], step -> step.def().validate(c -> c.type() == ValidationContainer.ResultType.VALID ? c.update() : c.update().fault("Base:")).object(Function.identity(), iInit -> iInit.use(Ingredient.VALIDATOR)))
+                        .object(i -> i[2], step -> step.def().validate(c -> c.type() == ValidationContainer.ResultType.VALID ? c.update() : c.update().fault("Addition:")).object(Function.identity(), iInit -> iInit.use(Ingredient.VALIDATOR)))
+                        // Make sure at least one ingredient is valid/pending
+                        .validate(container -> {
+                            boolean pending = false;
+                            boolean valid = false;
+                            for (ValidationContainerImpl<?> child : container.children()) {
+                                if (child.type() == ValidationContainer.ResultType.PENDING) {
+                                    pending = true;
+                                } else if (child.type() == ValidationContainer.ResultType.VALID) {
+                                    valid = true;
+                                }
+                            }
+                            if (pending || valid) {
+                                container.children().forEach(child -> {
+                                    if (child.type() == ValidationContainer.ResultType.INVALID) {
+                                        child.update().type(ValidationContainer.ResultType.VALID).clearFaults();
+                                        child.children().get(0).update().type(ValidationContainer.ResultType.VALID).clearFaults();
+                                    }
+                                });
+                                if (pending) {
+                                    return container.update().fault("At least one ingredient is still pending!").type(ValidationContainer.ResultType.PENDING);
+                                } else {
+                                    return container.update().type(ValidationContainer.ResultType.VALID);
+                                }
+                            }
+                            return container.update().fault("No ingredients could be loaded! At least one ingredient (Template, Base, or Addition) must be available!");
+                        }))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     private static final String KEY_BASE = "base";
     private static final String KEY_ADDITION = "addition";
@@ -161,9 +197,9 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
 
         IngredientData[] ingredientData;
         if (IS_1_20) {
-            ingredientData = new IngredientData[]{ templateData, baseData, additionData };
+            ingredientData = new IngredientData[]{templateData, baseData, additionData};
         } else {
-            ingredientData = new IngredientData[]{ baseData, additionData };
+            ingredientData = new IngredientData[]{baseData, additionData};
         }
         return new SmithingData(this, ingredientData);
     }

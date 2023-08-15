@@ -43,10 +43,6 @@ class ObjectValidatorImpl<T_VALUE> implements Validator<T_VALUE> {
     public ValidationContainerImpl<T_VALUE> validate(T_VALUE value) {
         ValidationContainerImpl<T_VALUE> container = new ValidationContainerImpl<>(value, this);
 
-        if (resultFunction != null) {
-            resultFunction.apply(container);
-        }
-
         childValidators.stream()
                 .map(entry -> {
                     ValidationContainer<?> result = entry.applyNestedValidator(value);
@@ -60,16 +56,16 @@ class ObjectValidatorImpl<T_VALUE> implements Validator<T_VALUE> {
                     }
                 });
 
+        if (resultFunction != null) {
+            resultFunction.apply(container);
+        }
+
         return container;
     }
 
     @Override
     public ValidationContainerImpl<T_VALUE> revalidate(ValidationContainerImpl<T_VALUE> container) {
         if (container.type() == ValidationContainerImpl.ResultType.VALID || container.type() == ValidationContainerImpl.ResultType.INVALID) return container;
-
-        if (resultFunction != null) {
-            resultFunction.apply(container);
-        }
 
         for (ValidationContainerImpl<?> child : container.children()) {
             ValidationContainerImpl.ResultType type = child.revalidate().type();
@@ -79,6 +75,9 @@ class ObjectValidatorImpl<T_VALUE> implements Validator<T_VALUE> {
             }
         }
 
+        if (resultFunction != null) {
+            resultFunction.apply(container);
+        }
         return container;
     }
 

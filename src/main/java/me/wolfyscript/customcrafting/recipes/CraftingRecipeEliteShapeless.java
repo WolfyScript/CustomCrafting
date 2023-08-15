@@ -35,8 +35,8 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 public class CraftingRecipeEliteShapeless extends AbstractRecipeShapeless<CraftingRecipeEliteShapeless, EliteRecipeSettings> {
 
     static {
-        //final Validator<CraftingRecipeShaped> VALIDATOR = ValidatorBuilder.<CraftingRecipeShaped>object(RecipeType.ELITE_CRAFTING_SHAPELESS.getNamespacedKey()).use(AbstractRecipeShaped.VALIDATOR).build();
-        //CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+        final Validator<CraftingRecipeEliteShapeless> VALIDATOR = ValidatorBuilder.<CraftingRecipeEliteShapeless>object(RecipeType.ELITE_CRAFTING_SHAPELESS.getNamespacedKey()).use(AbstractRecipeShapeless.validator()).build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
     }
 
     public CraftingRecipeEliteShapeless(NamespacedKey namespacedKey, JsonNode node) {

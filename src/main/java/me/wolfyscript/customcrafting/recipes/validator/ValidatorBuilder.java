@@ -39,7 +39,8 @@ public interface ValidatorBuilder<T> {
         return new ValidatorBuilderImpl.InitStepImpl<>(null, new ValidatorBuilderImpl<>(key, null)) {
 
             @Override
-            public ValidatorBuilderImpl<T> use(Validator<? super T> validator) {
+            public ValidatorBuilderImpl<T> use(Validator<T> validator) {
+                if (!(validator instanceof ObjectValidatorImpl<T> objectValidator)) throw new IllegalArgumentException("Validator must be an object validator!");
                 return new ValidatorBuilderImpl<>(key, parent) {
 
                     @Override
@@ -49,17 +50,23 @@ public interface ValidatorBuilder<T> {
 
                             @Override
                             public ValidationContainerImpl<T> validate(T value) {
-                                ValidationContainerImpl<? super T> extendedContainer = validator.validate(value);
+                                ValidationContainerImpl<T> extendedContainer = objectValidator.validate(value);
                                 ValidationContainerImpl<T> container = super.validate(value);
                                 container.update().copyFrom(extendedContainer.update());
                                 return container;
                             }
 
+                            @Override
+                            public ValidationContainerImpl<T> revalidate(ValidationContainerImpl<T> container) {
+                                objectValidator.revalidate(container);
+                                return super.revalidate(container);
+                            }
                         };
                     }
 
                 };
             }
+
         };
     }
 
@@ -73,7 +80,7 @@ public interface ValidatorBuilder<T> {
         return new ValidatorBuilderImpl.InitStepImpl<>(null, new ValidatorBuilderImpl.CollectionValidatorBuilderImpl<>(key, null)) {
 
             @Override
-            public CollectionValidatorBuilder<T> use(Validator<? super Collection<T>> validator) {
+            public CollectionValidatorBuilder<T> use(Validator<Collection<T>> validator) {
                 return new ValidatorBuilderImpl.CollectionValidatorBuilderImpl<>(key, parent) {
 
                     @Override
@@ -88,6 +95,11 @@ public interface ValidatorBuilder<T> {
                                 return container;
                             }
 
+                            @Override
+                            public ValidationContainerImpl<Collection<T>> revalidate(ValidationContainerImpl<Collection<T>> container) {
+                                validator.revalidate(container);
+                                return super.revalidate(container);
+                            }
                         };
                     }
 
@@ -151,7 +163,7 @@ public interface ValidatorBuilder<T> {
          * @param validator The existing validator that handles the super type of the type handled by this builder
          * @return A builder based on the specified validator
          */
-        B use(Validator<? super T> validator);
+        B use(Validator<T> validator);
 
     }
 

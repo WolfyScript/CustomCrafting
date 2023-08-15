@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
-public class CollectionValidatorImpl<T_VALUE> implements Validator<Collection<T_VALUE>> {
+class CollectionValidatorImpl<T_VALUE> implements Validator<Collection<T_VALUE>> {
 
     private final NamespacedKey key;
     protected final Function<ValidationContainerImpl<Collection<T_VALUE>>, ValidationContainer.UpdateStep<Collection<T_VALUE>>> resultFunction;
@@ -49,10 +49,6 @@ public class CollectionValidatorImpl<T_VALUE> implements Validator<Collection<T_
     public ValidationContainerImpl<Collection<T_VALUE>> validate(Collection<T_VALUE> values) {
         ValidationContainerImpl<Collection<T_VALUE>> container = new ValidationContainerImpl<>(values, this);
 
-        if (resultFunction != null) {
-            resultFunction.apply(container);
-        }
-
         values.stream()
                 .map(value -> {
                     ValidationContainer<T_VALUE> result = elementValidator.validate(value);
@@ -65,6 +61,10 @@ public class CollectionValidatorImpl<T_VALUE> implements Validator<Collection<T_
                     }
                 });
 
+        if (resultFunction != null) {
+            resultFunction.apply(container);
+        }
+
         return container;
     }
 
@@ -73,10 +73,6 @@ public class CollectionValidatorImpl<T_VALUE> implements Validator<Collection<T_
         if (container.type() == ValidationContainerImpl.ResultType.VALID || container.type() == ValidationContainerImpl.ResultType.INVALID)
             return container;
 
-        if (resultFunction != null) {
-            resultFunction.apply(container);
-        }
-
         for (ValidationContainerImpl<?> child : container.children()) {
             ValidationContainerImpl.ResultType type = child.revalidate().type();
             if (type != container.type()) {
@@ -84,6 +80,10 @@ public class CollectionValidatorImpl<T_VALUE> implements Validator<Collection<T_
                 container.update().type(type);
             }
         }
+        if (resultFunction != null) {
+            resultFunction.apply(container);
+        }
+
 
         return container;
     }
