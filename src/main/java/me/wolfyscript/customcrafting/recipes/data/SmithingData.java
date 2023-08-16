@@ -24,10 +24,14 @@ package me.wolfyscript.customcrafting.recipes.data;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.util.version.MinecraftVersion;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 
 import java.util.Map;
 
 public class SmithingData extends RecipeData<CustomRecipeSmithing> implements ISmithingData<CustomRecipeSmithing>{
+
+    private static final boolean IS_1_20 = ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0));
 
     public SmithingData(CustomRecipeSmithing recipe, IngredientData[] ingredients) {
         super(recipe, ingredients);
@@ -39,10 +43,10 @@ public class SmithingData extends RecipeData<CustomRecipeSmithing> implements IS
     }
 
     public CustomItem getBase() {
-        return getBySlot(1).customItem();
+        return getBySlot(IS_1_20 ? 0 : 1).customItem();
     }
 
     public CustomItem getAddition() {
-        return getBySlot(2).customItem();
+        return getBySlot(IS_1_20 ? 2 : 1).customItem();
     }
 }
