@@ -141,7 +141,8 @@ public class SmithingListener implements Listener {
         var player = (Player) event.getWhoClicked();
         var action = event.getAction();
         var inventory = event.getClickedInventory();
-        if (event.getSlot() == CustomRecipeSmithing.RESULT_SLOT && !ItemUtils.isAirOrNull(event.getCurrentItem()) && action.equals(InventoryAction.NOTHING)) {
+        if (event.getSlot() == CustomRecipeSmithing.RESULT_SLOT && !ItemUtils.isAirOrNull(event.getCurrentItem())) {
+            if (action == InventoryAction.PLACE_ALL || action == InventoryAction.PLACE_ONE || action == InventoryAction.PLACE_SOME || action == InventoryAction.SWAP_WITH_CURSOR) return;
             //Take out item!
             if (preCraftedRecipes.get(player.getUniqueId()) == null) {
                 //Vanilla Recipe
