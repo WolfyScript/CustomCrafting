@@ -38,7 +38,9 @@ import org.bukkit.inventory.RecipeChoice;
 public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfire, CampfireRecipe> {
 
     static {
-        final Validator<CustomRecipeCampfire> VALIDATOR = ValidatorBuilder.<CustomRecipeCampfire>object(RecipeType.CAMPFIRE.getNamespacedKey()).use(CustomRecipeCooking.validator()).build();
+        final Validator<CustomRecipeCampfire> VALIDATOR = ValidatorBuilder.<CustomRecipeCampfire>object(RecipeType.CAMPFIRE.getNamespacedKey()).use(CustomRecipeCooking.validator())
+                .name(container -> "Campfire Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .build();
         CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
     }
 

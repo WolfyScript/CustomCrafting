@@ -38,7 +38,9 @@ import org.bukkit.inventory.SmokingRecipe;
 public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking, SmokingRecipe> {
 
     static {
-        final Validator<CustomRecipeSmoking> VALIDATOR = ValidatorBuilder.<CustomRecipeSmoking>object(RecipeType.SMOKER.getNamespacedKey()).use(CustomRecipeCooking.validator()).build();
+        final Validator<CustomRecipeSmoking> VALIDATOR = ValidatorBuilder.<CustomRecipeSmoking>object(RecipeType.SMOKER.getNamespacedKey()).use(CustomRecipeCooking.validator())
+                .name(container -> "Smoking Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .build();
         CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
     }
 

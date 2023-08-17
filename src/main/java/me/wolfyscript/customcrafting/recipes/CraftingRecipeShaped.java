@@ -43,10 +43,13 @@ import org.bukkit.inventory.RecipeChoice;
 public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeShaped, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapedRecipe> {
 
     static {
-        final Validator<CraftingRecipeShaped> VALIDATOR = ValidatorBuilder.<CraftingRecipeShaped>object(RecipeType.CRAFTING_SHAPED.getNamespacedKey()).use(AbstractRecipeShaped.validator()).build();
+        final Validator<CraftingRecipeShaped> VALIDATOR = ValidatorBuilder.<CraftingRecipeShaped>object(RecipeType.CRAFTING_SHAPED.getNamespacedKey()).use(AbstractRecipeShaped.validator())
+                .name(container -> "Shaped Crafting Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .build();
         CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
     }
 
+    @Deprecated
     public CraftingRecipeShaped(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
     }

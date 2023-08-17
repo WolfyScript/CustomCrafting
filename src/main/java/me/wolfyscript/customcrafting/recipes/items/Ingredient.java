@@ -45,12 +45,11 @@ public class Ingredient extends RecipeItemStack {
     static {
         VALIDATOR = ValidatorBuilder.<Ingredient>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient")).use(RecipeItemStack.validatorFor(Ingredient.class)).build();
         ENTRY_VALIDATOR = ValidatorBuilder.<Map.Entry<Character, Ingredient>>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient_entry")).def()
+                .name(container -> container.value().map(entry -> "Ingredient [" + entry.getKey() + "]").orElse("Ingredient [Unknown]"))
                 .validate(entryContainer -> entryContainer.value()
                         .map(entry -> {
                             ValidationContainerImpl<Ingredient> result = VALIDATOR.validate(entry.getValue());
-                            ValidationContainer.UpdateStep<Map.Entry<Character, Ingredient>> updateStep = entryContainer.update().copyFrom(result.update());
-                            if (result.type() == ValidationContainer.ResultType.VALID) return updateStep;
-                            return updateStep.fault("Ingredient = '" + entry.getKey() + "'");
+                            return entryContainer.update().copyFrom(result.update());
                         })
                         .orElseGet(() -> entryContainer.update().type(ValidationContainerImpl.ResultType.INVALID))).build();
     }

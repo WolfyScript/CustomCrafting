@@ -38,7 +38,10 @@ import org.bukkit.inventory.RecipeChoice;
 public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace, FurnaceRecipe> {
 
     static {
-        final Validator<CustomRecipeFurnace> VALIDATOR = ValidatorBuilder.<CustomRecipeFurnace>object(RecipeType.FURNACE.getNamespacedKey()).use(CustomRecipeCooking.validator()).build();
+        final Validator<CustomRecipeFurnace> VALIDATOR = ValidatorBuilder.<CustomRecipeFurnace>object(RecipeType.FURNACE.getNamespacedKey())
+                .use(CustomRecipeCooking.validator())
+                .name(container -> "Furnace Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .build();
         CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
     }
 

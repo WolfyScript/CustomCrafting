@@ -43,7 +43,9 @@ import org.bukkit.inventory.RecipeChoice;
 public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRecipeShapeless, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapelessRecipe> {
 
     static {
-        final Validator<CraftingRecipeShapeless> VALIDATOR = ValidatorBuilder.<CraftingRecipeShapeless>object(RecipeType.CRAFTING_SHAPELESS.getNamespacedKey()).use(AbstractRecipeShapeless.validator()).build(); // TODO
+        final Validator<CraftingRecipeShapeless> VALIDATOR = ValidatorBuilder.<CraftingRecipeShapeless>object(RecipeType.CRAFTING_SHAPELESS.getNamespacedKey()).use(AbstractRecipeShapeless.validator())
+                .name(container -> "Shapeless Crafting Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .build(); // TODO
         CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
     }
 

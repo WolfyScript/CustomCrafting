@@ -38,7 +38,9 @@ import org.bukkit.inventory.RecipeChoice;
 public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasting, BlastingRecipe> {
 
     static {
-        final Validator<CustomRecipeBlasting> VALIDATOR = ValidatorBuilder.<CustomRecipeBlasting>object(RecipeType.BLAST_FURNACE.getNamespacedKey()).use(CustomRecipeCooking.validator()).build();
+        final Validator<CustomRecipeBlasting> VALIDATOR = ValidatorBuilder.<CustomRecipeBlasting>object(RecipeType.BLAST_FURNACE.getNamespacedKey()).use(CustomRecipeCooking.validator())
+                .name(container -> "Blasting Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .build();
         CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
     }
 
