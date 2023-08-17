@@ -108,10 +108,15 @@ public abstract class SmeltAPIAdapter {
             //Need to set the result to air to bypass the vanilla result computation (See net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity#burn).
             event.setResult(new ItemStack(Material.AIR));
             if (currentResultItem != null) {
-                if (!itemResult.isSimilar(currentResultItem)) return;
-                int nextAmount = currentResultItem.getAmount() + itemResult.getAmount();
-                if (nextAmount > currentResultItem.getMaxStackSize())
+                if (!itemResult.isSimilar(currentResultItem)) {
+                    event.setCancelled(true);
                     return;
+                }
+                int nextAmount = currentResultItem.getAmount() + itemResult.getAmount();
+                if (nextAmount > currentResultItem.getMaxStackSize()) {
+                    event.setCancelled(true);
+                    return;
+                }
                 currentResultItem.setAmount(nextAmount);
             } else {
                 inventory.setResult(itemResult);

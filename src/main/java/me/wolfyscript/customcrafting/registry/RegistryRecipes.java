@@ -502,6 +502,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     }
 
     private void removeBukkitRecipe(NamespacedKey namespacedKey) {
-        Bukkit.removeRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()));
+        Bukkit.removeRecipe(ICustomVanillaRecipe.toPlaceholder(namespacedKey).bukkit());
+        Bukkit.removeRecipe(ICustomVanillaRecipe.toDisplayKey(namespacedKey).bukkit());
     }
 }

@@ -44,6 +44,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.material.Colorable;
+import org.bukkit.material.Dye;
 
 public class CauldronListener implements Listener {
 
@@ -60,7 +63,7 @@ public class CauldronListener implements Listener {
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         MainConfig.CauldronInteraction interaction = customCrafting.getConfigHandler().getConfig().getCauldronInteraction();
-        if ((interaction == MainConfig.CauldronInteraction.SNEAKING && (!event.getPlayer().isSneaking() || !ItemUtils.isAirOrNull(event.getItem()))) ||
+        if (!ItemUtils.isAirOrNull(event.getItem()) || (interaction == MainConfig.CauldronInteraction.SNEAKING && !event.getPlayer().isSneaking()) ||
                 (interaction == MainConfig.CauldronInteraction.NORMAL && event.getPlayer().isSneaking())) {
             return;
         }
