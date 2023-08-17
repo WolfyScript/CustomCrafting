@@ -89,6 +89,12 @@ public class LocalStorageLoader extends ResourceLoader {
         }
     }
 
+    private static <T extends CustomRecipe<?>> Optional<ValidationContainer<T>> validateRecipe(T recipe) {
+        Validator<T> validator = (Validator<T>) CustomCrafting.inst().getRegistries().getValidators().get(recipe.getRecipeType().getNamespacedKey());
+        if (validator == null) return Optional.empty();
+        return Optional.of(validator.validate(recipe));
+    }
+
     @Override
     public void load() {
         /* CustomCrafting/data/<namespace>/
@@ -189,15 +195,6 @@ public class LocalStorageLoader extends ResourceLoader {
                 api.getConsole().getLogger().info("");
                 invalidRecipe.value().ifPresent(recipe -> invalidRecipe.toString().lines().forEach(s -> api.getConsole().getLogger().info(s)));
             }
-        }
-    }
-
-    private void printValidationContainer(ValidationContainer<?> container) {
-        for (String fault : container.faults()) {
-            api.getConsole().getLogger().info("    -> " + fault);
-        }
-        for (ValidationContainerImpl<?> child : container.children()) {
-            printValidationContainer(child);
         }
     }
 
@@ -356,6 +353,21 @@ public class LocalStorageLoader extends ResourceLoader {
         return false;
     }
 
+    /**
+     * Used to load data & cache the loaded, skipped errors & already existing keys.
+     */
+    private abstract static class DataLoader {
+
+        protected final String[] dirs;
+
+        private DataLoader(String[] dirs) {
+            this.dirs = dirs;
+        }
+
+        protected abstract void load();
+
+    }
+
     private class NewDataLoader extends DataLoader {
 
         private NewDataLoader(String[] dirs) {
@@ -367,12 +379,6 @@ public class LocalStorageLoader extends ResourceLoader {
             for (String dir : dirs) {
                 loadRecipesInNamespace(dir); //Load new recipe format files
             }
-        }
-
-        private static <T extends CustomRecipe<?>> Optional<ValidationContainer<T>> validateRecipe(T recipe) {
-            Validator<T> validator = (Validator<T>) CustomCrafting.inst().getRegistries().getValidators().get(recipe.getRecipeType().getNamespacedKey());
-            if (validator == null) return Optional.empty();
-            return Optional.of(validator.validate(recipe));
         }
 
         private void loadRecipesInNamespace(String namespace) {
@@ -397,19 +403,15 @@ public class LocalStorageLoader extends ResourceLoader {
                                     case VALID -> customCrafting.getRegistries().getRecipes().register(recipe);
                                 }
                             }, () -> customCrafting.getRegistries().getRecipes().register(recipe));
-
                         } catch (IOException e) {
                             ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
                             markFailed(namespacedKey);
                         }
                     });
-                } else {
-                    skipExisting(namespacedKey);
                 }
                 return FileVisitResult.CONTINUE;
             });
         }
-
     }
 
     private class LegacyDataLoader extends OldDataLoader {
@@ -472,55 +474,29 @@ public class LocalStorageLoader extends ResourceLoader {
                 if (isValidFile(file)) continue;
                 var namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
                 if (!customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
-                    try {
-                        customCrafting.getRegistries().getRecipes().register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
-                        loaded.add(namespacedKey);
-                    } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException |
-                             IllegalAccessException e) {
-                        ChatUtils.sendRecipeItemLoadingError("[LOCAL_OLD] ", namespacedKey.getNamespace(), namespacedKey.getKey(), e);
-                        skippedError.add(namespacedKey);
-                    }
-                } else {
-                    skippedAlreadyExisting.add(namespacedKey);
+                    executor.execute(() -> {
+                        try {
+                            CustomRecipe<?> recipe = loader.getInstance(namespacedKey, objectMapper.readTree(file));
+
+                            validateRecipe(recipe).ifPresentOrElse(container -> {
+                                switch (container.type()) {
+                                    case INVALID -> markInvalid(container);
+                                    case PENDING -> markPending(container);
+                                    case VALID -> customCrafting.getRegistries().getRecipes().register(recipe);
+                                }
+                            }, () -> customCrafting.getRegistries().getRecipes().register(recipe));
+                        } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException |
+                                 IllegalAccessException e) {
+                            ChatUtils.sendRecipeItemLoadingError("[LOCAL_OLD] ", namespacedKey.getNamespace(), namespacedKey.getKey(), e);
+                            markFailed(namespacedKey);
+                        }
+                    });
                 }
             }
         }
 
         protected String[] getOldTypeFolders(String namespace) {
             return new File(DATA_FOLDER + "/" + namespace).list((dir1, name) -> !name.equals(ITEMS_FOLDER) && !name.equals(RECIPES_FOLDER));
-        }
-
-    }
-
-    /**
-     * Used to load data & cache the loaded, skipped errors & already existing keys.
-     */
-    private abstract static class DataLoader {
-
-        protected final List<NamespacedKey> loaded;
-        protected final List<NamespacedKey> skippedError;
-        protected final List<NamespacedKey> skippedAlreadyExisting;
-        protected final String[] dirs;
-
-        private DataLoader(String[] dirs) {
-            this.dirs = dirs;
-            this.loaded = new ArrayList<>();
-            this.skippedError = new ArrayList<>();
-            this.skippedAlreadyExisting = new ArrayList<>();
-        }
-
-        protected abstract void load();
-
-        protected void skipExisting(NamespacedKey namespacedKey) {
-            synchronized (skippedAlreadyExisting) {
-                this.skippedAlreadyExisting.add(namespacedKey);
-            }
-        }
-
-        protected void addLoaded(NamespacedKey namespacedKey) {
-            synchronized (loaded) {
-                this.loaded.add(namespacedKey);
-            }
         }
 
     }
