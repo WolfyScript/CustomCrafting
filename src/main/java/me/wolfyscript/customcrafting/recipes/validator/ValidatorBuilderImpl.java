@@ -31,8 +31,11 @@ class ValidatorBuilderImpl<T> implements ValidatorBuilder<T> {
 
     protected final NamespacedKey key;
     protected final ValidatorBuilder<?> parentBuilder;
-    protected Function<ValidationContainerImpl<T>, ValidationContainer.UpdateStep<T>> validationFunction;
+    protected Function<ValidationContainer<T>, ValidationContainer.UpdateStep<T>> validationFunction;
     protected final List<ValidatorEntry<T, ?>> childValidators = new ArrayList<>();
+    protected boolean required = true;
+    protected int requiresOptionals = 0;
+    protected Function<ValidationContainer<T>, String> nameConstructorFunction = container -> container.value().map(value -> value.getClass().getSimpleName()).orElse("Unnamed");
 
     public ValidatorBuilderImpl(NamespacedKey key, ValidatorBuilder<?> parent) {
         this.key = key;
@@ -40,8 +43,26 @@ class ValidatorBuilderImpl<T> implements ValidatorBuilder<T> {
     }
 
     @Override
-    public ValidatorBuilder<T> validate(Function<ValidationContainerImpl<T>, ValidationContainer.UpdateStep<T>> validateFunction) {
+    public ValidatorBuilder<T> validate(Function<ValidationContainer<T>, ValidationContainer.UpdateStep<T>> validateFunction) {
         this.validationFunction = validateFunction;
+        return this;
+    }
+
+    @Override
+    public ValidatorBuilder<T> optional() {
+        this.required = false;
+        return this;
+    }
+
+    @Override
+    public ValidatorBuilder<T> name(Function<ValidationContainer<T>, String> nameConstructor) {
+        this.nameConstructorFunction = nameConstructor;
+        return this;
+    }
+
+    @Override
+    public ValidatorBuilder<T> require(int count) {
+        this.requiresOptionals = count;
         return this;
     }
 
@@ -61,7 +82,7 @@ class ValidatorBuilderImpl<T> implements ValidatorBuilder<T> {
 
     @Override
     public Validator<T> build() {
-        return new ObjectValidatorImpl<>(key, validationFunction, List.copyOf(childValidators));
+        return new ObjectValidatorImpl<>(key, required, requiresOptionals, nameConstructorFunction, validationFunction, List.copyOf(childValidators));
     }
 
     static class CollectionValidatorBuilderImpl<T> extends ValidatorBuilderImpl<Collection<T>> implements ValidatorBuilder.CollectionValidatorBuilder<T> {
@@ -80,13 +101,18 @@ class ValidatorBuilderImpl<T> implements ValidatorBuilder<T> {
         }
 
         @Override
-        public ValidatorBuilder.CollectionValidatorBuilder<T> validate(Function<ValidationContainerImpl<Collection<T>>, ValidationContainer.UpdateStep<Collection<T>>> validateFunction) {
+        public ValidatorBuilder.CollectionValidatorBuilder<T> validate(Function<ValidationContainer<Collection<T>>, ValidationContainer.UpdateStep<Collection<T>>> validateFunction) {
             return (ValidatorBuilder.CollectionValidatorBuilder<T>) super.validate(validateFunction);
         }
 
         @Override
+        public ValidatorBuilder.CollectionValidatorBuilder<T> name(Function<ValidationContainer<Collection<T>>, String> nameConstructor) {
+            return (ValidatorBuilder.CollectionValidatorBuilder<T>) super.name(nameConstructor);
+        }
+
+        @Override
         public Validator<Collection<T>> build() {
-            return new CollectionValidatorImpl<>(key, validationFunction, elementValidator);
+            return new CollectionValidatorImpl<>(key, required, requiresOptionals, nameConstructorFunction, validationFunction, elementValidator);
         }
     }
 

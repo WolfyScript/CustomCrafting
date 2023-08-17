@@ -30,6 +30,8 @@ public interface ValidationContainer<T> {
 
     List<ValidationContainerImpl<?>> children();
 
+    boolean optional();
+
     Optional<T> value();
 
     ResultType type();
@@ -58,7 +60,14 @@ public interface ValidationContainer<T> {
 
         VALID,
         INVALID,
-        PENDING
+        PENDING;
+
+        public ResultType combine(ResultType newValidation) {
+            if (this == newValidation || this == INVALID) return this;
+            if (this == VALID) return newValidation;
+            if (newValidation == VALID) return this;
+            return newValidation;
+        }
 
     }
 }

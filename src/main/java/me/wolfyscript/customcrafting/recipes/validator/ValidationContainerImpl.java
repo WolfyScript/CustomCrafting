@@ -46,6 +46,11 @@ public class ValidationContainerImpl<T> implements ValidationContainer<T> {
     }
 
     @Override
+    public boolean optional() {
+        return validator.optional();
+    }
+
+    @Override
     public List<ValidationContainerImpl<?>> children() {
         return children;
     }
@@ -86,18 +91,26 @@ public class ValidationContainerImpl<T> implements ValidationContainer<T> {
 
     @Override
     public String toString() {
-        return toString(0, new StringBuilder());
+        return toString(0, "", new StringBuilder());
     }
 
-    private String toString(int level, StringBuilder out) {
+    private String toString(int level, String prefix, StringBuilder out) {
+        out.append(validator.getNameFor(this)).append("\n");
         for (String fault : faults()) {
-            out.append(" ".repeat(level * 2));
-            out.append("> ");
-            out.append(fault);
-            out.append("\n");
+            out.append(prefix).append("| > ").append(fault).append('\n');
         }
-        for (ValidationContainerImpl<?> child : children()) {
-            child.toString(level + 1, out);
+
+        for (int i = 0; i < children.size(); i++) {
+            ValidationContainerImpl<?> child = children.get(i);
+            if (child.type() == ResultType.VALID) continue;
+            out.append(prefix);
+            if (i + 1 == children.size()) {
+                out.append("\\-- ");
+                child.toString(level + 1, prefix + "    ", out);
+            } else {
+                out.append("+-- ");
+                child.toString(level + 1, prefix + "|   ", out);
+            }
         }
         return out.toString();
     }

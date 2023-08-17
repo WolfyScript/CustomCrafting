@@ -30,31 +30,56 @@ import java.util.function.Function;
 class ObjectValidatorImpl<T_VALUE> implements Validator<T_VALUE> {
 
     private final NamespacedKey key;
-    protected final Function<ValidationContainerImpl<T_VALUE>, ValidationContainer.UpdateStep<T_VALUE>> resultFunction;
+    private final boolean required;
+    private final int requiredOptional;
+    protected final Function<ValidationContainer<T_VALUE>, ValidationContainer.UpdateStep<T_VALUE>> resultFunction;
     protected final List<ValidatorEntry<T_VALUE, ?>> childValidators;
+    protected Function<ValidationContainer<T_VALUE>, String> nameConstructorFunction;
 
-    public ObjectValidatorImpl(NamespacedKey key, Function<ValidationContainerImpl<T_VALUE>, ValidationContainer.UpdateStep<T_VALUE>> resultFunction, List<ValidatorEntry<T_VALUE, ?>> childValidators) {
+    public ObjectValidatorImpl(NamespacedKey key, boolean required, int requiredOptional, Function<ValidationContainer<T_VALUE>, String> nameConstructorFunction, Function<ValidationContainer<T_VALUE>, ValidationContainer.UpdateStep<T_VALUE>> resultFunction, List<ValidatorEntry<T_VALUE, ?>> childValidators) {
         this.key = key;
+        this.required = required;
+        this.requiredOptional = requiredOptional;
         this.resultFunction = resultFunction;
         this.childValidators = childValidators;
+        this.nameConstructorFunction = nameConstructorFunction;
+    }
+
+    @Override
+    public boolean optional() {
+        return !required;
+    }
+
+    @Override
+    public String getNameFor(ValidationContainer<T_VALUE> container) {
+        return nameConstructorFunction.apply(container);
     }
 
     @Override
     public ValidationContainerImpl<T_VALUE> validate(T_VALUE value) {
         ValidationContainerImpl<T_VALUE> container = new ValidationContainerImpl<>(value, this);
 
-        childValidators.stream()
-                .map(entry -> {
-                    ValidationContainer<?> result = entry.applyNestedValidator(value);
-                    container.update().children(List.of(result));
-                    return result.type();
-                })
-                .distinct().forEach(resultType -> {
-                    switch (resultType) {
-                        case INVALID, PENDING -> container.update().type(resultType);
-                        default -> { /* Do nothing! */ }
-                    }
-                });
+        ValidationContainer.ResultType resultType = container.type();
+        int optionalsValidOrPending = 0;
+
+        for (ValidatorEntry<T_VALUE, ?> entry : childValidators) {
+            ValidationContainer<?> result = entry.applyNestedValidator(value);
+            container.update().children(List.of(result));
+            if (entry.validator().optional()) {
+                // Invalid Optional children should not be taken into account!
+                if (result.type() == ValidationContainer.ResultType.VALID || result.type() == ValidationContainer.ResultType.PENDING) {
+                    resultType = resultType.combine(result.type());
+                    optionalsValidOrPending++;
+                }
+                continue;
+            }
+            resultType = resultType.combine(result.type());
+        }
+
+        if (optionalsValidOrPending < requiredOptional) {
+            resultType = resultType.combine(ValidationContainer.ResultType.INVALID);
+        }
+        container.update().type(resultType);
 
         if (resultFunction != null) {
             resultFunction.apply(container);
@@ -67,13 +92,27 @@ class ObjectValidatorImpl<T_VALUE> implements Validator<T_VALUE> {
     public ValidationContainerImpl<T_VALUE> revalidate(ValidationContainerImpl<T_VALUE> container) {
         if (container.type() == ValidationContainerImpl.ResultType.VALID || container.type() == ValidationContainerImpl.ResultType.INVALID) return container;
 
+        ValidationContainer.ResultType resultType = null;
+        int optionalsValidOrPending = 0;
+
         for (ValidationContainerImpl<?> child : container.children()) {
             ValidationContainerImpl.ResultType type = child.revalidate().type();
             if (type != container.type()) {
                 if (container.type() == ValidationContainerImpl.ResultType.INVALID) continue;
-                container.update().type(type);
+                if (child.optional()) {
+                    if (type == ValidationContainer.ResultType.VALID || type == ValidationContainer.ResultType.PENDING) {
+                        optionalsValidOrPending++;
+                    }
+                    continue;
+                }
+                resultType = resultType == null ? type : resultType.combine(type);
             }
         }
+
+        if (optionalsValidOrPending < requiredOptional) {
+            resultType = resultType.combine(ValidationContainer.ResultType.INVALID);
+        }
+        container.update().type(resultType);
 
         if (resultFunction != null) {
             resultFunction.apply(container);

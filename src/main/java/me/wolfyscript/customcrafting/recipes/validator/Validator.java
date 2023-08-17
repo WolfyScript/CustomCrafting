@@ -28,4 +28,8 @@ public interface Validator<T_VALUE> extends Keyed {
     ValidationContainerImpl<T_VALUE> validate(T_VALUE value);
 
     ValidationContainerImpl<T_VALUE> revalidate(ValidationContainerImpl<T_VALUE> container);
+
+    boolean optional();
+
+    String getNameFor(ValidationContainer<T_VALUE> container);
 }

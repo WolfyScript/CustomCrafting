@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes.validator;
 
 import me.wolfyscript.utilities.util.NamespacedKey;
+import net.kyori.adventure.text.Component;
 
 import java.util.Collection;
 import java.util.function.Function;
@@ -46,7 +47,7 @@ public interface ValidatorBuilder<T> {
                     @Override
                     public ObjectValidatorImpl<T> build() {
 
-                        return new ObjectValidatorImpl<>(key, validationFunction, childValidators) {
+                        return new ObjectValidatorImpl<>(key, required, requiresOptionals, nameConstructorFunction, validationFunction, childValidators) {
 
                             @Override
                             public ValidationContainerImpl<T> validate(T value) {
@@ -85,7 +86,7 @@ public interface ValidatorBuilder<T> {
 
                     @Override
                     public CollectionValidatorImpl<T> build() {
-                        return new CollectionValidatorImpl<>(key, validationFunction, null) {
+                        return new CollectionValidatorImpl<>(key, required, requiresOptionals, nameConstructorFunction, validationFunction, null) {
 
                             @Override
                             public ValidationContainerImpl<Collection<T>> validate(Collection<T> value) {
@@ -115,7 +116,13 @@ public interface ValidatorBuilder<T> {
      * @param validateFunction The validation function
      * @return This builder instance for chaining
      */
-    ValidatorBuilder<T> validate(Function<ValidationContainerImpl<T>, ValidationContainer.UpdateStep<T>> validateFunction);
+    ValidatorBuilder<T> validate(Function<ValidationContainer<T>, ValidationContainer.UpdateStep<T>> validateFunction);
+
+    ValidatorBuilder<T> name(Function<ValidationContainer<T>, String> nameConstructor);
+
+    ValidatorBuilder<T> optional();
+
+    ValidatorBuilder<T> require(int count);
 
     /**
      * Adds a nested child object validation to this validator.
@@ -170,7 +177,10 @@ public interface ValidatorBuilder<T> {
     interface CollectionValidatorBuilder<T> extends ValidatorBuilder<Collection<T>> {
 
         @Override
-        CollectionValidatorBuilder<T> validate(Function<ValidationContainerImpl<Collection<T>>, ValidationContainer.UpdateStep<Collection<T>>> validateFunction);
+        CollectionValidatorBuilder<T> validate(Function<ValidationContainer<Collection<T>>, ValidationContainer.UpdateStep<Collection<T>>> validateFunction);
+
+        @Override
+        CollectionValidatorBuilder<T> name(Function<ValidationContainer<Collection<T>>, String> nameConstructor);
 
         /**
          * Specifies the validator that is used to validate each element in the collection.

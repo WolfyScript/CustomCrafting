@@ -31,18 +31,29 @@ import java.util.function.Function;
 class CollectionValidatorImpl<T_VALUE> implements Validator<Collection<T_VALUE>> {
 
     private final NamespacedKey key;
-    protected final Function<ValidationContainerImpl<Collection<T_VALUE>>, ValidationContainer.UpdateStep<Collection<T_VALUE>>> resultFunction;
+    private final boolean required;
+    private final int requiredOptional;
+    protected final Function<ValidationContainer<Collection<T_VALUE>>, ValidationContainer.UpdateStep<Collection<T_VALUE>>> resultFunction;
     protected final Validator<T_VALUE> elementValidator;
+    protected Function<ValidationContainer<Collection<T_VALUE>>, String> nameConstructorFunction;
 
-    public CollectionValidatorImpl(NamespacedKey key, Function<ValidationContainerImpl<Collection<T_VALUE>>, ValidationContainer.UpdateStep<Collection<T_VALUE>>> resultFunction, Validator<T_VALUE> elementValidator) {
+    public CollectionValidatorImpl(NamespacedKey key, boolean required, int requiredOptional, Function<ValidationContainer<Collection<T_VALUE>>, String> nameConstructorFunction, Function<ValidationContainer<Collection<T_VALUE>>, ValidationContainer.UpdateStep<Collection<T_VALUE>>> resultFunction, Validator<T_VALUE> elementValidator) {
         this.key = key;
+        this.required = required;
+        this.requiredOptional = requiredOptional;
         this.resultFunction = resultFunction;
         this.elementValidator = elementValidator;
+        this.nameConstructorFunction = nameConstructorFunction;
     }
 
     @Override
     public NamespacedKey getNamespacedKey() {
         return key;
+    }
+
+    @Override
+    public String getNameFor(ValidationContainer<Collection<T_VALUE>> container) {
+        return nameConstructorFunction.apply(container);
     }
 
     @Override
@@ -84,7 +95,11 @@ class CollectionValidatorImpl<T_VALUE> implements Validator<Collection<T_VALUE>>
             resultFunction.apply(container);
         }
 
-
         return container;
+    }
+
+    @Override
+    public boolean optional() {
+        return !required;
     }
 }
