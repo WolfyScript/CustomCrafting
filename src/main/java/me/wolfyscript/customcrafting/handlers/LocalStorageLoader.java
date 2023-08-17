@@ -182,9 +182,12 @@ public class LocalStorageLoader extends ResourceLoader {
         if (!pendingRecipes.isEmpty()) {
             api.getConsole().getLogger().info(String.format("[LOCAL] %d recipes still pending for validation (waiting for dependencies)", pendingRecipes.size()));
             for (ValidationContainer<? extends CustomRecipe<?>> pendingRecipe : pendingRecipes) {
-                api.getConsole().getLogger().info("");
-                pendingRecipe.value().ifPresent(recipe -> pendingRecipe.toString().lines().forEach(s -> api.getConsole().getLogger().info(s)));
+                api.getConsole().getLogger().info("[LOCAL] |--------------------------------------------------------------");
+                api.getConsole().getLogger().info("[LOCAL] |");
+                pendingRecipe.value().ifPresent(recipe -> pendingRecipe.toString().lines().forEach(s -> api.getConsole().getLogger().info("[LOCAL] |   " + s)));
+                api.getConsole().getLogger().info("[LOCAL] |");
             }
+            api.getConsole().getLogger().info("[LOCAL] ----------------------------");
         }
     }
 
@@ -192,9 +195,12 @@ public class LocalStorageLoader extends ResourceLoader {
         if (!invalidRecipes.isEmpty()) {
             api.getConsole().getLogger().info(String.format("[LOCAL] %d recipes are invalid!", invalidRecipes.size()));
             for (ValidationContainer<? extends CustomRecipe<?>> invalidRecipe : invalidRecipes) {
-                api.getConsole().getLogger().info("");
-                invalidRecipe.value().ifPresent(recipe -> invalidRecipe.toString().lines().forEach(s -> api.getConsole().getLogger().info(s)));
+                api.getConsole().getLogger().info("[LOCAL] |--------------------------------------------------------------");
+                api.getConsole().getLogger().info("[LOCAL] |");
+                invalidRecipe.value().ifPresent(recipe -> invalidRecipe.toString().lines().forEach(s -> api.getConsole().getLogger().info("[LOCAL] |   " + s)));
+                api.getConsole().getLogger().info("[LOCAL] |");
             }
+            api.getConsole().getLogger().info("[LOCAL] ----------------------------");
         }
     }
 

@@ -97,7 +97,7 @@ public class ValidationContainerImpl<T> implements ValidationContainer<T> {
     private String toString(int level, String prefix, StringBuilder out) {
         out.append(validator.getNameFor(this)).append("\n");
         for (String fault : faults()) {
-            out.append(prefix).append("| > ").append(fault).append('\n');
+            out.append(prefix).append("| ").append(fault).append('\n');
         }
 
         for (int i = 0; i < children.size(); i++) {
