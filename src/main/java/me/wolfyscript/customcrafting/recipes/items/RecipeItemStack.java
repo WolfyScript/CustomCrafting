@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.validator.ValidationContainer;
 import me.wolfyscript.customcrafting.recipes.validator.ValidationContainerImpl;
 import me.wolfyscript.customcrafting.recipes.validator.Validator;
 import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
@@ -52,38 +52,61 @@ import java.util.stream.Stream;
 @JsonPropertyOrder({"items", "tags"})
 public abstract class RecipeItemStack {
 
-    private static final String NO_ITEMS_OR_TAGS = "%s does not have any item or tag set!";
-    private static final String MISSING_THIRD_PARTY = "%s depends on missing third-party item! (%s)";
-    private static final String EMPTY = "%s is empty! Either the specified Items or Tags couldn't be loaded!";
-    private static final String NULL = "%s cannot be null!";
+    private static final String NO_ITEMS_OR_TAGS = "%s could not load any item/tag";
+    private static final String TOTAL_MISSING_THIRD_PARTY = "At least one item is pending";
+    private static final String MISSING_THIRD_PARTY = "References a missing third-party item!";
+    private static final String INVALID_TAG = "Tag '%s' could not be found!";
+    private static final String INVALID_ITEM = "Item could not be loaded!";
+    private static final String NULL_TAG = "Tag cannot be null!";
+    private static final String NULL_ITEM = "Item cannot be null!";
 
     static <T extends RecipeItemStack> Validator<T> validatorFor(Class<T> recipeItemStackType) {
         return ValidatorBuilder.<T>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/abstract_itemstack")).def()
-                .validate(resultValidationContainer ->
-                        resultValidationContainer.value().map(value -> {
-                                    value.buildChoices();
-                                    if (value.isEmpty()) {
-                                        if (value.getItems().isEmpty()) return resultValidationContainer.update()
-                                                .type(ValidationContainerImpl.ResultType.INVALID)
-                                                .fault(String.format(NO_ITEMS_OR_TAGS, recipeItemStackType.getSimpleName()));
-
-                                        for (APIReference item : value.getItems()) {
-                                            if (!(item instanceof VanillaRef)) {
-                                                return resultValidationContainer.update()
-                                                        .type(ValidationContainerImpl.ResultType.PENDING)
-                                                        .fault(String.format(MISSING_THIRD_PARTY, recipeItemStackType.getSimpleName(), item.getClass().getSimpleName()));
+                .collection(RecipeItemStack::getItems, initStep -> initStep.def()
+                        .name(container -> "Items")
+                        .forEach(apiReferenceInitStep -> apiReferenceInitStep.def()
+                                .validate(container -> container.value()
+                                        .map(apiReference -> {
+                                            if (!ItemUtils.isAirOrNull(apiReference.getLinkedItem())) {
+                                                return container.update().type(ValidationContainer.ResultType.VALID);
                                             }
-                                        }
-
-                                        return resultValidationContainer.update()
-                                                .type(ValidationContainerImpl.ResultType.INVALID)
-                                                .fault(String.format(EMPTY, recipeItemStackType.getSimpleName()));
-                                    }
-                                    return resultValidationContainer.update().type(ValidationContainerImpl.ResultType.VALID);
-                                })
-                                .orElseGet(() -> resultValidationContainer.update()
-                                        .type(ValidationContainerImpl.ResultType.INVALID)
-                                        .fault(String.format(NULL, recipeItemStackType.getSimpleName()))))
+                                            if (apiReference instanceof VanillaRef) {
+                                                return container.update().type(ValidationContainerImpl.ResultType.INVALID).fault(INVALID_ITEM);
+                                            }
+                                            return container.update().type(ValidationContainer.ResultType.PENDING).fault(MISSING_THIRD_PARTY);
+                                        }).orElseGet(() -> container.update().type(ValidationContainer.ResultType.INVALID).fault(NULL_ITEM))
+                                ))
+                        .optional())
+                .collection(RecipeItemStack::getTags, initStep -> initStep.def()
+                        .name(container -> "Tags")
+                        .forEach(tagInitStep -> tagInitStep.def()
+                                .validate(container -> container.value()
+                                        .map(key -> {
+                                            if (key.getNamespace().equals("minecraft")) {
+                                                Tag<Material> tag = Bukkit.getTag("items", org.bukkit.NamespacedKey.minecraft(key.getKey()), Material.class);
+                                                if (tag != null) {
+                                                    return container.update().type(ValidationContainer.ResultType.VALID).fault(String.format(INVALID_TAG, key));
+                                                }
+                                            } else {
+                                                CustomTag<CustomItem> tag = WolfyUtilCore.getInstance().getRegistries().getItemTags().getTag(key);
+                                                if (tag != null) {
+                                                    return container.update().type(ValidationContainer.ResultType.VALID);
+                                                }
+                                            }
+                                            return container.update().type(ValidationContainer.ResultType.INVALID).fault(String.format(INVALID_TAG, key));
+                                        }).orElseGet(() -> container.update().type(ValidationContainer.ResultType.INVALID).fault(NULL_TAG))
+                                ))
+                        .optional())
+                .require(1) // There must be either an item or tag available
+                .validate(resultValidationContainer -> {
+                    if (resultValidationContainer.type() == ValidationContainer.ResultType.INVALID) {
+                        return resultValidationContainer.update().fault(String.format(NO_ITEMS_OR_TAGS, recipeItemStackType.getSimpleName()));
+                    }
+                    if (resultValidationContainer.type() == ValidationContainer.ResultType.PENDING) {
+                        return resultValidationContainer.update().fault(TOTAL_MISSING_THIRD_PARTY);
+                    }
+                    return resultValidationContainer.update();
+                })
                 .build();
     }
 
