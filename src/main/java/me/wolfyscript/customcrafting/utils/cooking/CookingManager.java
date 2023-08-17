@@ -108,12 +108,12 @@ public class CookingManager {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             BlockPositionData that = (BlockPositionData) o;
-            return x == that.x && y == that.y && Objects.equals(world, that.world);
+            return x == that.x && y == that.y && z == that.z && Objects.equals(world, that.world);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(x, y, world);
+            return Objects.hash(x, y, z, world);
         }
     }
 
