@@ -23,11 +23,11 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.DataSettings;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.validator.ValidationContainer;
-import me.wolfyscript.customcrafting.recipes.validator.ValidationContainerImpl;
 import me.wolfyscript.customcrafting.recipes.validator.Validator;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -48,9 +48,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class LocalStorageLoader extends ResourceLoader {
 
@@ -58,6 +56,7 @@ public class LocalStorageLoader extends ResourceLoader {
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     private static final String ITEMS_FOLDER = "items";
     private static final String RECIPES_FOLDER = "recipes";
+    private DataSettings dataSettings;
     private final ExecutorService executor;
     private final List<NamespacedKey> failedRecipes;
     private final List<ValidationContainer<? extends CustomRecipe<?>>> pendingRecipes;
@@ -68,6 +67,7 @@ public class LocalStorageLoader extends ResourceLoader {
         this.pendingRecipes = new ArrayList<>();
         this.failedRecipes = new ArrayList<>();
         this.invalidRecipes = new ArrayList<>();
+        this.dataSettings = customCrafting.getConfigHandler().getConfig().getDataSettings();
         executor = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors());
     }
 
@@ -120,7 +120,7 @@ public class LocalStorageLoader extends ResourceLoader {
 
             executor.shutdown();
 
-            Pair<Long, TimeUnit> timeout = config.getDataLoadTimeout();
+            Pair<Long, TimeUnit> timeout = config.getDataSettings().getTimeoutLoading();
             boolean successful;
             try {
                 successful = executor.awaitTermination(timeout.getKey(), timeout.getValue());
@@ -149,6 +149,18 @@ public class LocalStorageLoader extends ResourceLoader {
 
             printPendingRecipes();
             printInvalidRecipes();
+
+            Pair<Long, TimeUnit> timeoutPending = dataSettings.getTimeoutPending();
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    for (ValidationContainer<? extends CustomRecipe<?>> pendingRecipe : pendingRecipes) {
+                        markInvalid(pendingRecipe);
+                    }
+                    printInvalidRecipes();
+                    cancel();
+                }
+            }, timeoutPending.getValue().toMillis(timeoutPending.getKey()));
         }
     }
 
@@ -181,6 +193,7 @@ public class LocalStorageLoader extends ResourceLoader {
     private void printPendingRecipes() {
         if (!pendingRecipes.isEmpty()) {
             api.getConsole().getLogger().info(String.format("[LOCAL] %d recipes still pending for validation (waiting for dependencies)", pendingRecipes.size()));
+            if (!dataSettings.isPrintPending()) return;
             for (ValidationContainer<? extends CustomRecipe<?>> pendingRecipe : pendingRecipes) {
                 api.getConsole().getLogger().info("[LOCAL] |--------------------------------------------------------------");
                 api.getConsole().getLogger().info("[LOCAL] |");
@@ -192,8 +205,9 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     private void printInvalidRecipes() {
-        if (!invalidRecipes.isEmpty()) {
+        if (!invalidRecipes.isEmpty() && dataSettings.isPrintInvalid()) {
             api.getConsole().getLogger().info(String.format("[LOCAL] %d recipes are invalid!", invalidRecipes.size()));
+            if (!dataSettings.isPrintInvalid()) return;
             for (ValidationContainer<? extends CustomRecipe<?>> invalidRecipe : invalidRecipes) {
                 api.getConsole().getLogger().info("[LOCAL] |--------------------------------------------------------------");
                 api.getConsole().getLogger().info("[LOCAL] |");
