@@ -188,7 +188,7 @@ public class ItemLoader {
     @Nullable
     private static APIReference loadAndConvertCorruptReference(JsonNode itemNode) {
         APIReference reference = getObjectMapper().convertValue(itemNode, APIReference.class);
-        if (CustomCrafting.inst().getConfigHandler().getConfig().getDataVersion() < CustomCrafting.CONFIG_VERSION && reference != null) {
+        if (CustomCrafting.inst().getConfigHandler().getConfig().getDataSettings().getConfigVersion() < CustomCrafting.CONFIG_VERSION && reference != null) {
             if (reference instanceof VanillaRef) {
                 //Check for possible APIReference that could be used!
                 CustomItem customItem = CustomItem.getReferenceByItemStack(reference.getLinkedItem());

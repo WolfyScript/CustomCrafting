@@ -388,7 +388,7 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("    Version      | v" + version.getVersion());
         getLogger().info("    WolfyUtils   | v" + ServerVersion.getWUVersion().getVersion());
         getLogger().info("    Bukkit       | " + Bukkit.getVersion() + "(API: " + Bukkit.getBukkitVersion() + ")");
-        if (!getConfigHandler().getConfig().isPrintingStacktrace()) {
+        if (!getConfigHandler().getConfig().getDataSettings().isPrintStackTrace()) {
             getLogger().warning("    Print Errors | false (Required for Support! Enable `data.print_stacktrace` in config.yml!)");
         }
     }
