@@ -74,12 +74,13 @@ public class MainConfig extends YamlConfiguration {
         set("language", lang);
     }
 
+    @Deprecated
     public int getDataVersion() {
-        return getInt("data.version");
+        return getDataSettings().getConfigVersion();
     }
 
     public void setDataVersion(int version) {
-        set("data.version", version);
+        getDataSettings().setConfigVersion(version);
     }
 
     public boolean updateOldCustomItems() {
@@ -126,12 +127,9 @@ public class MainConfig extends YamlConfiguration {
         set("crafting_table.reset", reset);
     }
 
+    @Deprecated
     public boolean isPrintingStacktrace() {
-        return getBoolean("data.print_stacktrace");
-    }
-
-    public Pair<Long, TimeUnit> getDataLoadTimeout() {
-        return new Pair<>(getLong("data.load_timeout.timeout"), Objects.requireNonNullElse(TimeUnit.valueOf(getString("data.load_timeout.unit")), TimeUnit.SECONDS));
+        return getDataSettings().isPrintStackTrace();
     }
 
     public Set<String> getDisabledRecipes() {
@@ -169,6 +167,11 @@ public class MainConfig extends YamlConfiguration {
 
     public boolean isBrewingRecipes() {
         return getBoolean("recipes.brewing");
+    }
+
+    public DataSettings getDataSettings() {
+        ConfigurationSection section = getConfigurationSection("data");
+        return section != null ? new DataSettings(section) : null;
     }
 
     public LocalStorageSettings getLocalStorageSettings() {
