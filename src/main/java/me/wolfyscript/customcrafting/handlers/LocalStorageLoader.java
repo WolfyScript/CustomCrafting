@@ -68,7 +68,7 @@ public class LocalStorageLoader extends ResourceLoader {
         this.failedRecipes = new ArrayList<>();
         this.invalidRecipes = new ArrayList<>();
         this.dataSettings = customCrafting.getConfigHandler().getConfig().getDataSettings();
-        executor = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors());
+        executor = Executors.newWorkStealingPool(1);//Runtime.getRuntime().availableProcessors());
     }
 
     protected void markPending(ValidationContainer<? extends CustomRecipe<?>> recipe) {

@@ -23,7 +23,6 @@
 package me.wolfyscript.customcrafting.recipes.validator;
 
 import me.wolfyscript.utilities.util.NamespacedKey;
-import net.kyori.adventure.text.Component;
 
 import java.util.Collection;
 import java.util.function.Function;
@@ -42,30 +41,7 @@ public interface ValidatorBuilder<T> {
             @Override
             public ValidatorBuilderImpl<T> use(Validator<T> validator) {
                 if (!(validator instanceof ObjectValidatorImpl<T> objectValidator)) throw new IllegalArgumentException("Validator must be an object validator!");
-                return new ValidatorBuilderImpl<>(key, parent) {
-
-                    @Override
-                    public ObjectValidatorImpl<T> build() {
-
-                        return new ObjectValidatorImpl<>(key, required, requiresOptionals, nameConstructorFunction, validationFunction, childValidators) {
-
-                            @Override
-                            public ValidationContainerImpl<T> validate(T value) {
-                                ValidationContainerImpl<T> extendedContainer = objectValidator.validate(value);
-                                ValidationContainerImpl<T> container = super.validate(value);
-                                container.update().copyFrom(extendedContainer.update());
-                                return container;
-                            }
-
-                            @Override
-                            public ValidationContainerImpl<T> revalidate(ValidationContainerImpl<T> container) {
-                                objectValidator.revalidate(container);
-                                return super.revalidate(container);
-                            }
-                        };
-                    }
-
-                };
+                return new ObjectValidatorBuilderImpl<>(key, parent, objectValidator);
             }
 
         };
@@ -78,34 +54,12 @@ public interface ValidatorBuilder<T> {
      * @return This init step for the validator builder
      */
     static <T> ValidatorBuilder.InitStep<Collection<T>, CollectionValidatorBuilder<T>> collection(NamespacedKey key) {
-        return new ValidatorBuilderImpl.InitStepImpl<>(null, new ValidatorBuilderImpl.CollectionValidatorBuilderImpl<>(key, null)) {
+        return new ValidatorBuilderImpl.InitStepImpl<>(null, new CollectionValidatorBuilderImpl<>(key, null)) {
 
             @Override
             public CollectionValidatorBuilder<T> use(Validator<Collection<T>> validator) {
-                return new ValidatorBuilderImpl.CollectionValidatorBuilderImpl<>(key, parent) {
-
-                    @Override
-                    public CollectionValidatorImpl<T> build() {
-                        return new CollectionValidatorImpl<>(key, required, requiresOptionals, nameConstructorFunction, validationFunction, null) {
-
-                            @Override
-                            public ValidationContainerImpl<Collection<T>> validate(Collection<T> value) {
-                                ValidationContainerImpl<? super Collection<T>> extendedContainer = validator.validate(value);
-                                ValidationContainerImpl<Collection<T>> container = super.validate(value);
-                                container.update().copyFrom(extendedContainer.update());
-                                return container;
-                            }
-
-                            @Override
-                            public ValidationContainerImpl<Collection<T>> revalidate(ValidationContainerImpl<Collection<T>> container) {
-                                validator.revalidate(container);
-                                return super.revalidate(container);
-                            }
-                        };
-                    }
-
-                };
-
+                if (!(validator instanceof CollectionValidatorImpl<T> collectionValidator)) throw new IllegalArgumentException("Validator must be a collection validator!");
+                return new CollectionValidatorBuilderImpl<>(key, parent, collectionValidator);
             }
         };
     }
@@ -172,23 +126,6 @@ public interface ValidatorBuilder<T> {
          */
         B use(Validator<T> validator);
 
-    }
-
-    interface CollectionValidatorBuilder<T> extends ValidatorBuilder<Collection<T>> {
-
-        @Override
-        CollectionValidatorBuilder<T> validate(Function<ValidationContainer<Collection<T>>, ValidationContainer.UpdateStep<Collection<T>>> validateFunction);
-
-        @Override
-        CollectionValidatorBuilder<T> name(Function<ValidationContainer<Collection<T>>, String> nameConstructor);
-
-        /**
-         * Specifies the validator that is used to validate each element in the collection.
-         *
-         * @param childBuilder The element validator builder
-         * @return This build instance for chaining
-         */
-        CollectionValidatorBuilder<T> forEach(Function<ValidatorBuilder.InitStep<T, ?>, ValidatorBuilder<T>> childBuilder);
     }
 
 }

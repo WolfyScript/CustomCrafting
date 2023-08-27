@@ -24,13 +24,13 @@ package me.wolfyscript.customcrafting.recipes.validator;
 
 import java.util.*;
 
-public class ValidationContainerImpl<T> implements ValidationContainer<T> {
+class ValidationContainerImpl<T> implements ValidationContainer<T> {
 
     private ResultType type;
     private final List<String> faults;
     private final T value;
     private final Validator<T> validator;
-    private List<ValidationContainerImpl<?>> children;
+    private List<ValidationContainer<?>> children;
 
     public ValidationContainerImpl(T value, Validator<T> validator) {
         this.type = ResultType.VALID;
@@ -41,7 +41,7 @@ public class ValidationContainerImpl<T> implements ValidationContainer<T> {
     }
 
     @Override
-    public ValidationContainerImpl<T> revalidate() {
+    public ValidationContainer<T> revalidate() {
         return validator.revalidate(this);
     }
 
@@ -51,7 +51,7 @@ public class ValidationContainerImpl<T> implements ValidationContainer<T> {
     }
 
     @Override
-    public List<ValidationContainerImpl<?>> children() {
+    public List<ValidationContainer<?>> children() {
         return children;
     }
 
@@ -101,7 +101,7 @@ public class ValidationContainerImpl<T> implements ValidationContainer<T> {
         }
 
         for (int i = 0; i < children.size(); i++) {
-            ValidationContainerImpl<?> child = children.get(i);
+            ValidationContainerImpl<?> child = (ValidationContainerImpl<?>) children.get(i);
             if (child.type() == ResultType.VALID) continue;
             out.append(prefix);
             if (i + 1 == children.size()) {
@@ -117,15 +117,15 @@ public class ValidationContainerImpl<T> implements ValidationContainer<T> {
 
     public class UpdateStepImpl implements UpdateStep<T> {
 
-        public ValidationContainerImpl<T> owner() {
+        public ValidationContainer<T> owner() {
             return ValidationContainerImpl.this;
         }
 
         public UpdateStep<T> copyFrom(UpdateStep<?> other) {
             ValidationContainerImpl.this.type = other.owner().type();
 
-            List<ValidationContainerImpl<?>> copyChildren = new ArrayList<>();
-            copyChildren.addAll(owner().children);
+            List<ValidationContainer<?>> copyChildren = new ArrayList<>();
+            copyChildren.addAll(owner().children());
             copyChildren.addAll(other.owner().children());
             ValidationContainerImpl.this.children = Collections.unmodifiableList(copyChildren);
 
@@ -150,13 +150,9 @@ public class ValidationContainerImpl<T> implements ValidationContainer<T> {
         }
 
         public UpdateStep<T> children(List<ValidationContainer<?>> children) {
-            List<ValidationContainerImpl<?>> copyChildren = new ArrayList<>();
-            copyChildren.addAll(owner().children);
-            for (ValidationContainer<?> child : children) {
-                if (child instanceof ValidationContainerImpl<?> container) {
-                    copyChildren.add(container);
-                }
-            }
+            List<ValidationContainer<?>> copyChildren = new ArrayList<>();
+            copyChildren.addAll(owner().children());
+            copyChildren.addAll(children);
             ValidationContainerImpl.this.children = Collections.unmodifiableList(copyChildren);
             return this;
         }

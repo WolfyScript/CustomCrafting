@@ -27,7 +27,7 @@ import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.extension.ExecutionType;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.ResultTarget;
-import me.wolfyscript.customcrafting.recipes.validator.ValidationContainerImpl;
+import me.wolfyscript.customcrafting.recipes.validator.ValidationContainer;
 import me.wolfyscript.customcrafting.recipes.validator.Validator;
 import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -56,11 +56,11 @@ public class Result extends RecipeItemStack {
     public static final Validator<Result> VALIDATOR;
 
     static {
-        VALIDATOR = ValidatorBuilder.<Result>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/result")).use(RecipeItemStack.validatorFor(Result.class))
+        VALIDATOR = ValidatorBuilder.<Result>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/result")).use(RecipeItemStack.validatorFor())
                 .validate(resultValidationContainer -> {
                     Optional<Result> value = resultValidationContainer.value();
                     // TODO: Result specific checks
-                    return resultValidationContainer.update().type(ValidationContainerImpl.ResultType.VALID);
+                    return resultValidationContainer.update().type(ValidationContainer.ResultType.VALID);
                 })
                 .build();
     }

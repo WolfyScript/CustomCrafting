@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ValidationContainer<T> {
-    ValidationContainerImpl<T> revalidate();
+    ValidationContainer<T> revalidate();
 
-    List<ValidationContainerImpl<?>> children();
+    List<ValidationContainer<?>> children();
 
     boolean optional();
 
@@ -63,11 +63,22 @@ public interface ValidationContainer<T> {
         PENDING;
 
         public ResultType combine(ResultType newValidation) {
-            if (this == newValidation || this == INVALID) return this;
-            if (this == VALID) return newValidation;
-            if (newValidation == VALID) return this;
-            return newValidation;
+            if (newValidation == null) return this;
+            if (newValidation == INVALID) return INVALID;
+            return switch (this) {
+                case INVALID, PENDING -> this;
+                case VALID -> newValidation;
+            };
         }
+
+        public ResultType combine2(ResultType newValidation) {
+            if (newValidation == INVALID) return INVALID;
+            return switch (this) {
+                case INVALID -> this;
+                case PENDING, VALID -> newValidation;
+            };
+        }
+
 
     }
 }

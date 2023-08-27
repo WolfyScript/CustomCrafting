@@ -23,7 +23,6 @@
 package me.wolfyscript.customcrafting.recipes.items;
 
 import me.wolfyscript.customcrafting.recipes.validator.ValidationContainer;
-import me.wolfyscript.customcrafting.recipes.validator.ValidationContainerImpl;
 import me.wolfyscript.customcrafting.recipes.validator.Validator;
 import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -43,15 +42,15 @@ public class Ingredient extends RecipeItemStack {
     public static final Validator<Map.Entry<Character, Ingredient>> ENTRY_VALIDATOR;
 
     static {
-        VALIDATOR = ValidatorBuilder.<Ingredient>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient")).use(RecipeItemStack.validatorFor(Ingredient.class)).build();
+        VALIDATOR = ValidatorBuilder.<Ingredient>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient")).use(RecipeItemStack.validatorFor()).build();
         ENTRY_VALIDATOR = ValidatorBuilder.<Map.Entry<Character, Ingredient>>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient_entry")).def()
                 .name(container -> container.value().map(entry -> "Ingredient [" + entry.getKey() + "]").orElse("Ingredient [Unknown]"))
                 .validate(entryContainer -> entryContainer.value()
                         .map(entry -> {
-                            ValidationContainerImpl<Ingredient> result = VALIDATOR.validate(entry.getValue());
+                            ValidationContainer<Ingredient> result = VALIDATOR.validate(entry.getValue());
                             return entryContainer.update().copyFrom(result.update());
                         })
-                        .orElseGet(() -> entryContainer.update().type(ValidationContainerImpl.ResultType.INVALID))).build();
+                        .orElseGet(() -> entryContainer.update().type(ValidationContainer.ResultType.INVALID))).build();
     }
 
     private boolean replaceWithRemains = true;

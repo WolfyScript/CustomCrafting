@@ -85,37 +85,6 @@ class ValidatorBuilderImpl<T> implements ValidatorBuilder<T> {
         return new ObjectValidatorImpl<>(key, required, requiresOptionals, nameConstructorFunction, validationFunction, List.copyOf(childValidators));
     }
 
-    static class CollectionValidatorBuilderImpl<T> extends ValidatorBuilderImpl<Collection<T>> implements ValidatorBuilder.CollectionValidatorBuilder<T> {
-
-        private Validator<T> elementValidator;
-
-        public CollectionValidatorBuilderImpl(NamespacedKey key, ValidatorBuilder<?> parent) {
-            super(key, parent);
-        }
-
-        @Override
-        public ValidatorBuilder.CollectionValidatorBuilder<T> forEach(Function<InitStep<T, ?>, ValidatorBuilder<T>> childBuilderFunction) {
-            var builderComplete = childBuilderFunction.apply(ValidatorBuilder.object(key));
-            elementValidator = builderComplete.build();
-            return this;
-        }
-
-        @Override
-        public ValidatorBuilder.CollectionValidatorBuilder<T> validate(Function<ValidationContainer<Collection<T>>, ValidationContainer.UpdateStep<Collection<T>>> validateFunction) {
-            return (ValidatorBuilder.CollectionValidatorBuilder<T>) super.validate(validateFunction);
-        }
-
-        @Override
-        public ValidatorBuilder.CollectionValidatorBuilder<T> name(Function<ValidationContainer<Collection<T>>, String> nameConstructor) {
-            return (ValidatorBuilder.CollectionValidatorBuilder<T>) super.name(nameConstructor);
-        }
-
-        @Override
-        public Validator<Collection<T>> build() {
-            return new CollectionValidatorImpl<>(key, required, requiresOptionals, nameConstructorFunction, validationFunction, elementValidator);
-        }
-    }
-
     static abstract class InitStepImpl<T, B extends ValidatorBuilder<T>> implements InitStep<T, B> {
 
         protected final ValidatorBuilder<?> parent;

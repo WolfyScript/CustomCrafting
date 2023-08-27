@@ -23,7 +23,6 @@
 package me.wolfyscript.customcrafting.recipes.items;
 
 import me.wolfyscript.customcrafting.recipes.validator.ValidationContainer;
-import me.wolfyscript.customcrafting.recipes.validator.ValidationContainerImpl;
 import me.wolfyscript.customcrafting.recipes.validator.Validator;
 import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -60,7 +59,7 @@ public abstract class RecipeItemStack {
     private static final String NULL_TAG = "Tag cannot be null!";
     private static final String NULL_ITEM = "Item cannot be null!";
 
-    static <T extends RecipeItemStack> Validator<T> validatorFor(Class<T> recipeItemStackType) {
+    static <T extends RecipeItemStack> Validator<T> validatorFor() {
         return ValidatorBuilder.<T>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/abstract_itemstack")).def()
                 .collection(RecipeItemStack::getItems, initStep -> initStep.def()
                         .name(container -> "Items")
@@ -71,12 +70,13 @@ public abstract class RecipeItemStack {
                                                 return container.update().type(ValidationContainer.ResultType.VALID);
                                             }
                                             if (apiReference instanceof VanillaRef) {
-                                                return container.update().type(ValidationContainerImpl.ResultType.INVALID).fault(INVALID_ITEM);
+                                                return container.update().type(ValidationContainer.ResultType.INVALID).fault(INVALID_ITEM);
                                             }
                                             return container.update().type(ValidationContainer.ResultType.PENDING).fault(MISSING_THIRD_PARTY);
                                         }).orElseGet(() -> container.update().type(ValidationContainer.ResultType.INVALID).fault(NULL_ITEM))
                                 ))
-                        .optional())
+                        .optional()
+                )
                 .collection(RecipeItemStack::getTags, initStep -> initStep.def()
                         .name(container -> "Tags")
                         .forEach(tagInitStep -> tagInitStep.def()
@@ -96,17 +96,9 @@ public abstract class RecipeItemStack {
                                             return container.update().type(ValidationContainer.ResultType.INVALID).fault(String.format(INVALID_TAG, key));
                                         }).orElseGet(() -> container.update().type(ValidationContainer.ResultType.INVALID).fault(NULL_TAG))
                                 ))
-                        .optional())
+                        .optional()
+                )
                 .require(1) // There must be either an item or tag available
-                .validate(resultValidationContainer -> {
-                    if (resultValidationContainer.type() == ValidationContainer.ResultType.INVALID) {
-                        return resultValidationContainer.update().fault(String.format(NO_ITEMS_OR_TAGS, recipeItemStackType.getSimpleName()));
-                    }
-                    if (resultValidationContainer.type() == ValidationContainer.ResultType.PENDING) {
-                        return resultValidationContainer.update().fault(TOTAL_MISSING_THIRD_PARTY);
-                    }
-                    return resultValidationContainer.update();
-                })
                 .build();
     }
 

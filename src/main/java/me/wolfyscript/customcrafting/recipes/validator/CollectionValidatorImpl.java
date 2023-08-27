@@ -25,14 +25,16 @@ package me.wolfyscript.customcrafting.recipes.validator;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 class CollectionValidatorImpl<T_VALUE> implements Validator<Collection<T_VALUE>> {
 
     private final NamespacedKey key;
-    private final boolean required;
-    private final int requiredOptional;
+    final boolean required;
+    final int requiredOptional;
     protected final Function<ValidationContainer<Collection<T_VALUE>>, ValidationContainer.UpdateStep<Collection<T_VALUE>>> resultFunction;
     protected final Validator<T_VALUE> elementValidator;
     protected Function<ValidationContainer<Collection<T_VALUE>>, String> nameConstructorFunction;
@@ -60,17 +62,37 @@ class CollectionValidatorImpl<T_VALUE> implements Validator<Collection<T_VALUE>>
     public ValidationContainerImpl<Collection<T_VALUE>> validate(Collection<T_VALUE> values) {
         ValidationContainerImpl<Collection<T_VALUE>> container = new ValidationContainerImpl<>(values, this);
 
-        values.stream()
-                .map(value -> {
-                    ValidationContainer<T_VALUE> result = elementValidator.validate(value);
-                    container.update().children(List.of(result));
-                    return result.type();
-                }).distinct().forEach(resultType -> {
-                    switch (resultType) {
-                        case INVALID, PENDING -> container.update().type(resultType);
-                        default -> { /* Do nothing! */ }
-                    }
-                });
+        ValidationContainer.ResultType resultType;
+        if (elementValidator.optional()) {
+            Map<ValidationContainer.ResultType, Integer> counts = new EnumMap<>(ValidationContainer.ResultType.class);
+            for (T_VALUE value : values) {
+                ValidationContainer<T_VALUE> result = elementValidator.validate(value);
+                container.update().children(List.of(result));
+                counts.merge(result.type(), 1, Integer::sum);
+            }
+
+            if (counts.getOrDefault(ValidationContainer.ResultType.VALID, 0) >= requiredOptional) {
+                if (counts.getOrDefault(ValidationContainer.ResultType.PENDING, 0) > 0) {
+                    resultType = ValidationContainer.ResultType.PENDING;
+                } else {
+                    resultType = ValidationContainer.ResultType.VALID;
+                }
+            } else {
+                resultType = ValidationContainer.ResultType.INVALID;
+            }
+        } else {
+            resultType = values.stream()
+                    .map(value -> {
+                        ValidationContainer<T_VALUE> result = elementValidator.validate(value);
+                        container.update().children(List.of(result));
+                        return result.type();
+                    })
+                    .distinct()
+                    .reduce(ValidationContainer.ResultType::combine)
+                    .orElse(ValidationContainer.ResultType.INVALID);
+        }
+
+        container.update().type(resultType);
 
         if (resultFunction != null) {
             resultFunction.apply(container);
@@ -80,17 +102,38 @@ class CollectionValidatorImpl<T_VALUE> implements Validator<Collection<T_VALUE>>
     }
 
     @Override
-    public ValidationContainerImpl<Collection<T_VALUE>> revalidate(ValidationContainerImpl<Collection<T_VALUE>> container) {
+    public ValidationContainer<Collection<T_VALUE>> revalidate(ValidationContainer<Collection<T_VALUE>> container) {
         if (container.type() == ValidationContainerImpl.ResultType.VALID || container.type() == ValidationContainerImpl.ResultType.INVALID)
             return container;
 
-        for (ValidationContainerImpl<?> child : container.children()) {
-            ValidationContainerImpl.ResultType type = child.revalidate().type();
-            if (type != container.type()) {
-                if (container.type() == ValidationContainerImpl.ResultType.INVALID) continue;
-                container.update().type(type);
+        ValidationContainer.ResultType resultType;
+        if (elementValidator.optional()) {
+
+            Map<ValidationContainer.ResultType, Integer> counts = new EnumMap<>(ValidationContainer.ResultType.class);
+            for (ValidationContainer<?> child : container.children()) {
+                counts.merge(child.revalidate().type(), 1, Integer::sum);
             }
+
+            if (counts.getOrDefault(ValidationContainer.ResultType.VALID, 0) >= requiredOptional) {
+                if (counts.getOrDefault(ValidationContainer.ResultType.PENDING, 0) > 0) {
+                    resultType = ValidationContainer.ResultType.PENDING;
+                } else {
+                    resultType = ValidationContainer.ResultType.VALID;
+                }
+            } else {
+                resultType = ValidationContainer.ResultType.INVALID;
+            }
+
+        } else {
+            resultType = container.children().stream()
+                    .map(value -> value.revalidate().type())
+                    .distinct()
+                    .reduce(ValidationContainer.ResultType::combine2)
+                    .orElse(ValidationContainer.ResultType.INVALID);
         }
+
+        container.update().type(resultType);
+
         if (resultFunction != null) {
             resultFunction.apply(container);
         }

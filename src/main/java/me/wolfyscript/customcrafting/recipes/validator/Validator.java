@@ -25,9 +25,9 @@ package me.wolfyscript.customcrafting.recipes.validator;
 import me.wolfyscript.utilities.util.Keyed;
 
 public interface Validator<T_VALUE> extends Keyed {
-    ValidationContainerImpl<T_VALUE> validate(T_VALUE value);
+    ValidationContainer<T_VALUE> validate(T_VALUE value);
 
-    ValidationContainerImpl<T_VALUE> revalidate(ValidationContainerImpl<T_VALUE> container);
+    ValidationContainer<T_VALUE> revalidate(ValidationContainer<T_VALUE> container);
 
     boolean optional();
 
