@@ -51,8 +51,7 @@ import java.util.stream.Stream;
 @JsonPropertyOrder({"items", "tags"})
 public abstract class RecipeItemStack {
 
-    private static final String NO_ITEMS_OR_TAGS = "%s could not load any item/tag";
-    private static final String TOTAL_MISSING_THIRD_PARTY = "At least one item is pending";
+    private static final String NO_ITEMS_OR_TAGS = "Must have either valid items or valid tags!";
     private static final String MISSING_THIRD_PARTY = "References a missing third-party item!";
     private static final String INVALID_TAG = "Tag '%s' could not be found!";
     private static final String INVALID_ITEM = "Item could not be loaded!";
@@ -99,6 +98,12 @@ public abstract class RecipeItemStack {
                         .optional()
                 )
                 .require(1) // There must be either an item or tag available
+                .validate(resultValidationContainer -> {
+                    if (resultValidationContainer.type() == ValidationContainer.ResultType.INVALID || resultValidationContainer.type() == ValidationContainer.ResultType.PENDING) {
+                        return resultValidationContainer.update().fault(NO_ITEMS_OR_TAGS);
+                    }
+                    return resultValidationContainer.update();
+                })
                 .build();
     }
 
