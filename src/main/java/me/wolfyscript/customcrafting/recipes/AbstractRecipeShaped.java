@@ -72,7 +72,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     protected static <RT extends AbstractRecipeShaped<?, ?>> Validator<RT> validator() {
         return ValidatorBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shaped_crafting")).def()
                 .object(recipe -> recipe.result, resultInitStep -> resultInitStep.use(Result.VALIDATOR))
-                .collection(recipe -> recipe.mappedIngredients.entrySet(), init -> init.def().forEach(initEntry -> initEntry.use(Ingredient.ENTRY_VALIDATOR)))
+                .collection(recipe -> recipe.mappedIngredients.entrySet(), init -> init.def().name(c -> "Ingredients").forEach(initEntry -> initEntry.use(Ingredient.ENTRY_VALIDATOR)))
                 .build();
     }
 
