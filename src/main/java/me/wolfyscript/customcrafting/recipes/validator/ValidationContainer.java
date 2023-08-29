@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.validator;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public interface ValidationContainer<T> {
 
     ResultType type();
 
-    List<String> faults();
+    Collection<String> faults();
 
     UpdateStep<T> update();
 

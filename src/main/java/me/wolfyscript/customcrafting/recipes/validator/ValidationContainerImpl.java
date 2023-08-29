@@ -27,7 +27,7 @@ import java.util.*;
 class ValidationContainerImpl<T> implements ValidationContainer<T> {
 
     private ResultType type;
-    private final List<String> faults;
+    private final Set<String> faults;
     private final T value;
     private final Validator<T> validator;
     private List<ValidationContainer<?>> children;
@@ -35,7 +35,7 @@ class ValidationContainerImpl<T> implements ValidationContainer<T> {
     public ValidationContainerImpl(T value, Validator<T> validator) {
         this.type = ResultType.VALID;
         this.value = value;
-        this.faults = new ArrayList<>();
+        this.faults = new HashSet<>();
         this.validator = validator;
         this.children = List.of();
     }
@@ -66,7 +66,7 @@ class ValidationContainerImpl<T> implements ValidationContainer<T> {
     }
 
     @Override
-    public List<String> faults() {
+    public Collection<String> faults() {
         return faults;
     }
 
@@ -103,6 +103,7 @@ class ValidationContainerImpl<T> implements ValidationContainer<T> {
         for (int i = 0; i < children.size(); i++) {
             ValidationContainerImpl<?> child = (ValidationContainerImpl<?>) children.get(i);
             if (child.type() == ResultType.VALID) continue;
+            out.append(prefix).append("|").append('\n');
             out.append(prefix);
             if (i + 1 == children.size()) {
                 out.append("\\-- ");
