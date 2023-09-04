@@ -43,7 +43,7 @@ public class SmithingData extends RecipeData<CustomRecipeSmithing> implements IS
     }
 
     public CustomItem getBase() {
-        return getBySlot(IS_1_20 ? 0 : 1).customItem();
+        return getBySlot(IS_1_20 ? 1 : 0).customItem();
     }
 
     public CustomItem getAddition() {
