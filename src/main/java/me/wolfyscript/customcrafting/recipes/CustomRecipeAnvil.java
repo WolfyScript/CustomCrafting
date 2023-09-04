@@ -23,6 +23,9 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.validator.ValidationContainer;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
@@ -60,6 +63,25 @@ import java.util.List;
 
 @JsonIgnoreProperties({"result"})
 public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
+
+    static {
+        final Validator<CustomRecipeAnvil> VALIDATOR = ValidatorBuilder.<CustomRecipeAnvil>object(RecipeType.ANVIL.getNamespacedKey()).def()
+                .name(container -> "Anvil Recipe" + container.value().map(recipe -> " [" + recipe.getNamespacedKey() + "]").orElse(""))
+                .object(recipe -> recipe, i -> i.def().name(c -> "Ingredients")
+                        .object(recipe -> recipe.base, initStep -> initStep.use(Ingredient.VALIDATOR).name(c -> "Base").optional())
+                        .object(recipe -> recipe.addition, initStep -> initStep.use(Ingredient.VALIDATOR).name(c -> "Addition").optional())
+                        .require(1)
+                )
+                .object(recipe -> recipe.result, initStep -> initStep.use(Result.VALIDATOR))
+                .object(recipe -> recipe.repairCost, initStep -> initStep.def().name(c -> "Repair Cost").validate(repairCostContainer -> {
+                    if (!repairCostContainer.value().map(integer -> integer > 0).orElse(false)) {
+                        return repairCostContainer.update().type(ValidationContainer.ResultType.VALID);
+                    }
+                    return repairCostContainer.update().type(ValidationContainer.ResultType.INVALID).fault("Must be greater than 0");
+                }))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     private boolean blockRepair;
     private boolean blockRename;
