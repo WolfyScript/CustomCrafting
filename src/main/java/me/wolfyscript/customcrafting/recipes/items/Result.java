@@ -59,7 +59,6 @@ public class Result extends RecipeItemStack {
         VALIDATOR = ValidatorBuilder.<Result>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/result")).use(RecipeItemStack.validatorFor())
                 .validate(resultValidationContainer -> {
                     Optional<Result> value = resultValidationContainer.value();
-                    // TODO: Result specific checks
                     return resultValidationContainer.update().type(ValidationContainer.ResultType.VALID);
                 })
                 .build();

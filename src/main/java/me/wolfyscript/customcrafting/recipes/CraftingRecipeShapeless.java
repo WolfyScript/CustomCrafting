@@ -45,7 +45,7 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
     static {
         final Validator<CraftingRecipeShapeless> VALIDATOR = ValidatorBuilder.<CraftingRecipeShapeless>object(RecipeType.CRAFTING_SHAPELESS.getNamespacedKey()).use(AbstractRecipeShapeless.validator())
                 .name(container -> "Shapeless Crafting Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
-                .build(); // TODO
+                .build();
         CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
     }
 
