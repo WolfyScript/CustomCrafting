@@ -84,18 +84,11 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
                         .object(i -> i.addition, step -> step.def().name(container -> "Addition")
                                 .optional()
                                 .object(Function.identity(), iInit -> iInit.use(Ingredient.VALIDATOR)))
-                        // Make sure at least one ingredient is valid/pending
-                        .require(1)
+                        .require(1) // Make sure at least one ingredient is valid/pending
                         .validate(container -> {
                             if (container.type() == ValidationContainer.ResultType.INVALID) {
-                                return container.update().fault("No ingredients could be loaded! At least one ingredient (Template, Base, or Addition) must be available!");
+                                return container.update().fault("At least one ingredient (Template, Base, or Addition) must be available!");
                             }
-                            container.children().forEach(child -> {
-                                if (child.type() == ValidationContainer.ResultType.INVALID) {
-                                    child.update().type(ValidationContainer.ResultType.VALID).clearFaults();
-                                    child.children().get(0).update().type(ValidationContainer.ResultType.VALID).clearFaults();
-                                }
-                            });
                             if (container.type() == ValidationContainer.ResultType.PENDING) {
                                 return container.update().fault("At least one ingredient is still pending!");
                             }
