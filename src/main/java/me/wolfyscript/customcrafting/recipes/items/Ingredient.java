@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
-import me.wolfyscript.customcrafting.recipes.validator.ValidationContainer;
-import me.wolfyscript.customcrafting.recipes.validator.Validator;
-import me.wolfyscript.customcrafting.recipes.validator.ValidatorBuilder;
+import com.wolfyscript.utilities.validator.ValidationContainer;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;

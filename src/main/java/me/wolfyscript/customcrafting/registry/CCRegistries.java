@@ -28,7 +28,7 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
-import me.wolfyscript.customcrafting.recipes.validator.Validator;
+import com.wolfyscript.utilities.validator.Validator;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.registry.*;
 import me.wolfyscript.utilities.util.NamespacedKey;
