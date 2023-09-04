@@ -74,7 +74,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
                 )
                 .object(recipe -> recipe.result, initStep -> initStep.use(Result.VALIDATOR))
                 .object(recipe -> recipe.repairCost, initStep -> initStep.def().name(c -> "Repair Cost").validate(repairCostContainer -> {
-                    if (!repairCostContainer.value().map(integer -> integer > 0).orElse(false)) {
+                    if (repairCostContainer.value().map(integer -> integer > 0).orElse(false)) {
                         return repairCostContainer.update().type(ValidationContainer.ResultType.VALID);
                     }
                     return repairCostContainer.update().type(ValidationContainer.ResultType.INVALID).fault("Must be greater than 0");
