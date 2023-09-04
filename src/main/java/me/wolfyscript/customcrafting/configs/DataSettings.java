@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DataSettings {
 
+    private static final String MAX_PROCESSORS = "max_processors";
     private static final String PRINT_PENDING = "print_pending";
     private static final String PRINT_INVALID = "print_invalid";
     private static final String TIMEOUT_LOADING = "timeout.loading";
@@ -97,6 +98,10 @@ public class DataSettings {
 
     public void setPrintPending(boolean printPending) {
         section.set(PRINT_PENDING, printPending);
+    }
+
+    public int maxProcessors() {
+        return section.getInt(MAX_PROCESSORS);
     }
 
 }
