@@ -32,7 +32,6 @@ import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.node.ObjectNode;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
@@ -42,7 +41,6 @@ import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReferen
 import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -188,7 +186,7 @@ public class ItemLoader {
     @Nullable
     private static APIReference loadAndConvertCorruptReference(JsonNode itemNode) {
         APIReference reference = getObjectMapper().convertValue(itemNode, APIReference.class);
-        if (CustomCrafting.inst().getConfigHandler().getConfig().getDataSettings().getConfigVersion() < CustomCrafting.CONFIG_VERSION && reference != null) {
+        if (CustomCrafting.inst().getConfigHandler().getConfig().getDataSettings().configVersion() < CustomCrafting.CONFIG_VERSION && reference != null) {
             if (reference instanceof VanillaRef) {
                 //Check for possible APIReference that could be used!
                 CustomItem customItem = CustomItem.getReferenceByItemStack(reference.getLinkedItem());

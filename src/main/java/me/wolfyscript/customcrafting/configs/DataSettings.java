@@ -46,57 +46,57 @@ public class DataSettings {
         this.section = section;
     }
 
-    private void setTimeout(String key, Pair<Long, TimeUnit> value, Map<String, Object> result) {
+    private void timeout(String key, Pair<Long, TimeUnit> value, Map<String, Object> result) {
         result.put(key + ".value", value.getKey());
         result.put(key + ".unit", value.getValue().toString());
     }
 
-    private Pair<Long, TimeUnit> getTimeout(ConfigurationSection section, String key) {
+    private Pair<Long, TimeUnit> timeout(ConfigurationSection section, String key) {
         return new Pair<>(section.getLong(key + ".value"),
                 Objects.requireNonNullElse(TimeUnit.valueOf(section.getString(key + ".unit")), TimeUnit.SECONDS));
     }
 
-    public boolean isPrintPending() {
+    public boolean printPending() {
         return section.getBoolean(PRINT_PENDING);
     }
 
-    public boolean isPrintInvalid() {
+    public boolean printInvalid() {
         return section.getBoolean(PRINT_INVALID);
     }
 
-    public boolean isPrintStackTrace() {
+    public boolean printStackTrace() {
         return section.getBoolean(PRINT_STACKTRACE);
     }
 
-    public int getBukkitVersion() {
+    public int bukkitVersion() {
         return section.getInt(BUKKIT_VERSION);
     }
 
-    public int getConfigVersion() {
+    public int configVersion() {
         return section.getInt(CONFIG_VERSION);
     }
 
-    public Pair<Long, TimeUnit> getTimeoutPending() {
-        return getTimeout(section, TIMEOUT_PENDING);
+    public Pair<Long, TimeUnit> timeoutPending() {
+        return timeout(section, TIMEOUT_PENDING);
     }
 
-    public Pair<Long, TimeUnit> getTimeoutLoading() {
-        return getTimeout(section, TIMEOUT_LOADING);
+    public Pair<Long, TimeUnit> timeoutLoading() {
+        return timeout(section, TIMEOUT_LOADING);
     }
 
-    public void setBukkitVersion(int bukkitVersion) {
+    public void bukkitVersion(int bukkitVersion) {
         section.set(BUKKIT_VERSION, bukkitVersion);
     }
 
-    public void setConfigVersion(int configVersion) {
+    public void configVersion(int configVersion) {
         section.set(CONFIG_VERSION, configVersion);
     }
 
-    public void setPrintInvalid(boolean printFailed) {
+    public void printInvalid(boolean printFailed) {
         section.set(PRINT_INVALID, printFailed);
     }
 
-    public void setPrintPending(boolean printPending) {
+    public void printPending(boolean printPending) {
         section.set(PRINT_PENDING, printPending);
     }
 

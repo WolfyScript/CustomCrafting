@@ -30,9 +30,6 @@ import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.config.YamlConfiguration;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
-import java.util.concurrent.TimeUnit;
-
-import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class MainConfig extends YamlConfiguration {
@@ -76,11 +73,11 @@ public class MainConfig extends YamlConfiguration {
 
     @Deprecated
     public int getDataVersion() {
-        return getDataSettings().getConfigVersion();
+        return getDataSettings().configVersion();
     }
 
     public void setDataVersion(int version) {
-        getDataSettings().setConfigVersion(version);
+        getDataSettings().configVersion(version);
     }
 
     public boolean updateOldCustomItems() {
@@ -129,7 +126,7 @@ public class MainConfig extends YamlConfiguration {
 
     @Deprecated
     public boolean isPrintingStacktrace() {
-        return getDataSettings().isPrintStackTrace();
+        return getDataSettings().printStackTrace();
     }
 
     public Set<String> getDisabledRecipes() {
