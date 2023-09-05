@@ -1,7 +1,7 @@
 name: CustomCrafting
 authors: [ WolfyScript ]
 main: me.wolfyscript.customcrafting.CustomCrafting
-version: ${project.version}
+version: ${version}
 api-version: "1.16"
 depend: [ WolfyUtilities ]
 loadbefore:

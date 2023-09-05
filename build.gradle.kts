@@ -53,13 +53,20 @@ dependencies {
     compileOnly("io.netty:netty-all:4.1.85.Final")
     compileOnly("me.clip:placeholderapi:2.10.4")
     compileOnly("com.github.oraxen:oraxen:1.156.0")
-    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.16.12-beta.1")
+    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.16.13-SNAPSHOT")
 }
 
 group = "com.wolfyscript.customcrafting"
 version = "4.16.9-beta.1"
 description = "customcrafting-spigot"
 java.sourceCompatibility = JavaVersion.VERSION_16
+
+tasks.named<ProcessResources>("processResources") {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    filesMatching("**/*.yml") {
+        expand(project.properties)
+    }
+}
 
 tasks.named<ShadowJar>("shadowJar") {
     archiveClassifier.set("")
