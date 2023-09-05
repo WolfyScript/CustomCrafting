@@ -36,8 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.apache.commons.io.FileUtils;
-import org.bukkit.util.FileUtil;
+import java.nio.file.StandardCopyOption;
 
 public class ConfigHandler {
 
@@ -88,7 +87,7 @@ public class ConfigHandler {
             customCrafting.saveResource("recipe_book.conf", true);
         } else if (recipeBookFileJson.exists() && !recipeBookFile.exists()) {
             // The old json file is used and there is no hocon file available, so let's rename it.
-            FileUtils.moveFile(recipeBookFileJson, recipeBookFile);
+            Files.move(recipeBookFileJson.toPath(), recipeBookFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
         }
         // At this point both json and hocon file might be present (due to previous conversion logic), so just load the hocon variant.
         this.recipeBookConfig = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readValue(recipeBookFile, RecipeBookConfig.class);
