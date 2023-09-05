@@ -62,7 +62,7 @@ description = "customcrafting-spigot"
 java.sourceCompatibility = JavaVersion.VERSION_16
 
 tasks.named<ShadowJar>("shadowJar") {
-
+    archiveClassifier.set("")
     dependencies {
         include(dependency("org.bstats:.*"))
     }
