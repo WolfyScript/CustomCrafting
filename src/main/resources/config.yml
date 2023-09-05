@@ -67,7 +67,28 @@ database:
   password: ""
 
 data:
-  # Toggle if the stacktrace should be printed out if a recipe or item fails to load.
+  # Specifies the maximum number of processors to use for loading the data
+  # Uses either all available processors, or the specified count, whichever is smaller
+  max_processors: 64
+  # Specifies if it should print details about why the recipes are pending.
+  # Recipes are mostly pending because of dependencies, and are validated once a dependency is done loading its data.
+  # Usually not required as pending recipes not validated are marked as 'invalid' after a given timeout (see 'data.timeout.pending').
+  print_pending: false
+  # Specifies if it should print details about why the recipes failed.
+  # Only disable if absolute necessary! Especially when asking for support, this should be enabled, so we can help you out!
+  print_invalid: true
+  timeout:
+    # Timeout for the initial parsing & validation of the data.
+    # If this timeout is reached then the process is interrupted, but all data that is loaded until then will be registered!
+    loading:
+      value: 10
+      unit: SECONDS
+    # Timeout to wait for pending data to be validated (plugin dependencies).
+    # When this timeout is reached it marks all still pending recipes as invalid and prints them (see 'data.print_invalid').
+    pending:
+      value: 60
+      unit: SECONDS
+  # Toggle if the stacktrace should be printed when a recipe or item fails to load.
   print_stacktrace: true
   # Do not change this number! It is used for internal conversion of items between Bukkit versions to make sure they are up-to-date.
   bukkit_version: 0

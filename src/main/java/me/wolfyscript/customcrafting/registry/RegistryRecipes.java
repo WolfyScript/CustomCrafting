@@ -24,17 +24,6 @@ package me.wolfyscript.customcrafting.registry;
 
 
 import com.google.common.base.Preconditions;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -51,6 +40,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The custom Registry for the Recipes of CustomCrafting.
@@ -113,20 +106,22 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     }
 
     @Override
-    public void register(NamespacedKey namespacedKey, CustomRecipe<?> value) {
+    public synchronized void register(NamespacedKey namespacedKey, CustomRecipe<?> value) {
         Preconditions.checkArgument(namespacedKey != null, "Invalid NamespacedKey! The namespaced key cannot be null!");
         Preconditions.checkArgument(!namespacedKey.getNamespace().equalsIgnoreCase("minecraft"), "Invalid NamespacedKey! Cannot register recipe under minecraft namespace!");
         remove(namespacedKey);
         super.register(namespacedKey, value);
         if (value instanceof ICustomVanillaRecipe<?> vanillaRecipe && !value.isDisabled()) {
-            try {
-                Recipe bukkitRecipe = vanillaRecipe.getVanillaRecipe();
-                if (bukkitRecipe != null && !Bukkit.addRecipe(bukkitRecipe)) {
-                    customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
+                try {
+                    Recipe bukkitRecipe = vanillaRecipe.getVanillaRecipe();
+                    if (bukkitRecipe != null && !Bukkit.addRecipe(bukkitRecipe)) {
+                        customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
+                    }
+                } catch (IllegalArgumentException | IllegalStateException ex) {
+                    customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
-            } catch (IllegalArgumentException | IllegalStateException ex) {
-                customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
-            }
+            });
         }
         clearCache(namespacedKey);
     }
@@ -316,10 +311,10 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         boolean hasRoot = directory.startsWith("/");
         // Clear the folder, so it is in proper format.
         final String dir = (
-                                   includeRoot ?
-                                           (!hasRoot ? "/" + directory : directory) :
-                                           (hasRoot ? directory.substring(1) : directory)
-                           ) + (!directory.endsWith("/") ? "/" : "");
+                includeRoot ?
+                        (!hasRoot ? "/" + directory : directory) :
+                        (hasRoot ? directory.substring(1) : directory)
+        ) + (!directory.endsWith("/") ? "/" : "");
         return dirs(namespace, 64, includeRoot).stream().filter(sub -> sub.startsWith(dir) && (sub.length() != dir.length() || includeRoot)).toList();
     }
 

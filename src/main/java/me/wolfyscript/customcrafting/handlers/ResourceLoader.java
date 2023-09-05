@@ -67,6 +67,8 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
         }
     }
 
+    public abstract void validatePending();
+
     /**
      * Sets the new value for the "replace data" option.<br>
      * If set to true, this loader overrides already existing recipes that might be loaded by other loaders beforehand.

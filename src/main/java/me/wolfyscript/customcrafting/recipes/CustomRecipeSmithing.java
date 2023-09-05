@@ -22,13 +22,6 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.google.common.base.Preconditions;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -42,14 +35,11 @@ import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.ArmorTrimMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
+import com.wolfyscript.utilities.validator.ValidationContainer;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -69,7 +59,44 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmithingRecipe;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> implements ICustomVanillaRecipe<SmithingRecipe> {
+
+    static {
+        final Validator<CustomRecipeSmithing> VALIDATOR = ValidatorBuilder.<CustomRecipeSmithing>object(RecipeType.SMITHING.getNamespacedKey()).def()
+                .name(container -> "Smithing Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .object(recipe -> recipe.result, initStep -> initStep.use(Result.VALIDATOR).name(container -> "Result"))
+                .object(Function.identity(), init -> init.def()
+                        .name(container -> "Ingredients")
+                        .object(i -> i.template, step -> step.def().name(container -> "Template")
+                                .optional()
+                                .object(Function.identity(), iInit -> iInit.use(Ingredient.VALIDATOR)))
+                        .object(i -> i.base, step -> step.def().name(container -> "Base")
+                                .optional()
+                                .object(Function.identity(), iInit -> iInit.use(Ingredient.VALIDATOR)))
+                        .object(i -> i.addition, step -> step.def().name(container -> "Addition")
+                                .optional()
+                                .object(Function.identity(), iInit -> iInit.use(Ingredient.VALIDATOR)))
+                        .require(1) // Make sure at least one ingredient is valid/pending
+                        .validate(container -> {
+                            if (container.type() == ValidationContainer.ResultType.INVALID) {
+                                return container.update().fault("At least one ingredient (Template, Base, or Addition) must be available!");
+                            }
+                            if (container.type() == ValidationContainer.ResultType.PENDING) {
+                                return container.update().fault("At least one ingredient is still pending!");
+                            }
+                            return container.update();
+                        }))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     private static final String KEY_BASE = "base";
     private static final String KEY_ADDITION = "addition";
@@ -161,9 +188,9 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
 
         IngredientData[] ingredientData;
         if (IS_1_20) {
-            ingredientData = new IngredientData[]{ templateData, baseData, additionData };
+            ingredientData = new IngredientData[]{templateData, baseData, additionData};
         } else {
-            ingredientData = new IngredientData[]{ baseData, additionData };
+            ingredientData = new IngredientData[]{baseData, additionData};
         }
         return new SmithingData(this, ingredientData);
     }
@@ -179,7 +206,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     }
 
     public void setAddition(@NotNull Ingredient addition) {
-        Preconditions.checkArgument(!addition.isEmpty(), "Invalid Addition! Recipe must have non-air addition!");
+        // Preconditions.checkArgument(!addition.isEmpty(), "Invalid Addition! Recipe must have non-air addition!");
         this.addition = addition;
     }
 
@@ -188,7 +215,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     }
 
     public void setBase(@NotNull Ingredient base) {
-        Preconditions.checkArgument(!base.isEmpty(), "Invalid Base ingredient! Recipe must have non-air base ingredient!");
+        // Preconditions.checkArgument(!base.isEmpty(), "Invalid Base ingredient! Recipe must have non-air base ingredient!");
         this.base = base;
     }
 

@@ -22,7 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
+import com.wolfyscript.utilities.validator.ValidationContainer;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
@@ -40,22 +44,71 @@ import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @JsonPropertyOrder({"items", "tags"})
 public abstract class RecipeItemStack {
 
+    private static final String NO_ITEMS_OR_TAGS = "Must have either valid items or valid tags!";
+    private static final String MISSING_THIRD_PARTY = "References a missing third-party item!";
+    private static final String INVALID_TAG = "Tag '%s' could not be found!";
+    private static final String INVALID_ITEM = "Item could not be loaded!";
+    private static final String NULL_TAG = "Tag cannot be null!";
+    private static final String NULL_ITEM = "Item cannot be null!";
+
+    static <T extends RecipeItemStack> Validator<T> validatorFor() {
+        return ValidatorBuilder.<T>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/abstract_itemstack")).def()
+                .collection(RecipeItemStack::getItems, initStep -> initStep.def()
+                        .name(container -> "Items")
+                        .forEach(apiReferenceInitStep -> apiReferenceInitStep.def()
+                                .validate(container -> container.value()
+                                        .map(apiReference -> {
+                                            if (!ItemUtils.isAirOrNull(apiReference.getLinkedItem())) {
+                                                return container.update().type(ValidationContainer.ResultType.VALID);
+                                            }
+                                            if (apiReference instanceof VanillaRef) {
+                                                return container.update().type(ValidationContainer.ResultType.INVALID).fault(INVALID_ITEM);
+                                            }
+                                            return container.update().type(ValidationContainer.ResultType.PENDING).fault(MISSING_THIRD_PARTY);
+                                        }).orElseGet(() -> container.update().type(ValidationContainer.ResultType.INVALID).fault(NULL_ITEM))
+                                ))
+                        .optional()
+                )
+                .collection(RecipeItemStack::getTags, initStep -> initStep.def()
+                        .name(container -> "Tags")
+                        .forEach(tagInitStep -> tagInitStep.def()
+                                .validate(container -> container.value()
+                                        .map(key -> {
+                                            if (key.getNamespace().equals("minecraft")) {
+                                                Tag<Material> tag = Bukkit.getTag("items", org.bukkit.NamespacedKey.minecraft(key.getKey()), Material.class);
+                                                if (tag != null) {
+                                                    return container.update().type(ValidationContainer.ResultType.VALID).fault(String.format(INVALID_TAG, key));
+                                                }
+                                            } else {
+                                                CustomTag<CustomItem> tag = WolfyUtilCore.getInstance().getRegistries().getItemTags().getTag(key);
+                                                if (tag != null) {
+                                                    return container.update().type(ValidationContainer.ResultType.VALID);
+                                                }
+                                            }
+                                            return container.update().type(ValidationContainer.ResultType.INVALID).fault(String.format(INVALID_TAG, key));
+                                        }).orElseGet(() -> container.update().type(ValidationContainer.ResultType.INVALID).fault(NULL_TAG))
+                                ))
+                        .optional()
+                )
+                .require(1) // There must be either an item or tag available
+                .validate(resultValidationContainer -> {
+                    if (resultValidationContainer.type() == ValidationContainer.ResultType.INVALID || resultValidationContainer.type() == ValidationContainer.ResultType.PENDING) {
+                        return resultValidationContainer.update().fault(NO_ITEMS_OR_TAGS);
+                    }
+                    return resultValidationContainer.update();
+                })
+                .build();
+    }
+
     @JsonIgnore
     protected final List<CustomItem> choices;
-
     private List<APIReference> items;
     private Set<NamespacedKey> tags;
 

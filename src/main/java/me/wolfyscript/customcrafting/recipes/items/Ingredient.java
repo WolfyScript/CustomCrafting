@@ -22,6 +22,10 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
+import com.wolfyscript.utilities.validator.ValidationContainer;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -30,11 +34,24 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class Ingredient extends RecipeItemStack {
+
+    public static final Validator<Ingredient> VALIDATOR;
+    public static final Validator<Map.Entry<Character, Ingredient>> ENTRY_VALIDATOR;
+
+    static {
+        VALIDATOR = ValidatorBuilder.<Ingredient>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient")).use(RecipeItemStack.validatorFor()).build();
+        ENTRY_VALIDATOR = ValidatorBuilder.<Map.Entry<Character, Ingredient>>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient_entry")).def()
+                .name(container -> container.value().map(entry -> "Ingredient [" + entry.getKey() + "]").orElse("Ingredient [Unknown]"))
+                .validate(entryContainer -> entryContainer.value()
+                        .map(entry -> {
+                            ValidationContainer<Ingredient> result = VALIDATOR.validate(entry.getValue());
+                            return entryContainer.update().copyFrom(result.update());
+                        })
+                        .orElseGet(() -> entryContainer.update().type(ValidationContainer.ResultType.INVALID))).build();
+    }
 
     private boolean replaceWithRemains = true;
     private boolean allowEmpty = false;

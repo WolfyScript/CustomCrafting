@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -34,6 +36,13 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmokingRecipe;
 
 public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking, SmokingRecipe> {
+
+    static {
+        final Validator<CustomRecipeSmoking> VALIDATOR = ValidatorBuilder.<CustomRecipeSmoking>object(RecipeType.SMOKER.getNamespacedKey()).use(CustomRecipeCooking.validator())
+                .name(container -> "Smoking Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     public CustomRecipeSmoking(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);

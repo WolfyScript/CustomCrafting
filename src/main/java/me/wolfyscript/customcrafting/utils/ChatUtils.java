@@ -300,7 +300,7 @@ public class ChatUtils {
         if (ex.getCause() != null) {
             api.getConsole().warn(prefix + "[Error]   Caused by: " + ex.getCause().getMessage());
         }
-        if (CustomCrafting.inst().getConfigHandler().getConfig().isPrintingStacktrace()) {
+        if (CustomCrafting.inst().getConfigHandler().getConfig().getDataSettings().printStackTrace()) {
             api.getConsole().warn("------------------[StackTrace]-------------------");
             ex.printStackTrace();
         }

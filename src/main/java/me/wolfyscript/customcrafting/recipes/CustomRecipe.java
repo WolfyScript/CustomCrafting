@@ -275,7 +275,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
 
     public void setResult(@NotNull Result result) {
         Objects.requireNonNull(result, "Invalid result! Result must not be null!");
-        Preconditions.checkArgument(!result.isEmpty(), "Invalid result! Recipe must have a non-air result!");
+        // Preconditions.checkArgument(!result.isEmpty(), "Invalid result! Recipe must have a non-air result!");
         this.result = result;
     }
 
@@ -421,4 +421,8 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
         byteBuf.writeCollection(result.getChoices(), (mcByteBuf, customItem) -> mcByteBuf.writeItemStack(customItem.create()));
     }
 
+    @Override
+    public String toString() {
+        return namespacedKey.toString();
+    }
 }

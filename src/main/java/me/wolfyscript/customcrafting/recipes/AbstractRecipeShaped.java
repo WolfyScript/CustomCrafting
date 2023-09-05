@@ -24,27 +24,19 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -62,6 +54,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 @JsonPropertyOrder(value = {"@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions", "symmetry", "keepShapeAsIs", "shape", "ingredients"})
 public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
@@ -70,6 +68,13 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private static final String HORIZONTAL_KEY = "horizontal";
     private static final String VERTICAL_KEY = "vertical";
     private static final String ROTATION_KEY = "rotation";
+
+    protected static <RT extends AbstractRecipeShaped<?, ?>> Validator<RT> validator() {
+        return ValidatorBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shaped_crafting")).def()
+                .object(recipe -> recipe.result, resultInitStep -> resultInitStep.use(Result.VALIDATOR))
+                .collection(recipe -> recipe.mappedIngredients.entrySet(), init -> init.def().name(c -> "Ingredients").forEach(initEntry -> initEntry.use(Ingredient.ENTRY_VALIDATOR)))
+                .build();
+    }
 
     protected Map<Character, Ingredient> mappedIngredients;
     @JsonIgnore
@@ -236,15 +241,8 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
 
     @JsonSetter("ingredients")
     public void setIngredients(Map<Character, Ingredient> ingredients) {
-        this.mappedIngredients = ingredients.entrySet().stream().filter(entry -> {
-            var ingredient = entry.getValue();
-            if (ingredient != null) {
-                ingredient.buildChoices();
-                return !ingredient.isEmpty();
-            }
-            return false;
-        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        Preconditions.checkArgument(!this.mappedIngredients.isEmpty(), "Invalid ingredients! Recipe must have non-air ingredients!");
+        this.mappedIngredients = ingredients;
+        Preconditions.checkArgument(!this.mappedIngredients.isEmpty(), "Invalid ingredients! Recipe must have at least one non-air ingredient!");
         createFlatIngredients();
     }
 

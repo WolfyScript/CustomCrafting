@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -34,6 +36,13 @@ import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.RecipeChoice;
 
 public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasting, BlastingRecipe> {
+
+    static {
+        final Validator<CustomRecipeBlasting> VALIDATOR = ValidatorBuilder.<CustomRecipeBlasting>object(RecipeType.BLAST_FURNACE.getNamespacedKey()).use(CustomRecipeCooking.validator())
+                .name(container -> "Blasting Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     public CustomRecipeBlasting(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);

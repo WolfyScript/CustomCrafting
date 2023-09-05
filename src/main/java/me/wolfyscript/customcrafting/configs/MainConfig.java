@@ -22,15 +22,14 @@
 
 package me.wolfyscript.customcrafting.configs;
 
-import java.util.Locale;
+import java.util.*;
+
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.config.YamlConfiguration;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
 import org.bukkit.configuration.ConfigurationSection;
 
 public class MainConfig extends YamlConfiguration {
@@ -72,12 +71,13 @@ public class MainConfig extends YamlConfiguration {
         set("language", lang);
     }
 
+    @Deprecated
     public int getDataVersion() {
-        return getInt("data.version");
+        return getDataSettings().configVersion();
     }
 
     public void setDataVersion(int version) {
-        set("data.version", version);
+        getDataSettings().configVersion(version);
     }
 
     public boolean updateOldCustomItems() {
@@ -124,8 +124,9 @@ public class MainConfig extends YamlConfiguration {
         set("crafting_table.reset", reset);
     }
 
+    @Deprecated
     public boolean isPrintingStacktrace() {
-        return getBoolean("data.print_stacktrace");
+        return getDataSettings().printStackTrace();
     }
 
     public Set<String> getDisabledRecipes() {
@@ -163,6 +164,11 @@ public class MainConfig extends YamlConfiguration {
 
     public boolean isBrewingRecipes() {
         return getBoolean("recipes.brewing");
+    }
+
+    public DataSettings getDataSettings() {
+        ConfigurationSection section = getConfigurationSection("data");
+        return section != null ? new DataSettings(section) : null;
     }
 
     public LocalStorageSettings getLocalStorageSettings() {

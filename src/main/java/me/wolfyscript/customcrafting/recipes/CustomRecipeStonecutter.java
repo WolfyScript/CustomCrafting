@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
@@ -44,7 +46,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
@@ -55,6 +56,15 @@ import java.io.IOException;
 public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutter> implements ICustomVanillaRecipe<StonecuttingRecipe> {
 
     private static final String KEY_SOURCE = "source";
+
+    static {
+        final Validator<CustomRecipeStonecutter> VALIDATOR = ValidatorBuilder.<CustomRecipeStonecutter>object(RecipeType.STONECUTTER.getNamespacedKey()).def()
+                .name(container -> "Stonecutter Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .object(recipe -> recipe.source, initStep -> initStep.use(Ingredient.VALIDATOR))
+                .object(recipe -> recipe.result, initStep -> initStep.use(Result.VALIDATOR))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     private Ingredient source;
 

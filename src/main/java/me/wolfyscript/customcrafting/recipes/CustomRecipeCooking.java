@@ -32,7 +32,11 @@ import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
@@ -55,6 +59,13 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T extends CookingRecipe<?>> extends CustomRecipe<C> implements ICustomVanillaRecipe<T> {
+
+    protected static <RT extends CustomRecipeCooking<?,?>> Validator<RT> validator() {
+        return ValidatorBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_cooking_recipe")).def()
+                .object(recipe -> recipe.result, init -> init.use(Result.VALIDATOR))
+                .object(recipe -> recipe.getSource(), init -> init.use(Ingredient.VALIDATOR))
+                .build();
+    }
 
     private Ingredient source;
     private float exp;
@@ -95,7 +106,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     }
 
     public void setSource(@NotNull Ingredient source) {
-        Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
+        // Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
         this.source = source;
     }
 

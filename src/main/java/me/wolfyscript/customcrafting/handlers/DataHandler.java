@@ -23,23 +23,20 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import com.google.common.collect.Streams;
+import com.wolfyscript.utilities.bukkit.events.compatibility.PluginIntegrationEnableEvent;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.LocalStorageSettings;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.events.DependenciesLoadedEvent;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.Recipe;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -147,10 +144,10 @@ public class DataHandler implements Listener {
     }
 
     @EventHandler
-    private void dependenciesLoaded(DependenciesLoadedEvent event) {
-        customCrafting.writeSeparator();
-        loadRecipesAndItems();
-        customCrafting.writeSeparator();
+    private void integrationEnable(PluginIntegrationEnableEvent event) {
+        for (ResourceLoader loader : loaders) {
+            loader.validatePending();
+        }
     }
 
     public ResourceLoader getActiveLoader() {

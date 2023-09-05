@@ -28,11 +28,9 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
+import com.wolfyscript.utilities.validator.Validator;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
-import me.wolfyscript.utilities.registry.Registry;
-import me.wolfyscript.utilities.registry.RegistrySimple;
-import me.wolfyscript.utilities.registry.TypeRegistry;
-import me.wolfyscript.utilities.registry.TypeRegistrySimple;
+import me.wolfyscript.utilities.registry.*;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class CCRegistries {
@@ -40,6 +38,7 @@ public class CCRegistries {
     private final RegistryRecipes recipes;
     private final Registry<ItemCreatorTab> itemCreatorTabs;
     private final Registry<RecipeType<?>> recipeTypes;
+    private final Registry<Validator<?>> validators;
     private final TypeRegistryRecipeConditions recipeConditions;
     private final TypeRegistry<MergeAdapter> recipeMergeAdapters;
     private final TypeRegistry<ResultExtension> recipeResultExtensions;
@@ -48,6 +47,7 @@ public class CCRegistries {
     public CCRegistries(CustomCrafting customCrafting, WolfyUtilCore core) {
         var registries = core.getRegistries();
         this.recipes = new RegistryRecipes(customCrafting, registries);
+        this.validators = new UniqueRegistrySimple<>(new NamespacedKey(customCrafting, "validators"), registries);
         this.itemCreatorTabs = new RegistryItemCreatorTabs(customCrafting, registries);
         this.recipeConditions = new TypeRegistryRecipeConditions(customCrafting, registries);
         this.recipeMergeAdapters = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/merge_adapters"), registries);
@@ -82,5 +82,9 @@ public class CCRegistries {
 
     public RegistryRecipes getRecipes() {
         return recipes;
+    }
+
+    public Registry<Validator<?>> getValidators() {
+        return validators;
     }
 }

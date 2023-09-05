@@ -361,9 +361,8 @@ public class CustomCrafting extends JavaPlugin {
         if (WolfyUtilities.isDevEnv()) {
             this.networkHandler.registerPackets();
         }
-        if (api.getCore().getCompatibilityManager().getPlugins().isDoneLoading()) {
-            dataHandler.loadRecipesAndItems();
-        }
+        dataHandler.loadRecipesAndItems();
+
         //All data is loaded. Now test for updates.
         updateChecker.run(null);
         //Load Metrics
@@ -389,7 +388,7 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("    Version      | v" + version.getVersion());
         getLogger().info("    WolfyUtils   | v" + ServerVersion.getWUVersion().getVersion());
         getLogger().info("    Bukkit       | " + Bukkit.getVersion() + "(API: " + Bukkit.getBukkitVersion() + ")");
-        if (!getConfigHandler().getConfig().isPrintingStacktrace()) {
+        if (!getConfigHandler().getConfig().getDataSettings().printStackTrace()) {
             getLogger().warning("    Print Errors | false (Required for Support! Enable `data.print_stacktrace` in config.yml!)");
         }
     }
