@@ -32,17 +32,13 @@ plugins {
     `java-library`
     `maven-publish`
     id("com.github.johnrengelman.shadow") version ("8.1.1")
+    id("com.wolfyscript.devtools.docker.minecraft_servers") version ("2.0-SNAPSHOT")
 }
 
 repositories {
     mavenLocal()
-    maven {
-        url = uri("https://maven.wolfyscript.com/repository/public/")
-    }
-
-    maven {
-        url = uri("https://repo.dmulloy2.net/repository/public/")
-    }
+    maven(url = "https://maven.wolfyscript.com/repository/public/")
+    maven(url = "https://repo.dmulloy2.net/repository/public/")
     maven(url = "https://repo.maven.apache.org/maven2/")
     maven(url = "https://mvn.lumine.io/repository/maven-public/")
 }
@@ -100,3 +96,49 @@ tasks.withType<JavaCompile> {
 tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }
+
+minecraftDockerRun {
+
+}
+
+minecraftServers {
+    serversDir.set(file("${System.getProperty("user.home")}${File.separator}minecraft${File.separator}test_servers"))
+    libName.set("${project.name}-${version}.jar")
+    servers {
+        register("spigot_1_17") {
+            version.set("1.17.1")
+            type.set("SPIGOT")
+            ports.set(setOf("25565"))
+        }
+        register("spigot_1_18") {
+            version.set("1.18.2")
+            type.set("SPIGOT")
+            ports.set(setOf("25566"))
+        }
+        register("spigot_1_19") {
+            version.set("1.19.4")
+            type.set("SPIGOT")
+            ports.set(setOf("25567"))
+        }
+        register("spigot_1_20") {
+            version.set("1.20.1")
+            type.set("SPIGOT")
+            ports.set(setOf("25568"))
+        }
+        // Paper test servers
+        register("paper_1_20") {
+            version.set("1.20.1")
+            type.set("PAPER")
+            ports.set(setOf("25569"))
+        }
+        register("paper_1_19") {
+            version.set("1.19.4")
+            type.set("PAPER")
+            ports.set(setOf("25570"))
+        }
+    }
+}
+
+
+
+
