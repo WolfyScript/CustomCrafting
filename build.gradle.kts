@@ -115,33 +115,33 @@ minecraftServers {
         register("spigot_1_17") {
             version.set("1.17.1")
             type.set("SPIGOT")
-            ports.set(setOf("25565"))
+            ports.set(setOf("25565:25565"))
         }
         register("spigot_1_18") {
             version.set("1.18.2")
             type.set("SPIGOT")
-            ports.set(setOf("25566"))
+            ports.set(setOf("25566:25565"))
         }
         register("spigot_1_19") {
             version.set("1.19.4")
             type.set("SPIGOT")
-            ports.set(setOf("25567"))
+            ports.set(setOf("25567:25565"))
         }
         register("spigot_1_20") {
             version.set("1.20.1")
             type.set("SPIGOT")
-            ports.set(setOf("25568"))
+            ports.set(setOf("25568:25565"))
         }
         // Paper test servers
         register("paper_1_20") {
             version.set("1.20.1")
             type.set("PAPER")
-            ports.set(setOf("25569"))
+            ports.set(setOf("25569:25565"))
         }
         register("paper_1_19") {
             version.set("1.19.4")
             type.set("PAPER")
-            ports.set(setOf("25570"))
+            ports.set(setOf("25570:25565"))
         }
     }
 }
