@@ -57,7 +57,7 @@ public class LocalStorageLoader extends ResourceLoader {
     private static final String ITEMS_FOLDER = "items";
     private static final String RECIPES_FOLDER = "recipes";
     private DataSettings dataSettings;
-    private final ExecutorService executor;
+    private ExecutorService executor;
     private final List<NamespacedKey> failedRecipes;
     private final List<ValidationContainer<? extends CustomRecipe<?>>> pendingRecipes;
     private final List<ValidationContainer<? extends CustomRecipe<?>>> invalidRecipes;
@@ -68,7 +68,6 @@ public class LocalStorageLoader extends ResourceLoader {
         this.failedRecipes = new ArrayList<>();
         this.invalidRecipes = new ArrayList<>();
         this.dataSettings = customCrafting.getConfigHandler().getConfig().getDataSettings();
-        executor = Executors.newWorkStealingPool(Math.min(Runtime.getRuntime().availableProcessors(), dataSettings.maxProcessors()));
     }
 
     protected void markPending(ValidationContainer<? extends CustomRecipe<?>> recipe) {
@@ -102,6 +101,9 @@ public class LocalStorageLoader extends ResourceLoader {
          *   items/<folder>/<item_name>
          */
         api.getConsole().info("- - - - [Local Storage] - - - -");
+        int processors = Math.min(Runtime.getRuntime().availableProcessors(), dataSettings.maxProcessors());
+        customCrafting.getLogger().info(PREFIX + "Using " + processors + " threads");
+        executor = Executors.newWorkStealingPool(processors);
         api.getConsole().info(PREFIX + "Looking through data folder...");
         String[] dirs = DATA_FOLDER.list();
         if (dirs != null) {
