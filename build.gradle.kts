@@ -105,7 +105,10 @@ tasks.withType<Javadoc> {
 }
 
 minecraftDockerRun {
-
+    val customEnv = env.get().toMutableMap()
+    customEnv["MEMORY"] = "2G"
+    env.set(customEnv)
+    arguments("--cpus", "2", "-it") // Constrain to only use 2 cpus, and allow for console interactivity with 'docker attach'
 }
 
 minecraftServers {
