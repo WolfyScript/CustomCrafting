@@ -112,7 +112,7 @@ minecraftDockerRun {
 }
 
 minecraftServers {
-    serversDir.set(file("${System.getProperty("user.home")}${File.separator}minecraft${File.separator}test_servers"))
+    serversDir.set(file("${System.getProperty("user.home")}${File.separator}minecraft${File.separator}test_servers_v4"))
     libName.set("${project.name}-${version}.jar")
     servers {
         register("spigot_1_17") {
@@ -131,13 +131,13 @@ minecraftServers {
             ports.set(setOf("25567:25565"))
         }
         register("spigot_1_20") {
-            version.set("1.20.1")
+            version.set("1.20.2")
             type.set("SPIGOT")
             ports.set(setOf("25568:25565"))
         }
         // Paper test servers
         register("paper_1_20") {
-            version.set("1.20.1")
+            version.set("1.20.2")
             type.set("PAPER")
             ports.set(setOf("25569:25565"))
         }
