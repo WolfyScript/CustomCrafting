@@ -43,6 +43,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
+
 public class EventBasedCraftRecipeHandler implements Listener {
 
     private final CustomCrafting customCrafting;

@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.validator.Validator;
 import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -289,7 +290,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                 if (recipeSlot < 0) return null;
                 Ingredient ingredient = ingredients.get(recipeSlot);
                 if (ingredient == null) return null;
-                Optional<CustomItem> item = ingredient.check(invItem, this.checkAllNBT);
+                Optional<StackReference> item = ingredient.checkChoices(invItem, this.checkAllNBT);
                 if (item.isEmpty()) return null;
                 //In order to index the ingredients for the correct inventory slot we need to reverse the shape offset.
                 dataArray[recipeSlot] = new IngredientData(

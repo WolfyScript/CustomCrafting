@@ -25,6 +25,9 @@ package me.wolfyscript.customcrafting.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
@@ -41,6 +44,7 @@ import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReferen
 import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -218,6 +222,7 @@ public class ItemLoader {
         return load(getObjectMapper().convertValue(node, APIReference.class));
     }
 
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public static CustomItem load(APIReference reference) {
         var customItem = CustomItem.of(reference);
         if (customItem != null && customItem.hasNamespacedKey()) {
@@ -225,6 +230,15 @@ public class ItemLoader {
             customItem.setAmount(reference.getAmount());
         }
         return customItem;
+    }
+
+    public static CustomItem load(StackReference reference) {
+        // TODO: Instead of using CustomItem everywhere, lets just use the StackReference! This makes it easier to manage and gets rid of this code!
+        if (reference.identifier() instanceof WolfyUtilsStackIdentifier wolfyUtilsIdentifier) {
+            return wolfyUtilsIdentifier.customItem().map(CustomItem::clone).orElseGet(() -> new CustomItem(Material.AIR));
+        }
+        return CustomItem.wrap(reference).orElseGet(() -> new CustomItem(Material.AIR));
+
     }
 
     public static void saveItem(NamespacedKey namespacedKey, CustomItem customItem) {

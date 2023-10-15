@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.utils.cooking;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBlasting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
@@ -33,7 +34,6 @@ import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
 import me.wolfyscript.customcrafting.recipes.data.FurnaceRecipeData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.SmokerRecipeData;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -61,7 +61,7 @@ public abstract class SmeltAPIAdapter {
 
     protected Pair<CookingRecipeData<?>, Boolean> processRecipe(CustomRecipeCooking<?,?> cookingRecipe, ItemStack source, Block block) {
         if (cookingRecipe.validType(block.getType())) {
-            Optional<CustomItem> customSource = cookingRecipe.getSource().check(source, cookingRecipe.isCheckNBT());
+            Optional<StackReference> customSource = cookingRecipe.getSource().checkChoices(source, cookingRecipe.isCheckNBT());
             if (customSource.isPresent()) {
                 if (cookingRecipe.checkConditions(Conditions.Data.of(null, block, null))) {
                     var data = new IngredientData(0, 0, cookingRecipe.getSource(), customSource.get(), source);
@@ -122,7 +122,7 @@ public abstract class SmeltAPIAdapter {
                 inventory.setResult(itemResult);
             }
 
-            CustomItem customItem = data.getBySlot(0).customItem();
+            StackReference customItem = data.getBySlot(0).reference();
             ItemStack shrunken = customItem.shrink(smelting, 1, data.getBySlot(0).ingredient().isReplaceWithRemains(), null, null, block.getLocation());
             shrunken.setAmount(shrunken.getAmount());
             inventory.setSmelting(shrunken);

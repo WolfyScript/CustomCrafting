@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
@@ -44,6 +45,14 @@ public class AnvilData extends RecipeData<CustomRecipeAnvil> {
     @Deprecated
     public CustomItem getInputRight() {
         return getBySlot(1).customItem();
+    }
+
+    public StackReference base() {
+        return getBySlot(0).reference();
+    }
+
+    public StackReference addition() {
+        return getBySlot(1).reference();
     }
 
     public IngredientData getLeftIngredient() {

@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.listeners;
 
 import java.util.*;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -87,10 +88,10 @@ public class AnvilListener implements Listener {
                 .sorted()
                 .filter(customRecipeAnvil -> !customRecipeAnvil.isDisabled() && customRecipeAnvil.checkConditions(data))
                 .map(recipe -> {
-                    Optional<CustomItem> finalInputLeft = Optional.empty();
-                    Optional<CustomItem> finalInputRight = Optional.empty();
-                    if (recipe.hasInputLeft() && (finalInputLeft = recipe.getInputLeft().check(inputLeft, recipe.isCheckNBT())).isEmpty()) return null;
-                    if (recipe.hasInputRight() && (finalInputRight = recipe.getInputRight().check(inputRight, recipe.isCheckNBT())).isEmpty()) return null;
+                    Optional<StackReference> finalInputLeft = Optional.empty();
+                    Optional<StackReference> finalInputRight = Optional.empty();
+                    if (recipe.hasInputLeft() && (finalInputLeft = recipe.getInputLeft().checkChoices(inputLeft, recipe.isCheckNBT())).isEmpty()) return null;
+                    if (recipe.hasInputRight() && (finalInputRight = recipe.getInputRight().checkChoices(inputRight, recipe.isCheckNBT())).isEmpty()) return null;
                     //Recipe is valid at this point!
                     return new AnvilData(recipe, new IngredientData[]{
                             new IngredientData(0, 0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft),
@@ -180,18 +181,16 @@ public class AnvilListener implements Listener {
 
                     IngredientData inputLeft = anvilData.getLeftIngredient();
                     IngredientData inputRight = anvilData.getRightIngredient();
-                    consumeInputItem(inventory, inputLeft.customItem(), inputLeft, 0);
-                    consumeInputItem(inventory, inputRight.customItem(), inputRight, 1);
+                    consumeInputItem(inventory, inputLeft.reference(), inputLeft, 0);
+                    consumeInputItem(inventory, inputRight.reference(), inputRight, 1);
                 }
             }
         }
     }
 
-    private void consumeInputItem(AnvilInventory inventory, CustomItem input, IngredientData ingredient, int slot) {
+    private void consumeInputItem(AnvilInventory inventory, StackReference input, IngredientData ingredient, int slot) {
         if (input != null && inventory.getItem(slot) != null) {
-            ItemStack item = ingredient.itemStack().clone();
-            input.remove(item, 1, inventory);
-            inventory.setItem(slot, item);
+            inventory.setItem(slot, input.shrink(ingredient.itemStack(), 1, true, inventory, null, null));
         } else {
             inventory.setItem(slot, null);
         }

@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
@@ -67,6 +68,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -295,8 +297,14 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
     }
 
     @JsonIgnore
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public List<CustomItem> getRecipeBookItems() {
         return getResult().getChoices();
+    }
+
+    @JsonIgnore
+    public List<StackReference> recipeBookStacks() {
+        return getResult().choices();
     }
 
     /**

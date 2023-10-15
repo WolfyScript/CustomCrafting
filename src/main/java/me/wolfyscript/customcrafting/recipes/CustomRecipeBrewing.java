@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.collect.Streams;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
@@ -52,6 +53,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.chat.ChatColor;
 import me.wolfyscript.utilities.util.inventory.PotionUtils;
+import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -70,7 +72,7 @@ import java.util.stream.Collectors;
 
 public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
-    private static final CustomItem placeHolderPotion = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lAny kind of potion!"));
+    private static final StackReference placeHolderPotion = StackReference.of(new ItemBuilder(Material.POTION).setDisplayName(ChatColor.convert("&6&lAny kind of potion!")).create());
 
     Ingredient allowedItems; //The CustomItems that can be used. Needs to be a potion of course.
     private Ingredient ingredients; //The top ingredient of the recipe. Always required.
@@ -418,11 +420,22 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     public List<CustomItem> getRecipeBookItems() {
         if (this.getResult().isEmpty()) {
             if (getAllowedItems().isEmpty()) {
-                return Collections.singletonList(placeHolderPotion);
+                return Collections.singletonList(new CustomItem(placeHolderPotion));
             }
             return getIngredient().getChoices();
         }
         return this.getResult().getChoices();
+    }
+
+    @Override
+    public List<StackReference> recipeBookStacks() {
+        if (this.getResult().isEmpty()) {
+            if (getAllowedItems().isEmpty()) {
+                return Collections.singletonList(placeHolderPotion);
+            }
+            return getIngredient().choices();
+        }
+        return this.getResult().choices();
     }
 
     @Override
@@ -436,7 +449,7 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         if (!this.getResult().isEmpty()) {
             ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(1))).setVariants(guiHandler, this.getResult());
         } else {
-            CustomItem modifications = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lResulting Potion"));
+            ItemBuilder modifications = new ItemBuilder(Material.POTION).setDisplayName(ChatColor.convert("&6&lResulting Potion"));
             modifications.addLoreLine("");
             if (resetEffects) {
                 modifications.addLoreLine("&4All effects will be removed!");
@@ -473,7 +486,7 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
                     }
                 }
             }
-            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(1))).setVariants(guiHandler, Collections.singletonList(modifications));
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(1))).setVariants(guiHandler, Collections.singletonList(StackReference.of(modifications.create())));
         }
     }
 

@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.io.IOException;
@@ -275,7 +276,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         for (int key : indexes) {
             if (!selectedSlots.contains(key) && !getBit(checkedIndices, key)) {
                 final var ingredient = ingredients.get(key);
-                final var checkResult = ingredient.check(item, isCheckNBT());
+                final var checkResult = ingredient.checkChoices(item, isCheckNBT());
                 if (checkResult.isPresent()) {
                     //For shapeless we can't actually determine the exact inventory slot of the ingredient (without massively increasing complexity), but we can make an estimate using the same tactic as with shaped recipes.
                     //Though, Items will still be slightly rearranged in the matrix.
@@ -308,8 +309,8 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         byteBuf.writeVarInt(ingredients.size());
         ingredients.forEach(ingredient -> {
             byteBuf.writeVarInt(ingredient.size());
-            for (CustomItem choice : ingredient.getChoices()) {
-                byteBuf.writeItemStack(choice.create());
+            for (StackReference choice : ingredient.choices()) {
+                byteBuf.writeItemStack(choice.stack());
             }
         });
     }

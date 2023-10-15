@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -93,7 +95,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         JsonNode ingredientsNode = node.path("ingredients");
         if (ingredientsNode.isObject()) {
             ItemLoader.loadIngredient(ingredientsNode).getChoices().stream().map(customItem -> {
-                Ingredient ingredient = new Ingredient(customItem.getApiReference());
+                Ingredient ingredient = new Ingredient(customItem.stackReference());
                 ingredient.buildChoices();
                 return ingredient;
             }).forEach(ingredients::add);
@@ -284,9 +286,9 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         int ingredientIndex = 0;
         for (Ingredient ingredient : ingredients) {
             ItemStack input = items.get(ingredientIndex);
-            Optional<CustomItem> checkResult = ingredient.check(input, isCheckNBT());
+            Optional<StackReference> checkResult = ingredient.checkChoices(input, isCheckNBT());
             if (checkResult.isPresent()) {
-                if (checkResult.get().getAmount() != input.getAmount()) return false;
+                if (checkResult.get().amount() != input.getAmount()) return false;
                 ingredientIndex++;
             } else if (!ingredient.isAllowEmpty()) return false;
         }
@@ -364,7 +366,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         if (ingredientsNode.isObject()) {
             //Directly set ingredients to bypass max ingredient check, since old recipes might have more ingredients!
             ItemLoader.loadIngredient(ingredientsNode).getChoices().stream().map(customItem ->{
-                Ingredient ingredient = new Ingredient(customItem.getApiReference());
+                Ingredient ingredient = new Ingredient(customItem.stackReference());
                 ingredient.buildChoices();
                 return ingredient;
             }).forEach(ingredient -> this.ingredients.add(ingredient));
@@ -396,7 +398,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
             if (i < ingredients.length) {
                 ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i))).setVariants(guiHandler, ingredients[i]);
             } else {
-                ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i))).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
+                ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i))).setVariants(guiHandler, Collections.singletonList(StackReference.of(new ItemStack(Material.AIR))));
             }
         }
 

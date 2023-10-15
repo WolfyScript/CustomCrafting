@@ -23,12 +23,11 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import com.wolfyscript.lib.nbt.nbtapi.NBTTileEntity;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.nms.NMSUtil;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -60,7 +59,7 @@ public class BrewingStandListener implements Listener {
 
     private final CustomCrafting customCrafting;
     private final WolfyUtilities wolfyUtilities;
-    private final Map<Location, Pair<BukkitTask, Map<CustomRecipeBrewing, CustomItem>>> activeBrewingStands = new HashMap<>();
+    private final Map<Location, Pair<BukkitTask, Map<CustomRecipeBrewing, StackReference>>> activeBrewingStands = new HashMap<>();
 
     public BrewingStandListener(WolfyUtilities wolfyUtilities, CustomCrafting customCrafting) {
         this.wolfyUtilities = wolfyUtilities;
@@ -119,12 +118,12 @@ public class BrewingStandListener implements Listener {
                     NBTTileEntity brewingStandEntity = new NBTTileEntity(brewingStand);
                     int fuelLevel = brewingStandEntity.getInteger("Fuel");
                     //Check if recipe is correct
-                    Map<CustomRecipeBrewing, CustomItem> brewingRecipeList = new HashMap<>();
+                    Map<CustomRecipeBrewing, StackReference> brewingRecipeList = new HashMap<>();
                     //Check if at least one slot contains an item
                     if (!ItemUtils.isAirOrNull(inventory.getItem(0)) || !ItemUtils.isAirOrNull(inventory.getItem(1)) || !ItemUtils.isAirOrNull(inventory.getItem(2))) {
                         //Check for possible recipes and add them to the map
                         customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.BREWING_STAND, player).stream().filter(recipe -> fuelLevel >= recipe.getFuelCost()).forEach(recipe -> {
-                            Optional<CustomItem> optional = recipe.getIngredient().check(ingredient, recipe.isCheckNBT());
+                            Optional<StackReference> optional = recipe.getIngredient().checkChoices(ingredient, recipe.isCheckNBT());
                             if (optional.isPresent()) {
                                 //Ingredient is valid
                                 //Checking for valid item in the bottom 3 slots of the brewing inventory
@@ -156,10 +155,10 @@ public class BrewingStandListener implements Listener {
                     } else if (!activeBrewingStands.containsKey(location)) {
                         //Using the first recipe to set the brew time, fuel Level cost and ingredient.
                         //Because there can be multiple recipes for one ingredient
-                        Map.Entry<CustomRecipeBrewing, CustomItem> firstEntry = brewingRecipeList.entrySet().stream().findFirst().get();
+                        Map.Entry<CustomRecipeBrewing, StackReference> firstEntry = brewingRecipeList.entrySet().stream().findFirst().get();
                         brewingStandEntity.setInteger("BrewTime", 400);
                         brewingStandEntity.setInteger("Fuel", fuelLevel - 1);
-                        final CustomItem finalIngredient = firstEntry.getValue();
+                        final StackReference finalIngredient = firstEntry.getValue();
                         //Set the tick multiplier that is used for the progress bar
                         int multiplier = -1;
                         if (brewingStand.getFuelLevel() > 0) {
@@ -184,7 +183,7 @@ public class BrewingStandListener implements Listener {
                                     for (CustomRecipeBrewing recipe : activeBrewingStands.get(location).getValue().keySet()) {
                                         if (processedSlots.size() >= 3) break;
                                         var brewerInventory = brewingStand.getInventory();
-                                        finalIngredient.remove(brewerInventory.getItem(3), 1, player.getInventory());
+                                        brewerInventory.setItem(3, finalIngredient.shrink(brewerInventory.getItem(3), 1, true, player.getInventory(), player, brewingStand.getLocation()));
                                         for (int i = 0; i < 3; i++) {
                                             if (processedSlots.contains(i)) {
                                                 continue; //Make sure the slot isn't processed twice by multiple recipes
@@ -200,9 +199,9 @@ public class BrewingStandListener implements Listener {
                                                     if (potionMeta != null) {
                                                         if (!recipe.getResult().isEmpty()) {
                                                             //Result available. Replace the items with a random result from the list. (Percentages of items are used)
-                                                            Optional<CustomItem> item = recipe.getResult().getItem(player);
+                                                            Optional<StackReference> item = recipe.getResult().item(player);
                                                             if (item.isPresent()) {
-                                                                brewerInventory.setItem(i, item.get().create());
+                                                                brewerInventory.setItem(i, item.get().stack());
                                                             }
                                                         } else {
                                                             //No result available

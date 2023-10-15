@@ -24,6 +24,8 @@ package me.wolfyscript.customcrafting.registry;
 
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -31,6 +33,7 @@ import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.registry.Registries;
 import me.wolfyscript.utilities.registry.RegistrySimple;
@@ -55,7 +58,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
     private final Map<String, List<CustomRecipe<?>>> BY_NAMESPACE = new HashMap<>();
     private final Map<String, List<CustomRecipe<?>>> BY_GROUP = new HashMap<>();
-    private final Map<CustomItem, List<CustomRecipe<?>>> BY_RESULT = new HashMap<>();
+    private final Map<StackReference, List<CustomRecipe<?>>> BY_RESULT = new HashMap<>();
     private final Map<Class<?>, List<CustomRecipe<?>>> BY_CLASS_TYPE = new HashMap<>();
     private final Map<RecipeType<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE = new HashMap<>();
     private final Map<RecipeType.Container<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE_CONTAINER = new HashMap<>();
@@ -385,7 +388,13 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     }
 
     public List<CustomRecipe<?>> get(CustomItem result) {
-        return BY_RESULT.computeIfAbsent(result, item -> values().stream().filter(recipe -> recipe.getResult().getChoices().contains(item)).collect(Collectors.toList()));
+        return BY_RESULT.computeIfAbsent(
+                result.hasNamespacedKey() ? new StackReference(WolfyUtilCore.getInstance(), new WolfyUtilsStackIdentifier(result.getNamespacedKey()), result.getWeight(), result.getAmount(), result.getItemStack()) : result.stackReference(),
+                item -> values().stream().filter(recipe -> recipe.getResult().choices().contains(item)).collect(Collectors.toList()));
+    }
+
+    public List<CustomRecipe<?>> get(StackReference reference) {
+        return BY_RESULT.computeIfAbsent(reference, reference1 -> values().stream().filter(recipe -> recipe.getResult().choices().contains(reference1)).collect(Collectors.toList()));
     }
 
     @SuppressWarnings("unchecked")

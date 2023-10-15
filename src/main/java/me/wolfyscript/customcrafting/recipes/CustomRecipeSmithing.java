@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -170,18 +171,18 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
         IngredientData additionData = null;
 
         if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0)) && getTemplate() != null) {
-            Optional<CustomItem> templateCustom = getTemplate().check(template, isCheckNBT());
+            Optional<StackReference> templateCustom = getTemplate().checkChoices(template, isCheckNBT());
             if (templateCustom.isPresent()) {
                 templateData = new IngredientData(0, 0, getTemplate(), templateCustom.get(), template);
             } else if (!getTemplate().isAllowEmpty()) return null;
         }
 
-        Optional<CustomItem> baseCustom = getBase().check(base, isCheckNBT());
+        Optional<StackReference> baseCustom = getBase().checkChoices(base, isCheckNBT());
         if (baseCustom.isPresent()) {
             baseData = new IngredientData(BASE_SLOT, BASE_SLOT, getBase(), baseCustom.get(), base);
         } else if (!getBase().isAllowEmpty()) return null;
 
-        Optional<CustomItem> additionCustom = getAddition().check(addition, isCheckNBT());
+        Optional<StackReference> additionCustom = getAddition().checkChoices(addition, isCheckNBT());
         if (additionCustom.isPresent()) {
             additionData = new IngredientData(ADDITION_SLOT, ADDITION_SLOT, getAddition(), additionCustom.get(), base);
         } else if (!getAddition().isAllowEmpty()) return null;

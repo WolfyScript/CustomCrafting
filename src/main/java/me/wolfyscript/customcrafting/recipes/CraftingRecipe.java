@@ -157,10 +157,12 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         return ingredients;
     }
 
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public void removeMatrix(Inventory inventory, int totalAmount, CraftingData craftingData) {
         removeMatrix(null, inventory, totalAmount, craftingData);
     }
 
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public void removeMatrix(@Nullable Player player, @Nullable Inventory inventory, int totalAmount, CraftingData craftingData) {
         craftingData.getNonNullIngredients().forEach((data) -> {
             var item = data.customItem();
@@ -234,44 +236,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
             }
             event.setButton(25, ButtonContainerIngredient.key(cluster, maxIngredients));
         }
-    }
-
-    protected void applySettingsToFunctionalRecipe(FunctionalRecipeBuilderCrafting builder) {
-        builder.setGroup(group);
-        final CraftManager craftManager = customCrafting.getCraftManager();
-        builder.setRecipeMatcher((inventory, world) -> {
-            if (!isDisabled() && inventory.getHolder() instanceof Player player) {
-                if (checkConditions(Conditions.Data.of(player, inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getLocation().getBlock(), player.getOpenInventory()))) {
-                    var matrixData = craftManager.getMatrixData(player.getOpenInventory(), inventory);
-                    CraftingData craftingData = check(matrixData);
-                    if (craftingData != null) {
-                        var customPreCraftEvent = new CustomPreCraftEvent(this, player, inventory, matrixData);
-                        Bukkit.getPluginManager().callEvent(customPreCraftEvent);
-                        if (!customPreCraftEvent.isCancelled()) {
-                            Result result = customPreCraftEvent.getResult();
-                            craftingData.setResult(result);
-                            craftManager.put(player.getUniqueId(), craftingData);
-                            return true;
-                        }
-                    }
-                }
-                craftManager.remove(player.getUniqueId());
-            }
-            return false;
-        });
-        builder.setRecipeAssembler(inventory -> {
-            if (inventory.getHolder() instanceof Player player)
-                return Optional.ofNullable(getResult().getItem(player).orElse(new CustomItem(Material.AIR)).create());
-            return Optional.of(new ItemStack(Material.AIR));
-        });
-        builder.setRemainingItemsFunction(inventory -> {
-            if (!isDisabled() && inventory.getHolder() instanceof Player player) {
-                craftManager.get(player.getUniqueId()).ifPresent(craftingData -> craftingData.getNonNullIngredients().forEach(ingredientData -> {
-                    inventory.setItem(ingredientData.matrixSlot() + 1, ingredientData.customItem().shrink(ingredientData.itemStack(), 1, ingredientData.ingredient().isReplaceWithRemains(), inventory, player, player.getLocation()));
-                }));
-            }
-            return Optional.of(new ArrayList<>());
-        });
     }
 
     @Deprecated

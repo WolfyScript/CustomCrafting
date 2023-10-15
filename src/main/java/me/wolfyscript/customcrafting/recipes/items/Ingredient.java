@@ -22,9 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.validator.ValidationContainer;
 import com.wolfyscript.utilities.validator.Validator;
 import com.wolfyscript.utilities.validator.ValidatorBuilder;
+import io.r2dbc.spi.Parameter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -66,7 +68,7 @@ public class Ingredient extends RecipeItemStack {
     }
 
     @JsonCreator
-    public Ingredient(@JsonProperty("items") List<APIReference> items, @JsonProperty("tags") Set<NamespacedKey> tags) {
+    public Ingredient(@JsonProperty("items") Collection<StackReference> items, @JsonProperty("tags") Set<NamespacedKey> tags) {
         super(items, tags);
     }
 
@@ -82,8 +84,18 @@ public class Ingredient extends RecipeItemStack {
         super(tags);
     }
 
-    public Ingredient(APIReference... references) {
+    public Ingredient(StackReference... references) {
         super(references);
+    }
+
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public Ingredient(APIReference... references) {
+        super(Arrays.stream(references).map(APIReference::convertToStackReference).toArray(StackReference[]::new));
+    }
+
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public Ingredient(@JsonProperty("items") List<APIReference> items, @JsonProperty("tags") Set<NamespacedKey> tags) {
+        super(items.stream().map(APIReference::convertToStackReference).toList(), tags);
     }
 
     public boolean isReplaceWithRemains() {
@@ -109,11 +121,17 @@ public class Ingredient extends RecipeItemStack {
 
     public boolean test(ItemStack itemStack, boolean exactMatch) {
         if (itemStack == null) return false;
-        return choices.stream().anyMatch(customItem -> customItem.isSimilar(itemStack, exactMatch));
+        return oldChoices.stream().anyMatch(customItem -> customItem.isSimilar(itemStack, exactMatch));
     }
 
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public Optional<CustomItem> check(ItemStack itemStack, boolean exactMatch) {
         if (itemStack == null) return Optional.empty();
-        return choices.stream().filter(customItem -> customItem.isSimilar(itemStack, exactMatch)).findFirst();
+        return oldChoices.stream().filter(customItem -> customItem.isSimilar(itemStack, exactMatch)).findFirst();
+    }
+
+    public Optional<StackReference> checkChoices(ItemStack itemStack, boolean exactMatch) {
+        if (itemStack == null) return Optional.empty();
+        return choices.stream().filter(reference -> reference.matches(itemStack, exactMatch)).findFirst();
     }
 }
