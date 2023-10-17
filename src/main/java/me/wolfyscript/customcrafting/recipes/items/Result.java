@@ -210,6 +210,17 @@ public class Result extends RecipeItemStack {
         return block != null ? item(block) : Optional.empty();
     }
 
+    public ItemStack item(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block) {
+        return item(recipeData, item(player, block).orElse(StackReference.of(new ItemStack(Material.AIR))), player, block);
+    }
+
+    public ItemStack item(RecipeData<?> recipeData, StackReference chosenItem, @Nullable Player player, @Nullable Block block) {
+        if (target != null) {
+            return target.merge(recipeData, player, block, chosenItem, chosenItem.identifier().item());
+        }
+        return chosenItem.identifier().item();
+    }
+
     public RandomCollection<CustomItem> getRandomChoices(@Nullable Player player) {
         return (player == null ? getChoices() : getChoices(player)).stream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getWeight(), customItem)));
     }

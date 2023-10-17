@@ -300,30 +300,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     }
 
     @JsonIgnore
-    @Deprecated
-    public CustomItem getHandItem() {
-        return new CustomItem(Material.AIR);
-    }
-
-    @JsonIgnore
-    @Deprecated
-    public void setHandItem(CustomItem handItem) {
-        // This is no longer used!
-    }
-
-    @JsonIgnore
-    @Deprecated
-    public boolean dropItems() {
-        return false;
-    }
-
-    @JsonIgnore
-    @Deprecated
-    public void setDropItems(boolean dropItems) {
-        // This is no longer used!
-    }
-
-    @JsonIgnore
     public Ingredient getIngredient() {
         return getIngredient(0);
     }

@@ -169,6 +169,7 @@ public abstract class RecipeItemStack {
         this.items = items.stream().map(APIReference::convertToStackReference).toList();
     }
 
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public void put(int variantSlot, CustomItem variant) {
         if (this.items.size() > variantSlot) {
             if (variant != null) {
@@ -178,6 +179,18 @@ public abstract class RecipeItemStack {
             }
         } else if (variant != null) {
             this.items.add(variant.stackReference());
+        }
+    }
+
+    public void put(int variantSlot, StackReference variant) {
+        if (this.items.size() > variantSlot) {
+            if (variant != null) {
+                this.items.set(variantSlot, variant);
+            } else {
+                this.items.remove(variantSlot);
+            }
+        } else if (variant != null) {
+            this.items.add(variant);
         }
     }
 
@@ -198,21 +211,6 @@ public abstract class RecipeItemStack {
 
         // old choices use CustomItems
         this.oldChoices.clear();
-        this.oldChoices.addAll(items.stream().map(ItemLoader::load).filter(customItem -> !ItemUtils.isAirOrNull(customItem)).toList());
-        this.tags.stream().map(namespacedKey -> {
-            if (namespacedKey.getNamespace().equals("minecraft")) {
-                Tag<Material> tag = Bukkit.getTag("items", org.bukkit.NamespacedKey.minecraft(namespacedKey.getKey()), Material.class);
-                if (tag != null) {
-                    return tag.getValues().stream().map(CustomItem::new).collect(Collectors.toSet());
-                }
-            } else {
-                CustomTag<CustomItem> tag = WolfyUtilCore.getInstance().getRegistries().getItemTags().getTag(namespacedKey);
-                if (tag != null) {
-                    return tag.getValues();
-                }
-            }
-            return null;
-        }).filter(Objects::nonNull).distinct().forEach(this.oldChoices::addAll);
     }
 
     public List<StackReference> choices() {
@@ -229,7 +227,7 @@ public abstract class RecipeItemStack {
     }
 
     public List<ItemStack> bukkitChoices() {
-        return choices.stream().map(StackReference::stack).toList();
+        return choices.stream().map(reference -> reference.identifier().item()).toList();
     }
 
     @JsonIgnore

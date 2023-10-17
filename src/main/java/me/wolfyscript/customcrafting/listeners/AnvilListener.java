@@ -103,7 +103,9 @@ public class AnvilListener implements Listener {
                 .ifPresent(anvilData -> {
                     CustomRecipeAnvil recipe = anvilData.getRecipe();
                     //Set the result depending on what is configured!
-                    final CustomItem resultItem = recipe.getRepairTask().computeResult(recipe, event, anvilData, player, inputLeft, inputRight);
+                    final StackReference resultItem = recipe.getRepairTask().compute(recipe, event, anvilData, player, inputLeft, inputRight);
+                    final ItemStack finalResult = recipe.getResult().item(anvilData, resultItem, player, null);
+
                     int repairCost = Math.max(1, recipe.getRepairCost());
                     var inputMeta = inputLeft.getItemMeta();
                     //Configure the Repair cost
@@ -117,15 +119,14 @@ public class AnvilListener implements Listener {
                     }
                     //Apply the repair cost to the result.
                     if (recipe.isApplyRepairCost()) {
-                        var itemMeta = resultItem.getItemMeta();
+                        var itemMeta = finalResult.getItemMeta();
                         if (itemMeta instanceof Repairable repairable) {
                             repairable.setRepairCost(repairCost);
-                            resultItem.setItemMeta(itemMeta);
+                            finalResult.setItemMeta(itemMeta);
                         }
                     }
-                    // Save current active recipe to consume correct item inputs!
-                    preCraftedRecipes.put(player.getUniqueId(), anvilData);
-                    final ItemStack finalResult = recipe.getResult().getItem(anvilData, resultItem, player, null);
+
+                    preCraftedRecipes.put(player.getUniqueId(), anvilData); // Save current active recipe to consume correct item inputs!
                     event.setResult(repairCost > 0 ? finalResult : null);
                     inventory.setRepairCost(repairCost);
                     int finalRepairCost = repairCost;
@@ -179,10 +180,8 @@ public class AnvilListener implements Listener {
                     event.setCurrentItem(null);
                     player.updateInventory();
 
-                    IngredientData inputLeft = anvilData.getLeftIngredient();
-                    IngredientData inputRight = anvilData.getRightIngredient();
-                    consumeInputItem(inventory, inputLeft.reference(), inputLeft, 0);
-                    consumeInputItem(inventory, inputRight.reference(), inputRight, 1);
+                    anvilData.baseIngredient().ifPresent(inputLeft -> consumeInputItem(inventory, inputLeft.reference(), inputLeft, 0));
+                    anvilData.additionIngredient().ifPresent(inputRight -> consumeInputItem(inventory, inputRight.reference(), inputRight, 1));
                 }
             }
         }

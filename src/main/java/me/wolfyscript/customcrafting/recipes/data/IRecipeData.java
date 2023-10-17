@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.recipes.data;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.items.Result;
@@ -66,6 +67,19 @@ public interface IRecipeData<R extends CustomRecipe<?>> {
      * @return The {@link IngredientData} of the specified recipe slot.
      */
     @Nullable IngredientData getBySlot(int slot);
+
+    /**
+     * The slots indicate the index (position) of the Ingredient inside the recipe.
+     * For normal recipes that means from 0 to 9.
+     * For Elite recipes the range is from 0 to 36.
+     * <p>
+     * For the correct position open the in-game Recipe Creator GUI and see in which slot the ingredient is.
+     * You may take the character saved in the config and use the index of it inside this String "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+     *
+     * @param slot The recipe slot to get the {@link IngredientData} for.
+     * @return The {@link IngredientData} of the specified recipe slot.
+     */
+    Optional<IngredientData> bySlot(int slot);
 
     /**
      * The slots indicate the index (position) of the Ingredient inside the recipe.

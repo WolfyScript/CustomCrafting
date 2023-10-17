@@ -100,13 +100,13 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
     }
 
     private static RecipeChoice.ExactChoice getExactRecipeChoiceFor(Ingredient ingredient) {
-        List<ItemStack> choices = ingredient.choices().stream().map(StackReference::stack).distinct().collect(Collectors.toList());
+        List<ItemStack> choices = ingredient.choices().stream().map(reference -> reference.identifier().item()).distinct().collect(Collectors.toList());
         if (ingredient.isAllowEmpty()) choices.add(new ItemStack(Material.AIR));
         return new RecipeChoice.ExactChoice(choices);
     }
 
     private static RecipeChoice.MaterialChoice getMaterialRecipeChoiceFor(Ingredient ingredient) {
-        List<Material> choices = ingredient.choices().stream().map(reference -> reference.stack().getType()).distinct().collect(Collectors.toList());
+        List<Material> choices = ingredient.choices().stream().map(reference -> reference.identifier().item().getType()).distinct().collect(Collectors.toList());
         if (ingredient.isAllowEmpty()) choices.add(Material.AIR);
         return new RecipeChoice.MaterialChoice(choices);
     }

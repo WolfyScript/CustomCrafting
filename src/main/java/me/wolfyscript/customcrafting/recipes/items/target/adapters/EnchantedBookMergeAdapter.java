@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
@@ -45,7 +46,7 @@ public class EnchantedBookMergeAdapter extends MergeAdapter {
     }
 
     @Override
-    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, StackReference resultReference, ItemStack result) {
         for (IngredientData data : recipeData.getBySlots(slots)) {
             if (data.itemStack().getItemMeta() instanceof EnchantmentStorageMeta meta) {
                 meta.getStoredEnchants().forEach((enchantment, level) -> {

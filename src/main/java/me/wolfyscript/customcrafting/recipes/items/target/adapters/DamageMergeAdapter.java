@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import io.th0rgal.oraxen.OraxenPlugin;
 import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.durability.DurabilityMechanic;
@@ -82,7 +83,7 @@ public class DamageMergeAdapter extends MergeAdapter {
     }
 
     @Override
-    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, StackReference resultReference, ItemStack result) {
         return tryApplyToPluginItem(recipeData, result).orElseGet(() -> {
             var meta = result.getItemMeta();
             ((Damageable) meta).setDamage(calculateDamage(recipeData, result.getType().getMaxDurability()));

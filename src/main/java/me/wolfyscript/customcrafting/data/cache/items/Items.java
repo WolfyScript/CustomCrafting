@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.data.cache.items;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -81,20 +83,24 @@ public class Items implements Serializable {
         this.currentTab = null;
     }
 
-    public void setItem(boolean recipeItem, CustomItem customItem) {
-        setItem(customItem);
+    public void setItem(boolean recipeItem, StackReference reference) {
         setRecipeItem(recipeItem);
-        if (customItem.hasNamespacedKey()) {
-            setNamespacedKey(customItem.getNamespacedKey());
-            setSaved(true);
+        if (reference.identifier() instanceof WolfyUtilsStackIdentifier wolfyUtilsStackIdentifier) {
+            wolfyUtilsStackIdentifier.customItem().ifPresent(customItem -> {
+                setItem(customItem);
+                setNamespacedKey(customItem.getNamespacedKey());
+                setSaved(true);
+            });
         } else {
+            setItem(new CustomItem(reference));
+            setNamespacedKey(null);
             setSaved(false);
         }
     }
 
-    public void setVariant(int variantSlot, CustomItem customItem) {
+    public void setVariant(int variantSlot, StackReference reference) {
         this.variantSlot = variantSlot;
-        setItem(true, customItem);
+        setItem(true, reference);
     }
 
     public CustomItem getItem() {

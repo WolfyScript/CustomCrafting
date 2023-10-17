@@ -146,7 +146,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     }
 
     protected RecipeChoice getRecipeChoice() {
-        return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().choices().stream().map(StackReference::stack).toList()) : new RecipeChoice.MaterialChoice(getSource().choices().stream().map(i -> i.stack().getType()).toList());
+        return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().choices().stream().map(reference -> reference.identifier().item()).toList()) : new RecipeChoice.MaterialChoice(getSource().choices().stream().map(i -> i.identifier().item().getType()).toList());
     }
 
     protected void registerRecipeIntoMinecraft(FunctionalRecipeBuilderCooking builder) {
@@ -204,7 +204,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
 
         byteBuf.writeVarInt(source.size());
         for (StackReference choice : source.choices()) {
-            byteBuf.writeItemStack(choice.stack());
+            byteBuf.writeItemStack(choice.identifier().item());
         }
     }
 

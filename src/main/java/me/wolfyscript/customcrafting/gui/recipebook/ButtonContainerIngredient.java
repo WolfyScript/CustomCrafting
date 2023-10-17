@@ -132,7 +132,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
         if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             var customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
             if (!customItem.equals(book.getResearchItem())) {
-                List<CustomRecipe<?>> recipes = plugin.getRegistries().getRecipes().getAvailable(customItem.stack(), player);
+                List<CustomRecipe<?>> recipes = plugin.getRegistries().getRecipes().getAvailable(customItem.identifier().item(), player);
                 if (!recipes.isEmpty()) {
                     resetButtons(guiHandler);
                     book.setSubFolderPage(0);
@@ -151,7 +151,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
         List<StackReference> variants = getVariantsMap(guiHandler);
-        inventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).stack());
+        inventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).identifier().item());
         if (variants.size() > 1) {
             //Only use tasks if there are multiple display items
             final int openPage = guiHandler.getCustomCache().getRecipeBookCache().getSubFolderPage();
@@ -162,7 +162,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
                     if (player != null && slot < inventory.getSize() && !variants.isEmpty() && recipeBook.getSubFolder() != 0 && openPage == recipeBook.getSubFolderPage() && openRecipe.equals(recipeBook.getCurrentRecipe().getNamespacedKey())) {
                         int variant = getTiming(guiHandler);
                         variant = ++variant < variants.size() ? variant : 0;
-                        guiInventory.setItem(slot, variants.get(variant).stack());
+                        guiInventory.setItem(slot, variants.get(variant).identifier().item());
                         setTiming(guiHandler, variant);
                         return false;
                     }

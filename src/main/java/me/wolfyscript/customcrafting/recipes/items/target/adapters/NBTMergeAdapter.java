@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 import com.wolfyscript.lib.nbt.nbtapi.NBTCompound;
 import com.wolfyscript.lib.nbt.nbtapi.NBTItem;
 import com.wolfyscript.utilities.bukkit.nbt.NBTQuery;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
@@ -52,7 +53,7 @@ public class NBTMergeAdapter extends MergeAdapter {
     }
 
     @Override
-    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, StackReference resultReference, ItemStack result) {
         NBTItem nbtResultStack = new NBTItem(result);
         for (IngredientData slotData : recipeData.getBySlots(slots)) {
             var itemStack = slotData.itemStack();

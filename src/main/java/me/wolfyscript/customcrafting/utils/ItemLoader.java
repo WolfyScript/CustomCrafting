@@ -218,6 +218,7 @@ public class ItemLoader {
         return reference;
     }
 
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public static CustomItem load(JsonNode node) {
         return load(getObjectMapper().convertValue(node, APIReference.class));
     }
@@ -230,15 +231,6 @@ public class ItemLoader {
             customItem.setAmount(reference.getAmount());
         }
         return customItem;
-    }
-
-    public static CustomItem load(StackReference reference) {
-        // TODO: Instead of using CustomItem everywhere, lets just use the StackReference! This makes it easier to manage and gets rid of this code!
-        if (reference.identifier() instanceof WolfyUtilsStackIdentifier wolfyUtilsIdentifier) {
-            return wolfyUtilsIdentifier.customItem().map(CustomItem::clone).orElseGet(() -> new CustomItem(Material.AIR));
-        }
-        return CustomItem.wrap(reference).orElseGet(() -> new CustomItem(Material.AIR));
-
     }
 
     public static void saveItem(NamespacedKey namespacedKey, CustomItem customItem) {

@@ -23,8 +23,8 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
 import com.google.common.base.Preconditions;
-import java.util.Arrays;
-import java.util.Objects;
+
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,10 +33,6 @@ import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This object contains data of pre-crafted recipes like the recipe, ingredients and their slot ({@link IngredientData}), and the {@link Result}.
@@ -122,11 +118,28 @@ public abstract class RecipeData<R extends CustomRecipe<?>> implements IRecipeDa
      *
      * @param slot The recipe slot to get the {@link IngredientData} for.
      * @return The {@link IngredientData} of the specified recipe slot.
+     * @deprecated Prefer using {@link #bySlot(int)} using Optionals instead of null values!
      */
     @Nullable
     @Override
+    @Deprecated
     public IngredientData getBySlot(int slot) {
         return slot >= 0 && slot < indexedBySlot.length ? indexedBySlot[slot] : null;
+    }
+
+    /**
+     * The slots indicate the index (position) of the Ingredient inside the recipe.
+     * For normal recipes that means from 0 to 9.
+     * For Elite recipes the range is from 0 to 36.
+     * <p>
+     * For the correct position open the in-game Recipe Creator GUI and see in which slot the ingredient is.
+     * You may take the character saved in the config and use the index of it inside this String "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+     *
+     * @param slot The recipe slot to get the {@link IngredientData} for.
+     * @return The {@link IngredientData} of the specified recipe slot.
+     */
+    public Optional<IngredientData> bySlot(int slot) {
+        return slot >= 0 && slot < indexedBySlot.length ? Optional.ofNullable(indexedBySlot[slot]) : Optional.empty();
     }
 
     /**

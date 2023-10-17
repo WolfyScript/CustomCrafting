@@ -122,10 +122,12 @@ public abstract class SmeltAPIAdapter {
                 inventory.setResult(itemResult);
             }
 
-            StackReference customItem = data.getBySlot(0).reference();
-            ItemStack shrunken = customItem.shrink(smelting, 1, data.getBySlot(0).ingredient().isReplaceWithRemains(), null, null, block.getLocation());
-            shrunken.setAmount(shrunken.getAmount());
-            inventory.setSmelting(shrunken);
+            data.bySlot(0).ifPresent(ingredientData -> {
+                ItemStack shrunken = ingredientData.reference().shrink(smelting, 1, ingredientData.ingredient().isReplaceWithRemains(), null, null, block.getLocation());
+                shrunken.setAmount(shrunken.getAmount());
+                inventory.setSmelting(shrunken);
+            });
+
             result.executeExtensions(block.getLocation(), true, null);
             result.removeCachedItem(block);
             block.getState().update(); // Update the state of the block. Just in case!

@@ -148,11 +148,11 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public ItemStack getDisplayItem() {
-        return cachedRecipes.isEmpty() ? new ItemStack(Material.STONE) : cachedRecipes.get(0).recipeBookStacks().get(0).stack();
+        return cachedRecipes.isEmpty() ? new ItemStack(Material.STONE) : cachedRecipes.get(0).recipeBookStacks().get(0).identifier().item();
     }
 
     public List<ItemStack> getDisplayItems(Player player) {
-        return cachedPlayerItemStacks.computeIfAbsent(player.getUniqueId(), uuid -> getRecipes(player).stream().flatMap(recipe1 -> recipe1.recipeBookStacks().stream()).map(StackReference::stack).distinct().toList());
+        return cachedPlayerItemStacks.computeIfAbsent(player.getUniqueId(), uuid -> getRecipes(player).stream().flatMap(recipe1 -> recipe1.recipeBookStacks().stream()).map(reference -> reference.identifier().item()).distinct().toList());
     }
 
     @Override

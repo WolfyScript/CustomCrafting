@@ -22,12 +22,14 @@
 
 package me.wolfyscript.customcrafting.recipes.anvil;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.data.AnvilData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
@@ -47,43 +49,43 @@ public class RepairTaskDefault extends RepairTask {
     }
 
     @Override
-    public CustomItem computeResult(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight) {
+    public StackReference compute(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight) {
         AnvilInventory inventory = event.getInventory();
-        CustomItem resultItem;
+        ItemBuilder stackBuilder;
         if (ItemUtils.isAirOrNull(event.getResult())) {
-            resultItem = new CustomItem(inputLeft).clone();
+            stackBuilder = new ItemBuilder(inputLeft.clone());
             if (!recipe.isBlockRename() && inventory.getRenameText() != null && !inventory.getRenameText().isEmpty()) {
-                resultItem.setDisplayName(inventory.getRenameText());
+                stackBuilder.setDisplayName(inventory.getRenameText());
             }
         } else {
-            resultItem = new CustomItem(event.getResult());
-            ItemStack resultStack = resultItem.getItemStack();
-            if (resultItem.hasItemMeta()) {
+            stackBuilder = new ItemBuilder(event.getResult());
+            ItemStack resultStack = event.getResult();
+            if (stackBuilder.hasItemMeta()) {
                 //Further recipe options to block features.
-                if (recipe.isBlockEnchant() && resultStack.hasItemMeta() && resultItem.getItemMeta().hasEnchants()) {
+                if (recipe.isBlockEnchant() && resultStack.hasItemMeta() && stackBuilder.getItemMeta().hasEnchants()) {
                     //Block Enchants
-                    resultStack.getEnchantments().keySet().forEach(resultItem::removeEnchantment);
+                    resultStack.getEnchantments().keySet().forEach(stackBuilder::removeEnchantment);
                     if (inputLeft != null) {
-                        inputLeft.getEnchantments().forEach(resultItem::addUnsafeEnchantment);
+                        inputLeft.getEnchantments().forEach(stackBuilder::addUnsafeEnchantment);
                     }
                 }
                 if (recipe.isBlockRename()) {
                     //Block Renaming
                     if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasDisplayName()) {
-                        resultItem.setDisplayName(inputLeft.getItemMeta().getDisplayName());
+                        stackBuilder.setDisplayName(inputLeft.getItemMeta().getDisplayName());
                     } else {
-                        resultItem.setDisplayName(null);
+                        stackBuilder.setDisplayName(null);
                     }
                 }
-                if (recipe.isBlockRepair() && resultItem.getItemMeta() instanceof Damageable resultDamageable) {
+                if (recipe.isBlockRepair() && stackBuilder.getItemMeta() instanceof Damageable resultDamageable) {
                     //Block Repairing
                     if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta() instanceof Damageable damageable) {
                         resultDamageable.setDamage(damageable.getDamage());
                     }
-                    resultItem.setItemMeta(resultDamageable);
+                    stackBuilder.setItemMeta(resultDamageable);
                 }
             }
         }
-        return resultItem;
+        return StackReference.of(stackBuilder.create());
     }
 }

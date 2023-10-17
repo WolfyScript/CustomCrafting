@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -37,6 +39,7 @@ import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeResolver;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -80,7 +83,8 @@ public abstract class MergeAdapter implements Keyed {
     }
 
     /**
-     * Called when the data is merged inside of recipes like Furnace, Smithing Table, etc.
+     * Only called when {@link #merge(RecipeData, Player, Block, StackReference, ItemStack)} is unimplemented, for backwards compatibility!<br>
+     * <b>Implement {@link #merge(RecipeData, Player, Block, StackReference, ItemStack)} Instead!</b>
      *
      * @param recipeData   The {@link RecipeData}, that contains all the data of the pre-crafted recipe, like ingredients and their slots, result, and the recipe itself.
      * @param player       The player that has crafted the item. <strong>Might be null! e.g. Furnaces, and other workstations without player interaction!</strong>
@@ -88,18 +92,33 @@ public abstract class MergeAdapter implements Keyed {
      * @param customResult The {@link CustomItem} of the crafted item.
      * @param result       The actual manipulable result {@link ItemStack}. <strong>Previous adapters might have already manipulated this item!</strong>
      * @return The manipulated {@link ItemStack} that should be passed to the next adapter or set as the end result.
+     * @deprecated CustomItems are no longer used as references! <b>Implement {@link #merge(RecipeData, Player, Block, StackReference, ItemStack)} instead!</b>
      */
-    public abstract ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result);
-
-    public abstract MergeAdapter clone();
-
-    /**
-     * @deprecated Replaced with {@link #merge(RecipeData, Player, Block, CustomItem, ItemStack)}! All recipe types call that one method!
-     */
-    @Deprecated
-    public ItemStack mergeCrafting(CraftingData craftingData, Player player, CustomItem customResult, ItemStack result) {
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
         return result;
     }
+
+    /**
+     * Called when the data is merged inside of recipes like Furnace, Smithing Table, etc.
+     *
+     * @param recipeData   The {@link RecipeData}, that contains all the data of the pre-crafted recipe, like ingredients and their slots, result, and the recipe itself.
+     * @param player       The player that has crafted the item. <strong>Might be null! e.g. Furnaces, and other workstations without player interaction!</strong>
+     * @param block        The block that has processed the recipe. <strong>Might be null! e.g. for the 2x2 player crafting grid!</strong>
+     * @param resultReference The reference to the original stack
+     * @param result       The actual manipulable result {@link ItemStack}. <strong>Previous adapters might have already manipulated this item!</strong>
+     * @return The manipulated {@link ItemStack} that should be passed to the next adapter or set as the end result.
+     */
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, StackReference resultReference, ItemStack result) {
+        return merge(recipeData,
+                player,
+                block,
+                resultReference.identifier() instanceof WolfyUtilsStackIdentifier wuIdentifier ? wuIdentifier.customItem().orElse(new CustomItem(Material.AIR)) : new CustomItem(resultReference),
+                result
+        );
+    }
+
+    public abstract MergeAdapter clone();
 
     /**
      * @deprecated Not called! Replaced with {@link #merge(RecipeData, Player, Block, CustomItem, ItemStack)}!

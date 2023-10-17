@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.anvil;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.data.AnvilData;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -60,7 +61,12 @@ public abstract class RepairTask implements Keyed {
         return mode;
     }
 
-    public abstract CustomItem computeResult(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight);
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public CustomItem computeResult(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight) {
+        return null;
+    }
+
+    public abstract StackReference compute(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight);
 
     @JsonIgnore
     @Override

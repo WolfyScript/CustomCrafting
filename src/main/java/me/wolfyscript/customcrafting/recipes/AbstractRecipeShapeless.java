@@ -310,7 +310,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         ingredients.forEach(ingredient -> {
             byteBuf.writeVarInt(ingredient.size());
             for (StackReference choice : ingredient.choices()) {
-                byteBuf.writeItemStack(choice.stack());
+                byteBuf.writeItemStack(choice.identifier().item());
             }
         });
     }

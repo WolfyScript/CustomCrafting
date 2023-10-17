@@ -56,7 +56,7 @@ class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
             if (ingredient == null) {
                 ingredient = new Ingredient();
             }
-            ingredient.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
+            ingredient.put(0, guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(itemStack));
             ingredient.buildChoices();
             cache.getRecipeCreatorCache().getRecipeCache().setIngredient(recipeSlot, ingredient);
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {

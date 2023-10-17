@@ -65,7 +65,7 @@ public class RecipeCreatorCauldron extends RecipeCreator {
                         if ((result.getItems().isEmpty() && !result.getTags().isEmpty()) || event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
                             return;
                         }
-                        result.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
+                        result.put(0, guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(itemStack));
                         result.buildChoices();
                     })
                     .render((cache, guiHandler, player, inventory, itemStack, slot) -> {

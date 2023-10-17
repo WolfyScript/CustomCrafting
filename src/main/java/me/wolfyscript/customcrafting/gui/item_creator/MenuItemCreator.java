@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.gui.item_creator;
 
 import com.google.common.collect.Lists;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -112,11 +113,8 @@ public class MenuItemCreator extends CCWindow {
         })).register();
         btnB.itemInput(ITEM_INPUT).state(s -> s.icon(Material.AIR).postAction((cache, guiHandler, player, guiInventory, stack, slot, event) -> {
             var items = cache.getItems();
-            CustomItem reference = CustomItem.getReferenceByItemStack(stack != null ? stack : ItemUtils.AIR);
-            if (ItemUtils.isAirOrNull(reference.getItemStack())) {
-                reference = new CustomItem(stack != null ? stack : ItemUtils.AIR);
-            }
-            items.setItem(reference);
+            StackReference reference = guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(stack);
+            items.setItem(new CustomItem(reference));
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(guiHandler.getCustomCache().getItems().getItem().getItemStack()))).register();
         btnB.action(SAVE_ITEM).state(s -> s.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, i, event) -> {
             var items = cache.getItems();

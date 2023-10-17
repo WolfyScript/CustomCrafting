@@ -180,12 +180,12 @@ public class CauldronBlockData extends CustomBlockData {
 
                 Result result = recipe.getResult();
                 result.executeExtensions(locCopy, true, null);
-                this.result[0] = result.item(loc.getBlock()).map(StackReference::stack).orElse(air);
+                this.result[0] = result.item(loc.getBlock()).map(reference -> reference.identifier().item()).orElse(air);
                 // Handle additional results
                 for (int i = 0; i < 3; i++) {
                     Result additional = recipe.getAdditionalResults()[i];
                     additional.executeExtensions(locCopy, true, null);
-                    this.result[i+1] = additional.item(block).map(StackReference::stack).orElse(air);
+                    this.result[i+1] = additional.item(block).map(reference -> reference.identifier().item()).orElse(air);
                 }
                 reset();
             }

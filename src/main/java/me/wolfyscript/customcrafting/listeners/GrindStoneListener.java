@@ -108,21 +108,22 @@ public class GrindStoneListener implements Listener {
             }
             grindstoneData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
 
-            StackReference inputTop = grindstoneData.inputTop();
-            StackReference inputBottom = grindstoneData.inputBottom();
-
-            if (!ItemUtils.isAirOrNull(inputTop.stack())) {
-                ItemStack itemTop = inventory.getItem(0);
-                if (!ItemUtils.isAirOrNull(itemTop)) {
-                    inventory.setItem(0, inputTop.shrink(itemTop, 1, grindstoneData.getBySlot(0).ingredient().isReplaceWithRemains(), inventory, player, null));
+            grindstoneData.topIngredient().ifPresent(ingredientTop -> {
+                if (!ItemUtils.isAirOrNull(ingredientTop.reference().identifier().item())) {
+                    ItemStack itemTop = inventory.getItem(0);
+                    if (!ItemUtils.isAirOrNull(itemTop)) {
+                        inventory.setItem(0, ingredientTop.reference().shrink(itemTop, 1, ingredientTop.ingredient().isReplaceWithRemains(), inventory, player, null));
+                    }
                 }
-            }
-            if (!ItemUtils.isAirOrNull(inputBottom.stack())) {
-                ItemStack itemBottom = inventory.getItem(1);
-                if (!ItemUtils.isAirOrNull(itemBottom)) {
-                    inventory.setItem(1, inputBottom.shrink(itemBottom, 1, grindstoneData.getBySlot(1).ingredient().isReplaceWithRemains(), inventory, player, null));
+            });
+            grindstoneData.bottomIngredient().ifPresent(ingredientBottom -> {
+                if (!ItemUtils.isAirOrNull(ingredientBottom.reference().identifier().item())) {
+                    ItemStack itemBottom = inventory.getItem(1);
+                    if (!ItemUtils.isAirOrNull(itemBottom)) {
+                        inventory.setItem(1, ingredientBottom.reference().shrink(itemBottom, 1, ingredientBottom.ingredient().isReplaceWithRemains(), inventory, player, null));
+                    }
                 }
-            }
+            });
             // Invalidate crafted recipe and check for new recipe
             preCraftedRecipes.remove(player.getUniqueId());
             processGrindstone(inventory, player, event);
@@ -156,7 +157,7 @@ public class GrindStoneListener implements Listener {
     private void processGrindstone(Inventory inventory, Player player, InventoryInteractEvent event) {
         lookForValidRecipe(inventory.getItem(0), inventory.getItem(1), player, event.getView())
                 .ifPresentOrElse(data -> {
-                    inventory.setItem(2, data.getResult().item(player).map(StackReference::stack).orElse(new ItemStack(Material.AIR)));
+                    inventory.setItem(2, data.getResult().item(player).map(reference -> reference.identifier().item()).orElse(new ItemStack(Material.AIR)));
                     preCraftedRecipes.put(player.getUniqueId(), data);
                 }, () -> {
                     for (ItemStack itemStack : new ItemStack[]{inventory.getItem(0), inventory.getItem(1)}) {
