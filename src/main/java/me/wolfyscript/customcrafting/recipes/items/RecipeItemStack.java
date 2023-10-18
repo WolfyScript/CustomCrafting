@@ -159,6 +159,10 @@ public abstract class RecipeItemStack {
         this.tags = tags;
     }
 
+    public List<StackReference> items() {
+        return items;
+    }
+
     @Deprecated(forRemoval = true, since = "4.16.9")
     public List<APIReference> getItems() {
         return items.stream().map(StackReference::convert).toList();
