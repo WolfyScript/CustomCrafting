@@ -83,24 +83,31 @@ public class Items implements Serializable {
         this.currentTab = null;
     }
 
+    public void editCustomItem(CustomItem customItem) {
+        setItem(customItem);
+        setNamespacedKey(customItem.getNamespacedKey());
+        setSaved(true);
+    }
+
+    public void createCustomItem(StackReference reference) {
+        setItem(new CustomItem(reference));
+        setNamespacedKey(null);
+        setSaved(false);
+    }
+
     public void setItem(boolean recipeItem, StackReference reference) {
         setRecipeItem(recipeItem);
         if (reference.identifier() instanceof WolfyUtilsStackIdentifier wolfyUtilsStackIdentifier) {
-            wolfyUtilsStackIdentifier.customItem().ifPresent(customItem -> {
-                setItem(customItem);
-                setNamespacedKey(customItem.getNamespacedKey());
-                setSaved(true);
-            });
+            wolfyUtilsStackIdentifier.customItem().ifPresent(this::editCustomItem);
         } else {
-            setItem(new CustomItem(reference));
-            setNamespacedKey(null);
-            setSaved(false);
+            createCustomItem(reference);
         }
     }
 
-    public void setVariant(int variantSlot, StackReference reference) {
+    public void editRecipeStackVariant(int variantSlot, StackReference reference) {
         this.variantSlot = variantSlot;
-        setItem(true, reference);
+        setRecipeItem(true);
+        createCustomItem(reference);
     }
 
     public CustomItem getItem() {
