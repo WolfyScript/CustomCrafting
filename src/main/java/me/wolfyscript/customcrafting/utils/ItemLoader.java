@@ -77,20 +77,20 @@ public class ItemLoader {
             node.elements().forEachRemaining(item -> {
                 APIReference reference = loadAndConvertCorruptReference(item);
                 if (reference != null) {
-                    ingredient.getItems().add(reference);
+                    ingredient.items().add(reference.convertToStackReference());
                 }
             });
         } else {
             if (node.has("var0")) {
                 // Looks like the old format is used (v1.6.5.x or newer, before the major rewrite)
                 // It uses var0, var1, etc. for variants. Each variant can only have a single item.
-                List<APIReference> referenceList = new ArrayList<>();
+                List<StackReference> referenceList = new ArrayList<>();
                 node.fields().forEachRemaining(entry -> {
                     try {
                         // Load the api reference manually, because the old results only have one item reference.
                         APIReference converted = getObjectMapper().reader().readValue(entry.getValue(), APIReference.class);
                         if (converted != null) {
-                            referenceList.add(converted);
+                            referenceList.add(converted.convertToStackReference());
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -141,7 +141,7 @@ public class ItemLoader {
             node.elements().forEachRemaining(item -> {
                 APIReference reference = loadAndConvertCorruptReference(item);
                 if (reference != null) {
-                    result.getItems().add(reference);
+                    result.items().add(reference.convertToStackReference());
                 }
             });
         } else {
@@ -157,7 +157,7 @@ public class ItemLoader {
                     e.printStackTrace();
                 } finally {
                     if (converted != null) {
-                        result = new Result(converted);
+                        result = new Result(converted.convertToStackReference());
                     } else {
                         result = null;
                     }

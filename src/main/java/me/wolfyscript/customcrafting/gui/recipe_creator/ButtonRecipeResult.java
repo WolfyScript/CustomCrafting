@@ -41,10 +41,10 @@ class ButtonRecipeResult extends ItemInputButton<CCCache> {
                 guiHandler.openWindow("result");
                 return true;
             }
-            return result.getItems().isEmpty() && !result.getTags().isEmpty();
+            return result.items().isEmpty() && !result.getTags().isEmpty();
         }, (cache, guiHandler, player, inventory, itemStack, i, event) -> {
             Result result = cache.getRecipeCreatorCache().getRecipeCache().getResult();
-            if ((result.getItems().isEmpty() && !result.getTags().isEmpty()) || event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
+            if ((result.items().isEmpty() && !result.getTags().isEmpty()) || event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
                 return;
             }
             result.put(0, guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(itemStack));

@@ -24,10 +24,8 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -47,10 +45,10 @@ class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
                 }
                 return true;
             }
-            return ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty();
+            return ingredient != null && ingredient.items().isEmpty() && !ingredient.getTags().isEmpty();
         }, (cache, guiHandler, player, inventory, itemStack, i, event) -> {
             var ingredient = cache.getRecipeCreatorCache().getRecipeCache().getIngredient(recipeSlot);
-            if ((ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty()) || event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
+            if ((ingredient != null && ingredient.items().isEmpty() && !ingredient.getTags().isEmpty()) || event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
                 return;
             }
             if (ingredient == null) {
