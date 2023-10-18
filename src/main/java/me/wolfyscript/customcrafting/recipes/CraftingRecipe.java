@@ -249,7 +249,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     public void writeToBuf(MCByteBuf byteBuf) {
         super.writeToBuf(byteBuf);
         byteBuf.writeInt(maxGridDimension);
-        byteBuf.writeCollection(ingredients, (buf, ingredient) -> buf.writeCollection(ingredient.getChoices(), (buf1, customItem) -> buf1.writeItemStack(customItem.create())));
+        byteBuf.writeCollection(ingredients, (buf, ingredient) -> buf.writeCollection(ingredient.choices(), (buf1, reference) -> buf1.writeItemStack(reference.identifier().item())));
     }
 
 }

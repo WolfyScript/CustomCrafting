@@ -333,12 +333,6 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         gen.writeObjectField("addition", this.addition);
     }
 
-    @JsonIgnore
-    @Override
-    public List<CustomItem> getRecipeBookItems() {
-        return getMode().equals(CustomRecipeAnvil.Mode.RESULT) ? getResult().getChoices() : hasInputLeft() ? getInputLeft().getChoices() : getInputRight().getChoices();
-    }
-
     @Override
     public List<StackReference> recipeBookStacks() {
         return getMode().equals(CustomRecipeAnvil.Mode.RESULT) ? getResult().choices() : hasInputLeft() ? getInputLeft().choices() : getInputRight().choices();

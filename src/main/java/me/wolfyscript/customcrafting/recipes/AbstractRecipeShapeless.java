@@ -138,10 +138,10 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         indexes.sort((index, index1) -> {
             var ingredient = this.ingredients.get(index);
             var ingredient1 = this.ingredients.get(index1);
-            if (ingredient.getChoices().size() > 1) {
-                return ingredient1.getChoices().size() > 1 ? 0 : 1;
+            if (ingredient.choices().size() > 1) {
+                return ingredient1.choices().size() > 1 ? 0 : 1;
             }
-            return ingredient1.getChoices().size() > 1 ? -1 : 0;
+            return ingredient1.choices().size() > 1 ? -1 : 0;
         });
         combinations = 1;
         for (Ingredient ingredient : this.ingredients) {

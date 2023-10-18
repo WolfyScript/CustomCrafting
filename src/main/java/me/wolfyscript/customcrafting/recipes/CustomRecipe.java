@@ -299,7 +299,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
     @JsonIgnore
     @Deprecated(forRemoval = true, since = "4.16.9")
     public List<CustomItem> getRecipeBookItems() {
-        return getResult().getChoices();
+        return recipeBookStacks().stream().map(StackReference::convertToLegacy).toList();
     }
 
     @JsonIgnore
@@ -335,7 +335,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
     }
 
     public boolean findResultItem(ItemStack result) {
-        return getResult().getChoices().stream().anyMatch(customItem -> customItem.create().isSimilar(result));
+        return getResult().choices().stream().anyMatch(reference -> reference.matches(result));
     }
 
     /**
@@ -426,7 +426,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
         byteBuf.writeUtf(namespacedKey.toString());
         byteBuf.writeBoolean(checkAllNBT);
         byteBuf.writeUtf(group);
-        byteBuf.writeCollection(result.getChoices(), (mcByteBuf, customItem) -> mcByteBuf.writeItemStack(customItem.create()));
+        byteBuf.writeCollection(result.choices(), (mcByteBuf, reference) -> mcByteBuf.writeItemStack(reference.identifier().item()));
     }
 
     @Override

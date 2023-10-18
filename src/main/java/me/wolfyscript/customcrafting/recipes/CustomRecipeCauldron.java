@@ -94,8 +94,8 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.ingredients = new ArrayDeque<>();
         JsonNode ingredientsNode = node.path("ingredients");
         if (ingredientsNode.isObject()) {
-            ItemLoader.loadIngredient(ingredientsNode).getChoices().stream().map(customItem -> {
-                Ingredient ingredient = new Ingredient(customItem.stackReference());
+            ItemLoader.loadIngredient(ingredientsNode).choices().stream().map(reference -> {
+                Ingredient ingredient = new Ingredient(reference);
                 ingredient.buildChoices();
                 return ingredient;
             }).forEach(ingredients::add);
@@ -341,8 +341,8 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     private void setIngredients(JsonNode ingredientsNode) {
         if (ingredientsNode.isObject()) {
             //Directly set ingredients to bypass max ingredient check, since old recipes might have more ingredients!
-            ItemLoader.loadIngredient(ingredientsNode).getChoices().stream().map(customItem ->{
-                Ingredient ingredient = new Ingredient(customItem.stackReference());
+            ItemLoader.loadIngredient(ingredientsNode).choices().stream().map(reference ->{
+                Ingredient ingredient = new Ingredient(reference);
                 ingredient.buildChoices();
                 return ingredient;
             }).forEach(ingredient -> this.ingredients.add(ingredient));

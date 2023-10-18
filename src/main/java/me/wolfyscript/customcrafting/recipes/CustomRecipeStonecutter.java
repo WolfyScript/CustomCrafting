@@ -162,7 +162,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
     public StonecuttingRecipe getVanillaRecipe() {
         if (!getResult().isEmpty() && !getSource().isEmpty()) {
             RecipeChoice choice = isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().getBukkitChoices()) : new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).toList());
-            var recipe = new StonecuttingRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().getChoices().get(0).create(), choice);
+            var recipe = new StonecuttingRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().choices().get(0).identifier().item(), choice);
             recipe.setGroup(group);
             return recipe;
         }

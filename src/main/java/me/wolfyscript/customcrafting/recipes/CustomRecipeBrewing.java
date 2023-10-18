@@ -411,20 +411,9 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
             if (getAllowedItems().isEmpty()) {
                 return result.getType().equals(Material.POTION);
             }
-            return getAllowedItems().getChoices().stream().anyMatch(customItem -> customItem.create().isSimilar(result));
+            return getAllowedItems().choices().stream().anyMatch(reference -> reference.matches(result));
         }
         return super.findResultItem(result);
-    }
-
-    @Override
-    public List<CustomItem> getRecipeBookItems() {
-        if (this.getResult().isEmpty()) {
-            if (getAllowedItems().isEmpty()) {
-                return Collections.singletonList(new CustomItem(placeHolderPotion));
-            }
-            return getIngredient().getChoices();
-        }
-        return this.getResult().getChoices();
     }
 
     @Override

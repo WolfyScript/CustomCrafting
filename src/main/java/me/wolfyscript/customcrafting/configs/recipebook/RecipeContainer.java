@@ -119,7 +119,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public boolean isValid(Set<Material> materials) {
-        return materials.isEmpty() || cachedRecipes.stream().anyMatch(recipe1 -> recipe1.getResult().getChoices().stream().anyMatch(customItem -> materials.contains(customItem.getItemStack().getType())));
+        return materials.isEmpty() || cachedRecipes.stream().anyMatch(recipe1 -> recipe1.getResult().choices().stream().anyMatch(reference -> materials.contains(reference.identifier().item().getType())));
     }
 
     public boolean isValid(CacheEliteCraftingTable cacheEliteCraftingTable) {

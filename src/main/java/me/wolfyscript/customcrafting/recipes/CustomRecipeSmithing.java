@@ -353,7 +353,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
 
     private static RecipeChoice getRecipeChoiceFor(Ingredient ingredient) {
         if (ingredient == null || ingredient.isEmpty()) return new RecipeChoice.MaterialChoice(Material.AIR);
-        List<Material> choices = ingredient.getChoicesStream().map(customItem -> customItem.create().getType()).collect(Collectors.toList());
+        List<Material> choices = ingredient.choicesStream().map(reference -> reference.identifier().item().getType()).collect(Collectors.toList());
         if (ingredient.isAllowEmpty()) choices.add(Material.AIR);
         return new RecipeChoice.MaterialChoice(choices);
     }
