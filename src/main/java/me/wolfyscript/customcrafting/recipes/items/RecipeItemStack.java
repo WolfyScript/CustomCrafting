@@ -62,15 +62,15 @@ public abstract class RecipeItemStack {
 
     static <T extends RecipeItemStack> Validator<T> validatorFor() {
         return ValidatorBuilder.<T>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/abstract_itemstack")).def()
-                .collection(RecipeItemStack::getItems, initStep -> initStep.def()
+                .collection(RecipeItemStack::items, initStep -> initStep.def()
                         .name(container -> "Items")
                         .forEach(apiReferenceInitStep -> apiReferenceInitStep.def()
                                 .validate(container -> container.value()
-                                        .map(apiReference -> {
-                                            if (!ItemUtils.isAirOrNull(apiReference.getLinkedItem())) {
+                                        .map(reference -> {
+                                            if (!ItemUtils.isAirOrNull(reference.identifier().item())) {
                                                 return container.update().type(ValidationContainer.ResultType.VALID);
                                             }
-                                            if (apiReference instanceof VanillaRef) {
+                                            if (ItemUtils.isAirOrNull(reference.stack())) {
                                                 return container.update().type(ValidationContainer.ResultType.INVALID).fault(INVALID_ITEM);
                                             }
                                             return container.update().type(ValidationContainer.ResultType.PENDING).fault(MISSING_THIRD_PARTY);
