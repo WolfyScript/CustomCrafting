@@ -44,7 +44,7 @@ class ButtonContainerItemIngredient extends ItemInputButton<CCCache> {
         super("item_container_" + ingredSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, invSlot, event) -> {
             if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
                 if (!ItemUtils.isAirOrNull(inventory.getItem(invSlot))) {
-                    cache.getItems().setVariant(ingredSlot, guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(inventory.getItem(invSlot)));
+                    cache.getItems().editRecipeStackVariant(ingredSlot, guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(inventory.getItem(invSlot)));
                     cache.setApplyItem(APPLY_ITEM);
                     guiHandler.openWindow(ClusterRecipeCreator.ITEM_EDITOR);
                 }
