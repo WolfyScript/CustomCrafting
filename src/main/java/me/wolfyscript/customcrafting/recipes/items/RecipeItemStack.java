@@ -27,17 +27,14 @@ import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.validator.ValidationContainer;
 import com.wolfyscript.utilities.validator.Validator;
 import com.wolfyscript.utilities.validator.ValidatorBuilder;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.tags.CustomTag;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
@@ -214,7 +211,8 @@ public abstract class RecipeItemStack {
         }).filter(Objects::nonNull).distinct().forEach(this.choices::addAll);
 
         // old choices use CustomItems
-        this.oldChoices.clear();
+        oldChoices.clear();
+        choices.stream().map(StackReference::convertToLegacy).forEach(oldChoices::add);
     }
 
     public List<StackReference> choices() {
@@ -240,28 +238,8 @@ public abstract class RecipeItemStack {
     }
 
     @JsonIgnore
-    public List<CustomItem> getChoices() {
-        return new ArrayList<>(oldChoices);
-    }
-
-    @JsonIgnore
-    public List<CustomItem> getChoices(Player player) {
-        return getChoicesStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList();
-    }
-
-    @JsonIgnore
-    public Stream<CustomItem> getChoicesStream() {
-        return oldChoices.stream();
-    }
-
-    @JsonIgnore
-    public List<ItemStack> getBukkitChoices() {
-        return getChoicesStream().map(CustomItem::create).toList();
-    }
-
-    @JsonIgnore
     public boolean isEmpty() {
-        return (items.isEmpty() && tags.isEmpty()) || InventoryUtils.isCustomItemsListEmpty(this.oldChoices);
+        return (items.isEmpty() && tags.isEmpty()) || choices.stream().allMatch(reference -> ItemUtils.isAirOrNull(reference.identifier().item()));
     }
 
     /**
@@ -269,8 +247,8 @@ public abstract class RecipeItemStack {
      */
     @JsonIgnore
     public ItemStack getItemStack() {
-        if (!getChoices().isEmpty()) {
-            return getChoices().get(0).create();
+        if (!choices().isEmpty()) {
+            return choices().get(0).identifier().item();
         } else if (!getTags().isEmpty()) {
             Optional<NamespacedKey> tag = getTags().stream().findFirst();
             if (tag.isPresent()) {
@@ -284,11 +262,33 @@ public abstract class RecipeItemStack {
     }
 
     @JsonIgnore
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public List<CustomItem> getChoices() {
+        return new ArrayList<>(oldChoices);
+    }
+
+    @JsonIgnore
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public List<CustomItem> getChoices(Player player) {
+        return getChoicesStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList();
+    }
+
+    @JsonIgnore
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public Stream<CustomItem> getChoicesStream() {
+        return oldChoices.stream();
+    }
+
+    @JsonIgnore
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public List<ItemStack> getBukkitChoices() {
+        return bukkitChoices();
+    }
+
+    @JsonIgnore
     public ItemStack getItemStack(int slot) {
-        List<APIReference> refs = getItems();
-        if (refs.size() > slot) {
-            APIReference ref = refs.get(slot);
-            return ref != null ? CustomItem.with(ref).create() : ItemUtils.AIR;
+        if (items.size() > slot) {
+            return items.get(slot).identifier().item();
         }
         return ItemUtils.AIR;
     }
