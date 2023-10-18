@@ -302,7 +302,7 @@ public class Result extends RecipeItemStack {
         }
     }
 
-    public void removeCachedReferences(Block block) {
+    public void removeCachedReference(Block block) {
         if (block != null) {
             cachedBlockReferences.remove(block.getLocation().toVector());
         }

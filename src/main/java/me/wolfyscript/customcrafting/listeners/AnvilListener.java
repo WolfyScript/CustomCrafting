@@ -165,7 +165,7 @@ public class AnvilListener implements Listener {
                     if (anvilData.isUsedResult()) {
                         Result recipeResult = anvilData.getResult();
                         recipeResult.executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
-                        recipeResult.removeCachedItem(player);
+                        recipeResult.removeCachedReference(player);
                     }
                     preCraftedRecipes.remove(player.getUniqueId());
 

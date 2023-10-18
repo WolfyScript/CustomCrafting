@@ -129,7 +129,7 @@ public abstract class SmeltAPIAdapter {
             });
 
             result.executeExtensions(block.getLocation(), true, null);
-            result.removeCachedItem(block);
+            result.removeCachedReference(block);
             block.getState().update(); // Update the state of the block. Just in case!
         });
     }
