@@ -46,6 +46,7 @@ public class Items implements Serializable {
 
     private ItemStack playerHeadSetting;
 
+    private StackReference original;
     private CustomItem item;
     private boolean recipeItem;
     private NamespacedKey namespacedKey;
@@ -68,6 +69,7 @@ public class Items implements Serializable {
         this.playerHeadSetting = new ItemStack(Material.AIR);
 
         this.item = new CustomItem(Material.AIR);
+        this.original = StackReference.of(new ItemStack(Material.AIR));
         this.recipeItem = false;
         this.namespacedKey = null;
         this.saved = false;
@@ -83,6 +85,10 @@ public class Items implements Serializable {
         this.currentTab = null;
     }
 
+    public StackReference originalReference() {
+        return original;
+    }
+
     public void editCustomItem(CustomItem customItem) {
         setItem(customItem);
         setNamespacedKey(customItem.getNamespacedKey());
@@ -90,12 +96,14 @@ public class Items implements Serializable {
     }
 
     public void createCustomItem(StackReference reference) {
+        this.original = reference;
         setItem(new CustomItem(reference));
         setNamespacedKey(null);
         setSaved(false);
     }
 
     public void setItem(boolean recipeItem, StackReference reference) {
+        this.original = reference;
         setRecipeItem(recipeItem);
         if (reference.identifier() instanceof WolfyUtilsStackIdentifier wolfyUtilsStackIdentifier) {
             wolfyUtilsStackIdentifier.customItem().ifPresent(this::editCustomItem);

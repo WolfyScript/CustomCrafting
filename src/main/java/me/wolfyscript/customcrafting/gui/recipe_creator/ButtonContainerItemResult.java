@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.recipes.items.Result;
@@ -29,6 +31,7 @@ import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -43,10 +46,12 @@ class ButtonContainerItemResult extends ItemInputButton<CCCache> {
     ButtonContainerItemResult(int variantSlot) {
         super("variant_container_" + variantSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
+                if (clickEvent.getSlot() != slot) return true;
                 if (!ItemUtils.isAirOrNull(inventory.getItem(slot))) {
-                    cache.getItems().editRecipeStackVariant(variantSlot, guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(inventory.getItem(slot)));
+                    StackReference variant = cache.getRecipeCreatorCache().getRecipeCache().getResult().items().get(variantSlot);
+                    cache.getItems().editRecipeStackVariant(variantSlot, variant);
                     cache.setApplyItem(APPLY_ITEM);
-                    guiHandler.openWindow(ClusterRecipeCreator.ITEM_EDITOR);
+                    Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> guiHandler.openWindow(ClusterRecipeCreator.ITEM_EDITOR));
                 }
                 return true;
             }
