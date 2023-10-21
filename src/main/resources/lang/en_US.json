@@ -3069,13 +3069,52 @@
         }
       },
       "item_editor": {
-        "gui_name": "<black><b>Item Editor</b></black>",
+        "gui_name": "<black><b>Configure Item Stack</b></black>",
         "items": {
           "create_item": {
-            "name": "<gold>Create</gold>",
-            "help": [
-              "<grey>Create a custom Item</grey>"
+            "name": "<grey>\u27A5</grey>  <gold><b>Edit</b></gold>",
+            "lore": [
+              "<grey>Edit the Stack using the Item Creator</grey>",
+              "",
+              "<grey>[<green>Shift-Right-Click</green>] Open Item Creator</grey>"
             ]
+          },
+          "reference": {
+            "bukkit": {
+              "name": "<grey>\\u27A5</grey>  <gold><b>Bukkit Reference</b></gold>",
+              "lore": [
+                "",
+                "<grey>[<green>Shift-Right-Click</green>] Change Reference</grey>"
+              ]
+            },
+            "wolfyutils": {
+              "name": "<grey>\\u27A5</grey>  <gold><b>WolfyUtils Reference</b></gold>",
+              "lore": [
+                "",
+                "<grey>[<green>Shift-Right-Click</green>] Change Reference</grey>"
+              ]
+            },
+            "oraxen": {
+              "name": "<grey>\\u27A5</grey>  <gold><b>Oraxen Reference</b></gold>",
+              "lore": [
+                "",
+                "<grey>[<green>Shift-Right-Click</green>] Change Reference</grey>"
+              ]
+            },
+            "mmoitems": {
+              "name": "<grey>\\u27A5</grey>  <gold><b>MMOItems Reference</b></gold>",
+              "lore": [
+                "",
+                "<grey>[<green>Shift-Right-Click</green>] Change Reference</grey>"
+              ]
+            },
+            "itemsadder": {
+              "name": "<grey>\\u27A5</grey>  <gold><b>ItemsAdder Reference</b></gold>",
+              "lore": [
+                "",
+                "<grey>[<green>Shift-Right-Click</green>] Change Reference</grey>"
+              ]
+            }
           }
         },
         "messages": {
