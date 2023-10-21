@@ -139,7 +139,7 @@ public abstract class RecipeItemStack {
     protected RecipeItemStack(Collection<StackReference> references, Set<NamespacedKey> tags) {
         this.oldChoices = new ArrayList<>();
         this.choices = new ArrayList<>();
-        this.items = references.stream().toList();
+        this.items = new ArrayList<>(references);
         this.tags = tags;
         buildChoices();
     }
@@ -162,12 +162,12 @@ public abstract class RecipeItemStack {
 
     @Deprecated(forRemoval = true, since = "4.16.9")
     public List<APIReference> getItems() {
-        return items.stream().map(StackReference::convert).toList();
+        return items.stream().map(StackReference::convert).collect(Collectors.toList());
     }
 
     @Deprecated(forRemoval = true, since = "4.16.9")
     public void setItems(List<APIReference> items) {
-        this.items = items.stream().map(APIReference::convertToStackReference).toList();
+        this.items = items.stream().map(APIReference::convertToStackReference).collect(Collectors.toList());
     }
 
     @Deprecated(forRemoval = true, since = "4.16.9")
@@ -224,8 +224,7 @@ public abstract class RecipeItemStack {
     }
 
     public List<StackReference> choices(Player player) {
-        // TODO: Handle permissions
-        return choicesStream()/*.filter(reference -> !reference.hasPermission() || player.hasPermission(reference.getPermission()))*/.toList();
+        return choicesStream().filter(reference -> reference.identifier().permission().map(player::hasPermission).orElse(true)).toList();
     }
 
     public List<ItemStack> bukkitChoices() {

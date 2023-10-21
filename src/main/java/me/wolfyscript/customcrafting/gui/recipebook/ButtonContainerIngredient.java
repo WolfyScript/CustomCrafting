@@ -198,14 +198,9 @@ public class ButtonContainerIngredient extends Button<CCCache> {
         if (variants != null) {
             Iterator<StackReference> iterator = variants.iterator();
             while (iterator.hasNext()) {
-                StackReference customItem = iterator.next();
-                // TODO: PERMISSION HANDLING
-//                if (!customItem.hasPermission()) {
-//                    continue;
-//                }
-//                if (!guiHandler.getPlayer().hasPermission(customItem.getPermission())) {
-//                    iterator.remove();
-//                }
+                StackReference reference = iterator.next();
+                if (reference.identifier().permission().map(perm -> guiHandler.getPlayer().hasPermission(perm)).orElse(true)) continue;
+                iterator.remove();
             }
         }
         this.variantsMap.put(guiHandler, variants);

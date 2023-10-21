@@ -51,6 +51,7 @@ import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.jetbrains.annotations.NotNull;
@@ -168,7 +169,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(11)))
                 .setVariants(guiHandler, getSource().choices(player));
         ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(24)))
-                .setVariants(guiHandler, this.getResult().choices().stream()/*TODO: Permissions! .filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission()))*/.toList());
+                .setVariants(guiHandler, this.getResult().choices().stream().filter(reference -> !reference.identifier().permission().map(player::hasPermission).orElse(true)).toList());
     }
 
     @Override
