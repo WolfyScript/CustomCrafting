@@ -3080,39 +3080,16 @@
             ]
           },
           "reference": {
-            "bukkit": {
-              "name": "<grey>\\u27A5</grey>  <gold><b>Bukkit Reference</b></gold>",
-              "lore": [
-                "",
-                "<grey>[<green>Shift-Right-Click</green>] Change Reference</grey>"
-              ]
+            "icon": {
+              "name": "<gold><b><name></b></gold>",
+              "lore": []
             },
-            "wolfyutils": {
-              "name": "<grey>\\u27A5</grey>  <gold><b>WolfyUtils Reference</b></gold>",
+            "swap": {
+              "name": "<gold><b><name></b></gold>",
               "lore": [
+                "<grey>Swaps the current parser with this parser</grey>",
                 "",
-                "<grey>[<green>Shift-Right-Click</green>] Change Reference</grey>"
-              ]
-            },
-            "oraxen": {
-              "name": "<grey>\\u27A5</grey>  <gold><b>Oraxen Reference</b></gold>",
-              "lore": [
-                "",
-                "<grey>[<green>Shift-Right-Click</green>] Change Reference</grey>"
-              ]
-            },
-            "mmoitems": {
-              "name": "<grey>\\u27A5</grey>  <gold><b>MMOItems Reference</b></gold>",
-              "lore": [
-                "",
-                "<grey>[<green>Shift-Right-Click</green>] Change Reference</grey>"
-              ]
-            },
-            "itemsadder": {
-              "name": "<grey>\\u27A5</grey>  <gold><b>ItemsAdder Reference</b></gold>",
-              "lore": [
-                "",
-                "<grey>[<green>Shift-Right-Click</green>] Change Reference</grey>"
+                "<grey>[<green>Click</green>] Select Parser</grey>"
               ]
             }
           }

@@ -22,12 +22,10 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
-import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentifier;
-import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifierParser;
-import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
-import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
+import com.wolfyscript.utilities.bukkit.world.items.reference.*;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
@@ -36,6 +34,7 @@ import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -44,15 +43,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class MenuItemEditor extends CCWindow {
-
-    private static final String REFERENCE_WOLFYUTILITIES = "reference.wolfyutils";
-    private static final String REFERENCE_BUKKIT = "reference.bukkit";
-    private static final String REFERENCE_ORAXEN = "reference.oraxen";
-    private static final String REFERENCE_ITEMSADDER = "reference.itemsadder";
-    private static final String REFERENCE_MYTHICMOBS = "reference.mythicmobs";
-    private static final String REFERENCE_FANCYBAGS = "reference.fancybags";
 
     public MenuItemEditor(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, ClusterRecipeCreator.ITEM_EDITOR.getKey(), 54, customCrafting);
@@ -82,25 +75,6 @@ public class MenuItemEditor extends CCWindow {
             return true;
         })).register();
 
-        // Reference parser choose buttons
-        btnB.dummy(REFERENCE_WOLFYUTILITIES)
-                .state(s -> s.icon(Material.CRAFTING_TABLE)
-                        .render((cache, guiHandler, player, inv, stack, i) ->
-                                CallbackButtonRender.UpdateResult.of(
-                                        Placeholder.unparsed(
-                                                "item_key",
-                                                cache.getItems().originalReference().identifier() instanceof WolfyUtilsStackIdentifier sI ? sI.customItem().map(customItem -> customItem.getNamespacedKey().toString()).orElse("null") : "null"
-                                        ))))
-                .register();
-        btnB.dummy(REFERENCE_ORAXEN)
-                .state(s -> s.icon(Material.DIAMOND)
-                        .render((cache, guiHandler, player, inv, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", "")))).register();
-        btnB.dummy(REFERENCE_ITEMSADDER)
-                .state(s -> s.icon(Material.GRASS_BLOCK)
-                        .render((cache, guiHandler, player, inv, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", "")))).register();
-        btnB.dummy(REFERENCE_MYTHICMOBS)
-                .state(s -> s.icon(Material.WITHER_SKELETON_SKULL)).register();
-
     }
 
     @Override
@@ -111,37 +85,66 @@ public class MenuItemEditor extends CCWindow {
             event.setButton(i, gray);
         }
 
-        // Add current Reference Type indicator here in slot 0
-        event.setButton(1, ClusterMain.GLASS_GREEN);
-        event.setItem(2, event.getGuiHandler().getCustomCache().getItems().originalReference().identifier().item());
-        event.setButton(3, ClusterMain.GLASS_GREEN);
-        event.setButton(4, "create_item");
-        event.setButton(5, ClusterMain.GLASS_GREEN);
-        event.setButton(6, ClusterMain.ITEM_LIST.getKey());
+        for (StackIdentifierParser<?> parser : wolfyUtilities.getCore().getRegistries().getStackIdentifierParsers().sortedParsers()) {
+            String name = "reference." + parser.getNamespacedKey().toString("_");
 
-        StackReference reference = event.getGuiHandler().getCustomCache().getItems().originalReference();
+            if (getButton(name + ".icon") == null) {
+                System.out.println("Register new buttons for " + name);
+                Consumer<ButtonState.Builder<CCCache>> applyIcon = s -> {
+                    StackIdentifierParser.DisplayConfiguration.IconSettings iconSettings = parser.displayConfig().icon();
+                    if (iconSettings instanceof StackIdentifierParser.DisplayConfiguration.StackIconSettings stackIconSettings) {
+                        s.icon(stackIconSettings.stack());
+                    } else if (iconSettings instanceof StackIdentifierParser.DisplayConfiguration.MaterialIconSettings materialIconSettings) {
+                        s.icon(materialIconSettings.material());
+                    }
+                    s.render((ccCache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.component("name", parser.displayConfig().name())));
+                };
+
+                getButtonBuilder().dummy(name + ".icon")
+                        .state(s -> {
+                            s.key("reference.icon");
+                            applyIcon.accept(s);
+                        })
+                        .register();
+                getButtonBuilder().action(name + ".swap")
+                        .state(s -> {
+                            s.key("reference.swap");
+                            applyIcon.accept(s);
+                            s.action((ccCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                                ccCache.getItems().originalReference().swapParser(parser);
+                                return true;
+                            });
+                        })
+                        .register();
+            }
+        }
+
+        Items items = event.getGuiHandler().getCustomCache().getItems();
+        StackReference reference = items.originalReference();
+
+        // Add current Reference Type indicator here in slot 0
+        event.setItem(4, reference.referencedStack());
+        event.setButton(22, ClusterMain.GLASS_PURPLE);
+        event.setButton(3, ClusterMain.GLASS_GREEN);
+        event.setButton(6, "create_item");
+        event.setButton(5, ClusterMain.GLASS_GREEN);
+        event.setButton(2, ClusterMain.ITEM_LIST.getKey());
+        event.setButton(13, ClusterMain.GLASS_PURPLE);
+
+        NamespacedKey white = ClusterMain.GLASS_PURPLE;
+        for (int i = 18; i < 27; i++) {
+            event.setButton(i, white);
+        }
+        event.setButton(22, "reference." + reference.parser().getNamespacedKey().toString("_") + ".icon");
 
         // Parser selection
-        List<StackIdentifierParser<?>> parsers = wolfyUtilities.getCore().getRegistries().getStackIdentifierParsers().matchingParsers(reference.stack());
-
-        int slot = 18;
-        for (StackIdentifierParser<?> parser : parsers) {
+        int slot = 27;
+        for (StackIdentifierParser<?> parser : wolfyUtilities.getCore().getRegistries().getStackIdentifierParsers().matchingParsers(reference.originalStack())) {
             if (slot == 45) break;
             NamespacedKey key = parser.getNamespacedKey();
-            if (key.getNamespace().equals(NamespacedKey.WOLFYUTILITIES)) {
-                event.setButton(slot++, "reference." + key.getKey());
-            } else {
-                // TODO: Looks like a third-party parser
-            }
+            event.setButton(slot++, "reference." + key.toString("_") + ".swap");
         }
         event.setButton(49, ClusterMain.BACK_BOTTOM);
     }
 
-    private static String getParserBtnID(StackIdentifierParser<?> parser) {
-        if (parser instanceof BukkitStackIdentifier.Parser) {
-            return REFERENCE_BUKKIT;
-        } else if (parser instanceof WolfyUtilsStackIdentifier.Parser) {
-            return REFERENCE_MYTHICMOBS;
-        } else if (parser instanceof ItemsAdderRef)
-    }
 }
