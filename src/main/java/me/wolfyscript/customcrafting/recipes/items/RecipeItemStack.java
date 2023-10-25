@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes.items;
 
 import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentifier;
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.validator.ValidationContainer;
 import com.wolfyscript.utilities.validator.Validator;
@@ -64,10 +65,10 @@ public abstract class RecipeItemStack {
                         .forEach(apiReferenceInitStep -> apiReferenceInitStep.def()
                                 .validate(container -> container.value()
                                         .map(reference -> {
-                                            if (!ItemUtils.isAirOrNull(reference.identifier().item())) {
+                                            if (!ItemUtils.isAirOrNull(reference.referencedStack())) {
                                                 return container.update().type(ValidationContainer.ResultType.VALID);
                                             }
-                                            if (ItemUtils.isAirOrNull(reference.stack())) {
+                                            if (ItemUtils.isAirOrNull(reference.originalStack())) {
                                                 return container.update().type(ValidationContainer.ResultType.INVALID).fault(INVALID_ITEM);
                                             }
                                             return container.update().type(ValidationContainer.ResultType.PENDING).fault(MISSING_THIRD_PARTY);
@@ -228,7 +229,7 @@ public abstract class RecipeItemStack {
     }
 
     public List<ItemStack> bukkitChoices() {
-        return choices.stream().map(reference -> reference.identifier().item()).toList();
+        return choices.stream().map(StackReference::referencedStack).toList();
     }
 
     @JsonIgnore
@@ -238,7 +239,7 @@ public abstract class RecipeItemStack {
 
     @JsonIgnore
     public boolean isEmpty() {
-        return (items.isEmpty() && tags.isEmpty()) || choices.stream().allMatch(reference -> ItemUtils.isAirOrNull(reference.identifier().item()));
+        return (items.isEmpty() && tags.isEmpty()) || choices.stream().allMatch(reference -> ItemUtils.isAirOrNull(reference.referencedStack()));
     }
 
     /**
@@ -247,7 +248,7 @@ public abstract class RecipeItemStack {
     @JsonIgnore
     public ItemStack getItemStack() {
         if (!choices().isEmpty()) {
-            return choices().get(0).identifier().item();
+            return choices().get(0).referencedStack();
         } else if (!getTags().isEmpty()) {
             Optional<NamespacedKey> tag = getTags().stream().findFirst();
             if (tag.isPresent()) {
@@ -287,7 +288,8 @@ public abstract class RecipeItemStack {
     @JsonIgnore
     public ItemStack getItemStack(int slot) {
         if (items.size() > slot) {
-            return items.get(slot).identifier().item();
+            var item = items.get(slot);
+            return item.referencedStack();
         }
         return ItemUtils.AIR;
     }

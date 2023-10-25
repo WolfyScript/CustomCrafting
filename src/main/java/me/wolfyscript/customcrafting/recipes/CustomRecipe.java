@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -426,7 +427,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
         byteBuf.writeUtf(namespacedKey.toString());
         byteBuf.writeBoolean(checkAllNBT);
         byteBuf.writeUtf(group);
-        byteBuf.writeCollection(result.choices(), (mcByteBuf, reference) -> mcByteBuf.writeItemStack(reference.identifier().item()));
+        byteBuf.writeCollection(result.choices(), (mcByteBuf, reference) -> mcByteBuf.writeItemStack(reference.referencedStack()));
     }
 
     @Override

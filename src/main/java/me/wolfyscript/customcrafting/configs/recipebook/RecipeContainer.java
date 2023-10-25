@@ -119,7 +119,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public boolean isValid(Set<Material> materials) {
-        return materials.isEmpty() || cachedRecipes.stream().anyMatch(recipe1 -> recipe1.getResult().choices().stream().anyMatch(reference -> materials.contains(reference.identifier().item().getType())));
+        return materials.isEmpty() || cachedRecipes.stream().anyMatch(recipe1 -> recipe1.getResult().choices().stream().anyMatch(reference -> materials.contains(reference.referencedStack().getType())));
     }
 
     public boolean isValid(CacheEliteCraftingTable cacheEliteCraftingTable) {
@@ -147,12 +147,13 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
         return group != null ? group : recipe.toString();
     }
 
-    public ItemStack getDisplayItem() {
-        return cachedRecipes.isEmpty() ? new ItemStack(Material.STONE) : cachedRecipes.get(0).recipeBookStacks().get(0).identifier().item();
-    }
-
     public List<ItemStack> getDisplayItems(Player player) {
-        return cachedPlayerItemStacks.computeIfAbsent(player.getUniqueId(), uuid -> getRecipes(player).stream().flatMap(recipe1 -> recipe1.recipeBookStacks().stream()).map(reference -> reference.identifier().item()).distinct().toList());
+        return cachedPlayerItemStacks.computeIfAbsent(player.getUniqueId(), uuid -> getRecipes(player).stream()
+                .flatMap(recipe1 -> recipe1.recipeBookStacks().stream())
+                .map(StackReference::referencedStack)
+                .distinct()
+                .toList()
+        );
     }
 
     @Override

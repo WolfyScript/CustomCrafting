@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.validator.ValidationContainer;
 import com.wolfyscript.utilities.validator.Validator;
@@ -215,9 +216,9 @@ public class Result extends RecipeItemStack {
 
     public ItemStack item(RecipeData<?> recipeData, StackReference chosenItem, @Nullable Player player, @Nullable Block block) {
         if (target != null) {
-            return target.merge(recipeData, player, block, chosenItem, chosenItem.identifier().item());
+            return target.merge(recipeData, player, block, chosenItem, chosenItem.referencedStack());
         }
-        return chosenItem.identifier().item();
+        return chosenItem.referencedStack();
     }
 
     @Deprecated(forRemoval = true, since = "4.16.9")

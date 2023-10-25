@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
@@ -109,7 +110,7 @@ public class GrindStoneListener implements Listener {
             grindstoneData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
 
             grindstoneData.topIngredient().ifPresent(ingredientTop -> {
-                if (!ItemUtils.isAirOrNull(ingredientTop.reference().identifier().item())) {
+                if (!ItemUtils.isAirOrNull(ingredientTop.reference().referencedStack())) {
                     ItemStack itemTop = inventory.getItem(0);
                     if (!ItemUtils.isAirOrNull(itemTop)) {
                         inventory.setItem(0, ingredientTop.reference().shrink(itemTop, 1, ingredientTop.ingredient().isReplaceWithRemains(), inventory, player, null));
@@ -117,7 +118,7 @@ public class GrindStoneListener implements Listener {
                 }
             });
             grindstoneData.bottomIngredient().ifPresent(ingredientBottom -> {
-                if (!ItemUtils.isAirOrNull(ingredientBottom.reference().identifier().item())) {
+                if (!ItemUtils.isAirOrNull(ingredientBottom.reference().referencedStack())) {
                     ItemStack itemBottom = inventory.getItem(1);
                     if (!ItemUtils.isAirOrNull(itemBottom)) {
                         inventory.setItem(1, ingredientBottom.reference().shrink(itemBottom, 1, ingredientBottom.ingredient().isReplaceWithRemains(), inventory, player, null));
@@ -157,7 +158,7 @@ public class GrindStoneListener implements Listener {
     private void processGrindstone(Inventory inventory, Player player, InventoryInteractEvent event) {
         lookForValidRecipe(inventory.getItem(0), inventory.getItem(1), player, event.getView())
                 .ifPresentOrElse(data -> {
-                    inventory.setItem(2, data.getResult().item(player).map(reference -> reference.identifier().item()).orElse(new ItemStack(Material.AIR)));
+                    inventory.setItem(2, data.getResult().item(player).map(reference -> reference.referencedStack(ctxBldr -> ctxBldr.player(player))).orElse(new ItemStack(Material.AIR)));
                     preCraftedRecipes.put(player.getUniqueId(), data);
                 }, () -> {
                     for (ItemStack itemStack : new ItemStack[]{inventory.getItem(0), inventory.getItem(1)}) {

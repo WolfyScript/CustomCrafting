@@ -26,6 +26,8 @@ import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilde
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
@@ -249,7 +251,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     public void writeToBuf(MCByteBuf byteBuf) {
         super.writeToBuf(byteBuf);
         byteBuf.writeInt(maxGridDimension);
-        byteBuf.writeCollection(ingredients, (buf, ingredient) -> buf.writeCollection(ingredient.choices(), (buf1, reference) -> buf1.writeItemStack(reference.identifier().item())));
+        byteBuf.writeCollection(ingredients, (buf, ingredient) -> buf.writeCollection(ingredient.choices(), (buf1, reference) -> buf1.writeItemStack(reference.referencedStack())));
     }
 
 }

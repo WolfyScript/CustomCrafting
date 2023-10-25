@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import com.wolfyscript.lib.nbt.nbtapi.NBTTileEntity;
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
@@ -201,7 +202,7 @@ public class BrewingStandListener implements Listener {
                                                             //Result available. Replace the items with a random result from the list. (Percentages of items are used)
                                                             Optional<StackReference> item = recipe.getResult().item(player);
                                                             if (item.isPresent()) {
-                                                                brewerInventory.setItem(i, item.get().identifier().item());
+                                                                brewerInventory.setItem(i, item.get().referencedStack());
                                                             }
                                                         } else {
                                                             //No result available

@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.listeners.cooking;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
 import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -130,7 +131,7 @@ public class CampfireListener implements Listener {
                 }).orElse(null))
                 .filter(Objects::nonNull)
                 .findFirst()
-                .ifPresentOrElse(campfireRecipeData -> campfireRecipeData.getRecipe().getResult().item(event.getBlock()).ifPresent(reference -> event.setResult(reference.identifier().item())), () -> {
+                .ifPresentOrElse(campfireRecipeData -> campfireRecipeData.getRecipe().getResult().item(event.getBlock()).ifPresent(reference -> event.setResult(reference.referencedStack())), () -> {
                     Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(me.wolfyscript.utilities.api.nms.inventory.RecipeType.CAMPFIRE_COOKING);
                     while (recipeIterator.hasNext()) {
                         if (recipeIterator.next() instanceof CookingRecipe<?> recipe && !ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {

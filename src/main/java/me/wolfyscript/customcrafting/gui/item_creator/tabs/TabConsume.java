@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
@@ -91,7 +93,8 @@ public class TabConsume extends ItemCreatorTab {
                 }
             });
             return false;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().replacement().map(reference -> reference.identifier().item()).orElse(new ItemStack(Material.AIR))));
+        }, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().replacement()
+                .map(StackReference::referencedStack).orElse(new ItemStack(Material.AIR))));
     }
 
     @Override

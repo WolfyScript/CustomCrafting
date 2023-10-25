@@ -28,6 +28,7 @@ import com.wolfyscript.utilities.bukkit.persistent.world.CustomBlockData;
 import java.util.Optional;
 import java.util.Random;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
@@ -180,12 +181,12 @@ public class CauldronBlockData extends CustomBlockData {
 
                 Result result = recipe.getResult();
                 result.executeExtensions(locCopy, true, null);
-                this.result[0] = result.item(loc.getBlock()).map(reference -> reference.identifier().item()).orElse(air);
+                this.result[0] = result.item(loc.getBlock()).map(StackReference::referencedStack).orElse(air);
                 // Handle additional results
                 for (int i = 0; i < 3; i++) {
                     Result additional = recipe.getAdditionalResults()[i];
                     additional.executeExtensions(locCopy, true, null);
-                    this.result[i+1] = additional.item(block).map(reference -> reference.identifier().item()).orElse(air);
+                    this.result[i+1] = additional.item(block).map(StackReference::referencedStack).orElse(air);
                 }
                 reset();
             }

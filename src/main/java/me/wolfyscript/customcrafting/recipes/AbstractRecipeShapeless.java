@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -310,7 +311,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         ingredients.forEach(ingredient -> {
             byteBuf.writeVarInt(ingredient.size());
             for (StackReference choice : ingredient.choices()) {
-                byteBuf.writeItemStack(choice.identifier().item());
+                byteBuf.writeItemStack(choice.referencedStack());
             }
         });
     }
