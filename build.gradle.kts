@@ -104,9 +104,12 @@ tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }
 
+val debugPort: String = "5006"
+
 minecraftDockerRun {
     val customEnv = env.get().toMutableMap()
     customEnv["MEMORY"] = "2G"
+    customEnv["JVM_OPTS"] = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${debugPort}"
     env.set(customEnv)
     arguments("--cpus", "2", "-it") // Constrain to only use 2 cpus, and allow for console interactivity with 'docker attach'
 }
@@ -114,37 +117,38 @@ minecraftDockerRun {
 minecraftServers {
     serversDir.set(file("${System.getProperty("user.home")}${File.separator}minecraft${File.separator}test_servers_v4"))
     libName.set("${project.name}-${version}.jar")
+    val debugPortMapping = "${debugPort}:${debugPort}"
     servers {
         register("spigot_1_17") {
             version.set("1.17.1")
             type.set("SPIGOT")
-            ports.set(setOf("25565:25565"))
+            ports.set(setOf(debugPortMapping, "25565:25565"))
         }
         register("spigot_1_18") {
             version.set("1.18.2")
             type.set("SPIGOT")
-            ports.set(setOf("25566:25565"))
+            ports.set(setOf(debugPortMapping, "25566:25565"))
         }
         register("spigot_1_19") {
             version.set("1.19.4")
             type.set("SPIGOT")
-            ports.set(setOf("25567:25565"))
+            ports.set(setOf(debugPortMapping, "25567:25565"))
         }
         register("spigot_1_20") {
             version.set("1.20.2")
             type.set("SPIGOT")
-            ports.set(setOf("25568:25565"))
+            ports.set(setOf(debugPortMapping, "25568:25565"))
         }
         // Paper test servers
         register("paper_1_20") {
             version.set("1.20.2")
             type.set("PAPER")
-            ports.set(setOf("25569:25565"))
+            ports.set(setOf(debugPortMapping, "25569:25565"))
         }
         register("paper_1_19") {
             version.set("1.19.4")
             type.set("PAPER")
-            ports.set(setOf("25570:25565"))
+            ports.set(setOf(debugPortMapping, "25570:25565"))
         }
     }
 }
