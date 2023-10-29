@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import java.util.stream.Collectors;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
 import me.wolfyscript.customcrafting.recipes.AbstractRecipeShapeless;
@@ -33,7 +35,6 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.registry.RegistryRecipes;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -118,7 +119,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public boolean isValid(Set<Material> materials) {
-        return materials.isEmpty() || cachedRecipes.stream().anyMatch(recipe1 -> recipe1.getResult().getChoices().stream().anyMatch(customItem -> materials.contains(customItem.getItemStack().getType())));
+        return materials.isEmpty() || cachedRecipes.stream().anyMatch(recipe1 -> recipe1.getResult().choices().stream().anyMatch(reference -> materials.contains(reference.referencedStack().getType())));
     }
 
     public boolean isValid(CacheEliteCraftingTable cacheEliteCraftingTable) {
@@ -146,12 +147,13 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
         return group != null ? group : recipe.toString();
     }
 
-    public ItemStack getDisplayItem() {
-        return cachedRecipes.isEmpty() ? new ItemStack(Material.STONE) : cachedRecipes.get(0).getRecipeBookItems().get(0).create();
-    }
-
     public List<ItemStack> getDisplayItems(Player player) {
-        return cachedPlayerItemStacks.computeIfAbsent(player.getUniqueId(), uuid -> getRecipes(player).stream().flatMap(recipe1 -> recipe1.getRecipeBookItems().stream()).map(CustomItem::create).distinct().toList());
+        return cachedPlayerItemStacks.computeIfAbsent(player.getUniqueId(), uuid -> getRecipes(player).stream()
+                .flatMap(recipe1 -> recipe1.recipeBookStacks().stream())
+                .map(StackReference::referencedStack)
+                .distinct()
+                .toList()
+        );
     }
 
     @Override

@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
@@ -67,6 +69,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -295,8 +298,14 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
     }
 
     @JsonIgnore
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public List<CustomItem> getRecipeBookItems() {
-        return getResult().getChoices();
+        return recipeBookStacks().stream().map(StackReference::convertToLegacy).toList();
+    }
+
+    @JsonIgnore
+    public List<StackReference> recipeBookStacks() {
+        return getResult().choices();
     }
 
     /**
@@ -327,7 +336,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
     }
 
     public boolean findResultItem(ItemStack result) {
-        return getResult().getChoices().stream().anyMatch(customItem -> customItem.create().isSimilar(result));
+        return getResult().choices().stream().anyMatch(reference -> reference.matches(result));
     }
 
     /**
@@ -418,7 +427,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
         byteBuf.writeUtf(namespacedKey.toString());
         byteBuf.writeBoolean(checkAllNBT);
         byteBuf.writeUtf(group);
-        byteBuf.writeCollection(result.getChoices(), (mcByteBuf, customItem) -> mcByteBuf.writeItemStack(customItem.create()));
+        byteBuf.writeCollection(result.choices(), (mcByteBuf, reference) -> mcByteBuf.writeItemStack(reference.referencedStack()));
     }
 
     @Override

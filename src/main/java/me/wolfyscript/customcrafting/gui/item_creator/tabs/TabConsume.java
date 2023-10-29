@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
@@ -85,21 +87,22 @@ public class TabConsume extends ItemCreatorTab {
             Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> {
                 ItemStack replacement = inventory.getItem(slot);
                 if (replacement != null) {
-                    items.getItem().setReplacement(CustomItem.getReferenceByItemStack(replacement).getApiReference());
+                    items.getItem().replacement(guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(replacement));
                 } else {
-                    items.getItem().setReplacement(null);
+                    items.getItem().replacement(null);
                 }
             });
             return false;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().hasReplacement() ? CustomItem.with(cache.getItems().getItem().getReplacement()).create() : new ItemStack(Material.AIR)));
+        }, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().replacement()
+                .map(StackReference::referencedStack).orElse(new ItemStack(Material.AIR))));
     }
 
     @Override
     public void render(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
         update.setButton(31, "consume.consume_item");
         update.setButton(38, "consume.replacement");
-        update.setButton(39, items.getItem().hasReplacement() ? "consume.replacement.enabled" : "consume.replacement.disabled");
-        if (customItem.hasReplacement() || item.getMaxStackSize() > 1) {
+        update.setButton(39, items.getItem().replacement().map(reference -> "consume.replacement.enabled").orElse("consume.replacement.disabled"));
+        if (customItem.replacement().isPresent() || item.getMaxStackSize() > 1) {
             update.setButton(41, "consume.durability_cost.disabled");
         } else {
             update.setButton(41, "consume.durability_cost.enabled");

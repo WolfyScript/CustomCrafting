@@ -3069,13 +3069,29 @@
         }
       },
       "item_editor": {
-        "gui_name": "<black><b>Item Editor</b></black>",
+        "gui_name": "<black><b>Configure Item Stack</b></black>",
         "items": {
           "create_item": {
-            "name": "<gold>Create</gold>",
-            "help": [
-              "<grey>Create a custom Item</grey>"
+            "name": "<grey>\u27A5</grey>  <gold><b>Edit</b></gold>",
+            "lore": [
+              "<grey>Edit the Stack using the Item Creator</grey>",
+              "",
+              "<grey>[<green>Shift-Right-Click</green>] Open Item Creator</grey>"
             ]
+          },
+          "reference": {
+            "icon": {
+              "name": "<gold><b><name></b></gold>",
+              "lore": []
+            },
+            "swap": {
+              "name": "<gold><b><name></b></gold>",
+              "lore": [
+                "<grey>Swaps the current parser with this parser</grey>",
+                "",
+                "<grey>[<green>Click</green>] Select Parser</grey>"
+              ]
+            }
           }
         },
         "messages": {

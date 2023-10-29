@@ -22,10 +22,12 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class AnvilData extends RecipeData<CustomRecipeAnvil> {
 
@@ -34,6 +36,30 @@ public class AnvilData extends RecipeData<CustomRecipeAnvil> {
     public AnvilData(CustomRecipeAnvil recipe, IngredientData[] data) {
         super(recipe, data);
         this.usedResult = false;
+    }
+
+    public Optional<StackReference> base() {
+        return bySlot(0).map(IngredientData::reference);
+    }
+
+    public Optional<StackReference> addition() {
+        return bySlot(1).map(IngredientData::reference);
+    }
+
+    public Optional<IngredientData> baseIngredient() {
+        return bySlot(0);
+    }
+
+    public Optional<IngredientData> additionIngredient() {
+        return bySlot(1);
+    }
+
+    public boolean isUsedResult() {
+        return usedResult;
+    }
+
+    public void setUsedResult(boolean usedResult) {
+        this.usedResult = usedResult;
     }
 
     @Deprecated
@@ -46,19 +72,13 @@ public class AnvilData extends RecipeData<CustomRecipeAnvil> {
         return getBySlot(1).customItem();
     }
 
+    @Deprecated
     public IngredientData getLeftIngredient() {
         return getBySlot(0);
     }
 
+    @Deprecated
     public IngredientData getRightIngredient() {
         return getBySlot(1);
-    }
-
-    public boolean isUsedResult() {
-        return usedResult;
-    }
-
-    public void setUsedResult(boolean usedResult) {
-        this.usedResult = usedResult;
     }
 }

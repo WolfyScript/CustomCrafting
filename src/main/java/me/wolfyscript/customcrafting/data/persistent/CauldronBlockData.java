@@ -27,6 +27,9 @@ import com.wolfyscript.utilities.bukkit.persistent.world.ChunkStorage;
 import com.wolfyscript.utilities.bukkit.persistent.world.CustomBlockData;
 import java.util.Optional;
 import java.util.Random;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
 import me.wolfyscript.customcrafting.recipes.items.Result;
@@ -39,7 +42,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
@@ -174,17 +176,17 @@ public class CauldronBlockData extends CustomBlockData {
                         block.setBlockData(levelled);
                     }
                 }
-                CustomItem air = new CustomItem(ItemUtils.AIR);
+                ItemStack air = new ItemStack(ItemUtils.AIR);
                 Location locCopy = loc.clone();
 
                 Result result = recipe.getResult();
                 result.executeExtensions(locCopy, true, null);
-                this.result[0] = result.getItem(loc.getBlock()).orElse(air).create();
+                this.result[0] = result.item(loc.getBlock()).map(StackReference::referencedStack).orElse(air);
                 // Handle additional results
                 for (int i = 0; i < 3; i++) {
                     Result additional = recipe.getAdditionalResults()[i];
                     additional.executeExtensions(locCopy, true, null);
-                    this.result[i+1] = additional.getItem(block).orElse(air).create();
+                    this.result[i+1] = additional.item(block).map(StackReference::referencedStack).orElse(air);
                 }
                 reset();
             }

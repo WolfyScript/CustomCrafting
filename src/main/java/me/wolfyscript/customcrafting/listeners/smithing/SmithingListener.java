@@ -166,12 +166,12 @@ public class SmithingListener implements Listener {
             final var baseItem = Objects.requireNonNull(inventory.getItem(CustomRecipeSmithing.BASE_SLOT)).clone();
             final var additionItem = Objects.requireNonNull(inventory.getItem(CustomRecipeSmithing.ADDITION_SLOT)).clone();
 
-            if (smithingData.getTemplate() != null) {
+            smithingData.template().ifPresent(reference -> {
                 final var templateItem = Objects.requireNonNull(inventory.getItem(0));
-                inventory.setItem(0, smithingData.getTemplate().shrink(templateItem, 1, true, inventory, null, null));
-            }
-            inventory.setItem(CustomRecipeSmithing.BASE_SLOT, smithingData.getBase().shrink(baseItem, 1, true, inventory, null, null));
-            inventory.setItem(CustomRecipeSmithing.ADDITION_SLOT, smithingData.getAddition().shrink(additionItem, 1, true, inventory, null, null));
+                inventory.setItem(0, reference.shrink(templateItem, 1, true, inventory, null, null));
+            });
+            inventory.setItem(CustomRecipeSmithing.BASE_SLOT, smithingData.base().map(reference -> reference.shrink(baseItem, 1, true, inventory, null, null)).orElse(baseItem));
+            inventory.setItem(CustomRecipeSmithing.ADDITION_SLOT, smithingData.addition().map(reference -> reference.shrink(additionItem, 1, true, inventory, null, null)).orElse(additionItem));
 
             if (inventory.getLocation() != null) {
                 inventory.getLocation().getWorld().playSound(inventory.getLocation(), Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.BLOCKS, 1, 1);

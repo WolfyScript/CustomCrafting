@@ -25,6 +25,8 @@ package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
@@ -112,7 +114,7 @@ public class BannerMergeAdapter extends MergeAdapter {
     }
 
     @Override
-    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, StackReference resultReference, ItemStack result) {
         var resultMeta = result.getItemMeta();
         if (!(resultMeta instanceof BannerMeta bannerResultMeta)) return result;
         var evalContext = player == null ? new EvalContext() : new EvalContextPlayer(player);

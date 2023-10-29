@@ -24,6 +24,9 @@ package me.wolfyscript.customcrafting.recipes;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
@@ -95,13 +98,13 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
     }
 
     private static RecipeChoice.ExactChoice getExactRecipeChoiceFor(Ingredient ingredient) {
-        List<ItemStack> choices = ingredient.getChoices().stream().map(CustomItem::create).distinct().collect(Collectors.toList());
+        List<ItemStack> choices = ingredient.choices().stream().map(StackReference::referencedStack).distinct().collect(Collectors.toList());
         if (ingredient.isAllowEmpty()) choices.add(new ItemStack(Material.AIR));
         return new RecipeChoice.ExactChoice(choices);
     }
 
     private static RecipeChoice.MaterialChoice getMaterialRecipeChoiceFor(Ingredient ingredient) {
-        List<Material> choices = ingredient.getChoices().stream().map(customItem -> customItem.create().getType()).distinct().collect(Collectors.toList());
+        List<Material> choices = ingredient.choices().stream().map(customItem -> customItem.referencedStack().getType()).distinct().collect(Collectors.toList());
         if (ingredient.isAllowEmpty()) choices.add(Material.AIR);
         return new RecipeChoice.MaterialChoice(choices);
     }

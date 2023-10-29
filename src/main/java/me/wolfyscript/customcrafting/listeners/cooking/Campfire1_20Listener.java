@@ -27,7 +27,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.CampfireStartEvent;
@@ -50,7 +49,7 @@ public class Campfire1_20Listener implements Listener {
     public void onStartCampfireSmelt(CampfireStartEvent event) {
         ItemStack source = event.getSource();
         customCrafting.getRegistries().getRecipes().get(RecipeType.CAMPFIRE).stream()
-                .filter(recipe1 -> recipe1.getSource().check(source, recipe1.isCheckNBT()).isPresent() && recipe1.checkConditions(Conditions.Data.of(event.getBlock())))
+                .filter(recipe1 -> recipe1.getSource().checkChoices(source, recipe1.isCheckNBT()).isPresent() && recipe1.checkConditions(Conditions.Data.of(event.getBlock())))
                 .findFirst()
                 .ifPresentOrElse(
                         campfireRecipe -> event.setTotalCookTime(campfireRecipe.getCookingTime()),
@@ -63,10 +62,12 @@ public class Campfire1_20Listener implements Listener {
                                         event.setTotalCookTime(recipe.getCookingTime());
 
                                         // Check if the CustomItem is allowed in Vanilla recipes
-                                        CustomItem customItem = CustomItem.getByItemStack(source);
-                                        if (customItem != null && customItem.isBlockVanillaRecipes()) {
-                                            event.setTotalCookTime(-1); // "Cancel" the process if it is.
-                                        }
+                                        customCrafting.getApi().getCore().getRegistries().getCustomItems().getByItemStack(source)
+                                                .ifPresent(customItem -> {
+                                                    if (customItem.isBlockVanillaRecipes()) {
+                                                        event.setTotalCookTime(-1); // "Cancel" the process if it is.
+                                                    }
+                                                });
                                         return;
                                     }
                                 }

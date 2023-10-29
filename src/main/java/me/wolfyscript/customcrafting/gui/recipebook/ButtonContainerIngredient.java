@@ -22,11 +22,12 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.items.RecipeItemStack;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
@@ -60,7 +61,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
         this.plugin = plugin;
     }
 
-    private final Map<GuiHandler<CCCache>, List<CustomItem>> variantsMap = new HashMap<>();
+    private final Map<GuiHandler<CCCache>, List<StackReference>> variantsMap = new HashMap<>();
     private final Map<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
     private final Map<GuiHandler<CCCache>, Supplier<Boolean>> tasks = new HashMap<>();
 
@@ -130,14 +131,14 @@ public class ButtonContainerIngredient extends Button<CCCache> {
         CCCache cache = guiHandler.getCustomCache();
         var book = cache.getRecipeBookCache();
         if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
-            var customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
-            if (!customItem.equals(book.getResearchItem())) {
-                List<CustomRecipe<?>> recipes = plugin.getRegistries().getRecipes().getAvailable(customItem.create(), player);
+            var reference = getVariantsMap(guiHandler).get(getTiming(guiHandler));
+            if (!reference.equals(book.getResearchItem())) {
+                List<CustomRecipe<?>> recipes = plugin.getRegistries().getRecipes().getAvailable(reference.referencedStack(), player);
                 if (!recipes.isEmpty()) {
                     resetButtons(guiHandler);
                     book.setSubFolderPage(0);
-                    book.addResearchItem(customItem);
-                    book.setSubFolderRecipes(customItem, recipes);
+                    book.addResearchItem(reference);
+                    book.setSubFolderRecipes(reference, recipes);
                     book.setPrepareRecipe(true);
                     if (inventory.getWindow() instanceof MenuRecipeOverview menuRecipeOverview) {
                         menuRecipeOverview.updateTitle(guiHandler, player, inventory);
@@ -150,8 +151,8 @@ public class ButtonContainerIngredient extends Button<CCCache> {
 
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
-        List<CustomItem> variants = getVariantsMap(guiHandler);
-        inventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).create());
+        List<StackReference> variants = getVariantsMap(guiHandler);
+        inventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).referencedStack());
         if (variants.size() > 1) {
             //Only use tasks if there are multiple display items
             final int openPage = guiHandler.getCustomCache().getRecipeBookCache().getSubFolderPage();
@@ -162,7 +163,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
                     if (player != null && slot < inventory.getSize() && !variants.isEmpty() && recipeBook.getSubFolder() != 0 && openPage == recipeBook.getSubFolderPage() && openRecipe.equals(recipeBook.getCurrentRecipe().getNamespacedKey())) {
                         int variant = getTiming(guiHandler);
                         variant = ++variant < variants.size() ? variant : 0;
-                        guiInventory.setItem(slot, variants.get(variant).create());
+                        guiInventory.setItem(slot, variants.get(variant).referencedStack());
                         setTiming(guiHandler, variant);
                         return false;
                     }
@@ -182,7 +183,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
     }
 
     @NotNull
-    public List<CustomItem> getVariantsMap(GuiHandler<CCCache> guiHandler) {
+    public List<StackReference> getVariantsMap(GuiHandler<CCCache> guiHandler) {
         return variantsMap.getOrDefault(guiHandler, new ArrayList<>());
     }
 
@@ -191,20 +192,16 @@ public class ButtonContainerIngredient extends Button<CCCache> {
     }
 
     public void setVariants(GuiHandler<CCCache> guiHandler, RecipeItemStack recipeItemStack) {
-        this.variantsMap.put(guiHandler, recipeItemStack.getChoices(guiHandler.getPlayer()));
+        this.variantsMap.put(guiHandler, recipeItemStack.choices(guiHandler.getPlayer()));
     }
 
-    public void setVariants(GuiHandler<CCCache> guiHandler, List<CustomItem> variants) {
+    public void setVariants(GuiHandler<CCCache> guiHandler, List<StackReference> variants) {
         if (variants != null) {
-            Iterator<CustomItem> iterator = variants.iterator();
+            Iterator<StackReference> iterator = variants.iterator();
             while (iterator.hasNext()) {
-                CustomItem customItem = iterator.next();
-                if (!customItem.hasPermission()) {
-                    continue;
-                }
-                if (!guiHandler.getPlayer().hasPermission(customItem.getPermission())) {
-                    iterator.remove();
-                }
+                StackReference reference = iterator.next();
+                if (reference.identifier().permission().map(perm -> guiHandler.getPlayer().hasPermission(perm)).orElse(true)) continue;
+                iterator.remove();
             }
         }
         this.variantsMap.put(guiHandler, variants);

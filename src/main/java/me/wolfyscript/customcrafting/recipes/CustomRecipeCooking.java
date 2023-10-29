@@ -23,7 +23,9 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
-import java.util.logging.Level;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -41,7 +43,6 @@ import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -51,6 +52,7 @@ import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.jetbrains.annotations.NotNull;
@@ -146,7 +148,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     }
 
     protected RecipeChoice getRecipeChoice() {
-        return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().getChoices().stream().map(CustomItem::create).toList()) : new RecipeChoice.MaterialChoice(getSource().getChoices().stream().map(i -> i.create().getType()).toList());
+        return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().choices().stream().map(StackReference::referencedStack).toList()) :
+                new RecipeChoice.MaterialChoice(getSource().choices().stream().map(i -> i.referencedStack().getType()).toList());
     }
 
     protected void registerRecipeIntoMinecraft(FunctionalRecipeBuilderCooking builder) {
@@ -165,8 +168,10 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         var player = guiHandler.getPlayer();
-        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(11))).setVariants(guiHandler, getSource().getChoices(player));
-        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(24))).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(11)))
+                .setVariants(guiHandler, getSource().choices(player));
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(24)))
+                .setVariants(guiHandler, this.getResult().choices().stream().filter(reference -> !reference.identifier().permission().map(player::hasPermission).orElse(true)).toList());
     }
 
     @Override
@@ -201,8 +206,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         super.writeToBuf(byteBuf);
 
         byteBuf.writeVarInt(source.size());
-        for (CustomItem choice : source.getChoices()) {
-            byteBuf.writeItemStack(choice.create());
+        for (StackReference choice : source.choices()) {
+            byteBuf.writeItemStack(choice.referencedStack());
         }
     }
 

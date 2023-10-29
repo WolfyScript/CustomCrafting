@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
@@ -227,7 +229,7 @@ public class BookMetaMergeAdapter extends MergeAdapter {
     }
 
     @Override
-    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, StackReference resultReference, ItemStack result) {
         final var resultMeta = result.getItemMeta();
         if (!(resultMeta instanceof BookMeta resultBookMeta)) return result;
         final TagResolver papiResolver = TagResolverUtil.papi(player);

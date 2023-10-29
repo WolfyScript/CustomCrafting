@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
@@ -122,7 +123,7 @@ public class ClusterRecipeBook extends CCCluster {
                 } else if (clickEvent.isLeftClick()) {
                     book.removePreviousResearchItem();
                     if (book.getSubFolder() > 0) {
-                        CustomItem item = book.getResearchItem();
+                        StackReference item = book.getResearchItem();
                         if (book.getSubFolderRecipes().isEmpty()) {
                             book.setSubFolderRecipes(item, customCrafting.getRegistries().getRecipes().get(item));
                         }

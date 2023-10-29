@@ -24,6 +24,9 @@ package me.wolfyscript.customcrafting.recipes;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
@@ -33,7 +36,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -99,13 +101,13 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
     }
 
     private static RecipeChoice.ExactChoice getExactRecipeChoiceFor(Ingredient ingredient) {
-        List<ItemStack> choices = ingredient.getChoices().stream().map(CustomItem::create).distinct().collect(Collectors.toList());
+        List<ItemStack> choices = ingredient.choices().stream().map(StackReference::referencedStack).distinct().collect(Collectors.toList());
         if (ingredient.isAllowEmpty()) choices.add(new ItemStack(Material.AIR));
         return new RecipeChoice.ExactChoice(choices);
     }
 
     private static RecipeChoice.MaterialChoice getMaterialRecipeChoiceFor(Ingredient ingredient) {
-        List<Material> choices = ingredient.getChoices().stream().map(customItem -> customItem.create().getType()).distinct().collect(Collectors.toList());
+        List<Material> choices = ingredient.choices().stream().map(reference -> reference.referencedStack().getType()).distinct().collect(Collectors.toList());
         if (ingredient.isAllowEmpty()) choices.add(Material.AIR);
         return new RecipeChoice.MaterialChoice(choices);
     }

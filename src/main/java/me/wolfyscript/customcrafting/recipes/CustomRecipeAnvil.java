@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.validator.ValidationContainer;
 import com.wolfyscript.utilities.validator.Validator;
 import com.wolfyscript.utilities.validator.ValidatorBuilder;
@@ -53,6 +54,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -331,10 +333,9 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         gen.writeObjectField("addition", this.addition);
     }
 
-    @JsonIgnore
     @Override
-    public List<CustomItem> getRecipeBookItems() {
-        return getMode().equals(CustomRecipeAnvil.Mode.RESULT) ? getResult().getChoices() : hasInputLeft() ? getInputLeft().getChoices() : getInputRight().getChoices();
+    public List<StackReference> recipeBookStacks() {
+        return getMode().equals(CustomRecipeAnvil.Mode.RESULT) ? getResult().choices() : hasInputLeft() ? getInputLeft().choices() : getInputRight().choices();
     }
 
     @Override
@@ -348,7 +349,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         switch (getRepairTask().getMode()) {
             case RESULT -> resultBtn.setVariants(guiHandler, getResult());
             case DURABILITY -> resultBtn.setVariants(guiHandler, inputLeft);
-            case NONE -> resultBtn.setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
+            case NONE -> resultBtn.setVariants(guiHandler, Collections.singletonList(StackReference.of(new ItemStack(Material.AIR))));
         }
     }
 

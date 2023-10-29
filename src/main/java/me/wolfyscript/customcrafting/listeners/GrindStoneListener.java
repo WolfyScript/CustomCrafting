@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -106,21 +109,22 @@ public class GrindStoneListener implements Listener {
             }
             grindstoneData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
 
-            CustomItem inputTop = grindstoneData.getInputTop();
-            CustomItem inputBottom = grindstoneData.getInputBottom();
-
-            if (!ItemUtils.isAirOrNull(inputTop)) {
-                ItemStack itemTop = inventory.getItem(0);
-                if (!ItemUtils.isAirOrNull(itemTop)) {
-                    inventory.setItem(0, inputTop.shrink(itemTop, 1, grindstoneData.getBySlot(0).ingredient().isReplaceWithRemains(), inventory, player, null));
+            grindstoneData.topIngredient().ifPresent(ingredientTop -> {
+                if (!ItemUtils.isAirOrNull(ingredientTop.reference().referencedStack())) {
+                    ItemStack itemTop = inventory.getItem(0);
+                    if (!ItemUtils.isAirOrNull(itemTop)) {
+                        inventory.setItem(0, ingredientTop.reference().shrink(itemTop, 1, ingredientTop.ingredient().isReplaceWithRemains(), inventory, player, null));
+                    }
                 }
-            }
-            if (!ItemUtils.isAirOrNull(inputBottom)) {
-                ItemStack itemBottom = inventory.getItem(1);
-                if (!ItemUtils.isAirOrNull(itemBottom)) {
-                    inventory.setItem(1, inputBottom.shrink(itemBottom, 1, grindstoneData.getBySlot(1).ingredient().isReplaceWithRemains(), inventory, player, null));
+            });
+            grindstoneData.bottomIngredient().ifPresent(ingredientBottom -> {
+                if (!ItemUtils.isAirOrNull(ingredientBottom.reference().referencedStack())) {
+                    ItemStack itemBottom = inventory.getItem(1);
+                    if (!ItemUtils.isAirOrNull(itemBottom)) {
+                        inventory.setItem(1, ingredientBottom.reference().shrink(itemBottom, 1, ingredientBottom.ingredient().isReplaceWithRemains(), inventory, player, null));
+                    }
                 }
-            }
+            });
             // Invalidate crafted recipe and check for new recipe
             preCraftedRecipes.remove(player.getUniqueId());
             processGrindstone(inventory, player, event);
@@ -154,7 +158,7 @@ public class GrindStoneListener implements Listener {
     private void processGrindstone(Inventory inventory, Player player, InventoryInteractEvent event) {
         lookForValidRecipe(inventory.getItem(0), inventory.getItem(1), player, event.getView())
                 .ifPresentOrElse(data -> {
-                    inventory.setItem(2, data.getResult().getItem(player).orElse(new CustomItem(Material.AIR)).create());
+                    inventory.setItem(2, data.getResult().item(player).map(reference -> reference.referencedStack(ctxBldr -> ctxBldr.player(player))).orElse(new ItemStack(Material.AIR)));
                     preCraftedRecipes.put(player.getUniqueId(), data);
                 }, () -> {
                     for (ItemStack itemStack : new ItemStack[]{inventory.getItem(0), inventory.getItem(1)}) {
@@ -173,9 +177,9 @@ public class GrindStoneListener implements Listener {
                 .sorted()
                 .filter(recipe -> !recipe.isDisabled() && recipe.checkConditions(data))
                 .map(recipe -> {
-                    Pair<Boolean, CustomItem> checkTop = checkIngredientSlot(recipe, recipe.getInputTop(), topStack);
+                    Pair<Boolean, StackReference> checkTop = checkIngredientSlot(recipe, recipe.getInputTop(), topStack);
                     if (!checkTop.getKey()) return null;
-                    Pair<Boolean, CustomItem> checkBottom = checkIngredientSlot(recipe, recipe.getInputBottom(), bottomStack);
+                    Pair<Boolean, StackReference> checkBottom = checkIngredientSlot(recipe, recipe.getInputBottom(), bottomStack);
                     if (!checkBottom.getKey()) return null;
                     return new GrindstoneData(recipe, true,
                             new IngredientData(0, 0, recipe.getInputTop(), checkTop.getValue(), topStack),
@@ -185,11 +189,11 @@ public class GrindStoneListener implements Listener {
                 .findFirst();
     }
 
-    private Pair<Boolean, CustomItem> checkIngredientSlot(CustomRecipeGrindstone recipe, Ingredient ingredient, ItemStack stack) {
+    private Pair<Boolean, StackReference> checkIngredientSlot(CustomRecipeGrindstone recipe, Ingredient ingredient, ItemStack stack) {
         if (ItemUtils.isAirOrNull(stack)) {
             return new Pair<>(ingredient.isEmpty() || ingredient.isAllowEmpty(), null);
         }
-        return ingredient.check(stack, recipe.isCheckNBT()).map(customItem -> new Pair<>(true, customItem)).orElseGet(() -> new Pair<>(false, null));
+        return ingredient.checkChoices(stack, recipe.isCheckNBT()).map(customItem -> new Pair<>(true, customItem)).orElseGet(() -> new Pair<>(false, null));
     }
 
 }

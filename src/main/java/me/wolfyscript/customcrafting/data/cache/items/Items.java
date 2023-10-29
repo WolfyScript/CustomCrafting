@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.data.cache.items;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -44,6 +46,7 @@ public class Items implements Serializable {
 
     private ItemStack playerHeadSetting;
 
+    private StackReference original;
     private CustomItem item;
     private boolean recipeItem;
     private NamespacedKey namespacedKey;
@@ -66,6 +69,7 @@ public class Items implements Serializable {
         this.playerHeadSetting = new ItemStack(Material.AIR);
 
         this.item = new CustomItem(Material.AIR);
+        this.original = StackReference.of(new ItemStack(Material.AIR));
         this.recipeItem = false;
         this.namespacedKey = null;
         this.saved = false;
@@ -81,20 +85,37 @@ public class Items implements Serializable {
         this.currentTab = null;
     }
 
-    public void setItem(boolean recipeItem, CustomItem customItem) {
+    public StackReference originalReference() {
+        return original;
+    }
+
+    public void editCustomItem(CustomItem customItem) {
         setItem(customItem);
+        setNamespacedKey(customItem.getNamespacedKey());
+        setSaved(true);
+    }
+
+    public void createCustomItem(StackReference reference) {
+        this.original = reference;
+        setItem(new CustomItem(reference));
+        setNamespacedKey(null);
+        setSaved(false);
+    }
+
+    public void setItem(boolean recipeItem, StackReference reference) {
+        this.original = reference;
         setRecipeItem(recipeItem);
-        if (customItem.hasNamespacedKey()) {
-            setNamespacedKey(customItem.getNamespacedKey());
-            setSaved(true);
+        if (reference.identifier() instanceof WolfyUtilsStackIdentifier wolfyUtilsStackIdentifier) {
+            wolfyUtilsStackIdentifier.customItem().ifPresent(this::editCustomItem);
         } else {
-            setSaved(false);
+            createCustomItem(reference);
         }
     }
 
-    public void setVariant(int variantSlot, CustomItem customItem) {
+    public void editRecipeStackVariant(int variantSlot, StackReference reference) {
         this.variantSlot = variantSlot;
-        setItem(true, customItem);
+        setRecipeItem(true);
+        createCustomItem(reference);
     }
 
     public CustomItem getItem() {

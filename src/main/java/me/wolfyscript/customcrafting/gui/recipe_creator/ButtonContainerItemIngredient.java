@@ -22,28 +22,38 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 class ButtonContainerItemIngredient extends ItemInputButton<CCCache> {
 
-    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(items.getVariantSlot(), CustomItem.getReferenceByItemStack(customItem.create()));
+    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(
+            items.getVariantSlot(),
+            WolfyUtilCore.getInstance().getRegistries().getStackIdentifierParsers().parseFrom(customItem.create())
+    );
 
     ButtonContainerItemIngredient(int ingredSlot) {
         super("item_container_" + ingredSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, invSlot, event) -> {
             if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
+                if (clickEvent.getSlot() != invSlot) return true;
                 if (!ItemUtils.isAirOrNull(inventory.getItem(invSlot))) {
-                    cache.getItems().setVariant(ingredSlot, CustomItem.getReferenceByItemStack(inventory.getItem(invSlot)));
+                    StackReference variant = cache.getRecipeCreatorCache().getIngredientCache().getIngredient().items().get(ingredSlot);
+                    System.out.println(cache.getRecipeCreatorCache().getIngredientCache().getIngredient().items());
+                    cache.getItems().editRecipeStackVariant(ingredSlot, variant);
                     cache.setApplyItem(APPLY_ITEM);
-                    guiHandler.openWindow(ClusterRecipeCreator.ITEM_EDITOR);
+                    Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> guiHandler.openWindow(ClusterRecipeCreator.ITEM_EDITOR));
                 }
                 return true;
             }
@@ -52,7 +62,8 @@ class ButtonContainerItemIngredient extends ItemInputButton<CCCache> {
             if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
                 return;
             }
-            cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(ingredSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
+            StackReference updatedStack = itemStack == null ? StackReference.of(new ItemStack(Material.AIR)) : guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(itemStack);
+            cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(ingredSlot, updatedStack);
         }, null, (CallbackButtonRender<CCCache>) (cache, guiHandler, player, guiInventory, itemStack, i) -> {
             var data = cache.getRecipeCreatorCache().getIngredientCache().getIngredient();
             return CallbackButtonRender.UpdateResult.of(data != null ? data.getItemStack(ingredSlot) : ItemUtils.AIR);

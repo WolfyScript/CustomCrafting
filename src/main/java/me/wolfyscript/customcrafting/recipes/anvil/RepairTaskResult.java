@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes.anvil;
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.data.AnvilData;
 import me.wolfyscript.customcrafting.recipes.items.Result;
@@ -57,9 +58,9 @@ public class RepairTaskResult extends RepairTask {
     }
 
     @Override
-    public CustomItem computeResult(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight) {
+    public StackReference compute(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight) {
         //Recipe has a plain result set that we can use.
         anvilData.setUsedResult(true);
-        return recipe.getResult().getItem(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null).orElse(new CustomItem(Material.AIR));
+        return recipe.getResult().item(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null).orElse(StackReference.of(new ItemStack(Material.AIR)));
     }
 }

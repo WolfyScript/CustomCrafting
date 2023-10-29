@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -97,7 +98,7 @@ class ButtonContainerRecipeBook extends Button<CCCache> {
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         var cache = guiHandler.getCustomCache();
         var book = cache.getRecipeBookCache();
-        var customItem = new CustomItem(Material.AIR);
+        var customItem = StackReference.of(new ItemStack(Material.AIR));
         List<CustomRecipe<?>> recipes = getRecipeContainer(guiHandler).getRecipes(player);
         if (!recipes.isEmpty()) {
             book.setSubFolderPage(0);

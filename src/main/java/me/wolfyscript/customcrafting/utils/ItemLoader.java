@@ -25,6 +25,9 @@ package me.wolfyscript.customcrafting.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
@@ -41,6 +44,7 @@ import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReferen
 import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -73,20 +77,20 @@ public class ItemLoader {
             node.elements().forEachRemaining(item -> {
                 APIReference reference = loadAndConvertCorruptReference(item);
                 if (reference != null) {
-                    ingredient.getItems().add(reference);
+                    ingredient.items().add(reference.convertToStackReference());
                 }
             });
         } else {
             if (node.has("var0")) {
                 // Looks like the old format is used (v1.6.5.x or newer, before the major rewrite)
                 // It uses var0, var1, etc. for variants. Each variant can only have a single item.
-                List<APIReference> referenceList = new ArrayList<>();
+                List<StackReference> referenceList = new ArrayList<>();
                 node.fields().forEachRemaining(entry -> {
                     try {
                         // Load the api reference manually, because the old results only have one item reference.
                         APIReference converted = getObjectMapper().reader().readValue(entry.getValue(), APIReference.class);
                         if (converted != null) {
-                            referenceList.add(converted);
+                            referenceList.add(converted.convertToStackReference());
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -137,7 +141,7 @@ public class ItemLoader {
             node.elements().forEachRemaining(item -> {
                 APIReference reference = loadAndConvertCorruptReference(item);
                 if (reference != null) {
-                    result.getItems().add(reference);
+                    result.items().add(reference.convertToStackReference());
                 }
             });
         } else {
@@ -153,7 +157,7 @@ public class ItemLoader {
                     e.printStackTrace();
                 } finally {
                     if (converted != null) {
-                        result = new Result(converted);
+                        result = new Result(converted.convertToStackReference());
                     } else {
                         result = null;
                     }
@@ -214,10 +218,12 @@ public class ItemLoader {
         return reference;
     }
 
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public static CustomItem load(JsonNode node) {
         return load(getObjectMapper().convertValue(node, APIReference.class));
     }
 
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public static CustomItem load(APIReference reference) {
         var customItem = CustomItem.of(reference);
         if (customItem != null && customItem.hasNamespacedKey()) {

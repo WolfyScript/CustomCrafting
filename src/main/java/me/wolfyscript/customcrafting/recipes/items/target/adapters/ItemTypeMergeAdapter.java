@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
@@ -105,14 +107,13 @@ public class ItemTypeMergeAdapter extends MergeAdapter {
     }
 
     @Override
-    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
-        IngredientData ingredientData = recipeData.getBySlot(slots[0]);
-        if (ingredientData != null) {
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, StackReference resultReference, ItemStack result) {
+        recipeData.bySlot(slots[0]).ifPresent(ingredientData -> {
             if (ingredientData.itemStack() == null) {
                 if (defaultType != null) {
                     result.setType(defaultType);
                 }
-                return result;
+                return;
             }
             Material type = ingredientData.itemStack().getType();
             if (typeMappings.isEmpty()) {
@@ -121,7 +122,7 @@ public class ItemTypeMergeAdapter extends MergeAdapter {
                 Material mappedType = typeMappings.get(type);
                 result.setType(Objects.requireNonNullElseGet(mappedType, () -> Objects.requireNonNullElse(defaultType, type)));
             }
-        }
+        });
         return result;
     }
 
