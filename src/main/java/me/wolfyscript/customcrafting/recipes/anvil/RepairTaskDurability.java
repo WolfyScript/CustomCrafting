@@ -63,14 +63,14 @@ public class RepairTaskDurability extends RepairTaskDefault {
         ItemsAdderIntegration iAIntegration = WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
         if (iAIntegration != null) {
             //Set the new durability using the ItemsAdder method.
-            CustomStack customStack = iAIntegration.getByItemStack(resultItem.stack());
+            CustomStack customStack = iAIntegration.getByItemStack(resultItem.originalStack());
             if (customStack != null) {
                 customStack.setDurability(Math.min(customStack.getMaxDurability(), customStack.getDurability() + durability));
                 return resultItem;
             }
         }
 
-        var stackBuilder = new ItemBuilder(resultItem.stack());
+        var stackBuilder = new ItemBuilder(resultItem.referencedStack());
         if (stackBuilder.hasCustomDurability()) {
             stackBuilder.setCustomDamage(Math.max(0, stackBuilder.getCustomDamage() - durability));
         } else if (stackBuilder.getItemMeta() instanceof Damageable damageable) {
