@@ -89,7 +89,6 @@ public class MenuItemEditor extends CCWindow {
             String name = "reference." + parser.getNamespacedKey().toString("_");
 
             if (getButton(name + ".icon") == null) {
-                System.out.println("Register new buttons for " + name);
                 Consumer<ButtonState.Builder<CCCache>> applyIcon = s -> {
                     StackIdentifierParser.DisplayConfiguration.IconSettings iconSettings = parser.displayConfig().icon();
                     if (iconSettings instanceof StackIdentifierParser.DisplayConfiguration.StackIconSettings stackIconSettings) {

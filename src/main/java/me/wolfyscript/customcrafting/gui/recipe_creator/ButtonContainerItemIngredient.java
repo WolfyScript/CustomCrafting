@@ -50,7 +50,6 @@ class ButtonContainerItemIngredient extends ItemInputButton<CCCache> {
                 if (clickEvent.getSlot() != invSlot) return true;
                 if (!ItemUtils.isAirOrNull(inventory.getItem(invSlot))) {
                     StackReference variant = cache.getRecipeCreatorCache().getIngredientCache().getIngredient().items().get(ingredSlot);
-                    System.out.println(cache.getRecipeCreatorCache().getIngredientCache().getIngredient().items());
                     cache.getItems().editRecipeStackVariant(ingredSlot, variant);
                     cache.setApplyItem(APPLY_ITEM);
                     Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> guiHandler.openWindow(ClusterRecipeCreator.ITEM_EDITOR));
