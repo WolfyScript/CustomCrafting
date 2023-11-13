@@ -29,6 +29,7 @@ import com.wolfyscript.utilities.validator.ValidationContainer;
 import com.wolfyscript.utilities.validator.Validator;
 import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
@@ -157,10 +158,12 @@ public abstract class RecipeItemStack {
         this.tags = tags;
     }
 
+    @JsonGetter("items")
     public List<StackReference> items() {
         return items;
     }
 
+    @JsonIgnore
     @Deprecated(forRemoval = true, since = "4.16.9")
     public List<APIReference> getItems() {
         return items.stream().map(StackReference::convert).collect(Collectors.toList());
