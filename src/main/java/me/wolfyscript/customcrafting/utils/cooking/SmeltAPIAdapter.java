@@ -104,7 +104,7 @@ public abstract class SmeltAPIAdapter {
             var result = data.getResult();
             var currentResultItem = inventory.getResult();
 
-            ItemStack itemResult = result.getItem(data, null, block);
+            ItemStack itemResult = result.item(data, null, block);
             //Need to set the result to air to bypass the vanilla result computation (See net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity#burn).
             event.setResult(new ItemStack(Material.AIR));
             if (currentResultItem != null) {
