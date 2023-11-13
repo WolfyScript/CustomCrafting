@@ -53,7 +53,7 @@ dependencies {
     compileOnly("io.netty:netty-all:4.1.85.Final")
     compileOnly("me.clip:placeholderapi:2.10.4")
     compileOnly("com.github.oraxen:oraxen:1.156.0")
-    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.16.15-beta.1-SNAPSHOT")
+    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.16.15-beta.2")
 }
 
 group = "com.wolfyscript.customcrafting"
