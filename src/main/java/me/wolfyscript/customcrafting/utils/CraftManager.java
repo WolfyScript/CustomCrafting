@@ -154,7 +154,7 @@ public final class CraftManager {
     }
 
     private int calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?, ?> recipe, Result recipeResult) {
-        var result = recipeResult.getItem(craftingData, player, null);
+        var result = recipeResult.item(craftingData, player, null);
         var inventory = event.getClickedInventory();
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(craftingData)) : 1;
         recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked(), possible);

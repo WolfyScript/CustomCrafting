@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
@@ -36,7 +38,6 @@ import me.wolfyscript.customcrafting.recipes.data.SmithingData;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -114,8 +115,8 @@ public class SmithingListener implements Listener {
     private static void applyResult(PrepareSmithingEvent event, SmithingInventory inv, Player player, ItemStack base, Result result, boolean onlyChangeMaterial, List<MergeAdapter> adapters, RecipeData<?> data) {
         //Process result
         Block block = inv.getLocation() != null ? inv.getLocation().getBlock() : null;
-        CustomItem chosenResult = result.getItem(player, block).orElse(new CustomItem(Material.AIR));
-        ItemStack endResult = result.getItem(data, chosenResult, player, block);
+        StackReference chosenResult = result.item(player, block).orElse(StackReference.of(new ItemStack(Material.AIR)));
+        ItemStack endResult = result.item(data, chosenResult, player, block);
         if (onlyChangeMaterial) {
             //Take the base item and just change the material.
             var baseCopy = base.clone();
@@ -178,7 +179,7 @@ public class SmithingListener implements Listener {
             }
             preCraftedRecipes.remove(player.getUniqueId());
 
-            inventory.setItem(CustomRecipeSmithing.RESULT_SLOT, smithingData.getResult().getItem(smithingData, player, inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getLocation().getBlock()));
+            inventory.setItem(CustomRecipeSmithing.RESULT_SLOT, smithingData.getResult().item(smithingData, player, inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getLocation().getBlock()));
         }
     }
 

@@ -86,7 +86,7 @@ public class EventBasedCraftRecipeHandler implements Listener {
             ItemStack[] matrix = e.getInventory().getMatrix();
             Block block = e.getInventory().getLocation() == null ? player.getLocation().getBlock() : e.getInventory().getLocation().getBlock();
             craftManager.checkCraftingMatrix(matrix, Conditions.Data.of(player).setInventoryView(e.getView()).setBlock(block), RecipeType.Container.CRAFTING)
-                    .map(craftingData -> craftingData.getResult().getItem(craftingData, player, block))
+                    .map(craftingData -> craftingData.getResult().item(craftingData, player, block))
                     .ifPresentOrElse(result -> {
                         e.getInventory().setResult(result);
                         Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
