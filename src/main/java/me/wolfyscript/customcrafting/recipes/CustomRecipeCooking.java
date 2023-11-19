@@ -24,7 +24,6 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 
-import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -32,7 +31,6 @@ import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
-import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import com.wolfyscript.utilities.validator.Validator;
@@ -47,12 +45,9 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderCooking;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.jetbrains.annotations.NotNull;
@@ -147,22 +142,13 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         this.exp = exp;
     }
 
-    protected RecipeChoice getRecipeChoice() {
+    protected RecipeChoice getSourceChoice() {
         return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().choices().stream().map(StackReference::referencedStack).toList()) :
                 new RecipeChoice.MaterialChoice(getSource().choices().stream().map(i -> i.referencedStack().getType()).toList());
     }
 
-    protected void registerRecipeIntoMinecraft(FunctionalRecipeBuilderCooking builder) {
-        builder.setGroup(group);
-        builder.setExperience(getExp());
-        builder.setCookingTime(getCookingTime());
-        builder.setRecipeMatcher((inventory, world) -> {
-            Location location = inventory.getLocation();
-            if (location != null && !checkConditions(Conditions.Data.of(null, location.getBlock(), null))) return false;
-            return getSource().test(inventory.getItem(0), isCheckNBT());
-        });
-        builder.setRecipeAssembler(inventory -> java.util.Optional.ofNullable(getResult().getItemStack()));
-        builder.createAndRegister();
+    protected RecipeChoice getMaterialSourceChoice() {
+        return new RecipeChoice.MaterialChoice(getSource().choices().stream().map(i -> i.referencedStack().getType()).toList());
     }
 
     @Override
