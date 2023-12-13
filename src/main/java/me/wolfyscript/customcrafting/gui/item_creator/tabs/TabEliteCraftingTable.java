@@ -42,6 +42,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
+import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderStackIdentifier;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.version.ServerVersion;
@@ -154,7 +155,11 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
 
     @Override
     public boolean shouldRender(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
-        return item.getType().isBlock() || (customItem.getApiReference() instanceof ItemsAdderRef iaRef && ((WolfyUtilCore) update.getGuiHandler().getWolfyUtils().getCore()).getCompatibilityManager().getPlugins().evaluateIfAvailable("ItemsAdder", ItemsAdderIntegration.class, ia -> ia.getStackInstance(iaRef.getItemID()).map(CustomStack::isBlock).orElse(false)));
+        return item.getType().isBlock() ||
+                (
+                        customItem.stackReference().identifier() instanceof ItemsAdderStackIdentifier iaRef &&
+                        ((WolfyUtilCore) update.getGuiHandler().getWolfyUtils().getCore()).getCompatibilityManager().getPlugins().evaluateIfAvailable("ItemsAdder", ItemsAdderIntegration.class, ia -> ia.getStackInstance(iaRef.itemId()).map(CustomStack::isBlock).orElse(false))
+                );
     }
 
     @Override

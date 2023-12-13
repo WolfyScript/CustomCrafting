@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentifier;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
@@ -51,24 +52,29 @@ public class TabRepairCost extends ItemCreatorTabVanilla {
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ButtonOption(Material.EXPERIENCE_BOTTLE, this));
         creator.registerButton(new ChatInputButton<>("repair_cost.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
-            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
-            try {
-                int value = Integer.parseInt(s);
-                ((Repairable) itemMeta).setRepairCost(value);
-                guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
-                creator.sendMessage(player, "repair.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
-            } catch (NumberFormatException e) {
-                creator.sendMessage(player, "repair.invalid_value", new Pair<>("%VALUE%", s));
-                return true;
+            BukkitStackIdentifier identifier = guiHandler.getCustomCache().getItems().asBukkitIdentifier().orElse(null);
+            if (identifier != null) {
+                var itemMeta = identifier.stack().getItemMeta();
+                try {
+                    int value = Integer.parseInt(s);
+                    ((Repairable) itemMeta).setRepairCost(value);
+                    identifier.stack().setItemMeta(itemMeta);
+                    creator.sendMessage(player, "repair.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
+                } catch (NumberFormatException e) {
+                    creator.sendMessage(player, "repair.invalid_value", new Pair<>("%VALUE%", s));
+                    return true;
+                }
             }
             return false;
         }));
         creator.registerButton(new ActionButton<>("repair_cost.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            var itemMeta = items.getItem().getItemMeta();
-            if (itemMeta instanceof Repairable) {
-                ((Repairable) itemMeta).setRepairCost(0);
-            }
-            items.getItem().setItemMeta(itemMeta);
+            items.asBukkitIdentifier().ifPresent(identifier -> {
+                var itemMeta = identifier.stack().getItemMeta();
+                if (itemMeta instanceof Repairable) {
+                    ((Repairable) itemMeta).setRepairCost(0);
+                }
+                identifier.stack().setItemMeta(itemMeta);
+            });
             return true;
         }));
     }

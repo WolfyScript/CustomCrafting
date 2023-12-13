@@ -51,12 +51,12 @@ public class TabFuel extends ItemCreatorTab {
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ButtonOption(Material.COAL, this));
         creator.registerButton(new ChatInputButton<>("fuel.burn_time.set", Material.GREEN_CONCRETE, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getBurnTime());
+            values.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getFuelSettings().getBurnTime());
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
             try {
                 int value = Integer.parseInt(s);
-                guiHandler.getCustomCache().getItems().getItem().setBurnTime(value);
+                guiHandler.getCustomCache().getItems().getItem().getFuelSettings().setBurnTime(value);
                 creator.sendMessage(player, "fuel.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
             } catch (NumberFormatException e) {
                 creator.sendMessage(player, "fuel.invalid_value", new Pair<>("%VALUE%", s));
@@ -65,7 +65,7 @@ public class TabFuel extends ItemCreatorTab {
             return false;
         }));
         creator.registerButton(new ActionButton<>("fuel.burn_time.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            items.getItem().setBurnTime(0);
+            items.getItem().getFuelSettings().setBurnTime(0);
             return true;
         }));
         creator.registerButton(new ButtonFurnaceFuelToggle("furnace", Material.FURNACE));

@@ -47,7 +47,7 @@ class ButtonRecipeResult extends ItemInputButton<CCCache> {
             if ((result.items().isEmpty() && !result.getTags().isEmpty()) || event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
                 return;
             }
-            result.put(0, itemStack == null ? null : guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(itemStack));
+            result.put(0, itemStack == null ? null : guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(itemStack).orElse(null));
             result.buildChoices();
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             Result result = cache.getRecipeCreatorCache().getRecipeCache().getResult();

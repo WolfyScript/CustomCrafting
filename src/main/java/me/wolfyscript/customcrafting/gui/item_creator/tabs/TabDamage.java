@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentifier;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
@@ -39,7 +40,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 
-public class TabDamage extends ItemCreatorTabVanilla {
+public class TabDamage extends ItemCreatorTab {
 
     public static final String KEY = "damage";
 
@@ -51,27 +52,32 @@ public class TabDamage extends ItemCreatorTabVanilla {
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ButtonOption(Material.IRON_SWORD, this));
         creator.registerButton(new ChatInputButton<>("damage.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
-            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
-            if (!(itemMeta instanceof Damageable)) {
-                return true;
-            }
-            try {
-                int value = Integer.parseInt(s);
-                ((Damageable) itemMeta).setDamage(value);
-                guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
-                creator.sendMessage(player, "damage.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
-            } catch (NumberFormatException e) {
-                creator.sendMessage(player, "damage.invalid_value", new Pair<>("%VALUE%", s));
-                return true;
+            BukkitStackIdentifier identifier = guiHandler.getCustomCache().getItems().asBukkitIdentifier().orElse(null);
+            if (identifier != null) {
+                var itemMeta = identifier.stack().getItemMeta();
+                if (!(itemMeta instanceof Damageable)) {
+                    return true;
+                }
+                try {
+                    int value = Integer.parseInt(s);
+                    ((Damageable) itemMeta).setDamage(value);
+                    identifier.stack().setItemMeta(itemMeta);
+                    creator.sendMessage(player, "damage.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
+                } catch (NumberFormatException e) {
+                    creator.sendMessage(player, "damage.invalid_value", new Pair<>("%VALUE%", s));
+                    return true;
+                }
             }
             return false;
         }));
         creator.registerButton(new ActionButton<>("damage.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            var itemMeta = items.getItem().getItemMeta();
-            if (itemMeta instanceof Damageable) {
-                ((Damageable) itemMeta).setDamage(0);
-            }
-            items.getItem().setItemMeta(itemMeta);
+            items.asBukkitIdentifier().ifPresent(identifier -> {
+                var itemMeta = identifier.stack().getItemMeta();
+                if (itemMeta instanceof Damageable) {
+                    ((Damageable) itemMeta).setDamage(0);
+                }
+                identifier.stack().setItemMeta(itemMeta);
+            });
             return true;
         }));
     }

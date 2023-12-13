@@ -23,7 +23,9 @@
 package me.wolfyscript.customcrafting.gui.item_creator;
 
 import com.google.common.collect.Lists;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -42,7 +44,6 @@ import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEliteCraftingTable
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEnchants;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFlags;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFuel;
-import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLocalizedName;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLore;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabParticleEffects;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPermission;
@@ -68,8 +69,11 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
+import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderStackIdentifier;
 import me.wolfyscript.utilities.compatibility.plugins.mythicmobs.MythicMobsRef;
+import me.wolfyscript.utilities.compatibility.plugins.mythicmobs.MythicMobsStackIdentifier;
 import me.wolfyscript.utilities.compatibility.plugins.oraxen.OraxenRef;
+import me.wolfyscript.utilities.compatibility.plugins.oraxen.OraxenStackIdentifier;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
@@ -113,8 +117,9 @@ public class MenuItemCreator extends CCWindow {
         })).register();
         btnB.itemInput(ITEM_INPUT).state(s -> s.icon(Material.AIR).postAction((cache, guiHandler, player, guiInventory, stack, slot, event) -> {
             var items = cache.getItems();
-            StackReference reference = guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(stack);
-            items.setItem(new CustomItem(reference));
+            guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(stack).ifPresentOrElse(reference -> {
+                items.setItem(new CustomItem(reference));
+            }, () -> items.setItem(new CustomItem(Material.AIR)));
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(guiHandler.getCustomCache().getItems().getItem().getItemStack()))).register();
         btnB.action(SAVE_ITEM).state(s -> s.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, i, event) -> {
             var items = cache.getItems();
@@ -171,16 +176,27 @@ public class MenuItemCreator extends CCWindow {
     }
 
     private void registerReferences(ButtonBuilder<CCCache> btnB) {
-        btnB.dummy(REFERENCE_WOLFYUTILITIES).state(s -> s.icon(Material.CRAFTING_TABLE).render((cache, guiHandler, player, inv, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((WolfyUtilitiesRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getNamespacedKey().toString())))).register();
-        btnB.dummy(REFERENCE_ORAXEN).state(s -> s.icon(Material.DIAMOND).render((cache, guiHandler, player, inv, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((OraxenRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID())))).register();
-        btnB.dummy(REFERENCE_ITEMSADDER).state(s -> s.icon(Material.GRASS_BLOCK).render((cache, guiHandler, player, inv, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((ItemsAdderRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID())))).register();
+        btnB.dummy(REFERENCE_WOLFYUTILITIES).state(s -> s.icon(Material.CRAFTING_TABLE)
+                .render((cache, guiHandler, player, inv, stack, i) ->
+                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((WolfyUtilsStackIdentifier) guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()).itemKey().toString()))
+                )
+        ).register();
+        btnB.dummy(REFERENCE_ORAXEN).state(s -> s.icon(Material.DIAMOND)
+                .render((cache, guiHandler, player, inv, stack, i) ->
+                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((OraxenStackIdentifier) guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()).itemId()))
+                )
+        ).register();
+        btnB.dummy(REFERENCE_ITEMSADDER).state(s -> s.icon(Material.GRASS_BLOCK)
+                .render((cache, guiHandler, player, inv, stack, i) ->
+                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((ItemsAdderStackIdentifier) guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()).itemId()))
+                )
+        ).register();
         btnB.dummy(REFERENCE_MYTHICMOBS).state(s -> s.icon(Material.WITHER_SKELETON_SKULL)).register();
     }
 
     private void orderTabs() {
         var registry = customCrafting.getRegistries().getItemCreatorTabs();
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabDisplayName.KEY)));
-        tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabLocalizedName.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabLore.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabEnchants.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabFlags.KEY)));
@@ -211,7 +227,7 @@ public class MenuItemCreator extends CCWindow {
     private boolean saveItem(Items items, Player player, NamespacedKey namespacedKey) {
         if (namespacedKey != null && !namespacedKey.getNamespace().equalsIgnoreCase("minecraft")) {
             var customItem = items.getItem();
-            if (customItem.getApiReference() instanceof WolfyUtilitiesRef wolfyUtilitiesRef && wolfyUtilitiesRef.getNamespacedKey().equals(namespacedKey)) {
+            if (customItem.stackReference().identifier() instanceof WolfyUtilsStackIdentifier identifier && identifier.getNamespacedKey().equals(namespacedKey)) {
                 getChat().sendMessage(player, Component.text("Error saving item! Cannot override original CustomItem ", NamedTextColor.RED).append(Component.text(namespacedKey.toString(), NamedTextColor.DARK_RED)).append(Component.text("! Save it under another NamespacedKey or Edit the original!", NamedTextColor.RED)));
                 return false;
             }
@@ -247,13 +263,14 @@ public class MenuItemCreator extends CCWindow {
         }
         event.setButton(53, SAVE_ITEM_AS);
 
-        if (customItem.getApiReference() instanceof WolfyUtilitiesRef) {
+        StackIdentifier identifier = customItem.stackReference().identifier();
+        if (identifier instanceof WolfyUtilsStackIdentifier) {
             event.setButton(49, REFERENCE_WOLFYUTILITIES);
-        } else if (customItem.getApiReference() instanceof OraxenRef) {
+        } else if (identifier instanceof OraxenStackIdentifier) {
             event.setButton(49, REFERENCE_ORAXEN);
-        } else if (customItem.getApiReference() instanceof ItemsAdderRef) {
+        } else if (identifier instanceof ItemsAdderStackIdentifier) {
             event.setButton(49, REFERENCE_ITEMSADDER);
-        } else if (customItem.getApiReference() instanceof MythicMobsRef) {
+        } else if (identifier instanceof MythicMobsStackIdentifier) {
             event.setButton(49, REFERENCE_MYTHICMOBS);
         }
 

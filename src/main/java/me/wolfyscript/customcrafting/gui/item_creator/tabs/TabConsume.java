@@ -87,7 +87,9 @@ public class TabConsume extends ItemCreatorTab {
             Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> {
                 ItemStack replacement = inventory.getItem(slot);
                 if (replacement != null) {
-                    items.getItem().replacement(guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(replacement));
+                    guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(replacement).ifPresent(reference -> {
+                        items.getItem().replacement(reference);
+                    });
                 } else {
                     items.getItem().replacement(null);
                 }

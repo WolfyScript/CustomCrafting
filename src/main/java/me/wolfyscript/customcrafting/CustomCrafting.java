@@ -53,7 +53,6 @@ import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEliteCraftingTable
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEnchants;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFlags;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFuel;
-import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLocalizedName;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLore;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabParticleEffects;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPermission;
@@ -445,7 +444,6 @@ public class CustomCrafting extends JavaPlugin {
         registry.register(new TabEnchants());
         registry.register(new TabFlags());
         registry.register(new TabFuel());
-        registry.register(new TabLocalizedName());
         registry.register(new TabLore());
         registry.register(new TabParticleEffects());
         registry.register(new TabPermission());

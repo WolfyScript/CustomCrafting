@@ -147,13 +147,13 @@ public class ChatUtils {
     public static CollectionEditor<CCCache, String> createLoreChatEditor(InventoryAPI<CCCache> invAPI) {
         return new CollectionEditor<CCCache, String>(invAPI,
                 (guiHandler, player, cache) -> {
-                    var itemMeta = cache.getItems().getItem().getItemMeta();
+                    var itemMeta = cache.getItems().asBukkitIdentifier().map(identifier -> identifier.stack().getItemMeta()).orElse(null);
                     return itemMeta != null && itemMeta.hasLore() ? itemMeta.getLore() : List.of();
                 },
                 (guiHandler, player, cache, line) -> BukkitComponentSerializer.legacy().deserialize(line),
                 (guiHandler, player, cache, msg, args) -> BukkitComponentSerializer.legacy().serialize(miniM.deserialize(msg))
-        ).onAdd((guiHandler, player, cache, index, entry) -> {
-            var itemMeta = cache.getItems().getItem().getItemMeta();
+        ).onAdd((guiHandler, player, cache, index, entry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
+            var itemMeta = identifier.stack().getItemMeta();
             List<String> lore = itemMeta.getLore();
             if (lore == null) {
                 lore = new ArrayList<>();
@@ -164,17 +164,17 @@ public class ChatUtils {
                 lore.add(entry);
             }
             itemMeta.setLore(lore);
-            cache.getItems().getItem().setItemMeta(itemMeta);
-        }).onRemove((guiHandler, player, cache, index, entry) -> {
-            var itemMeta = cache.getItems().getItem().getItemMeta();
+            identifier.stack().setItemMeta(itemMeta);
+        })).onRemove((guiHandler, player, cache, index, entry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
+            var itemMeta = identifier.stack().getItemMeta();
             List<String> lore = itemMeta.getLore();
             if (lore != null) {
                 lore.remove(index);
                 itemMeta.setLore(lore);
             }
-            cache.getItems().getItem().setItemMeta(itemMeta);
-        }).onMove((guiHandler, player, cache, fromIndex, toIndex) -> {
-            var itemMeta = cache.getItems().getItem().getItemMeta();
+            identifier.stack().setItemMeta(itemMeta);
+        })).onMove((guiHandler, player, cache, fromIndex, toIndex) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
+            var itemMeta = identifier.stack().getItemMeta();
             List<String> lore = itemMeta.getLore();
             if (lore != null) {
                 String toPrevEntry = lore.get(toIndex);
@@ -182,16 +182,16 @@ public class ChatUtils {
                 lore.set(fromIndex, toPrevEntry);
                 itemMeta.setLore(lore);
             }
-            cache.getItems().getItem().setItemMeta(itemMeta);
-        }).onEdit((guiHandler, player, cache, index, previousEntry, newEntry) -> {
-            var itemMeta = cache.getItems().getItem().getItemMeta();
+            identifier.stack().setItemMeta(itemMeta);
+        })).onEdit((guiHandler, player, cache, index, previousEntry, newEntry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
+            var itemMeta = identifier.stack().getItemMeta();
             List<String> lore = itemMeta.getLore();
             if (lore != null) {
                 lore.set(index, newEntry);
                 itemMeta.setLore(lore);
             }
-            cache.getItems().getItem().setItemMeta(itemMeta);
-        }).setSendInputInfoMessages((guiHandler, player, cache) -> {
+            identifier.stack().setItemMeta(itemMeta);
+        })).setSendInputInfoMessages((guiHandler, player, cache) -> {
             var chat = invAPI.getWolfyUtilities().getChat();
             chat.sendMessage(player, chat.translated("msg.input.wui_command"));
             chat.sendMessage(player, chat.translated("msg.input.mini_message"));
@@ -202,14 +202,14 @@ public class ChatUtils {
         var paperMiniMsg = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage();
         return new CollectionEditor<CCCache, net.kyori.adventure.text.Component>(invAPI,
                 (guiHandler, player, cache) -> {
-                    var itemMeta = cache.getItems().getItem().getItemMeta();
+                    var itemMeta = cache.getItems().asBukkitIdentifier().map(identifier -> identifier.stack().getItemMeta()).orElse(null);
                     return itemMeta != null && itemMeta.hasLore() ? itemMeta.lore() : List.of();
                 },
                 // TODO: This is quite inefficient! We need to convert to the non-shaded version of Adventure! (v5)
                 (guiHandler, player, cache, line) -> miniM.deserialize(paperMiniMsg.serialize(line)),
                 (guiHandler, player, cache, msg, args) -> paperMiniMsg.deserialize(msg)
-        ).onAdd((guiHandler, player, cache, index, entry) -> {
-            var itemMeta = cache.getItems().getItem().getItemMeta();
+        ).onAdd((guiHandler, player, cache, index, entry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
+            var itemMeta = identifier.stack().getItemMeta();
             List<Component> lore = itemMeta.lore();
             if (lore == null) {
                 lore = new ArrayList<>();
@@ -220,17 +220,17 @@ public class ChatUtils {
                 lore.add(entry);
             }
             itemMeta.lore(lore);
-            cache.getItems().getItem().setItemMeta(itemMeta);
-        }).onRemove((guiHandler, player, cache, index, entry) -> {
-            var itemMeta = cache.getItems().getItem().getItemMeta();
+            identifier.stack().setItemMeta(itemMeta);
+        })).onRemove((guiHandler, player, cache, index, entry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
+            var itemMeta = identifier.stack().getItemMeta();
             List<Component> lore = itemMeta.lore();
             if (lore != null) {
                 lore.remove(index);
                 itemMeta.lore(lore);
             }
-            cache.getItems().getItem().setItemMeta(itemMeta);
-        }).onMove((guiHandler, player, cache, fromIndex, toIndex) -> {
-            var itemMeta = cache.getItems().getItem().getItemMeta();
+            identifier.stack().setItemMeta(itemMeta);
+        })).onMove((guiHandler, player, cache, fromIndex, toIndex) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
+            var itemMeta = identifier.stack().getItemMeta();
             List<Component> lore = itemMeta.lore();
             if (lore != null) {
                 Component toPrevEntry = lore.get(toIndex);
@@ -238,16 +238,16 @@ public class ChatUtils {
                 lore.set(fromIndex, toPrevEntry);
                 itemMeta.lore(lore);
             }
-            cache.getItems().getItem().setItemMeta(itemMeta);
-        }).onEdit((guiHandler, player, cache, index, previousEntry, newEntry) -> {
-            var itemMeta = cache.getItems().getItem().getItemMeta();
+            identifier.stack().setItemMeta(itemMeta);
+        })).onEdit((guiHandler, player, cache, index, previousEntry, newEntry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
+            var itemMeta = identifier.stack().getItemMeta();
             List<Component> lore = itemMeta.lore();
             if (lore != null) {
                 lore.set(index, newEntry);
                 itemMeta.lore(lore);
             }
-            cache.getItems().getItem().setItemMeta(itemMeta);
-        }).setSendInputInfoMessages((guiHandler, player, cache) -> {
+            identifier.stack().setItemMeta(itemMeta);
+        })).setSendInputInfoMessages((guiHandler, player, cache) -> {
             var chat = invAPI.getWolfyUtilities().getChat();
             chat.sendMessage(player, chat.translated("msg.input.wui_command"));
             chat.sendMessage(player, chat.translated("msg.input.mini_message"));
@@ -257,42 +257,44 @@ public class ChatUtils {
     public static void sendAttributeModifierManager(Player player) {
         CCCache cache = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache());
         var items = cache.getItems();
-        var itemMeta = items.getItem().getItemMeta();
-        for (int i = 0; i < 15; i++) {
-            player.sendMessage("");
-        }
-        chat.sendMessage(player, "-----------------[&cRemove Modifier&7]-----------------");
-        chat.sendMessage(player, "");
-        if (itemMeta.hasAttributeModifiers()) {
-            Collection<AttributeModifier> modifiers = itemMeta.getAttributeModifiers(Attribute.valueOf(cache.getSubSetting().substring("attribute.".length()).toUpperCase(Locale.ROOT)));
-            if (modifiers != null) {
-                chat.sendMessage(player, "        §e§oName   §b§oAmount  §6§oEquipment-Slot  §3§oMode  §7§oUUID");
-                chat.sendMessage(player, "");
-                for (AttributeModifier modifier : modifiers) {
-                    chat.sendActionMessage(player,
-                            new ClickData("§7[§c-§7] ", (wolfyUtilities, player1) -> {
-                                CCCache cache1 = (CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
-                                itemMeta.removeAttributeModifier(Attribute.valueOf(cache1.getSubSetting().substring("attribute.".length()).toUpperCase(Locale.ROOT)), modifier);
-                                cache1.getItems().getItem().setItemMeta(itemMeta);
-                                sendAttributeModifierManager(player1);
-                            }, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§c" + modifier.getName())),
-                            new ClickData("§e" + modifier.getName() + "  §b" + modifier.getAmount() + "  §6" + (modifier.getSlot() == null ? "ANY" : modifier.getSlot()) + "  §3" + modifier.getOperation(), null),
-                            new ClickData("  ", null),
-                            new ClickData("§7[UUID]", null, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§7[§3Click to copy§7]\n" + modifier.getUniqueId()), new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, "" + modifier.getUniqueId()))
-                    );
-                }
-            } else {
-                chat.sendMessage(player, ChatColor.RED + "No attributes set yet!");
-            }
-        }
-        chat.sendMessage(player, "");
-        chat.sendMessage(player, "-------------------------------------------------");
-        chat.sendActionMessage(player, new ClickData("                     §7[§3Back to ItemCreator§7]", (wolfyUtilities, player1) -> {
+        items.asBukkitIdentifier().ifPresent(identifier -> {
+            var itemMeta = identifier.stack().getItemMeta();
             for (int i = 0; i < 15; i++) {
                 player.sendMessage("");
             }
-            api.getInventoryAPI().getGuiHandler(player1).openCluster();
-        }, true));
+            chat.sendMessage(player, "-----------------[&cRemove Modifier&7]-----------------");
+            chat.sendMessage(player, "");
+            if (itemMeta.hasAttributeModifiers()) {
+                Collection<AttributeModifier> modifiers = itemMeta.getAttributeModifiers(Attribute.valueOf(cache.getSubSetting().substring("attribute.".length()).toUpperCase(Locale.ROOT)));
+                if (modifiers != null) {
+                    chat.sendMessage(player, "        §e§oName   §b§oAmount  §6§oEquipment-Slot  §3§oMode  §7§oUUID");
+                    chat.sendMessage(player, "");
+                    for (AttributeModifier modifier : modifiers) {
+                        chat.sendActionMessage(player,
+                                new ClickData("§7[§c-§7] ", (wolfyUtilities, player1) -> {
+                                    CCCache cache1 = (CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
+                                    itemMeta.removeAttributeModifier(Attribute.valueOf(cache1.getSubSetting().substring("attribute.".length()).toUpperCase(Locale.ROOT)), modifier);
+                                    cache1.getItems().asBukkitIdentifier().ifPresent(identifier1 -> identifier1.stack().setItemMeta(itemMeta));
+                                    sendAttributeModifierManager(player1);
+                                }, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§c" + modifier.getName())),
+                                new ClickData("§e" + modifier.getName() + "  §b" + modifier.getAmount() + "  §6" + (modifier.getSlot() == null ? "ANY" : modifier.getSlot()) + "  §3" + modifier.getOperation(), null),
+                                new ClickData("  ", null),
+                                new ClickData("§7[UUID]", null, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§7[§3Click to copy§7]\n" + modifier.getUniqueId()), new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, "" + modifier.getUniqueId()))
+                        );
+                    }
+                } else {
+                    chat.sendMessage(player, ChatColor.RED + "No attributes set yet!");
+                }
+            }
+            chat.sendMessage(player, "");
+            chat.sendMessage(player, "-------------------------------------------------");
+            chat.sendActionMessage(player, new ClickData("                     §7[§3Back to ItemCreator§7]", (wolfyUtilities, player1) -> {
+                for (int i = 0; i < 15; i++) {
+                    player.sendMessage("");
+                }
+                api.getInventoryAPI().getGuiHandler(player1).openCluster();
+            }, true));
+        });
     }
 
     public static void sendRecipeItemLoadingError(String prefix, String namespace, String key, Exception ex) {
