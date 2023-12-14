@@ -43,6 +43,7 @@ public class Items implements Serializable {
 
     private int listPage;
     private String listNamespace;
+    private boolean editorWasPreviouslyCancelled = false;
 
     private int page;
 
@@ -85,6 +86,14 @@ public class Items implements Serializable {
         this.attributeName = "";
 
         this.currentTab = null;
+    }
+
+    public boolean editorWasPreviouslyCancelled() {
+        return editorWasPreviouslyCancelled;
+    }
+
+    public void editorWasPreviouslyCancelled(boolean editorWasPreviouslyCancelled) {
+        this.editorWasPreviouslyCancelled = editorWasPreviouslyCancelled;
     }
 
     public StackReference originalReference() {

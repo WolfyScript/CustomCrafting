@@ -91,6 +91,7 @@ public class MenuItemCreator extends CCWindow {
     private final List<ItemCreatorTab> tabs = new ArrayList<>();
 
     private static final String BACK = "back";
+    private static final String CANCEL = "cancel";
     private static final String SAVE_ITEM = "save_item";
     private static final String SAVE_ITEM_AS = "save_item_as";
     private static final String APPLY_ITEM = "apply_item";
@@ -111,13 +112,18 @@ public class MenuItemCreator extends CCWindow {
     @Override
     public void onInit() {
         var btnB = getButtonBuilder();
-        btnB.action(BACK).state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, i, event) -> {
+        btnB.action(BACK).state(s -> s.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((cache, guiHandler, player, inventory, i, event) -> {
             guiHandler.openCluster(cache.getItems().isRecipeItem() ? "recipe_creator" : "none");
+            return true;
+        })).register();
+        btnB.action(CANCEL).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, inventory, i, event) -> {
+            cache.getItems().editorWasPreviouslyCancelled(true);
             return true;
         })).register();
         btnB.itemInput(ITEM_INPUT).state(s -> s.icon(Material.AIR).postAction((cache, guiHandler, player, guiInventory, stack, slot, event) -> {
             var items = cache.getItems();
             guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(stack).ifPresentOrElse(reference -> {
+                items.editorWasPreviouslyCancelled(false);
                 items.setItem(new CustomItem(reference));
             }, () -> items.setItem(new CustomItem(Material.AIR)));
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(guiHandler.getCustomCache().getItems().getItem().getItemStack()))).register();
@@ -250,8 +256,22 @@ public class MenuItemCreator extends CCWindow {
         var customItem = items.getItem();
         var item = customItem.create();
 
-        event.setButton(45, BACK);
-        event.setButton(4, ITEM_INPUT);
+        if (ItemUtils.isAirOrNull(item) || items.editorWasPreviouslyCancelled()) {
+            event.setButton(12, ClusterMain.GLASS_GREEN);
+            event.setButton(13, ClusterMain.GLASS_GREEN);
+            event.setButton(14, ClusterMain.GLASS_GREEN);
+            event.setButton(21, ClusterMain.GLASS_GREEN);
+            event.setButton(22, ITEM_INPUT);
+            event.setButton(23, ClusterMain.GLASS_GREEN);
+            event.setButton(30, ClusterMain.GLASS_GREEN);
+            event.setButton(31, ClusterMain.GLASS_GREEN);
+            event.setButton(32, ClusterMain.GLASS_GREEN);
+            event.setButton(49, BACK);
+            return;
+        }
+
+        event.setButton(45, CANCEL);
+        event.setItem(4, items.getItem().stackReference().referencedStack());
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         var gray = data.getLightBackground();
         if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) event.setButton(13, gray);
