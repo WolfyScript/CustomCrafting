@@ -41,7 +41,7 @@ class ButtonContainerItemIngredient extends ItemInputButton<CCCache> {
 
     private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(
             items.getVariantSlot(),
-            WolfyUtilCore.getInstance().getRegistries().getStackIdentifierParsers().parseFrom(customItem.create())
+            WolfyUtilCore.getInstance().getRegistries().getStackIdentifierParsers().parseFrom(customItem.create()).orElse(null)
     );
 
     ButtonContainerItemIngredient(int ingredSlot) {
@@ -61,7 +61,7 @@ class ButtonContainerItemIngredient extends ItemInputButton<CCCache> {
             if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
                 return;
             }
-            StackReference updatedStack = itemStack == null ? StackReference.of(new ItemStack(Material.AIR)) : guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(itemStack);
+            StackReference updatedStack = itemStack == null ? StackReference.of(new ItemStack(Material.AIR)) : guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(itemStack).orElse(null);
             cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(ingredSlot, updatedStack);
         }, null, (CallbackButtonRender<CCCache>) (cache, guiHandler, player, guiInventory, itemStack, i) -> {
             var data = cache.getRecipeCreatorCache().getIngredientCache().getIngredient();

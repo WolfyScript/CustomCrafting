@@ -130,9 +130,11 @@ public class TabAttributes extends ItemCreatorTabVanilla {
             return false;
         }));
         creator.registerButton(new ActionButton<>("attribute.save", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            var itemMeta = items.getItem().getItemMeta();
-            itemMeta.addAttributeModifier(Attribute.valueOf(cache.getSubSetting().split("\\.")[1].toUpperCase(Locale.ROOT)), items.getAttributeModifier());
-            items.getItem().setItemMeta(itemMeta);
+            items.asBukkitIdentifier().ifPresent(identifier -> {
+                var itemMeta = identifier.stack().getItemMeta();
+                itemMeta.addAttributeModifier(Attribute.valueOf(cache.getSubSetting().split("\\.")[1].toUpperCase(Locale.ROOT)), items.getAttributeModifier());
+                identifier.stack().setItemMeta(itemMeta);
+            });
             return true;
         }));
         creator.registerButton(new ActionButton<>("attribute.delete", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {

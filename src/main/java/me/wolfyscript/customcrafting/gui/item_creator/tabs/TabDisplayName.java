@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentifier;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
@@ -35,6 +37,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -52,15 +55,16 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
         creator.registerButton(new ButtonOption(Material.NAME_TAG, this));
         new ChatInputButton.Builder<>(creator, KEY + ".set")
                 .inputAction((guiHandler, player, s, strings) -> {
-                    if (creator.getCustomCrafting().isPaper()) {
-                        CustomItem customItem = guiHandler.getCustomCache().getItems().getItem();
-                        ItemMeta itemMeta = customItem.getItemStack().getItemMeta();
-                        // TODO: Need to use the non-relocated MiniMessage! (v5) No longer shade & relocate Adventure
-                        itemMeta.displayName(MiniMessage.miniMessage().deserialize(s));
-                        customItem.setItemMeta(itemMeta);
-                    } else {
-                        guiHandler.getCustomCache().getItems().getItem().setDisplayName(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s)));
-                    }
+                    guiHandler.getCustomCache().getItems().asBukkitIdentifier().ifPresent(identifier -> {
+                        ItemMeta itemMeta = identifier.stack().getItemMeta();
+                        if (creator.getCustomCrafting().isPaper()) {
+                            // TODO: Need to use the non-relocated MiniMessage! (v5) No longer shade & relocate Adventure
+                            itemMeta.displayName(MiniMessage.miniMessage().deserialize(s));
+                        } else {
+                            itemMeta.setDisplayName(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s)));
+                        }
+                        identifier.stack().setItemMeta(itemMeta);
+                    });
                     return false;
                 }).state(state -> state.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, guiInventory, i, event) -> {
                     var chat = guiInventory.getWindow().getChat();

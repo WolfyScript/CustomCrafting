@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentifier;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
@@ -39,7 +40,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;
 
-public class TabCustomModelData extends ItemCreatorTab {
+public class TabCustomModelData extends ItemCreatorTabVanilla {
 
     public static final String KEY = "custom_model_data";
 
@@ -55,25 +56,30 @@ public class TabCustomModelData extends ItemCreatorTab {
             hashMap.put("%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : "&7&l/") + "");
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
-            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
-            if (!(itemMeta instanceof Repairable)) {
-                return true;
-            }
-            try {
-                int value = Integer.parseInt(s);
-                itemMeta.setCustomModelData(value);
-                guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
-                creator.sendMessage(player, "custom_model_data.success", new Pair<>("%VALUE%", String.valueOf(value)));
-            } catch (NumberFormatException e) {
-                creator.sendMessage(player, "custom_model_data.invalid_value", new Pair<>("%VALUE%", s));
-                return true;
+            BukkitStackIdentifier identifier = guiHandler.getCustomCache().getItems().asBukkitIdentifier().orElse(null);
+            if (identifier != null) {
+                var itemMeta = identifier.stack().getItemMeta();
+                if (!(itemMeta instanceof Repairable)) {
+                    return true;
+                }
+                try {
+                    int value = Integer.parseInt(s);
+                    itemMeta.setCustomModelData(value);
+                    identifier.stack().setItemMeta(itemMeta);
+                    creator.sendMessage(player, "custom_model_data.success", new Pair<>("%VALUE%", String.valueOf(value)));
+                } catch (NumberFormatException e) {
+                    creator.sendMessage(player, "custom_model_data.invalid_value", new Pair<>("%VALUE%", s));
+                    return true;
+                }
             }
             return false;
         }));
         creator.registerButton(new ActionButton<>("custom_model_data.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            var itemMeta = items.getItem().getItemMeta();
-            itemMeta.setCustomModelData(null);
-            items.getItem().setItemMeta(itemMeta);
+            guiHandler.getCustomCache().getItems().asBukkitIdentifier().ifPresent(identifier -> {
+                var itemMeta = identifier.stack().getItemMeta();
+                itemMeta.setCustomModelData(null);
+                identifier.stack().setItemMeta(itemMeta);
+            });
             return true;
         }));
     }

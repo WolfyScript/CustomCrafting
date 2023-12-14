@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentifier;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -38,6 +39,6 @@ public abstract class ItemCreatorTabVanilla extends ItemCreatorTab {
 
     @Override
     public boolean shouldRender(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
-        return customItem.getApiReference() instanceof VanillaRef;
+        return customItem.stackReference().identifier() instanceof BukkitStackIdentifier;
     }
 }

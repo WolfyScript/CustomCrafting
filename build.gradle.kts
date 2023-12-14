@@ -53,7 +53,7 @@ dependencies {
     compileOnly("io.netty:netty-all:4.1.85.Final")
     compileOnly("me.clip:placeholderapi:2.10.4")
     compileOnly("com.github.oraxen:oraxen:1.156.0")
-    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.16.15-beta.2")
+    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.16.15-beta.5-SNAPSHOT")
 }
 
 group = "com.wolfyscript.customcrafting"
@@ -135,8 +135,9 @@ minecraftServers {
             ports.set(setOf(debugPortMapping, "25567:25565"))
         }
         register("spigot_1_20") {
-            version.set("1.20.2")
+            version.set("1.20.4")
             type.set("SPIGOT")
+            extraEnv.put("BUILD_FROM_SOURCE", "true")
             ports.set(setOf(debugPortMapping, "25568:25565"))
         }
         // Paper test servers
