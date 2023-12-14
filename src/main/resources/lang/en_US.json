@@ -871,6 +871,13 @@
               "<yellow>Applies the Item to the recipe</yellow>"
             ]
           },
+          "cancel": {
+            "name": "<grey>\u27A6</grey> <red><b>Cancel",
+            "lore": [
+              "<red>Some options are only available when saving the item!",
+              "<red>Those options will not apply to the item!"
+            ]
+          },
           "reference": {
             "wolfyutilities": {
               "name": "<gold><b>WolfyUtilities</b></gold>",
