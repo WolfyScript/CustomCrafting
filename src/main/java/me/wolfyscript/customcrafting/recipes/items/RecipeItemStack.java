@@ -242,7 +242,7 @@ public abstract class RecipeItemStack {
 
     @JsonIgnore
     public boolean isEmpty() {
-        return (items.isEmpty() && tags.isEmpty()) || choices.stream().allMatch(reference -> ItemUtils.isAirOrNull(reference.referencedStack()));
+        return (items.isEmpty() && tags.isEmpty()) || choices.stream().allMatch(reference -> ItemUtils.isAirOrNull(reference.originalStack()));
     }
 
     /**
