@@ -51,8 +51,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
-import org.bukkit.event.inventory.SmithItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.SmithingRecipe;
@@ -95,7 +95,6 @@ public class SmithingListener implements Listener {
                 .ifPresentOrElse(data -> {
                     preCraftedRecipes.put(player.getUniqueId(), data);
                     CustomRecipeSmithing recipe = data.getRecipe();
-                    customCrafting.getApi().getNmsUtil().getRecipeUtil().setCurrentRecipe(event.getView(), ICustomVanillaRecipe.toPlaceholder(recipe.getNamespacedKey()));
 
                     applyResult(event, inv, player, base, recipe.getResult(), recipe.isOnlyChangeMaterial(), recipe.getInternalMergeAdapters(), data);
                 }, () -> {
@@ -132,7 +131,7 @@ public class SmithingListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onCollectResult(SmithItemEvent event) {
+    public void onCollectResult(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
         if (!(event.getClickedInventory() instanceof SmithingInventory)) return;
         final var player = (Player) event.getWhoClicked();
@@ -150,9 +149,9 @@ public class SmithingListener implements Listener {
             smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
             preCraftedRecipes.remove(player.getUniqueId());
 
-            final var baseItem = Objects.requireNonNull(inventory.getItem(CustomRecipeSmithing.BASE_SLOT)).clone();
-            final var additionItem = Objects.requireNonNull(inventory.getItem(CustomRecipeSmithing.ADDITION_SLOT)).clone();
-            final var templateItem = Objects.requireNonNull(inventory.getItem(0)).clone();
+            final var baseItem = inventory.getItem(CustomRecipeSmithing.BASE_SLOT) == null ? new ItemStack(Material.AIR) : inventory.getItem(CustomRecipeSmithing.BASE_SLOT).clone();
+            final var additionItem = inventory.getItem(CustomRecipeSmithing.ADDITION_SLOT) == null ? new ItemStack(Material.AIR) : inventory.getItem(CustomRecipeSmithing.ADDITION_SLOT).clone();
+            final var templateItem = inventory.getItem(0) == null ? new ItemStack(Material.AIR) : inventory.getItem(0).clone();
 
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 smithingData.template().ifPresent(reference -> inventory.setItem(0, reference.shrink(templateItem, 1, true, inventory, null, null)));
