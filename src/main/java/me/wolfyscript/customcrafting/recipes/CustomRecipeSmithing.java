@@ -22,8 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
-import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.validator.ValidationContainer;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -37,15 +38,11 @@ import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.ArmorTrimMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
-import com.wolfyscript.utilities.validator.ValidationContainer;
-import com.wolfyscript.utilities.validator.Validator;
-import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -65,7 +62,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -167,33 +163,20 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     public SmithingData check(Player player, InventoryView view, ItemStack template, ItemStack base, ItemStack addition) {
         if (!checkConditions(Conditions.Data.of(player, view))) return null;
 
+
+        final IngredientData baseData = getBase().checkChoices(base, isCheckNBT()).map(reference -> new IngredientData(BASE_SLOT, BASE_SLOT, getBase(), reference, base)).orElse(null);
+        if (baseData == null && !getBase().isAllowEmpty()) return null;
+
+        final IngredientData additionData = getAddition().checkChoices(addition, isCheckNBT()).map(reference -> new IngredientData(ADDITION_SLOT, ADDITION_SLOT, getAddition(), reference, base)).orElse(null);
+        if (additionData == null && !getAddition().isAllowEmpty()) return null;
+
         IngredientData templateData = null;
-        IngredientData baseData = null;
-        IngredientData additionData = null;
-
-        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0)) && getTemplate() != null) {
-            Optional<StackReference> templateCustom = getTemplate().checkChoices(template, isCheckNBT());
-            if (templateCustom.isPresent()) {
-                templateData = new IngredientData(0, 0, getTemplate(), templateCustom.get(), template);
-            } else if (!getTemplate().isAllowEmpty()) return null;
+        if (IS_1_20 && getTemplate() != null) {
+            templateData = getTemplate().checkChoices(template, isCheckNBT()).map(reference -> new IngredientData(0, 0, getTemplate(), reference, template)).orElse(null);
+            if (templateData == null && !getTemplate().isAllowEmpty()) return null;
         }
 
-        Optional<StackReference> baseCustom = getBase().checkChoices(base, isCheckNBT());
-        if (baseCustom.isPresent()) {
-            baseData = new IngredientData(BASE_SLOT, BASE_SLOT, getBase(), baseCustom.get(), base);
-        } else if (!getBase().isAllowEmpty()) return null;
-
-        Optional<StackReference> additionCustom = getAddition().checkChoices(addition, isCheckNBT());
-        if (additionCustom.isPresent()) {
-            additionData = new IngredientData(ADDITION_SLOT, ADDITION_SLOT, getAddition(), additionCustom.get(), base);
-        } else if (!getAddition().isAllowEmpty()) return null;
-
-        IngredientData[] ingredientData;
-        if (IS_1_20) {
-            ingredientData = new IngredientData[]{templateData, baseData, additionData};
-        } else {
-            ingredientData = new IngredientData[]{baseData, additionData};
-        }
+        final IngredientData[] ingredientData = IS_1_20 ? new IngredientData[]{templateData, baseData, additionData} : new IngredientData[]{baseData, additionData};
         return new SmithingData(this, ingredientData);
     }
 

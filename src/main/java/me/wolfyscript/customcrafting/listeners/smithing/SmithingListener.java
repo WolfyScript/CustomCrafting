@@ -40,15 +40,11 @@ import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.version.MinecraftVersion;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Bukkit;
-import org.bukkit.Keyed;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -99,7 +95,6 @@ public class SmithingListener implements Listener {
                 .ifPresentOrElse(data -> {
                     preCraftedRecipes.put(player.getUniqueId(), data);
                     CustomRecipeSmithing recipe = data.getRecipe();
-                    customCrafting.getApi().getNmsUtil().getRecipeUtil().setCurrentRecipe(event.getView(), ICustomVanillaRecipe.toPlaceholder(recipe.getNamespacedKey()));
 
                     applyResult(event, inv, player, base, recipe.getResult(), recipe.isOnlyChangeMaterial(), recipe.getInternalMergeAdapters(), data);
                 }, () -> {
@@ -139,9 +134,9 @@ public class SmithingListener implements Listener {
     public void onCollectResult(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
         if (!(event.getClickedInventory() instanceof SmithingInventory)) return;
-        var player = (Player) event.getWhoClicked();
-        var action = event.getAction();
-        var inventory = event.getClickedInventory();
+        final var player = (Player) event.getWhoClicked();
+        final var action = event.getAction();
+        final var inventory = event.getClickedInventory();
         if (event.getSlot() == CustomRecipeSmithing.RESULT_SLOT && !ItemUtils.isAirOrNull(event.getCurrentItem())) {
             if (action == InventoryAction.PLACE_ALL || action == InventoryAction.PLACE_ONE || action == InventoryAction.PLACE_SOME || action == InventoryAction.SWAP_WITH_CURSOR) return;
             //Take out item!
@@ -149,37 +144,20 @@ public class SmithingListener implements Listener {
                 //Vanilla Recipe
                 return;
             }
-            var resultStack = event.getCurrentItem().clone();
-            if (event.isShiftClick()) {
-                if (InventoryUtils.hasInventorySpace(player, resultStack)) {
-                    player.getInventory().addItem(resultStack);
-                }
-            } else if (!ItemUtils.isAirOrNull(event.getCursor())) {
-                event.setCancelled(true);
-                return;
-            } else {
-                event.getView().setCursor(resultStack);
-            }
 
             final var smithingData = preCraftedRecipes.get(player.getUniqueId());
             smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
-
-            final var baseItem = Objects.requireNonNull(inventory.getItem(CustomRecipeSmithing.BASE_SLOT)).clone();
-            final var additionItem = Objects.requireNonNull(inventory.getItem(CustomRecipeSmithing.ADDITION_SLOT)).clone();
-
-            smithingData.template().ifPresent(reference -> {
-                final var templateItem = Objects.requireNonNull(inventory.getItem(0));
-                inventory.setItem(0, reference.shrink(templateItem, 1, true, inventory, null, null));
-            });
-            inventory.setItem(CustomRecipeSmithing.BASE_SLOT, smithingData.base().map(reference -> reference.shrink(baseItem, 1, true, inventory, null, null)).orElse(baseItem));
-            inventory.setItem(CustomRecipeSmithing.ADDITION_SLOT, smithingData.addition().map(reference -> reference.shrink(additionItem, 1, true, inventory, null, null)).orElse(additionItem));
-
-            if (inventory.getLocation() != null) {
-                inventory.getLocation().getWorld().playSound(inventory.getLocation(), Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.BLOCKS, 1, 1);
-            }
             preCraftedRecipes.remove(player.getUniqueId());
 
-            inventory.setItem(CustomRecipeSmithing.RESULT_SLOT, smithingData.getResult().item(smithingData, player, inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getLocation().getBlock()));
+            final var baseItem = inventory.getItem(CustomRecipeSmithing.BASE_SLOT) == null ? new ItemStack(Material.AIR) : inventory.getItem(CustomRecipeSmithing.BASE_SLOT).clone();
+            final var additionItem = inventory.getItem(CustomRecipeSmithing.ADDITION_SLOT) == null ? new ItemStack(Material.AIR) : inventory.getItem(CustomRecipeSmithing.ADDITION_SLOT).clone();
+            final var templateItem = inventory.getItem(0) == null ? new ItemStack(Material.AIR) : inventory.getItem(0).clone();
+
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
+                smithingData.template().ifPresent(reference -> inventory.setItem(0, reference.shrink(templateItem, 1, true, inventory, null, null)));
+                inventory.setItem(CustomRecipeSmithing.BASE_SLOT, smithingData.base().map(reference -> reference.shrink(baseItem, 1, true, inventory, null, null)).orElse(baseItem));
+                inventory.setItem(CustomRecipeSmithing.ADDITION_SLOT, smithingData.addition().map(reference -> reference.shrink(additionItem, 1, true, inventory, null, null)).orElse(additionItem));
+            });
         }
     }
 
