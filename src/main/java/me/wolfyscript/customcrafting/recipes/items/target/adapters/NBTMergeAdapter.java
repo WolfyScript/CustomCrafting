@@ -32,6 +32,7 @@ import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -57,6 +58,8 @@ public class NBTMergeAdapter extends MergeAdapter {
         NBTItem nbtResultStack = new NBTItem(result);
         for (IngredientData slotData : recipeData.getBySlots(slots)) {
             var itemStack = slotData.itemStack();
+            if (ItemUtils.isAirOrNull(itemStack) || itemStack.getAmount() == 0) continue;
+
             NBTItem nbtStack = new NBTItem(itemStack);
             NBTCompound resultCompound = query.run(nbtStack);
             nbtResultStack.mergeCompound(resultCompound);
