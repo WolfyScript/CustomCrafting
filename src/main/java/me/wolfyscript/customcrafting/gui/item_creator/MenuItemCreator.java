@@ -184,17 +184,20 @@ public class MenuItemCreator extends CCWindow {
     private void registerReferences(ButtonBuilder<CCCache> btnB) {
         btnB.dummy(REFERENCE_WOLFYUTILITIES).state(s -> s.icon(Material.CRAFTING_TABLE)
                 .render((cache, guiHandler, player, inv, stack, i) ->
-                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((WolfyUtilsStackIdentifier) guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()).itemKey().toString()))
+                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()
+                                .map(identifier -> ((WolfyUtilsStackIdentifier) identifier).itemKey().toString()).orElse("null")))
                 )
         ).register();
         btnB.dummy(REFERENCE_ORAXEN).state(s -> s.icon(Material.DIAMOND)
                 .render((cache, guiHandler, player, inv, stack, i) ->
-                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((OraxenStackIdentifier) guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()).itemId()))
+                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()
+                                .map(identifier -> ((OraxenStackIdentifier) identifier).itemId()).orElse("null")))
                 )
         ).register();
         btnB.dummy(REFERENCE_ITEMSADDER).state(s -> s.icon(Material.GRASS_BLOCK)
                 .render((cache, guiHandler, player, inv, stack, i) ->
-                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((ItemsAdderStackIdentifier) guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()).itemId()))
+                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()
+                                .map(identifier -> ((ItemsAdderStackIdentifier) identifier).itemId()).orElse("null")))
                 )
         ).register();
         btnB.dummy(REFERENCE_MYTHICMOBS).state(s -> s.icon(Material.WITHER_SKELETON_SKULL)).register();
@@ -233,7 +236,7 @@ public class MenuItemCreator extends CCWindow {
     private boolean saveItem(Items items, Player player, NamespacedKey namespacedKey) {
         if (namespacedKey != null && !namespacedKey.getNamespace().equalsIgnoreCase("minecraft")) {
             var customItem = items.getItem();
-            if (customItem.stackReference().identifier() instanceof WolfyUtilsStackIdentifier identifier && identifier.getNamespacedKey().equals(namespacedKey)) {
+            if (customItem.stackReference().identifier().orElse(null) instanceof WolfyUtilsStackIdentifier identifier && identifier.getNamespacedKey().equals(namespacedKey)) {
                 getChat().sendMessage(player, Component.text("Error saving item! Cannot override original CustomItem ", NamedTextColor.RED).append(Component.text(namespacedKey.toString(), NamedTextColor.DARK_RED)).append(Component.text("! Save it under another NamespacedKey or Edit the original!", NamedTextColor.RED)));
                 return false;
             }
@@ -283,16 +286,17 @@ public class MenuItemCreator extends CCWindow {
         }
         event.setButton(53, SAVE_ITEM_AS);
 
-        StackIdentifier identifier = customItem.stackReference().identifier();
-        if (identifier instanceof WolfyUtilsStackIdentifier) {
-            event.setButton(49, REFERENCE_WOLFYUTILITIES);
-        } else if (identifier instanceof OraxenStackIdentifier) {
-            event.setButton(49, REFERENCE_ORAXEN);
-        } else if (identifier instanceof ItemsAdderStackIdentifier) {
-            event.setButton(49, REFERENCE_ITEMSADDER);
-        } else if (identifier instanceof MythicMobsStackIdentifier) {
-            event.setButton(49, REFERENCE_MYTHICMOBS);
-        }
+        customItem.stackReference().identifier().ifPresent(identifier -> {
+            if (identifier instanceof WolfyUtilsStackIdentifier) {
+                event.setButton(49, REFERENCE_WOLFYUTILITIES);
+            } else if (identifier instanceof OraxenStackIdentifier) {
+                event.setButton(49, REFERENCE_ORAXEN);
+            } else if (identifier instanceof ItemsAdderStackIdentifier) {
+                event.setButton(49, REFERENCE_ITEMSADDER);
+            } else if (identifier instanceof MythicMobsStackIdentifier) {
+                event.setButton(49, REFERENCE_MYTHICMOBS);
+            }
+        });
 
         List<ItemCreatorTab> options = constructOptions(event, cache, items, customItem, item);
         int maxPages = options.size() / 14 + (options.size() % 14 > 0 ? 1 : 0);

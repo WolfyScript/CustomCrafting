@@ -26,7 +26,6 @@ import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentif
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -39,6 +38,6 @@ public abstract class ItemCreatorTabVanilla extends ItemCreatorTab {
 
     @Override
     public boolean shouldRender(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
-        return customItem.stackReference().identifier() instanceof BukkitStackIdentifier;
+        return customItem.stackReference().identifier().orElse(null) instanceof BukkitStackIdentifier;
     }
 }

@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.recipes.items;
 
 import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentifier;
-import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.validator.ValidationContainer;
 import com.wolfyscript.utilities.validator.Validator;
@@ -228,7 +228,7 @@ public abstract class RecipeItemStack {
     }
 
     public List<StackReference> choices(Player player) {
-        return choicesStream().filter(reference -> reference.identifier().permission().map(player::hasPermission).orElse(true)).toList();
+        return choicesStream().filter(reference -> reference.identifier().flatMap(StackIdentifier::permission).map(player::hasPermission).orElse(true)).toList();
     }
 
     public List<ItemStack> bukkitChoices() {
