@@ -48,7 +48,12 @@ public class Patreon {
         addPatron(new Patron("Invictus_Vulpes ", Tier.WOLFRAM));
         addPatron(new Patron("Luuk Musch", Tier.WOLFRAM));
         addPatron(new Patron("fioxu", Tier.WOLFRAM));
+        addPatron(new Patron("JorshStark", Tier.WOLFRAM));
+        addPatron(new Patron("Perny Dev", Tier.WOLFRAM));
+        addPatron(new Patron("Charlie", Tier.WOLFRAM));
         addPatron(new Patron("iachen", Tier.WOLFRAM));
+        addPatron(new Patron("whja t", Tier.WOLFRAM));
+        addPatron(new Patron("Green Masks", Tier.WOLFRAM));
         addPatron(new Patron("MineHouse Server", Tier.WOLFRAM));
     }
 
