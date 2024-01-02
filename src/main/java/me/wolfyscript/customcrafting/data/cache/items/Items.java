@@ -101,21 +101,25 @@ public class Items implements Serializable {
     }
 
     public Optional<BukkitStackIdentifier> asBukkitIdentifier() {
-        if (item.stackReference().identifier() instanceof BukkitStackIdentifier identifier) {
-            return Optional.of(identifier);
-        }
-        return Optional.empty();
+        return item.stackReference().identifier().map(identifier -> {
+            if (identifier instanceof BukkitStackIdentifier bukkitIdentifier) {
+                return bukkitIdentifier;
+            }
+            return null;
+        });
     }
 
     public Optional<WolfyUtilsStackIdentifier> asWolfyUtilsIdentifier() {
-        if (item.stackReference().identifier() instanceof WolfyUtilsStackIdentifier identifier) {
-            return Optional.of(identifier);
-        }
-        return Optional.empty();
+        return item.stackReference().identifier().map(identifier -> {
+            if (identifier instanceof WolfyUtilsStackIdentifier wolfyUtilsStackIdentifier) {
+                return wolfyUtilsStackIdentifier;
+            }
+            return null;
+        });
     }
 
     public boolean isBukkitIdentifier() {
-        return item.stackReference().identifier() instanceof BukkitStackIdentifier;
+        return item.stackReference().identifier().map(identifier -> identifier instanceof BukkitStackIdentifier).orElse(false);
     }
 
     public void editCustomItem(CustomItem customItem) {
@@ -134,7 +138,8 @@ public class Items implements Serializable {
     public void setItem(boolean recipeItem, StackReference reference) {
         this.original = reference;
         setRecipeItem(recipeItem);
-        if (reference.identifier() instanceof WolfyUtilsStackIdentifier wolfyUtilsStackIdentifier) {
+        if (reference.identifier().isEmpty()) return;
+        if (reference.identifier().get() instanceof WolfyUtilsStackIdentifier wolfyUtilsStackIdentifier) {
             wolfyUtilsStackIdentifier.customItem().ifPresent(this::editCustomItem);
         } else {
             createCustomItem(reference);

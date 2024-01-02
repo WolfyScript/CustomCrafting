@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -157,7 +158,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(11)))
                 .setVariants(guiHandler, getSource().choices(player));
         ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(24)))
-                .setVariants(guiHandler, this.getResult().choices().stream().filter(reference -> !reference.identifier().permission().map(player::hasPermission).orElse(true)).toList());
+                .setVariants(guiHandler, this.getResult().choices().stream().filter(reference -> !reference.identifier().flatMap(StackIdentifier::permission).map(player::hasPermission).orElse(true)).toList());
     }
 
     @Override

@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook;
 
-import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -200,7 +200,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
             Iterator<StackReference> iterator = variants.iterator();
             while (iterator.hasNext()) {
                 StackReference reference = iterator.next();
-                if (reference.identifier().permission().map(perm -> guiHandler.getPlayer().hasPermission(perm)).orElse(true)) continue;
+                if (reference.identifier().flatMap(StackIdentifier::permission).map(perm -> guiHandler.getPlayer().hasPermission(perm)).orElse(true)) continue;
                 iterator.remove();
             }
         }

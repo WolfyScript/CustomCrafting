@@ -74,7 +74,17 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
                         .object(recipe -> recipe.addition, initStep -> initStep.use(Ingredient.VALIDATOR).name(c -> "Addition").optional())
                         .require(1)
                 )
-                .object(recipe -> recipe.result, initStep -> initStep.use(Result.VALIDATOR))
+                .object(recipe -> recipe.repairTask, initStep -> initStep.def().validate(taskValidationContainer -> {
+                    if (taskValidationContainer.value().isEmpty())
+                        return taskValidationContainer.update().type(ValidationContainer.ResultType.INVALID);
+                    RepairTask repairTask = taskValidationContainer.value().get();
+
+                    if (repairTask instanceof RepairTaskResult repairTaskResult) {
+                        var value = Result.VALIDATOR.validate(repairTaskResult.getResult());
+                        return taskValidationContainer.update().type(value.type());
+                    }
+                    return taskValidationContainer.update().type(ValidationContainer.ResultType.VALID);
+                }))
                 .object(recipe -> recipe.repairCost, initStep -> initStep.def().name(c -> "Repair Cost").validate(repairCostContainer -> {
                     if (repairCostContainer.value().map(integer -> integer > 0).orElse(false)) {
                         return repairCostContainer.update().type(ValidationContainer.ResultType.VALID);

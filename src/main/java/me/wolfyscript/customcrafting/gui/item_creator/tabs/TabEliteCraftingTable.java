@@ -157,7 +157,7 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
     public boolean shouldRender(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
         return item.getType().isBlock() ||
                 (
-                        customItem.stackReference().identifier() instanceof ItemsAdderStackIdentifier iaRef &&
+                        customItem.stackReference().identifier().orElse(null) instanceof ItemsAdderStackIdentifier iaRef &&
                         ((WolfyUtilCore) update.getGuiHandler().getWolfyUtils().getCore()).getCompatibilityManager().getPlugins().evaluateIfAvailable("ItemsAdder", ItemsAdderIntegration.class, ia -> ia.getStackInstance(iaRef.itemId()).map(CustomStack::isBlock).orElse(false))
                 );
     }
