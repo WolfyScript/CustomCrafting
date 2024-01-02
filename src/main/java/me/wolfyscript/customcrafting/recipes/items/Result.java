@@ -58,12 +58,7 @@ public class Result extends RecipeItemStack {
     public static final Validator<Result> VALIDATOR;
 
     static {
-        VALIDATOR = ValidatorBuilder.<Result>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/result")).use(RecipeItemStack.validatorFor())
-                .validate(resultValidationContainer -> {
-                    Optional<Result> value = resultValidationContainer.value();
-                    return resultValidationContainer.update().type(ValidationContainer.ResultType.VALID);
-                })
-                .build();
+        VALIDATOR = ValidatorBuilder.<Result>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/result")).use(RecipeItemStack.validatorFor()).build();
     }
 
     @JsonIgnore
