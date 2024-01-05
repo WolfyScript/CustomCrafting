@@ -66,13 +66,12 @@ public abstract class RecipeItemStack {
                         .forEach(apiReferenceInitStep -> apiReferenceInitStep.def()
                                 .validate(container -> container.value()
                                         .map(reference -> {
-                                            if (!ItemUtils.isAirOrNull(reference.referencedStack())) {
-                                                return container.update().type(ValidationContainer.ResultType.VALID);
+                                            if (reference.identifier().isEmpty()) {
+                                                return container.update().type(ValidationContainer.ResultType.PENDING).fault(MISSING_THIRD_PARTY);
                                             }
-                                            if (ItemUtils.isAirOrNull(reference.originalStack())) {
-                                                return container.update().type(ValidationContainer.ResultType.INVALID).fault(INVALID_ITEM);
-                                            }
-                                            return container.update().type(ValidationContainer.ResultType.PENDING).fault(MISSING_THIRD_PARTY);
+                                            // TODO: Find a better workaround
+                                            // For now, ignore reference original stack check, to allow old config files.
+                                            return container.update().type(ValidationContainer.ResultType.VALID);
                                         }).orElseGet(() -> container.update().type(ValidationContainer.ResultType.INVALID).fault(NULL_ITEM))
                                 ))
                         .optional()
