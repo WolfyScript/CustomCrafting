@@ -113,7 +113,6 @@ public abstract class MergeAdapter implements Keyed {
         return merge(recipeData,
                 player,
                 block,
-                // TODO: Replace CustomItem with StackReference
                 resultReference.identifier()
                         .map(identifier -> identifier instanceof WolfyUtilsStackIdentifier wuIdentifier ? wuIdentifier : null)
                         .map(wolfyUtilsStackIdentifier -> wolfyUtilsStackIdentifier.customItem().orElse(new CustomItem(Material.AIR)))
