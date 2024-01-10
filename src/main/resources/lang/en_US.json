@@ -189,8 +189,9 @@
     ],
     "info": "<dark_aqua>type <gold>/cc help </gold>for help!</dark_aqua>",
     "lockdown": {
-      "enabled": "<grey>[<red><b>LOCKDOWN</b></red>]</grey> <green>ENABLED! </green><red>Recipes will be blocked from now on!</red>",
-      "disabled": "<grey>[<red><b>LOCKDOWN</b></red>]</grey> <red>DISABLED! Recipes will no longer be blocked!</red>"
+      "enabled": "<grey>[<red><b>Lockdown</b></red>]</grey> <green>ON! </green><red>All custom recipes will get blocked!</red>",
+      "disabled": "<grey>[<red><b>Lockdown</b></red>]</grey> <red>OFF! Custom recipes will no longer get blocked!</red>",
+      "confirm": "<yellow>Lockdown ist currently <b><state></b>! To toggle Lockdown run <white>/cc lockdown confirm</white>"
     },
     "darkmode": {
       "enabled": "<green>Enabled Dark Mode for the GUIs!</green>",
