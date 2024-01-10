@@ -67,7 +67,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
         }
     }
 
-    public abstract void validatePending();
+    public abstract int validatePending();
 
     /**
      * Sets the new value for the "replace data" option.<br>

@@ -167,7 +167,7 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     @Override
-    public void validatePending() {
+    public int validatePending() {
         int pendingSize = pendingRecipes.size();
         int validatedRecipeCount = 0;
 
@@ -190,6 +190,7 @@ public class LocalStorageLoader extends ResourceLoader {
 
         printPendingRecipes();
         printInvalidRecipes();
+        return validatedRecipeCount;
     }
 
     private void printPendingRecipes() {

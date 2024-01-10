@@ -87,8 +87,8 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     }
 
     @Override
-    public void validatePending() {
-
+    public int validatePending() {
+        return 0;
     }
 
     /**
