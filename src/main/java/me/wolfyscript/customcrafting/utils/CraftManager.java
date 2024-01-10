@@ -56,6 +56,7 @@ import org.bukkit.inventory.ItemStack;
 
 public final class CraftManager {
 
+    private long lastLockDownWarning = 0;
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
     private final Map<InventoryView, MatrixData> currentMatrixData = new HashMap<>();
     private final CustomCrafting customCrafting;
@@ -84,7 +85,13 @@ public final class CraftManager {
      */
     public Optional<CraftingData> checkCraftingMatrix(ItemStack[] matrix, Conditions.Data data, RecipeType.Container.CraftingContainer<?>... types) {
         data.player().ifPresent(player -> remove(player.getUniqueId()));
-        if (customCrafting.getConfigHandler().getConfig().isLockedDown()) return Optional.empty();
+        if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
+            if (System.currentTimeMillis() > lastLockDownWarning + (1000 * 60 * 60)) {
+                customCrafting.getLogger().warning("Lockdown is enabled! All custom recipes are blocked!");
+                lastLockDownWarning = System.currentTimeMillis();
+            }
+            return Optional.empty();
+        }
         var matrixData = MatrixData.of(matrix);
         return customCrafting.getRegistries().getRecipes().get(types)
                 .sorted() // Possibility for parallel stream when enough recipes are registered to amortize the overhead. (Things like the PreCraftEvent might interfere. TODO: Experimental Feature)
