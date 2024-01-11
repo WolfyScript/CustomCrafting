@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
@@ -127,8 +128,8 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @JsonIgnore
     public void setIngredients(Stream<Ingredient> ingredients) {
-        List<Ingredient> ingredientsNew = ingredients.filter(ingredient -> ingredient != null && !ingredient.isEmpty()).toList();
-        Preconditions.checkArgument(!ingredientsNew.isEmpty(), "Invalid ingredients! Recipe requires non-air ingredients!");
+        List<Ingredient> ingredientsNew = ingredients.filter(Objects::nonNull).toList();
+        Preconditions.checkArgument(!ingredientsNew.isEmpty(), "Invalid ingredients! Recipe requires ingredients!");
         this.ingredients = ingredientsNew;
         this.nonEmptyIngredientSize = (int) this.ingredients.stream().filter(ingredient -> !ingredient.isAllowEmpty()).count();
         this.hasAllowedEmptyIngredient = this.nonEmptyIngredientSize != this.ingredients.size();
