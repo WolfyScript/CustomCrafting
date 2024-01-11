@@ -69,8 +69,9 @@ public abstract class RecipeItemStack {
                                             if (reference.identifier().isEmpty()) {
                                                 return container.update().type(ValidationContainer.ResultType.PENDING).fault(MISSING_THIRD_PARTY);
                                             }
-                                            // TODO: Find a better workaround
-                                            // For now, ignore reference original stack check, to allow old config files.
+                                            if (ItemUtils.isAirOrNull(reference.originalStack())) {
+                                                return container.update().type(ValidationContainer.ResultType.INVALID).fault(INVALID_ITEM);
+                                            }
                                             return container.update().type(ValidationContainer.ResultType.VALID);
                                         }).orElseGet(() -> container.update().type(ValidationContainer.ResultType.INVALID).fault(NULL_ITEM))
                                 ))
