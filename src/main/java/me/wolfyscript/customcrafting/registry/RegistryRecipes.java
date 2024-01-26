@@ -39,6 +39,7 @@ import me.wolfyscript.utilities.registry.Registries;
 import me.wolfyscript.utilities.registry.RegistrySimple;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -118,9 +119,16 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 try {
                     Recipe bukkitRecipe = vanillaRecipe.getVanillaRecipe();
-                    if (bukkitRecipe != null && !Bukkit.addRecipe(bukkitRecipe)) {
-                        customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
+                    if (bukkitRecipe != null) {
+                        // In some cases the recipe seems to still exist? In that case remove it and then add it again
+                        if (Bukkit.getRecipe(((Keyed) bukkitRecipe).getKey()) != null) {
+                            Bukkit.removeRecipe(((Keyed) bukkitRecipe).getKey());
+                        }
+                        if (Bukkit.addRecipe(bukkitRecipe)) {
+                            return;
+                        }
                     }
+                    customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
                 } catch (IllegalArgumentException | IllegalStateException ex) {
                     customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
