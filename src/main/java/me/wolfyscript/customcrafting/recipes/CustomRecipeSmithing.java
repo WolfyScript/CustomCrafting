@@ -62,6 +62,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -163,23 +164,23 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     public SmithingData check(Player player, InventoryView view, ItemStack template, ItemStack base, ItemStack addition) {
         if (!checkConditions(Conditions.Data.of(player, view))) return null;
 
+        final Optional<IngredientData> baseData = getBase().checkChoices(base, isCheckNBT()).map(reference -> new IngredientData(BASE_SLOT, BASE_SLOT, getBase(), reference, base));
+        if (baseData.isEmpty() && !getBase().isAllowEmpty()) return null;
 
-        final IngredientData baseData = getBase().checkChoices(base, isCheckNBT()).map(reference -> new IngredientData(BASE_SLOT, BASE_SLOT, getBase(), reference, base)).orElse(null);
-        if (baseData == null && !getBase().isAllowEmpty()) return null;
+        final Optional<IngredientData> additionData = getAddition().checkChoices(addition, isCheckNBT()).map(reference -> new IngredientData(ADDITION_SLOT, ADDITION_SLOT, getAddition(), reference, addition));
+        if (additionData.isEmpty() && !getAddition().isAllowEmpty()) return null;
 
-        final IngredientData additionData = getAddition().checkChoices(addition, isCheckNBT()).map(reference -> new IngredientData(ADDITION_SLOT, ADDITION_SLOT, getAddition(), reference, base)).orElse(null);
-        if (additionData == null && !getAddition().isAllowEmpty()) return null;
-
-        IngredientData templateData = null;
+        Optional<IngredientData> templateData = Optional.empty();
         if (IS_1_20 && getTemplate() != null) {
-            templateData = getTemplate().checkChoices(template, isCheckNBT()).map(reference -> new IngredientData(0, 0, getTemplate(), reference, template)).orElse(null);
-            if (templateData == null && !getTemplate().isAllowEmpty()) return null;
+            templateData = getTemplate().checkChoices(template, isCheckNBT()).map(reference -> new IngredientData(0, 0, getTemplate(), reference, template));
+            if (templateData.isEmpty() && !getTemplate().isAllowEmpty()) return null;
         }
 
-        final IngredientData[] ingredientData = IS_1_20 ? new IngredientData[]{templateData, baseData, additionData} : new IngredientData[]{baseData, additionData};
+        final IngredientData[] ingredientData = IS_1_20 ?
+                new IngredientData[]{templateData.orElse(null), baseData.orElse(null), additionData.orElse(null)} :
+                new IngredientData[]{baseData.orElse(null), additionData.orElse(null)};
         return new SmithingData(this, ingredientData);
     }
-
 
     @Override
     public Ingredient getIngredient(int slot) {
@@ -330,7 +331,13 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     private final class Instantiate1_20Recipe {
 
         private SmithingRecipe create1_20PlaceholderRecipe() {
-            return new org.bukkit.inventory.SmithingTransformRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), getRecipeChoiceFor(getTemplate()), getRecipeChoiceFor(getBase()), getRecipeChoiceFor(getAddition()));
+            return new org.bukkit.inventory.SmithingTransformRecipe(
+                    ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(),
+                    getResult().getItemStack(),
+                    getRecipeChoiceFor(getTemplate()),
+                    getRecipeChoiceFor(getBase()),
+                    getRecipeChoiceFor(getAddition())
+            );
         }
 
     }
