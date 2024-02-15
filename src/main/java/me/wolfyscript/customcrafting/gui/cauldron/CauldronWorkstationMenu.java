@@ -32,6 +32,7 @@ import me.wolfyscript.customcrafting.gui.InteractionUtils;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.Tag;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -42,6 +43,9 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.reflection.InventoryUpdate;
+import me.wolfyscript.utilities.util.version.MinecraftVersion;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
@@ -107,6 +111,7 @@ public class CauldronWorkstationMenu extends CCWindow {
                     .action((cache, guiHandler, player, inventory, slot, event) -> false)
                     .postAction((cache, guiHandler, player, inventory, itemStack, i, event) -> {
                         cache.getCauldronWorkstation().getBlockData().ifPresent(cauldronBlockData -> cauldronBlockData.getResult()[finalResultSlot] = itemStack);
+                        updateTitle(guiHandler, player, inventory);
                     })
                     .render((cache, guiHandler, player, inventory, itemStack, slot) -> {
                         ItemStack result = cache.getCauldronWorkstation().getBlockData().map(cauldronBlockData -> cauldronBlockData.getResult()[finalResultSlot]).orElse(ItemUtils.AIR);
@@ -154,6 +159,18 @@ public class CauldronWorkstationMenu extends CCWindow {
                 .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
         getButtonBuilder().dummy(INDICATOR_WATER).state(s -> s.icon(Material.BLUE_STAINED_GLASS_PANE)
                 .render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.parsed("level", String.valueOf(cache.getCauldronWorkstation().getBlockData().map(data -> data.getCauldronStatus().map(CauldronBlockData.CauldronStatus::getLevel).orElse(0)).orElse(0)))))).register();
+    }
+
+    void updateTitle(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory) {
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
+            try {
+                player.getOpenInventory().setTitle(BukkitComponentSerializer.legacy().serialize(onUpdateTitle(player, inventory, guiHandler)));
+            } catch (IllegalArgumentException exception) {
+                // EMPTY! This shouldn't happen, just make sure to catch it.
+            }
+        } else {
+            InventoryUpdate.updateInventory(wolfyUtilities.getCore(), player, onUpdateTitle(player, inventory, guiHandler));
+        }
     }
 
     @Override
