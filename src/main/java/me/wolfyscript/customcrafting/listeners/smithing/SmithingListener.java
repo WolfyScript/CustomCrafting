@@ -114,6 +114,10 @@ public class SmithingListener implements Listener {
         ItemStack endResult = result.item(data, chosenResult, player, block);
         if (onlyChangeMaterial) {
             //Take the base item and just change the material.
+            if (base == null) { // The base item may be null! Make sure to reset the result slot!
+                event.setResult(null);
+                return;
+            }
             var baseCopy = base.clone();
             baseCopy.setType(endResult.getType());
             baseCopy.setAmount(endResult.getAmount());
