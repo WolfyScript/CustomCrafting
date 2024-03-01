@@ -48,18 +48,25 @@ public class SaveSubCommand extends AbstractSubCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         WolfyUtilities api = customCrafting.getApi();
         if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes_save")) {
+            sender.sendMessage("§eCreating backup of data directory...");
+
+            if (!customCrafting.getDataHandler().getActiveLoader().backup()) {
+                sender.sendMessage("§cFailed to create backup! Aborting re-save! Please check the errors in the logs!");
+                return true;
+            }
+
             api.getRegistries().getCustomItems().entrySet().forEach(entry -> {
                 api.getConsole().info("Saving item: " + entry.getKey().toString());
                 ItemLoader.saveItem(entry.getKey(), entry.getValue());
             });
+
             customCrafting.getRegistries().getRecipes().values().forEach(recipe -> {
                 api.getConsole().info("Saving recipe: " + recipe.getNamespacedKey());
                 recipe.save();
             });
-            sender.sendMessage("§eAll recipes are resaved! See the console log for errors.");
-            sender.sendMessage("§cNotice that some recipes must be recreated due incompatibility! These are: ");
-            sender.sendMessage("§c- recipes that caused errors when saving (their config is corrupted from now on)");
-            sender.sendMessage("§c- recipes that don't work when the server is restarted");
+
+            sender.sendMessage("§eAll recipes & items are re-saved! See the logs for errors");
+            sender.sendMessage("§cNotice that some recipes may fail due to incompatibility");
             sender.sendMessage("§eYou can get or ask for further information on the discord!");
         }
         return true;
