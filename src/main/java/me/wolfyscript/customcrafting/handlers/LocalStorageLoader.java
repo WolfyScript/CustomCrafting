@@ -42,17 +42,21 @@ import org.apache.commons.lang3.time.StopWatch;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class LocalStorageLoader extends ResourceLoader {
 
     private static final String PREFIX = "[LOCAL] ";
+    private static final DateTimeFormatter BACKUP_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS");
+    public static final File DATA_BACKUP_DIR = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data_backups");
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     private static final String ITEMS_FOLDER = "items";
     private static final String RECIPES_FOLDER = "recipes";
@@ -92,6 +96,48 @@ public class LocalStorageLoader extends ResourceLoader {
         Validator<T> validator = (Validator<T>) CustomCrafting.inst().getRegistries().getValidators().get(recipe.getRecipeType().getNamespacedKey());
         if (validator == null) return Optional.empty();
         return Optional.of(validator.validate(recipe));
+    }
+
+    public static void pack(File sourceDirPath, File zipFilePath) throws IOException {
+        Path p = Files.createFile(zipFilePath.toPath());
+        try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
+            Path pp = sourceDirPath.toPath();
+            Files.walk(pp)
+                    .filter(path -> !Files.isDirectory(path))
+                    .forEach(path -> {
+                        ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
+                        try {
+                            zs.putNextEntry(zipEntry);
+                            Files.copy(path, zs);
+                            zs.closeEntry();
+                        } catch (IOException e) {
+                            CustomCrafting.inst().getLogger().log(Level.SEVERE, e, () -> "Failed to create backup of data directory!");
+                        }
+                    });
+        } catch (IOException e) {
+            CustomCrafting.inst().getLogger().log(Level.SEVERE, e, () -> "Failed to create backup of data directory!");
+        }
+    }
+
+    @Override
+    public boolean backup() {
+        if (!DATA_BACKUP_DIR.exists()) {
+            if (!DATA_BACKUP_DIR.mkdirs()) {
+                customCrafting.getLogger().severe("Failed to create backup directory!");
+                return false;
+            }
+        }
+
+        LocalDateTime date = LocalDateTime.now();
+        String text = BACKUP_DATE_FORMAT.format(date);
+        try {
+            customCrafting.getLogger().info("Creating backup of data directory '" + text + ".zip'...");
+            pack(DATA_FOLDER, new File(DATA_BACKUP_DIR, text));
+            return true;
+        } catch (IOException e) {
+            customCrafting.getLogger().log(Level.SEVERE, e, () -> "Failed to create backup of data directory!");
+            return false;
+        }
     }
 
     @Override
