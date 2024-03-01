@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.BackupSettings;
 import me.wolfyscript.customcrafting.configs.DataSettings;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeLoader;
@@ -121,6 +122,11 @@ public class LocalStorageLoader extends ResourceLoader {
 
     @Override
     public boolean backup() {
+        BackupSettings backupSettings = customCrafting.getConfigHandler().getConfig().getLocalStorageSettings().backupSettings();
+        if (!backupSettings.enabled()) {
+            return true;
+        }
+
         if (!DATA_BACKUP_DIR.exists()) {
             if (!DATA_BACKUP_DIR.mkdirs()) {
                 customCrafting.getLogger().severe("Failed to create backup directory!");
@@ -133,6 +139,17 @@ public class LocalStorageLoader extends ResourceLoader {
         try {
             customCrafting.getLogger().info("Creating backup of data directory '" + text + ".zip'...");
             pack(DATA_FOLDER, new File(DATA_BACKUP_DIR, text));
+
+            // Purge older backups
+            File[] files = DATA_BACKUP_DIR.listFiles();
+            var duration = backupSettings.keepFor();
+            long currentTime = System.currentTimeMillis();
+            for (File file : files) {
+                if (currentTime > file.lastModified() + duration.toMillis()) {
+                    file.delete();
+                }
+            }
+
             return true;
         } catch (IOException e) {
             customCrafting.getLogger().log(Level.SEVERE, e, () -> "Failed to create backup of data directory!");
