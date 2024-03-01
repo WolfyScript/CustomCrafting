@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.configs;
 
 import java.util.*;
+import java.util.function.Function;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -166,24 +167,25 @@ public class MainConfig extends YamlConfiguration {
         return getBoolean("recipes.brewing");
     }
 
+    private <T> T getSetting(String key, Function<ConfigurationSection, T> creator) {
+        ConfigurationSection section = getConfigurationSection(key);
+        return section != null ? creator.apply(section) : null;
+    }
+
     public DataSettings getDataSettings() {
-        ConfigurationSection section = getConfigurationSection("data");
-        return section != null ? new DataSettings(section) : null;
+        return getSetting("data", DataSettings::new);
     }
 
     public LocalStorageSettings getLocalStorageSettings() {
-        ConfigurationSection section = getConfigurationSection("local_storage");
-        return section != null ? new LocalStorageSettings(section) : null;
+        return getSetting("local_storage", LocalStorageSettings::new);
     }
 
     public DatabaseSettings getDatabaseSettings() {
-        ConfigurationSection section = getConfigurationSection("database");
-        return section != null ? new DatabaseSettings(section) : null;
+        return getSetting("database", DatabaseSettings::new);
     }
 
     public CookingSettings getFurnacesSettings() {
-        ConfigurationSection section = getConfigurationSection("cooking");
-        return section != null ? new CookingSettings(section) : null;
+        return getSetting("cooking", CookingSettings::new);
     }
 
     public CauldronInteraction getCauldronInteraction() {

@@ -41,6 +41,12 @@ local_storage:
   # this should always be true if you don't use a database or want to export your data to the database.
   # If you use a database you can still load local data, but configure how it loads them with the following settings below.
   load: true
+  backup:
+    enabled: true
+    keep_for:
+      value: 60
+      unit: DAYS
+
   # Specifies if the local storage should be loaded before or after the database.
   # This is useful if you have items/recipes that depend on items in the database or other way around.
   # Make sure that the dependencies of items and recipes are loaded in the correct order.
