@@ -234,8 +234,8 @@ public class CustomCrafting extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        getLogger().info("WolfyUtils API: v" + ServerVersion.getWUVersion().getVersion());
-        getLogger().info("CustomCrafting: v" + getVersion().getVersion());
+        getLogger().info("WolfyUtils API: v" + getApi().getCore().getDescription().getVersion());
+        getLogger().info("CustomCrafting: v" + currentVersion);
         getLogger().info("Environment   : " + WolfyUtilities.getENVIRONMENT());
 
         api.getCore().applyWolfyUtilsJsonMapperModules(api.getJacksonMapperUtil().getGlobalMapper());
@@ -384,8 +384,8 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         getLogger().info("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         getLogger().info("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        getLogger().info("    Version      | v" + version.getVersion());
-        getLogger().info("    WolfyUtils   | v" + ServerVersion.getWUVersion().getVersion());
+        getLogger().info("    Version      | v" + currentVersion);
+        getLogger().info("    WolfyUtils   | v" + api.getCore().getDescription().getVersion());
         getLogger().info("    Bukkit       | " + Bukkit.getVersion() + "(API: " + Bukkit.getBukkitVersion() + ")");
         if (!getConfigHandler().getConfig().getDataSettings().printStackTrace()) {
             getLogger().warning("    Print Errors | false (Required for Support! Enable `data.print_stacktrace` in config.yml!)");
