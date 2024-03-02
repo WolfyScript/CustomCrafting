@@ -37,17 +37,23 @@ public class LocalStorageSettings  implements ConfigurationSerializable {
     private final boolean load;
     private final boolean beforeDatabase;
     private final boolean override;
+    private final BackupSettings backupSettings;
 
     public LocalStorageSettings(Map<String, Object> values) {
         this.load = values.get(LOAD) instanceof Boolean bool && bool;
         this.beforeDatabase = values.get(BEFORE_DATABASE) instanceof Boolean bool && bool;
         this.override = values.get(OVERRIDE) instanceof Boolean bool && bool;
+        ConfigurationSection section = values.get("data") instanceof ConfigurationSection s ? s : null;
+        this.backupSettings = section != null ? new BackupSettings(section) : null;
     }
 
     public LocalStorageSettings(ConfigurationSection section) {
         this.load = section.getBoolean(LOAD);
         this.beforeDatabase = section.getBoolean(BEFORE_DATABASE);
         this.override = section.getBoolean(OVERRIDE);
+
+        ConfigurationSection backupSection = section.getConfigurationSection("backup");
+        this.backupSettings = backupSection != null ? new BackupSettings(backupSection) : null;
     }
 
     @Override
@@ -69,5 +75,9 @@ public class LocalStorageSettings  implements ConfigurationSerializable {
 
     public boolean isOverride() {
         return override;
+    }
+
+    public BackupSettings backupSettings() {
+        return backupSettings;
     }
 }
