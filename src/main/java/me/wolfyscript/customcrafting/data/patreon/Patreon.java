@@ -54,6 +54,8 @@ public class Patreon {
         addPatron(new Patron("iachen", Tier.WOLFRAM));
         addPatron(new Patron("whja t", Tier.WOLFRAM));
         addPatron(new Patron("Green Masks", Tier.WOLFRAM));
+        addPatron(new Patron("lance fector", Tier.WOLFRAM));
+        addPatron(new Patron("Jack Snellings", Tier.WOLFRAM));
         addPatron(new Patron("MineHouse Server", Tier.WOLFRAM));
     }
 
