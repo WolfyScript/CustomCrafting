@@ -48,17 +48,20 @@ public class TabUnbreakable extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ToggleButton<>(KEY, (cache, guiHandler, player, guiInventory, i) -> {
-            CustomItem item = cache.getItems().getItem();
-            return !ItemUtils.isAirOrNull(item) && item.getItemMeta().isUnbreakable();
+            return cache.getItems().asBukkitIdentifier().map(identifier -> !ItemUtils.isAirOrNull(identifier.stack()) && identifier.stack().getItemMeta().isUnbreakable()).orElse(false);
         }, new ButtonState<>(KEY + ".enabled", Material.BEDROCK, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            var itemMeta = items.getItem().getItemMeta();
-            itemMeta.setUnbreakable(false);
-            items.getItem().setItemMeta(itemMeta);
+            cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
+                var itemMeta = identifier.stack().getItemMeta();
+                itemMeta.setUnbreakable(false);
+                identifier.stack().setItemMeta(itemMeta);
+            });
             return true;
         }), new ButtonState<>(KEY + ".disabled", Material.GLASS, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            var itemMeta = items.getItem().getItemMeta();
-            itemMeta.setUnbreakable(true);
-            items.getItem().setItemMeta(itemMeta);
+            cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
+                var itemMeta = identifier.stack().getItemMeta();
+                itemMeta.setUnbreakable(true);
+                identifier.stack().setItemMeta(itemMeta);
+            });
             return true;
         })));
     }

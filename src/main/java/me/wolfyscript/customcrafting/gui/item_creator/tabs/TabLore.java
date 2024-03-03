@@ -44,6 +44,8 @@ import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class TabLore extends ItemCreatorTabVanilla {
 
     public static final String KEY = "lore";
@@ -55,11 +57,18 @@ public class TabLore extends ItemCreatorTabVanilla {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         // MiniMessage is only included in Paper 1.18.2 or later
-        var loreChatEditor = creator.getCustomCrafting().isPaper() && ServerVersion.getVersion().isAfterOrEq(MinecraftVersion.of(1, 18, 2)) ? ChatUtils.createPaperLoreChatEditor(creator.getInventoryAPI()) : ChatUtils.createLoreChatEditor(creator.getInventoryAPI());
+        var loreChatEditor = creator.getCustomCrafting().isPaper() && ServerVersion.getVersion().isAfterOrEq(MinecraftVersion.of(1, 18, 2)) ?
+                ChatUtils.createPaperLoreChatEditor(creator.getInventoryAPI()) : ChatUtils.createLoreChatEditor(creator.getInventoryAPI());
 
         creator.registerButton(new ButtonOption(Material.WRITABLE_BOOK, this));
         creator.registerButton(new ChatInputButton<>(KEY + ".add", Material.WRITABLE_BOOK, (guiHandler, player, s, strings) -> {
-            guiHandler.getCustomCache().getItems().getItem().addLoreLine(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s, Placeholder.component("emtpy", Component.empty()))));
+            guiHandler.getCustomCache().getItems().asBukkitIdentifier().ifPresent(identifier -> {
+                List<String> lore = identifier.stack().getLore();
+                if (lore != null) {
+                    lore.add(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s, Placeholder.component("emtpy", Component.empty()))));
+                    identifier.stack().setLore(lore);
+                }
+            });
             return false;
         }));
         creator.registerButton(new ActionButton<>(KEY + ".edit", Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, i, event) -> {

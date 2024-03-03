@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,10 +32,16 @@ import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmokingRecipe;
 
 public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking, SmokingRecipe> {
+
+    static {
+        final Validator<CustomRecipeSmoking> VALIDATOR = ValidatorBuilder.<CustomRecipeSmoking>object(RecipeType.SMOKER.getNamespacedKey()).use(CustomRecipeCooking.validator())
+                .name(container -> "Smoking Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     public CustomRecipeSmoking(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
@@ -66,9 +74,9 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
     @Override
     public SmokingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            SmokingRecipe placeholderRecipe = new SmokingRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), new RecipeChoice.MaterialChoice(getResult().getItemStack().getType()), getExp(), getCookingTime());
+            SmokingRecipe placeholderRecipe = new SmokingRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), getMaterialSourceChoice(), getExp(), getCookingTime());
             Bukkit.addRecipe(placeholderRecipe);
-            return new SmokingRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+            return new SmokingRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().getItemStack(), getSourceChoice(), getExp(), getCookingTime());
         }
         return null;
     }

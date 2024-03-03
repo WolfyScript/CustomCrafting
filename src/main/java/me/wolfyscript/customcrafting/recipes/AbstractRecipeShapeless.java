@@ -24,20 +24,27 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
@@ -59,6 +66,13 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
     private int nonEmptyIngredientSize;
     @JsonIgnore
     private boolean hasAllowedEmptyIngredient;
+
+    protected static <RT extends AbstractRecipeShapeless<?,?>> Validator<RT> validator() {
+        return ValidatorBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shapeless_crafting")).def()
+                .object(recipe -> recipe.result, resultInitStep -> resultInitStep.use(Result.VALIDATOR))
+                .collection(recipe -> recipe.ingredients, init -> init.def().forEach(initEntry -> initEntry.use(Ingredient.VALIDATOR)))
+                .build();
+    }
 
     @Deprecated
     protected AbstractRecipeShapeless(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
@@ -114,8 +128,8 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @JsonIgnore
     public void setIngredients(Stream<Ingredient> ingredients) {
-        List<Ingredient> ingredientsNew = ingredients.filter(ingredient -> ingredient != null && !ingredient.isEmpty()).toList();
-        Preconditions.checkArgument(!ingredientsNew.isEmpty(), "Invalid ingredients! Recipe requires non-air ingredients!");
+        List<Ingredient> ingredientsNew = ingredients.filter(Objects::nonNull).toList();
+        Preconditions.checkArgument(!ingredientsNew.isEmpty(), "Invalid ingredients! Recipe requires ingredients!");
         this.ingredients = ingredientsNew;
         this.nonEmptyIngredientSize = (int) this.ingredients.stream().filter(ingredient -> !ingredient.isAllowEmpty()).count();
         this.hasAllowedEmptyIngredient = this.nonEmptyIngredientSize != this.ingredients.size();
@@ -126,10 +140,10 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         indexes.sort((index, index1) -> {
             var ingredient = this.ingredients.get(index);
             var ingredient1 = this.ingredients.get(index1);
-            if (ingredient.getChoices().size() > 1) {
-                return ingredient1.getChoices().size() > 1 ? 0 : 1;
+            if (ingredient.choices().size() > 1) {
+                return ingredient1.choices().size() > 1 ? 0 : 1;
             }
-            return ingredient1.getChoices().size() > 1 ? -1 : 0;
+            return ingredient1.choices().size() > 1 ? -1 : 0;
         });
         combinations = 1;
         for (Ingredient ingredient : this.ingredients) {
@@ -264,7 +278,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         for (int key : indexes) {
             if (!selectedSlots.contains(key) && !getBit(checkedIndices, key)) {
                 final var ingredient = ingredients.get(key);
-                final var checkResult = ingredient.check(item, isCheckNBT());
+                final var checkResult = ingredient.checkChoices(item, isCheckNBT());
                 if (checkResult.isPresent()) {
                     //For shapeless we can't actually determine the exact inventory slot of the ingredient (without massively increasing complexity), but we can make an estimate using the same tactic as with shaped recipes.
                     //Though, Items will still be slightly rearranged in the matrix.
@@ -297,8 +311,8 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         byteBuf.writeVarInt(ingredients.size());
         ingredients.forEach(ingredient -> {
             byteBuf.writeVarInt(ingredient.size());
-            for (CustomItem choice : ingredient.getChoices()) {
-                byteBuf.writeItemStack(choice.create());
+            for (StackReference choice : ingredient.choices()) {
+                byteBuf.writeItemStack(choice.referencedStack());
             }
         });
     }

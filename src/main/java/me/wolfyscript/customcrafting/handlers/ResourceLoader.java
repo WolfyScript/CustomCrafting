@@ -60,12 +60,18 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
     public void load(boolean upgrade) {
         load();
         if (upgrade) {
+            if (!backup()) {
+                api.getConsole().warn("Aborting Items & Recipes config upgrade to the latest format!");
+                return;
+            }
             api.getConsole().info("Updating Items & Recipes to the latest format..");
             save();
             api.getConsole().info("Loading updated Items & Recipes...");
             load();
         }
     }
+
+    public abstract int validatePending();
 
     /**
      * Sets the new value for the "replace data" option.<br>
@@ -88,9 +94,12 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
     }
 
     public void save() {
+        backup();
         api.getRegistries().getCustomItems().entrySet().forEach(entry -> ItemLoader.saveItem(this, entry.getKey(), entry.getValue()));
         customCrafting.getRegistries().getRecipes().values().forEach(recipe -> recipe.save(this, null));
     }
+
+    public boolean backup() { return true; }
 
     /**
      * Saves the specified recipe

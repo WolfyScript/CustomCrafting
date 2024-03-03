@@ -22,16 +22,18 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.validator.ValidationContainer;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.extension.ExecutionType;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.ResultTarget;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -46,23 +48,27 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result extends RecipeItemStack {
 
+    public static final Validator<Result> VALIDATOR;
+
+    static {
+        VALIDATOR = ValidatorBuilder.<Result>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/result")).use(RecipeItemStack.validatorFor()).build();
+    }
+
     @JsonIgnore
     private final Map<UUID, CustomItem> cachedItems = new HashMap<>();
     @JsonIgnore
+    private final Map<UUID, StackReference> cachedReferences = new HashMap<>();
+    @JsonIgnore
     private final Map<Vector, CustomItem> cachedBlockItems = new HashMap<>();
+    @JsonIgnore
+    private final Map<Vector, StackReference> cachedBlockReferences = new HashMap<>();
     private ResultTarget target;
     private List<ResultExtension> extensions;
     @JsonIgnore
@@ -94,15 +100,25 @@ public class Result extends RecipeItemStack {
         this.extensions = new ArrayList<>();
     }
 
-    public Result(APIReference... references) {
+    public Result(StackReference... references) {
         super(references);
         this.extensions = new ArrayList<>();
     }
 
     @JsonCreator
-    public Result(@JsonProperty("items") List<APIReference> items, @JsonProperty("tags") Set<NamespacedKey> tags) {
+    public Result(@JsonProperty("items") Collection<StackReference> items, @JsonProperty("tags") Set<NamespacedKey> tags) {
         super(items, tags);
         this.extensions = new ArrayList<>();
+    }
+
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public Result(APIReference... references) {
+        super(Arrays.stream(references).map(APIReference::convertToStackReference).toArray(StackReference[]::new));
+    }
+
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public Result(@JsonProperty("items") List<APIReference> items, @JsonProperty("tags") Set<NamespacedKey> tags) {
+        this(items.stream().map(APIReference::convertToStackReference).toList(), tags);
     }
 
     @Override
@@ -145,6 +161,62 @@ public class Result extends RecipeItemStack {
         removeExtension(this.extensions.get(index));
     }
 
+    public RandomCollection<StackReference> randomChoices(@Nullable Player player) {
+        return (player == null ? choices() : choices(player)).stream().collect(RandomCollection.getCollector((rdmCollection, reference) -> rdmCollection.add(reference.weight(), reference)));
+    }
+
+    /**
+     * @param player The player to get the result for.
+     * @return The optional {@link CustomItem} for that player. This might be a cached Item if the player hasn't taken it out previously.
+     */
+    public Optional<StackReference> item(@Nullable Player player) {
+        StackReference item = cachedReferences.computeIfAbsent(player == null ? null : player.getUniqueId(), uuid -> randomChoices(player).next());
+        addCachedReference(player, item);
+        return Optional.ofNullable(item);
+    }
+
+    /**
+     * @param block The {@link Block} to get the result for.
+     * @return The optional {@link CustomItem} for that block. This might be a cached Item if the block failed to processed it.
+     */
+    public Optional<StackReference> item(@NotNull Block block) {
+        var vector = block.getLocation().toVector();
+        var item = cachedBlockReferences.computeIfAbsent(vector, uuid -> randomChoices(null).next());
+        addCachedReference(vector, item);
+        return Optional.ofNullable(item);
+    }
+
+    /**
+     * Combination of {@link #item(Player)} and {@link #item(Block)}.
+     * <p>
+     * If the player is available it returns the item for the player.
+     * <br>
+     * If the player is null, but the block is available it returns the item for the block.
+     * </p>
+     *
+     * @param player The player to get the result for.
+     * @param block  The {@link Block} to get the result for.
+     * @return Either the item for the player or block, depending on which one is available.
+     */
+    public Optional<StackReference> item(@Nullable Player player, @Nullable Block block) {
+        if (player != null) {
+            return item(player);
+        }
+        return block != null ? item(block) : Optional.empty();
+    }
+
+    public ItemStack item(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block) {
+        return item(recipeData, item(player, block).orElse(StackReference.of(new ItemStack(Material.AIR))), player, block);
+    }
+
+    public ItemStack item(RecipeData<?> recipeData, StackReference chosenItem, @Nullable Player player, @Nullable Block block) {
+        if (target != null) {
+            return target.merge(recipeData, player, block, chosenItem, chosenItem.referencedStack());
+        }
+        return chosenItem.referencedStack();
+    }
+
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public RandomCollection<CustomItem> getRandomChoices(@Nullable Player player) {
         return (player == null ? getChoices() : getChoices(player)).stream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getWeight(), customItem)));
     }
@@ -153,21 +225,18 @@ public class Result extends RecipeItemStack {
      * @param player The player to get the result for.
      * @return The optional {@link CustomItem} for that player. This might be a cached Item if the player hasn't taken it out previously.
      */
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public Optional<CustomItem> getItem(@Nullable Player player) {
-        CustomItem item = cachedItems.computeIfAbsent(player == null ? null : player.getUniqueId(), uuid -> getRandomChoices(player).next());
-        addCachedItem(player, item);
-        return Optional.ofNullable(item);
+        return item(player).map(StackReference::convertToLegacy);
     }
 
     /**
      * @param block The {@link Block} to get the result for.
      * @return The optional {@link CustomItem} for that block. This might be a cached Item if the block failed to processed it.
      */
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public Optional<CustomItem> getItem(@NotNull Block block) {
-        var vector = block.getLocation().toVector();
-        var item = cachedBlockItems.computeIfAbsent(vector, uuid -> getRandomChoices(null).next());
-        addCachedItem(vector, item);
-        return Optional.ofNullable(item);
+        return item(block).map(StackReference::convertToLegacy);
     }
 
     /**
@@ -182,22 +251,54 @@ public class Result extends RecipeItemStack {
      * @param block  The {@link Block} to get the result for.
      * @return Either the item for the player or block, depending on which one is available.
      */
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public Optional<CustomItem> getItem(@Nullable Player player, @Nullable Block block) {
-        if (player != null) {
-            return getItem(player);
-        }
-        return block != null ? getItem(block) : Optional.empty();
+        return item(player, block).map(StackReference::convertToLegacy);
     }
 
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public ItemStack getItem(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block) {
-        return getItem(recipeData, getItem(player, block).orElse(new CustomItem(Material.AIR)), player, block);
+        return item(recipeData, player, block);
     }
 
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public ItemStack getItem(RecipeData<?> recipeData, CustomItem chosenItem, @Nullable Player player, @Nullable Block block) {
         if (target != null) {
             return target.merge(recipeData, player, block, chosenItem, chosenItem.create());
         }
         return chosenItem.create();
+    }
+
+    private void addCachedReference(Player player, StackReference reference) {
+        if (player != null) {
+            if (reference == null) {
+                cachedReferences.remove(player.getUniqueId());
+            } else {
+                cachedReferences.put(player.getUniqueId(), reference);
+            }
+        }
+    }
+
+    public void removeCachedReference(Player player) {
+        if (player != null) {
+            cachedReferences.remove(player.getUniqueId());
+        }
+    }
+
+    private void addCachedReference(Vector block, StackReference reference) {
+        if (block != null) {
+            if (reference == null) {
+                cachedBlockReferences.remove(block);
+            } else {
+                cachedBlockReferences.put(block, reference);
+            }
+        }
+    }
+
+    public void removeCachedReference(Block block) {
+        if (block != null) {
+            cachedBlockReferences.remove(block.getLocation().toVector());
+        }
     }
 
     private void addCachedItem(Player player, CustomItem customItem) {

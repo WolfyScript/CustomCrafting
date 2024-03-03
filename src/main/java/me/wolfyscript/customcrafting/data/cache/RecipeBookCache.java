@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.data.cache;
 
 import java.util.Optional;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
@@ -46,8 +48,8 @@ public class RecipeBookCache {
 
     private int page;
     private int subFolderPage;
-    private Map<CustomItem, List<CustomRecipe<?>>> cachedSubFolderRecipes;
-    private List<CustomItem> researchItems;
+    private Map<StackReference, List<CustomRecipe<?>>> cachedSubFolderRecipes;
+    private List<StackReference> researchItems;
 
     private boolean prepareRecipe;
 
@@ -115,10 +117,6 @@ public class RecipeBookCache {
         this.categoryFilter = categoryFilter;
     }
 
-    public Map<Character, ArrayList<CustomItem>> getIngredients() {
-        return new HashMap<>();
-    }
-
     public int getSubFolder() {
         return researchItems.size();
     }
@@ -127,7 +125,7 @@ public class RecipeBookCache {
         return this.cachedSubFolderRecipes.getOrDefault(getResearchItem(), new ArrayList<>());
     }
 
-    public void setSubFolderRecipes(CustomItem customItem, List<CustomRecipe<?>> subFolderRecipes) {
+    public void setSubFolderRecipes(StackReference customItem, List<CustomRecipe<?>> subFolderRecipes) {
         this.cachedSubFolderRecipes.put(customItem, subFolderRecipes);
     }
 
@@ -139,11 +137,11 @@ public class RecipeBookCache {
         this.subFolderPage = subFolderPage;
     }
 
-    public List<CustomItem> getResearchItems() {
+    public List<StackReference> getResearchItems() {
         return researchItems;
     }
 
-    public void addResearchItem(CustomItem item) {
+    public void addResearchItem(StackReference item) {
         researchItems.add(0, item);
     }
 
@@ -153,11 +151,11 @@ public class RecipeBookCache {
         }
     }
 
-    public void setResearchItems(List<CustomItem> researchItems) {
+    public void setResearchItems(List<StackReference> researchItems) {
         this.researchItems = researchItems;
     }
 
-    public CustomItem getResearchItem() {
+    public StackReference getResearchItem() {
         return !getResearchItems().isEmpty() ? getResearchItems().get(0) : null;
     }
 
@@ -165,7 +163,7 @@ public class RecipeBookCache {
         recipe.prepareMenu(guiHandler, guiHandler.getInvAPI().getGuiCluster("recipe_book"));
     }
 
-    public void setCachedSubFolderRecipes(Map<CustomItem, List<CustomRecipe<?>>> cachedSubFolderRecipes) {
+    public void setCachedSubFolderRecipes(Map<StackReference, List<CustomRecipe<?>>> cachedSubFolderRecipes) {
         this.cachedSubFolderRecipes = cachedSubFolderRecipes;
     }
 }

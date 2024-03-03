@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
@@ -48,6 +50,19 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
 public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone> {
+
+    static {
+        final Validator<CustomRecipeGrindstone> VALIDATOR = ValidatorBuilder.<CustomRecipeGrindstone>object(RecipeType.GRINDSTONE.getNamespacedKey()).def()
+                .name(container -> "Grindstone Recipe" + container.value().map(recipe -> " [" + recipe.getNamespacedKey() + "]").orElse(""))
+                .object(recipe -> recipe, i -> i.def().name(c -> "Ingredients")
+                        .object(recipe -> recipe.inputTop, initStep -> initStep.use(Ingredient.VALIDATOR).name(c -> "Top Ingredient").optional())
+                        .object(recipe -> recipe.inputBottom, initStep -> initStep.use(Ingredient.VALIDATOR).name(c -> "Bottom Ingredient").optional())
+                        .require(1)
+                )
+                .object(recipe -> recipe.result, initStep -> initStep.use(Result.VALIDATOR))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     private Ingredient inputTop;
     private Ingredient inputBottom;

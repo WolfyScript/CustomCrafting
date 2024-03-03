@@ -23,37 +23,138 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.BackupSettings;
+import me.wolfyscript.customcrafting.configs.DataSettings;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import com.wolfyscript.utilities.validator.ValidationContainer;
+import com.wolfyscript.utilities.validator.Validator;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class LocalStorageLoader extends ResourceLoader {
 
     private static final String PREFIX = "[LOCAL] ";
+    private static final DateTimeFormatter BACKUP_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS");
+    public static final File DATA_BACKUP_DIR = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data_backups");
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     private static final String ITEMS_FOLDER = "items";
     private static final String RECIPES_FOLDER = "recipes";
+    private DataSettings dataSettings;
+    private ExecutorService executor;
+    private final List<NamespacedKey> failedRecipes;
+    private final List<ValidationContainer<? extends CustomRecipe<?>>> pendingRecipes;
+    private final List<ValidationContainer<? extends CustomRecipe<?>>> invalidRecipes;
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
         super(customCrafting, new NamespacedKey(customCrafting, "local_loader"));
+        this.pendingRecipes = new ArrayList<>();
+        this.failedRecipes = new ArrayList<>();
+        this.invalidRecipes = new ArrayList<>();
+        this.dataSettings = customCrafting.getConfigHandler().getConfig().getDataSettings();
+    }
+
+    protected void markPending(ValidationContainer<? extends CustomRecipe<?>> recipe) {
+        synchronized (pendingRecipes) {
+            pendingRecipes.add(recipe);
+        }
+    }
+
+    protected void markInvalid(ValidationContainer<? extends CustomRecipe<?>> recipe) {
+        synchronized (invalidRecipes) {
+            invalidRecipes.add(recipe);
+        }
+    }
+
+    protected void markFailed(NamespacedKey recipe) {
+        synchronized (failedRecipes) {
+            failedRecipes.add(recipe);
+        }
+    }
+
+    private static <T extends CustomRecipe<?>> Optional<ValidationContainer<T>> validateRecipe(T recipe) {
+        Validator<T> validator = (Validator<T>) CustomCrafting.inst().getRegistries().getValidators().get(recipe.getRecipeType().getNamespacedKey());
+        if (validator == null) return Optional.empty();
+        return Optional.of(validator.validate(recipe));
+    }
+
+    public static void pack(File sourceDirPath, File zipFilePath) throws IOException {
+        Path p = Files.createFile(zipFilePath.toPath());
+        try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
+            Path pp = sourceDirPath.toPath();
+            Files.walk(pp)
+                    .filter(path -> !Files.isDirectory(path))
+                    .forEach(path -> {
+                        ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
+                        try {
+                            zs.putNextEntry(zipEntry);
+                            Files.copy(path, zs);
+                            zs.closeEntry();
+                        } catch (IOException e) {
+                            CustomCrafting.inst().getLogger().log(Level.SEVERE, e, () -> "Failed to create backup of data directory!");
+                        }
+                    });
+        } catch (IOException e) {
+            CustomCrafting.inst().getLogger().log(Level.SEVERE, e, () -> "Failed to create backup of data directory!");
+        }
+    }
+
+    @Override
+    public boolean backup() {
+        BackupSettings backupSettings = customCrafting.getConfigHandler().getConfig().getLocalStorageSettings().backupSettings();
+        if (!backupSettings.enabled()) {
+            return true;
+        }
+
+        if (!DATA_BACKUP_DIR.exists()) {
+            if (!DATA_BACKUP_DIR.mkdirs()) {
+                customCrafting.getLogger().severe("Failed to create backup directory!");
+                return false;
+            }
+        }
+
+        LocalDateTime date = LocalDateTime.now();
+        String text = BACKUP_DATE_FORMAT.format(date);
+        try {
+            customCrafting.getLogger().info("Creating backup of data directory '" + text + ".zip'...");
+            pack(DATA_FOLDER, new File(DATA_BACKUP_DIR, text));
+
+            // Purge older backups
+            File[] files = DATA_BACKUP_DIR.listFiles();
+            var duration = backupSettings.keepFor();
+            long currentTime = System.currentTimeMillis();
+            for (File file : files) {
+                if (currentTime > file.lastModified() + duration.toMillis()) {
+                    file.delete();
+                }
+            }
+
+            return true;
+        } catch (IOException e) {
+            customCrafting.getLogger().log(Level.SEVERE, e, () -> "Failed to create backup of data directory!");
+            return false;
+        }
     }
 
     @Override
@@ -63,6 +164,9 @@ public class LocalStorageLoader extends ResourceLoader {
          *   items/<folder>/<item_name>
          */
         api.getConsole().info("- - - - [Local Storage] - - - -");
+        int processors = Math.min(Runtime.getRuntime().availableProcessors(), dataSettings.maxProcessors());
+        customCrafting.getLogger().info(PREFIX + "Using " + processors + " threads");
+        executor = Executors.newWorkStealingPool(processors);
         api.getConsole().info(PREFIX + "Looking through data folder...");
         String[] dirs = DATA_FOLDER.list();
         if (dirs != null) {
@@ -70,6 +174,8 @@ public class LocalStorageLoader extends ResourceLoader {
             for (String dir : dirs) {
                 loadItemsInNamespace(dir);
             }
+            StopWatch stopWatch = StopWatch.createStarted();
+
             api.getConsole().info(PREFIX + "$msg.startup.recipes.recipes$");
             new NewDataLoader(dirs).load();
             //Loading old & legacy recipes
@@ -77,8 +183,104 @@ public class LocalStorageLoader extends ResourceLoader {
             new OldDataLoader(dirs).load();
             new LegacyDataLoader(dirs).load();
 
-            api.getConsole().info(PREFIX + "Loaded " + customCrafting.getRegistries().getRecipes().values().size() + " recipes");
-            api.getConsole().info("");
+            executor.shutdown();
+
+            Pair<Long, TimeUnit> timeout = config.getDataSettings().timeoutLoading();
+            boolean successful;
+            try {
+                successful = executor.awaitTermination(timeout.getKey(), timeout.getValue());
+            } catch (InterruptedException e) {
+                api.getConsole().getLogger().info(String.format("[LOCAL] Loaded %d recipes in %sms; Process was interrupted: %s!",
+                        customCrafting.getRegistries().getRecipes().values().size(),
+                        stopWatch.getTime(TimeUnit.MILLISECONDS),
+                        e.getMessage())
+                );
+                if (!failedRecipes.isEmpty()) {
+                    api.getConsole().getLogger().warning(String.format("[LOCAL] Failed to load %d recipes", failedRecipes.size()));
+                }
+                e.printStackTrace();
+                return;
+            }
+            stopWatch.stop();
+            int recipeCount = customCrafting.getRegistries().getRecipes().values().size();
+            api.getConsole().getLogger().info(String.format("[LOCAL] Loaded %d recipes in %sms", recipeCount, stopWatch.getTime(TimeUnit.MILLISECONDS)));
+            if (!failedRecipes.isEmpty()) {
+                api.getConsole().getLogger().warning(String.format("[LOCAL] Failed to load %d recipes", failedRecipes.size()));
+            }
+            if (!successful) {
+                api.getConsole().getLogger().severe(String.format("[LOCAL] Process was interrupted, took longer than %s %s!", timeout.getKey(), timeout.getValue().toString().toLowerCase()));
+                return;
+            }
+
+            printPendingRecipes();
+            printInvalidRecipes();
+
+            Pair<Long, TimeUnit> timeoutPending = dataSettings.timeoutPending();
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    for (ValidationContainer<? extends CustomRecipe<?>> pendingRecipe : pendingRecipes) {
+                        markInvalid(pendingRecipe);
+                    }
+                    printInvalidRecipes();
+                    cancel();
+                }
+            }, timeoutPending.getValue().toMillis(timeoutPending.getKey()));
+        }
+    }
+
+    @Override
+    public int validatePending() {
+        int pendingSize = pendingRecipes.size();
+        int validatedRecipeCount = 0;
+
+        Iterator<ValidationContainer<? extends CustomRecipe<?>>> pendingIterator = pendingRecipes.iterator();
+        while (pendingIterator.hasNext()) {
+            ValidationContainer<? extends CustomRecipe<?>> container = pendingIterator.next();
+            container.revalidate();
+            if (container.type() == ValidationContainer.ResultType.PENDING) continue;
+            pendingIterator.remove();
+            if (container.type() == ValidationContainer.ResultType.INVALID) {
+                markInvalid(container);
+            }
+            if (container.type() == ValidationContainer.ResultType.VALID) {
+                validatedRecipeCount++;
+                container.value().ifPresent(recipe -> customCrafting.getRegistries().getRecipes().register(recipe));
+            }
+        }
+
+        api.getConsole().getLogger().info(String.format("[LOCAL] Validated %d recipes from %d pending recipes", validatedRecipeCount, pendingSize));
+
+        printPendingRecipes();
+        printInvalidRecipes();
+        return validatedRecipeCount;
+    }
+
+    private void printPendingRecipes() {
+        if (!pendingRecipes.isEmpty()) {
+            api.getConsole().getLogger().info(String.format("[LOCAL] %d recipes still pending for validation (waiting for dependencies)", pendingRecipes.size()));
+            if (!dataSettings.printPending()) return;
+            for (ValidationContainer<? extends CustomRecipe<?>> pendingRecipe : pendingRecipes) {
+                api.getConsole().getLogger().info("[LOCAL] |--------------------------------------------------------------");
+                api.getConsole().getLogger().info("[LOCAL] |");
+                pendingRecipe.value().ifPresent(recipe -> pendingRecipe.toString().lines().forEach(s -> api.getConsole().getLogger().info("[LOCAL] |   " + s)));
+                api.getConsole().getLogger().info("[LOCAL] |");
+            }
+            api.getConsole().getLogger().info("[LOCAL] ----------------------------");
+        }
+    }
+
+    private void printInvalidRecipes() {
+        if (!invalidRecipes.isEmpty() && dataSettings.printInvalid()) {
+            api.getConsole().getLogger().info(String.format("[LOCAL] %d recipes are invalid!", invalidRecipes.size()));
+            if (!dataSettings.printInvalid()) return;
+            for (ValidationContainer<? extends CustomRecipe<?>> invalidRecipe : invalidRecipes) {
+                api.getConsole().getLogger().info("[LOCAL] |--------------------------------------------------------------");
+                api.getConsole().getLogger().info("[LOCAL] |");
+                invalidRecipe.value().ifPresent(recipe -> invalidRecipe.toString().lines().forEach(s -> api.getConsole().getLogger().info("[LOCAL] |   " + s)));
+                api.getConsole().getLogger().info("[LOCAL] |");
+            }
+            api.getConsole().getLogger().info("[LOCAL] ----------------------------");
         }
     }
 
@@ -237,6 +439,21 @@ public class LocalStorageLoader extends ResourceLoader {
         return false;
     }
 
+    /**
+     * Used to load data & cache the loaded, skipped errors & already existing keys.
+     */
+    private abstract static class DataLoader {
+
+        protected final String[] dirs;
+
+        private DataLoader(String[] dirs) {
+            this.dirs = dirs;
+        }
+
+        protected abstract void load();
+
+    }
+
     private class NewDataLoader extends DataLoader {
 
         private NewDataLoader(String[] dirs) {
@@ -248,31 +465,39 @@ public class LocalStorageLoader extends ResourceLoader {
             for (String dir : dirs) {
                 loadRecipesInNamespace(dir); //Load new recipe format files
             }
-            api.getConsole().getLogger().info(String.format("[LOCAL] Loaded %d recipes; Skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
         }
 
         private void loadRecipesInNamespace(String namespace) {
-            var injectableValues = new InjectableValues.Std();
+            TypeReference<CustomRecipe<?>> recipeTypeRef = new TypeReference<>() {
+            };
             readFiles(namespace, RECIPES_FOLDER, (relative, file, attrs) -> {
                 if (isValidFile(file.toFile())) return FileVisitResult.CONTINUE;
-                var namespacedKey = keyFromFile(namespace, relative);
+                final var namespacedKey = keyFromFile(namespace, relative);
                 if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
-                    try {
-                        injectableValues.addValue("key", namespacedKey);
-                        injectableValues.addValue("customcrafting", customCrafting);
-                        customCrafting.getRegistries().getRecipes().register(objectMapper.reader(injectableValues).readValue(file.toFile(), CustomRecipe.class));
-                        loaded.add(namespacedKey);
-                    } catch (IOException e) {
-                        ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
-                        skippedError.add(namespacedKey);
-                    }
-                } else {
-                    skippedAlreadyExisting.add(namespacedKey);
+                    executor.execute(() -> {
+                        try {
+                            var injectableValues = new InjectableValues.Std();
+                            injectableValues.addValue("key", namespacedKey);
+                            injectableValues.addValue("customcrafting", customCrafting);
+
+                            CustomRecipe<?> recipe = objectMapper.reader(injectableValues).forType(recipeTypeRef).readValue(file.toFile());
+
+                            validateRecipe(recipe).ifPresentOrElse(container -> {
+                                switch (container.type()) {
+                                    case INVALID -> markInvalid(container);
+                                    case PENDING -> markPending(container);
+                                    case VALID -> customCrafting.getRegistries().getRecipes().register(recipe);
+                                }
+                            }, () -> customCrafting.getRegistries().getRecipes().register(recipe));
+                        } catch (IOException e) {
+                            ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
+                            markFailed(namespacedKey);
+                        }
+                    });
                 }
                 return FileVisitResult.CONTINUE;
             });
         }
-
     }
 
     private class LegacyDataLoader extends OldDataLoader {
@@ -290,7 +515,6 @@ public class LocalStorageLoader extends ResourceLoader {
                     loadAndRegisterOldOrLegacyRecipe(RecipeType.Container.ELITE_CRAFTING, dir);
                 }
             }
-            api.getConsole().getLogger().info(String.format("[LOCAL_LEGACY] Loaded %d recipes; Skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
         }
     }
 
@@ -309,7 +533,6 @@ public class LocalStorageLoader extends ResourceLoader {
                     }
                 }
             }
-            api.getConsole().getLogger().info(String.format("[LOCAL_OLD] Loaded %d recipes; Skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
         }
 
         protected List<File> getOldOrLegacyFiles(String subFolder, String type) {
@@ -337,16 +560,23 @@ public class LocalStorageLoader extends ResourceLoader {
                 if (isValidFile(file)) continue;
                 var namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
                 if (!customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
-                    try {
-                        customCrafting.getRegistries().getRecipes().register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
-                        loaded.add(namespacedKey);
-                    } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException |
-                             IllegalAccessException e) {
-                        ChatUtils.sendRecipeItemLoadingError("[LOCAL_OLD] ", namespacedKey.getNamespace(), namespacedKey.getKey(), e);
-                        skippedError.add(namespacedKey);
-                    }
-                } else {
-                    skippedAlreadyExisting.add(namespacedKey);
+                    executor.execute(() -> {
+                        try {
+                            CustomRecipe<?> recipe = loader.getInstance(namespacedKey, objectMapper.readTree(file));
+
+                            validateRecipe(recipe).ifPresentOrElse(container -> {
+                                switch (container.type()) {
+                                    case INVALID -> markInvalid(container);
+                                    case PENDING -> markPending(container);
+                                    case VALID -> customCrafting.getRegistries().getRecipes().register(recipe);
+                                }
+                            }, () -> customCrafting.getRegistries().getRecipes().register(recipe));
+                        } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException |
+                                 IllegalAccessException e) {
+                            ChatUtils.sendRecipeItemLoadingError("[LOCAL_OLD] ", namespacedKey.getNamespace(), namespacedKey.getKey(), e);
+                            markFailed(namespacedKey);
+                        }
+                    });
                 }
             }
         }
@@ -354,27 +584,6 @@ public class LocalStorageLoader extends ResourceLoader {
         protected String[] getOldTypeFolders(String namespace) {
             return new File(DATA_FOLDER + "/" + namespace).list((dir1, name) -> !name.equals(ITEMS_FOLDER) && !name.equals(RECIPES_FOLDER));
         }
-
-    }
-
-    /**
-     * Used to load data & cache the loaded, skipped errors & already existing keys.
-     */
-    private abstract static class DataLoader {
-
-        protected List<NamespacedKey> loaded;
-        protected List<NamespacedKey> skippedError;
-        protected List<NamespacedKey> skippedAlreadyExisting;
-        protected final String[] dirs;
-
-        private DataLoader(String[] dirs) {
-            this.dirs = dirs;
-            this.loaded = new ArrayList<>();
-            this.skippedError = new ArrayList<>();
-            this.skippedAlreadyExisting = new ArrayList<>();
-        }
-
-        protected abstract void load();
 
     }
 

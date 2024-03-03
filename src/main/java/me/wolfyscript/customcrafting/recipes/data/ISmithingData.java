@@ -22,15 +22,27 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
+import java.util.Optional;
+
 public interface ISmithingData<R extends CustomRecipe<?>> extends IRecipeData<R> {
 
+    Optional<StackReference> template();
+
+    Optional<StackReference> base();
+
+    Optional<StackReference> addition();
+
+    @Deprecated
     CustomItem getTemplate();
 
+    @Deprecated
     CustomItem getBase();
 
+    @Deprecated
     CustomItem getAddition();
 
 }

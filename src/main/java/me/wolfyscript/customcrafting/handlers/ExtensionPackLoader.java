@@ -39,6 +39,11 @@ public class ExtensionPackLoader extends ResourceLoader {
     }
 
     @Override
+    public int validatePending() {
+        return 0;
+    }
+
+    @Override
     public void save() {
 
     }

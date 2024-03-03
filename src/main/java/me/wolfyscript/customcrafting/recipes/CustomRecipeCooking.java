@@ -23,29 +23,31 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
-import java.util.logging.Level;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
-import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import com.wolfyscript.utilities.bukkit.nms.item.crafting.FunctionalRecipeBuilderCooking;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.RecipeChoice;
@@ -55,6 +57,13 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T extends CookingRecipe<?>> extends CustomRecipe<C> implements ICustomVanillaRecipe<T> {
+
+    protected static <RT extends CustomRecipeCooking<?,?>> Validator<RT> validator() {
+        return ValidatorBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_cooking_recipe")).def()
+                .object(recipe -> recipe.result, init -> init.use(Result.VALIDATOR))
+                .object(recipe -> recipe.getSource(), init -> init.use(Ingredient.VALIDATOR))
+                .build();
+    }
 
     private Ingredient source;
     private float exp;
@@ -95,7 +104,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     }
 
     public void setSource(@NotNull Ingredient source) {
-        Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
+        // Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
         this.source = source;
     }
 
@@ -134,28 +143,22 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         this.exp = exp;
     }
 
-    protected RecipeChoice getRecipeChoice() {
-        return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().getChoices().stream().map(CustomItem::create).toList()) : new RecipeChoice.MaterialChoice(getSource().getChoices().stream().map(i -> i.create().getType()).toList());
+    protected RecipeChoice getSourceChoice() {
+        return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().choices().stream().map(StackReference::referencedStack).toList()) :
+                new RecipeChoice.MaterialChoice(getSource().choices().stream().map(i -> i.referencedStack().getType()).toList());
     }
 
-    protected void registerRecipeIntoMinecraft(FunctionalRecipeBuilderCooking builder) {
-        builder.setGroup(group);
-        builder.setExperience(getExp());
-        builder.setCookingTime(getCookingTime());
-        builder.setRecipeMatcher((inventory, world) -> {
-            Location location = inventory.getLocation();
-            if (location != null && !checkConditions(Conditions.Data.of(null, location.getBlock(), null))) return false;
-            return getSource().test(inventory.getItem(0), isCheckNBT());
-        });
-        builder.setRecipeAssembler(inventory -> java.util.Optional.ofNullable(getResult().getItemStack()));
-        builder.createAndRegister();
+    protected RecipeChoice getMaterialSourceChoice() {
+        return new RecipeChoice.MaterialChoice(getSource().choices().stream().map(i -> i.referencedStack().getType()).toList());
     }
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         var player = guiHandler.getPlayer();
-        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(11))).setVariants(guiHandler, getSource().getChoices(player));
-        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(24))).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(11)))
+                .setVariants(guiHandler, getSource().choices(player));
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(24)))
+                .setVariants(guiHandler, this.getResult().choices().stream().filter(reference -> !reference.identifier().flatMap(StackIdentifier::permission).map(player::hasPermission).orElse(true)).toList());
     }
 
     @Override
@@ -190,8 +193,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         super.writeToBuf(byteBuf);
 
         byteBuf.writeVarInt(source.size());
-        for (CustomItem choice : source.getChoices()) {
-            byteBuf.writeItemStack(choice.create());
+        for (StackReference choice : source.choices()) {
+            byteBuf.writeItemStack(choice.referencedStack());
         }
     }
 

@@ -104,6 +104,8 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
         if (template == null || template.isEmpty()) {
             this.template = new Ingredient();
             this.template.setAllowEmpty(true);
+        } else {
+            this.template.setAllowEmpty(false);
         }
     }
 
@@ -120,6 +122,8 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
         if (base == null || base.isEmpty()) {
             this.base = new Ingredient();
             this.base.setAllowEmpty(true);
+        } else {
+            this.base.setAllowEmpty(false);
         }
     }
 
@@ -132,6 +136,8 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
         if (addition == null || addition.isEmpty()) {
             this.addition = new Ingredient();
             this.addition.setAllowEmpty(true);
+        } else {
+            this.addition.setAllowEmpty(false);
         }
     }
 

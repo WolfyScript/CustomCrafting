@@ -189,8 +189,9 @@
     ],
     "info": "<dark_aqua>type <gold>/cc help </gold>for help!</dark_aqua>",
     "lockdown": {
-      "enabled": "<grey>[<red><b>LOCKDOWN</b></red>]</grey> <green>ENABLED! </green><red>Recipes will be blocked from now on!</red>",
-      "disabled": "<grey>[<red><b>LOCKDOWN</b></red>]</grey> <red>DISABLED! Recipes will no longer be blocked!</red>"
+      "enabled": "<grey>[<red><b>Lockdown</b></red>]</grey> <green>ON! </green><red>All custom recipes will get blocked!</red>",
+      "disabled": "<grey>[<red><b>Lockdown</b></red>]</grey> <red>OFF! Custom recipes will no longer get blocked!</red>",
+      "confirm": "<yellow>Lockdown ist currently <b><state></b>! To toggle Lockdown run <white>/cc lockdown confirm</white>"
     },
     "darkmode": {
       "enabled": "<green>Enabled Dark Mode for the GUIs!</green>",
@@ -869,6 +870,13 @@
             "name": "<grey>\u25B7</grey>  <green><b>Apply Item</b></green>",
             "help": [
               "<yellow>Applies the Item to the recipe</yellow>"
+            ]
+          },
+          "cancel": {
+            "name": "<grey>\u27A6</grey> <red><b>Cancel",
+            "lore": [
+              "<red>Some options are only available when saving the item!",
+              "<red>Those options will not apply to the item!"
             ]
           },
           "reference": {
@@ -3069,13 +3077,29 @@
         }
       },
       "item_editor": {
-        "gui_name": "<black><b>Item Editor</b></black>",
+        "gui_name": "<black><b>Configure Item Stack</b></black>",
         "items": {
           "create_item": {
-            "name": "<gold>Create</gold>",
-            "help": [
-              "<grey>Create a custom Item</grey>"
+            "name": "<grey>\u27A5</grey>  <gold><b>Edit</b></gold>",
+            "lore": [
+              "<grey>Edit the Stack using the Item Creator</grey>",
+              "",
+              "<grey>[<green>Shift-Right-Click</green>] Open Item Creator</grey>"
             ]
+          },
+          "reference": {
+            "icon": {
+              "name": "<gold><b><name></b></gold>",
+              "lore": []
+            },
+            "swap": {
+              "name": "<gold><b><name></b></gold>",
+              "lore": [
+                "<grey>Swaps the current parser with this parser</grey>",
+                "",
+                "<grey>[<green>Click</green>] Select Parser</grey>"
+              ]
+            }
           }
         },
         "messages": {

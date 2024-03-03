@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.listeners;
 
 import java.util.*;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -87,10 +88,10 @@ public class AnvilListener implements Listener {
                 .sorted()
                 .filter(customRecipeAnvil -> !customRecipeAnvil.isDisabled() && customRecipeAnvil.checkConditions(data))
                 .map(recipe -> {
-                    Optional<CustomItem> finalInputLeft = Optional.empty();
-                    Optional<CustomItem> finalInputRight = Optional.empty();
-                    if (recipe.hasInputLeft() && (finalInputLeft = recipe.getInputLeft().check(inputLeft, recipe.isCheckNBT())).isEmpty()) return null;
-                    if (recipe.hasInputRight() && (finalInputRight = recipe.getInputRight().check(inputRight, recipe.isCheckNBT())).isEmpty()) return null;
+                    Optional<StackReference> finalInputLeft = Optional.empty();
+                    Optional<StackReference> finalInputRight = Optional.empty();
+                    if (recipe.hasInputLeft() && (finalInputLeft = recipe.getInputLeft().checkChoices(inputLeft, recipe.isCheckNBT())).isEmpty()) return null;
+                    if (recipe.hasInputRight() && (finalInputRight = recipe.getInputRight().checkChoices(inputRight, recipe.isCheckNBT())).isEmpty()) return null;
                     //Recipe is valid at this point!
                     return new AnvilData(recipe, new IngredientData[]{
                             new IngredientData(0, 0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft),
@@ -102,7 +103,9 @@ public class AnvilListener implements Listener {
                 .ifPresent(anvilData -> {
                     CustomRecipeAnvil recipe = anvilData.getRecipe();
                     //Set the result depending on what is configured!
-                    final CustomItem resultItem = recipe.getRepairTask().computeResult(recipe, event, anvilData, player, inputLeft, inputRight);
+                    final StackReference resultItem = recipe.getRepairTask().compute(recipe, event, anvilData, player, inputLeft, inputRight);
+                    final ItemStack finalResult = recipe.getResult().item(anvilData, resultItem, player, null);
+
                     int repairCost = Math.max(1, recipe.getRepairCost());
                     var inputMeta = inputLeft.getItemMeta();
                     //Configure the Repair cost
@@ -116,15 +119,14 @@ public class AnvilListener implements Listener {
                     }
                     //Apply the repair cost to the result.
                     if (recipe.isApplyRepairCost()) {
-                        var itemMeta = resultItem.getItemMeta();
+                        var itemMeta = finalResult.getItemMeta();
                         if (itemMeta instanceof Repairable repairable) {
                             repairable.setRepairCost(repairCost);
-                            resultItem.setItemMeta(itemMeta);
+                            finalResult.setItemMeta(itemMeta);
                         }
                     }
-                    // Save current active recipe to consume correct item inputs!
-                    preCraftedRecipes.put(player.getUniqueId(), anvilData);
-                    final ItemStack finalResult = recipe.getResult().getItem(anvilData, resultItem, player, null);
+
+                    preCraftedRecipes.put(player.getUniqueId(), anvilData); // Save current active recipe to consume correct item inputs!
                     event.setResult(repairCost > 0 ? finalResult : null);
                     inventory.setRepairCost(repairCost);
                     int finalRepairCost = repairCost;
@@ -163,7 +165,7 @@ public class AnvilListener implements Listener {
                     if (anvilData.isUsedResult()) {
                         Result recipeResult = anvilData.getResult();
                         recipeResult.executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
-                        recipeResult.removeCachedItem(player);
+                        recipeResult.removeCachedReference(player);
                     }
                     preCraftedRecipes.remove(player.getUniqueId());
 
@@ -178,20 +180,16 @@ public class AnvilListener implements Listener {
                     event.setCurrentItem(null);
                     player.updateInventory();
 
-                    IngredientData inputLeft = anvilData.getLeftIngredient();
-                    IngredientData inputRight = anvilData.getRightIngredient();
-                    consumeInputItem(inventory, inputLeft.customItem(), inputLeft, 0);
-                    consumeInputItem(inventory, inputRight.customItem(), inputRight, 1);
+                    anvilData.baseIngredient().ifPresent(inputLeft -> consumeInputItem(inventory, inputLeft.reference(), inputLeft, 0));
+                    anvilData.additionIngredient().ifPresent(inputRight -> consumeInputItem(inventory, inputRight.reference(), inputRight, 1));
                 }
             }
         }
     }
 
-    private void consumeInputItem(AnvilInventory inventory, CustomItem input, IngredientData ingredient, int slot) {
+    private void consumeInputItem(AnvilInventory inventory, StackReference input, IngredientData ingredient, int slot) {
         if (input != null && inventory.getItem(slot) != null) {
-            ItemStack item = ingredient.itemStack().clone();
-            input.remove(item, 1, inventory);
-            inventory.setItem(slot, item);
+            inventory.setItem(slot, input.shrink(ingredient.itemStack(), 1, true, inventory, null, null));
         } else {
             inventory.setItem(slot, null);
         }

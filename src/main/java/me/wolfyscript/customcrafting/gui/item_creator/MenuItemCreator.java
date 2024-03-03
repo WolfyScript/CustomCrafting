@@ -23,6 +23,9 @@
 package me.wolfyscript.customcrafting.gui.item_creator;
 
 import com.google.common.collect.Lists;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -41,7 +44,6 @@ import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEliteCraftingTable
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabEnchants;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFlags;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabFuel;
-import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLocalizedName;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabLore;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabParticleEffects;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabPermission;
@@ -67,8 +69,11 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
+import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderStackIdentifier;
 import me.wolfyscript.utilities.compatibility.plugins.mythicmobs.MythicMobsRef;
+import me.wolfyscript.utilities.compatibility.plugins.mythicmobs.MythicMobsStackIdentifier;
 import me.wolfyscript.utilities.compatibility.plugins.oraxen.OraxenRef;
+import me.wolfyscript.utilities.compatibility.plugins.oraxen.OraxenStackIdentifier;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
@@ -86,6 +91,7 @@ public class MenuItemCreator extends CCWindow {
     private final List<ItemCreatorTab> tabs = new ArrayList<>();
 
     private static final String BACK = "back";
+    private static final String CANCEL = "cancel";
     private static final String SAVE_ITEM = "save_item";
     private static final String SAVE_ITEM_AS = "save_item_as";
     private static final String APPLY_ITEM = "apply_item";
@@ -106,17 +112,20 @@ public class MenuItemCreator extends CCWindow {
     @Override
     public void onInit() {
         var btnB = getButtonBuilder();
-        btnB.action(BACK).state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inventory, i, event) -> {
+        btnB.action(BACK).state(s -> s.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((cache, guiHandler, player, inventory, i, event) -> {
             guiHandler.openCluster(cache.getItems().isRecipeItem() ? "recipe_creator" : "none");
+            return true;
+        })).register();
+        btnB.action(CANCEL).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, inventory, i, event) -> {
+            cache.getItems().editorWasPreviouslyCancelled(true);
             return true;
         })).register();
         btnB.itemInput(ITEM_INPUT).state(s -> s.icon(Material.AIR).postAction((cache, guiHandler, player, guiInventory, stack, slot, event) -> {
             var items = cache.getItems();
-            CustomItem reference = CustomItem.getReferenceByItemStack(stack != null ? stack : ItemUtils.AIR);
-            if (ItemUtils.isAirOrNull(reference.getItemStack())) {
-                reference = new CustomItem(stack != null ? stack : ItemUtils.AIR);
-            }
-            items.setItem(reference);
+            guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(stack).ifPresentOrElse(reference -> {
+                items.editorWasPreviouslyCancelled(false);
+                items.setItem(new CustomItem(reference));
+            }, () -> items.setItem(new CustomItem(Material.AIR)));
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(guiHandler.getCustomCache().getItems().getItem().getItemStack()))).register();
         btnB.action(SAVE_ITEM).state(s -> s.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, i, event) -> {
             var items = cache.getItems();
@@ -173,16 +182,30 @@ public class MenuItemCreator extends CCWindow {
     }
 
     private void registerReferences(ButtonBuilder<CCCache> btnB) {
-        btnB.dummy(REFERENCE_WOLFYUTILITIES).state(s -> s.icon(Material.CRAFTING_TABLE).render((cache, guiHandler, player, inv, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((WolfyUtilitiesRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getNamespacedKey().toString())))).register();
-        btnB.dummy(REFERENCE_ORAXEN).state(s -> s.icon(Material.DIAMOND).render((cache, guiHandler, player, inv, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((OraxenRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID())))).register();
-        btnB.dummy(REFERENCE_ITEMSADDER).state(s -> s.icon(Material.GRASS_BLOCK).render((cache, guiHandler, player, inv, stack, i) -> CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", ((ItemsAdderRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID())))).register();
+        btnB.dummy(REFERENCE_WOLFYUTILITIES).state(s -> s.icon(Material.CRAFTING_TABLE)
+                .render((cache, guiHandler, player, inv, stack, i) ->
+                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()
+                                .map(identifier -> ((WolfyUtilsStackIdentifier) identifier).itemKey().toString()).orElse("null")))
+                )
+        ).register();
+        btnB.dummy(REFERENCE_ORAXEN).state(s -> s.icon(Material.DIAMOND)
+                .render((cache, guiHandler, player, inv, stack, i) ->
+                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()
+                                .map(identifier -> ((OraxenStackIdentifier) identifier).itemId()).orElse("null")))
+                )
+        ).register();
+        btnB.dummy(REFERENCE_ITEMSADDER).state(s -> s.icon(Material.GRASS_BLOCK)
+                .render((cache, guiHandler, player, inv, stack, i) ->
+                        CallbackButtonRender.UpdateResult.of(Placeholder.unparsed("item_key", guiHandler.getCustomCache().getItems().getItem().stackReference().identifier()
+                                .map(identifier -> ((ItemsAdderStackIdentifier) identifier).itemId()).orElse("null")))
+                )
+        ).register();
         btnB.dummy(REFERENCE_MYTHICMOBS).state(s -> s.icon(Material.WITHER_SKELETON_SKULL)).register();
     }
 
     private void orderTabs() {
         var registry = customCrafting.getRegistries().getItemCreatorTabs();
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabDisplayName.KEY)));
-        tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabLocalizedName.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabLore.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabEnchants.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabFlags.KEY)));
@@ -213,7 +236,7 @@ public class MenuItemCreator extends CCWindow {
     private boolean saveItem(Items items, Player player, NamespacedKey namespacedKey) {
         if (namespacedKey != null && !namespacedKey.getNamespace().equalsIgnoreCase("minecraft")) {
             var customItem = items.getItem();
-            if (customItem.getApiReference() instanceof WolfyUtilitiesRef wolfyUtilitiesRef && wolfyUtilitiesRef.getNamespacedKey().equals(namespacedKey)) {
+            if (customItem.stackReference().identifier().orElse(null) instanceof WolfyUtilsStackIdentifier identifier && identifier.getNamespacedKey().equals(namespacedKey)) {
                 getChat().sendMessage(player, Component.text("Error saving item! Cannot override original CustomItem ", NamedTextColor.RED).append(Component.text(namespacedKey.toString(), NamedTextColor.DARK_RED)).append(Component.text("! Save it under another NamespacedKey or Edit the original!", NamedTextColor.RED)));
                 return false;
             }
@@ -236,8 +259,22 @@ public class MenuItemCreator extends CCWindow {
         var customItem = items.getItem();
         var item = customItem.create();
 
-        event.setButton(45, BACK);
-        event.setButton(4, ITEM_INPUT);
+        if (ItemUtils.isAirOrNull(item) || items.editorWasPreviouslyCancelled()) {
+            event.setButton(12, ClusterMain.GLASS_GREEN);
+            event.setButton(13, ClusterMain.GLASS_GREEN);
+            event.setButton(14, ClusterMain.GLASS_GREEN);
+            event.setButton(21, ClusterMain.GLASS_GREEN);
+            event.setButton(22, ITEM_INPUT);
+            event.setButton(23, ClusterMain.GLASS_GREEN);
+            event.setButton(30, ClusterMain.GLASS_GREEN);
+            event.setButton(31, ClusterMain.GLASS_GREEN);
+            event.setButton(32, ClusterMain.GLASS_GREEN);
+            event.setButton(49, BACK);
+            return;
+        }
+
+        event.setButton(45, CANCEL);
+        event.setItem(4, items.getItem().stackReference().referencedStack());
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         var gray = data.getLightBackground();
         if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) event.setButton(13, gray);
@@ -249,15 +286,17 @@ public class MenuItemCreator extends CCWindow {
         }
         event.setButton(53, SAVE_ITEM_AS);
 
-        if (customItem.getApiReference() instanceof WolfyUtilitiesRef) {
-            event.setButton(49, REFERENCE_WOLFYUTILITIES);
-        } else if (customItem.getApiReference() instanceof OraxenRef) {
-            event.setButton(49, REFERENCE_ORAXEN);
-        } else if (customItem.getApiReference() instanceof ItemsAdderRef) {
-            event.setButton(49, REFERENCE_ITEMSADDER);
-        } else if (customItem.getApiReference() instanceof MythicMobsRef) {
-            event.setButton(49, REFERENCE_MYTHICMOBS);
-        }
+        customItem.stackReference().identifier().ifPresent(identifier -> {
+            if (identifier instanceof WolfyUtilsStackIdentifier) {
+                event.setButton(49, REFERENCE_WOLFYUTILITIES);
+            } else if (identifier instanceof OraxenStackIdentifier) {
+                event.setButton(49, REFERENCE_ORAXEN);
+            } else if (identifier instanceof ItemsAdderStackIdentifier) {
+                event.setButton(49, REFERENCE_ITEMSADDER);
+            } else if (identifier instanceof MythicMobsStackIdentifier) {
+                event.setButton(49, REFERENCE_MYTHICMOBS);
+            }
+        });
 
         List<ItemCreatorTab> options = constructOptions(event, cache, items, customItem, item);
         int maxPages = options.size() / 14 + (options.size() % 14 > 0 ? 1 : 0);

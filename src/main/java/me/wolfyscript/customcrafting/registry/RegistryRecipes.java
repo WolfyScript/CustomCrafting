@@ -24,17 +24,8 @@ package me.wolfyscript.customcrafting.registry;
 
 
 import com.google.common.base.Preconditions;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -42,15 +33,21 @@ import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.registry.Registries;
 import me.wolfyscript.utilities.registry.RegistrySimple;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The custom Registry for the Recipes of CustomCrafting.
@@ -62,7 +59,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
     private final Map<String, List<CustomRecipe<?>>> BY_NAMESPACE = new HashMap<>();
     private final Map<String, List<CustomRecipe<?>>> BY_GROUP = new HashMap<>();
-    private final Map<CustomItem, List<CustomRecipe<?>>> BY_RESULT = new HashMap<>();
+    private final Map<StackReference, List<CustomRecipe<?>>> BY_RESULT = new HashMap<>();
     private final Map<Class<?>, List<CustomRecipe<?>>> BY_CLASS_TYPE = new HashMap<>();
     private final Map<RecipeType<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE = new HashMap<>();
     private final Map<RecipeType.Container<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE_CONTAINER = new HashMap<>();
@@ -113,20 +110,29 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     }
 
     @Override
-    public void register(NamespacedKey namespacedKey, CustomRecipe<?> value) {
+    public synchronized void register(NamespacedKey namespacedKey, CustomRecipe<?> value) {
         Preconditions.checkArgument(namespacedKey != null, "Invalid NamespacedKey! The namespaced key cannot be null!");
         Preconditions.checkArgument(!namespacedKey.getNamespace().equalsIgnoreCase("minecraft"), "Invalid NamespacedKey! Cannot register recipe under minecraft namespace!");
         remove(namespacedKey);
         super.register(namespacedKey, value);
         if (value instanceof ICustomVanillaRecipe<?> vanillaRecipe && !value.isDisabled()) {
-            try {
-                Recipe bukkitRecipe = vanillaRecipe.getVanillaRecipe();
-                if (bukkitRecipe != null && !Bukkit.addRecipe(bukkitRecipe)) {
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
+                try {
+                    Recipe bukkitRecipe = vanillaRecipe.getVanillaRecipe();
+                    if (bukkitRecipe != null) {
+                        // In some cases the recipe seems to still exist? In that case remove it and then add it again
+                        if (Bukkit.getRecipe(((Keyed) bukkitRecipe).getKey()) != null) {
+                            Bukkit.removeRecipe(((Keyed) bukkitRecipe).getKey());
+                        }
+                        if (Bukkit.addRecipe(bukkitRecipe)) {
+                            return;
+                        }
+                    }
                     customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
+                } catch (IllegalArgumentException | IllegalStateException ex) {
+                    customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
-            } catch (IllegalArgumentException | IllegalStateException ex) {
-                customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
-            }
+            });
         }
         clearCache(namespacedKey);
     }
@@ -316,10 +322,10 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         boolean hasRoot = directory.startsWith("/");
         // Clear the folder, so it is in proper format.
         final String dir = (
-                                   includeRoot ?
-                                           (!hasRoot ? "/" + directory : directory) :
-                                           (hasRoot ? directory.substring(1) : directory)
-                           ) + (!directory.endsWith("/") ? "/" : "");
+                includeRoot ?
+                        (!hasRoot ? "/" + directory : directory) :
+                        (hasRoot ? directory.substring(1) : directory)
+        ) + (!directory.endsWith("/") ? "/" : "");
         return dirs(namespace, 64, includeRoot).stream().filter(sub -> sub.startsWith(dir) && (sub.length() != dir.length() || includeRoot)).toList();
     }
 
@@ -390,7 +396,13 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     }
 
     public List<CustomRecipe<?>> get(CustomItem result) {
-        return BY_RESULT.computeIfAbsent(result, item -> values().stream().filter(recipe -> recipe.getResult().getChoices().contains(item)).collect(Collectors.toList()));
+        return BY_RESULT.computeIfAbsent(
+                result.hasNamespacedKey() ? new StackReference(WolfyUtilCore.getInstance(), new WolfyUtilsStackIdentifier(result.getNamespacedKey()), result.getWeight(), result.getAmount(), result.getItemStack()) : result.stackReference(),
+                item -> values().stream().filter(recipe -> recipe.getResult().choices().contains(item)).collect(Collectors.toList()));
+    }
+
+    public List<CustomRecipe<?>> get(StackReference reference) {
+        return BY_RESULT.computeIfAbsent(reference, reference1 -> values().stream().filter(recipe -> recipe.getResult().choices().contains(reference1)).collect(Collectors.toList()));
     }
 
     @SuppressWarnings("unchecked")

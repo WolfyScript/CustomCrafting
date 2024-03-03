@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
 import java.util.Optional;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
@@ -112,7 +114,7 @@ public class CompassMergeAdapter extends MergeAdapter {
     }
 
     @Override
-    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, StackReference resultReference, ItemStack result) {
         var meta = result.getItemMeta();
         var context = player == null ? new EvalContext() : new EvalContextPlayer(player);
         if (meta instanceof CompassMeta compassMeta) {

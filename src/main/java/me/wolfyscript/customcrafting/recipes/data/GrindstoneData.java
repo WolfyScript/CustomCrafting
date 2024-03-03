@@ -22,9 +22,12 @@
 
 package me.wolfyscript.customcrafting.recipes.data;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class GrindstoneData extends RecipeData<CustomRecipeGrindstone> {
 
@@ -35,15 +38,33 @@ public class GrindstoneData extends RecipeData<CustomRecipeGrindstone> {
         this.validItem = validItem;
     }
 
-    public CustomItem getInputTop() {
-        return getBySlot(0).customItem();
+    public Optional<IngredientData> topIngredient() {
+        return bySlot(0);
     }
 
-    public CustomItem getInputBottom() {
-        return getBySlot(1).customItem();
+    public Optional<IngredientData> bottomIngredient() {
+        return bySlot(1);
+    }
+
+    public Optional<StackReference> inputTop() {
+        return bySlot(0).map(IngredientData::reference);
+    }
+
+    public Optional<StackReference> inputBottom() {
+        return bySlot(1).map(IngredientData::reference);
     }
 
     public boolean isValidItem() {
         return validItem;
+    }
+
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public CustomItem getInputTop() {
+        return getBySlot(0).customItem();
+    }
+
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public CustomItem getInputBottom() {
+        return getBySlot(1).customItem();
     }
 }

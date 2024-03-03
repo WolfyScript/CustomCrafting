@@ -23,6 +23,8 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,9 +33,15 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.BlastingRecipe;
-import org.bukkit.inventory.RecipeChoice;
 
 public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasting, BlastingRecipe> {
+
+    static {
+        final Validator<CustomRecipeBlasting> VALIDATOR = ValidatorBuilder.<CustomRecipeBlasting>object(RecipeType.BLAST_FURNACE.getNamespacedKey()).use(CustomRecipeCooking.validator())
+                .name(container -> "Blasting Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     public CustomRecipeBlasting(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
@@ -56,9 +64,9 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
     @Override
     public BlastingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            BlastingRecipe placeholderRecipe = new BlastingRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), new RecipeChoice.MaterialChoice(getResult().getItemStack().getType()), getExp(), getCookingTime());
+            BlastingRecipe placeholderRecipe = new BlastingRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), getMaterialSourceChoice(), getExp(), getCookingTime());
             Bukkit.addRecipe(placeholderRecipe);
-            return new BlastingRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+            return new BlastingRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().getItemStack(), getSourceChoice(), getExp(), getCookingTime());
         }
         return null;
     }

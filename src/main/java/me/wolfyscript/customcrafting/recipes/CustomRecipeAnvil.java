@@ -23,6 +23,10 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.validator.ValidationContainer;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
@@ -50,6 +54,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -60,6 +65,35 @@ import java.util.List;
 
 @JsonIgnoreProperties({"result"})
 public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
+
+    static {
+        final Validator<CustomRecipeAnvil> VALIDATOR = ValidatorBuilder.<CustomRecipeAnvil>object(RecipeType.ANVIL.getNamespacedKey()).def()
+                .name(container -> "Anvil Recipe" + container.value().map(recipe -> " [" + recipe.getNamespacedKey() + "]").orElse(""))
+                .object(recipe -> recipe, i -> i.def().name(c -> "Ingredients")
+                        .object(recipe -> recipe.base, initStep -> initStep.use(Ingredient.VALIDATOR).name(c -> "Base").optional())
+                        .object(recipe -> recipe.addition, initStep -> initStep.use(Ingredient.VALIDATOR).name(c -> "Addition").optional())
+                        .require(1)
+                )
+                .object(recipe -> recipe.repairTask, initStep -> initStep.def().validate(taskValidationContainer -> {
+                    if (taskValidationContainer.value().isEmpty())
+                        return taskValidationContainer.update().type(ValidationContainer.ResultType.INVALID);
+                    RepairTask repairTask = taskValidationContainer.value().get();
+
+                    if (repairTask instanceof RepairTaskResult repairTaskResult) {
+                        var value = Result.VALIDATOR.validate(repairTaskResult.getResult());
+                        return taskValidationContainer.update().type(value.type());
+                    }
+                    return taskValidationContainer.update().type(ValidationContainer.ResultType.VALID);
+                }))
+                .object(recipe -> recipe.repairCost, initStep -> initStep.def().name(c -> "Repair Cost").validate(repairCostContainer -> {
+                    if (repairCostContainer.value().map(integer -> integer > 0).orElse(false)) {
+                        return repairCostContainer.update().type(ValidationContainer.ResultType.VALID);
+                    }
+                    return repairCostContainer.update().type(ValidationContainer.ResultType.INVALID).fault("Must be greater than 0");
+                }))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     private boolean blockRepair;
     private boolean blockRename;
@@ -309,10 +343,9 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         gen.writeObjectField("addition", this.addition);
     }
 
-    @JsonIgnore
     @Override
-    public List<CustomItem> getRecipeBookItems() {
-        return getMode().equals(CustomRecipeAnvil.Mode.RESULT) ? getResult().getChoices() : hasInputLeft() ? getInputLeft().getChoices() : getInputRight().getChoices();
+    public List<StackReference> recipeBookStacks() {
+        return getMode().equals(CustomRecipeAnvil.Mode.RESULT) ? getResult().choices() : hasInputLeft() ? getInputLeft().choices() : getInputRight().choices();
     }
 
     @Override
@@ -326,7 +359,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         switch (getRepairTask().getMode()) {
             case RESULT -> resultBtn.setVariants(guiHandler, getResult());
             case DURABILITY -> resultBtn.setVariants(guiHandler, inputLeft);
-            case NONE -> resultBtn.setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
+            case NONE -> resultBtn.setVariants(guiHandler, Collections.singletonList(StackReference.of(new ItemStack(Material.AIR))));
         }
     }
 

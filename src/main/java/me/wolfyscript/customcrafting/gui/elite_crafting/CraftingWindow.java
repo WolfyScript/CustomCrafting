@@ -121,7 +121,7 @@ abstract class CraftingWindow extends CCWindow {
                                             RecipeType.Container.ELITE_CRAFTING,
                                             cacheEliteCraftingTable.isAdvancedCraftingRecipes() ? RecipeType.Container.CRAFTING : null
                                     )
-                                    .map(data -> data.getResult().getItem(data, player, targetBlock))
+                                    .map(data -> data.getResult().item(data, player, targetBlock))
                                     .ifPresent(cacheEliteCraftingTable::setResult);
                         } else {
                             cacheEliteCraftingTable.setResult(new ItemStack(Material.AIR));

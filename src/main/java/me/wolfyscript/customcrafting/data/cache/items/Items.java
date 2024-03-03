@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.data.cache.items;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentifier;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -31,6 +34,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.UUID;
 
 public class Items implements Serializable {
@@ -39,11 +43,13 @@ public class Items implements Serializable {
 
     private int listPage;
     private String listNamespace;
+    private boolean editorWasPreviouslyCancelled = false;
 
     private int page;
 
     private ItemStack playerHeadSetting;
 
+    private StackReference original;
     private CustomItem item;
     private boolean recipeItem;
     private NamespacedKey namespacedKey;
@@ -66,6 +72,7 @@ public class Items implements Serializable {
         this.playerHeadSetting = new ItemStack(Material.AIR);
 
         this.item = new CustomItem(Material.AIR);
+        this.original = StackReference.of(new ItemStack(Material.AIR));
         this.recipeItem = false;
         this.namespacedKey = null;
         this.saved = false;
@@ -81,20 +88,68 @@ public class Items implements Serializable {
         this.currentTab = null;
     }
 
-    public void setItem(boolean recipeItem, CustomItem customItem) {
+    public boolean editorWasPreviouslyCancelled() {
+        return editorWasPreviouslyCancelled;
+    }
+
+    public void editorWasPreviouslyCancelled(boolean editorWasPreviouslyCancelled) {
+        this.editorWasPreviouslyCancelled = editorWasPreviouslyCancelled;
+    }
+
+    public StackReference originalReference() {
+        return original;
+    }
+
+    public Optional<BukkitStackIdentifier> asBukkitIdentifier() {
+        return item.stackReference().identifier().map(identifier -> {
+            if (identifier instanceof BukkitStackIdentifier bukkitIdentifier) {
+                return bukkitIdentifier;
+            }
+            return null;
+        });
+    }
+
+    public Optional<WolfyUtilsStackIdentifier> asWolfyUtilsIdentifier() {
+        return item.stackReference().identifier().map(identifier -> {
+            if (identifier instanceof WolfyUtilsStackIdentifier wolfyUtilsStackIdentifier) {
+                return wolfyUtilsStackIdentifier;
+            }
+            return null;
+        });
+    }
+
+    public boolean isBukkitIdentifier() {
+        return item.stackReference().identifier().map(identifier -> identifier instanceof BukkitStackIdentifier).orElse(false);
+    }
+
+    public void editCustomItem(CustomItem customItem) {
         setItem(customItem);
+        setNamespacedKey(customItem.getNamespacedKey());
+        setSaved(true);
+    }
+
+    public void createCustomItem(StackReference reference) {
+        this.original = reference;
+        setItem(new CustomItem(reference));
+        setNamespacedKey(null);
+        setSaved(false);
+    }
+
+    public void setItem(boolean recipeItem, StackReference reference) {
+        this.original = reference;
         setRecipeItem(recipeItem);
-        if (customItem.hasNamespacedKey()) {
-            setNamespacedKey(customItem.getNamespacedKey());
-            setSaved(true);
+        if (reference.identifier().isEmpty()) return;
+        if (reference.identifier().get() instanceof WolfyUtilsStackIdentifier wolfyUtilsStackIdentifier) {
+            wolfyUtilsStackIdentifier.customItem().ifPresent(this::editCustomItem);
         } else {
-            setSaved(false);
+            createCustomItem(reference);
         }
     }
 
-    public void setVariant(int variantSlot, CustomItem customItem) {
+    public void editRecipeStackVariant(int variantSlot, StackReference reference) {
         this.variantSlot = variantSlot;
-        setItem(true, customItem);
+        setRecipeItem(true);
+        createCustomItem(reference);
     }
 
     public CustomItem getItem() {

@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes.anvil;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.data.AnvilData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -30,6 +32,7 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.ItemStack;
@@ -54,23 +57,25 @@ public class RepairTaskDurability extends RepairTaskDefault {
     }
 
     @Override
-    public CustomItem computeResult(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight) {
-        CustomItem resultItem = super.computeResult(recipe, event, anvilData, player, inputLeft, inputRight);
+    public StackReference compute(CustomRecipeAnvil recipe, PrepareAnvilEvent event, AnvilData anvilData, Player player, ItemStack inputLeft, ItemStack inputRight) {
+        StackReference resultItem = super.compute(recipe, event, anvilData, player, inputLeft, inputRight);
         //Durability mode is set.
         ItemsAdderIntegration iAIntegration = WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().getIntegration("ItemsAdder", ItemsAdderIntegration.class);
         if (iAIntegration != null) {
             //Set the new durability using the ItemsAdder method.
-            CustomStack customStack = iAIntegration.getByItemStack(resultItem.getItemStack());
+            CustomStack customStack = iAIntegration.getByItemStack(resultItem.originalStack());
             if (customStack != null) {
                 customStack.setDurability(Math.min(customStack.getMaxDurability(), customStack.getDurability() + durability));
                 return resultItem;
             }
         }
-        if (resultItem.hasCustomDurability()) {
-            resultItem.setCustomDamage(Math.max(0, resultItem.getCustomDamage() - durability));
-        } else if (resultItem.getItemMeta() instanceof Damageable damageable) {
+
+        var stackBuilder = new ItemBuilder(resultItem.referencedStack());
+        if (stackBuilder.hasCustomDurability()) {
+            stackBuilder.setCustomDamage(Math.max(0, stackBuilder.getCustomDamage() - durability));
+        } else if (stackBuilder.getItemMeta() instanceof Damageable damageable) {
             damageable.setDamage(damageable.getDamage() - durability);
-            resultItem.setItemMeta(damageable);
+            stackBuilder.setItemMeta(damageable);
         }
         return resultItem;
     }

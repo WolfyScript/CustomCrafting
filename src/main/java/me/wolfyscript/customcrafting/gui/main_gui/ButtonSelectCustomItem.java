@@ -69,7 +69,7 @@ class ButtonSelectCustomItem extends ActionButton<CCCache> {
                             Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> ItemLoader.deleteItem(namespacedKey, player));
                         })).append(chat.translated("inventories.none.item_list.messages.delete.declined").clickEvent(chat.executable(player, true, (wolfyUtilities, player1) -> guiHandler.openCluster()))));
                     } else if (customItem != null) {
-                        items.setItem(items.isRecipeItem(), customItem.clone());
+                        items.editCustomItem(customItem.clone());
                         itemEditor.sendMessage(guiHandler, itemEditor.translatedMsgKey("item_editable"));
                         guiHandler.openWindow(ClusterItemCreator.MAIN_MENU);
                     }
@@ -77,7 +77,7 @@ class ButtonSelectCustomItem extends ActionButton<CCCache> {
                     if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                         cache.applyItem(customItem);
                         itemEditor.sendMessage(guiHandler, itemEditor.translatedMsgKey("item_applied"));
-                        List<? extends GuiWindow<?>> history = guiHandler.getClusterHistory().get(guiHandler.getCluster());
+                        List<? extends GuiWindow<?>> history = guiHandler.getHistory(guiHandler.getCluster());
                         history.remove(history.size() - 1);
                         guiHandler.openCluster(ClusterRecipeCreator.KEY);
                     } else if (ChatUtils.checkPerm(player, "customcrafting.cmd.give")) {

@@ -41,15 +41,22 @@ public class Patreon {
     public void initialize() {
         addPatron(new Patron("Omarlatif", "f24ef68e-5126-414d-9102-54f15c023954", Tier.LEGEND));
         addPatron(new Patron("Nat R", "29e1d027-d8c2-457f-a1a8-e5387b84de31", Tier.ELITE));
-        addPatron(new Patron("Junye Zhou", Tier.WOLFRAM));
+        addPatron(new Patron("Obsidian_Sword", Tier.DIAMOND));
+        addPatron(new Patron("LiveJunye", Tier.WOLFRAM));
         addPatron(new Patron("Mithran", Tier.WOLFRAM));
         addPatron(new Patron("Teddy", Tier.WOLFRAM));
         addPatron(new Patron("Invictus_Vulpes ", Tier.WOLFRAM));
         addPatron(new Patron("Luuk Musch", Tier.WOLFRAM));
-        addPatron(new Patron("WizardOfWit", Tier.WOLFRAM));
-        addPatron(new Patron("Lumi Server", Tier.WOLFRAM));
         addPatron(new Patron("fioxu", Tier.WOLFRAM));
+        addPatron(new Patron("JorshStark", Tier.WOLFRAM));
+        addPatron(new Patron("Perny Dev", Tier.WOLFRAM));
+        addPatron(new Patron("Charlie", Tier.WOLFRAM));
+        addPatron(new Patron("iachen", Tier.WOLFRAM));
+        addPatron(new Patron("whja t", Tier.WOLFRAM));
         addPatron(new Patron("Green Masks", Tier.WOLFRAM));
+        addPatron(new Patron("lance fector", Tier.WOLFRAM));
+        addPatron(new Patron("Jack Snellings", Tier.WOLFRAM));
+        addPatron(new Patron("MineHouse Server", Tier.WOLFRAM));
     }
 
     public void printPatreonCredits() {

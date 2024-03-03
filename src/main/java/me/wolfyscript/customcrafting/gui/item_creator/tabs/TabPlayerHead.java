@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentifier;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
@@ -63,19 +64,24 @@ public class TabPlayerHead extends ItemCreatorTabVanilla {
         }));
         creator.registerButton(new ActionButton<>("player_head.texture.apply", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (inventory.getItem(38) != null && inventory.getItem(38).getType().equals(Material.PLAYER_HEAD)) {
-                items.getItem().setPlayerHeadValue(new ItemBuilder(inventory.getItem(38)).getPlayerHeadValue());
+                guiHandler.getCustomCache().getItems().asBukkitIdentifier().ifPresent(identifier -> {
+                    ItemBuilder builder = new ItemBuilder(identifier.stack());
+                    builder.setPlayerHeadValue(new ItemBuilder(inventory.getItem(30)).getPlayerHeadValue());
+                });
             }
             return true;
         }));
         creator.registerButton(new ChatInputButton<>("player_head.owner", Material.NAME_TAG, (guiHandler, player, s, args) -> {
-            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            BukkitStackIdentifier identifier = guiHandler.getCustomCache().getItems().asBukkitIdentifier().orElse(null);
+            if (identifier == null) return false;
+            var itemMeta = identifier.stack().getItemMeta();
             if (!(itemMeta instanceof SkullMeta)) {
                 return true;
             }
             try {
                 var uuid = UUID.fromString(args[0]);
                 ((SkullMeta) itemMeta).setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
-                guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
+                identifier.stack().setItemMeta(itemMeta);
             } catch (IllegalArgumentException e) {
                 return true;
             }

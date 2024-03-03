@@ -22,6 +22,12 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.validator.ValidationContainer;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
+import io.r2dbc.spi.Parameter;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -30,11 +36,24 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class Ingredient extends RecipeItemStack {
+
+    public static final Validator<Ingredient> VALIDATOR;
+    public static final Validator<Map.Entry<Character, Ingredient>> ENTRY_VALIDATOR;
+
+    static {
+        VALIDATOR = ValidatorBuilder.<Ingredient>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient")).use(RecipeItemStack.validatorFor()).build();
+        ENTRY_VALIDATOR = ValidatorBuilder.<Map.Entry<Character, Ingredient>>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient_entry")).def()
+                .name(container -> container.value().map(entry -> "Ingredient [" + entry.getKey() + "]").orElse("Ingredient [Unknown]"))
+                .validate(entryContainer -> entryContainer.value()
+                        .map(entry -> {
+                            ValidationContainer<Ingredient> result = VALIDATOR.validate(entry.getValue());
+                            return entryContainer.update().copyFrom(result.update());
+                        })
+                        .orElseGet(() -> entryContainer.update().type(ValidationContainer.ResultType.INVALID))).build();
+    }
 
     private boolean replaceWithRemains = true;
     private boolean allowEmpty = false;
@@ -49,7 +68,7 @@ public class Ingredient extends RecipeItemStack {
     }
 
     @JsonCreator
-    public Ingredient(@JsonProperty("items") List<APIReference> items, @JsonProperty("tags") Set<NamespacedKey> tags) {
+    public Ingredient(@JsonProperty("items") Collection<StackReference> items, @JsonProperty("tags") Set<NamespacedKey> tags) {
         super(items, tags);
     }
 
@@ -65,8 +84,18 @@ public class Ingredient extends RecipeItemStack {
         super(tags);
     }
 
-    public Ingredient(APIReference... references) {
+    public Ingredient(StackReference... references) {
         super(references);
+    }
+
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public Ingredient(APIReference... references) {
+        super(Arrays.stream(references).map(APIReference::convertToStackReference).toArray(StackReference[]::new));
+    }
+
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public Ingredient(@JsonProperty("items") List<APIReference> items, @JsonProperty("tags") Set<NamespacedKey> tags) {
+        super(items.stream().map(APIReference::convertToStackReference).toList(), tags);
     }
 
     public boolean isReplaceWithRemains() {
@@ -92,11 +121,17 @@ public class Ingredient extends RecipeItemStack {
 
     public boolean test(ItemStack itemStack, boolean exactMatch) {
         if (itemStack == null) return false;
-        return choices.stream().anyMatch(customItem -> customItem.isSimilar(itemStack, exactMatch));
+        return oldChoices.stream().anyMatch(customItem -> customItem.isSimilar(itemStack, exactMatch));
     }
 
+    @Deprecated(forRemoval = true, since = "4.16.9")
     public Optional<CustomItem> check(ItemStack itemStack, boolean exactMatch) {
         if (itemStack == null) return Optional.empty();
-        return choices.stream().filter(customItem -> customItem.isSimilar(itemStack, exactMatch)).findFirst();
+        return oldChoices.stream().filter(customItem -> customItem.isSimilar(itemStack, exactMatch)).findFirst();
+    }
+
+    public Optional<StackReference> checkChoices(ItemStack itemStack, boolean exactMatch) {
+        if (itemStack == null) return Optional.empty();
+        return choices.stream().filter(reference -> reference.matches(itemStack, exactMatch)).findFirst();
     }
 }

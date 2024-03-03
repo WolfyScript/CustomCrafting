@@ -27,9 +27,10 @@ import com.wolfyscript.utilities.bukkit.nms.inventory.NMSInventoryUtils;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
@@ -46,17 +47,16 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bukkit.Bukkit;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 public final class CraftManager {
 
+    private long lastLockDownWarning = 0;
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
     private final Map<InventoryView, MatrixData> currentMatrixData = new HashMap<>();
     private final CustomCrafting customCrafting;
@@ -85,7 +85,13 @@ public final class CraftManager {
      */
     public Optional<CraftingData> checkCraftingMatrix(ItemStack[] matrix, Conditions.Data data, RecipeType.Container.CraftingContainer<?>... types) {
         data.player().ifPresent(player -> remove(player.getUniqueId()));
-        if (customCrafting.getConfigHandler().getConfig().isLockedDown()) return Optional.empty();
+        if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
+            if (System.currentTimeMillis() > lastLockDownWarning + (1000 * 60 * 60)) {
+                customCrafting.getLogger().warning("Lockdown is enabled! All custom recipes are blocked!");
+                lastLockDownWarning = System.currentTimeMillis();
+            }
+            return Optional.empty();
+        }
         var matrixData = MatrixData.of(matrix);
         return customCrafting.getRegistries().getRecipes().get(types)
                 .sorted() // Possibility for parallel stream when enough recipes are registered to amortize the overhead. (Things like the PreCraftEvent might interfere. TODO: Experimental Feature)
@@ -96,10 +102,10 @@ public final class CraftManager {
     }
 
     /**
-     * Checks one single {@link CraftingRecipe} and returns the {@link CustomItem} if it's valid.
+     * Checks one single {@link CraftingRecipe} and returns the result.
      *
      * @param recipe The {@link CraftingRecipe} to check.
-     * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
+     * @return Optional consisting of the {@link CraftingData}, or empty if the recipe doesn't match.
      */
     public Optional<CraftingData> tryRecipe(CraftingRecipe<?, ?> recipe, MatrixData matrixData, Conditions.Data data) {
         if (!recipe.checkConditions(data))
@@ -155,17 +161,17 @@ public final class CraftManager {
     }
 
     private int calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?, ?> recipe, Result recipeResult) {
-        var result = recipeResult.getItem(craftingData, player, null);
+        var result = recipeResult.item(craftingData, player, null);
         var inventory = event.getClickedInventory();
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(craftingData)) : 1;
         recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked(), possible);
         if (event.isShiftClick()) {
             if (possible > 0) {
-                RandomCollection<CustomItem> results = recipeResult.getRandomChoices(player);
+                RandomCollection<StackReference> results = recipeResult.randomChoices(player);
                 for (int i = 0; i < possible; i++) {
-                    var customItem = results.next();
-                    if (customItem != null) {
-                        var item = recipeResult.getItem(craftingData, customItem, player, null);
+                    var reference = results.next();
+                    if (reference != null) {
+                        var item = recipeResult.item(craftingData, reference, player, null);
                         if (InventoryUtils.hasInventorySpace(player, item)) {
                             player.getInventory().addItem(item);
                         } else {

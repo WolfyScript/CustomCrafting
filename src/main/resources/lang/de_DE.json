@@ -19,6 +19,30 @@
       ]
     }
   },
+  "recipe": {
+    "type": {
+      "crafting" : {
+        "crafting_shaped": "Geformtes Werkbank Rezept",
+        "crafting_shapeless": "Formloses Werkbank Rezept"
+      },
+      "elite_crafting" : {
+        "elite_crafting_shaped": "Geformtes Elite Werkbank Rezept",
+        "elite_crafting_shapeless": "Formloses Elite Werkbank Rezept"
+      },
+      "cooking" : {
+        "furnace": "Ofen Rezept",
+        "blast_furnace": "Hochofen Rezept",
+        "smoker": "Räucherofen Rezept",
+        "campfire": "Lagerfeuer Rezept"
+      },
+      "brewing_stand" : "Braurezept",
+      "anvil" : "Amboss Rezept",
+      "stonecutter" : "Steinsäge Rezept",
+      "grindstone" : "Grindstone Recipe",
+      "smithing" : "Schmiedetisch Rezept",
+      "cauldron" : "Kessel Rezept"
+    }
+  },
   "recipe_book": {
     "filter_navigation": [
       "&7[&aLinksklick&7] Nächste Kategorie",
@@ -2706,7 +2730,7 @@
         }
       },
       "recipe_book": {
-        "gui_name": "&8&lRezeptbuch",
+        "gui_name": "<recipe_type_title>",
         "items": {
           "next_recipe": {
             "name": "&7&l» Nächstes",

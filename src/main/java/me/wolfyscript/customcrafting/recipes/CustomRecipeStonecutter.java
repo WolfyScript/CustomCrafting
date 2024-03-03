@@ -23,6 +23,9 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
@@ -44,7 +47,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
@@ -55,6 +57,15 @@ import java.io.IOException;
 public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutter> implements ICustomVanillaRecipe<StonecuttingRecipe> {
 
     private static final String KEY_SOURCE = "source";
+
+    static {
+        final Validator<CustomRecipeStonecutter> VALIDATOR = ValidatorBuilder.<CustomRecipeStonecutter>object(RecipeType.STONECUTTER.getNamespacedKey()).def()
+                .name(container -> "Stonecutter Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .object(recipe -> recipe.source, initStep -> initStep.use(Ingredient.VALIDATOR))
+                .object(recipe -> recipe.result, initStep -> initStep.use(Result.VALIDATOR))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     private Ingredient source;
 
@@ -139,7 +150,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
         event.setButton(32, glass);
         event.setButton(33, glass);
 
-        ItemStack whiteGlass = event.getInventory().getItem(53);
+        ItemStack whiteGlass = event.inventory().getItem(53);
         if (whiteGlass != null) {
             var itemMeta = whiteGlass.getItemMeta();
             itemMeta.setCustomModelData(9007);
@@ -151,8 +162,8 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
     @Override
     public StonecuttingRecipe getVanillaRecipe() {
         if (!getResult().isEmpty() && !getSource().isEmpty()) {
-            RecipeChoice choice = isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().getBukkitChoices()) : new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).toList());
-            var recipe = new StonecuttingRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().getChoices().get(0).create(), choice);
+            RecipeChoice choice = isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().bukkitChoices()) : new RecipeChoice.MaterialChoice(getSource().bukkitChoices().stream().map(ItemStack::getType).toList());
+            var recipe = new StonecuttingRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().choices().get(0).referencedStack(), choice);
             recipe.setGroup(group);
             return recipe;
         }

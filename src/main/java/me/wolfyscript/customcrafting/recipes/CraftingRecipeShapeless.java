@@ -24,9 +24,14 @@ package me.wolfyscript.customcrafting.recipes;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
+import com.wolfyscript.utilities.validator.Validator;
+import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -39,6 +44,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 
 public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRecipeShapeless, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapelessRecipe> {
+
+    static {
+        final Validator<CraftingRecipeShapeless> VALIDATOR = ValidatorBuilder.<CraftingRecipeShapeless>object(RecipeType.CRAFTING_SHAPELESS.getNamespacedKey()).use(AbstractRecipeShapeless.validator())
+                .name(container -> "Shapeless Crafting Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
+                .build();
+        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+    }
 
     public CraftingRecipeShapeless(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
@@ -86,13 +98,13 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
     }
 
     private static RecipeChoice.ExactChoice getExactRecipeChoiceFor(Ingredient ingredient) {
-        List<ItemStack> choices = ingredient.getChoices().stream().map(CustomItem::create).distinct().collect(Collectors.toList());
+        List<ItemStack> choices = ingredient.choices().stream().map(StackReference::referencedStack).distinct().collect(Collectors.toList());
         if (ingredient.isAllowEmpty()) choices.add(new ItemStack(Material.AIR));
         return new RecipeChoice.ExactChoice(choices);
     }
 
     private static RecipeChoice.MaterialChoice getMaterialRecipeChoiceFor(Ingredient ingredient) {
-        List<Material> choices = ingredient.getChoices().stream().map(customItem -> customItem.create().getType()).distinct().collect(Collectors.toList());
+        List<Material> choices = ingredient.choices().stream().map(customItem -> customItem.referencedStack().getType()).distinct().collect(Collectors.toList());
         if (ingredient.isAllowEmpty()) choices.add(Material.AIR);
         return new RecipeChoice.MaterialChoice(choices);
     }

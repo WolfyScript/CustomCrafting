@@ -22,9 +22,8 @@
 
 package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
@@ -41,7 +40,6 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Locale;
 import org.bukkit.util.StringUtil;
 
 public class TabEnchants extends ItemCreatorTabVanilla {
@@ -87,7 +85,7 @@ public class TabEnchants extends ItemCreatorTabVanilla {
                         }
                         var enchantment = Enchantment.getByKey(org.bukkit.NamespacedKey.fromString(args[0]));
                         if (enchantment != null) {
-                            guiHandler.getCustomCache().getItems().getItem().addUnsafeEnchantment(enchantment, level);
+                            guiHandler.getCustomCache().getItems().asBukkitIdentifier().ifPresent(identifier -> identifier.stack().addUnsafeEnchantment(enchantment, level));
                         } else {
                             creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_enchant", Placeholder.unparsed("enchant", args[0])));
                             return true;
@@ -107,14 +105,14 @@ public class TabEnchants extends ItemCreatorTabVanilla {
                 }))
                 .tabComplete((guiHandler, player, args) -> {
                     if (args.length > 0) {
-                        return StringUtil.copyPartialMatches(args[0],guiHandler.getCustomCache().getItems().getItem().getItemMeta().getEnchants().keySet().stream().map(enchantment -> enchantment.getKey().toString()).toList(), new ArrayList<>());
+                        return StringUtil.copyPartialMatches(args[0], guiHandler.getCustomCache().getItems().asBukkitIdentifier().map(identifier -> identifier.stack().getItemMeta().getEnchants().keySet().stream().map(enchantment -> enchantment.getKey().toString()).toList()).orElse(List.of()), new ArrayList<>());
                     }
                     return null;
                 })
                 .inputAction((guiHandler, player, s, args) -> {
                     var enchantment = Enchantment.getByKey(org.bukkit.NamespacedKey.fromString(args[0]));
                     if (enchantment != null) {
-                        guiHandler.getCustomCache().getItems().getItem().removeEnchantment(enchantment);
+                        guiHandler.getCustomCache().getItems().asBukkitIdentifier().ifPresent(identifier -> identifier.stack().removeEnchantment(enchantment));
                     } else {
                         creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_enchant", Placeholder.unparsed("enchant", args[0])));
                         return true;

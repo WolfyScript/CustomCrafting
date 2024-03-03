@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 
 import java.util.List;
 
@@ -53,12 +53,17 @@ public class IngredientCache {
         this.ingredient = ingredient;
     }
 
-    public void put(int variantSlot, CustomItem variant) {
-        List<APIReference> references = ingredient.getItems();
+    public void put(int variantSlot, StackReference variant) {
+        List<StackReference> references = ingredient.items();
         if (references.size() > variantSlot) {
-            references.set(variantSlot, variant.getApiReference());
+            references.set(variantSlot, variant);
         } else {
-            references.add(variant.getApiReference());
+            references.add(variant);
         }
+    }
+
+    @Deprecated(forRemoval = true, since = "4.16.9")
+    public void put(int variantSlot, CustomItem variant) {
+        put(variantSlot, variant.convertToReference());
     }
 }
