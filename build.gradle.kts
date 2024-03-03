@@ -25,8 +25,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     `java-library`
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version ("8.1.1")
-    id("com.wolfyscript.devtools.docker.minecraft_servers") version ("2.0-SNAPSHOT")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.wolfyscript.devtools.docker.minecraft_servers") version "2.0-SNAPSHOT"
 }
 
 repositories {
