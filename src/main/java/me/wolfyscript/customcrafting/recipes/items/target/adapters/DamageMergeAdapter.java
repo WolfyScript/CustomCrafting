@@ -25,7 +25,6 @@ package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import io.th0rgal.oraxen.OraxenPlugin;
 import io.th0rgal.oraxen.api.OraxenItems;
-import io.th0rgal.oraxen.mechanics.provided.gameplay.durability.DurabilityMechanic;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.durability.DurabilityMechanicFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,6 @@ import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.block.Block;
@@ -167,7 +165,8 @@ public class DamageMergeAdapter extends MergeAdapter {
         public Optional<Integer> getDamage(ItemStack stack) {
             PersistentDataContainer persistentDataContainer = stack.getItemMeta().getPersistentDataContainer();
             Integer dur = persistentDataContainer.get(DURABILITY_KEY, PersistentDataType.INTEGER);
-            if (dur != null && DurabilityMechanicFactory.get().getMechanic(OraxenItems.getIdByItem(stack)) instanceof DurabilityMechanic durabilityMechanic) {
+            var durabilityMechanic = DurabilityMechanicFactory.get().getMechanic(OraxenItems.getIdByItem(stack));
+            if (dur != null && durabilityMechanic != null) {
                 return Optional.of(durabilityMechanic.getItemMaxDurability() - dur);
             }
             return Optional.empty();
@@ -175,7 +174,8 @@ public class DamageMergeAdapter extends MergeAdapter {
 
         @Override
         public Optional<ItemStack> tryToApplyDamage(RecipeData<?> recipeData, ItemStack result) {
-            if (DurabilityMechanicFactory.get().getMechanic(OraxenItems.getIdByItem(result)) instanceof DurabilityMechanic durabilityMechanic) {
+            var durabilityMechanic = DurabilityMechanicFactory.get().getMechanic(OraxenItems.getIdByItem(result));
+            if (durabilityMechanic != null) {
                 durabilityMechanic.changeDurability(result, calculateDamage(recipeData, durabilityMechanic.getItemMaxDurability()));
                 return Optional.of(result);
             }
