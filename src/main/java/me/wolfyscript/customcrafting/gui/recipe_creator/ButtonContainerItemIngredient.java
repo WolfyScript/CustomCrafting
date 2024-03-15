@@ -39,10 +39,12 @@ import org.bukkit.inventory.ItemStack;
 
 class ButtonContainerItemIngredient extends ItemInputButton<CCCache> {
 
-    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(
-            items.getVariantSlot(),
-            WolfyUtilCore.getInstance().getRegistries().getStackIdentifierParsers().parseFrom(customItem.create()).orElse(null)
-    );
+    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> {
+        var updatedRef = WolfyUtilCore.getInstance().getRegistries().getStackIdentifierParsers().parseFrom(customItem.create()).orElse(null);
+        // Update edited ref, so the GUI gets updated!
+        items.editRecipeStackVariant(items.getVariantSlot(), updatedRef);
+        cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(items.getVariantSlot(), updatedRef);
+    };
 
     ButtonContainerItemIngredient(int ingredSlot) {
         super("item_container_" + ingredSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, invSlot, event) -> {
