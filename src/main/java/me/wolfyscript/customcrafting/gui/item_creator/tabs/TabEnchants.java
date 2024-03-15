@@ -85,7 +85,7 @@ public class TabEnchants extends ItemCreatorTabVanilla {
                         }
                         var enchantment = Enchantment.getByKey(org.bukkit.NamespacedKey.fromString(args[0]));
                         if (enchantment != null) {
-                            guiHandler.getCustomCache().getItems().asBukkitIdentifier().ifPresent(identifier -> identifier.stack().addUnsafeEnchantment(enchantment, level));
+                            guiHandler.getCustomCache().getItems().modifyOriginalStack(stack -> stack.addUnsafeEnchantment(enchantment, level));
                         } else {
                             creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_enchant", Placeholder.unparsed("enchant", args[0])));
                             return true;
@@ -112,7 +112,7 @@ public class TabEnchants extends ItemCreatorTabVanilla {
                 .inputAction((guiHandler, player, s, args) -> {
                     var enchantment = Enchantment.getByKey(org.bukkit.NamespacedKey.fromString(args[0]));
                     if (enchantment != null) {
-                        guiHandler.getCustomCache().getItems().asBukkitIdentifier().ifPresent(identifier -> identifier.stack().removeEnchantment(enchantment));
+                        guiHandler.getCustomCache().getItems().modifyOriginalStack(stack -> stack.removeEnchantment(enchantment));
                     } else {
                         creator.sendMessage(guiHandler, creator.translatedMsgKey("enchant.invalid_enchant", Placeholder.unparsed("enchant", args[0])));
                         return true;

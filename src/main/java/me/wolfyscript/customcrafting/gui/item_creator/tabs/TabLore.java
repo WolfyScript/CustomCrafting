@@ -62,11 +62,11 @@ public class TabLore extends ItemCreatorTabVanilla {
 
         creator.registerButton(new ButtonOption(Material.WRITABLE_BOOK, this));
         creator.registerButton(new ChatInputButton<>(KEY + ".add", Material.WRITABLE_BOOK, (guiHandler, player, s, strings) -> {
-            guiHandler.getCustomCache().getItems().asBukkitIdentifier().ifPresent(identifier -> {
-                List<String> lore = identifier.stack().getLore();
+            guiHandler.getCustomCache().getItems().modifyOriginalStack(stack -> {
+                List<String> lore = stack.getLore();
                 if (lore != null) {
                     lore.add(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s, Placeholder.component("emtpy", Component.empty()))));
-                    identifier.stack().setLore(lore);
+                    stack.setLore(lore);
                 }
             });
             return false;

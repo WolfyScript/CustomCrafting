@@ -50,17 +50,17 @@ public class TabUnbreakable extends ItemCreatorTabVanilla {
         creator.registerButton(new ToggleButton<>(KEY, (cache, guiHandler, player, guiInventory, i) -> {
             return cache.getItems().asBukkitIdentifier().map(identifier -> !ItemUtils.isAirOrNull(identifier.stack()) && identifier.stack().getItemMeta().isUnbreakable()).orElse(false);
         }, new ButtonState<>(KEY + ".enabled", Material.BEDROCK, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
-                var itemMeta = identifier.stack().getItemMeta();
+            cache.getItems().modifyOriginalStack(stack -> {
+                var itemMeta = stack.getItemMeta();
                 itemMeta.setUnbreakable(false);
-                identifier.stack().setItemMeta(itemMeta);
+                stack.setItemMeta(itemMeta);
             });
             return true;
         }), new ButtonState<>(KEY + ".disabled", Material.GLASS, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
-                var itemMeta = identifier.stack().getItemMeta();
+            cache.getItems().modifyOriginalStack(stack -> {
+                var itemMeta = stack.getItemMeta();
                 itemMeta.setUnbreakable(true);
-                identifier.stack().setItemMeta(itemMeta);
+                stack.setItemMeta(itemMeta);
             });
             return true;
         })));
