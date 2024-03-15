@@ -152,8 +152,8 @@ public class ChatUtils {
                 },
                 (guiHandler, player, cache, line) -> BukkitComponentSerializer.legacy().deserialize(line),
                 (guiHandler, player, cache, msg, args) -> BukkitComponentSerializer.legacy().serialize(miniM.deserialize(msg))
-        ).onAdd((guiHandler, player, cache, index, entry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
-            var itemMeta = identifier.stack().getItemMeta();
+        ).onAdd((guiHandler, player, cache, index, entry) -> cache.getItems().modifyOriginalStack(stack -> {
+            var itemMeta = stack.getItemMeta();
             List<String> lore = itemMeta.getLore();
             if (lore == null) {
                 lore = new ArrayList<>();
@@ -164,17 +164,17 @@ public class ChatUtils {
                 lore.add(entry);
             }
             itemMeta.setLore(lore);
-            identifier.stack().setItemMeta(itemMeta);
-        })).onRemove((guiHandler, player, cache, index, entry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
-            var itemMeta = identifier.stack().getItemMeta();
+            stack.setItemMeta(itemMeta);
+        })).onRemove((guiHandler, player, cache, index, entry) -> cache.getItems().modifyOriginalStack(stack -> {
+            var itemMeta = stack.getItemMeta();
             List<String> lore = itemMeta.getLore();
             if (lore != null) {
                 lore.remove(index);
                 itemMeta.setLore(lore);
             }
-            identifier.stack().setItemMeta(itemMeta);
-        })).onMove((guiHandler, player, cache, fromIndex, toIndex) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
-            var itemMeta = identifier.stack().getItemMeta();
+            stack.setItemMeta(itemMeta);
+        })).onMove((guiHandler, player, cache, fromIndex, toIndex) -> cache.getItems().modifyOriginalStack(stack -> {
+            var itemMeta = stack.getItemMeta();
             List<String> lore = itemMeta.getLore();
             if (lore != null) {
                 String toPrevEntry = lore.get(toIndex);
@@ -182,15 +182,15 @@ public class ChatUtils {
                 lore.set(fromIndex, toPrevEntry);
                 itemMeta.setLore(lore);
             }
-            identifier.stack().setItemMeta(itemMeta);
-        })).onEdit((guiHandler, player, cache, index, previousEntry, newEntry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
-            var itemMeta = identifier.stack().getItemMeta();
+            stack.setItemMeta(itemMeta);
+        })).onEdit((guiHandler, player, cache, index, previousEntry, newEntry) -> cache.getItems().modifyOriginalStack(stack -> {
+            var itemMeta = stack.getItemMeta();
             List<String> lore = itemMeta.getLore();
             if (lore != null) {
                 lore.set(index, newEntry);
                 itemMeta.setLore(lore);
             }
-            identifier.stack().setItemMeta(itemMeta);
+            stack.setItemMeta(itemMeta);
         })).setSendInputInfoMessages((guiHandler, player, cache) -> {
             var chat = invAPI.getWolfyUtilities().getChat();
             chat.sendMessage(player, chat.translated("msg.input.wui_command"));
@@ -208,8 +208,8 @@ public class ChatUtils {
                 // TODO: This is quite inefficient! We need to convert to the non-shaded version of Adventure! (v5)
                 (guiHandler, player, cache, line) -> miniM.deserialize(paperMiniMsg.serialize(line)),
                 (guiHandler, player, cache, msg, args) -> paperMiniMsg.deserialize(msg)
-        ).onAdd((guiHandler, player, cache, index, entry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
-            var itemMeta = identifier.stack().getItemMeta();
+        ).onAdd((guiHandler, player, cache, index, entry) -> cache.getItems().modifyOriginalStack(stack -> {
+            var itemMeta = stack.getItemMeta();
             List<Component> lore = itemMeta.lore();
             if (lore == null) {
                 lore = new ArrayList<>();
@@ -220,17 +220,17 @@ public class ChatUtils {
                 lore.add(entry);
             }
             itemMeta.lore(lore);
-            identifier.stack().setItemMeta(itemMeta);
-        })).onRemove((guiHandler, player, cache, index, entry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
-            var itemMeta = identifier.stack().getItemMeta();
+            stack.setItemMeta(itemMeta);
+        })).onRemove((guiHandler, player, cache, index, entry) -> cache.getItems().modifyOriginalStack(stack -> {
+            var itemMeta = stack.getItemMeta();
             List<Component> lore = itemMeta.lore();
             if (lore != null) {
                 lore.remove(index);
                 itemMeta.lore(lore);
             }
-            identifier.stack().setItemMeta(itemMeta);
-        })).onMove((guiHandler, player, cache, fromIndex, toIndex) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
-            var itemMeta = identifier.stack().getItemMeta();
+            stack.setItemMeta(itemMeta);
+        })).onMove((guiHandler, player, cache, fromIndex, toIndex) -> cache.getItems().modifyOriginalStack(stack -> {
+            var itemMeta = stack.getItemMeta();
             List<Component> lore = itemMeta.lore();
             if (lore != null) {
                 Component toPrevEntry = lore.get(toIndex);
@@ -238,15 +238,15 @@ public class ChatUtils {
                 lore.set(fromIndex, toPrevEntry);
                 itemMeta.lore(lore);
             }
-            identifier.stack().setItemMeta(itemMeta);
-        })).onEdit((guiHandler, player, cache, index, previousEntry, newEntry) -> cache.getItems().asBukkitIdentifier().ifPresent(identifier -> {
-            var itemMeta = identifier.stack().getItemMeta();
+            stack.setItemMeta(itemMeta);
+        })).onEdit((guiHandler, player, cache, index, previousEntry, newEntry) -> cache.getItems().modifyOriginalStack(stack -> {
+            var itemMeta = stack.getItemMeta();
             List<Component> lore = itemMeta.lore();
             if (lore != null) {
                 lore.set(index, newEntry);
                 itemMeta.lore(lore);
             }
-            identifier.stack().setItemMeta(itemMeta);
+            stack.setItemMeta(itemMeta);
         })).setSendInputInfoMessages((guiHandler, player, cache) -> {
             var chat = invAPI.getWolfyUtilities().getChat();
             chat.sendMessage(player, chat.translated("msg.input.wui_command"));
@@ -257,8 +257,8 @@ public class ChatUtils {
     public static void sendAttributeModifierManager(Player player) {
         CCCache cache = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache());
         var items = cache.getItems();
-        items.asBukkitIdentifier().ifPresent(identifier -> {
-            var itemMeta = identifier.stack().getItemMeta();
+        items.modifyOriginalStack(stack -> {
+            var itemMeta = stack.getItemMeta();
             for (int i = 0; i < 15; i++) {
                 player.sendMessage("");
             }
@@ -274,7 +274,7 @@ public class ChatUtils {
                                 new ClickData("§7[§c-§7] ", (wolfyUtilities, player1) -> {
                                     CCCache cache1 = (CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
                                     itemMeta.removeAttributeModifier(Attribute.valueOf(cache1.getSubSetting().substring("attribute.".length()).toUpperCase(Locale.ROOT)), modifier);
-                                    cache1.getItems().asBukkitIdentifier().ifPresent(identifier1 -> identifier1.stack().setItemMeta(itemMeta));
+                                    stack.setItemMeta(itemMeta);
                                     sendAttributeModifierManager(player1);
                                 }, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§c" + modifier.getName())),
                                 new ClickData("§e" + modifier.getName() + "  §b" + modifier.getAmount() + "  §6" + (modifier.getSlot() == null ? "ANY" : modifier.getSlot()) + "  §3" + modifier.getOperation(), null),

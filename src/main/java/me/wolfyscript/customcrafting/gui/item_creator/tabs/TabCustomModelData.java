@@ -58,14 +58,13 @@ public class TabCustomModelData extends ItemCreatorTabVanilla {
         }, (guiHandler, player, s, strings) -> {
             BukkitStackIdentifier identifier = guiHandler.getCustomCache().getItems().asBukkitIdentifier().orElse(null);
             if (identifier != null) {
-                var itemMeta = identifier.stack().getItemMeta();
-                if (!(itemMeta instanceof Repairable)) {
-                    return true;
-                }
                 try {
                     int value = Integer.parseInt(s);
-                    itemMeta.setCustomModelData(value);
-                    identifier.stack().setItemMeta(itemMeta);
+                    guiHandler.getCustomCache().getItems().modifyOriginalStack(stack -> {
+                        var itemMeta = stack.getItemMeta();
+                        itemMeta.setCustomModelData(value);
+                        stack.setItemMeta(itemMeta);
+                    });
                     creator.sendMessage(player, "custom_model_data.success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
                     creator.sendMessage(player, "custom_model_data.invalid_value", new Pair<>("%VALUE%", s));
@@ -75,10 +74,10 @@ public class TabCustomModelData extends ItemCreatorTabVanilla {
             return false;
         }));
         creator.registerButton(new ActionButton<>("custom_model_data.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            guiHandler.getCustomCache().getItems().asBukkitIdentifier().ifPresent(identifier -> {
-                var itemMeta = identifier.stack().getItemMeta();
+            guiHandler.getCustomCache().getItems().modifyOriginalStack(stack -> {
+                var itemMeta = stack.getItemMeta();
                 itemMeta.setCustomModelData(null);
-                identifier.stack().setItemMeta(itemMeta);
+                stack.setItemMeta(itemMeta);
             });
             return true;
         }));

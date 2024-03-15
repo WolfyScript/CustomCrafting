@@ -55,15 +55,15 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
         creator.registerButton(new ButtonOption(Material.NAME_TAG, this));
         new ChatInputButton.Builder<>(creator, KEY + ".set")
                 .inputAction((guiHandler, player, s, strings) -> {
-                    guiHandler.getCustomCache().getItems().asBukkitIdentifier().ifPresent(identifier -> {
-                        ItemMeta itemMeta = identifier.stack().getItemMeta();
+                    guiHandler.getCustomCache().getItems().modifyOriginalStack(itemStack -> {
+                        ItemMeta itemMeta = itemStack.getItemMeta();
                         if (creator.getCustomCrafting().isPaper()) {
                             // TODO: Need to use the non-relocated MiniMessage! (v5) No longer shade & relocate Adventure
                             itemMeta.displayName(MiniMessage.miniMessage().deserialize(s));
                         } else {
                             itemMeta.setDisplayName(BukkitComponentSerializer.legacy().serialize(api.getChat().getMiniMessage().deserialize(s)));
                         }
-                        identifier.stack().setItemMeta(itemMeta);
+                        itemStack.setItemMeta(itemMeta);
                     });
                     return false;
                 }).state(state -> state.icon(Material.GREEN_CONCRETE).action((cache, guiHandler, player, guiInventory, i, event) -> {

@@ -54,14 +54,16 @@ public class TabDamage extends ItemCreatorTab {
         creator.registerButton(new ChatInputButton<>("damage.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
             BukkitStackIdentifier identifier = guiHandler.getCustomCache().getItems().asBukkitIdentifier().orElse(null);
             if (identifier != null) {
-                var itemMeta = identifier.stack().getItemMeta();
-                if (!(itemMeta instanceof Damageable)) {
+                if (!(identifier.stack().getItemMeta() instanceof Damageable)) {
                     return true;
                 }
                 try {
                     int value = Integer.parseInt(s);
-                    ((Damageable) itemMeta).setDamage(value);
-                    identifier.stack().setItemMeta(itemMeta);
+                    guiHandler.getCustomCache().getItems().modifyOriginalStack(stack -> {
+                        var itemMeta = stack.getItemMeta();
+                        ((Damageable) itemMeta).setDamage(value);
+                        stack.setItemMeta(itemMeta);
+                    });
                     creator.sendMessage(player, "damage.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
                     creator.sendMessage(player, "damage.invalid_value", new Pair<>("%VALUE%", s));
@@ -71,12 +73,12 @@ public class TabDamage extends ItemCreatorTab {
             return false;
         }));
         creator.registerButton(new ActionButton<>("damage.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            items.asBukkitIdentifier().ifPresent(identifier -> {
-                var itemMeta = identifier.stack().getItemMeta();
+            items.modifyOriginalStack(stack -> {
+                var itemMeta = stack.getItemMeta();
                 if (itemMeta instanceof Damageable) {
                     ((Damageable) itemMeta).setDamage(0);
                 }
-                identifier.stack().setItemMeta(itemMeta);
+                stack.setItemMeta(itemMeta);
             });
             return true;
         }));
