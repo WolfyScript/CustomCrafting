@@ -118,6 +118,9 @@ public class MenuItemCreator extends CCWindow {
         })).register();
         btnB.action(CANCEL).state(s -> s.icon(Material.BARRIER).action((cache, guiHandler, player, inventory, i, event) -> {
             cache.getItems().editorWasPreviouslyCancelled(true);
+            if (cache.getItems().isRecipeItem()) { // Directly jump to the ItemEditor of the RecipeCreator, to not show the pickup window
+                guiHandler.openCluster("recipe_creator");
+            }
             return true;
         })).register();
         btnB.itemInput(ITEM_INPUT).state(s -> s.icon(Material.AIR).postAction((cache, guiHandler, player, guiInventory, stack, slot, event) -> {

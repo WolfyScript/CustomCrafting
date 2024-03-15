@@ -66,6 +66,7 @@ public class MenuItemEditor extends CCWindow {
             return true;
         })).register();
         getButtonBuilder().action("create_item").state(s -> s.icon(Material.ITEM_FRAME).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            cache.getItems().editorWasPreviouslyCancelled(false);
             guiHandler.openWindow(ClusterItemCreator.MAIN_MENU);
             return true;
         })).register();
