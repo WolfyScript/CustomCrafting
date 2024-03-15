@@ -133,6 +133,7 @@ public class Items implements Serializable {
     }
 
     public void editCustomItem(CustomItem customItem) {
+        editorWasPreviouslyCancelled(false);
         setItem(customItem);
         setNamespacedKey(customItem.getNamespacedKey());
         setSaved(true);
@@ -140,6 +141,7 @@ public class Items implements Serializable {
 
     public void createCustomItem(StackReference reference) {
         this.original = reference;
+        editorWasPreviouslyCancelled(false);
         setItem(new CustomItem(reference));
         setNamespacedKey(null);
         setSaved(false);
