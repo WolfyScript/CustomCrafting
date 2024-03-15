@@ -28,6 +28,7 @@ import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIde
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
@@ -36,6 +37,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Items implements Serializable {
 
@@ -107,6 +109,14 @@ public class Items implements Serializable {
             }
             return null;
         });
+    }
+
+    public void modifyOriginalStack(Consumer<ItemStack> stackConsumer) {
+        if (item.stackReference().identifier().map(stackIdentifier -> stackIdentifier instanceof BukkitStackIdentifier).orElse(false)) {
+            if (ItemUtils.isAirOrNull(item.stackReference().originalStack())) return;
+            stackConsumer.accept(item.stackReference().originalStack());
+            item.stackReference().swapParser(item.stackReference().parser());
+        }
     }
 
     public Optional<WolfyUtilsStackIdentifier> asWolfyUtilsIdentifier() {
