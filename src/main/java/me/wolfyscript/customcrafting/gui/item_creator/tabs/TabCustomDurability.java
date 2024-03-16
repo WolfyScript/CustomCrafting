@@ -34,6 +34,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -57,7 +58,11 @@ public class TabCustomDurability extends ItemCreatorTab {
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
             try {
-                guiHandler.getCustomCache().getItems().getItem().setCustomDurability(Integer.parseInt(strings[0]));
+                var durability = Integer.parseInt(strings[0]);
+                guiHandler.getCustomCache().getItems().modifyOriginalStack(stack -> {
+                    var builder = new ItemBuilder(stack);
+                    builder.setCustomDurability(durability);
+                });
             } catch (NumberFormatException ex) {
                 return true;
             }
@@ -70,7 +75,11 @@ public class TabCustomDurability extends ItemCreatorTab {
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
             try {
-                guiHandler.getCustomCache().getItems().getItem().setCustomDamage(Integer.parseInt(strings[0]));
+                var damage = Integer.parseInt(strings[0]);
+                guiHandler.getCustomCache().getItems().modifyOriginalStack(stack -> {
+                    var builder = new ItemBuilder(stack);
+                    builder.setCustomDamage(damage);
+                });
             } catch (NumberFormatException ex) {
                 return true;
             }
@@ -83,7 +92,10 @@ public class TabCustomDurability extends ItemCreatorTab {
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
             try {
-                guiHandler.getCustomCache().getItems().getItem().setCustomDurabilityTag(s);
+                guiHandler.getCustomCache().getItems().modifyOriginalStack(stack -> {
+                    var builder = new ItemBuilder(stack);
+                    builder.setCustomDurabilityTag(s);
+                });
             } catch (NumberFormatException ex) {
                 return true;
             }
