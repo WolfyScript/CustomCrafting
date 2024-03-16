@@ -48,6 +48,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.version.MinecraftVersion;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Material;
@@ -165,15 +166,15 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
         if (!checkConditions(Conditions.Data.of(player, view))) return null;
 
         final Optional<IngredientData> baseData = getBase().checkChoices(base, isCheckNBT()).map(reference -> new IngredientData(BASE_SLOT, BASE_SLOT, getBase(), reference, base));
-        if (baseData.isEmpty() && !getBase().isAllowEmpty()) return null;
+        if (baseData.isEmpty() && (!getBase().isAllowEmpty() || !ItemUtils.isAirOrNull(base))) return null;
 
         final Optional<IngredientData> additionData = getAddition().checkChoices(addition, isCheckNBT()).map(reference -> new IngredientData(ADDITION_SLOT, ADDITION_SLOT, getAddition(), reference, addition));
-        if (additionData.isEmpty() && !getAddition().isAllowEmpty()) return null;
+        if (additionData.isEmpty() && (!getAddition().isAllowEmpty() || !ItemUtils.isAirOrNull(addition))) return null;
 
         Optional<IngredientData> templateData = Optional.empty();
         if (IS_1_20 && getTemplate() != null) {
             templateData = getTemplate().checkChoices(template, isCheckNBT()).map(reference -> new IngredientData(0, 0, getTemplate(), reference, template));
-            if (templateData.isEmpty() && !getTemplate().isAllowEmpty()) return null;
+            if (templateData.isEmpty() && (!getTemplate().isAllowEmpty() || !ItemUtils.isAirOrNull(template))) return null; // Do not allow recipe, when there is an invalid item, or when slot is not allowed to be empty!
         }
 
         final IngredientData[] ingredientData = IS_1_20 ?
