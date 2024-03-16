@@ -78,7 +78,7 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 
     @Override
     protected CustomRecipeSmithing constructRecipe() {
-        return create(new CustomRecipeSmithing(key, customCrafting));
+        return create(new CustomRecipeSmithing(key, customCrafting, true, true, true, false));
     }
 
     @Override

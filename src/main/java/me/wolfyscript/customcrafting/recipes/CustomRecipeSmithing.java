@@ -123,27 +123,29 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
         this.type = RecipeType.SMITHING;
         setBase(ItemLoader.loadIngredient(node.path(KEY_BASE)));
         setAddition(ItemLoader.loadIngredient(node.path(KEY_ADDITION)));
-        preserveEnchants = node.path("preserve_enchants").asBoolean(true);
-        preserveDamage = node.path("preserveDamage").asBoolean(true);
-        onlyChangeMaterial = node.path("onlyChangeMaterial").asBoolean(false);
+        setOnlyChangeMaterial(node.path("onlyChangeMaterial").asBoolean(false));
+        setPreserveEnchants(node.path("preserve_enchants").asBoolean(true));
+        setPreserveDamage(node.path("preserveDamage").asBoolean(true));
     }
 
     @JsonCreator
-    public CustomRecipeSmithing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
+    public CustomRecipeSmithing(
+            @JsonProperty("key") @JacksonInject("key") NamespacedKey key,
+            @JacksonInject("customcrafting") CustomCrafting customCrafting,
+            @JsonProperty("preserveEnchants") boolean preserveEnchants,
+            @JsonProperty("preserveDamage") boolean preserveDamage,
+            @JsonProperty("preserveTrim") boolean preserveTrim,
+            @JsonProperty("onlyChangeMaterial") boolean onlyChangeMaterial
+    ) {
         super(key, customCrafting, RecipeType.SMITHING);
         this.template = ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0)) ? new Ingredient(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE) : new Ingredient();
         this.base = new Ingredient();
         this.addition = new Ingredient();
         this.result = new Result();
-        this.preserveEnchants = true;
-        this.preserveDamage = true;
-        this.preserveTrim = ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0));
-        this.onlyChangeMaterial = false;
-    }
-
-    @Deprecated
-    public CustomRecipeSmithing(NamespacedKey key) {
-        this(key, CustomCrafting.inst());
+        setOnlyChangeMaterial(onlyChangeMaterial);
+        setPreserveEnchants(preserveEnchants);
+        setPreserveDamage(preserveDamage);
+        setPreserveTrim(preserveTrim);
     }
 
     private CustomRecipeSmithing(CustomRecipeSmithing customRecipeSmithing) {
