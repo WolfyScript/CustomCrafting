@@ -52,7 +52,7 @@ dependencies {
 }
 
 group = "com.wolfyscript.customcrafting"
-version = "4.16.9.1"
+version = "4.16.9.1-SNAPSHOT"
 description = "customcrafting-spigot"
 java.sourceCompatibility = JavaVersion.VERSION_16
 
@@ -145,6 +145,12 @@ minecraftServers {
             version.set("1.19.4")
             type.set("PAPER")
             ports.set(setOf(debugPortMapping, "25570:25565"))
+        }
+        // Purpur
+        register("purpur_1_20") {
+            version.set("1.20.4")
+            type.set("PURPUR")
+            ports.set(setOf(debugPortMapping, "25569:25565"))
         }
     }
 }
