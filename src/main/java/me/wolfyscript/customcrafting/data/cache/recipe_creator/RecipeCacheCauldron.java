@@ -71,6 +71,9 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
 
     @Override
     public void setIngredient(int slot, Ingredient ingredient) {
+        if (ingredient != null) {
+            ingredient.buildChoices();
+        }
         if (slot < ingredients.size()) {
             ingredients.set(slot, ingredient);
         } else if (ingredients.size() < 6){

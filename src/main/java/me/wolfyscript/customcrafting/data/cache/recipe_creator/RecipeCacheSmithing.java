@@ -100,6 +100,9 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
     }
 
     public void setTemplate(Ingredient template) {
+        if (template != null) {
+            template.buildChoices();
+        }
         this.template = template;
         if (template == null || template.isEmpty()) {
             this.template = new Ingredient();
@@ -118,6 +121,9 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
     }
 
     public void setBase(Ingredient base) {
+        if (base != null) {
+            base.buildChoices();
+        }
         this.base = base;
         if (base == null || base.isEmpty()) {
             this.base = new Ingredient();
@@ -132,6 +138,9 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
     }
 
     public void setAddition(Ingredient addition) {
+        if (addition != null) {
+            addition.buildChoices();
+        }
         this.addition = addition;
         if (addition == null || addition.isEmpty()) {
             this.addition = new Ingredient();

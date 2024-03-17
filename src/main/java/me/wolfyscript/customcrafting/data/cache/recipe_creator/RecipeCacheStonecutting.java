@@ -67,6 +67,9 @@ public class RecipeCacheStonecutting extends RecipeCache<CustomRecipeStonecutter
     }
 
     public void setSource(Ingredient source) {
+        if (source != null) {
+            source.buildChoices();
+        }
         this.source = source;
     }
 }

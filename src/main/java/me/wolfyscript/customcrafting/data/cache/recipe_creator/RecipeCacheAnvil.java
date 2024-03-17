@@ -94,6 +94,9 @@ public class RecipeCacheAnvil extends RecipeCache<CustomRecipeAnvil> {
 
     @Override
     public void setIngredient(int slot, Ingredient ingredient) {
+        if (ingredient != null) {
+            ingredient.buildChoices();
+        }
         if (slot == 0) {
             this.base = ingredient;
         } else {

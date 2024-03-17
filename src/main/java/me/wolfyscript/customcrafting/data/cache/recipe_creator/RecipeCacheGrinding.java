@@ -47,6 +47,9 @@ public class RecipeCacheGrinding extends RecipeCache<CustomRecipeGrindstone> {
 
     @Override
     public void setIngredient(int slot, Ingredient ingredient) {
+        if (ingredient != null) {
+            ingredient.buildChoices();
+        }
         if (slot == 0) {
             setInputTop(ingredient);
         } else {

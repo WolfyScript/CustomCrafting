@@ -64,6 +64,9 @@ public abstract class RecipeCacheCooking<R extends CustomRecipeCooking<R, ?>> ex
     }
 
     public void setSource(Ingredient source) {
+        if (source != null) {
+            source.buildChoices();
+        }
         this.source = source;
     }
 
