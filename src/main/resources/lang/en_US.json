@@ -3084,7 +3084,7 @@
             "lore": [
               "<grey>Edit the Stack using the Item Creator</grey>",
               "",
-              "<grey>[<green>Shift-Right-Click</green>] Open Item Creator</grey>"
+              "<grey>[<green>Click</green>] Open Item Creator</grey>"
             ]
           },
           "reference": {
