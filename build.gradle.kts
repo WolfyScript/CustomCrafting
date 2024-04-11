@@ -27,11 +27,12 @@ plugins {
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.wolfyscript.devtools.docker.minecraft_servers") version "2.0-SNAPSHOT"
+    id("com.jfrog.artifactory") version "5.2.0"
 }
 
 repositories {
     mavenLocal()
-    maven(url = "https://maven.wolfyscript.com/repository/public/")
+    maven(url = "https://artifacts.wolfyscript.com/artifactory/gradle-dev")
     maven(url = "https://repo.dmulloy2.net/repository/public/")
     maven(url = "https://repo.maven.apache.org/maven2/")
     maven(url = "https://mvn.lumine.io/repository/maven-public/")
@@ -48,7 +49,7 @@ dependencies {
     compileOnly("io.netty:netty-all:4.1.85.Final")
     compileOnly("me.clip:placeholderapi:2.10.4")
     compileOnly("io.th0rgal:oraxen:1.170.0")
-    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.16.15-beta.12-SNAPSHOT")
+    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.17-SNAPSHOT")
 }
 
 group = "com.wolfyscript.customcrafting"
@@ -76,18 +77,7 @@ tasks.named<ShadowJar>("shadowJar") {
 publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
-    }
-    repositories {
-        mavenLocal()
-        maven {
-            url = if ((version as String).endsWith("-SNAPSHOT")) {
-                name = "snapshots"
-                uri("https://maven.wolfyscript.com/repository/snapshots/")
-            } else {
-                name = "releases"
-                uri("https://maven.wolfyscript.com/repository/releases/")
-            }
-        }
+        artifact(file("$rootDir/gradle.properties"))
     }
 }
 
@@ -155,6 +145,21 @@ minecraftServers {
     }
 }
 
-
+artifactory {
+    publish {
+        contextUrl = "https://artifacts.wolfyscript.com/artifactory"
+        repository {
+            repoKey = "gradle-dev-local"
+            username = project.properties["wolfyRepoPublishUsername"].toString()
+            password = project.properties["wolfyRepoPublishToken"].toString()
+        }
+        defaults {
+            publications("maven")
+            setPublishArtifacts(true)
+            setPublishPom(true)
+            isPublishBuildInfo = false
+        }
+    }
+}
 
 
