@@ -34,6 +34,13 @@ public class PermissionCondition extends Condition<PermissionCondition> {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "permission");
 
+    static boolean valid(CustomRecipe<?> recipe) {
+        return RecipeType.Container.CRAFTING.isInstance(recipe) || RecipeType.Container.ELITE_CRAFTING.isInstance(recipe) || switch (recipe.getRecipeType().getType()) {
+            case BREWING_STAND, GRINDSTONE, CAULDRON, SMITHING -> true;
+            default -> false;
+        };
+    }
+
     private String permission = "customcrafting.craft.%namespace%.%recipe_name%";
 
     public PermissionCondition() {
@@ -43,7 +50,7 @@ public class PermissionCondition extends Condition<PermissionCondition> {
 
     @Override
     public boolean isApplicable(CustomRecipe<?> recipe) {
-        return ExperienceCondition.valid(recipe);
+        return valid(recipe);
     }
 
     public void setPermission(String permission) {
@@ -84,7 +91,7 @@ public class PermissionCondition extends Condition<PermissionCondition> {
 
         @Override
         public boolean shouldRender(RecipeType<?> type) {
-            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.BREWING_STAND || type == RecipeType.GRINDSTONE || type == RecipeType.CAULDRON;
+            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.BREWING_STAND || type == RecipeType.GRINDSTONE || type == RecipeType.CAULDRON || type == RecipeType.SMITHING;
         }
     }
 }
