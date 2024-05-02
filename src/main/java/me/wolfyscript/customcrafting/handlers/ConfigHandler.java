@@ -138,6 +138,7 @@ public class ConfigHandler {
         customCrafting.saveResource("lang/en_US.json", true);
         customCrafting.saveResource("lang/de_DE.json", true);
         customCrafting.saveResource("lang/zh_CN.json", true);
+        customCrafting.saveResource("lang/ru_RU.json", true);
         //The default language to use and to which it falls back if a key is not found in the active language
         var fallBackLanguage = languageAPI.loadLangFile("en_US");
         languageAPI.registerLanguage(fallBackLanguage);
