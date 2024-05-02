@@ -143,10 +143,14 @@ public class MenuMain extends CCWindow {
         event.setButton(23, CAMPFIRE);
         event.setButton(25, STONECUTTER);
 
-        offset = 0;
-        event.setButton(30, customCrafting.getConfigHandler().getConfig().isBrewingRecipes() ? BREWING_STAND : "brewing_stand_disabled");
+        offset = 1;
+        if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
+            event.setButton(30, BREWING_STAND);
+            offset = 0;
+        }
+
         event.setButton(28 + offset, GRINDSTONE);
-        event.setButton(32 + offset, ELITE_CRAFTING);
+        event.setButton(32 - offset, ELITE_CRAFTING);
         event.setButton(34 - offset, SMITHING);
 
         if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) {
