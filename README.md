@@ -27,7 +27,8 @@ For any questions join the [Discord](https://discord.gg/qGhDTSr).
 ![recipe_types](https://github.com/WolfyScript/CustomCrafting/assets/41468455/f36d3d23-c094-4a47-9b45-370f2f314d21)
 ![customization](https://github.com/WolfyScript/CustomCrafting/assets/41468455/8415f2e3-18cc-49e5-99ae-c910f4c97c56)
 ![advanced_settings](https://github.com/WolfyScript/CustomCrafting/assets/41468455/8d74313c-e5e8-4171-a120-a0b0bd9e2d74)
-![dependencies_updates](https://github.com/WolfyScript/CustomCrafting/assets/41468455/c795f2b8-af0f-456f-a449-f16cfd03cf1c)
+![dependencies_updates](https://github.com/WolfyScript/CustomCrafting/assets/41468455/0a80e1ff-0c07-419d-bd88-7172aabe5096)
+
 [![](https://bstats.org/signatures/bukkit/CustomCrafting.svg)](https://bstats.org/plugin/bukkit/CustomCrafting/3211)
 
 
