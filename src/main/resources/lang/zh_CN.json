@@ -1,15 +1,18 @@
 {
-  "author": "肆零肆E, SnowCutieOwO",
+  "author": "肆零肆E, SnowCutieOwO, FireworkPolymer",
   "version": "6.1.0",
   "info": [
     "This langauge file is updated by SnowCutieOwO to 6.1.0",
+    "FireworkPolymer fixed some details.",
+    "",
     "Original Author Info:",
     "update 5.0.0 -> 6.0.0 by Yummy_Cookie_S",
     "bilibili: https://space.bilibili.com/71234479",
     "mcbbs: https://www.mcbbs.net/?1087836",
     "",
     "Continue Author Info:",
-    "https://www.github.com/SnowCutieOwO"
+    "https://www.github.com/SnowCutieOwO",
+    "https://www.github.com/Clexus"
   ],
   "crafting": {
     "workbench": {
@@ -338,7 +341,7 @@
           "name": "<dark_red><b>关闭</b></dark_red>"
         },
         "gui_help_on": {
-          "name": "<dark_aqua><b><u>[?] 信息</u></b></white>",
+          "name": "<dark_aqua><b><u>[?] 信息</u></b>",
           "lore": [
             "<grey><list_entry:0></grey>",
             "<grey><list_entry:1></grey>",
@@ -396,7 +399,7 @@
         }
       },
       "main_menu": {
-        "gui_name": "<dark_aqua><b>自定义合成 <grey>[<dark_grey>%plugin.version%<grey>]",
+        "gui_name": "<dark_aqua><b>自定义合成 <grey>[<dark_grey><plugin_version><grey>]",
         "gui_help": [
           "<gold><b>设置:",
           "<grey>- <yellow>点击你想创建一个新配方的配方类型",
@@ -435,49 +438,49 @@
           },
           "anvil": {
             "name": "<grey>\u27A5 <gold><b>铁砧配方",
-            "help": [
+            "lore": [
               ""
             ]
           },
           "furnace": {
             "name": "<grey>\u27A5 <gold><b>熔炉配方",
-            "help": [
+            "lore": [
               ""
             ]
           },
           "blast_furnace": {
             "name": "<grey>\u27A5 <gold><b>高炉配方",
-            "help": [
+            "lore": [
               ""
             ]
           },
           "smoker": {
             "name": "<grey>\u27A5 <gold><b>烟熏炉配方",
-            "help": [
+            "lore": [
               ""
             ]
           },
           "campfire": {
             "name": "<grey>\u27A5 <gold><b>营火配方",
-            "help": [
+            "lore": [
               ""
             ]
           },
           "cauldron": {
             "name": "<grey>\u27A5 <gold><b>炼药锅配方",
-            "help": [
+            "lore": [
               "<grey>创建炼药锅配方以在炼药锅内酿造/烹饪!"
             ]
           },
           "stonecutter": {
             "name": "<grey>\u27A5 <gold><b>切石机配方",
-            "help": [
+            "lore": [
               ""
             ]
           },
           "grindstone": {
             "name": "<grey>\u27A5 <gold><b>砂轮配方",
-            "help": [
+            "lore": [
               ""
             ]
           },
@@ -485,6 +488,15 @@
             "name": "<grey>\u27A5 <gold><b>酿造台配方",
             "lore": [
               ""
+            ]
+          },
+          "brewing_stand_disabled": {
+            "name": "<red>❌ </red>  <gold><b>酿造台配方</b></gold>",
+            "lore": [
+              "<red>酿造台配方已关闭!",
+              "<red>你必须在配置文件中开启它!",
+              "",
+              "<red>注意: 开发正在进行中, 所以酿造台配方可能不会按预期工作！"
             ]
           },
           "smithing": {
@@ -533,7 +545,7 @@
           "namespace": {
             "name": "<grey>%namespace%",
             "lore": [
-              "<grey>[<green>点击</green>] 命名",
+              "<grey>[<green>点击</green>] 打开命名空间",
               "<grey>[<green>Shift+左键<grey>] 禁用所有配方",
               "<grey>[<green>Shift+右键<grey>] 启用所有配方"
             ]
@@ -556,8 +568,8 @@
             "name": "<gold><b>类型: <yellow>%type%",
             "lore": [
               "",
-              "<grey>[<green>Left-Click<grey>] <yellow>下一类",
-              "<grey>[<green>Right-Click<grey>] <yellow>上一类"
+              "<grey>[<green>左键点击<grey>] <yellow>下一类",
+              "<grey>[<green>右键点击<grey>] <yellow>上一类"
             ]
           }
         },
@@ -645,11 +657,11 @@
           "language": {
             "name": "<gold>语言",
             "lore": [
-              "<yellow>» <b>%lang0%",
-              "<grey>%lang1%",
-              "<grey>%lang2%",
-              "<grey>%lang3%",
-              "<grey>%lang4%",
+              "<yellow>» <b><list_entry:0></b></yellow>",
+              "<grey><list_entry:1></grey>",
+              "<grey><list_entry:2></grey>",
+              "<grey><list_entry:3></grey>",
+              "<grey><list_entry:4></grey>",
               "<grey>[<green>左键<grey>]下一语言",
               "<grey>[<green>右键<grey>]上一语言",
               "<grey>[<green>Shift+点击<grey>]重载语言文件和GUI"
@@ -690,22 +702,44 @@
               }
             }
           },
-          "knowledgebook": {
-            "workbench_filter_button": {
-              "enabled": {
-                "name": "<green>显示<gold>工作台选择按钮",
-                "lore": [
-                  "<grey>已显示知识之书中的工作台选择按钮",
-                  "<grey>[<green>点击</green>]隐藏工作台选择按钮"
-                ]
-              },
-              "disabled": {
-                "name": "<red>隐藏<gold>工作台选择按钮",
-                "lore": [
-                  "<grey>已隐藏知识之书中的工作台选择按钮",
-                  "<grey>[<green>点击</green>]显示工作台选择按钮"
-                ]
-              }
+          "draw_background": {
+            "enabled": {
+              "name": "<grey>\u25A0 </grey><gold><b>背景</b></gold>",
+              "lore": [
+                "<grey>每个菜单都将有玻璃板作为背景</grey>",
+                "",
+                "<grey>[<green>点击</green>] 关闭玻璃板背景"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>\u25A1 </grey><gold><b>背景</b></gold>",
+              "lore": [
+                "<grey>所有的菜单中作为背景的玻璃板都不再可见!</grey>",
+                "<red>这使得配方格和其他输入槽等位置不会被显示</red>",
+                "<red>如果你这么做了，请保证你用了自定义合成材质!</red>",
+                "",
+                "<grey>[<green>点击</green>] 开启玻璃板背景"
+              ]
+            }
+          },
+          "recipe_book_keep_last_open": {
+            "enabled": {
+              "name": "<green>✔ </green><gold><b>Keep Last Open</b></gold>",
+              "lore": [
+                "<grey>When reopening the recipe book it opens</grey>",
+                "<grey>the menu the player last left on.</grey>",
+                "",
+                "<grey>[<green>Click</green>] Disable Keep Last Open"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌ </red><gold><b>Keep last Open</b></gold>",
+              "lore": [
+                "<grey>When reopening the recipe book it</grey>",
+                "<grey>always opens the recipe overview.</grey>",
+                "",
+                "<grey>[<green>Click</green>] Enable Keep Last Open"
+              ]
             }
           }
         }
@@ -933,12 +967,12 @@
             },
             "add": {
               "name": "<gold>添加附魔</gold>",
-              "help": [],
+              "lore": [],
               "message": "<yellow>输入附魔与等级!如: <gold>unbreaking 5</gold></yellow>"
             },
             "remove": {
               "name": "<dark_red>移除附魔</dark_red>",
-              "help": [],
+              "lore": [],
               "message": "<yellow>输入附魔名称! 如: <gold>unbreaking</gold></yellow>"
             }
           },
@@ -960,9 +994,9 @@
           },
           "flags": {
             "option": {
-              "name": "<gold>设置 标志",
+              "name": "<gold>设置标志",
               "lore": [
-                "<grey>切换物品  Flags 显示",
+                "<grey>切换物品的标志显示",
                 "<grey>例如：隐藏附魔"
               ]
             },
@@ -976,50 +1010,50 @@
             },
             "attributes": {
               "enabled": {
-                "name": "<green><b>启用隐藏属性标签</b></green>"
+                "name": "<green><b>点击隐藏属性标签</b></green>"
               },
               "disabled": {
-                "name": "<red><b>禁用隐藏属性标签</b></red>"
+                "name": "<red><b>点击显示属性标签</b></red>"
               }
             },
             "unbreakable": {
               "enabled": {
-                "name": "<green><b>隐藏不可破坏标签</b></green>"
+                "name": "<green><b>点击隐藏不可破坏标签</b></green>"
               },
               "disabled": {
-                "name": "<red><b>显示不可破坏标签</b></red>"
+                "name": "<red><b>点击显示不可破坏标签</b></red>"
               }
             },
             "destroys": {
               "enabled": {
-                "name": "<green><b>启用隐藏耐久度标志</b></green>"
+                "name": "<green><b>点击禁用隐藏耐久度标志</b></green>"
               },
               "disabled": {
-                "name": "<red><b>禁用隐藏耐久度标志</b></red>"
+                "name": "<red><b>点击启用耐久度标志</b></red>"
               }
             },
             "placed_on": {
               "enabled": {
-                "name": "<green><b>隐藏放置标志</b></green>"
+                "name": "<green><b>点击隐藏放置标志</b></green>"
               },
               "disabled": {
-                "name": "<red><b>显示放置标志</b></red>"
+                "name": "<red><b>点击显示放置标志</b></red>"
               }
             },
             "potion_effects": {
               "enabled": {
-                "name": "<green><b>启用隐藏药水效果标志</b></green>"
+                "name": "<green><b>点击启用隐藏药水效果标志</b></green>"
               },
               "disabled": {
-                "name": "<red><b>禁用隐藏药水效果标志</b></red>"
+                "name": "<red><b>点击禁用隐藏药水效果标志</b></red>"
               }
             },
             "dye": {
               "enabled": {
-                "name": "<green><b>隐藏染色</b></green>"
+                "name": "<green><b>点击隐藏染色信息</b></green>"
               },
               "disabled": {
-                "name": "<red><b>隐藏染料</b></green>"
+                "name": "<red><b>点击显示染色信息</b></red>"
               }
             }
           },
@@ -1093,7 +1127,7 @@
             "option": {
               "name": "<gold>设置属性</gold>",
               "lore": [
-                "<grey>添加或移除属性</gold>"
+                "<grey>添加或移除属性</grey>"
               ]
             },
             "generic_max_health": {
@@ -1314,7 +1348,7 @@
           },
           "fuel": {
             "option": {
-              "name": "<gold>可做燃料/gold>",
+              "name": "<gold>可做燃料</gold>",
               "lore": [
                 "<grey>允许在熔炉中用作燃料.</grey>",
                 "<red>需要已有的物品</red></red>"
@@ -1385,7 +1419,7 @@
           },
           "custom_model_data": {
             "option": {
-              "name": "<gold>自定义模型数据/gold>",
+              "name": "<gold>自定义模型数据</gold>",
               "lore": [
                 "<grey>设置自定义模型数据</grey>",
                 "<grey>使用自定义模型数据和纹理!</grey>",
@@ -1482,7 +1516,7 @@
               "message": "<yellow>输入耐久度.<red>最大值: 2,147,483,647</red></yellow>"
             },
             "set_damage": {
-              "name": "<grey>设置损坏值: <dark_aqua>%VAR%</dark_aqua></grey>",
+              "name": "<grey>设置损坏值: <dark_aqua>%VAR%",
               "lore": [
                 "<yellow>设置损坏值</yellow>",
                 "<grey>[<green>点击</green>] 输入损坏值</grey>"
@@ -1547,7 +1581,7 @@
               "name": "<grey>设置稀有度: <dark_aqua>%VAR%</dark_aqua></grey>",
               "lore": [
                 "<grey>输入稀有度的值，要求不大于 1.0<red>",
-                "<grey>1.0 -> 100%, 0.04 -> 4%</grey>"
+                "<grey>每0.01对应1%</grey>"
               ],
               "message": "<yellow>输入物品的稀有度。<red>数值必须小于 1.0</red></yellow>"
             },
@@ -1851,7 +1885,7 @@
           ]
         },
         "conditions": {
-          "name": "<grey>\u27A5</grey>  <gold><b>Conditions</b></gold>",
+          "name": "<grey>\u27A5</grey>  <gold><b>条件</b></gold>",
           "lore": [
             "<yellow>向配方添加条件以进一步自定义它. 如：</yellow>",
             "<yellow>所处世界, 当前时间, 当前天气, 所处群系等。</yellow>",
@@ -1879,14 +1913,14 @@
         },
         "vanilla_book": {
           "vanilla_book_discover": {
-            "name": "<grey><b>\u274F </b></grey><gold><b>Vanilla Recipe Book & Auto Discover</b></gold>",
+            "name": "<grey><b>\u274F </b></grey><gold><b>原版配方书与自动解锁</b></gold>",
             "lore": [
-              "<yellow>Recipe will be visible in the vanilla</yellow>",
-              "<yellow>recipe book and auto discovered on join! </yellow>",
-              "<red>NBT for ingredients will not be displayed & </red>",
-              "<red>ignored by the auto-completion!</red>",
+              "<yellow>配方将在原版配方书中可见</yellow>",
+              "<yellow>且会在进入游戏时解锁该配方! </yellow>",
+              "<red>材料的NBT数据不会显示</red>",
+              "<red>同时会忽略自动补全!</red>",
               "",
-              "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>Disable Auto Discover</yellow>"
+              "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>关闭自动解锁</yellow>"
             ]
           },
           "vanilla_book_no_discover" : {
@@ -1903,7 +1937,7 @@
             "lore": [
               "<yellow>配方在原版配方书中不可见。</yellow>",
               "",
-              "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>启用原版配方书 & 自动解锁</yellow>"
+              "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>启用原版配方书与自动解锁</yellow>"
             ]
           }
         },
@@ -2000,6 +2034,26 @@
               ]
             }
           }
+        },
+        "tags": {
+          "name": "<grey>\u27A5</grey>  <gold><b>标签</b></gold>",
+          "lore": [
+            "<grey>你可以配置物品的标签.</grey>",
+            "<grey>标签用来为物品分类,</grey>",
+            "<grey>这可以让创建物品更容易.</grey>"
+          ]
+        },
+        "group": {
+          "name": "<grey>\u270E</grey>  <gold><b>配方组ID</b></gold>",
+          "lore": [
+            "<grey>所在组: </grey><yellow>%group%</yellow>",
+            "<yellow>拥有同一个组ID的配方会在配方书中显示在同一格中</yellow>",
+            "<yellow>就像原版里的木头变种一样.</yellow>",
+            "",
+            "<grey>[<green>左键点击</green>]</grey> <yellow>输入组名</yellow>",
+            "<grey>[<green>右键点击</green>]</grey> <yellow>重置分组</yellow>"
+          ],
+          "message": "<yellow>请输入组名!</yellow>"
         }
       },
       "global_messages": {
@@ -2538,7 +2592,7 @@
           "xp": {
             "name": "<grey>\u270E</grey>  <gold><b>经验值</b></gold>",
             "lore": [
-              "<grey>Experience: </grey><yellow>%xp%</yellow>"
+              "<grey>经验值: </grey><yellow>%xp%</yellow>"
             ],
             "message": "<dark_aqua>输入经验值数量. e.g. 2</dark_aqua>"
           },
@@ -3062,11 +3116,11 @@
         },
         "previous_page": {
           "name": "&2上一页",
-          "help": []
+          "lore": []
         },
         "next_page": {
           "name": "&2下一页",
-          "help": []
+          "lore": []
         },
         "lores": {
           "click": "<grey>[<green>点击</green>] 查看配方"
@@ -3112,26 +3166,26 @@
           },
           "adv_workbench_on": {
             "name": "<dark_aqua>高级工作台",
-            "help": [
+            "lore": [
               "<grey>只能由高级工作台制作",
               ""
             ]
           },
           "adv_workbench_off": {
             "name": "<dark_red>所有工作台",
-            "help": [
+            "lore": [
               "<grey>能在所有工作台上制作"
             ]
           },
           "shapeless_off": {
             "name": "<dark_aqua>有序合成",
-            "help": [
+            "lore": [
               "<grey>有序合成!"
             ]
           },
           "shapeless_on": {
             "name": "<dark_aqua>无序合成",
-            "help": [
+            "lore": [
               "<grey>无序合成!"
             ]
           }
@@ -3216,31 +3270,31 @@
           },
           "workbench": {
             "name": "<gold>工作台配方",
-            "help": []
+            "lore": []
           },
           "furnace": {
             "name": "<gold>熔炉配方",
-            "help": []
+            "lore": []
           },
           "anvil": {
             "name": "<gold>铁砧配方",
-            "help": []
+            "lore": []
           },
           "blast_furnace": {
             "name": "<gold>高炉配方",
-            "help": []
+            "lore": []
           },
           "smoker": {
             "name": "<gold>烟熏炉配方",
-            "help": []
+            "lore": []
           },
           "campfire": {
             "name": "<gold>营火配方",
-            "help": []
+            "lore": []
           },
           "stonecutter": {
             "name": "<gold>切石机配方",
-            "help": []
+            "lore": []
           },
           "cauldron": {
             "name": "<gold>炼药锅配方"
@@ -3617,12 +3671,12 @@
             "disabled": {
               "name": "<red><b>不可制作</b></red>",
               "lore": [
-                "<grey>无效配方或要求!",
+                "<grey>无效配方或条件!",
                 "",
-                "<yellow>检查要求:",
-                "<grey>- <gold>液体 <grey>(<blue>水</blue>/<red>岩浆</red>)</grey>",
-                "<grey>- <gold>营火</gold> <grey>(<aqua>灵魂</aqua>/<yellow>普通</yellow>)</grey>",
-                "<grey>- <gold>烽火<grey>(干草捆)</grey>"
+                "<yellow>请检查:",
+                "<grey>- <gold>锅中是否有所需液体 <grey>(<blue>水</blue>/<red>岩浆</red>)</grey>",
+                "<grey>- <gold>锅下是否有所需营火</gold> <grey>(<aqua>灵魂</aqua>/<yellow>普通</yellow>)</grey>",
+                "<grey>- <gold>营火下方是否放置干草捆<grey> (干草捆)</grey>"
               ]
             }
           },
@@ -3635,7 +3689,7 @@
             }
           },
           "signal_fire": {
-            "name": "<gold>烽火</gold>"
+            "name": "<gold>已放置干草捆</gold>"
           }
         }
       }
