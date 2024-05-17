@@ -127,6 +127,14 @@ minecraftServers {
             extraEnv.put("BUILD_FROM_SOURCE", "true")
             ports.set(setOf(debugPortMapping, "25568:25565"))
         }
+        register("spigot_1_20_6") {
+            version.set("1.20.6")
+            type.set("SPIGOT")
+            imageVersion.set("java21-graalvm")
+
+            extraEnv.put("BUILD_FROM_SOURCE", "true")
+            ports.set(setOf(debugPortMapping, "25569:25565"))
+        }
         // Paper test servers
         register("paper_1_20") {
             version.set("1.20.4")
