@@ -32,6 +32,8 @@ plugins {
 
 repositories {
     mavenLocal()
+    maven (url = "https://repo.codemc.io/repository/maven-public/")
+    maven(url = "https://repo.papermc.io/repository/maven-public/")
     maven(url = "https://artifacts.wolfyscript.com/artifactory/gradle-dev")
     maven(url = "https://repo.dmulloy2.net/repository/public/")
     maven(url = "https://repo.maven.apache.org/maven2/")
@@ -43,7 +45,7 @@ dependencies {
     api("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
     api("org.bstats:bstats-bukkit:3.0.0")
     compileOnly("io.lumine:Mythic-Dist:5.3.5")
-    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly("com.mojang:authlib:3.11.50")
     compileOnly("org.jetbrains:annotations:23.0.0")
     compileOnly("io.netty:netty-all:4.1.85.Final")
