@@ -31,6 +31,7 @@ import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.compatibility.PluginIntegration;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
@@ -71,7 +72,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
         }
     }
 
-    public abstract int validatePending();
+    public abstract int validatePending(PluginIntegration pluginIntegration);
 
     /**
      * Sets the new value for the "replace data" option.<br>
