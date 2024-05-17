@@ -25,9 +25,10 @@ package me.wolfyscript.customcrafting.recipes.items;
 import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentifier;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
-import com.wolfyscript.utilities.validator.ValidationContainer;
-import com.wolfyscript.utilities.validator.Validator;
-import com.wolfyscript.utilities.validator.ValidatorBuilder;
+import com.wolfyscript.utilities.dependency.DependencySource;
+import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.VerifierBuilder;
+import com.wolfyscript.utilities.verification.VerifierContainer;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
@@ -59,48 +60,48 @@ public abstract class RecipeItemStack {
     private static final String NULL_TAG = "Tag cannot be null!";
     private static final String NULL_ITEM = "Item cannot be null!";
 
-    static <T extends RecipeItemStack> Validator<T> validatorFor() {
-        return ValidatorBuilder.<T>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/abstract_itemstack")).def()
-                .collection(RecipeItemStack::items, initStep -> initStep.def()
+    static <T extends RecipeItemStack> Verifier<T> validatorFor() {
+        return VerifierBuilder.<T>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/abstract_itemstack"))
+                .collection(RecipeItemStack::items, initStep -> initStep
                         .name(container -> "Items")
-                        .forEach(apiReferenceInitStep -> apiReferenceInitStep.def()
+                        .forEach(apiReferenceInitStep -> apiReferenceInitStep
                                 .validate(container -> container.value()
                                         .map(reference -> {
                                             if (reference.identifier().isEmpty()) {
-                                                return container.update().type(ValidationContainer.ResultType.PENDING).fault(MISSING_THIRD_PARTY);
+                                                return container.update().invalid().fault(MISSING_THIRD_PARTY);
                                             }
                                             if (ItemUtils.isAirOrNull(reference.originalStack())) {
-                                                return container.update().type(ValidationContainer.ResultType.INVALID).fault(INVALID_ITEM);
+                                                return container.update().invalid().fault(INVALID_ITEM);
                                             }
-                                            return container.update().type(ValidationContainer.ResultType.VALID);
-                                        }).orElseGet(() -> container.update().type(ValidationContainer.ResultType.INVALID).fault(NULL_ITEM))
+                                            return container.update().valid();
+                                        }).orElseGet(() -> container.update().invalid().fault(NULL_ITEM))
                                 ))
                         .optional()
                 )
-                .collection(RecipeItemStack::getTags, initStep -> initStep.def()
+                .collection(RecipeItemStack::getTags, initStep -> initStep
                         .name(container -> "Tags")
-                        .forEach(tagInitStep -> tagInitStep.def()
+                        .forEach(tagInitStep -> tagInitStep
                                 .validate(container -> container.value()
                                         .map(key -> {
                                             if (key.getNamespace().equals("minecraft")) {
                                                 Tag<Material> tag = Bukkit.getTag("items", org.bukkit.NamespacedKey.minecraft(key.getKey()), Material.class);
                                                 if (tag != null) {
-                                                    return container.update().type(ValidationContainer.ResultType.VALID).fault(String.format(INVALID_TAG, key));
+                                                    return container.update().valid();
                                                 }
                                             } else {
                                                 CustomTag<CustomItem> tag = WolfyUtilCore.getInstance().getRegistries().getItemTags().getTag(key);
                                                 if (tag != null) {
-                                                    return container.update().type(ValidationContainer.ResultType.VALID);
+                                                    return container.update().valid();
                                                 }
                                             }
-                                            return container.update().type(ValidationContainer.ResultType.INVALID).fault(String.format(INVALID_TAG, key));
-                                        }).orElseGet(() -> container.update().type(ValidationContainer.ResultType.INVALID).fault(NULL_TAG))
+                                            return container.update().invalid().fault(String.format(INVALID_TAG, key));
+                                        }).orElseGet(() -> container.update().invalid().fault(NULL_TAG))
                                 ))
                         .optional()
                 )
                 .require(1) // There must be either an item or tag available
                 .validate(resultValidationContainer -> {
-                    if (resultValidationContainer.type() == ValidationContainer.ResultType.INVALID || resultValidationContainer.type() == ValidationContainer.ResultType.PENDING) {
+                    if (resultValidationContainer.type() == VerifierContainer.ResultType.INVALID || resultValidationContainer.type() == VerifierContainer.ResultType.UNKNOWN) {
                         return resultValidationContainer.update().fault(NO_ITEMS_OR_TAGS);
                     }
                     return resultValidationContainer.update();

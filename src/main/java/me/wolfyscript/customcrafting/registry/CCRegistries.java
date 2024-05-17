@@ -22,13 +22,13 @@
 
 package me.wolfyscript.customcrafting.registry;
 
+import com.wolfyscript.utilities.verification.Verifier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
-import com.wolfyscript.utilities.validator.Validator;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.registry.*;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -38,7 +38,7 @@ public class CCRegistries {
     private final RegistryRecipes recipes;
     private final Registry<ItemCreatorTab> itemCreatorTabs;
     private final Registry<RecipeType<?>> recipeTypes;
-    private final Registry<Validator<?>> validators;
+    private final Registry<Verifier<?>> validators;
     private final TypeRegistryRecipeConditions recipeConditions;
     private final TypeRegistry<MergeAdapter> recipeMergeAdapters;
     private final TypeRegistry<ResultExtension> recipeResultExtensions;
@@ -84,7 +84,7 @@ public class CCRegistries {
         return recipes;
     }
 
-    public Registry<Validator<?>> getValidators() {
+    public Registry<Verifier<?>> getVerifiers() {
         return validators;
     }
 }

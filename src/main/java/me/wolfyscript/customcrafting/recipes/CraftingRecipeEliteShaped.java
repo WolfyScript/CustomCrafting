@@ -22,10 +22,10 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.VerifierBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
-import com.wolfyscript.utilities.validator.Validator;
-import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,10 +35,10 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 public class CraftingRecipeEliteShaped extends AbstractRecipeShaped<CraftingRecipeEliteShaped, EliteRecipeSettings> {
 
     static {
-        final Validator<CraftingRecipeEliteShaped> VALIDATOR = ValidatorBuilder.<CraftingRecipeEliteShaped>object(RecipeType.ELITE_CRAFTING_SHAPED.getNamespacedKey()).use(AbstractRecipeShaped.validator())
+        final Verifier<CraftingRecipeEliteShaped> VERIFIER = VerifierBuilder.<CraftingRecipeEliteShaped>object(RecipeType.ELITE_CRAFTING_SHAPED.getNamespacedKey(), AbstractRecipeShaped.validator())
                 .name(container -> "Shaped Elite Crafting Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
                 .build();
-        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+        CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
     }
 
     public CraftingRecipeEliteShaped(NamespacedKey namespacedKey, JsonNode node) {

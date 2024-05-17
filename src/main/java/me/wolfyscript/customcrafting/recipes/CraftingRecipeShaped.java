@@ -25,13 +25,12 @@ package me.wolfyscript.customcrafting.recipes;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.VerifierBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
-import com.wolfyscript.utilities.validator.Validator;
-import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -45,10 +44,10 @@ import org.bukkit.inventory.RecipeChoice;
 public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeShaped, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapedRecipe> {
 
     static {
-        final Validator<CraftingRecipeShaped> VALIDATOR = ValidatorBuilder.<CraftingRecipeShaped>object(RecipeType.CRAFTING_SHAPED.getNamespacedKey()).use(AbstractRecipeShaped.validator())
+        final Verifier<CraftingRecipeShaped> VERIFIER = VerifierBuilder.<CraftingRecipeShaped>object(RecipeType.CRAFTING_SHAPED.getNamespacedKey(), AbstractRecipeShaped.validator())
                 .name(container -> "Shaped Crafting Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
                 .build();
-        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+        CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
     }
 
     @Deprecated
