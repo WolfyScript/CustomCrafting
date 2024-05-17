@@ -57,7 +57,7 @@ dependencies {
 group = "com.wolfyscript.customcrafting"
 version = "4.17-SNAPSHOT"
 description = "customcrafting-spigot"
-java.sourceCompatibility = JavaVersion.VERSION_16
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks.named<ProcessResources>("processResources") {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
