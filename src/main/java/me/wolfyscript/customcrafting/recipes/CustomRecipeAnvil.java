@@ -101,12 +101,15 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     private boolean blockRename;
     private boolean blockEnchant;
 
+    @DependencySource
     private RepairTask repairTask;
     private int repairCost;
     private boolean applyRepairCost;
     private RepairCostMode repairCostMode;
 
+    @DependencySource
     private Ingredient base;
+    @DependencySource
     private Ingredient addition;
 
     public CustomRecipeAnvil(NamespacedKey namespacedKey, JsonNode node) {

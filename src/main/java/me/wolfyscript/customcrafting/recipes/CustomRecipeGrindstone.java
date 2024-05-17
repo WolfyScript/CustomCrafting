@@ -65,7 +65,9 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
         CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
     }
 
+    @DependencySource
     private Ingredient inputTop;
+    @DependencySource
     private Ingredient inputBottom;
     private int xp;
 

@@ -112,6 +112,7 @@ public abstract class RecipeItemStack {
     @JsonIgnore
     protected final List<CustomItem> oldChoices;
     protected final List<StackReference> choices;
+    @DependencySource
     private List<StackReference> items;
     private Set<NamespacedKey> tags;
 

@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.collect.Streams;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.dependency.DependencySource;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
@@ -44,7 +45,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -74,7 +74,9 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     private static final StackReference placeHolderPotion = StackReference.of(new ItemBuilder(Material.POTION).setDisplayName(ChatColor.convert("&6&lAny kind of potion!")).create());
 
+    @DependencySource
     Ingredient allowedItems; //The CustomItems that can be used. Needs to be a potion of course.
+    @DependencySource
     private Ingredient ingredients; //The top ingredient of the recipe. Always required.
     private int fuelCost; //The fuel cost of recipe
     private int brewTime; //The brew time in ticks

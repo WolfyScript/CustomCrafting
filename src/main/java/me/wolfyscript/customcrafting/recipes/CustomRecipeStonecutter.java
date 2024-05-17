@@ -67,6 +67,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
         CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
     }
 
+    @DependencySource
     private Ingredient source;
 
     public CustomRecipeStonecutter(NamespacedKey namespacedKey, JsonNode node) {

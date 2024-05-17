@@ -108,8 +108,11 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     public static final int BASE_SLOT = IS_1_20 ? 1 : 0;
     public static final int ADDITION_SLOT = IS_1_20 ? 2 : 1;
 
+    @DependencySource
     private Ingredient template;
+    @DependencySource
     private Ingredient base;
+    @DependencySource
     private Ingredient addition;
 
     private boolean preserveEnchants;

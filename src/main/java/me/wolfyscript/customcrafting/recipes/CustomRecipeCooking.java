@@ -66,6 +66,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
                 .build();
     }
 
+    @DependencySource
     private Ingredient source;
     private float exp;
     private int cookingTime;
