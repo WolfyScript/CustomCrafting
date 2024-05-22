@@ -164,4 +164,19 @@ public abstract class RecipeData<R extends CustomRecipe<?>> implements IRecipeDa
         }
         return list;
     }
+
+    @Override
+    public int getPossibleResultAmount() {
+        return getNonNullIngredients().map(value -> {
+            var item = value.reference();
+            if (item != null) {
+                var input = value.itemStack();
+                if (input != null) {
+                    return input.getAmount() / item.amount();
+                }
+            }
+            return 0;
+        }).min(Comparator.comparingInt(o -> o)).orElse(0);
+    }
+
 }
