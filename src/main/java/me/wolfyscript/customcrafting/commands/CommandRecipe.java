@@ -23,11 +23,7 @@
 package me.wolfyscript.customcrafting.commands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.commands.recipes.DeleteSubCommand;
-import me.wolfyscript.customcrafting.commands.recipes.EditSubCommand;
-import me.wolfyscript.customcrafting.commands.recipes.RecipeLookupCommand;
-import me.wolfyscript.customcrafting.commands.recipes.SaveSubCommand;
-import me.wolfyscript.customcrafting.commands.recipes.ToggleSubCommand;
+import me.wolfyscript.customcrafting.commands.recipes.*;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import org.bukkit.command.CommandSender;
@@ -45,6 +41,7 @@ public class CommandRecipe extends IndexCommand {
         registerSubCommand(new ToggleSubCommand(customCrafting));
         registerSubCommand(new SaveSubCommand(customCrafting));
         registerSubCommand(new RecipeLookupCommand(customCrafting));
+        registerSubCommand(new InfoSubCommand(customCrafting));
     }
 
     @Override
