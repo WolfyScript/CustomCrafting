@@ -76,34 +76,10 @@ public class LocalStorageLoader extends ResourceLoader {
 
     private DataSettings dataSettings;
     private ExecutorService executor;
-    private final List<NamespacedKey> failedRecipes;
-
-    private final Multimap<CustomRecipe<?>, Dependency> recipeDependencies = Multimaps.newSetMultimap(new HashMap<>(), HashSet::new);
-    private final List<VerifierContainer<? extends CustomRecipe<?>>> invalidRecipes;
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
         super(customCrafting, new NamespacedKey(customCrafting, "local_loader"));
-        this.failedRecipes = new ArrayList<>();
-        this.invalidRecipes = new ArrayList<>();
         this.dataSettings = customCrafting.getConfigHandler().getConfig().getDataSettings();
-    }
-
-    protected void markInvalid(VerifierContainer<? extends CustomRecipe<?>> recipe) {
-        synchronized (invalidRecipes) {
-            invalidRecipes.add(recipe);
-        }
-    }
-
-    protected void markFailed(NamespacedKey recipe) {
-        synchronized (failedRecipes) {
-            failedRecipes.add(recipe);
-        }
-    }
-
-    private static <T extends CustomRecipe<?>> Optional<VerifierContainer<T>> validateRecipe(T recipe) {
-        var validator = (Verifier<T>) CustomCrafting.inst().getRegistries().getVerifiers().get(recipe.getRecipeType().getNamespacedKey());
-        if (validator == null) return Optional.empty();
-        return Optional.of(validator.validate(recipe));
     }
 
     public static void pack(File sourceDirPath, File zipFilePath) throws IOException {

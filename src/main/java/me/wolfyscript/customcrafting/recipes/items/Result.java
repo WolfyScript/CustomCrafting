@@ -54,9 +54,7 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result extends RecipeItemStack {
 
-    public static final Verifier<Result> VERIFIER = VerifierBuilder.<Result>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/result"))
-            .object(Function.identity(), RecipeItemStack.validatorFor())
-            .build();
+    public static final Verifier<Result> VERIFIER = VerifierBuilder.<Result>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/result"), RecipeItemStack.validatorFor()).build();
 
     @JsonIgnore
     private final Map<UUID, CustomItem> cachedItems = new HashMap<>();
