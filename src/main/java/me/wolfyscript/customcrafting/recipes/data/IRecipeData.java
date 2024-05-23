@@ -94,4 +94,6 @@ public interface IRecipeData<R extends CustomRecipe<?>> {
      */
     List<IngredientData> getBySlots(int[] slots);
 
+    int getPossibleResultAmount();
+
 }
