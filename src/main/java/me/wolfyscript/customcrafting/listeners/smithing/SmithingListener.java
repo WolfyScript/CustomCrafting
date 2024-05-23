@@ -196,28 +196,7 @@ public class SmithingListener implements Listener {
                 if (result == null) {
                     return;
                 }
-                // Thanks to Spigot not allowing empty ingredients, we need our own way of collecting the result!
-                // Otherwise, it would just cancel the click, because there is no valid recipe!
-                if (event.getClick().isShiftClick()) {
-                    if (!event.getView().getBottomInventory().addItem(result).isEmpty()) {
-                        return; // No space in inventory! To not mess with dropping items, etc. we just cancel the click
-                    }
-                } else {
-                    if (ItemUtils.isAirOrNull(event.getCursor())) {
-                        Bukkit.getScheduler().runTask(customCrafting, () -> {
-                            event.getView().setCursor(result);
-                        });
-                    } else if (event.getCursor().isSimilar(result)) {
-                        if (event.getCursor().getAmount() + result.getAmount() > event.getCursor().getMaxStackSize()) {
-                            return; // Again instead of doing weird stuff, just cancel
-                        }
-                        Bukkit.getScheduler().runTask(customCrafting, () -> {
-                            event.getView().getCursor().setAmount(event.getCursor().getAmount() + result.getAmount());
-                        });
-                    }
-                }
-
-                player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1.0F, 1.0F);
+                handleInvalidRecipeClick(result, player, event);
             }
 
             smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
@@ -226,6 +205,31 @@ public class SmithingListener implements Listener {
             inventory.setItem(CustomRecipeSmithing.BASE_SLOT, smithingData.base().map(reference -> reference.shrink(baseItem, 1, true, inventory, player, null)).orElse(baseItem));
             inventory.setItem(CustomRecipeSmithing.ADDITION_SLOT, smithingData.addition().map(reference -> reference.shrink(additionItem, 1, true, inventory, player, null)).orElse(additionItem));
         }
+    }
+
+    private void handleInvalidRecipeClick(ItemStack result, Player player, InventoryClickEvent event) {
+        // Thanks to Spigot not allowing empty ingredients, we need our own way of collecting the result!
+        // Otherwise, it would just cancel the click, because there is no valid recipe!
+        if (event.getClick().isShiftClick()) {
+            if (!event.getView().getBottomInventory().addItem(result).isEmpty()) {
+                return; // No space in inventory! To not mess with dropping items, etc. we just cancel the click
+            }
+        } else {
+            if (ItemUtils.isAirOrNull(event.getCursor())) {
+                Bukkit.getScheduler().runTask(customCrafting, () -> {
+                    event.getView().setCursor(result);
+                });
+            } else if (event.getCursor().isSimilar(result)) {
+                if (event.getCursor().getAmount() + result.getAmount() > event.getCursor().getMaxStackSize()) {
+                    return; // Again instead of doing weird stuff, just cancel
+                }
+                Bukkit.getScheduler().runTask(customCrafting, () -> {
+                    event.getView().getCursor().setAmount(event.getCursor().getAmount() + result.getAmount());
+                });
+            }
+        }
+
+        player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1.0F, 1.0F);
     }
 
 }
