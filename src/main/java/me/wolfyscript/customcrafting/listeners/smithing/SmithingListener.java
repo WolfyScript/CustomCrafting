@@ -172,26 +172,7 @@ public class SmithingListener implements Listener {
 
             if (smithingInventory.getRecipe() != null) {
                 // A recipe may be available if none of the ingredients are empty
-                if (event.getClick().isShiftClick()) {
-                    if (possible > 0) {
-                        // Pick a new stack for each result item
-                        RandomCollection<StackReference> results = smithingData.getResult().randomChoices(player);
-                        for (int i = 0; i < possible; i++) {
-                            var reference = results.next();
-                            if (reference != null) {
-                                var item = smithingData.getResult().item(smithingData, reference, player, null);
-                                if (InventoryUtils.hasInventorySpace(player, item)) {
-                                    player.getInventory().addItem(item);
-                                } else {
-                                    var loc = player.getLocation();
-                                    loc.getWorld().dropItem(loc, item);
-                                }
-                            }
-                        }
-                    }
-                    player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1.0F, 1.0F);
-                    event.setCancelled(true); // Cancel the event to prevent vanilla ingredient consumption
-                }
+                handleValidRecipeClick(possible, smithingData, player, event);
             } else {
                 if (result == null) {
                     return;
@@ -204,6 +185,29 @@ public class SmithingListener implements Listener {
             smithingData.template().ifPresent(reference -> inventory.setItem(0, reference.shrink(templateItem, 1, true, inventory, player, null)));
             inventory.setItem(CustomRecipeSmithing.BASE_SLOT, smithingData.base().map(reference -> reference.shrink(baseItem, 1, true, inventory, player, null)).orElse(baseItem));
             inventory.setItem(CustomRecipeSmithing.ADDITION_SLOT, smithingData.addition().map(reference -> reference.shrink(additionItem, 1, true, inventory, player, null)).orElse(additionItem));
+        }
+    }
+
+    private void handleValidRecipeClick(int possible, SmithingData smithingData, Player player, InventoryClickEvent event) {
+        if (event.getClick().isShiftClick()) {
+            if (possible > 0) {
+                // Pick a new stack for each result item
+                RandomCollection<StackReference> results = smithingData.getResult().randomChoices(player);
+                for (int i = 0; i < possible; i++) {
+                    var reference = results.next();
+                    if (reference != null) {
+                        var item = smithingData.getResult().item(smithingData, reference, player, null);
+                        if (InventoryUtils.hasInventorySpace(player, item)) {
+                            player.getInventory().addItem(item);
+                        } else {
+                            var loc = player.getLocation();
+                            loc.getWorld().dropItem(loc, item);
+                        }
+                    }
+                }
+            }
+            player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1.0F, 1.0F);
+            event.setCancelled(true); // Cancel the event to prevent vanilla ingredient consumption
         }
     }
 
