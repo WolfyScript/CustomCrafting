@@ -32,6 +32,8 @@ plugins {
 
 repositories {
     mavenLocal()
+    maven (url = "https://repo.codemc.io/repository/maven-public/")
+    maven(url = "https://repo.papermc.io/repository/maven-public/")
     maven(url = "https://artifacts.wolfyscript.com/artifactory/gradle-dev")
     maven(url = "https://repo.dmulloy2.net/repository/public/")
     maven(url = "https://repo.maven.apache.org/maven2/")
@@ -43,19 +45,19 @@ dependencies {
     api("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
     api("org.bstats:bstats-bukkit:3.0.0")
     compileOnly("io.lumine:Mythic-Dist:5.3.5")
-    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly("com.mojang:authlib:3.11.50")
     compileOnly("org.jetbrains:annotations:23.0.0")
     compileOnly("io.netty:netty-all:4.1.85.Final")
     compileOnly("me.clip:placeholderapi:2.10.4")
     compileOnly("io.th0rgal:oraxen:1.170.0")
-    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.17-SNAPSHOT")
+    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.17-beta.2-SNAPSHOT")
 }
 
 group = "com.wolfyscript.customcrafting"
 version = "4.17-SNAPSHOT"
 description = "customcrafting-spigot"
-java.sourceCompatibility = JavaVersion.VERSION_16
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks.named<ProcessResources>("processResources") {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -124,6 +126,14 @@ minecraftServers {
             type.set("SPIGOT")
             extraEnv.put("BUILD_FROM_SOURCE", "true")
             ports.set(setOf(debugPortMapping, "25568:25565"))
+        }
+        register("spigot_1_20_6") {
+            version.set("1.20.6")
+            type.set("SPIGOT")
+            imageVersion.set("java21-graalvm")
+
+            extraEnv.put("BUILD_FROM_SOURCE", "true")
+            ports.set(setOf(debugPortMapping, "25569:25565"))
         }
         // Paper test servers
         register("paper_1_20") {

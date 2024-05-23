@@ -24,11 +24,11 @@ package me.wolfyscript.customcrafting.recipes.anvil;
 
 import com.google.common.base.Preconditions;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.dependency.DependencySource;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.data.AnvilData;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,6 +41,7 @@ public class RepairTaskResult extends RepairTask {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "result");
 
+    @DependencySource
     private Result result;
 
     public RepairTaskResult() {

@@ -24,8 +24,9 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
-import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.VerifierBuilder;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.io.IOException;
@@ -40,8 +41,6 @@ import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
-import com.wolfyscript.utilities.validator.Validator;
-import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -51,7 +50,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -67,10 +65,10 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
     @JsonIgnore
     private boolean hasAllowedEmptyIngredient;
 
-    protected static <RT extends AbstractRecipeShapeless<?,?>> Validator<RT> validator() {
-        return ValidatorBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shapeless_crafting")).def()
-                .object(recipe -> recipe.result, resultInitStep -> resultInitStep.use(Result.VALIDATOR))
-                .collection(recipe -> recipe.ingredients, init -> init.def().forEach(initEntry -> initEntry.use(Ingredient.VALIDATOR)))
+    protected static <RT extends AbstractRecipeShapeless<?,?>> Verifier<RT> validator() {
+        return VerifierBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shapeless_crafting"))
+                .object(recipe -> recipe.result, Result.VERIFIER)
+                .collection(recipe -> recipe.ingredients, builder -> builder.forEach(Ingredient.VERIFIER))
                 .build();
     }
 

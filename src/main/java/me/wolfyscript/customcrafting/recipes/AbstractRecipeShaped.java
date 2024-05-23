@@ -25,8 +25,8 @@ package me.wolfyscript.customcrafting.recipes;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
-import com.wolfyscript.utilities.validator.Validator;
-import com.wolfyscript.utilities.validator.ValidatorBuilder;
+import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.VerifierBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -45,7 +45,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
@@ -70,10 +69,13 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private static final String VERTICAL_KEY = "vertical";
     private static final String ROTATION_KEY = "rotation";
 
-    protected static <RT extends AbstractRecipeShaped<?, ?>> Validator<RT> validator() {
-        return ValidatorBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shaped_crafting")).def()
-                .object(recipe -> recipe.result, resultInitStep -> resultInitStep.use(Result.VALIDATOR))
-                .collection(recipe -> recipe.mappedIngredients.entrySet(), init -> init.def().name(c -> "Ingredients").forEach(initEntry -> initEntry.use(Ingredient.ENTRY_VALIDATOR)))
+    protected static <RT extends AbstractRecipeShaped<?, ?>> Verifier<RT> validator() {
+        return VerifierBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shaped_crafting"))
+                .object(recipe -> recipe.result, Result.VERIFIER)
+                .collection(recipe -> recipe.mappedIngredients.entrySet(), builder -> builder
+                        .name(c -> "Ingredients")
+                        .forEach(Ingredient.ENTRY_VERIFIER)
+                )
                 .build();
     }
 

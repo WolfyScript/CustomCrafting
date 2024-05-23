@@ -33,6 +33,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonProcessingException;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.network.database.sql.SQLDataBase;
+import me.wolfyscript.utilities.compatibility.PluginIntegration;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.io.IOException;
@@ -87,7 +88,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     }
 
     @Override
-    public int validatePending() {
+    public int validatePending(PluginIntegration pluginIntegration) {
         return 0;
     }
 

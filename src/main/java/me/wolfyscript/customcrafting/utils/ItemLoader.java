@@ -27,7 +27,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
-import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
+import com.wolfyscript.utilities.json.jackson.MissingDependencyException;
+import com.wolfyscript.utilities.json.jackson.MissingImplementationException;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
@@ -44,7 +45,6 @@ import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReferen
 import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -167,11 +167,10 @@ public class ItemLoader {
                 Result desResult = null;
                 try {
                     desResult = getObjectMapper().reader(injects).readValue(node, Result.class);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    result = desResult;
+                } catch (IOException | MissingImplementationException e) {
+                    throw new RuntimeException(e);
                 }
+                result = desResult;
             }
         }
         if (result != null) {

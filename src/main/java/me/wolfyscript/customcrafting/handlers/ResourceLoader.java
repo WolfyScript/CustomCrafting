@@ -24,6 +24,12 @@ package me.wolfyscript.customcrafting.handlers;
 
 import java.io.File;
 import java.io.IOException;
+
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.wolfyscript.utilities.dependency.Dependency;
+import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.VerifierContainer;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -31,11 +37,12 @@ import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.compatibility.PluginIntegration;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import java.util.*;
 
 public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keyed {
 
@@ -46,6 +53,10 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
     protected final ObjectMapper objectMapper;
     private int priority = 0;
     private boolean replaceData = false;
+
+    protected final Multimap<CustomRecipe<?>, Dependency> recipeDependencies = Multimaps.newSetMultimap(new HashMap<>(), HashSet::new);
+    protected final List<VerifierContainer<? extends CustomRecipe<?>>> invalidRecipes = new ArrayList<>();
+    protected final List<NamespacedKey> failedRecipes = new ArrayList<>();
 
     protected ResourceLoader(CustomCrafting customCrafting, NamespacedKey key) {
         this.key = key;
@@ -71,7 +82,37 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
         }
     }
 
-    public abstract int validatePending();
+    public abstract int validatePending(PluginIntegration pluginIntegration);
+
+    protected static <T extends CustomRecipe<?>> Optional<VerifierContainer<T>> validateRecipe(T recipe) {
+        var validator = (Verifier<T>) CustomCrafting.inst().getRegistries().getVerifiers().get(recipe.getRecipeType().getNamespacedKey());
+        if (validator == null) return Optional.empty();
+        return Optional.of(validator.validate(recipe));
+    }
+
+    protected void markInvalid(VerifierContainer<? extends CustomRecipe<?>> recipe) {
+        synchronized (invalidRecipes) {
+            invalidRecipes.add(recipe);
+        }
+    }
+
+    protected void markFailed(NamespacedKey recipe) {
+        synchronized (failedRecipes) {
+            failedRecipes.add(recipe);
+        }
+    }
+
+    public Set<CustomRecipe<?>> getPendingRecipes() {
+        return Collections.unmodifiableSet(recipeDependencies.keySet());
+    }
+
+    public List<VerifierContainer<? extends CustomRecipe<?>>> getInvalidRecipes() {
+        return Collections.unmodifiableList(invalidRecipes);
+    }
+
+    public List<NamespacedKey> getFailedRecipes() {
+        return Collections.unmodifiableList(failedRecipes);
+    }
 
     /**
      * Sets the new value for the "replace data" option.<br>

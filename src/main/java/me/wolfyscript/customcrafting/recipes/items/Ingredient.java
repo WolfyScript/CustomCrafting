@@ -23,10 +23,9 @@
 package me.wolfyscript.customcrafting.recipes.items;
 
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
-import com.wolfyscript.utilities.validator.ValidationContainer;
-import com.wolfyscript.utilities.validator.Validator;
-import com.wolfyscript.utilities.validator.ValidatorBuilder;
-import io.r2dbc.spi.Parameter;
+import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.VerifierBuilder;
+import com.wolfyscript.utilities.verification.VerifierContainer;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -40,19 +39,21 @@ import java.util.*;
 
 public class Ingredient extends RecipeItemStack {
 
-    public static final Validator<Ingredient> VALIDATOR;
-    public static final Validator<Map.Entry<Character, Ingredient>> ENTRY_VALIDATOR;
+    public static final Verifier<Ingredient> VERIFIER;
+    public static final Verifier<Map.Entry<Character, Ingredient>> ENTRY_VERIFIER;
 
     static {
-        VALIDATOR = ValidatorBuilder.<Ingredient>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient")).use(RecipeItemStack.validatorFor()).build();
-        ENTRY_VALIDATOR = ValidatorBuilder.<Map.Entry<Character, Ingredient>>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient_entry")).def()
+        VERIFIER = VerifierBuilder.<Ingredient>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient"), RecipeItemStack.validatorFor()).build();
+
+        ENTRY_VERIFIER = VerifierBuilder.<Map.Entry<Character, Ingredient>>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient_entry"))
                 .name(container -> container.value().map(entry -> "Ingredient [" + entry.getKey() + "]").orElse("Ingredient [Unknown]"))
                 .validate(entryContainer -> entryContainer.value()
                         .map(entry -> {
-                            ValidationContainer<Ingredient> result = VALIDATOR.validate(entry.getValue());
-                            return entryContainer.update().copyFrom(result.update());
+                            VerifierContainer<Ingredient> result = VERIFIER.validate(entry.getValue());
+                            return entryContainer.update().type(result.type());
                         })
-                        .orElseGet(() -> entryContainer.update().type(ValidationContainer.ResultType.INVALID))).build();
+                        .orElseGet(() -> entryContainer.update().invalid())
+                ).build();
     }
 
     private boolean replaceWithRemains = true;

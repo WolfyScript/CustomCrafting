@@ -23,9 +23,9 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
-import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
-import com.wolfyscript.utilities.validator.Validator;
-import com.wolfyscript.utilities.validator.ValidatorBuilder;
+import com.wolfyscript.utilities.dependency.DependencySource;
+import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.VerifierBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
@@ -59,14 +59,15 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
     private static final String KEY_SOURCE = "source";
 
     static {
-        final Validator<CustomRecipeStonecutter> VALIDATOR = ValidatorBuilder.<CustomRecipeStonecutter>object(RecipeType.STONECUTTER.getNamespacedKey()).def()
+        final Verifier<CustomRecipeStonecutter> VERIFIER = VerifierBuilder.<CustomRecipeStonecutter>object(RecipeType.STONECUTTER.getNamespacedKey())
                 .name(container -> "Stonecutter Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
-                .object(recipe -> recipe.source, initStep -> initStep.use(Ingredient.VALIDATOR))
-                .object(recipe -> recipe.result, initStep -> initStep.use(Result.VALIDATOR))
+                .object(recipe -> recipe.source, Ingredient.VERIFIER)
+                .object(recipe -> recipe.result, Result.VERIFIER)
                 .build();
-        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+        CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
     }
 
+    @DependencySource
     private Ingredient source;
 
     public CustomRecipeStonecutter(NamespacedKey namespacedKey, JsonNode node) {

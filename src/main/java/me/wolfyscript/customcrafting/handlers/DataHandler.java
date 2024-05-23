@@ -147,7 +147,7 @@ public class DataHandler implements Listener {
     private void integrationEnable(PluginIntegrationEnableEvent event) {
         int validatedTotal = 0;
         for (ResourceLoader loader : loaders) {
-            validatedTotal += loader.validatePending();
+            validatedTotal += loader.validatePending(event.getIntegration());
         }
         if (validatedTotal > 0) {
             configHandler.getRecipeBookConfig().index(customCrafting);

@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.utils.chat.CollectionEditor;
@@ -298,13 +300,17 @@ public class ChatUtils {
     }
 
     public static void sendRecipeItemLoadingError(String prefix, String namespace, String key, Exception ex) {
-        api.getConsole().warn(prefix + "[Error] Invalid Recipe: \"" + namespace + ":" + key + "\": " + (ex.getMessage() != null ? ex.getMessage() : ""));
+        sendRecipeItemLoadingError(prefix, namespace, key, ex, CustomCrafting.inst().getConfigHandler().getConfig().getDataSettings().printStackTrace());
+    }
+
+    public static void sendRecipeItemLoadingError(String prefix, String namespace, String key, Exception ex, boolean stacktrace) {
+        CustomCrafting.inst().getLogger().warning(prefix + "[Error] Invalid Recipe: \"" + namespace + ":" + key + "\": " + (ex.getMessage() != null ? ex.getMessage() : ""));
         if (ex.getCause() != null) {
-            api.getConsole().warn(prefix + "[Error]   Caused by: " + ex.getCause().getMessage());
+            CustomCrafting.inst().getLogger().warning(prefix + "[Error]   Caused by: " + ex.getCause().getMessage());
         }
-        if (CustomCrafting.inst().getConfigHandler().getConfig().getDataSettings().printStackTrace()) {
-            api.getConsole().warn("------------------[StackTrace]-------------------");
-            ex.printStackTrace();
+        if (stacktrace) {
+            CustomCrafting.inst().getLogger().log(Level.WARNING, "------------------[StackTrace]-------------------");
+            CustomCrafting.inst().getLogger().log(Level.WARNING, "", ex);
         }
     }
 }

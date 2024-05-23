@@ -23,8 +23,9 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
-import com.wolfyscript.utilities.validator.Validator;
-import com.wolfyscript.utilities.validator.ValidatorBuilder;
+import com.wolfyscript.utilities.dependency.DependencySource;
+import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.VerifierBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
@@ -52,19 +53,21 @@ import java.io.IOException;
 public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone> {
 
     static {
-        final Validator<CustomRecipeGrindstone> VALIDATOR = ValidatorBuilder.<CustomRecipeGrindstone>object(RecipeType.GRINDSTONE.getNamespacedKey()).def()
+        final Verifier<CustomRecipeGrindstone> VERIFIER = VerifierBuilder.<CustomRecipeGrindstone>object(RecipeType.GRINDSTONE.getNamespacedKey())
                 .name(container -> "Grindstone Recipe" + container.value().map(recipe -> " [" + recipe.getNamespacedKey() + "]").orElse(""))
-                .object(recipe -> recipe, i -> i.def().name(c -> "Ingredients")
-                        .object(recipe -> recipe.inputTop, initStep -> initStep.use(Ingredient.VALIDATOR).name(c -> "Top Ingredient").optional())
-                        .object(recipe -> recipe.inputBottom, initStep -> initStep.use(Ingredient.VALIDATOR).name(c -> "Bottom Ingredient").optional())
+                .object(recipe -> recipe, i -> i.name(c -> "Ingredients")
+                        .object(recipe -> recipe.inputTop, Ingredient.VERIFIER, initStep -> initStep.name(c -> "Top Ingredient").optional())
+                        .object(recipe -> recipe.inputBottom, Ingredient.VERIFIER, initStep -> initStep.name(c -> "Bottom Ingredient").optional())
                         .require(1)
                 )
-                .object(recipe -> recipe.result, initStep -> initStep.use(Result.VALIDATOR))
+                .object(recipe -> recipe.result, Result.VERIFIER)
                 .build();
-        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+        CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
     }
 
+    @DependencySource
     private Ingredient inputTop;
+    @DependencySource
     private Ingredient inputBottom;
     private int xp;
 

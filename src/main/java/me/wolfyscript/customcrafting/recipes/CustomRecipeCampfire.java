@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.VerifierBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import com.wolfyscript.utilities.validator.Validator;
-import com.wolfyscript.utilities.validator.ValidatorBuilder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -38,10 +38,10 @@ import org.bukkit.inventory.RecipeChoice;
 public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfire, CampfireRecipe> {
 
     static {
-        final Validator<CustomRecipeCampfire> VALIDATOR = ValidatorBuilder.<CustomRecipeCampfire>object(RecipeType.CAMPFIRE.getNamespacedKey()).use(CustomRecipeCooking.validator())
+        final Verifier<CustomRecipeCampfire> VERIFIER = VerifierBuilder.<CustomRecipeCampfire>object(RecipeType.CAMPFIRE.getNamespacedKey(), CustomRecipeCooking.validator())
                 .name(container -> "Campfire Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
                 .build();
-        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+        CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
     }
 
     public CustomRecipeCampfire(NamespacedKey namespacedKey, JsonNode node) {

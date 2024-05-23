@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.wolfyscript.utilities.validator.ValidationContainer;
-import com.wolfyscript.utilities.validator.Validator;
-import com.wolfyscript.utilities.validator.ValidatorBuilder;
+import com.wolfyscript.utilities.dependency.DependencySource;
+import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.VerifierBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -61,38 +61,40 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> implements ICustomVanillaRecipe<SmithingRecipe> {
 
     static {
-        final Validator<CustomRecipeSmithing> VALIDATOR = ValidatorBuilder.<CustomRecipeSmithing>object(RecipeType.SMITHING.getNamespacedKey()).def()
-                .name(container -> "Smithing Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
-                .object(recipe -> recipe.result, initStep -> initStep.use(Result.VALIDATOR).name(container -> "Result"))
-                .object(Function.identity(), init -> init.def()
+        final Verifier<CustomRecipeSmithing> VERIFIER = VerifierBuilder.<CustomRecipeSmithing>object(RecipeType.SMITHING.getNamespacedKey())
+                .name(container -> "Smithing Recipe" + container.value().map(recipe -> " [" + recipe.getNamespacedKey() + "]").orElse(""))
+                .object(recipe -> recipe.result, Result.VERIFIER)
+                .object(Function.identity(), builder -> builder
                         .name(container -> "Ingredients")
-                        .object(i -> i.template, step -> step.def().name(container -> "Template")
+                        .object(i -> i.template, Ingredient.VERIFIER, override -> override
+                                .name("Template")
                                 .optional()
-                                .object(Function.identity(), iInit -> iInit.use(Ingredient.VALIDATOR)))
-                        .object(i -> i.base, step -> step.def().name(container -> "Base")
+                        )
+                        .object(i -> i.base, Ingredient.VERIFIER, step -> step
+                                .name("Base")
                                 .optional()
-                                .object(Function.identity(), iInit -> iInit.use(Ingredient.VALIDATOR)))
-                        .object(i -> i.addition, step -> step.def().name(container -> "Addition")
+                        )
+                        .object(i -> i.addition, Ingredient.VERIFIER, step -> step
+                                .name("Addition")
                                 .optional()
-                                .object(Function.identity(), iInit -> iInit.use(Ingredient.VALIDATOR)))
-                        .require(1) // Make sure at least one ingredient is valid/pending
+                        )
+                        .require(1) // Make sure at least one ingredient is valid
                         .validate(container -> {
-                            if (container.type() == ValidationContainer.ResultType.INVALID) {
-                                return container.update().fault("At least one ingredient (Template, Base, or Addition) must be available!");
-                            }
-                            if (container.type() == ValidationContainer.ResultType.PENDING) {
-                                return container.update().fault("At least one ingredient is still pending!");
+                            if (!container.type().isValid()) {
+                                return container.update().fault("At least one ingredient (Template, Base, or Addition) must be valid!");
                             }
                             return container.update();
-                        }))
+                        })
+                )
                 .build();
-        CustomCrafting.inst().getRegistries().getValidators().register(VALIDATOR);
+        CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
     }
 
     private static final String KEY_BASE = "base";
@@ -103,8 +105,11 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     public static final int BASE_SLOT = IS_1_20 ? 1 : 0;
     public static final int ADDITION_SLOT = IS_1_20 ? 2 : 1;
 
+    @DependencySource
     private Ingredient template;
+    @DependencySource
     private Ingredient base;
+    @DependencySource
     private Ingredient addition;
 
     private boolean preserveEnchants;
