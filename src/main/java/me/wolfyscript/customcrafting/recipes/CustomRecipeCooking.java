@@ -27,7 +27,7 @@ import com.google.common.base.Preconditions;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.dependency.DependencySource;
-import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.ObjectVerifier;
 import com.wolfyscript.utilities.verification.VerifierBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -59,7 +59,7 @@ import java.util.List;
 
 public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T extends CookingRecipe<?>> extends CustomRecipe<C> implements ICustomVanillaRecipe<T> {
 
-    protected static <RT extends CustomRecipeCooking<?,?>> Verifier<RT> validator() {
+    protected static <RT extends CustomRecipeCooking<?,?>> ObjectVerifier<RT> validator() {
         return VerifierBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_cooking_recipe"))
                 .object(recipe -> recipe.result, Result.VERIFIER)
                 .object(recipe -> recipe.getSource(), Ingredient.VERIFIER)

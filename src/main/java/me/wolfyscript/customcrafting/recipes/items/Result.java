@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.recipes.items;
 
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
-import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.ObjectVerifier;
 import com.wolfyscript.utilities.verification.VerifierBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result extends RecipeItemStack {
 
-    public static final Verifier<Result> VERIFIER = VerifierBuilder.<Result>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/result"), RecipeItemStack.validatorFor()).build();
+    public static final ObjectVerifier<Result> VERIFIER = VerifierBuilder.<Result>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/result"), RecipeItemStack.validatorFor()).build();
 
     @JsonIgnore
     private final Map<UUID, CustomItem> cachedItems = new HashMap<>();

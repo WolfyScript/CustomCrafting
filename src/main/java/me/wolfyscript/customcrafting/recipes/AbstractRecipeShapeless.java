@@ -25,7 +25,7 @@ package me.wolfyscript.customcrafting.recipes;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
-import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.ObjectVerifier;
 import com.wolfyscript.utilities.verification.VerifierBuilder;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -65,7 +65,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
     @JsonIgnore
     private boolean hasAllowedEmptyIngredient;
 
-    protected static <RT extends AbstractRecipeShapeless<?,?>> Verifier<RT> validator() {
+    protected static <RT extends AbstractRecipeShapeless<?,?>> ObjectVerifier<RT> validator() {
         return VerifierBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shapeless_crafting"))
                 .object(recipe -> recipe.result, Result.VERIFIER)
                 .collection(recipe -> recipe.ingredients, builder -> builder.forEach(Ingredient.VERIFIER))

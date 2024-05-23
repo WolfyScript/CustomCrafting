@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.recipes.items;
 
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
-import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.ObjectVerifier;
 import com.wolfyscript.utilities.verification.VerifierBuilder;
 import com.wolfyscript.utilities.verification.VerifierContainer;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -39,8 +39,8 @@ import java.util.*;
 
 public class Ingredient extends RecipeItemStack {
 
-    public static final Verifier<Ingredient> VERIFIER;
-    public static final Verifier<Map.Entry<Character, Ingredient>> ENTRY_VERIFIER;
+    public static final ObjectVerifier<Ingredient> VERIFIER;
+    public static final ObjectVerifier<Map.Entry<Character, Ingredient>> ENTRY_VERIFIER;
 
     static {
         VERIFIER = VerifierBuilder.<Ingredient>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient"), RecipeItemStack.validatorFor()).build();

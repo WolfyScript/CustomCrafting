@@ -26,7 +26,7 @@ import com.wolfyscript.utilities.bukkit.world.items.reference.BukkitStackIdentif
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.dependency.DependencySource;
-import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.ObjectVerifier;
 import com.wolfyscript.utilities.verification.VerifierBuilder;
 import com.wolfyscript.utilities.verification.VerifierContainer;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -60,7 +60,7 @@ public abstract class RecipeItemStack {
     private static final String NULL_TAG = "Tag cannot be null!";
     private static final String NULL_ITEM = "Item cannot be null!";
 
-    static <T extends RecipeItemStack> Verifier<T> validatorFor() {
+    static <T extends RecipeItemStack> ObjectVerifier<T> validatorFor() {
         return VerifierBuilder.<T>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/abstract_itemstack"))
                 .collection(RecipeItemStack::items, initStep -> initStep
                         .name(container -> "Items")

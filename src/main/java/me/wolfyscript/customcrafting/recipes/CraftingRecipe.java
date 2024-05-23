@@ -22,8 +22,6 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import java.util.Comparator;
-
 import com.wolfyscript.utilities.dependency.DependencySource;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;

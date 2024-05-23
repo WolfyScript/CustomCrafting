@@ -25,7 +25,7 @@ package me.wolfyscript.customcrafting.recipes;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
-import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.ObjectVerifier;
 import com.wolfyscript.utilities.verification.VerifierBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -69,7 +69,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private static final String VERTICAL_KEY = "vertical";
     private static final String ROTATION_KEY = "rotation";
 
-    protected static <RT extends AbstractRecipeShaped<?, ?>> Verifier<RT> validator() {
+    protected static <RT extends AbstractRecipeShaped<?, ?>> ObjectVerifier<RT> validator() {
         return VerifierBuilder.<RT>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "abstract_shaped_crafting"))
                 .object(recipe -> recipe.result, Result.VERIFIER)
                 .collection(recipe -> recipe.mappedIngredients.entrySet(), builder -> builder

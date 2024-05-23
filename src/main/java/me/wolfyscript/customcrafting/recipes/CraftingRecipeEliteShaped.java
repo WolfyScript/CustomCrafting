@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.wolfyscript.utilities.verification.Verifier;
+import com.wolfyscript.utilities.verification.ObjectVerifier;
 import com.wolfyscript.utilities.verification.VerifierBuilder;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
@@ -35,7 +35,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 public class CraftingRecipeEliteShaped extends AbstractRecipeShaped<CraftingRecipeEliteShaped, EliteRecipeSettings> {
 
     static {
-        final Verifier<CraftingRecipeEliteShaped> VERIFIER = VerifierBuilder.<CraftingRecipeEliteShaped>object(RecipeType.ELITE_CRAFTING_SHAPED.getNamespacedKey(), AbstractRecipeShaped.validator())
+        final ObjectVerifier<CraftingRecipeEliteShaped> VERIFIER = VerifierBuilder.<CraftingRecipeEliteShaped>object(RecipeType.ELITE_CRAFTING_SHAPED.getNamespacedKey(), AbstractRecipeShaped.validator())
                 .name(container -> "Shaped Elite Crafting Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
                 .build();
         CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
