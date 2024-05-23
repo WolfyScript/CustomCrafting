@@ -22,12 +22,6 @@
 
 package me.wolfyscript.customcrafting.listeners.smithing;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Stream;
-
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
@@ -60,6 +54,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.SmithingRecipe;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Stream;
+
 public class SmithingListener implements Listener {
 
     private final HashMap<UUID, SmithingData> preCraftedRecipes = new HashMap<>();
@@ -78,8 +78,8 @@ public class SmithingListener implements Listener {
 
         if (!ItemUtils.isAirOrNull(event.getResult())) {
             if (Stream.of(inv.getStorageContents()).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())
-                || Bukkit.getRecipesFor(event.getResult()).stream()
-                        .anyMatch(recipe -> recipe instanceof SmithingRecipe smithingRecipe && customCrafting.getDisableRecipesHandler().getRecipes().contains(NamespacedKey.fromBukkit(smithingRecipe.getKey())))) {
+                    || Bukkit.getRecipesFor(event.getResult()).stream()
+                    .anyMatch(recipe -> recipe instanceof SmithingRecipe smithingRecipe && customCrafting.getDisableRecipesHandler().getRecipes().contains(NamespacedKey.fromBukkit(smithingRecipe.getKey())))) {
                 event.setResult(null);
             }
         }
@@ -139,13 +139,16 @@ public class SmithingListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCollectResult(InventoryClickEvent event) {
-        if (event.getClickedInventory() == null) return;
-        if (!(event.getClickedInventory() instanceof SmithingInventory smithingInventory)) return;
+        if (event.getClickedInventory() == null || !(event.getClickedInventory() instanceof SmithingInventory smithingInventory)) {
+            return;
+        }
         final var player = (Player) event.getWhoClicked();
         final var action = event.getAction();
         final var inventory = event.getClickedInventory();
         if (event.getSlot() == CustomRecipeSmithing.RESULT_SLOT && !ItemUtils.isAirOrNull(event.getCurrentItem())) {
-            if (action == InventoryAction.PLACE_ALL || action == InventoryAction.PLACE_ONE || action == InventoryAction.PLACE_SOME || action == InventoryAction.SWAP_WITH_CURSOR) return;
+            if (action == InventoryAction.PLACE_ALL || action == InventoryAction.PLACE_ONE || action == InventoryAction.PLACE_SOME || action == InventoryAction.SWAP_WITH_CURSOR) {
+                return;
+            }
             //Take out item!
             if (preCraftedRecipes.get(player.getUniqueId()) == null) {
                 //Vanilla Recipe
@@ -187,25 +190,17 @@ public class SmithingListener implements Listener {
                         }
                     }
                     player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1.0F, 1.0F);
-                    event.setCancelled(true);
+                    event.setCancelled(true); // Cancel the event to prevent vanilla ingredient consumption
                 }
-
-                smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
-
-                // This was done a tick later for some reason... I don't remember why, so just leave it
-                Bukkit.getScheduler().runTask(customCrafting, () -> {
-                    smithingData.template().ifPresent(reference -> inventory.setItem(0, reference.shrink(templateItem, possible, true, inventory, null, null)));
-                    inventory.setItem(CustomRecipeSmithing.BASE_SLOT, smithingData.base().map(reference -> reference.shrink(baseItem, possible, true, inventory, null, null)).orElse(baseItem));
-                    inventory.setItem(CustomRecipeSmithing.ADDITION_SLOT, smithingData.addition().map(reference -> reference.shrink(additionItem, possible, true, inventory, null, null)).orElse(additionItem));
-                });
             } else {
-                if (result == null) return;
-                player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1.0F, 1.0F);
+                if (result == null) {
+                    return;
+                }
                 // Thanks to Spigot not allowing empty ingredients, we need our own way of collecting the result!
                 // Otherwise, it would just cancel the click, because there is no valid recipe!
                 if (event.getClick().isShiftClick()) {
                     if (!event.getView().getBottomInventory().addItem(result).isEmpty()) {
-                        return; // To not mess with dropping items, etc. we just cancel the click
+                        return; // No space in inventory! To not mess with dropping items, etc. we just cancel the click
                     }
                 } else {
                     if (ItemUtils.isAirOrNull(event.getCursor())) {
@@ -222,12 +217,14 @@ public class SmithingListener implements Listener {
                     }
                 }
 
-                smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
-
-                smithingData.template().ifPresent(reference -> inventory.setItem(0, reference.shrink(templateItem, 1, true, inventory, null, null)));
-                inventory.setItem(CustomRecipeSmithing.BASE_SLOT, smithingData.base().map(reference -> reference.shrink(baseItem, 1, true, inventory, null, null)).orElse(baseItem));
-                inventory.setItem(CustomRecipeSmithing.ADDITION_SLOT, smithingData.addition().map(reference -> reference.shrink(additionItem, 1, true, inventory, null, null)).orElse(additionItem));
+                player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1.0F, 1.0F);
             }
+
+            smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
+
+            smithingData.template().ifPresent(reference -> inventory.setItem(0, reference.shrink(templateItem, 1, true, inventory, player, null)));
+            inventory.setItem(CustomRecipeSmithing.BASE_SLOT, smithingData.base().map(reference -> reference.shrink(baseItem, 1, true, inventory, player, null)).orElse(baseItem));
+            inventory.setItem(CustomRecipeSmithing.ADDITION_SLOT, smithingData.addition().map(reference -> reference.shrink(additionItem, 1, true, inventory, player, null)).orElse(additionItem));
         }
     }
 
