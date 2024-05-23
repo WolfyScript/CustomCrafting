@@ -147,11 +147,10 @@ public class SmithingListener implements Listener {
         final var inventory = event.getClickedInventory();
         if (event.getSlot() == CustomRecipeSmithing.RESULT_SLOT && !ItemUtils.isAirOrNull(event.getCurrentItem())) {
             if (action == InventoryAction.PLACE_ALL || action == InventoryAction.PLACE_ONE || action == InventoryAction.PLACE_SOME || action == InventoryAction.SWAP_WITH_CURSOR) {
-                return;
+                return; // Ignore ingredient slots
             }
-            //Take out item!
             if (preCraftedRecipes.get(player.getUniqueId()) == null) {
-                //Vanilla Recipe
+                // Vanilla Recipe, so lets stop here
                 return;
             }
 
@@ -175,6 +174,7 @@ public class SmithingListener implements Listener {
                 // A recipe may be available if none of the ingredients are empty
                 if (event.getClick().isShiftClick()) {
                     if (possible > 0) {
+                        // Pick a new stack for each result item
                         RandomCollection<StackReference> results = smithingData.getResult().randomChoices(player);
                         for (int i = 0; i < possible; i++) {
                             var reference = results.next();
