@@ -34,8 +34,6 @@ import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.RandomCollection;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.version.MinecraftVersion;
 import me.wolfyscript.utilities.util.version.ServerVersion;
@@ -161,25 +159,17 @@ public class SmithingListener implements Listener {
             final var templateItem = inventory.getItem(0) == null ? new ItemStack(Material.AIR) : inventory.getItem(0).clone();
 
             ItemStack result = smithingInventory.getResult();
-            final int possible;
             if (result == null) {
-                possible = 0;
-            } else if (event.isShiftClick()) {
-                possible = Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), smithingData.getPossibleResultAmount());
-            } else {
-                possible = 1;
+                return;
             }
 
-            if (smithingInventory.getRecipe() != null) {
-                // A recipe may be available if none of the ingredients are empty
-                handleValidRecipeClick(possible, smithingData, player, event);
-            } else {
-                if (result == null) {
-                    return;
-                }
-                handleInvalidRecipeClick(result, player, event);
+            event.setCancelled(true); // Cancel the event to prevent vanilla ingredient consumption
+            // We only want to allow one craft. This is to prevent inconsistent behaviour.
+            if (!handleInvalidRecipeClick(result, event)) {
+                return;
             }
 
+            player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1.0F, 1.0F);
             smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
 
             smithingData.template().ifPresent(reference -> inventory.setItem(0, reference.shrink(templateItem, 1, true, inventory, player, null)));
@@ -188,52 +178,27 @@ public class SmithingListener implements Listener {
         }
     }
 
-    private void handleValidRecipeClick(int possible, SmithingData smithingData, Player player, InventoryClickEvent event) {
-        if (event.getClick().isShiftClick()) {
-            if (possible > 0) {
-                // Pick a new stack for each result item
-                RandomCollection<StackReference> results = smithingData.getResult().randomChoices(player);
-                for (int i = 0; i < possible; i++) {
-                    var reference = results.next();
-                    if (reference != null) {
-                        var item = smithingData.getResult().item(smithingData, reference, player, null);
-                        if (InventoryUtils.hasInventorySpace(player, item)) {
-                            player.getInventory().addItem(item);
-                        } else {
-                            var loc = player.getLocation();
-                            loc.getWorld().dropItem(loc, item);
-                        }
-                    }
-                }
-            }
-            player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1.0F, 1.0F);
-            event.setCancelled(true); // Cancel the event to prevent vanilla ingredient consumption
-        }
-    }
-
-    private void handleInvalidRecipeClick(ItemStack result, Player player, InventoryClickEvent event) {
+    private boolean handleInvalidRecipeClick(ItemStack result, InventoryClickEvent event) {
         // Thanks to Spigot not allowing empty ingredients, we need our own way of collecting the result!
         // Otherwise, it would just cancel the click, because there is no valid recipe!
         if (event.getClick().isShiftClick()) {
-            if (!event.getView().getBottomInventory().addItem(result).isEmpty()) {
-                return; // No space in inventory! To not mess with dropping items, etc. we just cancel the click
-            }
-        } else {
-            if (ItemUtils.isAirOrNull(event.getCursor())) {
-                Bukkit.getScheduler().runTask(customCrafting, () -> {
-                    event.getView().setCursor(result);
-                });
-            } else if (event.getCursor().isSimilar(result)) {
-                if (event.getCursor().getAmount() + result.getAmount() > event.getCursor().getMaxStackSize()) {
-                    return; // Again instead of doing weird stuff, just cancel
-                }
-                Bukkit.getScheduler().runTask(customCrafting, () -> {
-                    event.getView().getCursor().setAmount(event.getCursor().getAmount() + result.getAmount());
-                });
-            }
+            // No space in inventory! To not mess with dropping items, etc. we just cancel the click
+            return event.getView().getBottomInventory().addItem(result).isEmpty();
         }
-
-        player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1.0F, 1.0F);
+        // A quick implementation to collect the result. Things like moving the item to the hotbar won't work!
+        if (ItemUtils.isAirOrNull(event.getCursor())) {
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
+                event.getView().setCursor(result);
+            });
+        } else if (event.getCursor().isSimilar(result)) {
+            if (event.getCursor().getAmount() + result.getAmount() > event.getCursor().getMaxStackSize()) {
+                return false; // Again instead of doing weird stuff, just cancel
+            }
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
+                event.getView().getCursor().setAmount(event.getCursor().getAmount() + result.getAmount());
+            });
+        }
+        return true;
     }
 
 }
