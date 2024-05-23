@@ -60,10 +60,7 @@ import org.bukkit.inventory.SmithingRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -351,9 +348,17 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     }
 
     private static RecipeChoice getRecipeChoiceFor(Ingredient ingredient) {
-        if (ingredient == null || ingredient.isEmpty()) return new RecipeChoice.MaterialChoice(Material.AIR);
+        if (ingredient == null || ingredient.isEmpty()) {
+            // Need a placeholder item to bypass Spigots dumbass Air and emtpy choice check.
+            // Thanks for nothing Spigot... now this needs to be handled by the PrepareSmithingEvent!
+            // Note: Minecraft does support emtpy Ingredients for SmithingRecipes!! Just fucking Spigot doesn't (or at least not anymore for whatever reason)!
+            // Paper has a RecipeChoice.emtpy(), however that would require compilation against Java 21.
+            return new RecipeChoice.MaterialChoice(Material.BARRIER);
+        }
         List<Material> choices = ingredient.choicesStream().map(reference -> reference.referencedStack().getType()).collect(Collectors.toList());
-        if (ingredient.isAllowEmpty()) choices.add(Material.AIR);
+        if (ingredient.isAllowEmpty()) {
+            //choices.add(Material.AIR); // This no longer works due to minecraft not being able to serialize Air stacks
+        }
         return new RecipeChoice.MaterialChoice(choices);
     }
 

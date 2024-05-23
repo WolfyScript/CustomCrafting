@@ -170,19 +170,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         return matrix;
     }
 
-    public int getAmountCraftable(CraftingData craftingData) {
-        return craftingData.getNonNullIngredients().map(value -> {
-            var item = value.customItem();
-            if (item != null) {
-                var input = value.itemStack();
-                if (input != null) {
-                    return input.getAmount() / item.getAmount();
-                }
-            }
-            return 0;
-        }).min(Comparator.comparingInt(o -> o)).orElse(0);
-    }
-
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         if (!ingredients.isEmpty()) {
