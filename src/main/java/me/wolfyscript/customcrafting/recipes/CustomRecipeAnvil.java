@@ -71,26 +71,22 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
                         .require(1)
                 )
                 .object(recipe -> recipe.repairTask, builder -> builder
-                        .validate(verifierContainer -> {
-                            if (verifierContainer.value().isEmpty()) {
-                                return verifierContainer.update().invalid();
-                            }
-                            RepairTask repairTask = verifierContainer.value().get();
-
+                        .validate(result -> result.currentValue().ifPresentOrElse(repairTask -> {
+                            result.valid(); // Default = valid
                             if (repairTask instanceof RepairTaskResult repairTaskResult) {
                                 var value = Result.VERIFIER.validate(repairTaskResult.getResult());
-                                return verifierContainer.update().type(value.type());
+                                result.type(value.type()); // set to invalid here
                             }
-                            return verifierContainer.update().valid();
-                        })
+                        }, result::invalid))
                 )
                 .object(recipe -> recipe.repairCost, builder -> builder
                         .name(c -> "Repair Cost")
-                        .validate(repairCostContainer -> {
-                            if (repairCostContainer.value().map(repairCost -> repairCost > 0).orElse(false)) {
-                                return repairCostContainer.update().valid();
+                        .validate(result -> {
+                            if (result.currentValue().map(repairCost -> repairCost > 0).orElse(false)) {
+                                result.valid();
+                            } else {
+                                result.invalid().fault("Must be greater than 0");
                             }
-                            return repairCostContainer.update().invalid().fault("Must be greater than 0");
                         })
                 )
                 .build();

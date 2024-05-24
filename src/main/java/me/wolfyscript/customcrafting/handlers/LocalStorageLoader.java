@@ -22,14 +22,11 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import com.wolfyscript.utilities.bukkit.dependency.PluginIntegrationDependency;
 import com.wolfyscript.utilities.dependency.Dependency;
 import com.wolfyscript.utilities.dependency.DependencyResolver;
 import com.wolfyscript.utilities.json.jackson.MissingImplementationException;
-import com.wolfyscript.utilities.verification.Verifier;
-import com.wolfyscript.utilities.verification.VerifierContainer;
+import com.wolfyscript.utilities.verification.VerificationResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.BackupSettings;
 import me.wolfyscript.customcrafting.configs.DataSettings;
@@ -224,7 +221,7 @@ public class LocalStorageLoader extends ResourceLoader {
         if (!invalidRecipes.isEmpty()) {
             api.getConsole().getLogger().info(String.format("[LOCAL] %d recipes are invalid!", invalidRecipes.size()));
             if (!dataSettings.printInvalid()) return;
-            for (VerifierContainer<? extends CustomRecipe<?>> invalidRecipe : invalidRecipes) {
+            for (VerificationResult<? extends CustomRecipe<?>> invalidRecipe : invalidRecipes) {
                 api.getConsole().getLogger().info("[LOCAL] |--------------------------------------------------------------");
                 api.getConsole().getLogger().info("[LOCAL] |");
                 invalidRecipe.value().ifPresent(recipe -> invalidRecipe.toString().lines().forEach(s -> api.getConsole().getLogger().info("[LOCAL] |   " + s)));

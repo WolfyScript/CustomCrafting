@@ -86,11 +86,10 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
                                 .optional()
                         )
                         .require(1) // Make sure at least one ingredient is valid
-                        .validate(container -> {
-                            if (!container.type().isValid()) {
-                                return container.update().fault("At least one ingredient (Template, Base, or Addition) must be valid!");
+                        .validate(result -> {
+                            if (!result.currentType().isValid()) {
+                                result.fault("At least one ingredient (Template, Base, or Addition) must be valid!");
                             }
-                            return container.update();
                         })
                 )
                 .build();

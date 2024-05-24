@@ -24,7 +24,7 @@ package me.wolfyscript.customcrafting.commands.recipes;
 
 import com.wolfyscript.utilities.dependency.Dependency;
 import com.wolfyscript.utilities.dependency.DependencyResolver;
-import com.wolfyscript.utilities.verification.VerifierContainer;
+import com.wolfyscript.utilities.verification.VerificationResult;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
@@ -34,9 +34,7 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.chat.CollectionView;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.event.ClickEvent;
-import me.wolfyscript.lib.net.kyori.adventure.text.event.HoverEventSource;
 import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
-import me.wolfyscript.lib.net.kyori.adventure.text.format.TextDecoration;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -81,7 +79,7 @@ public class InfoSubCommand extends AbstractSubCommand {
 
                     chat.sendMessage(player, Component.text("----------------------------"));
 
-                    Optional<VerifierContainer<? extends CustomRecipe<?>>> invalidState = resourceLoader.getInvalidRecipes()
+                    Optional<VerificationResult<? extends CustomRecipe<?>>> invalidState = resourceLoader.getInvalidRecipes()
                             .stream()
                             .filter(verifierContainer -> verifierContainer.value().map(recipe -> recipe.getNamespacedKey().equals(key)).orElse(false))
                             .findFirst();

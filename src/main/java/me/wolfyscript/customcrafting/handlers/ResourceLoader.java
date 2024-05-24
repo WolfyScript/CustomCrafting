@@ -28,8 +28,8 @@ import java.io.IOException;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.wolfyscript.utilities.dependency.Dependency;
+import com.wolfyscript.utilities.verification.VerificationResult;
 import com.wolfyscript.utilities.verification.Verifier;
-import com.wolfyscript.utilities.verification.VerifierContainer;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -55,7 +55,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
     private boolean replaceData = false;
 
     protected final Multimap<CustomRecipe<?>, Dependency> recipeDependencies = Multimaps.newSetMultimap(new HashMap<>(), HashSet::new);
-    protected final List<VerifierContainer<? extends CustomRecipe<?>>> invalidRecipes = new ArrayList<>();
+    protected final List<VerificationResult<? extends CustomRecipe<?>>> invalidRecipes = new ArrayList<>();
     protected final List<NamespacedKey> failedRecipes = new ArrayList<>();
 
     protected ResourceLoader(CustomCrafting customCrafting, NamespacedKey key) {
@@ -84,13 +84,13 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
 
     public abstract int validatePending(PluginIntegration pluginIntegration);
 
-    protected static <T extends CustomRecipe<?>> Optional<VerifierContainer<T>> validateRecipe(T recipe) {
+    protected static <T extends CustomRecipe<?>> Optional<VerificationResult<T>> validateRecipe(T recipe) {
         var validator = (Verifier<T>) CustomCrafting.inst().getRegistries().getVerifiers().get(recipe.getRecipeType().getNamespacedKey());
         if (validator == null) return Optional.empty();
         return Optional.of(validator.validate(recipe));
     }
 
-    protected void markInvalid(VerifierContainer<? extends CustomRecipe<?>> recipe) {
+    protected void markInvalid(VerificationResult<? extends CustomRecipe<?>> recipe) {
         synchronized (invalidRecipes) {
             invalidRecipes.add(recipe);
         }
@@ -106,7 +106,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
         return Collections.unmodifiableSet(recipeDependencies.keySet());
     }
 
-    public List<VerifierContainer<? extends CustomRecipe<?>>> getInvalidRecipes() {
+    public List<VerificationResult<? extends CustomRecipe<?>>> getInvalidRecipes() {
         return Collections.unmodifiableList(invalidRecipes);
     }
 

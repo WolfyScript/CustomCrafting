@@ -25,7 +25,6 @@ package me.wolfyscript.customcrafting.recipes.items;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.verification.ObjectVerifier;
 import com.wolfyscript.utilities.verification.VerifierBuilder;
-import com.wolfyscript.utilities.verification.VerifierContainer;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,13 +46,8 @@ public class Ingredient extends RecipeItemStack {
 
         ENTRY_VERIFIER = VerifierBuilder.<Map.Entry<Character, Ingredient>>object(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe/ingredient_entry"))
                 .name(container -> container.value().map(entry -> "Ingredient [" + entry.getKey() + "]").orElse("Ingredient [Unknown]"))
-                .validate(entryContainer -> entryContainer.value()
-                        .map(entry -> {
-                            VerifierContainer<Ingredient> result = VERIFIER.validate(entry.getValue());
-                            return entryContainer.update().type(result.type());
-                        })
-                        .orElseGet(() -> entryContainer.update().invalid())
-                ).build();
+                .validate(entryResult -> entryResult.currentValue().ifPresentOrElse(entry -> entryResult.type(VERIFIER.validate(entry.getValue()).type()), entryResult::invalid))
+                .build();
     }
 
     private boolean replaceWithRemains = true;
