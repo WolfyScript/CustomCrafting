@@ -1,183 +1,257 @@
 {
-  "author": "肆零肆E",
-  "version": "6.0.0",
+  "author": "肆零肆E, SnowCutieOwO, FireworkPolymer",
+  "version": "6.1.0",
   "info": [
+    "This langauge file is updated by SnowCutieOwO to 6.1.0",
+    "FireworkPolymer fixed some details.",
+    "",
+    "Original Author Info:",
+    "update 5.0.0 -> 6.0.0 by Yummy_Cookie_S",
     "bilibili: https://space.bilibili.com/71234479",
     "mcbbs: https://www.mcbbs.net/?1087836",
     "",
-    "update 5.0.0 -> 6.0.0 by Yummy_Cookie_S"
+    "Continue Author Info:",
+    "https://www.github.com/SnowCutieOwO",
+    "https://www.github.com/Clexus"
   ],
   "crafting": {
     "workbench": {
-      "name": "&6高级工作台",
+      "name": "<gold>高级工作台</gold>",
       "lore": [
-        "&7用于高级合成的工作台"
+        "<grey>用于高级合成的工作台</grey>"
       ]
     },
     "knowledgebook": {
-      "name": "&6知识之书",
+      "name": "<gold>知识之书</gold>",
       "lore": [
-        "&7包含一些有趣的配方..."
+        "<grey>包含一些有趣的配方...</grey>"
       ]
     }
   },
   "recipe_book": {
     "filter_navigation": [
-      "&7[&a左键&7] 下一类别",
-      "&7[&a右键&7] 上一类别"
+      "<grey>[<green>左键</green>] 下一类别</grey>",
+      "<grey>[<green>右键</green>] 上一类别</grey>"
     ],
     "category": {
       "main": {
-        "name": "&6&l配方"
+        "name": "<gold><b>配方</b></gold>"
       },
       "customcrafting": {
-        "name": "&6&lCustomCrafting"
+        "name": "<gold><b>CustomCrafting</b></gold>"
       }
     },
     "filter": {
       "brewing": {
-        "name": "&6&l酿造"
+        "name": "<grey>\u274F</grey> <gold><b>酿造</b></gold>"
       },
       "building_blocks": {
-        "name": "&6&l建筑方块"
+        "name": "<grey>\u274F</grey> <gold><b>建筑方块</b></gold>"
+      },
+      "colored_blocks" : {
+        "name": "<grey>\u274F</grey> <gold><b>染色方块</b></gold>"
+      },
+      "natural_blocks" : {
+        "name": "<grey>\u274F</grey> <gold><b>自然方块</b></gold>"
+      },
+      "functional_blocks" : {
+        "name": "<grey>\u274F</grey> <gold><b>功能性方块</b></gold>"
       },
       "decorations": {
-        "name": "&6&l装饰方块"
+        "name": "<grey>\u274F</grey> <gold><b>装饰方块</b></gold>"
       },
       "combat": {
-        "name": "&6&l战斗"
+        "name": "<grey>\u274F</grey> <gold><b>战斗</b></gold>"
+      },
+      "tools_and_utilities" : {
+        "name": "<grey>\u274F</grey> <gold><b>工具与实用物品</b></gold>"
+      },
+      "redstone_blocks" : {
+        "name": "<grey>\u274F</grey> <gold><b>红石方块</b></gold>"
+      },
+      "food_and_drinks": {
+        "name": "<grey>\u274F</grey> <gold><b>食物与饮品</b></gold>"
       },
       "tools": {
-        "name": "&6&l工具"
+        "name": "<grey>\u274F</grey> <gold><b>工具</b></gold>"
       },
       "redstone": {
-        "name": "&6&l红石"
+        "name": "<grey>\u274F</grey> <gold><b>红石</b></gold>"
       },
       "food": {
-        "name": "&6&l食物"
+        "name": "<grey>\u274F</grey> <gold><b>食物</b></gold>"
+      },
+      "ingredients": {
+        "name": "<grey>\u274F</grey> <gold><b>原材料</b></gold>"
+      },
+      "spawn_eggs": {
+        "name": "<grey>\u274F</grey> <gold><b>刷怪蛋</b></gold>"
       },
       "transportation": {
-        "name": "&6&l交通运输"
+        "name": "<grey>\u274F</grey> <gold><b>交通运输</b></gold>"
       },
       "misc": {
-        "name": "&6&l杂项"
+        "name": "<grey>\u274F</grey> <gold><b>杂项</b></gold>"
       },
       "search": {
-        "name": "&6&l搜索"
+        "name": "<grey>\u274F</grey> <gold><b>搜索</b></gold>"
       }
+    }
+  },
+  "recipe": {
+    "type": {
+      "crafting" : {
+        "crafting_shaped": "有序合成配方",
+        "crafting_shapeless": "无序合成配方"
+      },
+      "elite_crafting" : {
+        "elite_crafting_shaped": "有序精英合成配方",
+        "elite_crafting_shapeless": "无序精英合成配方"
+      },
+      "cooking" : {
+        "furnace": "熔炉配方",
+        "blast_furnace": "高炉配方",
+        "smoker": "烟熏炉配方",
+        "campfire": "篝火配方"
+      },
+      "brewing_stand" : "炼药台配方",
+      "anvil" : "铁砧配方",
+      "stonecutter" : "切石机配方",
+      "grindstone" : "砂轮配方",
+      "smithing" : "锻造台配方",
+      "cauldron" : "炼药锅配方"
     }
   },
   "msg": {
     "auto_save": {
-      "start": "自动保存数据",
-      "complete": "自动保存完成"
+      "start": "   自动保存数据   ",
+      "complete": " 自动保存完成 "
     },
     "startup": {
-      "outdated": "您的版本已过时!有新版本可用! 下载地址: https://www.spigotmc.org/resources/55883/",
+      "outdated": "您的版本已过时，有新版本可用！下载地址: https://www.spigotmc.org/resources/55883/",
       "update_check_fail": "无法检查spigot的更新",
-      "playerstats": "加载玩家统计信息",
-      "inventories": "启动库存GUI",
-      "placeholder": "注册变量",
+      "playerstats": "正在载入玩家统计信息",
+      "inventories": "初始化菜单界面",
+      "placeholder": "正在注册变量",
       "recipes": {
-        "title": "________[加载 配方/物品]________",
-        "items": "---------[物品]---------",
-        "recipes": "--------[配方]--------",
-        "particles": "-------[粒子]-------",
-        "duplicate": "忽略重复配方%namespace%:%key%的配置文件%key%.%file_type%!",
-        "incompatible": "不支持的文件类型!忽略%namespace%:%key%的配置文件%key%.%file_type%! "
+        "title": "正在载入配方与物品",
+        "items": "正在载入物品",
+        "recipes": "正在载入配方",
+        "particles": "正在载入粒子效果",
+        "duplicate": "忽略重复配方 %namespace%:%key% 的配置文件 %key%.%file_type%!",
+        "incompatible": "检测到不支持的文件类型！正在忽略 %namespace%:%key% 的配置文件 %key%.%file_type%! "
       }
     },
-    "denied_perm": "&c您没有所需的权限&4%PERM%&c!",
+    "denied_perm": "<red>你缺少 <dark_red>%PERM%</dark_red> 权限！</red>",
     "player": {
       "outdated": {
-        "msg": "&c过期版本!新版本可用!",
-        "msg2": "&a立刻下载!",
-        "link": " &7[&3点击&7]"
+        "msg": "<red>当前版本过期，有新版本可用！</red>",
+        "msg2": "<green>立刻下载！</green>",
+        "link": " <grey>[<dark_aqua>点此</dark_arua>]</grey>"
       },
       "invalid_namespacedkey": [
-        "&c文件夹和 key 必须是小写字母",
-        "&c允许使用以下字符 [a-z 0-9 _ -]!",
-        "&e请重新输入文件夹和 key !"
-      ],
-      "error": {
-        "loading": {
-          "msg": "&c插件已禁用!",
-          "msg1": "请使用正确的核心!",
-          "msg2": "&71.13.x请使用最新的核心!",
-          "msg3": "&7更多信息",
-          "msg4": "   &7[&6Spigot&7]",
-          "msg5": "   &7[&3Paper&7]",
-          "msg6": "&c如果这个解决方案不起作用，并且您在启动时收到错误消息，请在Discord或者SpigotMC上联系我!"
-        }
+        "<red>文件夹和键值必须是小写字母</red>",
+        "<red>能够接受的字符：小写英文字母及阿拉伯数字，横杠(-)与下划线(_)</red>",
+        "<yellow>请重新输入文件夹和键值！</yellow>"
+      ]
+    },
+    "input":{
+      "mini_message" : "<#00ccff>使用 <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>MiniMessage 使用标签而非旧版的颜色字符!<br>这些标签可以用于指定: <br>* 颜色: <#FD6684><_颜色名称_></#FD6684><br>    <#FD6684>\\<green></#FD6684>: <green>绿色</green><br>    <#FD6684>\\<#5662F6></#FD6684>: <#5662F6>Hex 颜色</#5662F6><br>    ... 等.<br><br>* 装饰字体:<br>    <#FD6684>\\<bold></#FD6684>, <#FD6684>\\<b></#FD6684>: <b>粗体字</b>,<br>    <#FD6684>\\<italic></#FD6684>, <#FD6684>\\<em></#FD6684>, <#FD6684>\\<i></#FD6684>: <em>斜体字</em>,<br>    <#FD6684>\\<underline></#FD6684>, <#FD6684>\\<u></#FD6684>: <u>下划线</u>,<br>    <#FD6684>\\<strikethrough></#FD6684>, <#FD6684>\\<st></#FD6684>: <st>删除线</st>,<br>    <#FD6684>\\<obfuscated></#FD6684>, <#FD6684>\\<obf></#FD6684>: <obf>乱码字</obf><br><br>* 渐变色: <#FD6684><gradient:<#50E975>[颜色1]</#50E975>:<#50E975>[颜色...]</#50E975>:<#50E975>[阶段]</#50E975>></#FD6684><br>    <#FD6684>\\<gradient></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>:<#50E975>red</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459:red>||||||||||||||||||||||||</gradient><br><br>* 字体: <#FD6684>\\<font:<#50E975>key</#50E975>></#FD6684><br>    <#FD6684>\\<font:<#50E975>uniform</#50E975>></#FD6684>Uniform<#FD6684>\\</font></#FD6684>: <font:uniform>Uniform</font><br>    <#FD6684>\\<font:<#50E975>alt</#50E975>></#FD6684>Alt<#FD6684>\\</font></#FD6684>: <font:alt>Alt</font><br><br>* 以及更多    <br><br><grey>(<green>点此</green>)</grey> <yellow>打开维基链接'><u><yellow>MiniMessage</yellow></u></hover></click> 来编辑字体样式!",
+      "wui_command": "<#00ccff>Use the <click:suggest_command:'/wui '><hover:show_text:'<white>使用 <yellow>/wui</yellow> 命令输入你的值, 而不是将它直接输入聊天栏!<br>这提供了 TAB 补全，也避免了其他聊天插件的兼容性问题!<br><br>将你的输入内容放在命令后即可。<br>如: <yellow>/wui <green>输入内容</green></yellow><br><br><grey>(<green>点击</green>)</grey> <yellow>填充命令'><u><yellow>/wui</yellow></u></hover></click> 命令来输入你的值!"
+    },
+    "chat_editor": {
+      "list_edit": {
+        "title": "<grey>┌──── [<green>修改列表</green>]</grey>",
+        "back_to_gui": "<grey>└─── [<yellow><b>➥ 返回界面</b></yellow>]</grey>",
+        "empty": "<red><b>列表为空</b></red>",
+        "pages": "<gold><b><current_page><b><grey> / </grey><pages></gold>",
+        "entry": {
+          "number": "<list_entry>. ",
+          "remove": "<hover:show_text:'<red><b>移除条目 <list_entry></b></red>'><b><red>-</red></b></hover>",
+          "edit": "<hover:show_text:'编辑条目 <list_entry>'><b><yellow>✎</yellow></b></hover>",
+          "add": "<hover:show_text:'添加条目'><b><green>+ 添加条目</green></b></hover>",
+          "add_below": "<hover:show_text:'添加下列条目 <list_entry>'><b><green>+</green></b></hover>",
+          "move_up": "<hover:show_text:'移动条目 <list_entry> up'><b><gold>∧</gold></b></hover>",
+          "move_down": "<hover:show_text:'移动条目 <list_entry> down'><b><gold>∨</gold></b></hover>"
+        },
+        "input_new_entry": "<white为 <list_entry> 条目输入新内容",
+        "input_add_entry": "<white>为新条目输入内容"
       }
     }
   },
   "commands": {
     "help": [
-      "&e/cc &7- &e打开 GUI",
+      "<yellow>/cc <grey>-</grey> 打开界面</yellow>",
       "",
-      "&e/cc &7<option>",
+      "<yellow>/cc <grey><选项></grey></yellow>",
       "",
-      "&7Options:",
-      "&einfo       &7- &e显示插件信息",
-      "&egive       &7- &e给予玩家自定义物品",
-      "&edatabase   &7- &e将特定数据导出到数据库",
-      "&edarkmode   &7- &e切换 GUI 的深色/浅色模式",
-      "&edebug      &7- &e切换调试模式。可能会产生大量的垃圾信息!",
-      "&elockdown   &7- &e切换LockDown模式。如果启用，就不能制作定制的配方。",
-      "&ehelp       &7- &e显示命令列表",
+      "<grey>选项:",
+      "<yellow>info       <grey>-</grey> 显示插件信息</yellow>",
+      "<yellow>give       <grey>-</grey> 给予玩家自定义物品</yellow>",
+      "<yellow>database   <grey>-</grey> 将特定数据导出到数据库</yellow>",
+      "<yellow>darkmode   <grey>-</grey> 切换界面的深色/浅色模式</yellow>",
+      "<yellow>debug      <grey>-</grey> 切换调试模式。可能会导致刷屏！</yellow>",
+      "<yellow>lockdown   <grey>-</grey> 切换锁定模式。若启用则自定义配方会被禁用。</yellow>",
+      "<yellow>help       <grey>-</grey> 显示命令列表</yellow>",
       "",
       "欲了解更多信息，请访问维基："
     ],
-    "info": "&3输入 &6\"/cc help\" &3获得帮助!",
+    "info": "<dark_aqua>输入 <gold>/cc help</gold> 获得帮助!</dark_aqua>",
     "lockdown": {
-      "enabled": "&7[&c&l锁定&7] &a已启用! &c配方已锁定!",
-      "disabled": "&7[&c&l锁定&7] &c已禁用! &c配方未锁定!"
+      "enabled": "<grey>[<red><b>锁定模式</b></red>]</grey> <green>启用! </green><red>游戏内将不再能合成自定义配方!</red>",
+      "disabled": "<grey>[<red><b>锁定模式</b></red>]</grey> <red>禁用! 现在可以在游戏内合成自定义配方了!</red>",
+      "confirm": "<yellow>锁定模式正 <b><state></b>! 若要切换锁定模式，请输入命令 <white>/cc lockdown confirm</white>"
     },
     "darkmode": {
-      "enabled": "&a启动深色模式!",
-      "disabled": "&c关闭深色模式!"
+      "enabled": "<green>启用深色界面!</green>",
+      "disabled": "<red>关闭深色界面!</red>"
     },
     "give": {
-      "invalid_usage": "&4使用方法: &c/cc give <player> <item> [<amount> <drop_items>]",
-      "invalid_target": "&c目标 \"%target%\" 不存在!",
-      "player_offline": "&&c玩家&4%PLAYER%&c不在线!",
-      "invalid_amount": "&c无效的数量!不是有效数字",
-      "success": "&a给予&e%PLAYER%&a一个&e%ITEM%",
-      "success_amount": "&a给予&e%PLAYER%&a%AMOUNT%个&e%ITEM%",
-      "no_inv_space": "&c背包已经满了!",
-      "invalid_item": "&c物品&4%ITEM%&c不存在!"
+      "invalid_usage": "<dark_red>使用方法: </dark_red><red>/cc give <玩家> <物品> [<数量> <掉落物品>]</red>",
+      "invalid_target": "<red>目标 %target% 不存在!</red>",
+      "player_offline": "<red>玩家 <dark_red>%PLAYER%<dard_red> 不在线！</red>",
+      "invalid_amount": "<red>输入的数量参数无效！</red>",
+      "success": "<green>给予了玩家 <yellow>%PLAYER%</yellow> 一个 %ITEM%</green>",
+      "success_amount": "<green>给予了玩家<yellow>%PLAYER%</yellow> %AMOUNT% 个%ITEM%</green>",
+      "no_inv_space": "<red>背包装不下更多的  <dark_red>%ITEM%</dark_red> 了！</red>",
+      "invalid_item": "<red>物品 <dark_red>%ITEM%</dark_red> 不存在!</red>"
     },
     "recipes": {
       "toggle": {
-        "enabled": "&e启用配方 &a%recipe%",
-        "disabled": "&e禁用配方 &c%recipe%"
+        "enabled": "<yellow>成功启用了配方 <green>%recipe%</green></yellow>",
+        "disabled": "<yellow>成功禁用了配方 <red>%recipe%</red></yellow>",
+        "invalid_usage": "<dark_red>用法: </dark_red><red>/recipes toggle <配方名称></red>"
       },
       "edit": {
-        "invalid_recipe": "&c不支持的配方!"
+        "invalid_recipe": "<red>不支持的配方!</red>",
+        "invalid_usage": "<dark_red>用法: </dark_red><red>/recipes edit <配方名称></red>"
       },
       "delete": {
-        "confirm": "&e你真的想删除 &6%recipe%&e? ",
-        "confirmation": "&7[&a确定&7] ",
-        "cancel": "&7[&c取消&7]"
+        "invalid_usage": "<dark_red>用法: </dark_red><red>/recipes delete <配方名称></red>",
+        "confirm": "<yellow>确定删除配方 <gold>%recipe%</gold></yellow>？",
+        "confirmation": "<grey>[<green>确定</green>]</grey> ",
+        "cancel": "<grey>[<red>取消</red>]</grey>"
       },
-      "invalid_recipe": "&c配方 &e%recipe%&c 不存在!"
+      "lookup": {
+        "invalid_usage": "<dark_red>用法: </dark_red><red>/recipes lookup <配方名称></red>"
+      },
+      "invalid_recipe": "<red>配方 <yellow>%recipe%</yellow> 不存在!</red>"
     },
     "database": {
-      "invalid_usage": "&c错误的使用: &4/cc database <export_items | export_recipes>"
+      "invalid_usage": "<red>无效用法: <dark_red>/cc database <export_items | export_recipes>"
     }
   },
   "recipe_conditions": {
     "world_time": {
       "name": "时间",
       "description": [
-        "&7设置配方所需要的世界时间"
+        "<grey>设置配方所需要的世界时间。</grey>"
       ]
     },
     "player_experience": {
       "name": "玩家经验",
       "description": [
-        "&7设置配方所需要的玩家经验"
+        "<grey>设置配方所需要的玩家经验。</grey>"
       ]
     },
     "world_name": {
@@ -191,20 +265,19 @@
     "weather": {
       "name": "天气",
       "description": [
-        "&7设置配方所需要的天气"
+        "<grey>设置配方所需要的天气</grey>"
       ],
       "modes": {
-        "storm": "&e雨/雪",
-        "thunder": "&e雷电",
-        "storm_thunder": "&e雨/雪 &7+ &e雷电",
-        "none": "&e晴天"
+        "storm": "<yellow>雨/雪</yellow>",
+        "thunder": "<yellow>雷雨</yellow>",
+        "storm_thunder": "<yellow>雨/雪 <grey>+</grey> 雷电</yellow>",
+        "none": "<yellow>晴天</yellow>"
       }
     },
     "advanced_crafting_table": {
       "name": "高级工作台",
       "description": [
-        "&7启用后配方将只能合成于",
-        "&7高级工作台."
+        "<grey>启用后配方将只能在高级合成台中进行。</grey>"
       ]
     },
     "elite_crafting_table": {
@@ -215,32 +288,40 @@
     "permission": {
       "name": "权限",
       "description": [
-        "&7设置一个配方所需要的权限权限"
+        "<grey>设置一个配方所需要的权限。</grey>"
       ]
     },
     "craft_delay": {
       "name": "配方延迟",
       "description": [
-        "&7设置一个延迟，玩家需要等待才能再次制作"
+        "<grey>设置一个延迟，玩家需要等待才能再次制作。</grey>"
       ]
     },
     "craft_limit": {
-      "name": "配方现在",
+      "name": "配方限制",
       "description": [
-        "&7限制配方的制作次数"
+        "<grey>限制配方的制作次数。</grey>"
       ]
     },
     "player_advancements": {
-      "name": "进度",
+      "name": "成就",
       "description": [
-        "&7设置玩家制作配方所需的进度"
+        "<grey>设置玩家制作配方所需获得的成就。</grey>"
       ]
     },
     "player_scoreboard": {
       "name": "玩家计分板",
       "description": [
-        "&7评估合成时需要的计分板值",
-        "&c必须在配方的 JSON 配置中配置!"
+        "<grey>设置合成时需要的计分板值。</grey>",
+        "<red>必须在配方的 JSON 设置中修改相关内容！</red>"
+      ]
+    },
+    "player/custom_check": {
+      "name": "自定义玩家检查",
+      "description": [
+        "<grey>设置合成物品所需的自定义条件。</grey>",
+        "<grey>required to craft the recipe.</grey>",
+        "<red>必须在配方的 JSON 设置中修改相关内容！</red>"
       ]
     }
   },
@@ -248,623 +329,658 @@
     "none": {
       "global_items": {
         "background": {
-          "name": "&4"
+          "name": "<dark_red>"
         },
         "back": {
-          "name": "&7\u27A6 &6&l返回"
+          "name": "<grey>\u27A6</grey>  <gold><b>返回</b></gold>"
         },
         "back_bottom": {
-          "name": "&7\u27A6 &c&l返回"
+          "name": "<grey>\u27A6</grey>  <red><b>返回</b></red>"
         },
         "close": {
-          "name": "&4&l关闭"
+          "name": "<dark_red><b>关闭</b></dark_red>"
         },
         "gui_help_on": {
-          "name": "&3&l[?] 信息",
+          "name": "<dark_aqua><b><u>[?] 信息</u></b>",
           "lore": [
-            "%wolfyutilities.help%",
-            "",
-            "&7[&a已启用&7]"
-          ]
-        },
-        "gui_help_off": {
-          "name": "&3&l帮助",
-          "lore": [
-            "%wolfyutilities.help%",
-            "",
-            "&7[&c已禁用&7]"
+            "<grey><list_entry:0></grey>",
+            "<grey><list_entry:1></grey>",
+            "<grey><list_entry:2></grey>",
+            "<grey><list_entry:3></grey>",
+            "<grey><list_entry:4></grey>",
+            "<grey><list_entry:5></grey>",
+            "<grey><list_entry:6></grey>",
+            "<grey><list_entry:7></grey>"
           ]
         },
         "patreon": {
-          "name": "&6赞助名单",
+          "name": "<grey>\u27A5</grey>  <#FF424D><b><obf>tt</obf>   Patreon   <obf>tt</obf></b>",
           "lore": [
-            "&e成为赞助者来获得最新更新",
-            "&7[&a点击&7]查看当前赞助人的 Credits"
+            "<grey>成为 Patreon 捐赠者并获取最新更新. </grey>",
+            "",
+            "<grey>[<green>点此</green>]</grey> <yellow>浏览当前 Patreon 捐赠者。"
           ]
         },
         "youtube": {
-          "name": "&7\u2756 &c&lYouTube",
+          "name": "<grey>\u2756</grey>  <red><b>YouTube</b></red>",
           "lore": [
-            "&e在 YouTube 上订阅我"
+            "<yellow>在 YouTube 上订阅我</yellow>"
           ]
         },
         "github": {
-          "name": "&7\u2756 &7&lGitHub",
+          "name": "<grey>\u2756</grey>  <grey><b>GitHub</b></grey>",
           "lore": [
-            "&e需要Wiki、教程，或者想做贡献?",
-            "&e请看GitHub仓库"
+            "<yellow>需要Wiki、教程，或者想做贡献?",
+            "<yellow>来看看我们的 GitHub 仓库吧。"
           ]
         },
         "discord": {
-          "name": "&9&lDiscord",
+          "name": "<grey>\u2756</grey>  <blue><b>Discord</b></blue>",
           "lore": [
-            "&e需要支持?发现了bug?",
-            "&e欢迎加入Discord服务器!"
+            "<yellow>需要支持？发现了bug？",
+            "<yellow>欢迎加入我们的 Discord 聊天群组！"
           ]
         },
         "recipe_list": {
-          "name": "&7\u27A5 &6&l配方列表",
+          "name": "<grey>\u27A5</grey>  <gold><b>配方列表</b></gold>",
           "lore": [
-            "&e自定义/原版配方列表",
-            "&e禁用&7/&e启用任何配方."
+            "<yellow>自定义/原版配方列表</yellow>",
+            "<yellow>可自由禁用<grey>/</grey>启用任何配方。</yellow>"
           ]
         },
         "item_list": {
-          "name": "&7\u27A5 &6&l物品列表",
+          "name": "<grey>\u27A5 <gold><b>物品列表",
           "lore": [
-            "&e列出你所有的自定义物品",
-            "&e轻松地获取、编辑或删除它们。",
+            "<yellow>列出你所有的自定义物品</yellow>",
+            "<yellow>轻松地获取、编辑或删除它们。</yellow>",
             "",
-            "&7[&a点击&7]&e 打开物品列表"
+            "<grey>[<green>点击</green>]</grey><yellow> 打开物品列表</yellow>"
           ]
         }
       },
       "main_menu": {
-        "gui_name": "&3&l自定义合成 &7[&8%plugin.version%&7]",
+        "gui_name": "<dark_aqua><b>自定义合成 <grey>[<dark_grey><plugin_version><grey>]",
         "gui_help": [
-          "&6&l设置:",
-          "&7- &e点击你想创建一个新配方的配方类型",
-          "&7- &e通过物品创建器创建自定义物品",
-          "   &e(左侧按钮)",
-          "&7- &e在配方列表中查看您的配方",
-          "   &e(右侧按钮)",
-          "&7- &e设置在左上角"
+          "<gold><b>设置:",
+          "<grey>- <yellow>点击你想创建一个新配方的配方类型",
+          "<grey>- <yellow>通过物品创建器创建自定义物品",
+          "   <yellow>(左侧按钮)",
+          "<grey>- <yellow>在配方列表中查看您的配方",
+          "   <yellow>(右侧按钮)",
+          "<grey>- <yellow>设置在左上角"
         ],
         "items": {
           "settings": {
-            "name": "&7\u27A5 &6&l设置",
+            "name": "<grey>\u27A5 <gold><b>设置",
             "lore": [
-              "&e配置主要设置 ",
-              "&e不需要停止服务器!"
+              "<yellow>配置主要设置 ",
+              "<yellow>不需要停止服务器!"
             ]
           },
           "recipe_book_editor": {
-            "name": "&7\u27A5 &6&l配方书 &8[&7Beta&8]",
+            "name": "<grey>\u27A5 <gold><b>配方书 <dark_grey>[<grey>Beta<dark_grey>]",
             "lore": [
-              "&e配置配方书",
-              "&e创建类别并设置其中食谱显示，添加材料等。"
+              "<yellow>配置配方书",
+              "<yellow>创建类别并设置其中食谱显示，添加材料等。"
             ]
           },
           "crafting": {
-            "name": "&7\u27A5 &6&l工作台配方",
+            "name": "<grey>\u27A5 <gold><b>工作台配方",
             "lore": [
-              "&7创建普通和高级工作台配方"
+              "<grey>创建普通和高级工作台配方"
             ]
           },
           "elite_crafting": {
-            "name": "&6精英工作台 &8[&7Beta&8]",
+            "name": "<gold>精英工作台 <dark_grey>[<grey>Beta<dark_grey>]",
             "lore": [
-              "&7用高达6x6的工作台面板创建精英工作台配方"
+              "<grey>用高达6x6的工作台面板创建精英工作台配方"
             ]
           },
           "anvil": {
-            "name": "&7\u27A5 &6&l铁砧配方",
-            "help": [
+            "name": "<grey>\u27A5 <gold><b>铁砧配方",
+            "lore": [
               ""
             ]
           },
           "furnace": {
-            "name": "&7\u27A5 &6&l熔炉配方",
-            "help": [
-              ""
-            ]
-          },
-          "blast_furnace": {
-            "name": "&7\u27A5 &6&l高炉配方",
-            "help": [
-              ""
-            ]
-          },
-          "smoker": {
-            "name": "&7\u27A5 &6&l烟熏炉配方",
-            "help": [
-              ""
-            ]
-          },
-          "campfire": {
-            "name": "&7\u27A5 &6&l营火配方",
-            "help": [
-              ""
-            ]
-          },
-          "cauldron": {
-            "name": "&7\u27A5 &6&l炼药锅配方",
-            "help": [
-              "&7创建炼药锅配方以在炼药锅内酿造/烹饪!"
-            ]
-          },
-          "stonecutter": {
-            "name": "&7\u27A5 &6&l切石机配方",
-            "help": [
-              ""
-            ]
-          },
-          "grindstone": {
-            "name": "&7\u27A5 &6&l砂轮配方",
-            "help": [
-              ""
-            ]
-          },
-          "brewing_stand": {
-            "name": "&7\u27A5 &6&l酿造台配方",
+            "name": "<grey>\u27A5 <gold><b>熔炉配方",
             "lore": [
               ""
             ]
           },
+          "blast_furnace": {
+            "name": "<grey>\u27A5 <gold><b>高炉配方",
+            "lore": [
+              ""
+            ]
+          },
+          "smoker": {
+            "name": "<grey>\u27A5 <gold><b>烟熏炉配方",
+            "lore": [
+              ""
+            ]
+          },
+          "campfire": {
+            "name": "<grey>\u27A5 <gold><b>营火配方",
+            "lore": [
+              ""
+            ]
+          },
+          "cauldron": {
+            "name": "<grey>\u27A5 <gold><b>炼药锅配方",
+            "lore": [
+              "<grey>创建炼药锅配方以在炼药锅内酿造/烹饪!"
+            ]
+          },
+          "stonecutter": {
+            "name": "<grey>\u27A5 <gold><b>切石机配方",
+            "lore": [
+              ""
+            ]
+          },
+          "grindstone": {
+            "name": "<grey>\u27A5 <gold><b>砂轮配方",
+            "lore": [
+              ""
+            ]
+          },
+          "brewing_stand": {
+            "name": "<grey>\u27A5 <gold><b>酿造台配方",
+            "lore": [
+              ""
+            ]
+          },
+          "brewing_stand_disabled": {
+            "name": "<red>❌ </red>  <gold><b>酿造台配方</b></gold>",
+            "lore": [
+              "<red>酿造台配方已关闭!",
+              "<red>你必须在配置文件中开启它!",
+              "",
+              "<red>注意: 开发正在进行中, 所以酿造台配方可能不会按预期工作！"
+            ]
+          },
           "smithing": {
-            "name": "&7\u27A5 &6&l锻造台配方",
+            "name": "<grey>\u27A5 <gold><b>锻造台配方",
             "lore": [
               ""
             ]
           },
           "item_editor": {
-            "name": "&6物品创建器",
+            "name": "<gold>物品创建器",
             "lore": [
-              "&7创建&8/&7修改有特殊特性的自定义物品",
-              "&e例如 定制耐久&7,&e 熔炉燃料&7, &e定制设备等"
+              "<grey>创建<dark_grey>/<grey>修改有特殊特性的自定义物品",
+              "<yellow>例如 定制耐久<grey>,<yellow> 熔炉燃料<grey>, <yellow>定制设备等"
             ]
           }
         }
       },
       "patrons_menu": {
-        "gui_name": "&6赞助名单",
+        "gui_name": "<gold>赞助名单",
         "gui_help": [
-          "&7特别感谢我的赞助者对这个项目发展的支持"
+          "<grey>特别感谢我的赞助者对这个项目发展的支持"
         ],
         "items": {
           "patreon": {
             "name": "",
             "lore": [
-              "&e成为赞助人，可以提前进入并参与该插件的开发",
-              "&e获得开发建设的机会等等"
+              "<yellow>成为赞助人，可以提前进入并参与该插件的开发",
+              "<yellow>获得开发建设的机会等等"
             ]
           }
         }
       },
       "recipe_list": {
-        "gui_name": "&8&l配方列表",
+        "gui_name": "<dark_grey><b>配方列表",
         "gui_help": [
-          "&7切换自定义和原版配方",
-          "&7如果一个配方被禁用，任何人都无法制作它!"
+          "<grey>切换自定义和原版配方",
+          "<grey>如果一个配方被禁用，任何人都无法制作它!"
         ],
         "items": {
           "lores": {
-            "disabled": "&7&l[&c&l禁用&7&l]",
-            "enabled": "&7&l[&a&l启用&7&l]",
-            "edit": "&7[&aShift-左键&7] &e编辑合成表",
-            "delete": "&7[&cShift-右键&7] &c删除合成表"
+            "disabled": "<grey><b>[<red><b>禁用<grey><b>]",
+            "enabled": "<grey><b>[<green><b>启用<grey><b>]",
+            "edit": "<grey>[<green>Shift-左键<grey>] <yellow>编辑合成表",
+            "delete": "<grey>[<red>Shift-右键<grey>] <red>删除合成表"
           },
           "namespace": {
-            "name": "&7%namespace%",
+            "name": "<grey>%namespace%",
             "lore": [
-              "&7[&a点击&7] 命名",
-              "&7[&aShift+左键&7] 禁用所有配方",
-              "&7[&aShift+右键&7] 启用所有配方"
+              "<grey>[<green>点击</green>] 打开命名空间",
+              "<grey>[<green>Shift+左键<grey>] 禁用所有配方",
+              "<grey>[<green>Shift+右键<grey>] 启用所有配方"
             ]
           },
           "folder": {
-            "name": "&6&l%folder%",
+            "name": "<gold><b>%folder%",
             "lore": [
-              "&7[&aClick&7] &e打开文件夹",
-              "&7[&aShift 左键&7] &c禁用所有配方",
-              "&7[&aShift 右键&7] &e启用所有配方"
+              "<grey>[<green>点击</green>] <yellow>打开文件夹",
+              "<grey>[<green>Shift 左键<grey>] <red>禁用所有配方",
+              "<grey>[<green>Shift 右键<grey>] <yellow>启用所有配方"
             ]
           },
           "previous_page": {
-            "name": "&7\u23EA &6&l上一页"
+            "name": "<grey>\u23EA <gold><b>上一页"
           },
           "next_page": {
-            "name": "&7\u23E9 &6&l下一页"
+            "name": "<grey>\u23E9 <gold><b>下一页"
           },
           "workstation_filter": {
-            "name": "&6&l类型: &e%type%",
+            "name": "<gold><b>类型: <yellow>%type%",
             "lore": [
               "",
-              "&7[&aLeft-Click&7] &e下一类",
-              "&7[&aRight-Click&7] &e上一类"
+              "<grey>[<green>左键点击<grey>] <yellow>下一类",
+              "<grey>[<green>右键点击<grey>] <yellow>上一类"
             ]
           }
         },
         "messages": {
-          "invalid_recipe": "&c这个配方不是 %recipe_type% 类型!",
+          "invalid_recipe": "<red>这个配方不是 %recipe_type% 类型!",
           "delete": {
-            "confirm": "&e你真的想删除 &6%recipe%&e 吗?",
-            "confirmed": "&7[&aYES&7]  ",
-            "declined": "&7[&cNO&7]"
+            "confirm": "<yellow>你真的想删除 <gold>%recipe%<yellow> 吗?",
+            "confirmed": "<grey>[<green>YES<grey>]  ",
+            "declined": "<grey>[<red>NO<grey>]"
           }
         }
       },
       "settings": {
-        "gui_name": "&8设置",
+        "gui_name": "<dark_grey>设置",
         "gui_help": [
-          "&7编辑 main-config 中的配置内容",
-          "&7",
-          "&7修改时请注意是否锁定配方!"
+          "<grey>编辑 main-config 中的配置内容",
+          "<grey>",
+          "<grey>修改时请注意是否锁定配方!"
         ],
         "items": {
           "lockdown": {
             "enabled": {
-              "name": "&4&l锁定!",
+              "name": "<dark_red><b>锁定!",
               "lore": [
-                "&7[&3启用&7]",
-                "&4配方已被锁定!"
+                "<grey>[<dark_aqua>启用<grey>]",
+                "<dark_red>配方已被锁定!"
               ]
             },
             "disabled": {
-              "name": "&4未锁定",
+              "name": "<dark_red>未锁定",
               "lore": [
-                "&7[&8禁用&7]",
-                "&7配方未被锁定!"
+                "<grey>[<dark_grey>禁用<grey>]",
+                "<grey>配方未被锁定!"
               ]
             }
           },
           "darkMode": {
             "enabled": {
-              "name": "&7深色模式",
+              "name": "<grey>深色模式",
               "lore": [
-                "&7当前为深色模式",
-                "&7[&a点击&7]切换浅色模式"
+                "<grey>当前为深色模式",
+                "<grey>[<green>点击</green>]切换浅色模式"
               ]
             },
             "disabled": {
-              "name": "&7浅色模式",
+              "name": "<grey>浅色模式",
               "lore": [
-                "&7当前为浅色模式",
-                "&7[&a点击&7]切换深色模式"
+                "<grey>当前为浅色模式",
+                "<grey>[<green>点击</green>]切换深色模式"
               ]
             }
           },
           "pretty_printing": {
             "enabled": {
-              "name": "&6默认的多行配置文件",
+              "name": "<gold>默认的多行配置文件",
               "lore": [
-                "&7配置被保存为默认的多行的Json格式",
-                "&7[&a点击&7]切换单行配置文件"
+                "<grey>配置被保存为默认的多行的Json格式",
+                "<grey>[<green>点击</green>]切换单行配置文件"
               ]
             },
             "disabled": {
-              "name": "&6单行配置文件",
+              "name": "<gold>单行配置文件",
               "lore": [
-                "&7配置被保存为单行的Json格式!(没有换行)",
-                "&7[&a点击&7]切换多行配置文件"
+                "<grey>配置被保存为单行的Json格式!(没有换行)",
+                "<grey>[<green>点击</green>]切换多行配置文件"
               ]
             }
           },
           "advanced_workbench": {
             "enabled": {
-              "name": "&a高级工作台",
+              "name": "<green>高级工作台",
               "lore": [
-                "&7高级工作台已启用!",
-                "&7[&a点击&7] 禁用高级工作台"
+                "<grey>高级工作台已启用!",
+                "<grey>[<green>点击</green>] 禁用高级工作台"
               ]
             },
             "disabled": {
-              "name": "&c高级工作台",
+              "name": "<red>高级工作台",
               "lore": [
-                "&7高级工作台已禁用!",
-                "&7[&a点击&7] 启用高级工作台"
+                "<grey>高级工作台已禁用!",
+                "<grey>[<green>点击</green>] 启用高级工作台"
               ]
             }
           },
           "language": {
-            "name": "&6语言",
+            "name": "<gold>语言",
             "lore": [
-              "&e» &l%lang0%",
-              "&7%lang1%",
-              "&7%lang2%",
-              "&7%lang3%",
-              "&7%lang4%",
-              "&7[&a左键&7]下一语言",
-              "&7[&a右键&7]上一语言",
-              "&7[&aShift+点击&7]重载语言文件和GUI"
+              "<yellow>» <b><list_entry:0></b></yellow>",
+              "<grey><list_entry:1></grey>",
+              "<grey><list_entry:2></grey>",
+              "<grey><list_entry:3></grey>",
+              "<grey><list_entry:4></grey>",
+              "<grey>[<green>左键<grey>]下一语言",
+              "<grey>[<green>右键<grey>]上一语言",
+              "<grey>[<green>Shift+点击<grey>]重载语言文件和GUI"
             ]
           },
           "debug": {
             "enabled": {
-              "name": "&aDebug模式",
+              "name": "<green>Debug模式",
               "lore": [
-                "&7Debug模式已&a启动!",
-                "&7从现在开始你会收到很多信息!",
-                "&7[&a点击&7]关闭Debug模式"
+                "<grey>Debug模式已<green>启动!",
+                "<grey>从现在开始你会收到很多信息!",
+                "<grey>[<green>点击</green>]关闭Debug模式"
               ]
             },
             "disabled": {
-              "name": "&cDebug",
+              "name": "<red>Debug",
               "lore": [
-                "&7Debug模式已&c关闭!",
-                "&7[&a点击&7]启动Debug模式"
+                "<grey>Debug模式已<red>关闭!",
+                "<grey>[<green>点击</green>]启动Debug模式"
               ]
             }
           },
           "creator": {
             "reset_after_save": {
               "enabled": {
-                "name": "&a重置&6配方生成器",
+                "name": "<green>重置<gold>配方生成器",
                 "lore": [
-                  "&7在配方保存后重置配方生成器的各项设置.",
-                  "&7[&a点击&7]切换为保留配方生成器"
+                  "<grey>在配方保存后重置配方生成器的各项设置.",
+                  "<grey>[<green>点击</green>]切换为保留配方生成器"
                 ]
               },
               "disabled": {
-                "name": "&c保留&6配方生成器",
+                "name": "<red>保留<gold>配方生成器",
                 "lore": [
-                  "&7在配方保存后保留配方生成器的各项设置",
-                  "&7[&a点击&7]切换为重置配方生成器"
+                  "<grey>在配方保存后保留配方生成器的各项设置",
+                  "<grey>[<green>点击</green>]切换为重置配方生成器"
                 ]
               }
             }
           },
-          "knowledgebook": {
-            "workbench_filter_button": {
-              "enabled": {
-                "name": "&a显示&6工作台选择按钮",
-                "lore": [
-                  "&7已显示知识之书中的工作台选择按钮",
-                  "&7[&a点击&7]隐藏工作台选择按钮"
-                ]
-              },
-              "disabled": {
-                "name": "&c隐藏&6工作台选择按钮",
-                "lore": [
-                  "&7已隐藏知识之书中的工作台选择按钮",
-                  "&7[&a点击&7]显示工作台选择按钮"
-                ]
-              }
+          "draw_background": {
+            "enabled": {
+              "name": "<grey>\u25A0 </grey><gold><b>背景</b></gold>",
+              "lore": [
+                "<grey>每个菜单都将有玻璃板作为背景</grey>",
+                "",
+                "<grey>[<green>点击</green>] 关闭玻璃板背景"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>\u25A1 </grey><gold><b>背景</b></gold>",
+              "lore": [
+                "<grey>所有的菜单中作为背景的玻璃板都不再可见!</grey>",
+                "<red>这使得配方格和其他输入槽等位置不会被显示</red>",
+                "<red>如果你这么做了，请保证你用了自定义合成材质!</red>",
+                "",
+                "<grey>[<green>点击</green>] 开启玻璃板背景"
+              ]
+            }
+          },
+          "recipe_book_keep_last_open": {
+            "enabled": {
+              "name": "<green>✔ </green><gold><b>Keep Last Open</b></gold>",
+              "lore": [
+                "<grey>When reopening the recipe book it opens</grey>",
+                "<grey>the menu the player last left on.</grey>",
+                "",
+                "<grey>[<green>Click</green>] Disable Keep Last Open"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌ </red><gold><b>Keep last Open</b></gold>",
+              "lore": [
+                "<grey>When reopening the recipe book it</grey>",
+                "<grey>always opens the recipe overview.</grey>",
+                "",
+                "<grey>[<green>Click</green>] Enable Keep Last Open"
+              ]
             }
           }
         }
       },
       "item_list": {
-        "gui_name": "&0&l物品列表",
+        "gui_name": "<black><b>物品列表",
         "items": {
           "next_page": {
-            "name": "&6下一页"
+            "name": "<gold>下一页"
           },
           "previous_page": {
-            "name": "&6上一页"
+            "name": "<gold>上一页"
           },
           "custom_item": {
             "lore": [
               "",
-              "&7[&a右键&7]&e 使用 ItemCreator 编辑物品",
-              "&7[&cShift 右键&7]&c 删除物品",
-              "&7[&a左键&7]&e 获取一个我",
-              "&7[&aShift 左键&7]&e 获取一组物品"
+              "<grey>[<green>右键<grey>]<yellow> 使用 ItemCreator 编辑物品",
+              "<grey>[<red>Shift 右键<grey>]<red> 删除物品",
+              "<grey>[<green>左键<grey>]<yellow> 获取一个我",
+              "<grey>[<green>Shift 左键<grey>]<yellow> 获取一组物品"
             ]
           },
           "custom_item_error": {
-            "name": "&c加载物品时出错!"
+            "name": "<red>加载物品时出错!"
           },
           "namespace": {
-            "name": "&7%namespace%",
+            "name": "<grey>%namespace%",
             "lore": [
               "",
-              "&7[&aClick&7] 查看该命名空间的物品"
+              "<grey>[<green>点击</green>] 查看该命名空间的物品"
             ]
           }
         },
         "messages": {
           "delete": {
-            "confirm": "&e你确定要删除 &6%item%&e?",
-            "confirmed": "&7[&aYES&7]  ",
-            "declined": "&7[&cNO&7]"
+            "confirm": "<yellow>你确定要删除 <gold>%item%<yellow>?",
+            "confirmed": "<grey>[<green>YES<grey>]  ",
+            "declined": "<grey>[<red>NO<grey>]"
           }
         }
       }
     },
     "item_creator": {
       "main_menu": {
-        "gui_name": "&0&l物品编辑器",
+        "gui_name": "<black><b>物品编辑器</b><black>",
         "gui_help": [
-          "&7将要编辑的物品放在中间",
-          "&e某些功能仅可在编辑保存的物品时使用!"
+          "<grey>将要编辑的物品放在中间</grey>",
+          "<yellow>某些功能仅可在编辑保存的物品时使用！</yellow>"
         ],
         "messages": {
           "save": {
             "input": {
-              "line1": "&e输入物品和文件夹名称!",
-              "line2": "&6例如: weapons ultimate_sword"
+              "line1": "<white>输入保存物品的 <hover:show_text:'自定义物品在下列文件中保存: <yellow>/data/<folder>/items/<item_name>.conf</yellow><br><br>文件夹可用于整理物品，且支持子文件夹！<br>像这样输入你的文件夹名称: <yellow>/wui <文件夹> <名称></yellow><br><br><red>确保文件夹和文件名称都只包含: <br> - 小写字母,<br> - 数字,<br> - 下划线 (_),<br> - 或英文横杠(-)!<br>使用命令 <yellow>/wui </yellow>来获取输入帮助，例如 TAB 补全!</red>'><yellow>文件夹和物品名称</yellow></hover>。"
             },
-            "success": "&a配置保存到:"
+            "success": "<green>配置已保存至：</green>"
           },
           "enchant": {
-            "invalid_lvl": "&c级别无效!不是有效数字!",
-            "invalid_enchant": "&c无效的附魔!&4%ENCHANT%&c不存在!",
-            "no_lvl": "&c没有等级!"
+            "invalid_lvl": "<red>等级无效!不是有效数字!</red>",
+            "invalid_enchant": "<red>无效的附魔<dark_red>%ENCHANT%</dark_red>！</red>",
+            "no_lvl": "<red>未设置等级!</red>"
           },
           "potion": {
-            "error_number": "&c分析数字时出错! &4<name> <duration> <level> [<ambient> <particles>]",
-            "wrong_args": "&c参数错误或名称无效! &4<name> <duration> <level> [<ambient> <particles>]",
-            "success": "&a增加药水效果&6%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%",
-            "invalid_name": "&c无效的名称!&4%NAME%&c不存在!"
+            "error_number": "<red>判断数字时出错! <dark_red><名称> <时间> <等级> [<环境> <粒子效果>]",
+            "wrong_args": "<red>参数错误或名称无效! <dark_red><名称> <时间> <等级> [<环境> <粒子效果>]",
+            "success": "<green>增加了药水效果 <gold>%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%",
+            "invalid_name": "<red>无效的药水效果名称 <dark)red>%NAME%</dark_red>！</red>"
           },
           "attribute": {
             "amount": {
-              "error": "&c解析编号时出错!不是有效编号!"
+              "error": "<red>判断数字时出错！</red>"
             },
             "uuid": {
               "error": {
-                "line1": "&c无效的UUID: &4%UUID%",
-                "line2": "&c输入一个有效的UUID!"
+                "line1": "<red>无效 UUID: <dark_red>%UUID%</dark_red></red>",
+                "line2": "<red>请输入有效 UUID!</red>"
               }
             }
           },
           "damage": {
-            "invalid_type": "&c当前物品不支持损坏程度!",
-            "value_success": "&a设置当前物品的损坏程度为&6%VALUE%&a!",
-            "invalid_value": "&4%VALUE%&c不是有效数字!"
+            "invalid_type": "<red>当前物品不支持损坏值!",
+            "value_success": "<green>成功将当前物品的损坏值设置为 <gold>%VALUE%</gold>!</green>",
+            "invalid_value": "<red><dark_red>%VALUE%</dark_red>不是有效数字!</red>"
           },
           "repair": {
-            "invalid_type": "&c当前物品不支持维修价格!",
-            "value_success": "&a将维修价格设置为&6%VALUE%&a!",
-            "invalid_value": "&4%VALUE%&c不是有效数字!"
+            "invalid_type": "<red>当前物品不支持维修价格!</red>",
+            "value_success": "<green>将维修价格设置为<gold>%VALUE%<green>!",
+            "invalid_value": "<dark_red>%VALUE%<red>不是有效数字!"
           },
           "fuel": {
-            "value_success": "&a设置损坏时间为&6%VALUE%Ticks&a!",
-            "invalid_value": "&4%VALUE%&c不是有效数字!"
+            "value_success": "<green>设置损坏时间为<gold>%VALUE%Ticks<green>!",
+            "invalid_value": "<dark_red>%VALUE%<red>不是有效数字!"
           },
           "custom_model_data": {
-            "disabled": "&l&c禁用",
-            "success": "&a将模型数据设置为&6%VALUE%&a!",
-            "invalid_value": "&4%VALUE%&c不是有效数字!"
+            "disabled": "<red><b>禁用</b></red>",
+            "success": "<green>将模型数据设置为<gold>%VALUE%</gold>!</green>",
+            "invalid_value": "<dark_red>%VALUE%<red> 不是有效自定义模型数据值!"
           },
           "consume": {
-            "valid": "&a设置耐久费用为&e%VALUE%",
-            "invalid": "&c这不是有效数字!请输入有效数字,如&e1&7或&e-1"
+            "valid": "<green>设置耐久消耗为</green><yellow> %VALUE%</yellow>",
+            "invalid": "<red>这不是有效数字!请输入有效数字,如 <yellow>1</yellow> 或 <yellow>-1</yellow></red>"
           }
         },
         "items": {
           "invalid_type": {
-            "name": "&c无效的物品",
+            "name": "<red>无效的物品</red>",
             "lore": [
-              "&7此物品与设置不兼容"
+              "<grey>此物品与设置不兼容</grey>"
             ]
           },
           "invalid_version": {
-            "name": "&c不支持的Minecraft版本",
+            "name": "<red>不支持的Minecraft版本</red>",
             "lore": [
-              "&7此功能需要最低1.14的Minecraft版本!"
+              "<grey>此功能需要最低1.14的Minecraft版本!</grey>"
             ]
           },
           "page_next": {
-            "name": "&7下一页"
+            "name": "<grey>\u23E9</grey>  <gold><b>下一页</b></gold>"
           },
           "page_previous": {
-            "name": "&7上一页"
+            "name": "<grey>\u23E9</grey>  <gold><b>上一页</b></gold>"
           },
           "save_item": {
-            "name": "&a保存物品",
+            "name": "<grey>\u25B7</grey>  <gold><b>保存物品</b></gold>",
             "lore": [
-              "&7将物品保存为文件: &3<folder> <file_name>"
+              "<yellow>将物品保存到指定文件夹的文件中！</yellow>"
             ]
           },
           "save_item_as": {
-            "name": "&7\u270E &6&l另存为...",
+            "name": "<grey>\u270E</grey> <gold><b>另存为...</b></gold>",
             "lore": [
-              "&7用一个新的文件夹和 key 保存该项目。",
-              "&7输入: &e&lfolder item_key",
-              "&c文件夹和key必须是小写的，并且只包含字母、数字、'_'、'-'或'/'!"
+              "<grey>将物品保存至指定文件夹中的文件。",
+              "<grey>输入格式：<yellow><b>文件夹名称 物品键值",
+              "<red>文件夹和key必须小写，且只应包含字母、数字、'_'、'-'或'/'!"
             ]
           },
           "apply_item": {
-            "name": "&a将此物品用于配方",
+            "name": "<grey>\u25B7</grey>  <green><b>将此物品用于配方</b></green>",
             "help": [
-              "&7将此物品用于配方"
+              "<yellow>将此物品用于配方</yellow>"
+            ]
+          },
+          "cancel": {
+            "name": "<grey>\u27A6</grey> <red><b>撤销",
+            "lore": [
+              "<red>有些选项仅在保存物品时有效！",
+              "<red>这些改动将不会被应用到物品上！"
             ]
           },
           "reference": {
             "wolfyutilities": {
-              "name": "&l&6WolfyUtilities",
+              "name": "<b><gold>WolfyUtilities",
               "lore": [
-                "&7此项是用 WolfyUtilities 创建的",
-                "&7并链接到&e%item_key%&7!",
-                "&6使用自定义或API编辑项目!"
+                "<grey>此物品由 WolfyUtilities 创建",
+                "<grey>且连接到了物品 <yellow>%item_key%<grey>!",
+                "<gold>若要编辑物品，请使用 CustomCrafting 或 API!"
               ]
             },
             "oraxen": {
-              "name": "&l&6Oraxen",
+              "name": "<b><gold>Oraxen</gold></b>",
               "lore": [
-                "&7此项是用 Oraxen 创建的",
-                "&7并链接到&e%item_key%&7!",
-                "&6要编辑项目，请使用Oraxen!"
+                "<grey>此物品由 Oraxen 创建",
+                "<grey>且连接到了物品 <yellow>%item_key%<grey>!",
+                "<gold>若要编辑物品，请使用 Oraxen!"
               ]
             },
             "itemsadder": {
-              "name": "&l&6ItemsAdder",
+              "name": "<b><gold>ItemsAdder</gold></b>",
               "lore": [
-                "&7此项目是使用 ItemsAdder 创建的",
-                "&7并链接到&e%item_key%&7!",
-                "&6要编辑项目，请使用ItemsAdder!"
+                "<grey>此项目是使用 ItemsAdder 创建的",
+                "<grey>且连接到了物品 <yellow>%item_key%<grey>!",
+                "<gold>若要编辑物品，请使用 ItemsAdder!"
               ]
             },
             "mythicmobs": {
-              "name": "&l&6MythicMobs",
+              "name": "<b><gold>MythicMobs</gold></b>",
               "lore": [
-                "&7此项目是使用 MythicMobs 创建的",
-                "&e要编辑项目，请使用 MythicMobs!"
+                "<grey>此项目是使用 MythicMobs 创建的",
+                "<yellow>若要编辑物品，请使用 MythicMobs!"
               ]
             }
           },
           "meta_ignore": {
-            "name": "&7模式: &3%VAR%",
+            "name": "<grey>模式: <dark_aqua>%VAR%",
             "lore": [
-              "&e更改此元数据的检查方式!",
-              "&7忽略特定的元数据，例如DisplayName",
-              "&7数值元也可以配置为只允许更高或更低的值"
+              "<yellow>更改此元数据的检查方式!</yellow>",
+              "<grey>忽略特定的元数据，例如显示名称</grey>",
+              "<grey>数字元数据也可以配置为只允许更高或更低的值！</grey>"
             ],
             "help": [
-              "&7----------------------------------------",
-              "&3EXACT &7-元数据必须完全相同!",
-              "&3IGNORE &7-忽略且不需要元数据!",
-              "&7对于数字项目:",
-              "&3HIGHER &7-该值可以高于设置值!",
-              "&3LOWER &7-该值可以低于设置值!"
+              "<grey>----------------------------------------</grey>",
+              "<dark_aqua>EXACT </dark_aqua><grey>- 元数据必须完全相同!</grey>",
+              "<dark_aqua>IGNORE </dark_aqua><grey>- 忽略且不需要元数据!</grey>",
+              "<grey>对于数字物品:</grey>",
+              "<dark_aqua>HIGHER </dark_aqua><grey>- 该值可以高于设置值!</grey>",
+              "<dark_aqua>LOWER </dark_aqua><grey>- 该值可以低于设置值!</grey>"
             ]
           },
           "display_name": {
             "option": {
-              "name": "&6更改名称",
+              "name": "<gold>更改名称",
               "lore": [
-                "&7编辑展示名"
+                "<grey>编辑展示名"
               ]
             },
             "set": {
-              "name": "<grey>✎ <gold><b>设置展示名",
+              "name": "<grey>✎</grey> <gold><b>设置展示名",
               "lore": [
                 "<yellow>更改展示名"
               ],
-              "message": "<yellow>键入新的物品名称! <grey>(<yellow>格式: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
+              "message": "<yellow>键入新的物品名称!</yellow>"
             },
             "remove": {
-              "name": "&3移除名称",
+              "name": "<grey>\u25B7</grey> <gold><b>移除名称",
               "lore": [
-                "&7移除并恢复默认名称"
+                "<yellow>移除并恢复默认名称"
               ]
             }
           },
           "enchantments": {
             "option": {
-              "name": "&6附魔",
+              "name": "<gold>附魔</gold>",
               "lore": [
-                "&7编辑附魔"
+                "<grey>编辑附魔</grey>"
               ]
             },
             "add": {
-              "name": "&6添加附魔",
-              "help": [],
-              "message": "&e输入附魔与等级!如: &6unbreaking 5"
+              "name": "<gold>添加附魔</gold>",
+              "lore": [],
+              "message": "<yellow>输入附魔与等级!如: <gold>unbreaking 5</gold></yellow>"
             },
             "remove": {
-              "name": "&4移除附魔",
-              "help": [],
-              "message": "&e输入附魔名称!如: &6unbreaking"
+              "name": "<dark_red>移除附魔</dark_red>",
+              "lore": [],
+              "message": "<yellow>输入附魔名称! 如: <gold>unbreaking</gold></yellow>"
             }
           },
           "lore": {
             "option": {
-              "name": "&6修改 Lore",
+              "name": "<gold>修改 Lore",
               "lore": [
-                "&7添加或移除Lore"
+                "<yellow>添加或移除Lore"
               ]
             },
             "add": {
@@ -878,830 +994,860 @@
           },
           "flags": {
             "option": {
-              "name": "&6设置 Flags",
+              "name": "<gold>设置标志",
               "lore": [
-                "&7切换物品  Flags 显示",
-                "&7例如：隐藏附魔"
+                "<grey>切换物品的标志显示",
+                "<grey>例如：隐藏附魔"
               ]
             },
             "enchants": {
               "enabled": {
-                "name": "&a&l隐藏附魔"
+                "name": "<green><b>隐藏附魔</b></green>"
               },
               "disabled": {
-                "name": "&c&l隐藏附魔"
+                "name": "<red><b>隐藏附魔</b></red>"
               }
             },
             "attributes": {
               "enabled": {
-                "name": "&a启用隐藏Attributes Flags"
+                "name": "<green><b>点击隐藏属性标签</b></green>"
               },
               "disabled": {
-                "name": "&c禁用隐藏Attributes Flags"
+                "name": "<red><b>点击显示属性标签</b></red>"
               }
             },
             "unbreakable": {
               "enabled": {
-                "name": "&a启用隐藏禁用损坏Flags"
+                "name": "<green><b>点击隐藏不可破坏标签</b></green>"
               },
               "disabled": {
-                "name": "&c禁用隐藏禁用损坏Flags"
+                "name": "<red><b>点击显示不可破坏标签</b></red>"
               }
             },
             "destroys": {
               "enabled": {
-                "name": "&a启用隐藏耐久度Flags"
+                "name": "<green><b>点击禁用隐藏耐久度标志</b></green>"
               },
               "disabled": {
-                "name": "&c禁用隐藏耐久度Flags"
+                "name": "<red><b>点击启用耐久度标志</b></red>"
               }
             },
             "placed_on": {
               "enabled": {
-                "name": "&a启用隐藏Placed On Flags"
+                "name": "<green><b>点击隐藏放置标志</b></green>"
               },
               "disabled": {
-                "name": "&c禁用隐藏Placed On Flags"
+                "name": "<red><b>点击显示放置标志</b></red>"
               }
             },
             "potion_effects": {
               "enabled": {
-                "name": "&a启用隐藏药水效果Flags"
+                "name": "<green><b>点击启用隐藏药水效果标志</b></green>"
               },
               "disabled": {
-                "name": "&c禁用隐藏药水效果Flags"
+                "name": "<red><b>点击禁用隐藏药水效果标志</b></red>"
               }
             },
             "dye": {
               "enabled": {
-                "name": "&a&l隐藏染料"
+                "name": "<green><b>点击隐藏染色信息</b></green>"
               },
               "disabled": {
-                "name": "&c&l隐藏染料"
+                "name": "<red><b>点击显示染色信息</b></red>"
               }
             }
           },
           "player_head": {
             "option": {
-              "name": "&6头颅设置",
+              "name": "<gold>头颅设置<gold>",
               "lore": [
-                "&7向头颅添加皮肤"
+                "<grey>向头颅添加皮肤</grey>"
               ]
             },
             "texture": {
               "apply": {
-                "name": "&6应用皮肤",
+                "name": "<gold>应用皮肤",
                 "lore": [
-                  "&e为头颅添加皮肤",
-                  "&7«« &e使用添加完皮肤的头颅!",
-                  "&7[&a点击&7] Apply texture"
+                  "<yellow>为头颅添加皮肤",
+                  "<grey>«« <yellow>将带有皮肤的头颅放入左侧空位!",
+                  "<grey>[<green>点击</green>] 应用皮肤"
                 ]
               }
             },
             "owner": {
-              "name": "&6设置头颅的玩家ID",
+              "name": "<gold>设置头颅的玩家ID</gold>",
               "lore": [
-                "&e设置头颅的玩家ID",
-                "&7[&a点击&7]输入玩家的UUID或name"
+                "<yellow>设置头颅的玩家 ID</yellow>",
+                "<grey>[<green>点击</green>]输入玩家的UUID或name"
               ],
-              "message": "&e输入玩家名字!"
+              "message": "<yellow>输入玩家名字!</yellow>"
             }
           },
           "unbreakable": {
             "enabled": {
-              "name": "&a不可损坏",
+              "name": "<green>不可损坏</green>",
               "lore": [
-                "&a不可损坏&f已启用",
-                "&7[&a点击&7]禁用不可损坏"
+                "<grey>[<green>点击</green>] 禁用不可损坏标签</grey>"
               ]
             },
             "disabled": {
-              "name": "&c可损坏",
+              "name": "<green>可损坏</green>",
               "lore": [
-                "&c不可损坏&f已禁用",
-                "&7[&a点击&7]启用不可损坏"
+                "<grey>[<green>点击</green>] 启用不可损坏标签</grey>"
               ]
             }
           },
           "potion": {
             "option": {
-              "name": "&6药水效果",
+              "name": "<gold>药水效果</gold>",
               "lore": [
-                "&7设置药水效果"
+                "<grey>设置药水效果</grey>"
               ]
             },
             "add": {
-              "name": "&a添加药水效果",
+              "name": "<green>添加药水效果</green>",
               "lore": [
-                "&e添加药水效果",
-                "&e输入: &6<name> <duration> <level> [<ambient> <particles>]",
-                "&7[&a点击&7]输入药水效果"
-              ],
-              "message": "&e输入药水效果! &6<name> <duration> <level> [<ambient> <particles>]"
+                "<yellow>创建并添加药水效果</yellow>",
+                "<yellow>点击打开创建界面。</yellow>",
+                "",
+                "<grey>[<green>点击</green>] 打开药水效果创建器</grey>"
+              ]
             },
             "remove": {
-              "name": "&4移除药水效果",
+              "name": "<dark_red>移除药水效果</dark_red>",
               "lore": [
-                "&e移除指定的药水效果",
-                "&e输入: &6<name>",
-                "&7[&a点击&7]输入要移除的药水效果名字"
-              ],
-              "message": "&e输入要移除的药水效果名字!"
+                "<yellow>移除指定类型的药水效果。</yellow>",
+                "<yellow>点击打开药水效果移除界面</yellow>",
+                "",
+                "<grey>[<green>点击</green>] 打开药水效果选择器</grey>"
+              ]
             }
           },
           "attribute": {
             "option": {
-              "name": "&6设置Attributes",
+              "name": "<gold>设置属性</gold>",
               "lore": [
-                "&7添加或移除Attributes"
+                "<grey>添加或移除属性</grey>"
               ]
             },
             "generic_max_health": {
-              "name": "&6最大生命值",
+              "name": "<gold>最大生命值</gold>",
               "lore": [
-                "&7[&a点击&7]设置最大生命值"
+                "<grey>[<green>点击</green>] 设置最大生命值</grey>"
               ]
             },
             "generic_follow_range": {
-              "name": "&6跟随范围",
+              "name": "<gold>跟随范围</gold>",
               "lore": [
-                "&7[&a点击&7]设置跟随范围"
+                "<grey>[<green>点击</green>]设置跟随范围</grey>"
               ]
             },
             "generic_knockback_resistance": {
-              "name": "&6击退抗性",
+              "name": "<gold>击退抗性</gold>",
               "lore": [
-                "&7[&a点击&7]设置击退抗性r"
+                "<grey>[<green>点击</green>]设置击退抗性<grey>"
               ]
             },
             "generic_movement_speed": {
-              "name": "&6移动速度",
+              "name": "<gold>移动速度</gold>",
               "lore": [
-                "&7[&a点击&7]设置移动速度"
+                "<grey>[<green>点击</green>]设置移动速度</grey>"
               ]
             },
             "generic_flying_speed": {
-              "name": "&6飞行速度",
+              "name": "<gold>飞行速度</gold>",
               "lore": [
-                "&7[&a点击&7]设置飞行速度"
+                "<grey>[<green>点击</green>]设置飞行速度</grey>"
               ]
             },
             "generic_attack_damage": {
-              "name": "&6攻击伤害",
+              "name": "<gold>攻击伤害</gold>",
               "lore": [
-                "&7[&a点击&7]设置攻击伤害"
+                "<grey>[<green>点击</green>] 设置攻击伤害</grey>"
               ]
             },
             "generic_attack_speed": {
-              "name": "&6攻击速度",
+              "name": "<gold>攻击速度</gold>",
               "lore": [
-                "&7[&a点击&7]设置攻击速度"
+                "<grey>[<green>点击</green>] 设置攻击速度<grey>"
               ]
             },
             "generic_armor": {
-              "name": "&6盔甲",
+              "name": "<gold>盔甲</gold>",
               "lore": [
-                "&7[&a点击&7]设置盔甲"
+                "<grey>[<green>点击</green>]设置盔甲"
               ]
             },
             "generic_armor_toughness": {
-              "name": "&6盔甲韧性",
+              "name": "<gold>盔甲韧性</gold>",
               "lore": [
-                "&7[&a点击&7]设置盔甲韧性"
+                "<grey>[<green>点击</green>]设置盔甲韧性"
               ]
             },
             "generic_luck": {
-              "name": "&6幸运",
+              "name": "<gold>幸运</gold>",
               "lore": []
             },
             "horse_jump_strength": {
-              "name": "&6马的跳跃高度",
+              "name": "<gold>马匹跳跃高度</gold>",
               "lore": []
             },
             "zombie_spawn_reinforcements": {
-              "name": "&6僵尸增援",
+              "name": "<gold>僵尸增援</gold>",
               "lore": []
             },
             "add_number": {
               "name": "%C%添加所有属性",
               "lore": [
-                "&e将所有属性添加到属性的当前值."
+                "<yellow>将所有属性添加到属性的当前值。</yellow>"
               ]
             },
             "add_scalar": {
-              "name": "%C%Multiply number",
+              "name": "%C%翻倍数",
               "lore": [
-                "&e将属性的当前值乘以(1+x)",
-                "&e其中x是修改器数值的总和"
+                "<yellow>将属性的当前值乘以 (1+x)</yellow>",
+                "<yellow>其中x是倍率数值的总和</yellow>"
               ]
             },
             "multiply_scalar_1": {
-              "name": "%C%Multiply scalar",
+              "name": "%C%翻倍比率",
               "lore": [
-                "&e最复杂的选择！启用帮助(右上角)了解更多信息!",
-                "&e对于每个修改器，将属性的当前值乘以(1+x)",
-                "&e其中x是修改器数值的总和."
+                "<yellow>最复杂的选择！启用帮助(右上角)了解更多信息!</yellow>",
+                "<yellow>对于每个倍率，将属性的当前值乘以 (1+x)</yellow>",
+                "<yellow>其中x是倍率数值的总和.</yellow>"
               ],
               "help": [
-                "&7---------------------------------------------------",
-                "&e如果操作1或2(乘标量)只有一个修饰符",
-                "&e则函数与操作1(乘法)相同.",
-                "&e但是，对于多个修饰符",
-                "&e它将倍增修饰符而不是添加它们.",
-                "&e例如，使用{Amount:2,Operation:2}以及",
-                "&e{Amount:4,Operation:2}以3为基数得到45(3*(1+2)*(1+4)=45",
-                "&6参见Minecraft Wiki: &3https://minecraft.gamepedia.com/Attribute#Operations"
+                "<grey>---------------------------------------------------</grey>",
+                "<yellow>如果操作1或2(乘标量)只有一个修饰符</yellow>",
+                "<yellow>则函数与操作1(乘法)相同.</yellow>",
+                "<yellow>但是，对于多个修饰符</yellow>",
+                "<yellow>它将倍增修饰符而不是添加它们.</yellow>",
+                "<yellow>例如，使用 {Amount:2,Operation:2} 以及</yellow>",
+                "<yellow>{Amount:4,Operation:2} 以 3 为基数得到45(3*(1+2)*(1+4)=45 </yellow>",
+                "<gold>另见 Minecraft Wiki: <dark_aqua>https://zh.minecraft.wiki/w/%E5%B1%9E%E6%80%A7#%E8%BF%90%E7%AE%97%E6%A8%A1%E5%BC%8F</dark_aqua></gold>"
               ]
             },
             "slot_hand": {
-              "name": "&6主手",
+              "name": "<gold>主手</gold>",
               "lore": [
-                "&7[&a点击&7]启用/禁用"
+                "<grey>[<green>点击</green>] 启用/禁用</grey>"
               ]
             },
             "slot_off_hand": {
-              "name": "&6副手",
+              "name": "<gold>副手</gold>",
               "lore": [
-                "&7[&a点击&7]启用/禁用"
+                "<grey>[<green>点击</green>] 启用/禁用</grey>"
               ]
             },
             "slot_feet": {
-              "name": "&6靴子",
+              "name": "<gold>靴子</gold>",
               "lore": [
-                "&7[&a点击&7]启用/禁用"
+                "<grey>[<green>点击</green>] 启用/禁用</grey>"
               ]
             },
             "slot_legs": {
-              "name": "&6护腿",
+              "name": "<gold>护腿</gold>",
               "lore": [
-                "&7[&a点击&7]启用/禁用"
+                "<grey>[<green>点击</green>] 启用/禁用</grey>"
               ]
             },
             "slot_chest": {
-              "name": "&6胸甲",
+              "name": "<gold>胸甲</gold>",
               "lore": [
-                "&7[&a点击&7]启用/禁用"
+                "<grey>[<green>点击</green>] 启用/禁用</grey>"
               ]
             },
             "slot_head": {
-              "name": "&6头盔",
+              "name": "<gold>头盔</gold>",
               "lore": [
-                "&7[&a点击&7]启用/禁用"
+                "<grey>[<green>点击</green>] 启用/禁用</grey>"
               ]
             },
             "save": {
-              "name": "&a添加Attribute",
+              "name": "<green>添加属性</green>",
               "lore": [
-                "&e对具有设置选项和值的物品应用 Attribute",
-                "&7[&a点击&7]添加Attribute"
+                "<yellow>对具有设置选项和值的物品应用属性</yellow>",
+                "<grey>[<green>点击</green>] 启用/禁用</grey>"
               ]
             },
             "delete": {
-              "name": "&c移除Attribute",
+              "name": "<red>移除属性</red>",
               "lore": [
-                "&e为物品移除Attribute",
-                "&7[&a点击&7]打开GUI"
+                "<yellow>去除物品上的属性</yellow>",
+                "<grey>[<green>点击</green>] 打开界面</grey>"
               ]
             },
             "set_amount": {
-              "name": "&7设置数值: &e%NUMBER%",
+              "name": "<grey>设置数值: <yellow>%NUMBER%</yellow></grey>",
               "lore": [
-                "&e设置数值",
+                "<yellow>设置数值",
                 "",
-                "&7[&a点击&7]输入数值"
+                "<grey>[<green>点击</green>]输入数值"
               ],
-              "message": "&e输入数值!如: e&6 0.4"
+              "message": "<yellow>输入数值!如: e<gold> 0.4"
             },
             "set_name": {
-              "name": "&7设置名字: &e%NAME%",
+              "name": "<grey>设置名字: <yellow>%NAME%</yellow></grey>",
               "lore": [
-                "&e设置名字",
-                "&7[&a点击&7]输入名字"
+                "<yellow>设置翻倍的名字",
+                "<grey>[<green>点击</green>] 输入名字"
               ],
-              "message": "&e输入名字!"
+              "message": "<yellow>输入名字!"
             },
             "set_uuid": {
-              "name": "&7UUID: &e%UUID%",
+              "name": "<grey>UUID: <yellow>%UUID%</yellow></grey>",
               "lore": [
-                "&e设置UUID",
-                "&c必须是UUID!",
-                "&7[&a点击&7]输入UUID"
+                "<yellow>为翻倍设置 UUID",
+                "<red>必须是有效的 UUID 格式!",
+                "<grey>[<green>点击</green>] 输入UUID</grey>"
               ],
-              "message": "&e设置UUID!必须是UUID!"
+              "message": "<yellow>设置UUID！必须是有效的 UUID 格式！</yellow>"
             }
           },
           "damage": {
             "option": {
-              "name": "&6设置物品的损坏程度",
+              "name": "<gold>设置物品的损坏程度</gold>",
               "lore": [
-                "&7设置物品的损坏程度"
+                "<grey>设置物品的损坏程度</grey>"
               ]
             },
             "set": {
-              "name": "&6设置损坏程度",
+              "name": "<gold>设置损坏程度",
               "lore": [
-                "&e设置损坏程度数值!",
-                "&7[&a点击&7]输入损坏程度"
+                "<yellow>设置损坏程度数值!",
+                "<grey>[<green>点击</green>]输入损坏程度"
               ],
-              "message": "&e输入损坏程度!"
+              "message": "<yellow>输入损坏程度!"
             },
             "reset": {
-              "name": "&c重置损坏程度",
+              "name": "<red>重置损坏程度",
               "help": [
-                "&e重置损坏程度为0",
-                "&7[&a点击&7]重置损坏程度"
+                "<yellow>重置损坏程度为0",
+                "<grey>[<green>点击</green>]重置损坏程度"
               ]
             }
           },
           "repair_cost": {
             "option": {
-              "name": "&6修理费用",
+              "name": "<gold>修理费用</gold>",
               "lore": [
-                "&7设置此物品的修理费用!"
+                "<grey>设置此物品的修理费用!</grey>",
+                "<grey>可用于阻止玩家修复物品</grey>"
               ]
             },
             "set": {
-              "name": "&6设置修理费用",
-              "message": "&e输入修理费用的数值"
+              "name": "<gold>设置修理费用</gold>",
+              "message": "<yellow>输入修理费用的数值</yellow>"
             },
             "reset": {
-              "name": "&c重置修理费用",
+              "name": "<red>重置修理费用</red>",
               "lore": [
-                "&7重置修理费用为0"
+                "<grey>重置修理费用为 0</grey>"
               ]
             }
           },
           "fuel": {
             "option": {
-              "name": "&6可做燃料",
+              "name": "<gold>可做燃料</gold>",
               "lore": [
-                "&7允许在熔炉中用作燃料.",
-                "&c需要保存的物品"
+                "<grey>允许在熔炉中用作燃料.</grey>",
+                "<red>需要已有的物品</red></red>"
               ]
             },
             "burn_time": {
               "set": {
-                "name": "&a燃烧时间: &7%VAR% Ticks",
+                "name": "<green>燃烧时间: </green><grey>%VAR% Ticks</grey>",
                 "lore": [
-                  "&7[&a点击&7]设置燃烧时间(Tick)"
+                  "<grey>[<green>点击</green>] 设置燃烧时间(Tick)"
                 ],
                 "help": [
-                  "&7以Tick为单位设置燃烧时间!",
-                  "&720Ticks = 1秒",
-                  "&c设置为0禁用此选项",
-                  "&c仅为燃料设置!"
+                  "<grey>设置燃烧时间，单位为刻!",
+                  "<grey>20 刻 = 1 秒",
+                  "<red>设置为 0 表示该物品不可作为燃料使用！"
                 ],
-                "message": "&e以Tick为单位设置燃烧时间!"
+                "message": "<yellow>输入燃烧时间，单位为刻!"
               },
               "reset": {
-                "name": "&c重置燃烧时间",
+                "name": "<red>重置燃烧时间</red>",
                 "lore": [
-                  "&7此物品将不能作为燃料!"
+                  "<grey>此物品将不能作为燃料!</grey>"
                 ]
               }
             },
             "furnace": {
               "enabled": {
-                "name": "&a熔炉",
+                "name": "<green>熔炉</green>",
                 "lore": [
-                  "&7可以用作熔炉的燃料"
+                  "<grey>可以用作熔炉的燃料</grey>"
                 ]
               },
               "disabled": {
-                "name": "&c熔炉",
+                "name": "<red>熔炉</red>",
                 "lore": [
-                  "&7不能用作熔炉的燃料"
+                  "<grey>不能用作熔炉的燃料</grey>"
                 ]
               }
             },
             "blast_furnace": {
               "enabled": {
-                "name": "&a高炉",
+                "name": "<green>高炉</green>",
                 "lore": [
-                  "&7可以用作高炉的燃料"
+                  "<grey>可以用作高炉的燃料</grey>"
                 ]
               },
               "disabled": {
-                "name": "&c高炉",
+                "name": "<red>高炉</red>",
                 "lore": [
-                  "&7不能用作高炉的燃料"
+                  "<grey>不能用作高炉的燃料</grey>"
                 ]
               }
             },
             "smoker": {
               "enabled": {
-                "name": "&a烟熏炉",
+                "name": "<green>烟熏炉</green>",
                 "lore": [
-                  "&7可以用作烟熏炉的燃料"
+                  "<grey>可以用作烟熏炉的燃料</grey>"
                 ]
               },
               "disabled": {
-                "name": "&c烟熏炉",
+                "name": "<red>烟熏炉</red>",
                 "lore": [
-                  "&7不能用作烟熏炉的燃料"
+                  "<grey>不能用作烟熏炉的燃料</grey>"
                 ]
               }
             }
           },
           "custom_model_data": {
             "option": {
-              "name": "&6自定义模型数据",
+              "name": "<gold>自定义模型数据</gold>",
               "lore": [
-                "&7设置自定义模型数据",
-                "&7使用自定义模型数据和纹理!",
-                "&7最低兼容Minecraft1.14"
+                "<grey>设置自定义模型数据</grey>",
+                "<grey>使用自定义模型数据和纹理!</grey>",
+                "<grey>最低兼容 Minecraft 1.14</grey>"
               ]
             },
             "set": {
-              "name": "&7模型数据: &7%VAR%",
+              "name": "<grey>模型数据: <grey>%VAR%",
               "help": [
-                "&7为物品设置自定义模型数据!"
+                "<grey>为物品设置自定义模型数据!</grey>"
               ],
-              "message": "&e输入自定义模型数据!"
+              "message": "<yellow>输入自定义模型数据值!</yellow>"
             },
             "reset": {
-              "name": "&c移除自定义模型数据",
+              "name": "<red>移除自定义模型数据</red>",
               "help": [
-                "&7为物品移除自定义模型数据!"
+                "<grey>为物品移除自定义模型数据!</grey>"
               ]
             }
           },
           "consume": {
             "option": {
-              "name": "&6失去耐久值或被替换",
+              "name": "<gold>失去耐久值与替换",
               "lore": [
-                "&7制作一个物品,作为材料在",
-                "&7合成后会消耗耐久值或被替换",
-                "&c需要保存的物品"
+                "<grey>设置参与合成后消耗耐久或返还的物品",
+                "<red>需要已保存的物品"
               ]
             },
             "durability_cost": {
               "enabled": {
-                "name": "&7耐久度消耗: &3%VAR%",
+                "name": "<grey>耐久度消耗: <dark_aqua>%VAR%</dark_aqua></grey>",
                 "lore": [
-                  "&7>0: &3耐久度降低!",
-                  "&7=0: &3全移除耐久度!",
-                  "&7<0: &3耐久度增加!"
+                  "<grey>>0: <dark_aqua>耐久度降低！",
+                  "<grey>=0: <dark_aqua>去除耐久！使用替代来防止！",
+                  "<grey><0: <dark_aqua>耐久度增加！"
                 ],
-                "message": "&e输入数值决定使用物品时的耐久值更改"
+                "message": "<yellow>输入参与合成的物品耐久值消耗"
               },
               "disabled": {
-                "name": "&7耐久度消耗: &4&l禁用",
+                "name": "<grey>耐久度消耗: <dark_red><b>禁用",
                 "lore": [
-                  "&c使用此物品将不会消耗耐久度!"
+                  "<red>物品必须不可堆叠！</red>",
+                  "<red>物品必须禁用替换模式！</red>"
                 ]
               }
             },
             "consume_item": {
               "enabled": {
-                "name": "&a消耗",
+                "name": "<green>消耗</green>",
                 "lore": [
-                  "&7I使用此物品将会被消耗!"
+                  "<grey>使用此物品将会被消耗!</grey>"
                 ]
               },
               "disabled": {
-                "name": "&c无消耗",
+                "name": "<red>无消耗</red>",
                 "lore": [
-                  "&7使用此物品不会被消耗!"
+                  "<grey>使用此物品不会被消耗!</grey>"
                 ]
               }
             },
             "replacement": {
               "enabled": {
-                "name": "&a启用替换!",
+                "name": "<green>启用替换!</green>",
                 "lore": [
-                  "&7耐久消耗已禁用!"
+                  "<grey>已阻止耐久消耗！</grey>"
                 ]
               },
               "disabled": {
-                "name": "&c禁用替换!"
+                "name": "<red>禁用替换!</red>"
               }
             }
           },
           "custom_durability": {
             "option": {
-              "name": "&6定制耐久度和损坏程度",
+              "name": "<gold>自定义耐久度和损坏程度</gold>",
               "lore": [
-                "&7为您的物品设置自定义耐久度和损坏程度!",
-                "&7这将取代原版的耐久度和损坏程度!"
+                "<grey>为您的物品设置自定义耐久度和损坏程度!</grey>",
+                "<grey>这将取代原版的耐久度和损坏程度!</grey>"
               ]
             },
             "remove": {
-              "name": "&c移除损坏程度",
+              "name": "<red>移除自定义耐久</red>",
               "lore": [
-                "&e删除此物品的自定义耐久度.",
-                "&7[&a点击&7]删除此物品的自定义耐久度"
+                "<yellow>删除此物品的自定义耐久度.</yellow>",
+                "<grey>[<green>点击</green>] 删除此物品的自定义耐久度</grey>"
               ]
             },
             "set_durability": {
-              "name": "&7设置耐久度: &3%VAR%",
+              "name": "<grey>设置耐久度: <dark_aqua>%VAR%</dark_qaua></grey>",
               "lore": [
-                "&e设置耐久度.",
-                "&7[&a点击&7]输入耐久度"
+                "<yellow>为该物品设置自定义耐久度。</yellow>",
+                "<grey>[<green>点击</green>] 输入耐久度</grey>"
               ],
-              "message": "&e输入耐久度.&c最大值: 2,147,483,647"
+              "message": "<yellow>输入耐久度.<red>最大值: 2,147,483,647</red></yellow>"
             },
             "set_damage": {
-              "name": "&7设置损坏程度: &3%VAR%",
+              "name": "<grey>设置损坏值: <dark_aqua>%VAR%",
               "lore": [
-                "&e设置损坏程度.",
-                "&7[&a点击&7]输入损坏程度"
+                "<yellow>设置损坏值</yellow>",
+                "<grey>[<green>点击</green>] 输入损坏值</grey>"
               ],
-              "message": "&e输入损坏程度.&c最大值: 2,147,483,647"
+              "message": "<yellow>输入损坏值。<red>最大值: 2,147,483,647"
             },
             "set_tag": {
-              "name": "&7Set Tag: &3%VAR%",
+              "name": "<grey>设置标签: <dark_aqua>%VAR%",
               "lore": [
-                "&e设置显示耐久度和损坏程度的标签",
-                "&7&n替换: ",
-                "&6%dur% &7-> &e可用的耐久度",
-                "&6%max_dur% &7-> &e最大耐久度",
-                "&7[&a点击&7]输入显示耐久度和损坏程度的标签"
+                "<yellow>设置显示耐久和损坏值的标签</yellow>",
+                "<grey><u>内建变量:</u></grey> ",
+                "<gold>%dur% </gold><grey>-> </grey><yellow>剩余使用耐久</yellow>",
+                "<gold>%max_dur% </gold><grey>-> </grey><yellow>物品最大耐久</yellow>",
+                "<grey>[<green>点击</green>] 输入自定义标签</grey>"
               ],
-              "message": "&e设置显示耐久度和损坏程度的标签! %dur%"
+              "message": "<yellow>设置显示耐久度和损坏程度的标签! %dur%</yellow>"
             }
           },
           "localized_name": {
             "option": {
-              "name": "&6本地化名称",
+              "name": "<gold>本地化名称</gold>",
               "lore": [
-                "&7将本地化名称设置为",
-                "&7使用资源包等的翻译."
+                "<grey>将本地化名称设置为</grey>",
+                "<grey>使用资源包等的翻译.</grey>"
               ]
             },
             "set": {
-              "name": "&7设置本地化名称: &f%VAR%",
-              "message": "&e输入设置本地化名称"
+              "name": "<grey>设置本地化名称: <white>%VAR%</white></grey>",
+              "message": "<yellow>输入设置本地化名称</yellow>"
             },
             "remove": {
-              "name": "&c移除本地化名称"
+              "name": "<red>移除本地化名称</red>"
             }
           },
           "permission": {
             "option": {
-              "name": "&6权限",
+              "name": "<gold>权限</gold>",
               "lore": [
-                "&7设置获取此物品所需的权限",
-                "&7用于工作台和手工制作",
-                "&c需要保存的物品"
+                "<grey>设置获取此物品所需的权限</grey>",
+                "<grey>用于工作台和铁砧输出物品</grey>",
+                "<red>需要已有的物品</red>"
               ]
             },
             "set": {
-              "name": "&7设置权限: &3%VAR%",
-              "message": "&e输入获取此物品所需的权限"
+              "name": "<grey>设置权限: <dark_aqua>%VAR%</dark_aqua></grey>",
+              "message": "<yellow>输入获取此物品所需的权限</yellow>"
             },
             "remove": {
-              "name": "&7移除获取此物品所需的权限"
+              "name": "<grey>移除获取此物品所需的权限</grey>"
             }
           },
           "rarity": {
             "option": {
-              "name": "&6稀有度&8[&7测试&8]",
+              "name": "<gold>稀有度</gold><dark_grey> [<grey>测试</grey>]</dark_grey>",
               "lore": [
-                "&7为物品设置稀有度.",
-                "&7用于工作台和手工制作",
-                "&c需要保存的物品"
+                "<grey>为物品设置稀有度.</grey>",
+                "<grey>用于工作台和手工制作</grey>",
+                "<red>需要已有的物品</red>"
               ]
             },
             "set": {
-              "name": "&7设置稀有度: &3%VAR%",
+              "name": "<grey>设置稀有度: <dark_aqua>%VAR%</dark_aqua></grey>",
               "lore": [
-                "&7输入稀有度的值,&c需<=1",
-                "&71.0 -> 100%,0.04 -> 4%"
+                "<grey>输入稀有度的值，要求不大于 1.0<red>",
+                "<grey>每0.01对应1%</grey>"
               ],
-              "message": "&e输入稀有度的值,&c需<=1!"
+              "message": "<yellow>输入物品的稀有度。<red>数值必须小于 1.0</red></yellow>"
             },
             "reset": {
-              "name": "&7重置稀有度",
+              "name": "<grey>重置稀有度</grey>",
               "lore": [
-                "&7重置稀有度为1.0(100%)"
+                "<grey>重置稀有度为 1.0 (100%)</grey>"
               ]
             }
           },
           "persistent_data": {
             "option": {
-              "name": "&6设置NBT",
+              "name": "<gold>持久 NBT 数据</gold>",
               "lore": [
-                "&7在NBT中存储自定义数据，链接到键."
+                "<grey>在NBT中存储自定义数据，连接到键.</grey>"
               ]
             }
           },
           "elite_workbench": {
             "option": {
-              "name": "&6精英工作台&8[&7测试&8]",
+              "name": "<gold>精英工作台</gold><dark_grey> [<grey>测试</grey>]</dark_grey>",
               "lore": [
-                "&7创建和配置精英工作台",
-                "&7最大支持6X6的合成空间",
-                "&c支持保存物品"
+                "<grey>创建和配置精英工作台</grey>",
+                "<grey>最大支持6X6的合成空间</grey>",
+                "<red>需要已有的物品</red>"
               ]
             },
             "grid_size": {
-              "size_3": {
-                "name": "&7合成空间大小: &73&8x&73",
+              "size_2": {
+                "name": "<grey><b>空间大小:</b> 2<dark_grey>x</dark_grey>2 <dark_grey>[<green>推荐</green>]</dark_grey></grey>",
                 "lore": [
-                  "&7原版的3X3工作台",
-                  "&7[&a点击&7]切换成4X4的工作台"
+                  "<yellow>一个 2x2 的合成格子，用于小型配方。</yellow>",
+                  "<grey>[<green>点击</green>] 切换成 3x3 的工作台"
+                ]
+              },
+              "size_3": {
+                "name": "<grey><b>空间大小:</b> 3<dark_grey>x</dark_grey>3 <dark_grey>[<green>推荐</green>]</dark_grey></grey>",
+                "lore": [
+                  "<yellow>一个 3x3 的合成格子。</yellow>",
+                  "<yellow>用于普通合成。</yellow>",
+                  "",
+                  "<grey>[<green>点击</green>] 切换成 4x4 的工作台</grey>"
                 ]
               },
               "size_4": {
-                "name": "&7合成空间大小: &e4&8x&e4",
+                "name": "<grey><b>空间大小:</b> <yellow>4<dark_grey>x</dark_grey><yellow>4</grey>",
                 "lore": [
-                  "&e更大的空间,合成高级物品",
-                  "&7[&a点击&7]切换成5X5的工作台"
+                  "<yellow>更大的空间,合成高级物品",
+                  "<grey>[<green>点击</green>] 切换成 5x5 的工作台</grey>"
                 ]
               },
               "size_5": {
-                "name": "&7合成空间大小: &65&8x&65",
+                "name": "<grey><b>空间大小:</b> <gold>5<dark_grey>x</dark_grey><gold>5 <dark_grey>[<red><b>警告</b></red>]</dark_grey></grey>",
                 "lore": [
-                  "&e更大的合成空间,创建更高级的合成配方",
-                  "&7[&a点击&7]切换成6X6的工作台"
+                  "<yellow>更多格子...</yellow>",
+                  "<yellow>可以创建更复杂的配方.</yellow>",
+                  "",
+                  "<red>这可能会导致卡顿!</red>",
+                  "<red>推荐使用 <yellow>合成延迟</yellow> 条件!</red>",
+                  "",
+                  "<grey>[<green>点击</green>] 切换为 6x6 的工作台</grey>"
                 ]
               },
               "size_6": {
-                "name": "&7合成空间大小: &46&8x&46",
+                "name": "<grey><b>空间大小:</b> <dark_red>6</dark_red><dark_grey>x</dark_grey><dark_red>6 </dark_red><dark_grey>[<red><b>弃用</b></red>]</dark_grey></grey>",
                 "lore": [
-                  "&e拥有非常大的合成空间来创建非常复杂的配方.",
-                  "&c这些合成空间需要很多的资源,如果在短时间内使用过多,可能会导致延迟!",
-                  "&7[&a点击&7]切换成3X3的工作台"
+                  "<yellow>最大的合成格子</yellow>",
+                  "<yellow>用以创建最复杂的合成配方</yellow>",
+                  "",
+                  "<red>配方需要更多资源</red>",
+                  "<red>短时间频繁使用可能造成卡顿！</red>",
+                  "<red>请确保使用了 <yellow>合成延迟</yellow> 条件!</red>",
+                  "",
+                  "<grey>[<green>点击</green>] 切换成 2x2 的工作台</grey>"
                 ]
               }
             },
             "toggle": {
               "enabled": {
-                "name": "&a启用精英工作台",
+                "name": "<green>启用精英工作台</green>",
                 "lore": [
-                  "&e精英工作台已启用.",
-                  "&7[&a点击&7]禁用精英工作台"
+                  "<yellow>精英工作台已启用.</yellow>",
+                  "<grey>[<green>点击</green>] 禁用精英工作台"
                 ]
               },
               "disabled": {
-                "name": "&c禁用精英工作台",
+                "name": "<red>禁用精英工作台</red>",
                 "lore": [
-                  "&e精英工作台已禁用.",
-                  "&7[&a点击&7]启用精英工作台"
+                  "<yellow>精英工作台已禁用.</yellow>",
+                  "<grey>[<green>点击</green>] 启用精英工作台</grey>"
                 ]
               }
             },
             "advanced_recipes": {
               "enabled": {
-                "name": "&a通用的配方",
+                "name": "<green>通用配方</green>",
                 "lore": [
-                  "&7普通工作台和精英工作台通用的配方(高级工作台不可用).",
-                  "&7[&a点击&7]切换为精英工作台专用"
+                  "<grey>普通 & 精英配方都可合成。</grey>",
+                  "<yellow>不指定高级合成台的自定义配方都可以在此合成。</yellow>",
+                  "<grey>[<green>点击</green>] 切换为仅精英工作台</grey>"
                 ]
               },
               "disabled": {
-                "name": "&7高级工作台专用",
+                "name": "<grey>仅精英工作台专用</grey>",
                 "lore": [
-                  "&e高级工作台专用!",
-                  "&7[&a点击&7]切换为通用的配方"
+                  "<yellow>高级工作台专用!</yellow>",
+                  "<grey>[<green>点击</green>] 切换为通用配方</grey>"
                 ]
               }
             },
             "particles": {
-              "name": "&6粒子效果",
+              "name": "<gold>粒子效果</gold>",
               "lore": [
-                "&e设置工作台的粒子效果.",
-                "&7[&a点击&7]转到粒子效果设置"
+                "<yellow>设置工作台的粒子效果.</yellow>",
+                "<red>必须在物品的 json 配置中预先设置！！</red>"
               ]
             }
           },
           "knowledge_book": {
             "option": {
-              "name": "&6知识之书",
+              "name": "<gold>知识之书</gold>",
               "lore": [
-                "&7显示在知识之书中",
-                "&c需要保存的物品"
+                "<grey>显示在知识之书中</grey>",
+                "<red>需要已有的物品</red>"
               ]
             },
             "toggle": {
               "enabled": {
-                "name": "&a已启用",
+                "name": "<green>已启用</green>",
                 "lore": [
-                  "&e知识之书已启用",
-                  "&7[&a点击&7]禁用知识之书"
+                  "<yellow>知识之书已启用</yellow>",
+                  "<grey>[<green>点击</green>] 禁用知识之书</grey>"
                 ]
               },
               "disabled": {
-                "name": "&c已禁用",
+                "name": "<red>已禁用</red>",
                 "lore": [
-                  "&e知识之书已禁用",
-                  "&7[&a点击&7]启用知识之书"
+                  "<yellow>知识之书已禁用</yellow>",
+                  "<grey>[<green>点击</green>] 启用知识之书</grey>"
                 ]
               }
             }
           },
           "armor_slots": {
             "option": {
-              "name": "&6定制装备",
+              "name": "<gold>自定义装备</gold>",
               "lore": [
-                "&7配置可以装备的装备栏",
-                "&c需要保存的物品"
+                "<grey>配置该物品可装备至的位置。</grey>",
+                "<red>需要已有的物品</red>"
               ]
             },
             "head": {
               "enabled": {
-                "name": "&a头盔",
+                "name": "<green>头盔</green>",
                 "lore": [
-                  "&7能作为头盔装备.",
-                  "&7[&a点击&7]切换为不能作为头盔装备"
+                  "<grey>能作为头盔装备.</grey>",
+                  "<grey>[<green>点击</green>] 切换可装备状态</grey>"
                 ]
               },
               "disabled": {
-                "name": "&c头盔",
+                "name": "<red>头盔</red>",
                 "lore": [
-                  "&7不能作为头盔装备.",
-                  "&7[&a点击&7]切换为能作为头盔装备"
+                  "<grey>不能作为头盔装备.</grey>",
+                  "<grey>[<green>点击</green>] 切换可装备状态</grey>"
                 ]
               }
             },
             "chest": {
               "enabled": {
-                "name": "&a胸甲",
+                "name": "<green>胸甲</green>",
                 "lore": [
-                  "&7能作为胸甲装备.",
-                  "&7[&a点击&7]切换为不能作为胸甲装备"
+                  "<grey>能作为胸甲装备.</grey>",
+                  "<grey>[<green>点击</green>] 切换可装备状态</grey>"
                 ]
               },
               "disabled": {
-                "name": "&c胸甲",
+                "name": "<red>胸甲</red>",
                 "lore": [
-                  "&7不能作为胸甲装备.",
-                  "&7[&a点击&7]切换为能作为胸甲装备"
+                  "<grey>不能作为胸甲装备.</grey>",
+                  "<grey>[<green>点击</green>] 切换可装备状态</grey>"
                 ]
               }
             },
             "legs": {
               "enabled": {
-                "name": "&a护腿",
+                "name": "<green>护腿</green>",
                 "lore": [
-                  "&7能作为护腿装备.",
-                  "&7[&a点击&7]切换为不能作为护腿装备"
+                  "<grey>能作为护腿装备.</grey>",
+                  "<grey>[<green>点击</green>] 切换可装备状态</grey>"
                 ]
               },
               "disabled": {
-                "name": "&c护腿",
+                "name": "<red>护腿</red>",
                 "lore": [
-                  "&7不能作为护腿装备.",
-                  "&7[&a点击&7]切换为能作为护腿装备"
+                  "<grey>不能作为护腿装备.</grey>",
+                  "<grey>[<green>点击</green>] 切换可装备状态</grey>"
                 ]
               }
             },
             "feet": {
               "enabled": {
-                "name": "&a靴子",
+                "name": "<green>靴子</green>",
                 "lore": [
-                  "&7能作为靴子装备.",
-                  "&7[&a点击&7]切换为不能作为靴子装备"
+                  "<grey>能作为靴子装备.",
+                  "<grey>[<green>点击</green>] 切换可装备状态</grey>"
                 ]
               },
               "disabled": {
-                "name": "&c靴子",
+                "name": "<red>靴子</red>",
                 "lore": [
-                  "&7不能作为靴子装备.",
-                  "&7[&a点击&7]切换为能作为靴子装备"
+                  "<grey>不能作为靴子装备.",
+                  "<grey>[<green>点击</green>] 切换可装备状态</grey>"
                 ]
               }
             }
           },
           "particle_effects": {
             "option": {
-              "name": "&6特殊粒子效果&8[&7实验]",
+              "name": "<gold>粒子效果<dark_grey></gold><dark_grey>[<grey>实验性功能</grey>]</dark_grey>",
               "lore": [
-                "&7配置在持有、装备",
-                "&7或放置此物品时生成的粒子效果",
-                "&c需要保存的物品"
+                "<grey>配置在持有、装备</grey>",
+                "<grey>或放置此物品时生成的粒子效果</grey>",
+                "<red>需要在 json 中预先配置！</red>"
+              ]
+            }
+          },
+          "vanilla": {
+            "option": {
+              "name": "<gold>原版设置</gold>",
+              "lore": [
+                "<grey>阻止原版特性,</grey>",
+                "<grey>如参与原版配方合成</grey>",
+                "<red>需要已保存的物品</red>"
               ]
             },
-            "head": {
-              "name": "&6头盔"
+            "block_recipes": {
+              "enabled": {
+                "name": "<green>阻止</green>",
+                "lore": [
+                  "<yellow>物品已在原版配方中被阻止</yellow>",
+                  "<grey>[<green>点击</green>] 解除禁用</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>禁用</red>",
+                "lore": [
+                  "<yellow>物品可以用在原版配方中</yellow>",
+                  "<grey>[<green>点击</green>] 启用阻止</grey>"
+                ]
+              }
             },
-            "chest": {
-              "name": "&6胸甲"
-            },
-            "legs": {
-              "name": "&6护腿"
-            },
-            "feet": {
-              "name": "&6靴子"
-            },
-            "hand": {
-              "name": "&6主手"
-            },
-            "off_hand": {
-              "name": "&6副手"
-            },
-            "block": {
-              "name": "&6持有"
-            },
-            "input": {
-              "name": "%effect_name%",
-              "lore": [
-                "%effect_description%",
-                "",
-                "&7[&a点击&7]编辑效果",
-                "&7[&aShift+点击&7]移除效果"
-              ]
+            "block_placement": {
+              "enabled": {
+                "name": "<gold>方块放置</gold>",
+                "lore": [
+                  "<yellow>此方块的放置操作被禁止!</yellow>",
+                  "<grey>[<green>点击</green>] 允许放置</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<gold>方块放置</gold>",
+                "lore": [
+                  "<yellow>此方块的放置操作被允许!</yellow>",
+                  "<grey>[<green>点击</green>] 禁用放置</grey>"
+                ]
+              }
             }
           }
         }
@@ -1710,893 +1856,944 @@
     "recipe_creator": {
       "global_items": {
         "save": {
-          "name": "&3保存",
+          "name": "<grey>\u25B7</grey> <gold><b>保存</b></gold>",
           "lore": [
-            "<yellow>保存文件在已经存在的文件夹和key</yellow>",
+            "<yellow>将文件保存至现存的文件夹的文件中。</yellow>",
             "<grey>文件夹: </grey><yellow><recipe_folder></yellow>",
-            "<grey>Key: </grey><yellow><recipe_key></yellow>"
+            "<grey>名称: </grey><yellow><recipe_key></yellow>"
           ]
         },
         "save_as": {
-          "name": "&7\u270E &6&lSave As...",
+          "name": "<grey>\u270E</grey> <gold><b>保存为...</b></gold>",
           "lore": [
-            "&7用一个新的文件夹和 key 保存该项目。",
-            "&7输入: &e&lfolder item_key",
-            "&c文件夹和key必须是小写的，并且只包含字母、数字、'_'、'-'或'/'!"
+            "<grey>将文件保存至现存的文件夹的文件中!</grey>",
+            "<grey>输入: <yellow><b>文件夹 文件名称</b></yellow></grey>",
+            "<red>输入文件名称应当为小写且只包含英文字母或数字，</red>",
+            "<red>下划线 '_', 英文横杠 '-', 或英文斜杠 '/'!</red>"
           ]
         },
         "priority": {
-          "name": "&3优先级:&7 %PRI%",
+          "name": "<grey><b>\u274F </b></grey><gold><b>优先级:</b></gold><green> %PRI%</green>",
           "lore": [
-            "&7设置此配方的优先级!",
-            "&7优先级: ",
-            "&9LOWEST&7: 最低优先级",
-            "&bLOW&7: 低优先级",
-            "&3NORMAL&7: 正常优先级",
-            "&cHIGH&7: 高优先级",
-            "&4HIGHEST&7: 最高优先级"
+            "<grey>设置配方优先级!</grey>",
+            "<grey>优先级: </grey>",
+            "<blue>LOWEST</blue><grey>: 最后检查</grey>",
+            "<aqua>LOW</aqua>",
+            "<dark_aqua>NORMAL</dark_aqua><grey>: 正常检查</grey>",
+            "<red>HIGH</red>",
+            "<dark_red>HIGHEST</dark_red><grey>: 最先检查</grey>"
           ]
         },
         "conditions": {
-          "name": "&3条件",
+          "name": "<grey>\u27A5</grey>  <gold><b>条件</b></gold>",
           "lore": [
-            "&e设置条件以进一步自定义配方.",
-            "&e例如世界时间、天气等.",
-            "&7[&a点击&7]设置条件"
+            "<yellow>向配方添加条件以进一步自定义它. 如：</yellow>",
+            "<yellow>所处世界, 当前时间, 当前天气, 所处群系等。</yellow>",
+            "",
+            "<grey>[<green>点击</green>] 配置条件</grey>"
           ]
         },
         "hidden": {
           "enabled": {
-            "name": "&c❌ &6&l隐藏配方",
+            "name": "<red>❌ </red><gold><b>隐藏配方</b></gold>",
             "lore": [
-              "&e配方隐藏在插件和原版配方书中!",
+              "<yellow>将配方隐藏在插件和原版配方书中!</yellow>",
               "",
-              "&7[&aClick&7] 在插件配方书中显示"
+              "<grey>[<green>点击</green>] 在插件配方书中显示</grey>"
             ]
           },
           "disabled": {
-            "name": "&a✔ &6&l显示配方",
+            "name": "<green>✔ <gold><b>显示配方",
             "lore": [
-              "&e配方显示在配方书中。",
+              "<yellow>配方显示在配方书中。</yellow>",
               "",
-              "&7[&aClick&7] 在插件配方书中隐藏"
+              "<grey>[<green>点击</green>] 在插件配方书中隐藏</grey>"
             ]
           }
         },
         "vanilla_book": {
-          "enabled": {
-            "name": "&a✔ &6&l原版配方书",
+          "vanilla_book_discover": {
+            "name": "<grey><b>\u274F </b></grey><gold><b>原版配方书与自动解锁</b></gold>",
             "lore": [
-              "&e菜谱将在原版配方书中可见。",
-              "&c成分的NBT将不被显示，并被自动补全所忽略",
+              "<yellow>配方将在原版配方书中可见</yellow>",
+              "<yellow>且会在进入游戏时解锁该配方! </yellow>",
+              "<red>材料的NBT数据不会显示</red>",
+              "<red>同时会忽略自动补全!</red>",
               "",
-              "&8[&aClick&8] &e禁用原版配方书"
+              "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>关闭自动解锁</yellow>"
             ]
           },
-          "disabled": {
-            "name": "&4❌ &6&l原版配方书",
+          "vanilla_book_no_discover" : {
+            "name": "<grey><b>\u274F </b></grey><gold><b>原版配方书</b></gold>",
             "lore": [
-              "&e菜谱将在原版配方书中不可见。",
+              "<yellow>配方将在原版配方书中隐藏。</yellow>",
+              "<red>参与合成物品的 NBT 将不会被展示，且会忽略自动补全。</red>",
               "",
-              "&8[&aClick&8] &e启用 原版配方书"
+              "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>禁用原版配方书</yellow>"
+            ]
+          },
+          "no_vanilla_book": {
+            "name": "<grey><b>\u274F </b></grey><gold><b>禁用原版配方书</b></gold>",
+            "lore": [
+              "<yellow>配方在原版配方书中不可见。</yellow>",
+              "",
+              "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>启用原版配方书与自动解锁</yellow>"
             ]
           }
         },
         "exact_meta": {
           "enabled": {
-            "name": "&7\u25A0 &6&l完整NBT检查",
-            "help": [],
+            "name": "<grey>\u25A0</grey>  <gold><b>完整NBT检查</b></gold>",
             "lore": [
-              "&e检查每种成分的 NBT",
-              "&e如果原料没有NBT，那么它只匹配没有任何NBT的物品。",
+              "<yellow>检查参与合成物品的 NBT</yellow>",
+              "<yellow>如果原料没有NBT，那么它只匹配没有任何NBT的物品。</yellow>",
               "",
-              "&7[&aClick&7] &7默认 NBT 检查"
+              "<grey>[<green>点击</green>] 设置为默认 NBT 检查</grey>"
             ]
           },
           "disabled": {
-            "name": "&3忽略元数据",
-            "help": [],
+            "name": "<grey>\u25A1</grey>  <gold><b>默认物品检查</b></gold>",
             "lore": [
-              "&7不带元数据的物品将只检查其类型",
-              "&7带元数据的物品仍需精准匹配!"
+              "<yellow>不带 NBT 的物品只需种类相符即可！</yellow>",
+              "<red>带有 NBT 的物品仍需与原配方相符！</red>",
+              "",
+              "<grey>[<green>点击</green>] 设置为完整 NBT 检查</grey>"
             ]
           }
         },
-        "workbench": {
+        "crafting": {
           "shapeless": {
             "enabled": {
-              "name": "&3无序配方",
-              "help": [
-                "&7无序配方!",
-                "&7只要材料相同就可以合成!"
+              "name": "<grey>\u25A1</grey>  <gold><b>无序配方</b></gold>",
+              "lore": [
+                "<yellow>配方没有固定顺序，</yellow>",
+                "<yellow>只需放在格子中。</yellow>"
               ]
             },
             "disabled": {
-              "name": "&3有序配方",
-              "help": [
-                "&7有序配方!",
-                "&7材料相同的同时还要求摆放位置相同!"
+              "name": "<grey>\u25A0</grey>  <gold><b>有序配方</b></gold>",
+              "lore": [
+                "<yellow>配方需要按一定顺序放在格子中。</yellow>"
               ]
             }
           },
           "mirror_horizontal": {
             "enabled": {
-              "name": "&a水平镜像",
+              "name": "<grey>\u21C4</grey>  <gold><b>水平镜像</b></gold>",
               "lore": [
-                "&e配方现在可以水平镜像",
-                "&7[&a点击&7]关闭水平镜像"
+                "<yellow>配方现在可以像原版配方那样水平镜像合成</yellow>",
+                "<grey>[<green>点击</green>] 关闭水平镜像</grey>"
               ]
             },
             "disabled": {
-              "name": "&c水平镜像",
+              "name": "<grey>\u274C</grey>  <gold><b>固定顺序</b></gold>",
               "lore": [
-                "&e配方现在不可以水平镜像!",
-                "&7[&a点击&7]开启水平镜像"
+                "<yellow>合成表形状固定.</yellow>",
+                "<yellow>即不能水平翻转摆放</yellow>",
+                "<yellow>否则无效。</yellow>",
+                "",
+                "<grey>[<green>点击</green>] 切换为水平镜像</grey>"
               ]
             }
           },
           "mirror_vertical": {
             "enabled": {
-              "name": "&a垂直镜像",
+              "name": "<grey>\u21F5</grey>  <gold><b>垂直镜像</b></gold>",
               "lore": [
-                "&e配方现在可以垂直镜像",
-                "&7[&a点击&7]关闭垂直镜像"
+                "<yellow>配方现在可以通过垂直镜像摆放合成.</yellow>",
+                "",
+                "<grey>[<green>点击</green>] 关闭垂直镜像</grey>"
               ]
             },
             "disabled": {
-              "name": "&c垂直镜像",
+              "name": "<grey>\u274C</grey>  <gold><b>固定顺序</b></gold>",
               "lore": [
-                "&e配方现在不可以垂直镜像!",
-                "&7[&a点击&7]开启垂直镜像"
+                "<yellow>配方现在垂直固定.</yellow>",
+                "<yellow>即垂直翻转的摆放方式不能合成物品。</yellow>",
+                "",
+                "<grey>[<green>点击</green>] 开启垂直镜像</grey>"
               ]
             }
           },
           "mirror_rotation": {
             "disabled": {
-              "name": "&c旋转配方",
+              "name": "<grey>\u274C</grey>  <gold><b>不旋转配方</b></gold>",
               "lore": [
-                "&e配方现在不可以旋转.",
-                "&7[&a点击&7]关闭旋转配方"
+                "<yellow>配方不可以通过旋转物品顺序合成。</yellow>",
+                "<yellow>无论水平<b>或</b>垂直!</yellow>",
+                "",
+                "<grey>[<green>点击</green>] 启用旋转配方</grey>"
               ]
             },
             "enabled": {
-              "name": "&a旋转配方",
+              "name": "<grey>\u2190\u2193</grey> <gold><b>旋转配方</b></gold>",
               "lore": [
-                "&e配方现在可以旋转.",
-                "&7[&a点击&7]开启旋转配方"
+                "<yellow>配方可以被水平<b></b>或垂直翻转摆放</yellow>",
+                "",
+                "<grey>[<green>点击</green>] 禁用配方旋转</grey>"
               ]
             }
           }
+        },
+        "tags": {
+          "name": "<grey>\u27A5</grey>  <gold><b>标签</b></gold>",
+          "lore": [
+            "<grey>你可以配置物品的标签.</grey>",
+            "<grey>标签用来为物品分类,</grey>",
+            "<grey>这可以让创建物品更容易.</grey>"
+          ]
+        },
+        "group": {
+          "name": "<grey>\u270E</grey>  <gold><b>配方组ID</b></gold>",
+          "lore": [
+            "<grey>所在组: </grey><yellow>%group%</yellow>",
+            "<yellow>拥有同一个组ID的配方会在配方书中显示在同一格中</yellow>",
+            "<yellow>就像原版里的木头变种一样.</yellow>",
+            "",
+            "<grey>[<green>左键点击</green>]</grey> <yellow>输入组名</yellow>",
+            "<grey>[<green>右键点击</green>]</grey> <yellow>重置分组</yellow>"
+          ],
+          "message": "<yellow>请输入组名!</yellow>"
         }
       },
-      "tags": {
-        "name": "&7\u27A5 &6&l标签",
-        "lore": [
-          "&7允许你配置标签",
-          "&7标签是一个物品的集合，可以使创建工作更容易。"
-        ]
+      "global_messages": {
+        "override": "<white>输入文件夹及配方名称",
+        "valid_number": "<red>请输入有效数字!</red>",
+        "group_id": {
+          "invalid" : "<red>组名称包含无效字符. 请注意在这些名称中使用彩色字符是没有必要的，因为它们并不会给玩家显示!"
+        },
+        "save": {
+          "input": "<white>输入保存物品的 <hover:show_text:'自定义物品在下列文件中保存: <yellow>/data/<folder>/items/<item_name>.conf</yellow><br><br>文件夹可用于整理物品，且支持子文件夹！<br>像这样输入你的文件夹名称: <yellow>/wui <文件夹> <名称></yellow><br><br><red>确保文件夹和文件名称都只包含: <br> - 小写字母,<br> - 数字,<br> - 下划线 (_),<br> - 或英文横杠(-)!<br>使用命令 <yellow>/wui </yellow>来获取输入帮助，例如 TAB 补全!</red>'><yellow>文件夹和物品名称</yellow></hover>。",
+          "key": {
+            "invalid": "<red>输入内容无效! \n请确保它只包含: \n - 小写英文字母,\n - 数字,\n - 下划线(_), \n - 英文横杠(-)!\n - 你不能使用 Minecraft 命名空间！\n使用 <yellow>/wui </yellow>来获取输入帮助，与 TAB 补全类似!</red>"
+          },
+          "empty": "<red>所要保存配方为空! 检查输入/输出物品</red>",
+          "success": "<green>配方已成功保存至:</green>"
+        },
+        "loading": {
+          "error": "<red>载入配方 <dark_red>%REC%</dark_red> 时出现错误</red>",
+          "success": "<green>成功载入并注册了配方!</green>",
+          "warning": "<red>非常建议重启服务器让配方能正确工作!</red>"
+        }
       },
-      "group": {
-        "name": "&7\u270E &6&l配方组",
-        "lore": [
-          "&7组: &e%group%",
-          "&e具有相同组别的配方在配方书中被归为一组",
-          "",
-          "&7[&a左键&7] &e输入组 ",
-          "&7[&a右键&7] &e重置组"
-        ],
-        "message": "&e输入组名"
-      }
-    },
-    "global_messages": {
-      "override": "&3输入配方的文件夹和名称!",
-      "valid_number": "&c输入有效数字!",
-      "save": {
-        "input": "&3输入文件夹和名称!&6如: folder recipe_name",
-        "key": {
-          "invalid": "&c输入不是有效的文件夹和key! \n确保他只包含: \n - 小写字母\n - 数字,\n - 下划线, \n - 或连接线!\n - 你不能使用 minecraft 命名空间!\n&c使用 &e/wui &cto 获得输入协助，如标签完成!"
+      "conditions": {
+        "gui_name": "条件",
+        "mode_names": {
+          "exact": "<yellow>完全匹配</yellow>",
+          "ignore": "<red>禁用</red>",
+          "higher": "<yellow>></yellow>",
+          "lower": "<yellow><</yellow>",
+          "higher_lower": "<yellow>大或小于</yellow>",
+          "higher_exact": "<yellow>>=</yellow>",
+          "lower_exact": "<yellow><=</yellow>"
         },
-        "empty": "&c无法保存空配方!检查结果和来源/成分",
-        "success": "&a配方成功保存到:"
-      },
-      "loading": {
-        "error": "&c加载配方&4%REC%&c时出错",
-        "success": "&a加载并注入配方成功!",
-        "warning": "&c最好在完成后重新启动服务器，以防止配方无法正常工作!"
-      }
-    },
-    "conditions": {
-      "gui_name": "条件",
-      "mode_names": {
-        "exact": "&e精确值",
-        "ignore": "&c禁用",
-        "higher": "&e>",
-        "lower": "&e<",
-        "higher_lower": "&e高还是低",
-        "higher_exact": "&e>=",
-        "lower_exact": "&e<="
-      },
-      "items": {
-        "world_time": {
-          "name": "&7- 世界时间 - ",
-          "lore": [
-            "&7时间:&e %VALUE%",
-            "&7模式:&e %MODE%",
-            "&8[&a右键点击&8]&7切换模式",
-            "&8[&a左键点击&8]&7设置时间"
-          ]
-        },
-        "player_experience": {
-          "name": "&7- 玩家经验 - ",
-          "lore": [
-            "&7经验:&e %VALUE%",
-            "&7模式:&e %MODE%",
-            "&8[&a右键点击&8]&7切换模式",
-            "&8[&a左键点击&8]&7设置经验等级"
-          ]
-        },
-        "remove": {
-          "name": "&c&l异常",
-          "lore": [
-            "&e从配方中移除选定的条件",
-            "&8[&aClick&8] &7移除添加"
-          ]
-        },
-        "page_up": {
-          "name": "&7&l上"
-        },
-        "page_down": {
-          "name": "&7&l下"
-        },
-        "toggle_mode": {
-          "name": "&6&l切换模式",
-          "lore": [
-            "&7模式: %mode%",
-            "",
-            "&8[&aClick&8] &7切换模式"
-          ]
-        },
-        "conditions": {
-          "world_time": {
-            "set": {
-              "name": "&a&l设置时间",
-              "lore": [
-                "&7时间:&e %VALUE% ticks",
-                "&8[&aClick&8] &7设置时间"
-              ],
-              "message": "&e键入时间，单位为ticks"
-            }
+        "items": {
+          "select": {
+            "name": "<gold><b>%name%</b></gold>",
+            "lore": [
+              "<list_entry:0>",
+              "<list_entry:1>",
+              "<list_entry:2>",
+              "",
+              "<dark_grey>[<green>点击</green>]</dark_grey> <grey>打开设置</grey>"
+            ]
           },
-          "player_experience": {
-            "set": {
-              "name": "&a&l设置经验",
-              "lore": [
-                "&7经验:&e %VALUE%",
-                "",
-                "&8[&aClick&8] &7设置经验等级"
-              ],
-              "message": "&e输入经验等级"
-            }
+          "add": {
+            "name": "<grey><b>添加条件</b></grey>",
+            "lore": [
+              "",
+              "<dark_grey>[<green>点击</green>]</dark_grey> <grey>打开选择菜单</grey>"
+            ]
           },
-          "world_name": {
-            "add": {
-              "name": "&a&l添加世界 ",
-              "lore": [
-                "",
-                "&8[&aClick&8] &7添加世界名"
-              ],
-              "message": "&e输入世界名来添加"
-            },
-            "list": {
-              "name": "&6&l值",
-              "lore": [
-                "&7 - &e%var0%",
-                "&7 - &e%var1%",
-                "&7 - &e%var2%",
-                "&7 - &e%var3%"
-              ]
-            },
-            "remove": {
-              "name": "&c&l移除世界",
-              "lore": [
-                "&7在值中移除最后的世界.",
-                "",
-                "&8[&aClick&8] &7移除世界名"
-              ]
-            }
+          "remove": {
+            "name": "<red><b>移除</b></red>",
+            "lore": [
+              "<yellow>将选定条件从配方中移除。</yellow>",
+              "<dark_grey>[<green>点击</green>]</dark_grey> <grey>移除条件</grey>"
+            ]
           },
-          "world_biome": {
-            "add": {
-              "name": "&a&l添加群系",
-              "lore": [
-                "",
-                "&8[&aClick&8] &7添加群系"
-              ],
-              "message": "&e键入你想添加的生物群! 用法：&6<生物群落名称>。"
-            },
-            "list": {
-              "name": "&6&lValues",
-              "lore": [
-                "&7 - &e%var0%",
-                "&7 - &e%var1%",
-                "&7 - &e%var2%",
-                "&7 - &e%var3%"
-              ]
-            },
-            "remove": {
-              "name": "&c&l移除群系",
-              "lore": [
-                "",
-                "&8[&aClick&8] &7移除群系"
-              ]
-            }
+          "page_up": {
+            "name": "<grey><b>上</b></grey>"
           },
-          "weather": {
-            "set": {
-              "name": "&6&l世界天气",
-              "lore": [
-                "&7天气: %weather%",
-                "",
-                "&8[&aClick&8] &7改变 天气"
-              ]
-            }
+          "page_down": {
+            "name": "<grey><b>下</b></grey>"
           },
-          "elite_crafting_table": {
-            "add": {
-              "name": "&a&l添加精英工作台",
-              "lore": [
-                "&8[&aClick&8] &7添加精英工作台"
-              ],
-              "message": "&e键入精英工作台物品目的文件夹和键! 用法：&e&lfolder item_key"
-            },
-            "list": {
-              "name": "&6&lValues",
-              "lore": [
-                "&7 - &e%var0%",
-                "&7 - &e%var1%",
-                "&7 - &e%var2%",
-                "&7 - &e%var3%"
-              ]
-            },
-            "remove": {
-              "name": "&c&l移除精英工作台",
-              "lore": [
-                "",
-                "&8[&aClick&8] &7移除精英工作台"
-              ]
-            }
+          "toggle_mode": {
+            "name": "<gold><b>切换模式</b></gold>",
+            "lore": [
+              "<grey>当前模式: %mode%</grey>",
+              "",
+              "<dark_grey>[<green>点击</green>]</dark_grey> <grey>切换模式</grey>"
+            ]
           },
-          "permission": {
-            "set": {
-              "name": "&7- Permission - ",
-              "lore": [
-                "&7Permission:&e %VALUE%",
-                "&7Mode:&e %MODE%",
-                "&8[&a右键点击&8] &7切换模式",
-                "&8[&a左键点击&8] &7编辑权限"
-              ],
-              "message": "&e键入权限"
+          "conditions": {
+            "world_time": {
+              "set": {
+                "name": "<green><b>设置时间</b></green>",
+                "lore": [
+                  "<grey>当前时间:</grey><yellow> %VALUE% ticks</yellow>",
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>设置时间</grey>"
+                ],
+                "message": "<yellow>设置时间，单位为刻.</yellow>"
+              }
+            },
+            "player_experience": {
+              "set": {
+                "name": "<green><b>设置经验值</b></green>",
+                "lore": [
+                  "<grey>所需经验值:</grey><yellow> %VALUE%</yellow>",
+                  "",
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>设置经验等级</grey>"
+                ],
+                "message": "<yellow>输入所需经验值等级。</yellow>"
+              }
+            },
+            "world_name": {
+              "add": {
+                "name": "<green><b>添加世界</b></green>",
+                "lore": [
+                  "",
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>添加世界名称</grey>"
+                ],
+                "message": "<yellow>输入要添加的世界名称.</yellow>"
+              },
+              "list": {
+                "name": "<gold><b>值</b></gold>",
+                "lore": [
+                  "<grey> - </grey><yellow>%var0%</yellow>",
+                  "<grey> - </grey><yellow>%var1%</yellow>",
+                  "<grey> - </grey><yellow>%var2%</yellow>",
+                  "<grey> - </grey><yellow>%var3%</yellow>"
+                ]
+              },
+              "remove": {
+                "name": "<red><b>移除世界</b></red>",
+                "lore": [
+                  "<grey>移除值中的最后一个世界.</grey>",
+                  "",
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>移除世界名称</grey>"
+                ]
+              }
+            },
+            "world_biome": {
+              "add": {
+                "name": "<green><b>添加群系</b></green>",
+                "lore": [
+                  "",
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>添加群系</grey>"
+                ],
+                "message": "<yellow>输入你要添加的群系! 用法: <gold><biome_name></gold></yellow>"
+              },
+              "list": {
+                "name": "<gold><b>值</b></gold>",
+                "lore": [
+                  "<grey> - </grey><yellow>%var0%</yellow>",
+                  "<grey> - </grey><yellow>%var1%</yellow>",
+                  "<grey> - </grey><yellow>%var2%</yellow>",
+                  "<grey> - </grey><yellow>%var3%</yellow>"
+                ]
+              },
+              "remove": {
+                "name": "<red><b>移除群系</b></red>",
+                "lore": [
+                  "",
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>移除群系</grey>"
+                ]
+              }
+            },
+            "weather": {
+              "set": {
+                "name": "<gold><b>世界天气</b></gold>",
+                "lore": [
+                  "<grey>天气: %weather%</grey>",
+                  "",
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>修改天气</grey>"
+                ]
+              }
+            },
+            "elite_crafting_table": {
+              "add": {
+                "name": "<green><b>添加精英工作台</b></green>",
+                "lore": [
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>添加精英工作台</grey>"
+                ],
+                "message": "<white>输入文件夹与精英工作台的名称!</white>"
+              },
+              "list": {
+                "name": "<gold><b>值</b></gold>",
+                "lore": [
+                  "<grey> - </grey><yellow>%var0%</yellow>",
+                  "<grey> - </grey><yellow>%var1%</yellow>",
+                  "<grey> - </grey><yellow>%var2%</yellow>",
+                  "<grey> - </grey><yellow>%var3%</yellow>"
+                ]
+              },
+              "remove": {
+                "name": "<red><b>移除精英工作台</b></red>",
+                "lore": [
+                  "",
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>移除精英工作台</grey>"
+                ]
+              }
+            },
+            "permission": {
+              "set": {
+                "name": "<gold><b>设置权限</b></gold>",
+                "lore": [
+                  "<grey>当前权限:</grey><yellow> %VALUE%</yellow>",
+                  "",
+                  "<dark_grey>[<green>左键点击</green>]</dark_grey> <grey>设置权限</grey>"
+                ],
+                "message": "<yellow>输入权限! 用法: <gold><permission></gold></yellow>"
+              }
             },
             "craft_delay": {
               "set": {
-                "name": "&a&l设置合成延迟",
+                "name": "<green><b>设置合成延时</b></green>",
                 "lore": [
-                  "&7延迟:&e %VALUE%ms",
+                  "<grey>当前延时:</grey><yellow> %VALUE%ms</yellow>",
                   "",
-                  "&8[&aClick&8] &7设置延迟"
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>设置延时</grey>"
                 ],
-                "message": "&e键入以毫秒为单位的延迟!"
+                "message": "<yellow>输入合成延时，单位为毫秒! 用法: <gold><craft_delay></gold></yellow>"
               }
             },
             "craft_limit": {
               "set": {
-                "name": "&l&7设置合成限制",
+                "name": "<grey><b>设置合成限制</b></grey>",
                 "lore": [
-                  "&7限制:&e %VALUE%",
+                  "<grey>当前限制:</grey><yellow> %VALUE%</yellow>",
                   "",
-                  "&8[&aClick&8] &7设置限制"
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>设置限制</grey>"
                 ]
               },
-              "message": "&e键入合成限制"
+              "message": "<yellow>输入合成限制! 用法: <gold><craft_limit></gold></yellow>"
             },
             "player_advancements": {
               "add": {
-                "name": "&a&l添加进度",
+                "name": "<green><b>添加成就</b></green>",
                 "lore": [
                   "",
-                  "&8[&aClick&8] &7添加进度"
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>添加成就</grey>"
                 ],
-                "message": "&e键入进度的命名空间和key! &7/wui &6提供tab补全!"
+                "message": "<yellow>输入成就的命名空间与值! <gold>/wui</gold> 可显示 TAB 补全!</yellow>"
               },
               "list": {
-                "name": "&6&lValues",
+                "name": "<gold><b>值</b></gold>",
                 "lore": [
-                  "&7 - &e%var0%",
-                  "&7 - &e%var1%",
-                  "&7 - &e%var2%",
-                  "&7 - &e%var3%"
+                  "<grey> - </grey><yellow>%var0%</yellow>",
+                  "<grey> - </grey><yellow>%var1%</yellow>",
+                  "<grey> - </grey><yellow>%var2%</yellow>",
+                  "<grey> - </grey><yellow>%var3%</yellow>"
                 ]
               },
               "remove": {
-                "name": "&c&l移除进度",
+                "name": "<red><b>移除成就</b></red>",
                 "lore": [
-                  "&7移除最后一个进度",
+                  "<grey>移除值列表中最后一个成就。</grey>",
                   "",
-                  "&8[&aClick&8] &7移除进度"
+                  "<dark_grey>[<green>点击</green>]</dark_grey> <grey>移除成就</grey>"
                 ]
               }
             }
           }
         },
         "messages": {
-          "world_time": "&e以tick为单位输入时间!如: 1500",
-          "world_name": "&e输入世界名字",
-          "world_biome": "&e输入群系名字",
-          "missing_world": "&c该世界不存在!",
-          "elite_workbench": "&e输入CustomItem的文件夹和名称!如: &6workbenches golden_workbench",
-          "player_experience": "&e输入所需的经验!",
-          "permission": "&e输入所需的权限",
-          "error": "&c物品不存在或未载入!",
-          "no_name": "&c请先输入我名字!",
-          "not_elite_workbench": "&c此物品不是精英工作台!",
-          "already_existing": "&c物品已存在!",
-          "craft_delay": "&e以毫秒为单位键入延迟",
-          "craft_limit": "&e键入限制 (该配方可以制作多少次! Shift-Click = 1 use)"
+          "world_time": "<yellow>输入单位为刻的时间! 如 1500</yellow>",
+          "world_name": "<yellow>输入世界名称</yellow>",
+          "world_biome": "<yellow>输入群系名称</yellow>",
+          "missing_world": "<red>该世界不存在!</red>",
+          "elite_workbench": "<yellow>输入自定义物品的命名空间与键值! 示例: <gold>[命名空间] [键]</gold></yellow>",
+          "player_experience": "<yellow>输入所需的玩家经验值!</yellow>",
+          "permission": "<yellow>输入权限节点</yellow>",
+          "error": "<red>物品不存在或未载入!</red>",
+          "no_name": "<red>你需要输入物品键值!</red>",
+          "not_elite_workbench": "<red>该物品不是精英合成台!</red>",
+          "already_existing": "<red>你已经添加该物品了!</red>",
+          "craft_delay": "<yellow>输入单位为毫秒的延迟</yellow>",
+          "craft_limit": "<yellow>输入限制 (物品合成的次数限制! 左键点击 = 单次)</yellow>"
         }
       },
       "conditions_add": {
-        "gui_name": "&8&l添加类别",
+        "gui_name": "<dark_grey><b>添加分类</b></dark_grey>",
         "items": {
           "icon": {
-            "name": "&6&l%name%",
+            "name": "<gold><b>%name%</b></gold>",
             "lore": [
-              "%description%",
+              "<list_entry:0>",
+              "<list_entry:1>",
+              "<list_entry:2>",
               "",
-              "&8[&aClick&8] &e添加到配方"
+              "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>添加至配方</yellow>"
             ]
           }
         }
       },
       "crafting": {
-        "gui_name": "&4&l创建配方 &7[&8工作台&7]",
+        "gui_name": "<dark_red><b>创建 </b></dark_red><grey>[<dark_grey>工作台]</dark_grey></grey>",
         "gui_help": [
-          "&7在结果/成分槽上&eShift&7+&e右键",
-          "&7\u27A0&e 打开结果/配料编辑器",
+          "<gold><b>输入/输出物品槽</b></gold><grey>:</grey>",
+          " <green>Shift<grey>+</grey>右键点击</green>",
+          " <grey>\u27A0</grey> <yellow> 打开输入/输出编辑器</yellow>",
           ""
         ]
       },
       "elite_crafting": {
-        "gui_name": "&4创建配方 &7[&8精英工作台&7]",
+        "gui_name": "<dark_red><b>创建 </b></dark_red><grey>[<dark_grey>精英工作台]</dark_grey></grey>",
         "gui_help": [
-          "&7提示:",
-          "&7在原料或成品上&eShift&7+&e右键点击",
-          "&7将会允许你编辑这个物品"
+          "<grey>提示:</grey>",
+          "<yellow>Shift<grey>+右键点击原料或输出物品</grey></yellow>",
+          "<grey>可立即编辑该物品。</grey>"
         ],
         "items": {
           "settings": {
-            "name": "&7\u27A5 &6&l设置",
+            "name": "<grey>\u27A5</grey>  <gold><b>设置</b></gold>",
             "lore": [
-              "&7打开设置，如优先级、条件、元，以及更多"
+              "<grey>打开诸如优先级、元数据和其他内容编辑的设置.</grey>"
             ]
           }
         }
       },
       "elite_crafting_settings": {
-        "gui_name": "&4&l创建器 &7[&8精英工作台&7]",
+        "gui_name": "<dark_red><b>创建 </b></dark_red><grey>[<dark_grey>精英工作台]</dark_grey></grey>",
         "gui_help": [],
         "items": {
         }
       },
       "stonecutter": {
-        "gui_name": "&4创建配方 &8[&7切石机&8]",
+        "gui_name": "<dark_red><b>配方创建 </b></dark_red><grey>[<dark_grey>切石机]</dark_grey></grey>",
         "gui_help": [
-          "&7提示:",
-          "&7在原料或成品上&eShift&7+&e右键点击",
-          "&7将会允许你编辑物品"
+          "<grey>提示:</grey>",
+          "<yellow>Shift<grey>+右键点击原料或输出物品</grey></yellow>",
+          "<grey>可立即编辑该物品。</grey>"
         ],
         "items": {
         }
       },
       "cooking": {
-        "gui_name": "&4创建配方 &8[&7熔炉&8]",
+        "gui_name": "<dark_red>配方创建</dark_red><grey>[<dark_grey>烹饪/熔炼]</dark_grey></grey>",
         "gui_help": [
-          "&7提示:",
-          "&7在原料或成品上&eShift&7+&e右键点击",
-          "&7将会允许你编辑物品"
+          "<grey>提示:</grey>",
+          "<yellow>Shift<grey>+右键点击原料或输出物品</grey></yellow>",
+          "<grey>可立即编辑该物品。</grey>"
         ],
         "items": {
           "xp": {
-            "name": "&7\u270E &6&l经验",
+            "name": "<grey>\u270E</grey>  <gold><b>经验值</b></gold>",
             "lore": [
-              "&7经验: %XP%"
+              "<grey>经验值: </grey><yellow>%XP%</yellow>"
             ],
-            "message": "&3输入经验数量.如: 0.5"
+            "message": "<dark_aqua>输入经验值数量. 如 0.5</dark_aqua>"
           },
           "cooking_time": {
-            "name": "&6烹饪时间",
+            "name": "<grey>\u270E</grey>  <gold><b>烹饪时间</b></gold>",
             "lore": [
-              "&6烹饪时间 : %TIME% ticks",
-              "&7输入物品的烹饪时长",
-              "&3提示: 20ticks = 1秒"
+              "<grey>烹饪时间: </grey><yellow>%TIME% ticks</yellow>",
+              "<yellow>单位为刻的烹饪时间.</yellow>",
+              "<yellow>(20 刻 = 1 秒)</yellow>"
             ],
-            "message": "&3输入物品的烹饪时长.如: 20"
+            "message": "<yellow>输入单位为刻的烹饪时间. e.g. 20. <red>最大值: 32767</red></yellow>"
           }
         }
       },
       "anvil": {
-        "gui_name": "&4创建配方 &8[&7铁砧&8]",
+        "gui_name": "<dark_red><b>配方创建 </b></dark_red><grey>[<dark_grey>铁砧]</dark_grey></grey>",
         "gui_help": [
-          "&7提示:",
-          "&7在原料或成品上&eShift&7+&e右键点击",
-          "&7将会允许你编辑物品"
+          "<gold><b>输入/输出物品槽</b></gold><grey>:</grey>",
+          " <green>Shift<grey>+</grey>右键点击</green>",
+          " <grey>\u27A0</grey> <yellow> 打开输入/输出编辑器</yellow>",
+          ""
         ],
         "items": {
           "mode": {
-            "name": "&7模式:&6 %MODE%",
+            "name": "<grey>\u274F</grey> <gold><b>当前模式:</b></gold><green> %MODE%</green>",
             "lore": [
-              "&e结果模式",
-              "&7&l----------------",
-              "&aResult &7- 应用指定的结果项。",
-              "&aNone &7- 与原版配方的作用相同(块特性见左下角)",
-              "&aDurability &7- 和 \"None\"一样，另外你还可以修改要修复的损害量。"
+              "<yellow>合成结果的模式.</yellow>",
+              "<grey><b>–––––––––––––––––</b></grey>",
+              "<green>Result </green><grey>- 应用指定数量的物品.</grey>",
+              "<green>None </green><grey>- 行为与原版配方相似.</grey>",
+              "          <grey>(阻止特性见下)</grey>",
+              "<green>Durability </green><grey>- 与 None 相同，但你可以编辑修复的耐久度。</grey>"
             ]
           },
           "repair_cost": {
-            "name": "&7\u270E &6&l修理费用:&6 %VAR%",
+            "name": "<grey>\u270E</grey> <gold><b>修复花费:</b></gold><yellow> %VAR%</yellow>",
             "lore": [
-              "&e这个配方的修理费用.",
-              "&c必须>0!",
-              "&7[&a点击&7]输入这个配方的修理费用"
+              "<yellow>该配方的修复花费.</yellow>",
+              "<red>必须大于 0!</red>",
+              "",
+              "<grey>[<green>点击</green>] 修改花费</grey>"
             ],
-            "message": "&3输入这个配方的修理费用,必须>0!"
+            "message": "<yellow>输入修复等级. <red>必须大于 0!</red></yellow>"
           },
           "block_repair": {
             "true": {
-              "name": "&a禁用修复",
+              "name": "<red>\u274C</red>  <gold><b>阻止修复</b></gold>",
               "lore": [
-                "&e左边的成分不能被修复"
+                "<yellow>左侧原料不可被修复。</yellow>"
               ]
             },
             "false": {
-              "name": "&c允许修复",
+              "name": "<green>\u2714</green>  <gold><b>允许修复</b></gold>",
               "lore": [
-                "&e左边的成分可以被修复",
-                "&e(如果原版可能的话!)"
+                "<yellow>左侧原料可以被修复。</yellow>",
+                "<yellow>(若原版允许!)</yellow>"
               ]
             }
           },
           "block_rename": {
             "true": {
-              "name": "&c\u274C &6&l禁用重命名",
+              "name": "<red>\u274C</red>  <gold><b>禁止重命名</b></gold>",
               "lore": [
-                "&e左边的成分不能被重新命名"
+                "<yellow>禁止左侧物品重命名.</yellow>"
               ]
             },
             "false": {
-              "name": "&a\u2714 &6&l允许重命名",
+              "name": "<green>\u2714</green>  <gold><b>允许重命名</b></gold>",
               "lore": [
-                "&e左边的成分可以被重新命名。",
-                "&e(如果原版可能的话!)"
+                "<yellow>允许左侧物品重命名.</yellow>",
+                "<yellow>(若原版允许!)</yellow>"
               ]
             }
           },
           "block_enchant": {
             "true": {
-              "name": "&a禁用附魔",
+              "name": "<red>\u274C</red>  <gold><b>禁止附魔</b></gold>",
               "lore": [
-                "&e左边的成分不能被附魔"
+                "<yellow>左侧原料不可被附魔.</yellow>"
               ]
             },
             "false": {
-              "name": "&c允许附魔",
+              "name": "<green>\u2714</green>  <gold><b>允许附魔</b></gold>",
               "lore": [
-                "&e左边的成分可以被附魔",
-                "&e(如果原版可能的话!)"
+                "<yellow>左侧原料可以被附魔.</yellow>",
+                "<yellow>(若原版允许!)</yellow>"
               ]
             }
           },
           "durability": {
-            "name": "&7耐久修复:&6 %VAR%",
+            "name": "<grey>\u270E</grey> <gold><b>修复耐久:</b></gold><green> %VAR%</green>",
             "lore": [
-              "&e需要修复的损坏量"
+              "<yellow>修复的耐久度.</yellow>"
             ],
-            "message": "&3输入耐久度.&6>0 增加&7,<0 减少"
+            "message": "<dark_aqua>输入耐久值. </dark_aqua><gold>>0 表示增加</gold><grey>, </grey><0 表示减少"
           },
           "repair_apply": {
             "true": {
-              "name": "&a修理应用于结果",
+              "name": "<green>\u2714</green>  <gold><b>应用修复费用</b></gold>",
               "lore": [
-                "&7将修理费用应用于修理后的元数据!",
+                "<yellow>将修复花费施加至输出物品！</yellow>",
                 "",
-                "&7[&aClick&7] 不应用修复开销"
+                "<grey>[<green>点击</green>] 不应用至输出物品</grey>"
               ]
             },
             "false": {
-              "name": "&c修理不应用于结果!",
+              "name": "<red>\u274C</red>  <gold><b>不应用修复费用</b></gold>",
               "lore": [
-                "&7修理后的元数据保持不变!",
+                "<yellow>不修复花费施加至输出物品。</yellow>",
                 "",
-                "&7[&aClick&7] 应用修复"
+                "<grey>[<green>点击</green>] 应用至输出物品</grey>"
               ]
             }
           },
           "repair_mode": {
-            "name": "&7维修费用模式: &3%VAR%",
+            "name": "<grey>\u274F</grey> <gold><b>修复花费模式: </b></gold><green>%VAR%</green>",
             "lore": [
-              "&e这种模式指定了维修费用应",
-              "&e如何受到左面成分的影响！",
-              "&3NONE &7- 完全不受影响",
-              "&3ADD &7- 添加到配方修复成本中!",
-              "&3MULTIPLY &7- 乘以配方修复成本",
+              "<yellow>该模式决定了修复费用会如何被左侧的原料影响！</yellow>",
+              "<grey><b>–––––––––––––––––</b></grey>",
+              "<green>NONE </green><grey>- 完全不影响</grey>",
+              "<green>ADD </green><grey>- 叠加!</grey>",
+              "<green>MULTIPLY </green><grey>- 按配方的修复花费翻倍</grey>",
               "",
-              "&7[&a点击&7]切换模式"
+              "<grey>[<green>点击</green>] 切换模式</grey>"
             ]
           }
         }
       },
       "cauldron": {
-        "gui_name": "&4&l创建配方 &8[&7炼药锅&8]",
+        "gui_name": "<dark_red><b>配方创建 </b></dark_red><grey>[<dark_grey>炼药锅]</dark_grey></grey>",
         "messages": {
-          "mythicMob": "&e输入你想加入的怪物.\n&e<&6mob_name&e> <&6level&e> [<&6x&e> <&6y&e> <&6z&e>]"
+          "mythicMob": "<yellow>输入需要添加的生物.\n<<gold>生物名称</gold>> <<gold>等级</gold>> [<<gold>x</gold>> <<gold>y</gold>> <<gold>z</gold>>]</yellow>"
         },
         "items": {
           "cauldron": {
-            "name": "&c"
+            "name": " "
           },
-          "dropItems": {
+          "campfire": {
             "enabled": {
-              "name": "&6直接掉落",
+              "name": "<green>\u2714</green> <gold><b>营火</b></gold>",
               "lore": [
-                "&e完成后物品会在炼药锅里掉落.",
-                "",
-                "&7[&a点击&7]切换点击获取"
+                "<yellow>合成配方需要炼药锅下方有营火加热！</yellow>"
               ]
             },
             "disabled": {
-              "name": "&6点击获取",
+              "name": "<red>\u274C</red> <gold><b>萤火</b></gold>",
               "lore": [
-                "&e完成后物品会留在炼药锅里.",
-                "&e右键点击获取.",
-                "&e« 设置玩家右键单击时所需的物品!",
-                "     &e空白以要求空手!",
-                "&7[&a点击&7]切换直接掉落"
+                "<yellow>合成配方无需炼药锅下方有营火加热</yellow>"
               ]
             }
           },
-          "fire": {
+          "soul_campfire": {
             "enabled": {
-              "name": "&6需要火焰",
+              "name": "<green>\u2714</green> <gold><b>灵魂营火</b></gold>",
               "lore": [
-                "&e这个配方需要炼药锅下有点燃的营火"
+                "<yellow>合成配方需要炼药锅下方有灵魂营火加热！</yellow>"
               ]
             },
             "disabled": {
-              "name": "&6无需火焰",
+              "name": "<red>\u274C</red> <gold><b>灵魂营火</b></gold>",
               "lore": [
-                "&e这个配方需要炼药锅下有熄灭的营火"
+                "<yellow>合成配方无需炼药锅下方有灵魂营火加热</yellow>"
               ]
             }
           },
-          "water": {
+          "signal_fire": {
             "enabled": {
-              "name": "&a\u2714 &6&l需要水!",
+              "name": "<green>\u2714</green> <gold><b>烽火</b></gold>",
               "lore": [
-                "&e炼药锅有水的时候配方才会起作用!",
-                "&e水位需要是0!"
+                "<yellow>配方需要下方有烽火（营火下方放置干草捆）。</yellow>"
               ]
             },
             "disabled": {
-              "name": "&c\u274C &6&l不需要水!",
+              "name": "<red>\u274C</red> <gold><b>烽火</b></gold>",
               "lore": [
-                "&e炼药锅空的时候配方才会起作用!"
+                "<yellow>配方只需普通营火即可</yellow>"
+              ]
+            }
+          },
+          "can_cook_in_water": {
+            "enabled": {
+              "name": "<green>\u2714</green> <gold><b>水中合成</b></gold>",
+              "lore": [
+                "<yellow>配方可在水中合成</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>\u274C</red>  <gold><b>无水合成!</b></gold>",
+              "lore": [
+                "<yellow>配方可无水合成!</yellow>"
+              ]
+            }
+          },
+          "can_cook_in_lava": {
+            "enabled": {
+              "name": "<green>\u2714</green> <gold><b>可在岩浆中合成</b></gold>",
+              "lore": [
+                "<yellow>配方可在岩浆中合成</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>\u274C</red>  <gold><b>无需岩浆!</b></gold>",
+              "lore": [
+                "<yellow>配方无需岩浆合成!</yellow>"
               ]
             }
           },
           "xp": {
-            "name": "&6经验",
+            "name": "<grey>\u270E</grey>  <gold><b>经验值</b></gold>",
             "lore": [
-              "&7经验: &e%xp%"
+              "<grey>经验值: </grey><yellow>%xp%</yellow>"
             ],
-            "message": "&3输入配方完成后你获得的经验值.如: 2"
+            "message": "<dark_aqua>输入经验值数量. e.g. 2</dark_aqua>"
           },
           "cookingTime": {
-            "name": "&7\u270E &6&l烹饪时间",
+            "name": "<grey>\u270E</grey>  <gold><b>合成时间</b></gold>",
             "lore": [
-              "&7时间: &e%time% ticks(1秒20tick)",
-              "&e完成配方需要的ticks!",
-              "&e(20 ticks = 1 sec)"
+              "<grey>时间: </grey><yellow>%time% ticks</yellow>",
+              "<yellow>单位为刻的合成时间.</yellow>",
+              "<yellow>(20 刻 = 1 秒)</yellow>"
             ],
-            "message": "&e输入完成配方需要的ticks(1s=20tick).如: 20"
+            "message": "<yellow>Type in the cooking time in ticks. e.g. 20</yellow>"
           },
-          "waterLevel": {
-            "name": "&3水位",
+          "fluid_level": {
+            "name": "<grey>\u270E</grey>  <gold><b>液体层数</b></gold>",
             "lore": [
-              "&7要求: &e%level%",
+              "<grey>需要 </grey><yellow>%level%</yellow><grey>层液体处于炼药锅中。</grey>",
               "",
-              "&e输入此配方最少需要的水位",
-              "&e配方完成时会消耗水!"
+              "<yellow>消耗一定层数的液体。</yellow>",
+              "<yellow>使用岩浆时则会消耗所有液体。</yellow>"
             ],
-            "message": "&e输入此配方最少需要的水位,配方完成时会消耗水! &c最大值: &43"
+            "message": "<yellow>输入炼药锅中需要的水层数! <red>最大: <dark_red>3</dark_red></red></yellow>"
           },
           "mythicMob": {
-            "name": "&6MythicMob",
+            "name": "<gold>MythicMob</gold>",
             "lore": [
-              "&7-Mob Settings-",
-              "&7名字: &e%mob.name%",
-              "&7等级: &e%mob.level%",
-              "&7出生位置(relative): ",
-              "   &7x: &e%mob.modX%",
-              "   &7y: &e%mob.modY%",
-              "   &7z: &e%mob.modZ%",
+              "<grey>-实体设置-</grey>",
+              "<grey>名称: </grey><yellow>%mob.name%</yellow>",
+              "<grey>等级: </grey><yellow>%mob.level%</yellow>",
+              "<grey>生成位置 (相对): </grey>",
+              "   <grey>x: </grey><yellow>%mob.modX%</yellow>",
+              "   <grey>y: </grey><yellow>%mob.modY%</yellow>",
+              "   <grey>z: </grey><yellow>%mob.modZ%</yellow>",
               ""
             ],
-            "message": "&e输入MythicMob的信息! <mob_name> [<level> <relative_x> <relative_y> <relative_z>]"
+            "message": "<yellow>输入你想要的实体名称! <实体名称> [<等级> <相对 x 轴> <相对 y 轴> <相对 z 轴>]</yellow>"
           }
         }
       },
       "grindstone": {
-        "gui_name": "&4&l创建配方 &7[&8砂轮&7]",
+        "gui_name": "<dark_red><b>创建配方 </b></dark_red><grey>[<dark_grey>砂轮]</dark_grey></grey>",
         "gui_help": [
-          "&7提示:",
-          "&7在原料或成品上&eShift&7+&e右键点击",
-          "&7将会允许你编辑"
+          "<grey>提示:</grey>",
+          "<yellow>Shift<grey>+右键点击原料或输出物品</grey></yellow>",
+          "<grey>可立即编辑该物品。</grey>"
         ],
         "items": {
           "grindstone": {
-            "name": "&c"
+            "name": ""
           },
           "xp": {
-            "name": "&6经验",
+            "name": "<grey>\u270E</grey>  <gold><b>经验值</b></gold>",
             "lore": [
-              "&7经验: &e%xp%",
-              "",
-              "&e配方完成后你获得的经验值"
+              "<grey>经验值: </grey><yellow>%xp%</yellow>",
+              "<yellow>配方能够获得的经验值</yellow>"
             ],
-            "message": "&e输入配方完成后你获得的经验值.如: 0.5"
+            "message": "<yellow>输入经验值的数量. 如 0.5</yellow>"
           }
         }
       },
       "brewing_stand": {
-        "gui_name": "&4&l创建配方 &7[&8酿造台&7]",
+        "gui_name": "<dark_red><b>创建配方 </b></dark_red><grey>[<dark_grey>Brewing Stand]</dark_grey></grey>",
         "messages": {
-          "potion_duration": "&e输入药水效果持续的ticks",
-          "potion_aplifier": "&e输入药水效果等级"
+          "duration_change": "<yellow>修改药水改变时间的长度</yellow>",
+          "amplifier_change": "<yellow>修改药水改变等级的长度</yellow>"
         },
         "items": {
           "brewing_stand": {
-            "name": "&6酿造台配料",
+            "name": "<gold>炼药台原料</gold>",
             "lore": [
-              "&e把原料放进左边的一个槽里!",
-              "&e««««",
-              "&7« Shift + 右键 来设置多个物品."
+              "<yellow>将炼药原料放入左侧!</yellow>",
+              "<yellow>««««</yellow>",
+              "<grey>« Shift + 右键点击设置多个物品.</grey>"
             ]
           },
           "allowed_items": {
-            "name": "&6允许的药水",
+            "name": "<gold>允许药水</gold>",
             "lore": [
-              "&e把这个配方允许的物品放到左边的一个槽里!",
-              "&e««««",
-              "&7« Shift + 右键 来设置多个物品",
-              "&e这些项目将在酿造台底部的3个插槽中进行检查!",
-              "&e如果是空的，所有项目都是允许的，可以在右边进一步定制"
+              "<yellow>将配方允许的物品</yellow>",
+              "<yellow>放入左边的格子!</yellow>",
+              "<yellow>««««</yellow>",
+              "<grey>« Shift + 右键点击设置多个物品.</grey>",
+              "<yellow>这些物品会与下面的三个格子一同比较！</yellow>",
+              "<yellow>若为空则任意物品都可放入，可在右侧进一步自定义。</yellow>"
             ]
           },
           "duration_change": {
-            "name": "&7药水持续时间",
+            "name": "<grey>药水时间</grey>",
             "lore": [
-              "&e持续时间变化: &6%value%",
-              "&7[&a左键&7] &e编辑",
-              "&7[&c右键&7] &c重置"
+              "<yellow>修改时间: <gold>%value%</gold></yellow>",
+              "<grey>[<green>左键点击</green>]</grey> <yellow>修改值</yellow>",
+              "<grey>[<red>右键点击</red>]</grey> <red>重置操作</red>"
             ]
           },
           "amplifier_change": {
-            "name": "&7药水加强器",
+            "name": "<grey>药水等级</grey>",
             "lore": [
-              "&e强度变化: &6%value%",
-              "&7[&a左键&7] &e编辑",
-              "&7[&c右键&7] &c重置"
+              "<yellow>修改等级: <gold>%value%</gold></yellow>",
+              "<grey>[<green>左键点击</green>]</grey> <yellow>修改值</yellow>",
+              "<grey>[<red>右键点击</red>]</grey> <red>重置操作</red>"
             ]
           },
           "reset_effects": {
             "enabled": {
-              "name": "&c重置药水效果",
+              "name": "<red>重置药水效果</red>",
               "lore": [
-                "&e每种药水的效果都会被重新设置!",
-                "&7[&aClick&7] &7保持药水效果"
+                "<yellow>重置每一瓶药水的药水效果!</yellow>",
+                "<grey>[<green>点击</green>] 保持药水效果</grey>"
               ]
             },
             "disabled": {
-              "name": "&7保持药水效果",
+              "name": "<grey>保留药水效果</grey>",
               "lore": [
-                "&e每种药水的效果都会保持!",
-                "&7[&aClick&7] &7重置药水效果"
+                "<yellow>每一瓶药水的效果都会得到保留!</yellow>",
+                "<grey>[<green>点击</green>] 重置药水效果</grey>"
               ]
             }
           },
           "effect_color": {
-            "name": "&6效果 RGB 颜色",
+            "name": "<gold>效果 RGB 颜色",
             "lore": [
-              "&e这个选项为药水设置了特定的颜色。",
-              "&7[&a左键&7] &e编辑 (input: <red> <green> <blue>)",
-              "&7[&a右键&7] &c重置"
+              "<yellow>可以为药水设置指定颜色.</yellow>",
+              "<grey>[<green>左键点击</green>]</grey> <yellow>设置颜色 (输入顺序: <red> <green> <blue>)</yellow>",
+              "<grey>[<green>右键点击</green>]</grey> <red>重置颜色</red>"
             ]
           },
           "required_effects": {
             "option": {
-              "name": "&6必要的效果 &7[&8即将到来&7]",
+              "name": "<gold>需要效果 </gold><grey>[<dark_grey>正在制作]</dark_grey></grey>",
               "lore": [
-                "&e配置药水需要包含的效果!"
+                "<yellow>决定参与合成的药水所需要的效果!</yellow>"
               ]
             }
           },
           "effect_removals": {
             "option": {
-              "name": "&6移除效果",
+              "name": "<gold>移除效果</gold>",
               "lore": [
-                "&e配置要从药水中移除的效果类型"
+                "<yellow>决定参与合成的药水会移除的效果</yellow>"
               ]
             },
             "info": {
-              "name": "&6效果",
+              "name": "<gold>效果</gold>",
               "lore": [
-                "&e这些效果将从药水中移除!",
-                "&e强度和持续时间都被忽略了!"
+                "<yellow>定参与合成的药水会移除的效果!</yellow>",
+                "<yellow>无视等级和效果!</yellow>"
               ]
             },
             "add_type": {
-              "name": "&6添加效果类型",
+              "name": "<gold>添加效果类型</gold>",
               "lore": [
-                "&e将一个效果添加到要删除的列表中。"
+                "<yellow>向列表中添加需要移除的效果。</yellow>"
               ]
             },
             "remove_type": {
-              "name": "&6移除效果类型",
+              "name": "<gold>移除效果类型</gold>",
               "lore": [
               ]
             }
           },
           "effect_additions": {
             "option": {
-              "name": "&6效果追加",
+              "name": "<gold>额外效果</gold>",
               "lore": [
-                "&e配置添加到药水中的效果"
+                "<yellow>配置添加至药水的效果</yellow>"
               ]
             },
             "info": {
-              "name": "&6药水效果 ",
+              "name": "<gold>药水效果</gold>",
               "lore": [
-                "&e这些效果被添加到药水中"
+                "<yellow>这些效果会被添加至药水/yellow>"
               ]
             },
             "potion_effect": {
-              "name": "&6药水效果",
+              "name": "<gold>药水效果</gold>",
               "lore": [
-                "&e目前的药水效果",
-                "&e单击 \"应用\"，将它们应用到列表中。"
+                "<yellow>当前药水效果.</yellow>",
+                "<yellow>点击将它们加入列表.</yellow>"
               ]
             },
             "replace": {
               "enabled": {
-                "name": "&6替换",
+                "name": "<gold>替换</gold>",
                 "lore": [
-                  "&e如果药水中已经含有该效果，则该效果将被替换。"
+                  "<yellow>若药水已经包含该效果，则它会将其替换。</yellow>"
                 ]
               },
               "disabled": {
-                "name": "&6保留",
+                "name": "<gold>保留</gold>",
                 "lore": [
-                  "&e如果药水中已经含有该效果，则该效果不会被替换"
+                  "<yellow>若药水已经包含该效果，则它不会将其替换。</yellow>"
                 ]
               }
             },
             "apply": {
-              "name": "&6应用",
+              "name": "<gold>应用</gold>",
               "lore": [
-                "&e应用效果到效果添加列表中!"
+                "<yellow>将效果应用至额外效果的列表！</yellow>"
               ]
             },
             "remove": {
-              "name": "&6异常",
+              "name": "<gold>移除</gold>",
               "lore": [
                 ""
               ]
@@ -2604,250 +2801,285 @@
           },
           "effect_upgrades": {
             "option": {
-              "name": "&6效果升级",
+              "name": "<gold>效果升级</gold>",
               "lore": [
-                "&e配置被升级的效果",
-                "&e设置添加的级别和持续时间的数量"
+                "<yellow>配置升级的药水效果。</yellow>",
+                "<yellow>设置添加效果的等级和时长。</yellow>"
               ]
             },
             "info": {
-              "name": "&6效果升级",
+              "name": "<gold>效果升级</gold>",
               "lore": [
-                "&e这些效果被添加到药水中。",
-                "&e以下是一份更详细的清单（包括内部药水名称!）:",
+                "<yellow>这些效果会被加到药水中。</yellow>",
+                "<yellow>如下为完整药水效果列表 (带内部药水名称!):</yellow>",
                 "%values%"
               ]
             },
             "amplifier": {
-              "name": "&6强度",
+              "name": "<gold>等级</gold>",
               "lore": [
-                "&eValue: &7%value%",
-                "&e这个值将被添加到所选药水效果的强度上"
+                "<yellow>Value: <grey>%value%</grey></yellow>",
+                "<yellow>这个值将会被添加到选定药水的等级上。</yellow>"
               ],
-              "message": "&e键入强度的值."
+              "message": "<yellow>输入等级值.</yellow>"
             },
             "duration": {
-              "name": "&6持续时间",
+              "name": "<gold>持续时间</gold>",
               "lore": [
-                "&eValue: &7%value%",
-                "&e这个值将被添加到所选药水效果的持续时间上"
+                "<yellow>值: <grey>%value%</grey></yellow>",
+                "<yellow>这个值会被添加到选定药水的时间上。</yellow>"
               ],
-              "message": "&e键入持续时间值"
+              "message": "<yellow>输入持续时间的值。</yellow>"
             },
             "add_type": {
-              "name": "&6药水效果类型",
+              "name": "<gold>药水效果类型</gold>",
               "lore": [
-                "&e这个药水效果类型是为这些升级设置而选择的。",
-                "&e这些设置将被添加到药水的药水效果上。",
-                "&e这个项目上的例子药水效果代表了值",
-                "&e(不能表示负值!)"
+                "<yellow>药水效果类型会被选中用于这些事情：</yellow>",
+                "<yellow>该设置中的药水效果会被添加到药水中。</yellow>",
+                "<yellow>该物品上代表值的示例药水效果</yellow>",
+                "<yellow>(不能使用负值!)</yellow>"
               ]
             },
             "apply": {
-              "name": "&6应用升级",
+              "name": "<gold>应用升级</gold>",
               "lore": [
-                "&e将升级版应用到配方中!",
-                "&e每种药水效果类型只能有一个升级!",
-                "&c如果效果类型已经存在，它将被覆盖。"
+                "<yellow>将升级应用至药水!</yellow>",
+                "<yellow>每个药水效果只能有一个升级！</yellow>",
+                "<red>若相同类型的药水效果已经存在，</red>",
+                "<red>则它将被覆盖！</red>"
               ]
             },
             "remove": {
-              "name": "&6移除升级",
+              "name": "<gold>移除升级</gold>",
               "lore": [
-                "&e从配方中删除一个升级!",
-                "&e选择你想移除的药水效果类型"
+                "<yellow>将升级从指定配方中移除</yellow>",
+                "<yellow>点击选择你想要移除的药水效果类型。</yellow>"
               ]
             }
           },
           "result": {
             "option": {
-              "name": "&6结果",
+              "name": "<gold>输出</gold>",
               "lore": [
-                "&e配置将取代药水的结果项目!",
-                "&e该选项将覆盖其他升级、添加和删除选项!"
+                "<yellow>配置替换输出药水出现的物品!</yellow>",
+                "<yellow>该选项会覆盖其他升级, </yellow>",
+                "<yellow>添加与移除选项!</yellow>"
               ]
             },
             "info": {
-              "name": "&6配置结果",
+              "name": "<gold>配置输出</gold>",
               "lore": [
-                "&e« 配置你的结果，将取代药水!",
-                "&7« Shift + 右键单击来设置多个物品"
+                "<yellow>« 配置你替换输出药水的物品!</yellow>",
+                "<grey>« Shift + 右键点击设置多个物品.</grey>"
               ]
             }
           }
         }
       },
       "smithing": {
-        "gui_name": "&4&l制作器&7[&8锻造台&7]",
+        "gui_name": "<dark_red><b>创建配方 </b></dark_red><grey>[<dark_grey>锻造台]</dark_grey></grey>",
         "items": {
           "change_material": {
             "enabled": {
-              "name": "&6&l仅限材料",
+              "name": "<gold><b>仅材料</b></gold>",
               "lore": [
-                "&e这将采取基础项目，并将其材料改为结果的材料。",
-                "&c结果的任何nbt都被忽略了!",
+                "<yellow>这将会消耗模板物品</yellow>",
+                "<yellow>并将材料转化为输出物品。</yellow>",
+                "<red>任何输出 NBT 都会被无视!</red>",
                 "",
-                "&8[&aClick&8] &e使用完整的结果物品"
+                "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>使用完整输出</yellow>"
               ]
             },
             "disabled": {
-              "name": "&6&l使用结果物品",
+              "name": "<gold><b>使用输出物品</b></gold>",
               "lore": [
-                "&e使用集合的结果项及其所有的NBT数据",
+                "<yellow>设置的结果物品</yellow>",
+                "<yellow>带有全部的 NBT 数据.</yellow>",
                 "",
-                "&8[&aClick&8] &e仅限材料"
+                "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>设置为仅材料</yellow>"
               ]
             }
           },
           "preserve_enchants": {
             "enabled": {
-              "name": "&a\u2714 &6&l保留附魔",
+              "name": "<green>\u2714</green>  <gold><b>保留附魔</b></gold>",
               "lore": [
-                "&e将基础的魔法复制到结果物品上",
+                "<yellow>将模板物品的附魔复制到输出物品上。</yellow>",
                 "",
-                "&8[&aClick&8] &e丢弃附魔"
+                "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>无视附魔</yellow>"
               ]
             },
             "disabled": {
-              "name": "&c\u274C &6&l丢弃附魔",
+              "name": "<red>\u274C</red>  <gold><b>无视附魔</b></gold>",
               "lore": [
-                "&e将结果中的魔法保留下来",
-                "&e并丢弃基本成分的魔法",
+                "<yellow>保留输出附魔并无视模板物品上的附魔。</yellow>",
                 "",
-                "&8[&aClick&8] &e保留附魔"
+                "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>保留附魔</yellow>"
               ]
             }
           },
           "preserve_damage": {
             "enabled": {
-              "name": "&a\u2714 &6&l保留损伤",
+              "name": "<green>\u2714</green>  <gold><b>保留损耗耐久值</b></gold>",
               "lore": [
-                "&e将损伤从基本复制到结果项。",
+                "<yellow>将模板物品的耐久值复制到输出物品上。</yellow>",
                 "",
-                "&8[&aClick&8] &e丢弃损伤"
+                "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>无视耐久值</yellow>"
               ]
             },
             "disabled": {
-              "name": "&c\u274C &6&l丢弃损伤",
+              "name": "<red>\u274C</red>  <gold><b>无视耐久值</b></gold>",
               "lore": [
-                "&e保持结果的损伤不变",
-                "&e并丢弃基本成分的损伤",
+                "<yellow>保留输出耐久度</yellow>",
+                "<yellow>并取消模版材料的耐久损耗。</yellow>",
                 "",
-                "&8[&aClick&8] &e保留损伤"
+                "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>保留耐久度</yellow>"
+              ]
+            }
+          },
+          "preserve_trim": {
+            "enabled": {
+              "name": "<green>\u2714</green>  <gold><b>保留纹路</b></gold>",
+              "lore": [
+                "<yellow>将模板的纹路复制到输出物品上。</yellow>",
+                "",
+                "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>设置为无视纹路</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>\u274C</red>  <gold><b>无视纹路</b></gold>",
+              "lore": [
+                "<yellow>保留输出的纹路并无视模板物品的纹路。</yellow>",
+                "",
+                "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>保留纹路</yellow>"
               ]
             }
           }
         }
       },
       "variants": {
-        "gui_name": "&8变体",
+        "gui_name": "<dark_grey>同类替代</dark_grey>",
         "gui_help": [
-          "&7设置所选插槽的特殊酿造材料.",
-          "&7把你想要的东西放进去.",
-          "&7提示:",
-          "&eShift&7+&e右键点击&7会打开物品编辑器"
+          "<grey>设置指定格子的同类替代物品.</grey>",
+          "<grey>放入物品的数量不限.</grey>",
+          "<grey>提示:</grey>",
+          "<yellow>Shift <grey>+ 右键点击打开物品编辑器</grey></yellow>"
         ]
       },
       "ingredient": {
-        "gui_name": "&8&l成分选择",
+        "gui_name": "<dark_grey><b>输入物品选项</b></dark_grey>",
         "items": {
           "replace_with_remains": {
             "enabled": {
-              "name": "&a✔ &6&l配方保留",
+              "name": "<green>✔ </green><gold><b>保留合成</b></gold>",
               "lore": [
-                "&e该成分将被原版合成的残留物取代。",
-                "&e如果它是一个已经启用的CustomItem",
-                "&e则通过自定义替换/耐用性成本",
+                "<yellow>原料会被原版合成剩余物代替。</yellow>",
+                "<yellow>若设置了自定义替换或耐久消耗，也会按设置正常工作。</yellow>",
                 "",
-                "&8[&aClick&8] &e禁用原版合成遗留"
+                "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>禁用原版合成剩余物</yellow>"
               ]
             },
             "disabled": {
-              "name": "&4❌ &6&l配方保留",
+              "name": "<dark_red>❌ </dark_red><gold><b>保留合成物</b></gold>",
               "lore": [
-                "&e该成分将被完全去除",
-                "&e唯一的例外是有自定义替换或耐久性费用的自定义物品",
+                "<yellow>输入物品会被完全移除.</yellow>",
+                "<yellow>若设置了自定义替换或耐久消耗，则会按应有机制正常工作。</yellow>",
                 "",
-                "&8[&aClick&8] &e启用原版合成遗留"
+                "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>启用原版合成剩余物</yellow>"
               ]
             }
           }
         }
       },
       "result": {
-        "gui_name": "&8&l结果选项",
+        "gui_name": "<dark_grey><b>输出选项</b></dark_grey>",
         "items": {
           "target": {
-            "name": "&6&l目标 &8[&7仅配置&8]",
+            "name": "<gold><b>目标 </b></gold><dark_grey>[<grey>仅配置文件</grey>]</dark_grey>",
             "lore": [
-              "&7允许以配方中的一个成分槽为目标",
-              "&7并将其数据合并到结果中",
-              "&7或以其他方式操作结果的项目"
+              "<grey>允许指向一个输入格并将其属性合并至输出物品</grey>",
+              "<grey>或通过其他方式操作物品。</grey>"
             ]
           },
           "extensions": {
-            "name": "&6&l拓展 &8[&7仅配置&8]",
+            "name": "<gold><b>拓展 </b></gold><dark_grey>[<grey>仅配置文件</grey>]</dark_grey>",
             "lore": [
-              "&7执行合成、冶炼和其他方面的扩展。",
-              "&7它们可以是命令、生物生成、声音等等。"
+              "<grey>在合成或熔炼等操作时执行额外操作.</grey>",
+              "<grey>可以是执行命令、召唤实体或播放音效等。</grey>"
             ]
           }
         }
       },
       "item_editor": {
-        "gui_name": "&0&l物品编辑器",
+        "gui_name": "<black><b>配置物品</b></black>",
         "items": {
           "create_item": {
-            "name": "&6创建",
-            "help": [
-              "&7创建一个新的自定义物品"
+            "name": "<grey>\u27A5</grey>  <gold><b>编辑</b></gold>",
+            "lore": [
+              "<grey>通过物品编辑器编辑物品</grey>",
+              "",
+              "<grey>[<green>点击</green>] 打开物品编辑器</grey>"
             ]
+          },
+          "reference": {
+            "icon": {
+              "name": "<gold><b><name></b></gold>",
+              "lore": []
+            },
+            "swap": {
+              "name": "<gold><b><name></b></gold>",
+              "lore": [
+                "<grey>将当前判断器与之切换</grey>",
+                "",
+                "<grey>[<green>点击</green>] 选择判断器</grey>"
+              ]
+            }
           }
         },
         "messages": {
-          "item_applied": "&a配方成功应用!",
-          "item_editable": "&a现在可以编辑此配方!"
+          "item_applied": "<green>物品已成功应用至配方!</green>",
+          "item_editable": "<green>该物品现在可被编辑了!</green>"
         }
       },
       "tag_settings": {
-        "gui_name": "&8&l标签设置",
+        "gui_name": "<dark_grey><b>标签设置</b></dark_grey>",
         "items": {
           "add_tag_list": {
-            "name": "&6&l添加标签 &8[&7列表&8]",
+            "name": "<gold><b>添加标签 </b></gold><dark_grey>[<grey>列表</grey>]</dark_grey>",
             "lore": [
-              "&7从 GUI 列表中添加标签 "
+              "<grey>从界面列表添加标签</grey>"
             ]
           },
           "add_tag_chat": {
-            "name": "&6&l添加标签  &8[&7聊天&8]",
+            "name": "<gold><b>添加标签 </b></gold><dark_grey>[<grey>聊天栏</grey>]</dark_grey>",
             "lore": [
-              "&7通过聊天添加标签"
+              "<grey>从聊天栏输入添加标签</grey>"
             ]
           },
           "tag_container": {
-            "name": "&6&l标签",
+            "name": "<gold><b>标签</b></gold>",
             "lore": [
-              "&7%namespaced_key%",
+              "<grey>%namespaced_key%</grey>",
               "",
-              "&7[&aShift-右键 &7] 移除标签"
+              "<grey>[<green>Shift+右键点击</green>] 移除标签</grey>"
             ]
           }
         }
       },
       "tag_list": {
-        "gui_name": "&8&l标签",
+        "gui_name": "<dark_grey><b>标签</b></dark_grey>",
         "items": {
           "next_page": {
-            "name": "&7&l下一页"
+            "name": "<grey><b>下一页</b></grey>"
           },
           "previous_page": {
-            "name": "&7&l上一页"
+            "name": "<grey><b>上一页</b></grey>"
           },
           "tag": {
-            "name": "&6&l%namespaced_key%",
+            "name": "<gold><b>%namespaced_key%</b></gold>",
             "lore": [
               "",
-              "&7[&aClick&7] &7添加标签"
+              "<grey>[<green>点击</green>] 添加标签</grey>"
             ]
           }
         }
@@ -2857,56 +3089,56 @@
       "global_items": {
         "conditions": {
           "world_time": {
-            "name": "&6&l» 世界时间 «",
+            "name": "<gold><b>» 世界时间 «",
             "lore": [
-              "&7此配方只有在&6%mode% %value%&7时才可以制作!"
+              "<grey>此配方只有在<gold>%mode% %value%<grey>时才可以制作!"
             ]
           },
           "weather": {
-            "name": "&6&l» 世界天气 «",
+            "name": "<gold><b>» 世界天气 «",
             "lore": [
-              "&7此配方只有在&6%value%&7时才可以制作!"
+              "<grey>此配方只有在<gold>%value%<grey>时才可以制作!"
             ]
           },
           "advanced_workbench": {
-            "name": "&6&l» 高级工作台 «",
+            "name": "<gold><b>» 高级工作台 «",
             "lore": [
-              "&7此配方只能由高级工作台制作 "
+              "<grey>此配方只能由高级工作台制作 "
             ]
           },
           "permission": {
-            "name": "&6&l» 权限 «",
+            "name": "<gold><b>» 权限 «",
             "lore": [
-              "&7权限:&e %VALUE%",
-              "&7模式:&e %MODE%"
+              "<grey>权限:<yellow> %VALUE%",
+              "<grey>模式:<yellow> %MODE%"
             ]
           }
         },
         "previous_page": {
           "name": "&2上一页",
-          "help": []
+          "lore": []
         },
         "next_page": {
           "name": "&2下一页",
-          "help": []
+          "lore": []
         },
         "lores": {
-          "click": "&7[&a点击&7] 查看配方"
+          "click": "<grey>[<green>点击</green>] 查看配方"
         },
         "stonecutter": {
-          "name": "&7切石机"
+          "name": "<grey>切石机"
         },
         "anvil": {
           "durability": {
-            "name": "&7耐久度",
+            "name": "<grey>耐久度",
             "lore": [
-              "&e物品耐久性受到影响的几率: &6%var%"
+              "<yellow>物品耐久性受到影响的几率: <gold>%var%"
             ]
           },
           "result": {
-            "name": "&7结果",
+            "name": "<grey>结果",
             "lore": [
-              "&e配方输出设定的结果.",
+              "<yellow>配方输出设定的结果.",
               ""
             ]
           }
@@ -2914,368 +3146,373 @@
         "workbench": {
           "filter_button": {
             "all": {
-              "name": "&7配方过滤器:&3所有",
+              "name": "<grey>配方过滤器:<dark_aqua>所有",
               "lore": [
-                "&7展示所有配方"
+                "<grey>展示所有配方"
               ]
             },
             "normal": {
-              "name": "&7配方过滤器:&3普通",
+              "name": "<grey>配方过滤器:<dark_aqua>普通",
               "lore": [
-                "&7只展示普通配方"
+                "<grey>只展示普通配方"
               ]
             },
             "advanced": {
-              "name": "&7配方过滤器:&3高级",
+              "name": "<grey>配方过滤器:<dark_aqua>高级",
               "lore": [
-                "&7只展示高级配方"
+                "<grey>只展示高级配方"
               ]
             }
           },
           "adv_workbench_on": {
-            "name": "&3高级工作台",
-            "help": [
-              "&7只能由高级工作台制作",
+            "name": "<dark_aqua>高级工作台",
+            "lore": [
+              "<grey>只能由高级工作台制作",
               ""
             ]
           },
           "adv_workbench_off": {
-            "name": "&4所有工作台",
-            "help": [
-              "&7能在所有工作台上制作"
+            "name": "<dark_red>所有工作台",
+            "lore": [
+              "<grey>能在所有工作台上制作"
             ]
           },
           "shapeless_off": {
-            "name": "&3有序合成",
-            "help": [
-              "&7有序合成!"
+            "name": "<dark_aqua>有序合成",
+            "lore": [
+              "<grey>有序合成!"
             ]
           },
           "shapeless_on": {
-            "name": "&3无序合成",
-            "help": [
-              "&7无序合成!"
+            "name": "<dark_aqua>无序合成",
+            "lore": [
+              "<grey>无序合成!"
             ]
           }
         },
         "cooking": {
           "icon": {
-            "name": "&7&l%type%",
+            "name": "<grey><b>%type%",
             "lore": [
-              "&7烹饪时长: &e%time% ticks",
-              "&7经验: &e%xp%"
+              "<grey>烹饪时长: <yellow>%time% ticks",
+              "<grey>经验: <yellow>%xp%"
             ]
           }
         },
         "cauldron": {
           "water": {
             "enabled": {
-              "name": "&7炼药锅",
+              "name": "<grey>炼药锅",
               "lore": [
-                "&e需要至少&6%lvl%&e的水位!"
+                "<yellow>需要至少<gold>%lvl%<yellow>的水位!"
               ]
             },
             "disabled": {
-              "name": "&7炼药锅",
+              "name": "<grey>炼药锅",
               "lore": [
-                "&e不需要水!"
+                "<yellow>不需要水!"
               ]
             }
           },
           "fire": {
             "enabled": {
-              "name": "&6营火",
+              "name": "<gold>营火",
               "lore": [
-                "&e需要火焰!",
-                "&e确保你的炼药锅下面",
-                "&e有一个点燃的营火!"
+                "<yellow>需要火焰!",
+                "<yellow>确保你的炼药锅下面",
+                "<yellow>有一个点燃的营火!"
               ]
             },
             "disabled": {
-              "name": "&6营火",
+              "name": "<gold>营火",
               "lore": [
-                "&e无需营火!"
+                "<yellow>无需营火!"
               ]
             }
           }
         },
         "brewing": {
           "icon": {
-            "name": "&7&l酿造",
+            "name": "<grey><b>酿造",
             "lore": [
-              "&7酿造时长: &e%time% ticks",
-              "&7酿造花费: &e%cost%"
+              "<grey>酿造时长: <yellow>%time% ticks",
+              "<grey>酿造花费: <yellow>%cost%"
             ]
           },
           "potion_duration": {
-            "name": "&7药水效果持续时间",
+            "name": "<grey>药水效果持续时间",
             "lore": [
-              "&e药水效果将会持续&6%value% ticks"
+              "<yellow>药水效果将会持续<gold>%value% ticks"
             ]
           },
           "potion_amplifier": {
-            "name": "&7药水效果等级提升",
+            "name": "<grey>药水效果等级提升",
             "lore": [
-              "&e此配方将提升&6%value%&e级的药水效果"
+              "<yellow>此配方将提升<gold>%value%<yellow>级的药水效果"
             ]
           }
         },
         "grindstone": {
-          "name": "&7&l砂轮"
+          "name": "<grey><b>砂轮"
         },
         "back_to_list": {
-          "name": "&7&l返回",
+          "name": "<grey><b>返回",
           "lore": [
-            "&7» &e返回配方列表"
+            "<grey>» <yellow>返回配方列表"
           ]
         }
       },
       "main_menu": {
-        "gui_name": "&8&l知识之书配方",
+        "gui_name": "<dark_grey><b>知识之书配方",
         "items": {
           "elite_workbench": {
-            "name": "&6精英工作台配方"
+            "name": "<gold>精英工作台配方"
           },
           "workbench": {
-            "name": "&6工作台配方",
-            "help": []
+            "name": "<gold>工作台配方",
+            "lore": []
           },
           "furnace": {
-            "name": "&6熔炉配方",
-            "help": []
+            "name": "<gold>熔炉配方",
+            "lore": []
           },
           "anvil": {
-            "name": "&6铁砧配方",
-            "help": []
+            "name": "<gold>铁砧配方",
+            "lore": []
           },
           "blast_furnace": {
-            "name": "&6高炉配方",
-            "help": []
+            "name": "<gold>高炉配方",
+            "lore": []
           },
           "smoker": {
-            "name": "&6烟熏炉配方",
-            "help": []
+            "name": "<gold>烟熏炉配方",
+            "lore": []
           },
           "campfire": {
-            "name": "&6营火配方",
-            "help": []
+            "name": "<gold>营火配方",
+            "lore": []
           },
           "stonecutter": {
-            "name": "&6切石机配方",
-            "help": []
+            "name": "<gold>切石机配方",
+            "lore": []
           },
           "cauldron": {
-            "name": "&6炼药锅配方"
+            "name": "<gold>炼药锅配方"
           },
           "brewing": {
-            "name": "&6酿造台配方"
+            "name": "<gold>酿造台配方"
           }
         }
       },
       "recipe_book": {
-        "gui_name": "&8&l知识之书",
+        "gui_name": "<dark_grey><b>知识之书",
         "items": {
           "next_recipe": {
-            "name": "&7&l» 下一个",
+            "name": "<grey><b>» 下一个",
             "lore": [
-              "&ePage &7%page%&e/&7%max_pages%"
+              "<yellow>Page <grey>%page%<yellow>/<grey>%max_pages%"
             ]
           },
           "previous_recipe": {
-            "name": "&7&l« 上一个",
+            "name": "<grey><b>« 上一个",
             "lore": [
-              "&ePage &7%page%&e/&7%max_pages%"
+              "<yellow>Page <grey>%page%<yellow>/<grey>%max_pages%"
             ]
           }
         }
-      }
+      },
+      "category_overview": {
+        "gui_name": "<category_name>",
+        "items": {
+        }
+      } 
     },
     "recipe_view": {
       "single_recipe": {
-        "gui_name": "&8&l配方书"
+        "gui_name": "<dark_grey><b>配方书"
       }
     },
     "recipe_book_editor": {
       "global_items": {
         "save": {
-          "name": "&3保存",
+          "name": "<dark_aqua>保存",
           "lore": [
-            "&7使用当前 key 保存"
+            "<grey>使用当前 key 保存"
           ]
         },
         "save_as": {
-          "name": "&6另存为",
+          "name": "<gold>另存为",
           "lore": [
-            "&7使用新的 key 保存",
-            "&7输入 : &e<category_key>",
-            "&cID必须是小写字母数字!",
-            "&c(a-z 0-9 _ -)"
+            "<grey>使用新的 key 保存",
+            "<grey>输入 : <yellow><category_key>",
+            "<red>ID必须是小写字母数字!",
+            "<red>(a-z 0-9 _ -)"
           ]
         },
         "name": {
-          "name": "&6名称: &r%name%",
+          "name": "<gold>名称: &r%name%",
           "lore": [
           ],
-          "message": "&e键入名称。你可以使用&&作为格式化代码。"
+          "message": "<yellow>键入名称。你可以使用&&作为格式化代码。"
         },
         "description": {
           "add": {
-            "name": "&6添加描述行",
+            "name": "<gold>添加描述行",
             "lore": [
-              "&e描述: ",
+              "<yellow>描述: ",
               "%description%"
             ],
-            "message": "&e键入描述。你可以使用&&作为格式化代码。"
+            "message": "<yellow>键入描述。你可以使用&&作为格式化代码。"
           },
           "remove": {
-            "name": "&6移除描述"
+            "name": "<gold>移除描述"
           }
         },
         "recipes": {
-          "name": "&6&l配方",
+          "name": "<gold><b>配方",
           "lore": [
-            "&7[&a左键&7] 添加配方",
-            "&7[&a右键&7] 移除配方",
-            "&e配置配方:",
+            "<grey>[<green>左键<grey>] 添加配方",
+            "<grey>[<green>右键<grey>] 移除配方",
+            "<yellow>配置配方:",
             "%recipes%"
           ]
         },
         "folders": {
-          "name": "&6&l文件夹",
+          "name": "<gold><b>文件夹",
           "lore": [
-            "&7[&a左键&7] 添加文件夹",
-            "&7[&a右键&7] 移除文件夹",
-            "&e配置文件夹:",
+            "<grey>[<green>左键<grey>] 添加文件夹",
+            "<grey>[<green>右键<grey>] 移除文件夹",
+            "<yellow>配置文件夹:",
             "%folders%"
           ]
         },
         "groups": {
-          "name": "&6&l组",
+          "name": "<gold><b>组",
           "lore": [
-            "&7[&a左键&7] 添加组",
-            "&7[&a右键&7] 移除组 ",
-            "&e配置组:",
+            "<grey>[<green>左键<grey>] 添加组",
+            "<grey>[<green>右键<grey>] 移除组 ",
+            "<yellow>配置组:",
             "%groups%"
           ]
         }
       },
       "global_messages": {
-        "not_existing": "&c配方&4 %recipe% &c不存在!",
+        "not_existing": "<red>配方<dark_red> %recipe% <red>不存在!",
         "save": {
-          "input": "&e输入 key! 必须是字母数字的小写字母! [a-z0-9/._-]",
-          "error": "&c检查是否有遗失的图标!",
-          "failed_backup": "&c创建recipe_book.json的备份失败!",
-          "success": "&a保存成功!"
+          "input": "<yellow>输入 key! 必须是字母数字的小写字母! [a-z0-9/._-]",
+          "error": "<red>检查是否有遗失的图标!",
+          "failed_backup": "<red>创建recipe_book.json的备份失败!",
+          "success": "<green>保存成功!"
         }
       },
       "editor_main": {
-        "gui_name": "&8&l配方书 &7[&8编辑器&7]",
+        "gui_name": "<dark_grey><b>配方书 <grey>[<dark_grey>编辑器<grey>]",
         "items": {
           "filters": {
-            "name": "&6&l过滤器",
+            "name": "<gold><b>过滤器",
             "lore": [
-              "&e过滤器存在于每个类别的顶部",
-              "&e你可以通过点击它们来循环使用它们"
+              "<yellow>过滤器存在于每个类别的顶部",
+              "<yellow>你可以通过点击它们来循环使用它们"
             ]
           },
           "categories": {
-            "name": "&6类别",
+            "name": "<gold>类别",
             "lore": [
-              "&e类别显示在配方书的主菜单上。",
-              "&e如果只有一个类别可用",
-              "&e向导将直接打开这个类别",
-              "&e而不显示主菜单!"
+              "<yellow>类别显示在配方书的主菜单上。",
+              "<yellow>如果只有一个类别可用",
+              "<yellow>向导将直接打开这个类别",
+              "<yellow>而不显示主菜单!"
             ]
           },
           "cancel": {
-            "name": "&c&l取消",
+            "name": "<red><b>取消",
             "lore": [
-              "&7恢复对配方书所作的修改!",
-              "&c如果你不恢复之前的变化",
-              "&c服务器停止时，它们将被替代应用!"
+              "<grey>恢复对配方书所作的修改!",
+              "<red>如果你不恢复之前的变化",
+              "<red>服务器停止时，它们将被替代应用!"
             ]
           },
           "save": {
-            "name": "&6&l保存",
+            "name": "<gold><b>保存",
             "lore": [
-              "&7将配方书保存到配置!",
-              "&7要加载和应用你需要的更改",
-              "&7执行: &e/cc reload"
+              "<grey>将配方书保存到配置!",
+              "<grey>要加载和应用你需要的更改",
+              "<grey>执行: <yellow>/cc reload"
             ]
           }
         }
       },
       "categories": {
-        "gui_name": "&8&l配方书 &7[&8编辑类别&7]",
+        "gui_name": "<dark_grey><b>配方书 <grey>[<dark_grey>编辑类别<grey>]",
         "items": {
           "category": {
             "name": "%name%",
             "lore": [
               "%description%",
-              "&7--------------------",
-              "&7[&a左键&7] &eEdit Category",
-              "&7[&cShift + 右键&7] &cDelete Category"
+              "<grey>--------------------",
+              "<grey>[<green>左键<grey>] <yellow>Edit Category",
+              "<grey>[<red>Shift + 右键<grey>] <red>Delete Category"
             ]
           },
           "previous": {
-            "name": "&7前一页 "
+            "name": "<grey>前一页 "
           },
           "next": {
-            "name": "&7下一页"
+            "name": "<grey>下一页"
           },
           "add": {
-            "name": "&6添加类型",
+            "name": "<gold>添加类型",
             "lore": [
-              "&e为配方书配置一个新的类别"
+              "<yellow>为配方书配置一个新的类别"
             ]
           }
         }
       },
       "filters": {
-        "gui_name": "&8&l配方书 &7[&8编辑过滤器&7]",
+        "gui_name": "<dark_grey><b>配方书 <grey>[<dark_grey>编辑过滤器<grey>]",
         "items": {
           "filter": {
             "name": "%name%",
             "lore": [
               "%description%",
-              "&7--------------------",
-              "&7[&a左键&7] &eEdit Filter",
-              "&7[&cShift + 右键&7] &cDelete Filter"
+              "<grey>--------------------",
+              "<grey>[<green>左键<grey>] <yellow>Edit Filter",
+              "<grey>[<red>Shift + 右键<grey>] <red>Delete Filter"
             ]
           },
           "add": {
-            "name": "&6添加过滤器",
+            "name": "<gold>添加过滤器",
             "lore": [
-              "&e为配方书配置一个新的过滤器"
+              "<yellow>为配方书配置一个新的过滤器"
             ]
           }
         }
       },
       "category": {
-        "gui_name": "&8&l配方书 &7[&8编辑类&7]",
+        "gui_name": "<dark_grey><b>配方书 <grey>[<dark_grey>编辑类<grey>]",
         "items": {
           "auto": {
             "enabled": {
-              "name": "&6&l自动",
+              "name": "<gold><b>自动",
               "lore": [
-                "&7所有可用的配方和组将被自动添加到这个类别",
-                "&7拥有一个组的配方只显示在该组中",
-                "&7动添加的配方和组将被忽略"
+                "<grey>所有可用的配方和组将被自动添加到这个类别",
+                "<grey>拥有一个组的配方只显示在该组中",
+                "<grey>动添加的配方和组将被忽略"
               ]
             },
             "disabled": {
-              "name": "&6&l手动",
+              "name": "<gold><b>手动",
               "lore": [
-                "&7配方、命名空间和群组需要手动添加",
-                "&c如果一个群组不包含在类别中",
-                "&c配方将被单独显示"
+                "<grey>配方、命名空间和群组需要手动添加",
+                "<red>如果一个群组不包含在类别中",
+                "<red>配方将被单独显示"
               ]
             }
           }
         }
       },
       "filter": {
-        "gui_name": "&8&l配方书 &7[&8编辑过滤器&7]",
+        "gui_name": "<dark_grey><b>配方书 <grey>[<dark_grey>编辑过滤器<grey>]",
         "items": {
         }
       }
@@ -3283,32 +3520,32 @@
     "crafting": {
       "global_items": {
         "recipe_book": {
-          "name": "&e知识之书",
+          "name": "<yellow>知识之书",
           "lore": [
           ]
         }
       },
       "crafting_grid3": {
-        "gui_name": "&8&l精英工作台",
+        "gui_name": "<dark_grey><b>精英工作台",
         "items": {
         }
       },
       "crafting_grid4": {
-        "gui_name": "&8&l精英工作台"
+        "gui_name": "<dark_grey><b>精英工作台"
       },
       "crafting_grid5": {
-        "gui_name": "&8&l精英工作台"
+        "gui_name": "<dark_grey><b>精英工作台"
       },
       "crafting_grid6": {
-        "gui_name": "&8&l精英工作台"
+        "gui_name": "<dark_grey><b>精英工作台"
       },
       "recipe_book": {
-        "gui_name": "&8&l知识之书配方"
+        "gui_name": "<dark_grey><b>知识之书配方"
       }
     },
     "particle_creator": {
       "main_menu": {
-        "gui_name": "&7粒子生成器",
+        "gui_name": "<grey>粒子生成器</grey>",
         "items": {
           "particle_effect": {
             "select": {
@@ -3316,7 +3553,7 @@
               "lore": [
                 "%effect_description%",
                 "",
-                "&7[&a右键&7] Select Effect"
+                "<grey>[<green>右键<grey>] 选择效果</grey>"
               ]
             }
           }
@@ -3325,99 +3562,134 @@
     },
     "potion_creator": {
       "potion_creator": {
-        "gui_name": "&0&l药水效果创造器",
+        "gui_name": "<black><b>药水效果创建器</b></black>",
         "items": {
           "apply": {
-            "name": "&a应用药水效果",
+            "name": "<green>应用药水效果</green>",
             "lore": [
-              "&e将药水效果应用于相应的目的地",
-              "&e例如： 自定义物品, 酿造配方"
+              "<yellow>将药水效果应用于相应的配方</yellow>",
+              "<yellow>例如：自定义物品, 酿造配方</yellow>"
             ]
           },
           "cancel": {
-            "name": "&c取消",
+            "name": "<red>取消</red>",
             "lore": [
-              "&e取消该药水效果的产生 ",
-              "&e它将不会被应用!"
+              "<yellow>取消药水效果创建</yellow>",
+              "<yellow>它将不会被应用!</yellow>"
             ]
           },
           "potion_effect_type": {
-            "name": "&7效果类型 : &3%effect_type%",
+            "name": "<grey>效果类型: </grey><dark_aqua>%effect_type%</dark_aqua>",
             "lore": [
-              "&e选择该药水效果的类型"
+              "<yellow>选择该药水效果的类型</yellow>"
             ]
           },
           "duration": {
-            "name": "&7持续时间: &3%duration%",
+            "name": "<grey>持续时间: <dark_aqua>%duration%</grey><dark_aqua>%duration%</dark_aqua>",
             "lore": [
-              "&e设置药水效果的持续时间，单位为ticks",
-              "&7[&aClick&7] 输入持续时间"
+              "<yellow>设置药水效果的持续时间，单位为刻</yellow>",
+              "<grey>[<green>点击</green>] 输入持续时间</grey>"
             ],
-            "message": "&e键入以刻度为单位的持续时间数字值! 20 ticks = 1 sec"
+            "message": "<yellow>键入以刻度为单位的持续时间数字值! 20 刻 = 1 秒</yellow>"
           },
           "amplifier": {
-            "name": "&7强度: &3%amplifier%",
+            "name": "<grey>强度: </grey><dark_aqua>%amplifier%</dark_aqua>",
             "lore": [
-              "&e设置药水效果的强度",
-              "&7[&aClick&7] 输入强度"
+              "<yellow>设置药水效果的强度</yellow>",
+              "<grey>[<green>点击</green>] 输入强度</grey>"
             ],
-            "message": "&e键入强度的数字值!"
+            "message": "<yellow>键入强度的数字值!</yellow>"
           },
           "ambient": {
             "enabled": {
-              "name": "&7环境: &aenabled",
+              "name": "<grey>环境: <green>启用</green></grey>",
               "lore": [
-                "&e产生更多半透明的环境粒子",
-                "&7[&aClick&7] 禁用环境粒子"
+                "<yellow>产生更多半透明的环境粒子</yellow>",
+                "<grey>[<green>点击</green>] 禁用环境粒子</grey>"
               ]
             },
             "disabled": {
-              "name": "&7环境: &cdisabled",
+              "name": "<grey>环境: <red>禁用</red></grey>",
               "lore": [
-                "&e产生较少的环境颗粒",
-                "&7[&aClick&7] 启用环境粒子"
+                "<yellow>产生较少的环境颗粒</yellow>",
+                "<grey>[<green>点击</green>] 启用环境粒子</grey>"
               ]
             }
           },
           "particles": {
             "enabled": {
-              "name": "&7粒子: &aenabled",
+              "name": "<grey>粒子: </grey><green>启用</green>",
               "lore": [
-                "&e有粒子产生",
-                "&7[&aClick&7] 禁用粒子"
+                "<yellow>有粒子产生</yellow>",
+                "<grey>[<green>点击</green>] 禁用粒子</grey>"
               ]
             },
             "disabled": {
-              "name": "&7粒子: &cdisabled",
+              "name": "<grey>粒子: </grey><red>禁用</red>",
               "lore": [
-                "&e无粒子产生",
-                "&7[&aClick&7] 启用粒子"
+                "<yellow>无粒子产生</yellow>",
+                "<grey>[<green>点击</green>] 启用粒子</grey>"
               ]
             }
           },
           "icon": {
             "enabled": {
-              "name": "&7图标: &aenabled",
+              "name": "<grey>图标: </grey><green>启用</green>",
               "lore": [
-                "&e显示粒子效应的图标",
-                "&7[&aClick&7] 禁用图标"
+                "<yellow>显示粒子效应的图标</yellow>",
+                "<grey>[<green>点击</green>] 禁用图标"
               ]
             },
             "disabled": {
-              "name": "&7图标: &cdisabled",
+              "name": "<grey>图标: </grey><red>禁用</red>",
               "lore": [
-                "&e隐藏粒子效应的图标",
-                "&7[&aClick&7] 启用图标"
+                "<yellow>隐藏粒子效应的图标</yellow>",
+                "<grey>[<green>点击</green>] 启用图标</grey>"
               ]
             }
           }
         }
       },
       "potion_effect_type_selection": {
-        "gui_name": "&0&l药水效果创建器",
+        "gui_name": "<black><b>药水效果创建器</b></black>",
         "items": {
           "effect_type": {
             "name": "%effect_type%"
+          }
+        }
+      }
+    },
+    "cauldron": {
+      "cauldron": {
+        "default_title": "<dark_grey>炼药锅</dark_grey>",
+        "gui_name": "<title>",
+        "items": {
+          "start": {
+            "enabled": {
+              "name": "<green><b>开始制作</b></green>"
+            },
+            "disabled": {
+              "name": "<red><b>不可制作</b></red>",
+              "lore": [
+                "<grey>无效配方或条件!",
+                "",
+                "<yellow>请检查:",
+                "<grey>- <gold>锅中是否有所需液体 <grey>(<blue>水</blue>/<red>岩浆</red>)</grey>",
+                "<grey>- <gold>锅下是否有所需营火</gold> <grey>(<aqua>灵魂</aqua>/<yellow>普通</yellow>)</grey>",
+                "<grey>- <gold>营火下方是否放置干草捆<grey> (干草捆)</grey>"
+              ]
+            }
+          },
+          "indicator":{
+            "water": {
+              "name": "<blue><level></blue>"
+            },
+            "lava": {
+              "name": "<gold><level></gold>"
+            }
+          },
+          "signal_fire": {
+            "name": "<gold>已放置干草捆</gold>"
           }
         }
       }
