@@ -55,7 +55,7 @@ dependencies {
 }
 
 group = "com.wolfyscript.customcrafting"
-version = "4.17-SNAPSHOT"
+version = "4.17-beta.1"
 description = "customcrafting-spigot"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
