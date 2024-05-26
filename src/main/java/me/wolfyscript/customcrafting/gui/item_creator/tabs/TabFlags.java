@@ -54,7 +54,13 @@ public class TabFlags extends ItemCreatorTabVanilla {
         creator.registerButton(new ButtonItemFlagsToggle("unbreakable", ItemFlag.HIDE_UNBREAKABLE, Material.BEDROCK));
         creator.registerButton(new ButtonItemFlagsToggle("destroys", ItemFlag.HIDE_DESTROYS, Material.TNT));
         creator.registerButton(new ButtonItemFlagsToggle("placed_on", ItemFlag.HIDE_PLACED_ON, Material.GRASS_BLOCK));
-        creator.registerButton(new ButtonItemFlagsToggle("potion_effects", ItemFlag.HIDE_POTION_EFFECTS, Material.POTION));
+
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 5))) {
+            creator.registerButton(new ButtonItemFlagsToggle("potion_effects", ItemFlag.valueOf("HIDE_ADDITIONAL_TOOLTIP"), Material.POTION));
+        } else {
+            creator.registerButton(new ButtonItemFlagsToggle("potion_effects", ItemFlag.HIDE_POTION_EFFECTS, Material.POTION));
+        }
+
         if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 16, 2))) {
             creator.registerButton(new ButtonItemFlagsToggle("dye", ItemFlag.HIDE_DYE, Material.YELLOW_DYE));
         }
