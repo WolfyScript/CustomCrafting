@@ -172,7 +172,7 @@ public class FurnaceListener implements Listener {
             CookingRecipeCache cache = cacheOptional.get();
             CookingRecipeData<?> data = cache.data();
             if (data != null) {
-                updateRecipeExperience(event.getBlock(), data.getRecipe().getNamespacedKey());
+                Bukkit.getScheduler().runTask(customCrafting, () -> updateRecipeExperience(event.getBlock(), data.getRecipe().getNamespacedKey()));
                 applyResult(event);
                 return;
             }
@@ -293,6 +293,8 @@ public class FurnaceListener implements Listener {
         usedRecipes.set(recipeKey.bukkit(), PersistentDataType.INTEGER, amount + 1);
 
         rootContainer.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, usedRecipes);
+
+        blockState.update();
     }
 
 
