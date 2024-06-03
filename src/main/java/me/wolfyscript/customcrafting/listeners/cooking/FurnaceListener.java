@@ -146,60 +146,6 @@ public class FurnaceListener implements Listener {
                 });
     }
 
-    @EventHandler
-    public void onSmelt(FurnaceSmeltEvent event) {
-        //Check for and handle the custom recipe.
-        Optional<CookingRecipeCache> cacheOptional = manager.getCustomRecipeCache(event);
-        if (cacheOptional.isPresent()) {
-            CookingRecipeCache cache = cacheOptional.get();
-            CookingRecipeData<?> data = cache.data();
-            if (data != null) {
-                applyResult(event);
-                return;
-            }
-            if (cache.cancelSmelting()) {
-                event.setCancelled(true); // FurnaceStartSmeltEvent told us to cancel if no custom recipe was found
-            }
-        }
-
-        // Check if the CustomItem is allowed in Vanilla recipes
-        CustomItem customItem = CustomItem.getByItemStack(event.getSource());
-        if (customItem != null && customItem.isBlockVanillaRecipes()) {
-            event.setCancelled(true); //Cancel the process if it is.
-        }
-        Bukkit.getScheduler().runTask(customCrafting, () -> manager.clearCache(event.getBlock()));
-    }
-
-    /**
-     * Listening to this event is required, because the exp events are not called. This is because the recipes are not saved in the vanilla NBT tags and therefor the furnace doesn't contain any xp to drop.
-     */
-    @EventHandler
-    public void onResultCollect(InventoryClickEvent event) {
-        if (!(event.getClickedInventory() instanceof FurnaceInventory inventory) || !event.getSlotType().equals(InventoryType.SlotType.RESULT)) {
-            return;
-        }
-        var location = event.getClickedInventory().getLocation();
-        if (location == null) return;
-        if (!(location.getBlock().getState() instanceof Furnace)) return;
-        manager.clearCache(location.getBlock());
-
-        if (!ItemUtils.isAirOrNull(inventory.getResult())) { //Make sure to only give exp if the result is actually there.
-            // @Deprecated: Keep this for backwards compatibility and handle existing custom recipe exp.
-            Bukkit.getScheduler().runTask(customCrafting, () -> {
-                Furnace blockState = (Furnace) location.getBlock().getState();
-                PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
-                PersistentDataContainer usedRecipes = rootContainer.get(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER);
-                if (usedRecipes != null) {
-                    //Award the experience of all the stored recipes.
-                    usedRecipes.getKeys().forEach(bukkitRecipeKey -> awardRecipeExperience(usedRecipes, bukkitRecipeKey, location));
-                    rootContainer.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, rootContainer.getAdapterContext().newPersistentDataContainer());
-                    //Update the furnace state, so the NBT is updated.
-                    blockState.update();
-                }
-            });
-        }
-    }
-
     private Optional<CookingRecipeData<?>> processRecipe(CustomRecipeCooking<?,?> cookingRecipe, ItemStack source, Block block) {
         if (cookingRecipe.validType(block.getType())) {
             Optional<StackReference> customSource = cookingRecipe.getSource().checkChoices(source, cookingRecipe.isCheckNBT());
@@ -216,6 +162,31 @@ public class FurnaceListener implements Listener {
             }
         }
         return Optional.empty();
+    }
+
+    @EventHandler
+    public void onSmelt(FurnaceSmeltEvent event) {
+        //Check for and handle the custom recipe.
+        Optional<CookingRecipeCache> cacheOptional = manager.getCustomRecipeCache(event);
+        if (cacheOptional.isPresent()) {
+            CookingRecipeCache cache = cacheOptional.get();
+            CookingRecipeData<?> data = cache.data();
+            if (data != null) {
+                updateRecipeExperience(event.getBlock(), data.getRecipe().getNamespacedKey());
+                applyResult(event);
+                return;
+            }
+            if (cache.cancelSmelting()) {
+                event.setCancelled(true); // FurnaceStartSmeltEvent told us to cancel if no custom recipe was found
+            }
+        }
+
+        // Check if the CustomItem is allowed in Vanilla recipes
+        CustomItem customItem = CustomItem.getByItemStack(event.getSource());
+        if (customItem != null && customItem.isBlockVanillaRecipes()) {
+            event.setCancelled(true); //Cancel the process if it is.
+        }
+        Bukkit.getScheduler().runTask(customCrafting, () -> manager.clearCache(event.getBlock()));
     }
 
     /**
@@ -268,72 +239,61 @@ public class FurnaceListener implements Listener {
         });
     }
 
+    /**
+     * Listening to this event is required, because the exp events are not called. This is because the recipes are not saved in the vanilla NBT tags and therefor the furnace doesn't contain any xp to drop.
+     */
+    @EventHandler
+    public void onResultCollect(InventoryClickEvent event) {
+        if (!(event.getClickedInventory() instanceof FurnaceInventory inventory) || !event.getSlotType().equals(InventoryType.SlotType.RESULT)) {
+            return;
+        }
+        var location = event.getClickedInventory().getLocation();
+        if (location == null) return;
+        if (!(location.getBlock().getState() instanceof Furnace)) return;
+        manager.clearCache(location.getBlock());
 
-    @Deprecated
+        if (!ItemUtils.isAirOrNull(inventory.getResult())) { //Make sure to only give exp if the result is actually there.
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
+                Furnace blockState = (Furnace) location.getBlock().getState();
+                PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
+                PersistentDataContainer usedRecipes = rootContainer.get(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER);
+                if (usedRecipes != null) {
+                    // Award the experience of all the stored recipes.
+                    usedRecipes.getKeys().forEach(bukkitRecipeKey -> awardRecipeExperience(usedRecipes, bukkitRecipeKey, location));
+                    rootContainer.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, rootContainer.getAdapterContext().newPersistentDataContainer());
+                    // Update the furnace state, so the NBT is updated.
+                    blockState.update();
+                }
+            });
+        }
+    }
+
     private void awardRecipeExperience(PersistentDataContainer usedRecipes, NamespacedKey bukkitRecipeKey, Location location) {
         CustomRecipe<?> recipeFurnace = customCrafting.getRegistries().getRecipes().get(me.wolfyscript.utilities.util.NamespacedKey.fromBukkit(bukkitRecipeKey));
         if (recipeFurnace instanceof CustomRecipeCooking<?, ?> furnaceRecipe) {
             if (furnaceRecipe.getExp() > 0) {
-                //Calculates the amount of xp levels the Exp Orbs will get. (See net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity#createExperience)
                 double totalXp = (double) usedRecipes.getOrDefault(bukkitRecipeKey, PersistentDataType.INTEGER, 0) * furnaceRecipe.getExp();
-                int levels = (int) Math.floor(totalXp);
-                if (levels < Integer.MAX_VALUE) {
-                    double xpLeft = totalXp - levels;
-                    if (xpLeft != 0.0F && Math.random() < xpLeft) {
-                        ++levels;
-                    }
-                }
-                awardExp(location, levels);
+                location.getWorld().spawn(location, ExperienceOrb.class, experienceOrb -> {
+                    experienceOrb.setExperience((int) Math.floor(totalXp));
+                });
             }
         }
     }
 
-    @Deprecated
-    public static void awardExp(Location loc, int expLevels) {
-        while (expLevels > 0) {
-            int totalXp = getExperienceValue(expLevels);
-            expLevels -= totalXp;
-            loc.getWorld().spawn(loc, ExperienceOrb.class, orb -> orb.setExperience(totalXp));
+    private void updateRecipeExperience(Block furnace, me.wolfyscript.utilities.util.NamespacedKey recipeKey) {
+        Furnace blockState = (Furnace) furnace.getState();
+        PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
+        PersistentDataContainer usedRecipes = rootContainer.get(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER);
+        if (usedRecipes == null) {
+            usedRecipes = rootContainer.getAdapterContext().newPersistentDataContainer();
         }
+
+        NamespacedKey bukkitKey = recipeKey.bukkit();
+        int amount = usedRecipes.getOrDefault(bukkitKey, PersistentDataType.INTEGER, 0);
+        usedRecipes.set(recipeKey.bukkit(), PersistentDataType.INTEGER, amount + 1);
+
+        rootContainer.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, usedRecipes);
     }
 
-    @Deprecated
-    public static int getExperienceValue(int expLevels) {
-        if (expLevels > 162670129) {
-            return expLevels - 100000;
-        } else if (expLevels > 81335063) {
-            return 81335063;
-        } else if (expLevels > 40667527) {
-            return 40667527;
-        } else if (expLevels > 20333759) {
-            return 20333759;
-        } else if (expLevels > 10166857) {
-            return 10166857;
-        } else if (expLevels > 5083423) {
-            return 5083423;
-        } else if (expLevels > 2541701) {
-            return 2541701;
-        } else if (expLevels > 1270849) {
-            return 1270849;
-        } else if (expLevels > 635413) {
-            return 635413;
-        } else if (expLevels > 317701) {
-            return 317701;
-        } else if (expLevels > 158849) {
-            return 158849;
-        } else if (expLevels > 79423) {
-            return 79423;
-        } else if (expLevels > 39709) {
-            return 39709;
-        } else if (expLevels > 19853) {
-            return 19853;
-        } else if (expLevels > 9923) {
-            return 9923;
-        } else if (expLevels > 4957) {
-            return 4957;
-        } else {
-            return expLevels >= 2477 ? 2477 : (expLevels >= 1237 ? 1237 : (expLevels >= 617 ? 617 : (expLevels >= 307 ? 307 : (expLevels >= 149 ? 149 : (expLevels >= 73 ? 73 : (expLevels >= 37 ? 37 : (expLevels >= 17 ? 17 : (expLevels >= 7 ? 7 : (expLevels >= 3 ? 3 : 1)))))))));
-        }
-    }
 
 }
