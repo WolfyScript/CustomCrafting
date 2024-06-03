@@ -34,14 +34,14 @@ import me.wolfyscript.utilities.registry.RegistryCustomItem;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
-import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockExpEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.FurnaceInventory;
@@ -50,11 +50,14 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class FurnaceListener implements Listener {
 
     public static final NamespacedKey RECIPES_USED_KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipes_used");
+    public static final NamespacedKey BACKING_RECIPES_USED = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "backing_recipes_used");
 
     protected final CustomCrafting customCrafting;
     protected final WolfyUtilities api;
@@ -120,7 +123,7 @@ public class FurnaceListener implements Listener {
             if (dataOptional.isEmpty()) {
                 continue;
             }
-            manager.cacheRecipeData(event.getBlock(), new CookingRecipeCache(dataOptional.get(), customBackingRecipe));
+            manager.cacheRecipeData(event.getBlock(), new CookingRecipeCache(dataOptional.get(), bukkitRecipe.getKey(), customBackingRecipe));
             return; // Found valid cached custom recipe
         }
 
@@ -139,10 +142,10 @@ public class FurnaceListener implements Listener {
                     // Let's remember this recipe and check it first next time the same bukkit recipe is present
                     manager.cacheCustomBukkitRecipeAssociation(bukkitRecipe.getKey(), dataOptional.get().getRecipe().getNamespacedKey());
                     // Finally cache recipe data and notify the SmeltEvent
-                    manager.cacheRecipeData(block, new CookingRecipeCache(dataOptional.get(), customBackingRecipe));
+                    manager.cacheRecipeData(block, new CookingRecipeCache(dataOptional.get(), bukkitRecipe.getKey(), customBackingRecipe));
                 }, () -> {
                     // No custom recipe was found, but may still want to cancel the smelting when the original recipe is a custom recipe
-                    manager.cacheRecipeData(block, new CookingRecipeCache(null, customBackingRecipe));
+                    manager.cacheRecipeData(block, new CookingRecipeCache(null, bukkitRecipe.getKey(), customBackingRecipe));
                 });
     }
 
@@ -172,7 +175,9 @@ public class FurnaceListener implements Listener {
             CookingRecipeCache cache = cacheOptional.get();
             CookingRecipeData<?> data = cache.data();
             if (data != null) {
-                Bukkit.getScheduler().runTask(customCrafting, () -> updateRecipeExperience(event.getBlock(), data.getRecipe().getNamespacedKey()));
+                Bukkit.getScheduler().runTask(customCrafting, () -> {
+                    updateRecipeExperience(event.getBlock(), cache.bukkitRecipe(), data.getRecipe().getNamespacedKey());
+                });
                 applyResult(event);
                 return;
             }
@@ -258,9 +263,6 @@ public class FurnaceListener implements Listener {
                 PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
                 PersistentDataContainer usedRecipes = rootContainer.get(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER);
                 if (usedRecipes != null) {
-                    // Award the experience of all the stored recipes.
-                    usedRecipes.getKeys().forEach(bukkitRecipeKey -> awardRecipeExperience(usedRecipes, bukkitRecipeKey, location));
-                    rootContainer.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, rootContainer.getAdapterContext().newPersistentDataContainer());
                     // Update the furnace state, so the NBT is updated.
                     blockState.update();
                 }
@@ -268,32 +270,125 @@ public class FurnaceListener implements Listener {
         }
     }
 
-    private void awardRecipeExperience(PersistentDataContainer usedRecipes, NamespacedKey bukkitRecipeKey, Location location) {
-        CustomRecipe<?> recipeFurnace = customCrafting.getRegistries().getRecipes().get(me.wolfyscript.utilities.util.NamespacedKey.fromBukkit(bukkitRecipeKey));
-        if (recipeFurnace instanceof CustomRecipeCooking<?, ?> furnaceRecipe) {
-            if (furnaceRecipe.getExp() > 0) {
-                double totalXp = (double) usedRecipes.getOrDefault(bukkitRecipeKey, PersistentDataType.INTEGER, 0) * furnaceRecipe.getExp();
-                location.getWorld().spawn(location, ExperienceOrb.class, experienceOrb -> {
-                    experienceOrb.setExperience((int) Math.floor(totalXp));
-                });
+    /* **************************************************************************************** *
+     *                                                                                          *
+     * ## Experience Handling                                                                   *
+     *                                                                                          *
+     * CustomRecipe usages is stored via the PersistentDataContainer of the Furnace block.      *
+     * Due to vanilla recipes interfering it also needs to keep track of those to properly      *
+     * calculate the exp to drop.                                                               *
+     *                                                                                          *
+     * **************************************************************************************** */
+
+    /**
+     *
+     */
+    @EventHandler
+    public void onExperienceCollect(BlockExpEvent event) {
+        Block block = event.getBlock();
+        BlockState state = block.getState();
+        if (state instanceof Furnace furnace) {
+            PersistentDataContainer rootContainer = furnace.getPersistentDataContainer();
+            int expToDrop = event.getExpToDrop();
+
+            Map<NamespacedKey, Integer> usedBackingRecipes = getUsedBackingRecipesExperience(block);
+            Map<CookingRecipe<?>, Integer> map = furnace.getRecipesUsed();
+
+            // Remove usages of backing recipes, so that there are no double XP gains
+            for (Map.Entry<CookingRecipe<?>, Integer> entry : map.entrySet()) {
+                int countToRemove = usedBackingRecipes.getOrDefault(entry.getKey().getKey(), 0);
+                if (countToRemove > 0) {
+                    expToDrop -= (int) Math.floor(countToRemove * entry.getKey().getExperience());
+                }
             }
+
+            // Now let's add the custom recipe experience
+            for (Map.Entry<me.wolfyscript.utilities.util.NamespacedKey, Integer> entry : getUsedCustomRecipesExperience(block).entrySet()) {
+                expToDrop += calculateRecipeExperience(entry.getValue(), entry.getKey());
+            }
+
+            // And finally drop the exp
+            event.setExpToDrop(expToDrop);
+
+            // Reset stored used recipes
+            rootContainer.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, rootContainer.getAdapterContext().newPersistentDataContainer());
+            rootContainer.set(FurnaceListener.BACKING_RECIPES_USED, PersistentDataType.TAG_CONTAINER, rootContainer.getAdapterContext().newPersistentDataContainer());
+            state.update();
         }
     }
 
-    private void updateRecipeExperience(Block furnace, me.wolfyscript.utilities.util.NamespacedKey recipeKey) {
-        Furnace blockState = (Furnace) furnace.getState();
+    private int calculateRecipeExperience(int count, me.wolfyscript.utilities.util.NamespacedKey recipeKey) {
+        CustomRecipe<?> recipeFurnace = customCrafting.getRegistries().getRecipes().get(recipeKey);
+        if (recipeFurnace instanceof CustomRecipeCooking<?, ?> furnaceRecipe) {
+            if (furnaceRecipe.getExp() > 0) {
+                return (int) Math.floor((double) count * furnaceRecipe.getExp());
+            }
+        }
+        return 0;
+    }
+
+    private Map<me.wolfyscript.utilities.util.NamespacedKey, Integer> getUsedCustomRecipesExperience(Block block) {
+        Furnace blockState = (Furnace) block.getState();
         PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
+        PersistentDataContainer usedRecipes = rootContainer.get(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER);
+        if (usedRecipes == null) {
+            return Map.of();
+        }
+        Map<me.wolfyscript.utilities.util.NamespacedKey, Integer> map = new HashMap<>();
+        for (NamespacedKey key : usedRecipes.getKeys()) {
+            int count = usedRecipes.getOrDefault(key, PersistentDataType.INTEGER, 0);
+            map.put(me.wolfyscript.utilities.util.NamespacedKey.fromBukkit(key), count);
+        }
+        return map;
+    }
+
+    private Map<NamespacedKey, Integer> getUsedBackingRecipesExperience(Block block) {
+        Furnace blockState = (Furnace) block.getState();
+        PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
+        PersistentDataContainer usedBackingRecipes = rootContainer.get(FurnaceListener.BACKING_RECIPES_USED, PersistentDataType.TAG_CONTAINER);
+        if (usedBackingRecipes == null) {
+            return Map.of();
+        }
+        Map<NamespacedKey, Integer> map = new HashMap<>();
+        for (NamespacedKey key : usedBackingRecipes.getKeys()) {
+            int count = usedBackingRecipes.getOrDefault(key, PersistentDataType.INTEGER, 0);
+            map.put(key, count);
+        }
+        return map;
+    }
+
+    /**
+     * Increments the used count for both the actual CustomRecipe and the backing Bukkit (Vanilla) recipe that Minecraft used.
+     * This keeps track how many Bukkit (Vanilla) recipes are used for CustomRecipes, so they can be subtracted from the experience to drop,
+     * because the Bukkit (Vanilla) recipe was overridden by the CustomRecipe.
+     *
+     * @param furnace The Furnace block
+     * @param backingRecipe The actual bukkit (vanilla) recipe that is present in the event
+     * @param recipeKey The custom recipe key
+     */
+    private void updateRecipeExperience(Block furnace, NamespacedKey backingRecipe, me.wolfyscript.utilities.util.NamespacedKey recipeKey) {
+        Furnace blockState = (Furnace) furnace.getState();
+
+        PersistentDataContainer rootContainer = blockState.getPersistentDataContainer();
+        // Increment usages for Bukkit (Vanilla) recipes, so we can subtract those later
+        PersistentDataContainer usedBackingRecipes = rootContainer.get(FurnaceListener.BACKING_RECIPES_USED, PersistentDataType.TAG_CONTAINER);
+        if (usedBackingRecipes == null) {
+            usedBackingRecipes = rootContainer.getAdapterContext().newPersistentDataContainer();
+        }
+        int recipeCount = usedBackingRecipes.getOrDefault(backingRecipe, PersistentDataType.INTEGER, 0);
+        usedBackingRecipes.set(backingRecipe, PersistentDataType.INTEGER, recipeCount + 1);
+
+        // Increment custom recipe usages
         PersistentDataContainer usedRecipes = rootContainer.get(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER);
         if (usedRecipes == null) {
             usedRecipes = rootContainer.getAdapterContext().newPersistentDataContainer();
         }
-
         NamespacedKey bukkitKey = recipeKey.bukkit();
         int amount = usedRecipes.getOrDefault(bukkitKey, PersistentDataType.INTEGER, 0);
         usedRecipes.set(recipeKey.bukkit(), PersistentDataType.INTEGER, amount + 1);
 
+        // Update root container
         rootContainer.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, usedRecipes);
-
         blockState.update();
     }
 

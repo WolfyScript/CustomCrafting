@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.listeners.cooking;
 
 import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.Nullable;
 
-public record CookingRecipeCache(@Nullable CookingRecipeData<?> data, boolean cancelSmelting) {
-}
+public record CookingRecipeCache(@Nullable CookingRecipeData<?> data, NamespacedKey bukkitRecipe, boolean cancelSmelting) { }
