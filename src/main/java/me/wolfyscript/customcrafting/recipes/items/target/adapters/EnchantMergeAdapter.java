@@ -66,6 +66,14 @@ public class EnchantMergeAdapter extends MergeAdapter {
     @JsonProperty("levelLimit")
     private Map<Enchantment, Integer> enchantsLimit = new HashMap<>();
 
+    public EnchantMergeAdapter(boolean ignoreEnchantLimit, boolean ignoreConflicts, boolean ignoreItemLimit, boolean increaseLevels) {
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "enchant"));
+        this.ignoreEnchantLimit = ignoreEnchantLimit;
+        this.ignoreConflicts = ignoreConflicts;
+        this.ignoreItemLimit = ignoreItemLimit;
+        this.increaseLevels = increaseLevels;
+    }
+
     public EnchantMergeAdapter() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "enchant"));
         this.ignoreEnchantLimit = false;

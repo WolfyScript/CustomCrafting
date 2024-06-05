@@ -234,7 +234,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
     public void setPreserveEnchants(boolean preserveEnchants) {
         this.preserveEnchants = preserveEnchants;
         if (!onlyChangeMaterial && preserveEnchants) {
-            internalMergeAdapters.add(new EnchantMergeAdapter());
+            internalMergeAdapters.add(new EnchantMergeAdapter(true, true, true, false));
         } else if (!preserveEnchants) {
             internalMergeAdapters.removeIf(mergeAdapter -> mergeAdapter.getClass().equals(EnchantMergeAdapter.class));
         }
