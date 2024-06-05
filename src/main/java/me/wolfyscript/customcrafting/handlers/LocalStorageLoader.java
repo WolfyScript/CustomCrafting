@@ -43,6 +43,7 @@ import me.wolfyscript.utilities.compatibility.PluginIntegration;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import org.apache.commons.lang3.time.StopWatch;
+import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.io.IOException;
@@ -146,6 +147,9 @@ public class LocalStorageLoader extends ResourceLoader {
         api.getConsole().info("- - - - [Local Storage] - - - -");
         int processors = Math.min(Runtime.getRuntime().availableProcessors(), dataSettings.maxProcessors());
         customCrafting.getLogger().info(PREFIX + "Using " + processors + " threads");
+        if (dataSettings.sync()) {
+            customCrafting.getLogger().info(PREFIX + "Loading data synchronously");
+        }
         executor = Executors.newWorkStealingPool(processors);
         api.getConsole().info(PREFIX + "Looking through data folder...");
         String[] dirs = DATA_FOLDER.list();
@@ -416,7 +420,7 @@ public class LocalStorageLoader extends ResourceLoader {
     /**
      * Used to load data & cache the loaded, skipped errors & already existing keys.
      */
-    private abstract static class DataLoader {
+    private abstract class DataLoader {
 
         protected final String[] dirs;
 
@@ -425,6 +429,28 @@ public class LocalStorageLoader extends ResourceLoader {
         }
 
         protected abstract void load();
+
+        protected void executeTask(Runnable runnable) {
+            if (dataSettings.sync()) {
+                if (Bukkit.isPrimaryThread()) {
+                    // This option will cause the task to run on the main thread! Required for plugins like MMOItems
+                    runnable.run();
+                } else {
+                    // The LocalStorageLoader was not called from the main thread.
+                    // Not sure what to do in this case... maybe a hacky Future thingy will work
+                    try {
+                        Bukkit.getScheduler().callSyncMethod(customCrafting, () -> {
+                            runnable.run();
+                            return true;
+                        }).get(dataSettings.timeoutLoading().getKey(), dataSettings.timeoutLoading().getValue());
+                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                        customCrafting.getLogger().log(Level.SEVERE, "Error while loading recipe ", e);
+                    }
+                }
+            } else {
+                executor.execute(runnable);
+            }
+        }
 
     }
 
@@ -448,7 +474,7 @@ public class LocalStorageLoader extends ResourceLoader {
                 if (isValidFile(file.toFile())) return FileVisitResult.CONTINUE;
                 final var namespacedKey = keyFromFile(namespace, relative);
                 if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
-                    executor.execute(() -> {
+                    executeTask(() -> {
                         try {
                             var injectableValues = new InjectableValues.Std();
                             injectableValues.addValue("key", namespacedKey);
@@ -533,7 +559,7 @@ public class LocalStorageLoader extends ResourceLoader {
                 if (isValidFile(file)) continue;
                 var namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
                 if (!customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
-                    executor.execute(() -> {
+                    executeTask(() -> {
                         try {
                             CustomRecipe<?> recipe = loader.getInstance(namespacedKey, objectMapper.readTree(file));
                             checkDependenciesAndRegister(recipe);
