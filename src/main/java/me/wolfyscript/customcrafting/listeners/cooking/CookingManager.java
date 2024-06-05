@@ -20,49 +20,47 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.utils.cooking;
+package me.wolfyscript.customcrafting.listeners.cooking;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
-import me.wolfyscript.utilities.util.Pair;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.block.Furnace;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CookingManager {
 
     private final CustomCrafting plugin;
-    private final Map<BlockPositionData, Pair<CookingRecipeData<?>, Boolean>> cachedRecipeData = new ConcurrentHashMap<>();
-    private final SmeltAPIAdapter smeltAdapter;
+
+    /**
+     * Stores the custom recipes that were detected to be valid when the furnace contained a vanilla/bukkit recipe.
+     * Most optimally that vanilla/bukkit recipe is the placeholder recipe of the custom recipe, but it may get overridden and has lower priority than other recipes.
+     * This way if we come across a vanilla/bukkit recipe, we check the associated CustomRecipes first. When none matche then we iterate over all registered CustomRecipes.
+     */
+    private final Multimap<NamespacedKey, me.wolfyscript.utilities.util.NamespacedKey> VANILLA_RECIPE_TO_CUSTOM_RECIPE_CACHE = Multimaps.newSetMultimap(new HashMap<>(), HashSet::new);
+
+    private final Map<BlockPositionData, CookingRecipeCache> cachedRecipeData = new ConcurrentHashMap<>();
 
     public CookingManager(CustomCrafting plugin) {
         this.plugin = plugin;
-        this.smeltAdapter = plugin.isPaper() ? new PaperSmeltAPIAdapter(plugin, this) : new BukkitSmeltAPIAdapter(plugin, this);
     }
 
-    public SmeltAPIAdapter getAdapter() {
-        return smeltAdapter;
+    void cacheCustomBukkitRecipeAssociation(NamespacedKey bukkitRecipe, me.wolfyscript.utilities.util.NamespacedKey customRecipe) {
+        VANILLA_RECIPE_TO_CUSTOM_RECIPE_CACHE.put(bukkitRecipe, customRecipe);
     }
 
-    /**
-     * Checks and caches if the cooked/smelted recipe is a custom recipe.<br>
-     * The cached value will be removed after a specific delay (currently 4 ticks).
-     *
-     * @param event The {@link FurnaceSmeltEvent}
-     */
-    private Pair<CookingRecipeData<?>, Boolean> checkEvent(FurnaceSmeltEvent event) {
-        var block = event.getBlock();
-        return smeltAdapter.process(event, block, (Furnace) block.getState());
+    Collection<me.wolfyscript.utilities.util.NamespacedKey> getAssociatedCustomRecipes(NamespacedKey bukkitRecipe) {
+        return VANILLA_RECIPE_TO_CUSTOM_RECIPE_CACHE.get(bukkitRecipe);
     }
 
-    void cacheRecipeData(Block block, Pair<CookingRecipeData<?>, Boolean> data) {
-        cachedRecipeData.put(new BlockPositionData(block), data);
+    void cacheRecipeData(Block block, CookingRecipeCache recipeCache) {
+        cachedRecipeData.put(new BlockPositionData(block), recipeCache);
     }
 
     public void clearCache(Block block) {
@@ -78,7 +76,7 @@ public class CookingManager {
      * @return If the recipe of the event is a custom recipe.
      */
     public boolean hasCustomRecipe(FurnaceSmeltEvent event) {
-        return getCustomRecipeCache(event).getValue();
+        return getCustomRecipeCache(event).map(recipeCache -> recipeCache.data() != null).orElse(false);
     }
 
     /**
@@ -89,11 +87,11 @@ public class CookingManager {
      * @param event The {@link FurnaceSmeltEvent}
      * @return The {@link CookingRecipeData} of the custom recipe. Null if the event doesn't contain a custom recipe.
      */
-    public Pair<CookingRecipeData<?>, Boolean> getCustomRecipeCache(FurnaceSmeltEvent event) {
-        return cachedRecipeData.computeIfAbsent(new BlockPositionData(event.getBlock()), block -> checkEvent(event));
+    public Optional<CookingRecipeCache> getCustomRecipeCache(FurnaceSmeltEvent event) {
+        return Optional.ofNullable(cachedRecipeData.get(new BlockPositionData(event.getBlock())));
     }
 
-    public Optional<Pair<CookingRecipeData<?>, Boolean>> getCustomRecipeCache(Block block) {
+    public Optional<CookingRecipeCache> getCustomRecipeCache(Block block) {
         return Optional.ofNullable(cachedRecipeData.get(new BlockPositionData(block)));
     }
 

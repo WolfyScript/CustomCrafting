@@ -20,31 +20,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.utils.cooking;
+package me.wolfyscript.customcrafting.listeners.cooking;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
-import me.wolfyscript.utilities.util.Pair;
-import org.bukkit.block.Block;
-import org.bukkit.block.Furnace;
-import org.bukkit.event.inventory.FurnaceSmeltEvent;
+import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * In versions 1.16+ paper provides a recipe getter for the FurnaceSmeltEvent that we can use.
- */
-public class PaperSmeltAPIAdapter extends SmeltAPIAdapter {
-
-    public PaperSmeltAPIAdapter(CustomCrafting customCrafting, CookingManager manager) {
-        super(customCrafting, manager);
-    }
-
-    @Override
-    public Pair<CookingRecipeData<?>, Boolean> process(FurnaceSmeltEvent event, Block block, Furnace furnace) {
-        var recipe = event.getRecipe();
-        if (recipe != null && ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
-            return processRecipe(event.getSource(), ICustomVanillaRecipe.toOriginalKey(recipe.getKey()), block);
-        }
-        return new Pair<>(null, false);
-    }
-}
+public record CookingRecipeCache(@Nullable CookingRecipeData<?> data, NamespacedKey bukkitRecipe, boolean cancelSmelting) { }
