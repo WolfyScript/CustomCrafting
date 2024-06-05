@@ -123,6 +123,7 @@ public class FurnaceListener implements Listener {
             if (dataOptional.isEmpty()) {
                 continue;
             }
+            event.setTotalCookTime(dataOptional.get().getRecipe().getCookingTime()); // Apply the correct custom cook time
             manager.cacheRecipeData(event.getBlock(), new CookingRecipeCache(dataOptional.get(), bukkitRecipe.getKey(), customBackingRecipe));
             return; // Found valid cached custom recipe
         }
@@ -139,10 +140,13 @@ public class FurnaceListener implements Listener {
                 .filter(Optional::isPresent)
                 .findFirst()
                 .ifPresentOrElse(dataOptional -> {
+                    CookingRecipeData<?> data = dataOptional.get();
+                    CustomRecipeCooking<?,?> recipeCooking = data.getRecipe();
+                    event.setTotalCookTime(recipeCooking.getCookingTime()); // Apply the correct custom cook time
                     // Let's remember this recipe and check it first next time the same bukkit recipe is present
-                    manager.cacheCustomBukkitRecipeAssociation(bukkitRecipe.getKey(), dataOptional.get().getRecipe().getNamespacedKey());
+                    manager.cacheCustomBukkitRecipeAssociation(bukkitRecipe.getKey(), recipeCooking.getNamespacedKey());
                     // Finally cache recipe data and notify the SmeltEvent
-                    manager.cacheRecipeData(block, new CookingRecipeCache(dataOptional.get(), bukkitRecipe.getKey(), customBackingRecipe));
+                    manager.cacheRecipeData(block, new CookingRecipeCache(data, bukkitRecipe.getKey(), customBackingRecipe));
                 }, () -> {
                     // No custom recipe was found, but may still want to cancel the smelting when the original recipe is a custom recipe
                     manager.cacheRecipeData(block, new CookingRecipeCache(null, bukkitRecipe.getKey(), customBackingRecipe));
