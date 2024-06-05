@@ -39,6 +39,7 @@ public class DataSettings {
     private static final String PRINT_STACKTRACE = "print_stacktrace";
     private static final String BUKKIT_VERSION = "bukkit_version";
     private static final String CONFIG_VERSION = "version";
+    private static final String SYNC = "sync";
 
     private final ConfigurationSection section;
 
@@ -54,6 +55,10 @@ public class DataSettings {
     private Pair<Long, TimeUnit> timeout(ConfigurationSection section, String key) {
         return new Pair<>(section.getLong(key + ".value"),
                 Objects.requireNonNullElse(TimeUnit.valueOf(section.getString(key + ".unit")), TimeUnit.SECONDS));
+    }
+
+    public boolean sync() {
+        return section.getBoolean(SYNC, false);
     }
 
     public boolean printPending() {

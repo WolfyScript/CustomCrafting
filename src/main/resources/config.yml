@@ -80,6 +80,9 @@ data:
   # Specifies the maximum number of processors to use for loading the data
   # Uses either all available processors, or the specified count, whichever is smaller
   max_processors: 64
+  # When set true, uses the sync scheduler to load the items & recipes.
+  # Data is then loaded sequentially and not parallel across multiple cores (ignores 'max_processors')
+  sync: false
   # Specifies if it should print details about why the recipes are pending.
   # Recipes are mostly pending because of dependencies, and are validated once a dependency is done loading its data.
   # Usually not required as pending recipes not validated are marked as 'invalid' after a given timeout (see 'data.timeout.pending').
