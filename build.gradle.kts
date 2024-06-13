@@ -121,16 +121,17 @@ minecraftServers {
             type.set("SPIGOT")
             ports.set(setOf(debugPortMapping, "25567:25565"))
         }
-        register("spigot_1_20") {
-            version.set("1.20.4")
-            type.set("SPIGOT")
-            extraEnv.put("BUILD_FROM_SOURCE", "true")
-            ports.set(setOf(debugPortMapping, "25568:25565"))
-        }
         register("spigot_1_20_6") {
             version.set("1.20.6")
             type.set("SPIGOT")
             imageVersion.set("java21")
+            ports.set(setOf(debugPortMapping, "25568:25565"))
+        }
+        register("spigot_1_21") {
+            version.set("1.21")
+            type.set("SPIGOT")
+            extraEnv.put("BUILD_FROM_SOURCE", "true")
+            imageVersion.set("java21-graalvm")
             ports.set(setOf(debugPortMapping, "25569:25565"))
         }
         // Paper test servers
