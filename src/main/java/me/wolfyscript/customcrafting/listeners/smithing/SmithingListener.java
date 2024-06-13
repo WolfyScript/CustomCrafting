@@ -103,7 +103,6 @@ public class SmithingListener implements Listener {
                     SmithingRecipe recipe = (SmithingRecipe) inv.getRecipe();
                     if (recipe == null || ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
                         event.setResult(null);
-                        customCrafting.getApi().getNmsUtil().getRecipeUtil().setCurrentRecipe(event.getView(), null);
                     }
                 });
     }
