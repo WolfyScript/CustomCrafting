@@ -127,8 +127,8 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
                         if (Bukkit.addRecipe(bukkitRecipe)) {
                             return;
                         }
+                        customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
                     }
-                    customCrafting.getLogger().warning(String.format("Didn't add recipe '%s' to Bukkit! Most likely already exists!", namespacedKey));
                 } catch (IllegalArgumentException | IllegalStateException ex) {
                     customCrafting.getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
