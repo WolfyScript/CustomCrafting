@@ -87,7 +87,7 @@ public class ConfigHandler {
             customCrafting.saveResource("recipe_book.conf", true);
         } else if (recipeBookFileJson.exists() && !recipeBookFile.exists()) {
             // The old json file is used and there is no hocon file available, so let's rename it.
-            Files.move(recipeBookFileJson.toPath(), recipeBookFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+            Files.move(recipeBookFileJson.toPath(), recipeBookFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
         // At this point both json and hocon file might be present (due to previous conversion logic), so just load the hocon variant.
         this.recipeBookConfig = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readValue(recipeBookFile, RecipeBookConfig.class);
