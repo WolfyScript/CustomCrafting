@@ -64,13 +64,13 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
 
     @Override
     public CampfireRecipe getVanillaRecipe() {
-        if (!getSource().isEmpty()) {
-            return new CampfireRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(),
-                    getResult().getItemStack(),
-                    new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).toList()), getExp(),
-                    getCookingTime()
-            );
-        }
+//        if (!getSource().isEmpty()) {
+//            return new CampfireRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(),
+//                    getResult().getItemStack(),
+//                    new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).toList()), getExp(),
+//                    getCookingTime()
+//            );
+//        }
         return null;
     }
 
