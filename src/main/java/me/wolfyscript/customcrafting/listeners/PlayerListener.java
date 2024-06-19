@@ -80,9 +80,4 @@ public class PlayerListener implements Listener {
             }
         }
     }
-
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        customCrafting.onPlayerDisconnect(event.getPlayer());
-    }
 }

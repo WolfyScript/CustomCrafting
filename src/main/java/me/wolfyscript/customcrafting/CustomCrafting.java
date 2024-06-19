@@ -176,7 +176,6 @@ public class CustomCrafting extends JavaPlugin {
     private DataHandler dataHandler;
     //Network
     private final UpdateChecker updateChecker;
-    private final NetworkHandler networkHandler;
     //Compatibility
     private final PluginCompatibility pluginCompatibility;
     private final boolean isPaper;
@@ -209,7 +208,6 @@ public class CustomCrafting extends JavaPlugin {
         this.chatUtils = new ChatUtils(this);
         this.patreon = new Patreon(this);
         this.updateChecker = new UpdateChecker(this, 55883);
-        this.networkHandler = new NetworkHandler(this, api);
 
         this.craftManager = new CraftManager(this);
         this.cookingManager = new CookingManager(this);
@@ -356,10 +354,7 @@ public class CustomCrafting extends JavaPlugin {
         registerListeners();
         registerCommands();
         registerInventories();
-        //Used for testing purposes, might be available for production in the future
-        if (WolfyUtilities.isDevEnv()) {
-            this.networkHandler.registerPackets();
-        }
+
         dataHandler.loadRecipesAndItems();
 
         //All data is loaded. Now test for updates.
@@ -486,10 +481,6 @@ public class CustomCrafting extends JavaPlugin {
      */
     public WolfyUtilities getApi() {
         return api;
-    }
-
-    public void onPlayerDisconnect(Player player) {
-        this.networkHandler.disconnectPlayer(player);
     }
 
     /**
