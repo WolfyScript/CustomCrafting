@@ -22,17 +22,13 @@
 
 package me.wolfyscript.customcrafting.listeners.cooking;
 
-import java.util.Iterator;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.CampfireStartEvent;
-import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 
 /**
  * In Spigot 1.20 we have access to the CampfireStartEvent that we can use to make sure the correct recipe is used and cancel invalid recipes.
@@ -49,31 +45,19 @@ public class Campfire1_20Listener implements Listener {
     public void onStartCampfireSmelt(CampfireStartEvent event) {
         ItemStack source = event.getSource();
         customCrafting.getRegistries().getRecipes().get(RecipeType.CAMPFIRE).stream()
-                .filter(recipe1 -> recipe1.getSource().checkChoices(source, recipe1.isCheckNBT()).isPresent() && recipe1.checkConditions(Conditions.Data.of(event.getBlock())))
+                .filter(recipe -> recipe.checkConditions(Conditions.Data.of(event.getBlock())))
+                .filter(recipe -> recipe.getSource().checkChoices(source, recipe.isCheckNBT()).isPresent())
                 .findFirst()
                 .ifPresentOrElse(
                         campfireRecipe -> event.setTotalCookTime(campfireRecipe.getCookingTime()),
                         () -> {
-                            Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(me.wolfyscript.utilities.api.nms.inventory.RecipeType.CAMPFIRE_COOKING);
-                            while (recipeIterator.hasNext()) {
-                                if (recipeIterator.next() instanceof CookingRecipe<?> recipe && !ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
-                                    if (recipe.getInputChoice().test(source)) {
-                                        // Found a vanilla or other plugin recipe that matches.
-                                        event.setTotalCookTime(recipe.getCookingTime());
-
-                                        // Check if the CustomItem is allowed in Vanilla recipes
-                                        customCrafting.getApi().getCore().getRegistries().getCustomItems().getByItemStack(source)
-                                                .ifPresent(customItem -> {
-                                                    if (customItem.isBlockVanillaRecipes()) {
-                                                        event.setTotalCookTime(-1); // "Cancel" the process if it is.
-                                                    }
-                                                });
-                                        return;
-                                    }
-                                }
-                            }
-                            // No non-cc recipe found, lets cancel the progress!
-                            event.setTotalCookTime(-1);
+                            // Check if the CustomItem is allowed in Vanilla recipes
+                            customCrafting.getApi().getCore().getRegistries().getCustomItems().getByItemStack(source)
+                                    .ifPresent(customItem -> {
+                                        if (customItem.isBlockVanillaRecipes()) {
+                                            event.setTotalCookTime(-1); // "Cancel" the process if it is.
+                                        }
+                                    });
                         });
     }
 

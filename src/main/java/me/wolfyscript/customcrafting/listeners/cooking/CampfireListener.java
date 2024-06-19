@@ -22,16 +22,16 @@
 
 package me.wolfyscript.customcrafting.listeners.cooking;
 
-import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.CampfireRecipeData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
+import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Campfire;
@@ -41,11 +41,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.CookingRecipe;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.Iterator;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -72,39 +69,37 @@ public class CampfireListener implements Listener {
             return;
 
         Campfire campfire = (Campfire) event.getClickedBlock().getState();
+        Conditions.Data condtionsData = Conditions.Data.of(campfire.getBlock());
         getFirstEmptySlot(campfire).ifPresent(slot -> customCrafting.getRegistries().getRecipes().get(RecipeType.CAMPFIRE).stream()
-                .filter(recipe1 -> recipe1.getSource().checkChoices(event.getItem(), recipe1.isCheckNBT()).isPresent() && recipe1.checkConditions(Conditions.Data.of(campfire.getBlock())))
+                .filter(recipe -> recipe.checkConditions(condtionsData))
+                .map(recipe1 -> new Pair<>(recipe1, recipe1.getSource().checkChoices(event.getItem(), recipe1.isCheckNBT())))
+                .filter(pair -> pair.getValue().isPresent())
                 .findFirst()
                 .ifPresentOrElse(
-                        recipe1 -> campfire.setCookTimeTotal(slot, recipe1.getCookingTime()),
-                        () -> {
-                            boolean isPartOfPlaceholderRecipe = false;
-                            Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(me.wolfyscript.utilities.api.nms.inventory.RecipeType.CAMPFIRE_COOKING);
-                            while (recipeIterator.hasNext()) {
-                                if (recipeIterator.next() instanceof CookingRecipe<?> recipe) {
-                                    if (!recipe.getInputChoice().test(event.getItem())) continue;
-                                    if (ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
-                                        isPartOfPlaceholderRecipe = true;
-                                        continue;
-                                    }
-                                    // Found a vanilla or other plugin recipe that matches.
-                                    campfire.setCookTimeTotal(slot, recipe.getCookingTime());
+                        pair -> {
+                            StackReference matchingSource = pair.getValue().get(); // Ignore warning. This was checked using the stream filter
 
-                                    // Check if the CustomItem is allowed in Vanilla recipes
-                                    customCrafting.getApi().getCore().getRegistries().getCustomItems().getByItemStack(event.getItem())
-                                            .ifPresent(customItem -> {
-                                                if (customItem.isBlockVanillaRecipes()) {
-                                                    event.setUseInteractedBlock(Event.Result.DENY);
-                                                }
-                                            });
-                                    return;
-                                }
-                            }
-                            // No non-cc recipe found!
-                            // Allow for normal interaction if the item is not used in any recipe.
-                            if (isPartOfPlaceholderRecipe) {
-                                event.setUseInteractedBlock(Event.Result.DENY);
-                            }
+                            // Calculate the items that should be placed onto the campfire
+                            ItemStack stackToPlace = event.getItem().clone();
+                            stackToPlace.setAmount(matchingSource.amount());
+
+                            // Cannot handle remains here, because the original item can still be returned e.g. when the campfire is broken.
+                            matchingSource.shrink(event.getItem(), 1, false, null, event.getPlayer(), event.getClickedBlock().getLocation());
+
+                            campfire.setItem(slot, stackToPlace); // Set the item that should be cooked or dropped when campfire is broken
+                            campfire.setCookTimeTotal(slot, pair.getKey().getCookingTime());
+                            campfire.setCookTime(slot, 0); // We need to reset the previous cook time, otherwise it is done instantly!
+
+                            event.setCancelled(true);
+                        },
+                        () -> {
+                            // Check if the CustomItem is allowed in Vanilla recipes
+                            customCrafting.getApi().getCore().getRegistries().getCustomItems().getByItemStack(event.getItem())
+                                    .ifPresent(customItem -> {
+                                        if (customItem.isBlockVanillaRecipes()) {
+                                            event.setUseInteractedBlock(Event.Result.DENY);
+                                        }
+                                    });
                         }));
         campfire.update();
     }
@@ -121,40 +116,29 @@ public class CampfireListener implements Listener {
     @EventHandler
     public void onCampfireFinished(BlockCookEvent event) {
         if (!event.getBlock().getType().equals(Material.CAMPFIRE)) return;
-        customCrafting.getRegistries().getRecipes().get(RecipeType.CAMPFIRE).stream()
-                .map(recipe1 -> recipe1.getSource().checkChoices(event.getSource(), recipe1.isCheckNBT()).map(customItem -> {
-                    if (recipe1.checkConditions(Conditions.Data.of(event.getBlock()))) {
-                        IngredientData ingredientData = new IngredientData(0, 0, recipe1.getSource(), customItem, event.getSource());
-                        return new CampfireRecipeData(recipe1, ingredientData);
-                    }
-                    return null;
-                }).orElse(null))
-                .filter(Objects::nonNull)
-                .findFirst()
-                .ifPresentOrElse(campfireRecipeData -> campfireRecipeData.getRecipe().getResult().item(event.getBlock()).ifPresent(reference -> event.setResult(reference.referencedStack())), () -> {
-                    Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(me.wolfyscript.utilities.api.nms.inventory.RecipeType.CAMPFIRE_COOKING);
-                    while (recipeIterator.hasNext()) {
-                        if (recipeIterator.next() instanceof CookingRecipe<?> recipe && !ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(recipe.getKey())) {
-                            if (recipe.getInputChoice().test(event.getSource())) {
-                                // Found a vanilla or other plugin recipe that matches.
-                                event.setResult(recipe.getResult());
 
-                                // Check if the CustomItem is allowed in Vanilla recipes
-                                StackIdentifier identifier = WolfyUtilCore.getInstance().getRegistries().getStackIdentifierParsers().parseIdentifier(event.getSource());
-                                if (identifier instanceof WolfyUtilsStackIdentifier wolfyUtilsStackIdentifier) {
-                                    wolfyUtilsStackIdentifier.customItem().ifPresent(customItem -> {
-                                        if (customItem.isBlockVanillaRecipes()) {
-                                            event.setResult(event.getSource());
-                                        }
-                                    });
-                                }
-                                return;
+        customCrafting.getRegistries().getRecipes().get(RecipeType.CAMPFIRE).stream()
+                .filter(customRecipe -> customRecipe.checkConditions(Conditions.Data.of(event.getBlock())))
+                .map(customRecipe -> customRecipe.getSource().checkChoices(event.getSource(), customRecipe.isCheckNBT()).map(customItem -> {
+                    IngredientData ingredientData = new IngredientData(0, 0, customRecipe.getSource(), customItem, event.getSource());
+                    return new CampfireRecipeData(customRecipe, ingredientData);
+                }))
+                .filter(Optional::isPresent)
+                .findFirst()
+                .ifPresentOrElse(
+                        recipeData -> recipeData.get().getRecipe().getResult().item(event.getBlock()).ifPresent(reference -> event.setResult(reference.referencedStack())),
+                        () -> {
+                            // Check if the CustomItem is allowed in Vanilla recipes
+                            StackIdentifier identifier = WolfyUtilCore.getInstance().getRegistries().getStackIdentifierParsers().parseIdentifier(event.getSource());
+                            if (identifier instanceof WolfyUtilsStackIdentifier wolfyUtilsStackIdentifier) {
+                                wolfyUtilsStackIdentifier.customItem().ifPresent(customItem -> {
+                                    if (customItem.isBlockVanillaRecipes()) {
+                                        event.setResult(event.getSource());
+                                    }
+                                });
                             }
                         }
-                    }
-                    // No non-cc recipe found, lets cancel the progress!
-                    event.setResult(event.getSource());
-                });
+                );
     }
 
 }
