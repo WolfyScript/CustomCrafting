@@ -169,6 +169,7 @@ public class Items implements Serializable {
     }
 
     public void setItem(CustomItem item) {
+        this.original = item.stackReference();
         this.item = item;
     }
 

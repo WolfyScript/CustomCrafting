@@ -23,8 +23,6 @@
 package me.wolfyscript.customcrafting.gui.item_creator;
 
 import com.google.common.collect.Lists;
-import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifier;
-import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIdentifier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -32,6 +30,7 @@ import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabArmorSlots;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabAttributes;
@@ -55,6 +54,7 @@ import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabRepairCost;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabUnbreakable;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.TabVanilla;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -77,8 +77,11 @@ import me.wolfyscript.utilities.compatibility.plugins.oraxen.OraxenStackIdentifi
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 
@@ -125,10 +128,11 @@ public class MenuItemCreator extends CCWindow {
         })).register();
         btnB.itemInput(ITEM_INPUT).state(s -> s.icon(Material.AIR).postAction((cache, guiHandler, player, guiInventory, stack, slot, event) -> {
             var items = cache.getItems();
+            // Normal interaction, just apply the item
             guiHandler.getWolfyUtils().getRegistries().getStackIdentifierParsers().parseFrom(stack).ifPresentOrElse(reference -> {
                 items.editorWasPreviouslyCancelled(false);
                 items.setItem(new CustomItem(reference));
-            }, () -> items.setItem(new CustomItem(Material.AIR)));
+            }, () -> /* Should never happen (Bukkit reference would need to fail) */ items.setItem(new CustomItem(Material.AIR)));
         }).render((cache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(guiHandler.getCustomCache().getItems().getItem().getItemStack()))).register();
         btnB.action(SAVE_ITEM).state(s -> s.icon(Material.WRITABLE_BOOK).action((cache, guiHandler, player, inventory, i, event) -> {
             var items = cache.getItems();
@@ -169,6 +173,19 @@ public class MenuItemCreator extends CCWindow {
             }
             return true;
         })).register();
+        // Displays the stack in the ItemCreator
+        btnB.action("item_display").state(s -> s.icon(Material.AIR).action((cache, guiHandler, player, guiInventory, i, event) -> {
+            if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
+                if (cache.getSetting() == Setting.RECIPE_CREATOR) {
+                    cache.getItems().setRecipeItem(false); // Prevent to move back to the ingredient/result menu
+                }
+                // Allow editing the stack reference like in the Recipe Creator
+                Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> guiHandler.openWindow(ClusterRecipeCreator.ITEM_EDITOR));
+                return true;
+            }
+            return true;
+        }).render((ccCache, guiHandler, player, guiInventory, itemStack, i) -> CallbackButtonRender.UpdateResult.of(ccCache.getItems().getItem().stackReference().referencedStack()))).register();
+
         btnB.action(PAGE_NEXT).state(s -> s.icon(PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287")).action((ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             items.setPage(items.getPage() + 1);
             return true;
@@ -277,7 +294,7 @@ public class MenuItemCreator extends CCWindow {
         }
 
         event.setButton(45, CANCEL);
-        event.setItem(4, items.getItem().stackReference().referencedStack());
+        event.setButton(4, "item_display");
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         var gray = data.getLightBackground();
         if (customCrafting.getConfigHandler().getConfig().isGUIDrawBackground()) event.setButton(13, gray);

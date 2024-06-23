@@ -22,7 +22,8 @@
 
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
-import com.wolfyscript.utilities.bukkit.world.items.reference.*;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackIdentifierParser;
+import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
@@ -36,13 +37,9 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
-import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class MenuItemEditor extends CCWindow {
@@ -55,12 +52,21 @@ public class MenuItemEditor extends CCWindow {
     public void onInit() {
         ButtonBuilder<CCCache> btnB = getButtonBuilder();
 
-        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK).icon(PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c")).action((cache, guiHandler, player, inv, i, event) -> {
+        getButtonBuilder().action("back").state(s -> s.key(ClusterMain.BACK_BOTTOM).icon(Material.BARRIER).action((cache, guiHandler, player, inv, i, event) -> {
+            cache.setApplyItem(null);
             if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
-                cache.getItems().setRecipeItem(false);
-                cache.setApplyItem(null);
+                if (!cache.getItems().isRecipeItem()) {
+                    cache.getItems().setRecipeItem(true);
+                    guiHandler.openCluster(ClusterItemCreator.KEY);
+                    return true;
+                }
                 guiHandler.openPreviousWindow();
             } else {
+                if (cache.getSetting().equals(Setting.ITEMS)) {
+                    // Move back to the ItemCreator
+                    guiHandler.openCluster(ClusterItemCreator.KEY);
+                    return true;
+                }
                 guiHandler.openCluster(ClusterMain.KEY);
             }
             return true;
@@ -126,9 +132,13 @@ public class MenuItemEditor extends CCWindow {
         event.setItem(4, reference.referencedStack());
         event.setButton(22, ClusterMain.GLASS_PURPLE);
         event.setButton(3, ClusterMain.GLASS_GREEN);
-        event.setButton(6, "create_item");
+        if (event.getGuiHandler().getCustomCache().getSetting() == Setting.RECIPE_CREATOR) {
+            // Only provide these options when accessing it from the Recipe Creator
+            // Items to edit via the Item Creator can be picked from the Item List via the Main Menu!
+            event.setButton(6, "create_item");
+            event.setButton(2, ClusterMain.ITEM_LIST.getKey());
+        }
         event.setButton(5, ClusterMain.GLASS_GREEN);
-        event.setButton(2, ClusterMain.ITEM_LIST.getKey());
         event.setButton(13, ClusterMain.GLASS_PURPLE);
 
         NamespacedKey white = ClusterMain.GLASS_PURPLE;
@@ -144,7 +154,7 @@ public class MenuItemEditor extends CCWindow {
             NamespacedKey key = parser.getNamespacedKey();
             event.setButton(slot++, "reference." + key.toString("_") + ".swap");
         }
-        event.setButton(49, ClusterMain.BACK_BOTTOM);
+        event.setButton(49, "back");
     }
 
 }
