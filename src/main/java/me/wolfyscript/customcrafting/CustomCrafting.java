@@ -85,6 +85,7 @@ import me.wolfyscript.customcrafting.listeners.PlayerListener;
 import me.wolfyscript.customcrafting.listeners.RecipeBookListener;
 import me.wolfyscript.customcrafting.listeners.smithing.SmithingListener;
 import me.wolfyscript.customcrafting.listeners.crafting.CraftListener;
+import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDefault;
