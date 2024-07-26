@@ -84,7 +84,8 @@ public class CampfireListener implements Listener {
                             stackToPlace.setAmount(matchingSource.amount());
 
                             // Cannot handle remains here, because the original item can still be returned e.g. when the campfire is broken.
-                            matchingSource.shrink(event.getItem(), 1, false, null, event.getPlayer(), event.getClickedBlock().getLocation());
+                            ItemStack stack = matchingSource.shrink(event.getItem(), 1, false, null, event.getPlayer(), event.getClickedBlock().getLocation());
+                            event.getPlayer().getEquipment().setItem(event.getHand(), stack);
 
                             campfire.setItem(slot, stackToPlace); // Set the item that should be cooked or dropped when campfire is broken
                             campfire.setCookTimeTotal(slot, pair.getKey().getCookingTime());
