@@ -26,7 +26,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -40,7 +39,7 @@ public class DisableRecipesHandler {
     private final MainConfig config;
 
     private final Set<NamespacedKey> recipes = new HashSet<>();
-    private final Map<org.bukkit.NamespacedKey, Recipe> cachedRecipes = new WeakHashMap<>();
+    private final Map<org.bukkit.NamespacedKey, Recipe> cachedRecipes = new HashMap<>();
 
     public DisableRecipesHandler(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
