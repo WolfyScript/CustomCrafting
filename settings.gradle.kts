@@ -43,7 +43,7 @@ plugins {
 
 sequenceOf(
     "spigot",
-    "spigot1_20",
+    "spigot1_21",
 ).forEach {
     include(":${it}")
     project(":${it}").projectDir = file(it.replace(":", "/"))
