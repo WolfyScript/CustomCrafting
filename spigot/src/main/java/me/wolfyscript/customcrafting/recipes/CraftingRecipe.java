@@ -164,7 +164,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     public ItemStack[] shrinkMatrix(@Nullable Player player, @Nullable Inventory inventory, int totalAmount, CraftingData craftingData, int gridDimension) {
         ItemStack[] matrix = new ItemStack[gridDimension * gridDimension];
-        craftingData.getNonNullIngredients().forEach((data) -> matrix[data.matrixSlot()] = data.customItem().shrink(data.itemStack(), totalAmount, data.ingredient().isReplaceWithRemains(), inventory, player, null));
+        craftingData.getNonNullIngredients().forEach((data) -> matrix[data.matrixSlot()] = data.reference().shrink(data.itemStack(), totalAmount, data.ingredient().isReplaceWithRemains(), inventory, player, null));
         return matrix;
     }
 

@@ -26,6 +26,8 @@ import com.wolfyscript.jackson.dataformat.hocon.HoconFactory;
 import com.wolfyscript.jackson.dataformat.hocon.HoconGenerator;
 import com.wolfyscript.jackson.dataformat.hocon.HoconMapper;
 import java.io.IOException;
+import java.util.Optional;
+
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.compatibility.PluginCompatibility;
@@ -128,6 +130,7 @@ import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.version.MinecraftVersion;
+import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
@@ -178,6 +181,7 @@ public class CustomCrafting extends JavaPlugin {
     //Compatibility
     private final PluginCompatibility pluginCompatibility;
     private final boolean isPaper;
+    private CustomCraftingSpigotAPIModule spigotAPIModule = null;
 
     public CustomCrafting() {
         super();
@@ -333,6 +337,12 @@ public class CustomCrafting extends JavaPlugin {
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, resultMergeAdapters);
         KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) (Object) Condition.class, recipeConditions);
         KeyedTypeIdResolver.registerTypeRegistry(RepairTask.class, anvilRecipeRepairTasks);
+
+        // Load Spigot API Module
+        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 21, 0))) {
+            spigotAPIModule = CustomCraftingSpigotAPIModule.create1_20Module(this);
+            spigotAPIModule.load();
+        }
     }
 
     @Override
@@ -407,6 +417,9 @@ public class CustomCrafting extends JavaPlugin {
             pM.registerEvents(new Campfire1_20Listener(this), this);
         }
         pM.registerEvents(new CampfireListener(this), this);
+
+        // Register events that might only be available in later API versions
+        getSpigotAPIModule().ifPresent(CustomCraftingSpigotAPIModule::registerListeners);
     }
 
     private void registerCommands() {
@@ -547,5 +560,9 @@ public class CustomCrafting extends JavaPlugin {
      */
     public CCRegistries getRegistries() {
         return registries;
+    }
+
+    private Optional<CustomCraftingSpigotAPIModule> getSpigotAPIModule() {
+        return Optional.ofNullable(spigotAPIModule);
     }
 }
