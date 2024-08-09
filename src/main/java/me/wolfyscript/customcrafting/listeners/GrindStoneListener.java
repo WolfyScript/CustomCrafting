@@ -27,17 +27,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.GrindstoneData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
-import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
@@ -177,23 +173,21 @@ public class GrindStoneListener implements Listener {
                 .sorted()
                 .filter(recipe -> !recipe.isDisabled() && recipe.checkConditions(data))
                 .map(recipe -> {
-                    Pair<Boolean, StackReference> checkTop = checkIngredientSlot(recipe, recipe.getInputTop(), topStack);
-                    if (!checkTop.getKey()) return null;
-                    Pair<Boolean, StackReference> checkBottom = checkIngredientSlot(recipe, recipe.getInputBottom(), bottomStack);
-                    if (!checkBottom.getKey()) return null;
+                    var topIngredient = recipe.getInputTop();
+                    var bottomIngredient = recipe.getInputBottom();
+                    // Check the top ingredient
+                    Optional<StackReference> checkTop = topIngredient.checkChoices(topStack, recipe.isCheckNBT());
+                    if (checkTop.isEmpty() && (!topIngredient.isEmpty() && !topIngredient.isAllowEmpty())) return null;
+                    // Check the bottom ingredient
+                    Optional<StackReference> checkBottom = bottomIngredient.checkChoices(bottomStack, recipe.isCheckNBT());
+                    if (checkBottom.isEmpty() && (!bottomIngredient.isEmpty() && !bottomIngredient.isAllowEmpty())) return null;
+
                     return new GrindstoneData(recipe, true,
-                            new IngredientData(0, 0, recipe.getInputTop(), checkTop.getValue(), topStack),
-                            new IngredientData(1, 1, recipe.getInputBottom(), checkBottom.getValue(), bottomStack));
+                            checkTop.map(stackReference -> new IngredientData(0, 0, recipe.getInputTop(), stackReference, topStack)).orElse(null),
+                            checkBottom.map(stackReference -> new IngredientData(1, 1, recipe.getInputBottom(), stackReference, bottomStack)).orElse(null));
                 })
                 .filter(Objects::nonNull)
                 .findFirst();
-    }
-
-    private Pair<Boolean, StackReference> checkIngredientSlot(CustomRecipeGrindstone recipe, Ingredient ingredient, ItemStack stack) {
-        if (ItemUtils.isAirOrNull(stack)) {
-            return new Pair<>(ingredient.isEmpty() || ingredient.isAllowEmpty(), null);
-        }
-        return ingredient.checkChoices(stack, recipe.isCheckNBT()).map(customItem -> new Pair<>(true, customItem)).orElseGet(() -> new Pair<>(false, null));
     }
 
 }
