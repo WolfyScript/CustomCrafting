@@ -25,7 +25,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     `java-library`
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.github.goooler.shadow") version "8.1.7"
     id("com.wolfyscript.devtools.docker.minecraft_servers") version "2.0-SNAPSHOT"
     id("com.jfrog.artifactory") version "5.2.0"
 }
@@ -42,35 +42,16 @@ repositories {
 }
 
 dependencies {
-    api("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
-    api("org.bstats:bstats-bukkit:3.0.0")
-    compileOnly("io.lumine:Mythic-Dist:5.3.5")
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("com.mojang:authlib:3.11.50")
-    compileOnly("org.jetbrains:annotations:23.0.0")
-    compileOnly("io.netty:netty-all:4.1.85.Final")
-    compileOnly("me.clip:placeholderapi:2.10.4")
-    compileOnly("io.th0rgal:oraxen:1.170.0")
-    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.17-beta.2-SNAPSHOT")
+    compileOnly(project(":spigot"))
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17
 
-tasks.named<ProcessResources>("processResources") {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    filesMatching("**/*.yml") {
-        expand(project.properties)
-    }
-}
-
 tasks.named<ShadowJar>("shadowJar") {
     archiveClassifier.set("")
-    dependencies {
-        include(dependency("org.bstats:.*"))
-    }
 
-    relocate("org.bstats", "com.wolfyscript.customcrafting.bukkit.metrics")
-
+    from(project(":spigot1_21").tasks.jar.get().archiveFile)
+    from(project(":spigot").tasks.shadowJar.get().archiveFile)
 }
 
 publishing {
@@ -127,7 +108,8 @@ minecraftServers {
         register("spigot_1_21") {
             version.set("1.21")
             type.set("SPIGOT")
-            imageVersion.set("java21")
+            extraEnv.put("BUILD_FROM_SOURCE", "true")
+            imageVersion.set("java21-graalvm") // graalvm contains the jdk required to build from source
             ports.set(setOf(debugPortMapping, "25569:25565"))
         }
         // Paper test servers
