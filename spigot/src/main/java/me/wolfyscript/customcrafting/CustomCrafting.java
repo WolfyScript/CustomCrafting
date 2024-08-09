@@ -130,7 +130,6 @@ import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.version.MinecraftVersion;
-import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
@@ -138,7 +137,6 @@ import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @JsonIncludeProperties(/* Do not include properties because it is injected and there is no need to serialize this class! */)
@@ -340,7 +338,7 @@ public class CustomCrafting extends JavaPlugin {
 
         // Load Spigot API Module
         if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 21, 0))) {
-            spigotAPIModule = CustomCraftingSpigotAPIModule.create1_20Module(this);
+            spigotAPIModule = CustomCraftingSpigotAPIModule.create1_21Module(this);
             spigotAPIModule.load();
         }
     }
