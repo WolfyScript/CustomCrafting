@@ -54,9 +54,6 @@ dependencies {
     compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.17-beta.2-SNAPSHOT")
 }
 
-group = "com.wolfyscript.customcrafting"
-version = "4.17-beta.3"
-description = "customcrafting-spigot"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks.named<ProcessResources>("processResources") {
