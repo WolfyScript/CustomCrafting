@@ -177,10 +177,10 @@ public class GrindStoneListener implements Listener {
                     var bottomIngredient = recipe.getInputBottom();
                     // Check the top ingredient
                     Optional<StackReference> checkTop = topIngredient.checkChoices(topStack, recipe.isCheckNBT());
-                    if (checkTop.isEmpty() && !topIngredient.isAllowEmpty()) return null;
+                    if (checkTop.isEmpty() && (!topIngredient.isEmpty() && !topIngredient.isAllowEmpty())) return null;
                     // Check the bottom ingredient
                     Optional<StackReference> checkBottom = bottomIngredient.checkChoices(bottomStack, recipe.isCheckNBT());
-                    if (checkBottom.isEmpty() && !bottomIngredient.isAllowEmpty()) return null;
+                    if (checkBottom.isEmpty() && (!bottomIngredient.isEmpty() && !bottomIngredient.isAllowEmpty())) return null;
 
                     return new GrindstoneData(recipe, true,
                             checkTop.map(stackReference -> new IngredientData(0, 0, recipe.getInputTop(), stackReference, topStack)).orElse(null),
