@@ -272,14 +272,14 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     }
 
     @Override
-    public CraftingData check(CraftManager.MatrixData matrixData) {
+    public Optional<CraftingData> checkFor(CraftManager.MatrixData matrixData) {
         if (!isDisabled() && fitsDimensions(matrixData)) {
             for (int[] entry : internalShape.getUniqueShapes()) {
                 var craftingData = checkShape(matrixData, entry);
-                if (craftingData != null) return craftingData;
+                if (craftingData != null) return Optional.of(craftingData);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     protected CraftingData checkShape(@NotNull CraftManager.MatrixData matrixData, int[] shape) {

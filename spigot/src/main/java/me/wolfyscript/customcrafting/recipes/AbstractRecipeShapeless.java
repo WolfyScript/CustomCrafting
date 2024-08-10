@@ -30,10 +30,7 @@ import com.wolfyscript.utilities.verification.VerifierBuilder;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
@@ -205,8 +202,8 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
      * @return The data of the matching recipe, or null if not valid.
      */
     @Override
-    public CraftingData check(CraftManager.MatrixData matrixData) {
-        if (isDisabled() || !fitsDimensions(matrixData)) return null;
+    public Optional<CraftingData> checkFor(CraftManager.MatrixData matrixData) {
+        if (isDisabled() || !fitsDimensions(matrixData)) return Optional.empty();
         final IngredientData[] dataArray = new IngredientData[ingredients.size()];
         final ItemStack[] matrix = matrixData.getItems();
         final IntList selectedSlots = new IntArrayList(matrix.length);
@@ -217,8 +214,8 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
             final int recipeSlot = checkIngredient(i, matrixData, selectedSlots, checkedIndices, dataArray, matrix[i]); //Get the slot of the ingredient or -1 if non is found.
             if (recipeSlot == -1) {
                 // Invalid ingredient. Does not match current matrix stack.
-                if (i == 0 || countOfSetBits(checkedIndices) == indexes.size()) { //We can directly end the check if it fails for the first slot.
-                    return null;
+                if (i == 0 || Integer.bitCount(checkedIndices) == indexes.size()) { //We can directly end the check if it fails for the first slot.
+                    return Optional.empty();
                 }
                 if (selectedSlots.size() > i) {
                     selectedSlots.rem(i); //Add the previous selected recipe slot back into the queue.
@@ -230,30 +227,18 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
             } else {
                 selectedSlots.add(recipeSlot); //Add the newly found slot to the used slots.
             }
-            checkedIndicesPerSlot[i] = setBit(checkedIndices, recipeSlot); // Ingredient matches current matrix stack, goto next slot
+            checkedIndicesPerSlot[i] = checkedIndices | (1<<recipeSlot); // Ingredient matches current matrix stack, goto next slot. Set bit in bitmap for recipe slot
             i++;
         }
         if ((selectedSlots.size() == ingredients.size())) {
-            return new CraftingData(this, dataArray);
+            return Optional.of(new CraftingData(this, dataArray));
         }
         if (hasAllowedEmptyIngredient && matrixData.getStrippedSize() == selectedSlots.size()) { //The empty ingredients can be very tricky in shapeless recipes and shouldn't be used... but might as well implement it anyway.
             if (indexes.intStream().filter(index -> !selectedSlots.contains(index)).allMatch(index -> ingredients.get(index).isAllowEmpty())) {
-                return new CraftingData(this, dataArray);
+                return Optional.of(new CraftingData(this, dataArray));
             }
         }
-        return null;
-    }
-
-    private static int setBit(int bitSet, int index) {
-        return bitSet | (1<<index);
-    }
-
-    private static boolean getBit(int bitSet, int index) {
-        return (bitSet & (1<<index)) != 0;
-    }
-
-    private static int countOfSetBits(int bitSet) {
-        return Integer.bitCount(bitSet);
+        return Optional.empty();
     }
 
     /**
@@ -274,7 +259,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
      */
     protected int checkIngredient(int pos, CraftManager.MatrixData matrixData, List<Integer> selectedSlots, Integer checkedIndices, IngredientData[] dataArray, ItemStack item) {
         for (int key : indexes) {
-            if (!selectedSlots.contains(key) && !getBit(checkedIndices, key)) {
+            if (!selectedSlots.contains(key) && (checkedIndices & (1<<key)) == 0) { // Check if the ingredient was already checked
                 final var ingredient = ingredients.get(key);
                 final var checkResult = ingredient.checkChoices(item, isCheckNBT());
                 if (checkResult.isPresent()) {

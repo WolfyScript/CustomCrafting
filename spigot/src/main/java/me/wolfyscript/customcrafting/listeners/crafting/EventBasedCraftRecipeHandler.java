@@ -83,7 +83,7 @@ public class EventBasedCraftRecipeHandler implements Listener {
     public void onPreCraft(PrepareItemCraftEvent e) {
         var player = (Player) e.getView().getPlayer();
         try {
-            ItemStack[] matrix = e.getInventory().getMatrix();
+            CraftManager.MatrixData matrix = CraftManager.MatrixData.of(e.getInventory().getMatrix());
             Block block = e.getInventory().getLocation() == null ? player.getLocation().getBlock() : e.getInventory().getLocation().getBlock();
             craftManager.checkCraftingMatrix(matrix, Conditions.Data.of(player).setInventoryView(e.getView()).setBlock(block), RecipeType.Container.CRAFTING)
                     .map(craftingData -> craftingData.getResult().item(craftingData, player, block))
@@ -94,7 +94,6 @@ public class EventBasedCraftRecipeHandler implements Listener {
                         // No valid custom recipes found
                         if (!(e.getRecipe() instanceof Keyed)) return;
 
-                        var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
                         // We need placeholder recipes that simply use material choices, because otherwise we can get duplication issues and buggy behaviour like flickering.
                         // Here we need to disable those placeholder recipes and check for a vanilla recipe the placeholder may override.
                         if (ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe(((Keyed) e.getRecipe()).getKey())) {
@@ -104,6 +103,7 @@ public class EventBasedCraftRecipeHandler implements Listener {
                             return;
                         }
 
+                        var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
                         //Check for custom recipe that overrides the vanilla recipe
                         if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey) || customCrafting.getRegistries().getRecipes().getAdvancedCrafting(namespacedKey) != null) {
                             //Recipe is disabled or it is a custom recipe!
@@ -113,7 +113,7 @@ public class EventBasedCraftRecipeHandler implements Listener {
                         }
                         //Check for items that are not allowed in vanilla recipes.
                         //If one is found, then cancel the recipe.
-                        if (Stream.of(matrix).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
+                        if (Stream.of(matrix.getMatrix()).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
                             e.getInventory().setResult(ItemUtils.AIR);
                         }
                         //At this point the vanilla recipe is valid and can be crafted

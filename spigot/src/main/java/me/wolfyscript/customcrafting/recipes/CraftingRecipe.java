@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends CraftingRecipeSettings<S>> extends CustomRecipe<C> {
 
@@ -109,7 +110,12 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     public abstract boolean fitsDimensions(CraftManager.MatrixData matrixData);
 
-    public abstract CraftingData check(CraftManager.MatrixData matrixData);
+    @Deprecated(forRemoval = true, since = "4.17-beta.4")
+    public CraftingData check(CraftManager.MatrixData matrixData) {
+        return checkFor(matrixData).orElse(null);
+    }
+
+    public abstract Optional<CraftingData> checkFor(CraftManager.MatrixData matrixData);
 
     /**
      * @return The type specific settings. {@link me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings}, {@link me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings}
