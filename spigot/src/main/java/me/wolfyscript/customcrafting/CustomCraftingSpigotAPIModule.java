@@ -28,12 +28,12 @@ public interface CustomCraftingSpigotAPIModule {
 
     static CustomCraftingSpigotAPIModule create1_21Module(CustomCrafting customCrafting) {
         try {
-            Class<? extends CustomCraftingSpigotAPIModule> implType = (Class<? extends CustomCraftingSpigotAPIModule>) Class.forName(CustomCraftingSpigotAPIModule.class.getPackageName() + ".CustomCraftingSpigot1_20Module");
+            Class<? extends CustomCraftingSpigotAPIModule> implType = (Class<? extends CustomCraftingSpigotAPIModule>) Class.forName(CustomCraftingSpigotAPIModule.class.getPackageName() + ".CustomCraftingSpigot1_21Module");
             Constructor<? extends CustomCraftingSpigotAPIModule> constructor = implType.getConstructor(CustomCrafting.class);
             constructor.setAccessible(true);
             return constructor.newInstance(customCrafting);
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException("Could not find CustomCraftingSpigot1_20Module", e);
+            throw new RuntimeException("Could not find CustomCraftingSpigot1_21Module", e);
         }
     }
 
