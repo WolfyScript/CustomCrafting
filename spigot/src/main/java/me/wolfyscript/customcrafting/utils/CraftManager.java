@@ -84,21 +84,27 @@ public final class CraftManager {
      * @return The result ItemStack of the valid {@link CraftingRecipe}.
      */
     public Optional<CraftingData> checkCraftingMatrix(ItemStack[] matrix, Conditions.Data data, RecipeType.Container.CraftingContainer<?>... types) {
+        var matrixData = MatrixData.of(matrix);
+        return checkCraftingMatrix(matrixData, data, types);
+    }
+
+    public Optional<CraftingData> checkCraftingMatrix(MatrixData matrixData, Conditions.Data data, RecipeType.Container.CraftingContainer<?>... types) {
         data.player().ifPresent(player -> remove(player.getUniqueId()));
+        return customCrafting.getRegistries().getRecipes().get(types)
+                .sorted() // Possibility for parallel stream when enough recipes are registered to amortize the overhead. (Things like the PreCraftEvent might interfere. TODO: Experimental Feature)
+                .flatMap(recipe -> tryRecipe(recipe, matrixData, data).stream())
+                .findFirst();
+    }
+
+    private boolean verifyLockdown() {
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
             if (System.currentTimeMillis() > lastLockDownWarning + (1000 * 60 * 60)) {
                 customCrafting.getLogger().warning("Lockdown is enabled! All custom recipes are blocked!");
                 lastLockDownWarning = System.currentTimeMillis();
             }
-            return Optional.empty();
+            return false;
         }
-        var matrixData = MatrixData.of(matrix);
-        return customCrafting.getRegistries().getRecipes().get(types)
-                .sorted() // Possibility for parallel stream when enough recipes are registered to amortize the overhead. (Things like the PreCraftEvent might interfere. TODO: Experimental Feature)
-                .map(recipe -> tryRecipe(recipe, matrixData, data))
-                .filter(Optional::isPresent)
-                .findFirst()
-                .flatMap(Functions.identity());
+        return true;
     }
 
     /**
@@ -108,10 +114,12 @@ public final class CraftManager {
      * @return Optional consisting of the {@link CraftingData}, or empty if the recipe doesn't match.
      */
     public Optional<CraftingData> tryRecipe(CraftingRecipe<?, ?> recipe, MatrixData matrixData, Conditions.Data data) {
-        if (!recipe.checkConditions(data))
+        if (!verifyLockdown()) { return Optional.empty(); }
+        if (!recipe.checkConditions(data)) {
             return Optional.empty(); //No longer call Event if recipe is disabled or invalid!
+        }
         var craftingData = recipe.check(matrixData);
-        if (craftingData == null) return Optional.empty();
+        if (craftingData == null) { return Optional.empty(); }
 
         var inventory = data.inventoryView().map(InventoryView::getTopInventory).orElse(null);
         var customPreCraftEvent = new CustomPreCraftEvent(recipe, data.getPlayer(), inventory, matrixData);
