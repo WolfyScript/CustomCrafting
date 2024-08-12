@@ -22,8 +22,6 @@
 
 package me.wolfyscript.customcrafting.utils;
 
-import com.google.common.base.Functions;
-import com.wolfyscript.utilities.bukkit.nms.inventory.NMSInventoryUtils;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,12 +38,9 @@ import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import me.wolfyscript.utilities.util.version.ServerVersion;
-import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -60,11 +55,9 @@ public final class CraftManager {
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
     private final Map<InventoryView, MatrixData> currentMatrixData = new HashMap<>();
     private final CustomCrafting customCrafting;
-    private final boolean storeCurrentRecipeViaNMS;
 
     public CraftManager(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
-        storeCurrentRecipeViaNMS = ServerVersion.getWUVersion().isAfterOrEq(WUVersion.of(4, 16, 9, 0));
     }
 
     public MatrixData getMatrixData(InventoryView view, CraftingInventory craftingInventory) {
@@ -84,21 +77,27 @@ public final class CraftManager {
      * @return The result ItemStack of the valid {@link CraftingRecipe}.
      */
     public Optional<CraftingData> checkCraftingMatrix(ItemStack[] matrix, Conditions.Data data, RecipeType.Container.CraftingContainer<?>... types) {
+        var matrixData = MatrixData.of(matrix);
+        return checkCraftingMatrix(matrixData, data, types);
+    }
+
+    public Optional<CraftingData> checkCraftingMatrix(MatrixData matrixData, Conditions.Data data, RecipeType.Container.CraftingContainer<?>... types) {
         data.player().ifPresent(player -> remove(player.getUniqueId()));
+        return customCrafting.getRegistries().getRecipes().get(types)
+                .sorted() // Possibility for parallel stream when enough recipes are registered to amortize the overhead. (Things like the PreCraftEvent might interfere. TODO: Experimental Feature)
+                .flatMap(recipe -> tryRecipe(recipe, matrixData, data).stream())
+                .findFirst();
+    }
+
+    private boolean verifyLockdown() {
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
             if (System.currentTimeMillis() > lastLockDownWarning + (1000 * 60 * 60)) {
                 customCrafting.getLogger().warning("Lockdown is enabled! All custom recipes are blocked!");
                 lastLockDownWarning = System.currentTimeMillis();
             }
-            return Optional.empty();
+            return false;
         }
-        var matrixData = MatrixData.of(matrix);
-        return customCrafting.getRegistries().getRecipes().get(types)
-                .sorted() // Possibility for parallel stream when enough recipes are registered to amortize the overhead. (Things like the PreCraftEvent might interfere. TODO: Experimental Feature)
-                .map(recipe -> tryRecipe(recipe, matrixData, data))
-                .filter(Optional::isPresent)
-                .findFirst()
-                .flatMap(Functions.identity());
+        return true;
     }
 
     /**
@@ -108,23 +107,19 @@ public final class CraftManager {
      * @return Optional consisting of the {@link CraftingData}, or empty if the recipe doesn't match.
      */
     public Optional<CraftingData> tryRecipe(CraftingRecipe<?, ?> recipe, MatrixData matrixData, Conditions.Data data) {
-        if (!recipe.checkConditions(data))
+        if (!verifyLockdown()) { return Optional.empty(); }
+        if (!recipe.checkConditions(data)) {
             return Optional.empty(); //No longer call Event if recipe is disabled or invalid!
-        var craftingData = recipe.check(matrixData);
-        if (craftingData == null) return Optional.empty();
-
-        var inventory = data.inventoryView().map(InventoryView::getTopInventory).orElse(null);
-        var customPreCraftEvent = new CustomPreCraftEvent(recipe, data.getPlayer(), inventory, matrixData);
-        Bukkit.getPluginManager().callEvent(customPreCraftEvent);
-        if (customPreCraftEvent.isCancelled()) return Optional.empty();
-
-        Result result = customPreCraftEvent.getResult();
-        craftingData.setResult(result);
-        if (storeCurrentRecipeViaNMS) {
-            NMSInventoryUtils.setCurrentRecipe(inventory, recipe.getNamespacedKey());
         }
-        data.player().ifPresent(player1 -> put(player1.getUniqueId(), craftingData));
-        return Optional.of(craftingData);
+        return recipe.checkFor(matrixData).map(craftingData -> {
+            var customPreCraftEvent = new CustomPreCraftEvent(recipe, data.getPlayer(), data.inventoryView().map(InventoryView::getTopInventory).orElse(null), matrixData);
+            Bukkit.getPluginManager().callEvent(customPreCraftEvent);
+            if (customPreCraftEvent.isCancelled()) return null;
+
+            craftingData.setResult(customPreCraftEvent.getResult());
+            data.player().ifPresent(player1 -> put(player1.getUniqueId(), craftingData));
+            return craftingData;
+        });
     }
 
     public int collectResult(InventoryClickEvent event, CraftingData craftingData, Player player) {
