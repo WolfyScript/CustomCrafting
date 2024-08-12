@@ -106,7 +106,7 @@ minecraftServers {
             ports.set(setOf(debugPortMapping, "25568:25565"))
         }
         register("spigot_1_21") {
-            version.set("1.21")
+            version.set("1.21.1")
             type.set("SPIGOT")
             extraEnv.put("BUILD_FROM_SOURCE", "true")
             imageVersion.set("java21-graalvm") // graalvm contains the jdk required to build from source
