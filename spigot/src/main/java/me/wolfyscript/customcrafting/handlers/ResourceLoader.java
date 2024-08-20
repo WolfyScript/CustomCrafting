@@ -53,10 +53,12 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
     protected final ObjectMapper objectMapper;
     private int priority = 0;
     private boolean replaceData = false;
+    private boolean doneLoading = false;
 
     protected final Multimap<CustomRecipe<?>, Dependency> recipeDependencies = Multimaps.newSetMultimap(new HashMap<>(), HashSet::new);
     protected final List<VerificationResult<? extends CustomRecipe<?>>> invalidRecipes = new ArrayList<>();
     protected final List<NamespacedKey> failedRecipes = new ArrayList<>();
+    private final Deque<ScheduledPluginIntegrationTask> scheduledPluginIntegrationTasks = new ArrayDeque<>();
 
     protected ResourceLoader(CustomCrafting customCrafting, NamespacedKey key) {
         this.key = key;
@@ -66,9 +68,10 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
         this.objectMapper = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper();
     }
 
-    public abstract void load();
+    protected abstract void load();
 
     public void load(boolean upgrade) {
+        doneLoading = false;
         load();
         if (upgrade) {
             if (!backup()) {
@@ -80,9 +83,35 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
             api.getConsole().info("Loading updated Items & Recipes...");
             load();
         }
+
+        doneLoading = true;
+        // Run scheduled plugin loaders
+        runScheduledPluginIntegrations();
     }
 
-    public abstract int validatePending(PluginIntegration pluginIntegration);
+    public synchronized void schedulePluginIntegration(ScheduledPluginIntegrationTask task) {
+        scheduledPluginIntegrationTasks.add(task);
+        if (!doneLoading) {
+            return;
+        }
+        // Load directly when it is already done loading
+        runScheduledPluginIntegrations();
+    }
+
+    /**
+     * Loads the recipes for plugin integrations that were scheduled while recipes were still loading
+     */
+    private synchronized void runScheduledPluginIntegrations() {
+        doneLoading = false;
+        while (!scheduledPluginIntegrationTasks.isEmpty()) {
+            var task = scheduledPluginIntegrationTasks.pop();
+            int amount = validatePending(task.integration());
+            task.callback().accept(task.integration(), amount);
+        }
+        doneLoading = true;
+    }
+
+    protected abstract int validatePending(PluginIntegration pluginIntegration);
 
     protected static <T extends CustomRecipe<?>> Optional<VerificationResult<T>> validateRecipe(T recipe) {
         var validator = (Verifier<T>) CustomCrafting.inst().getRegistries().getVerifiers().get(recipe.getRecipeType().getNamespacedKey());

@@ -202,7 +202,7 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     @Override
-    public int validatePending(PluginIntegration pluginIntegration) {
+    protected int validatePending(PluginIntegration pluginIntegration) {
         for (CustomRecipe<?> customRecipe : recipeDependencies.keySet()) {
             Collection<Dependency> dependencies = recipeDependencies.get(customRecipe);
 
