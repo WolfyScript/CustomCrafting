@@ -124,7 +124,7 @@ public class FurnaceListener implements Listener {
                 continue;
             }
             event.setTotalCookTime(dataOptional.get().getRecipe().getCookingTime()); // Apply the correct custom cook time
-            manager.cacheRecipeData(event.getBlock(), new CookingRecipeCache(dataOptional.get(), bukkitRecipe.getKey(), customBackingRecipe));
+            manager.cacheRecipeData(block, new CookingRecipeCache(dataOptional.get(), bukkitRecipe.getKey(), customBackingRecipe));
             return; // Found valid cached custom recipe
         }
 
@@ -259,7 +259,7 @@ public class FurnaceListener implements Listener {
         var location = event.getClickedInventory().getLocation();
         if (location == null) return;
         if (!(location.getBlock().getState() instanceof Furnace)) return;
-        manager.clearCache(location.getBlock());
+//        manager.clearCache(location.getBlock()); Do not clear cache here! Causes issues when collecting result while another recipe is smelting!
 
         if (!ItemUtils.isAirOrNull(inventory.getResult())) { //Make sure to only give exp if the result is actually there.
             Bukkit.getScheduler().runTask(customCrafting, () -> {
