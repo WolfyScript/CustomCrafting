@@ -72,7 +72,7 @@ public class FurnaceListener implements Listener {
     }
 
     @EventHandler
-    public void placeItemIntoFurnace(InventoryClickEvent event) {
+    public void placeFuelIntoFurnace(InventoryClickEvent event) {
         if (!(event.getClickedInventory() instanceof FurnaceInventory)) return;
         var slotType = event.getSlotType();
         if (slotType.equals(InventoryType.SlotType.FUEL)) {
