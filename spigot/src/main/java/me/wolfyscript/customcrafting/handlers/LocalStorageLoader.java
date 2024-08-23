@@ -72,7 +72,7 @@ public class LocalStorageLoader extends ResourceLoader {
     private static final String LOG_LOADED_RECIPES = PREFIX + "Loaded %d recipes in %sms";
     private static final String LOG_FAILED_RECIPES = PREFIX + "Failed to load %d recipes";
 
-    private DataSettings dataSettings;
+    private final DataSettings dataSettings;
     private ExecutorService executor;
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
@@ -80,6 +80,12 @@ public class LocalStorageLoader extends ResourceLoader {
         this.dataSettings = customCrafting.getConfigHandler().getConfig().getDataSettings();
     }
 
+    /**
+     * Packs a given source directory into zip file and saves at the specified path.
+     *
+     * @param sourceDirPath The source directory to zip
+     * @param zipFilePath The zip file to save
+     */
     public static void pack(File sourceDirPath, File zipFilePath) throws IOException {
         Path p = Files.createFile(zipFilePath.toPath());
         try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
@@ -430,6 +436,16 @@ public class LocalStorageLoader extends ResourceLoader {
 
         protected abstract void load();
 
+        /**
+         * Executes the given task.
+         * Depending on the {@link DataSettings#sync()} the task is either executed synchronously or asynchronously.
+         * <p>
+         *      If {@link DataSettings#sync() sync} is enabled then the task may run on the primary server thread when the current thread is the primary thread, or it is scheduled to run synchronously.
+         * </p>
+         * Otherwise, if {@link DataSettings#sync() sync} is disabled, the task is executed using the ExecutorService of the LocalStorageLoader, that may spread the tasks across multiple processors.
+         *
+         * @param runnable The task to run
+         */
         protected void executeTask(Runnable runnable) {
             if (dataSettings.sync()) {
                 if (Bukkit.isPrimaryThread()) {
