@@ -21,7 +21,7 @@
  */
 
 plugins {
-    kotlin("jvm") version "2.0.0"
+    `java-library`
 }
 
 repositories {
@@ -37,15 +37,9 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
     compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.17-beta.2-SNAPSHOT")
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     compileOnly(project(":spigot"))
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(21)
-}
+java.sourceCompatibility = JavaVersion.VERSION_21
