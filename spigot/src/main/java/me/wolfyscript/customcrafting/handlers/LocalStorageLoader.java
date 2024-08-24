@@ -152,9 +152,10 @@ public class LocalStorageLoader extends ResourceLoader {
          */
         api.getConsole().info("- - - - [Local Storage] - - - -");
         int processors = Math.min(Runtime.getRuntime().availableProcessors(), dataSettings.maxProcessors());
-        customCrafting.getLogger().info(PREFIX + "Using " + processors + " threads");
         if (dataSettings.sync()) {
             customCrafting.getLogger().info(PREFIX + "Loading data synchronously");
+        } else {
+            customCrafting.getLogger().info(PREFIX + "Using " + processors + " threads");
         }
         executor = Executors.newWorkStealingPool(processors);
         api.getConsole().info(PREFIX + "Looking through data folder...");
