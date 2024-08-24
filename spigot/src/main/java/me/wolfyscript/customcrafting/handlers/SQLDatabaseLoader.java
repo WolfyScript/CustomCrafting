@@ -88,7 +88,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     }
 
     @Override
-    public int validatePending(PluginIntegration pluginIntegration) {
+    protected int validatePending(PluginIntegration pluginIntegration) {
         return 0;
     }
 
