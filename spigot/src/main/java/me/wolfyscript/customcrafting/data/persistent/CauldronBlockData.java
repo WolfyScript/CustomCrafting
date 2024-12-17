@@ -199,7 +199,7 @@ public class CauldronBlockData extends CustomBlockData {
 
             if (recipe.checkRecipeStatus(status)) {
                 spawnBubbles(world, loc, level);
-                world.spawnParticle(Particle.REDSTONE, loc.add(particleLevel(level)), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
+                world.spawnParticle(Particle.DUST, loc.add(particleLevel(level)), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
                 passedTicks++;
             } else {
                 //The cauldron doesn't fulfill the requirements of the recipe. Perhaps water level changed or the campfire was extinguished.

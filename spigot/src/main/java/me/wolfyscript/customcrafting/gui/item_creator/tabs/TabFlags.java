@@ -58,7 +58,7 @@ public class TabFlags extends ItemCreatorTabVanilla {
         if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 5))) {
             creator.registerButton(new ButtonItemFlagsToggle("potion_effects", ItemFlag.valueOf("HIDE_ADDITIONAL_TOOLTIP"), Material.POTION));
         } else {
-            creator.registerButton(new ButtonItemFlagsToggle("potion_effects", ItemFlag.HIDE_POTION_EFFECTS, Material.POTION));
+            creator.registerButton(new ButtonItemFlagsToggle("potion_effects", ItemFlag.HIDE_ADDITIONAL_TOOLTIP, Material.POTION));
         }
 
         if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 16, 2))) {

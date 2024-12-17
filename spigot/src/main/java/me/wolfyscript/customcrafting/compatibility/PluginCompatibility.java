@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.compatibility;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.compatibility.protocollib.ProtocolLib;
+//import me.wolfyscript.customcrafting.compatibility.protocollib.ProtocolLib;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.util.version.WUVersion;
@@ -34,14 +34,14 @@ public class PluginCompatibility {
 
     private final CustomCrafting plugin;
 
-    private ProtocolLib protocolLib = null;
+    //private ProtocolLib protocolLib = null;
 
     public PluginCompatibility(CustomCrafting plugin) {
         this.plugin = plugin;
     }
 
     public void init() {
-        Plugin protocolLibPlugin = Bukkit.getPluginManager().getPlugin("ProtocolLib");
+        /*Plugin protocolLibPlugin = Bukkit.getPluginManager().getPlugin("ProtocolLib");
         if (protocolLibPlugin != null) {
             String verString = protocolLibPlugin.getDescription().getVersion();
             WUVersion version = WUVersion.parse(verString);
@@ -59,7 +59,7 @@ public class PluginCompatibility {
             }
             plugin.getLogger().info("Detected ProtocolLib... initiating additional features.");
             this.protocolLib = new ProtocolLib(plugin);
-        }
+        }*/
         if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
             plugin.getApi().getConsole().info("$msg.startup.placeholder$");
             new PlaceHolder(plugin).register();

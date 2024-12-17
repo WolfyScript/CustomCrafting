@@ -20,6 +20,8 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
+
 package me.wolfyscript.customcrafting.compatibility.protocollib;
 
 import com.comphenix.protocol.PacketType;
@@ -30,13 +32,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.EquivalentConverter;
-import com.comphenix.protocol.reflect.FuzzyReflection;
 import com.comphenix.protocol.reflect.StructureModifier;
-import com.comphenix.protocol.reflect.accessors.Accessors;
-import com.comphenix.protocol.reflect.accessors.MethodAccessor;
-import com.comphenix.protocol.reflect.fuzzy.FuzzyMethodContract;
-import com.comphenix.protocol.utility.MinecraftReflection;
-import com.comphenix.protocol.wrappers.Converters;
 import com.comphenix.protocol.wrappers.MinecraftKey;
 import java.util.HashMap;
 import java.util.List;
@@ -173,10 +169,12 @@ public class ProtocolLib {
         });
     }
 
-    /**
+    */
+/**
      * This wrapper contains data read from a packet using the {@link EquivalentConverter} from {@link #getRecipeKeyConverter()}.
      * It will cache the handle of the recipe, and will be reapplied to the packet.
-     */
+     *//*
+
     private record RecipeWrapper(MinecraftKey key, Object recipe) {
 
         public MinecraftKey getKey() {
@@ -189,3 +187,4 @@ public class ProtocolLib {
     }
 
 }
+*/

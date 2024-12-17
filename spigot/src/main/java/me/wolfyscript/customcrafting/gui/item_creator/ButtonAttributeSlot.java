@@ -42,7 +42,7 @@ public class ButtonAttributeSlot extends ActionButton<CCCache> {
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             if (guiHandler.getCustomCache().getItems().isAttributeSlot(equipmentSlot)) {
-                return new ItemBuilder(itemStack).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create();
+                return new ItemBuilder(itemStack).addEnchantment(Enchantment.UNBREAKING, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create();
             }
             return itemStack;
         });
