@@ -82,6 +82,9 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
                 placeholderShapelessRecipe.addIngredient(getMaterialRecipeChoiceFor(value));
             }
             placeholderShapelessRecipe.setGroup(getGroup());
+            if(Bukkit.getRecipe(placeholderShapelessRecipe.getKey())!=null)
+                Bukkit.removeRecipe(placeholderShapelessRecipe.getKey());
+
             Bukkit.addRecipe(placeholderShapelessRecipe);
 
             // Return display recipe

@@ -65,6 +65,8 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
     public BlastingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
             BlastingRecipe placeholderRecipe = new BlastingRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), getMaterialSourceChoice(), getExp(), getCookingTime());
+            if(Bukkit.getRecipe(placeholderRecipe.getKey())!=null)
+                Bukkit.removeRecipe(placeholderRecipe.getKey());
             Bukkit.addRecipe(placeholderRecipe);
             return new BlastingRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().getItemStack(), getSourceChoice(), getExp(), getCookingTime());
         }

@@ -87,6 +87,10 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
             placeholderRecipe.shape(getShape());
             mappedIngredients.forEach((character, items) -> placeholderRecipe.setIngredient(character, getMaterialRecipeChoiceFor(items)));
             placeholderRecipe.setGroup(getGroup());
+
+            if(Bukkit.getRecipe(placeholderRecipe.getKey())!=null) {
+                Bukkit.removeRecipe(placeholderRecipe.getKey());
+            }
             Bukkit.addRecipe(placeholderRecipe);
 
             // Return display recipe
