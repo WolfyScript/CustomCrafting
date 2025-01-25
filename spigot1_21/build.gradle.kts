@@ -37,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.18-petu")
+    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.18.1-petu")
     compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
     compileOnly(project(":spigot"))
 }

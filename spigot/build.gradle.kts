@@ -52,7 +52,8 @@ dependencies {
     compileOnly("io.netty:netty-all:4.1.111.Final")
     compileOnly("me.clip:placeholderapi:2.11.1")
     compileOnly("io.th0rgal:oraxen:1.170.0")
-    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.18-petu")
+    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.18.1-petu")
+    compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1")
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_21

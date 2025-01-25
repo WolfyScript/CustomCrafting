@@ -22,9 +22,8 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
-import com.wolfyscript.lib.nbt.nbtapi.NBTTileEntity;
-import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import de.tr7zw.nbtapi.NBTTileEntity;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
