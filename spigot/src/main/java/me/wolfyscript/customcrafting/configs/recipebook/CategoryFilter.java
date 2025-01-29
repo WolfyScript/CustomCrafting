@@ -22,23 +22,19 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
-import java.util.Locale;
-import java.util.Objects;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.inventory.CreativeModeTab;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
+
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @JsonPropertyOrder({"id", "icon", "name", "description"})
 public class CategoryFilter extends CategorySettings {

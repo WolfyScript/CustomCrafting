@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
-import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -32,6 +31,8 @@ import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+
+import java.util.List;
 
 public class OverviewFilters extends Overview {
 

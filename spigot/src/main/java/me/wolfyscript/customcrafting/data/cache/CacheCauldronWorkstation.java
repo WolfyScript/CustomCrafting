@@ -22,14 +22,15 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import me.wolfyscript.customcrafting.data.persistent.CauldronBlockData;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class CacheCauldronWorkstation {
 

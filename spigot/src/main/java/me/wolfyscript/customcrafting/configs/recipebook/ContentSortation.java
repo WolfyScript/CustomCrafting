@@ -24,17 +24,12 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
+import me.wolfyscript.utilities.util.NamespacedKey;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.utilities.util.NamespacedKey;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
 public class ContentSortation {

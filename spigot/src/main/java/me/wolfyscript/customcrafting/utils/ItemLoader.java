@@ -22,12 +22,7 @@
 
 package me.wolfyscript.customcrafting.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
-import com.wolfyscript.utilities.json.jackson.MissingDependencyException;
 import com.wolfyscript.utilities.json.jackson.MissingImplementationException;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
@@ -52,6 +47,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class ItemLoader {
 

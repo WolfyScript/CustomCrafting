@@ -46,7 +46,7 @@ dependencies {
     //api("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
     api("org.bstats:bstats-bukkit:3.0.2")
     compileOnly("io.lumine:Mythic-Dist:5.3.5")
-    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.mojang:authlib:3.11.50")
     compileOnly("org.jetbrains:annotations:24.1.0")
     compileOnly("io.netty:netty-all:4.1.111.Final")

@@ -22,9 +22,6 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
-import java.io.File;
-import java.io.IOException;
-
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.wolfyscript.utilities.dependency.Dependency;
@@ -42,6 +39,8 @@ import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 

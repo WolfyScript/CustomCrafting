@@ -41,7 +41,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.MultipleChoiceB
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.compatibility.plugins.ItemsAdderIntegration;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.CustomStack;
-import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
 import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderStackIdentifier;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;

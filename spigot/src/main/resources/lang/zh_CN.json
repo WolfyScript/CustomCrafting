@@ -48,13 +48,13 @@
       "building_blocks": {
         "name": "<grey>\u274F</grey> <gold><b>建筑方块</b></gold>"
       },
-      "colored_blocks" : {
+      "colored_blocks": {
         "name": "<grey>\u274F</grey> <gold><b>染色方块</b></gold>"
       },
-      "natural_blocks" : {
+      "natural_blocks": {
         "name": "<grey>\u274F</grey> <gold><b>自然方块</b></gold>"
       },
-      "functional_blocks" : {
+      "functional_blocks": {
         "name": "<grey>\u274F</grey> <gold><b>功能性方块</b></gold>"
       },
       "decorations": {
@@ -63,10 +63,10 @@
       "combat": {
         "name": "<grey>\u274F</grey> <gold><b>战斗</b></gold>"
       },
-      "tools_and_utilities" : {
+      "tools_and_utilities": {
         "name": "<grey>\u274F</grey> <gold><b>工具与实用物品</b></gold>"
       },
-      "redstone_blocks" : {
+      "redstone_blocks": {
         "name": "<grey>\u274F</grey> <gold><b>红石方块</b></gold>"
       },
       "food_and_drinks": {
@@ -100,26 +100,26 @@
   },
   "recipe": {
     "type": {
-      "crafting" : {
+      "crafting": {
         "crafting_shaped": "有序合成配方",
         "crafting_shapeless": "无序合成配方"
       },
-      "elite_crafting" : {
+      "elite_crafting": {
         "elite_crafting_shaped": "有序精英合成配方",
         "elite_crafting_shapeless": "无序精英合成配方"
       },
-      "cooking" : {
+      "cooking": {
         "furnace": "熔炉配方",
         "blast_furnace": "高炉配方",
         "smoker": "烟熏炉配方",
         "campfire": "篝火配方"
       },
-      "brewing_stand" : "炼药台配方",
-      "anvil" : "铁砧配方",
-      "stonecutter" : "切石机配方",
-      "grindstone" : "砂轮配方",
-      "smithing" : "锻造台配方",
-      "cauldron" : "炼药锅配方"
+      "brewing_stand": "炼药台配方",
+      "anvil": "铁砧配方",
+      "stonecutter": "切石机配方",
+      "grindstone": "砂轮配方",
+      "smithing": "锻造台配方",
+      "cauldron": "炼药锅配方"
     }
   },
   "msg": {
@@ -155,8 +155,8 @@
         "<yellow>请重新输入文件夹和键值！</yellow>"
       ]
     },
-    "input":{
-      "mini_message" : "<#00ccff>使用 <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>MiniMessage 使用标签而非旧版的颜色字符!<br>这些标签可以用于指定: <br>* 颜色: <#FD6684><_颜色名称_></#FD6684><br>    <#FD6684>\\<green></#FD6684>: <green>绿色</green><br>    <#FD6684>\\<#5662F6></#FD6684>: <#5662F6>Hex 颜色</#5662F6><br>    ... 等.<br><br>* 装饰字体:<br>    <#FD6684>\\<bold></#FD6684>, <#FD6684>\\<b></#FD6684>: <b>粗体字</b>,<br>    <#FD6684>\\<italic></#FD6684>, <#FD6684>\\<em></#FD6684>, <#FD6684>\\<i></#FD6684>: <em>斜体字</em>,<br>    <#FD6684>\\<underline></#FD6684>, <#FD6684>\\<u></#FD6684>: <u>下划线</u>,<br>    <#FD6684>\\<strikethrough></#FD6684>, <#FD6684>\\<st></#FD6684>: <st>删除线</st>,<br>    <#FD6684>\\<obfuscated></#FD6684>, <#FD6684>\\<obf></#FD6684>: <obf>乱码字</obf><br><br>* 渐变色: <#FD6684><gradient:<#50E975>[颜色1]</#50E975>:<#50E975>[颜色...]</#50E975>:<#50E975>[阶段]</#50E975>></#FD6684><br>    <#FD6684>\\<gradient></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>:<#50E975>red</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459:red>||||||||||||||||||||||||</gradient><br><br>* 字体: <#FD6684>\\<font:<#50E975>key</#50E975>></#FD6684><br>    <#FD6684>\\<font:<#50E975>uniform</#50E975>></#FD6684>Uniform<#FD6684>\\</font></#FD6684>: <font:uniform>Uniform</font><br>    <#FD6684>\\<font:<#50E975>alt</#50E975>></#FD6684>Alt<#FD6684>\\</font></#FD6684>: <font:alt>Alt</font><br><br>* 以及更多    <br><br><grey>(<green>点此</green>)</grey> <yellow>打开维基链接'><u><yellow>MiniMessage</yellow></u></hover></click> 来编辑字体样式!",
+    "input": {
+      "mini_message": "<#00ccff>使用 <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>MiniMessage 使用标签而非旧版的颜色字符!<br>这些标签可以用于指定: <br>* 颜色: <#FD6684><_颜色名称_></#FD6684><br>    <#FD6684>\\<green></#FD6684>: <green>绿色</green><br>    <#FD6684>\\<#5662F6></#FD6684>: <#5662F6>Hex 颜色</#5662F6><br>    ... 等.<br><br>* 装饰字体:<br>    <#FD6684>\\<bold></#FD6684>, <#FD6684>\\<b></#FD6684>: <b>粗体字</b>,<br>    <#FD6684>\\<italic></#FD6684>, <#FD6684>\\<em></#FD6684>, <#FD6684>\\<i></#FD6684>: <em>斜体字</em>,<br>    <#FD6684>\\<underline></#FD6684>, <#FD6684>\\<u></#FD6684>: <u>下划线</u>,<br>    <#FD6684>\\<strikethrough></#FD6684>, <#FD6684>\\<st></#FD6684>: <st>删除线</st>,<br>    <#FD6684>\\<obfuscated></#FD6684>, <#FD6684>\\<obf></#FD6684>: <obf>乱码字</obf><br><br>* 渐变色: <#FD6684><gradient:<#50E975>[颜色1]</#50E975>:<#50E975>[颜色...]</#50E975>:<#50E975>[阶段]</#50E975>></#FD6684><br>    <#FD6684>\\<gradient></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>:<#50E975>red</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459:red>||||||||||||||||||||||||</gradient><br><br>* 字体: <#FD6684>\\<font:<#50E975>key</#50E975>></#FD6684><br>    <#FD6684>\\<font:<#50E975>uniform</#50E975>></#FD6684>Uniform<#FD6684>\\</font></#FD6684>: <font:uniform>Uniform</font><br>    <#FD6684>\\<font:<#50E975>alt</#50E975>></#FD6684>Alt<#FD6684>\\</font></#FD6684>: <font:alt>Alt</font><br><br>* 以及更多    <br><br><grey>(<green>点此</green>)</grey> <yellow>打开维基链接'><u><yellow>MiniMessage</yellow></u></hover></click> 来编辑字体样式!",
       "wui_command": "<#00ccff>Use the <click:suggest_command:'/wui '><hover:show_text:'<white>使用 <yellow>/wui</yellow> 命令输入你的值, 而不是将它直接输入聊天栏!<br>这提供了 TAB 补全，也避免了其他聊天插件的兼容性问题!<br><br>将你的输入内容放在命令后即可。<br>如: <yellow>/wui <green>输入内容</green></yellow><br><br><grey>(<green>点击</green>)</grey> <yellow>填充命令'><u><yellow>/wui</yellow></u></hover></click> 命令来输入你的值!"
     },
     "chat_editor": {
@@ -837,6 +837,26 @@
             "success": "<green>将模型数据设置为<gold>%VALUE%</gold>!</green>",
             "invalid_value": "<dark_red>%VALUE%<red> 不是有效自定义模型数据值!"
           },
+          "custom_model_data_new": {
+            "disabled": "<red><b>Disabled</b></red>",
+            "success_string_add": "<green>Set String Model Data to <gold>%VALUE%</gold>!</green>",
+            "success_float_add": "<green>Set Float Model Data to <gold>%VALUE%</gold>!</green>",
+            "error_invalid_value": "<red>The value <dark_red>%VALUE%</dark_red> is not a valid Model Data <yellow>%DATA_TYPE%</yellow> value!</red>",
+            "success_string_remove": "<green>Removed String Model Data <gold>%VALUE%</gold>!</green>",
+            "success_float_remove": "<green>Removed Float Model Data <gold>%VALUE%</gold>!</green>",
+            "success_color_add": "<green>Set Color Model Data to <gold>%VALUE%</gold>!</green>",
+            "success_color_remove": "<green>Removed Color Model Data <gold>%VALUE%</gold>!</green>",
+            "error_not_enough_args_rgb": "<red>Not enough arguments provided - 'RGB 100 100 100' is valid format!</red>",
+            "error_argb": "<red>Error with ARGB parse occurred - <yellow>%ERROR%</yellow>!</red>",
+            "error_rgb": "<red>Error with RGB parse occurred - <yellow>%ERROR%</yellow>!</red>",
+            "error_not_enough_args_argb": "<red>Not enough arguments provided - 'ARGB 255 100 100 100' is valid format!</red>",
+            "color_error": "<red>Invalid arguments provided - 'RGB 1 1 1' or 'ARGB 1 1 1 1' or 'AQUA' (+ other colors) are valid!</red>"
+          },
+          "item_model": {
+            "set": "<green>Set Item Model to <gold>%VALUE%</gold>!</green>",
+            "reset": "<green>Removed Item Model!</green>",
+            "invalid_namespace": "<red>Namespace <yellow>%VAL%</yellow> is invalid!"
+          },
           "consume": {
             "valid": "<green>设置耐久消耗为</green><yellow> %VALUE%</yellow>",
             "invalid": "<red>这不是有效数字!请输入有效数字,如 <yellow>1</yellow> 或 <yellow>-1</yellow></red>"
@@ -1440,6 +1460,116 @@
               ]
             }
           },
+          "item_model": {
+            "option": {
+              "name": "<gold>Item Model </gold><dark_grey>[<grey>Beta</grey>]</dark_grey>",
+              "lore": [
+                "<grey>Set Item Model values.</grey>",
+                "<red>Available since Minecraft 1.21.4</red>"
+              ]
+            },
+            "info": {
+              "name": "<grey>Item Model:</grey> <red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Item Model</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set": {
+              "name": "<green>Click to <red>set</red></green> <yellow>Item Model</yellow>",
+              "help": [
+                "<grey>Sets the <yellow>Item Model</yellow> value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Item Model (/wui <namespace> <key>)!</yellow>"
+            },
+            "reset": {
+              "name": "<green>Click to <red>reset</red></green> <yellow>Item Model</yellow>",
+              "help": [
+                "<grey><red>Resets</red> the <yellow>Item Model</yellow> value</grey>",
+                "<grey>for this item!</grey>"
+              ]
+            }
+          },
+          "custom_model_data_new": {
+            "option": {
+              "name": "<gold>Custom Model Data </gold><dark_grey>[<grey>Beta</grey>]</dark_grey>",
+              "lore": [
+                "<grey>Set Custom Model values.</grey>",
+                "<grey>Floats, Strings, Flags, Colors</grey>",
+                "<red>Available since Minecraft 1.21.4</red>"
+              ]
+            },
+            "info_string": {
+              "name": "<yellow>String</yellow> <grey>Model Data:</grey> <red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>String</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_string": {
+              "name": "<green>Click to set <yellow>String</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>String</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_string": {
+              "name": "<red>Remove <yellow>String</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the Custom Model Data <red>String</red> value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "info_float": {
+              "name": "<yellow>Float</yellow><grey> Model Data: </grey><red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Float</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_float": {
+              "name": "<green>Click to set <yellow>Float</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>Float</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_float": {
+              "name": "<red>Remove <yellow>Float</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the <red>Float</red> Custom Model Data value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "info_color": {
+              "name": "<yellow>Color</yellow><grey> Model Data: </grey><red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Color</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_color": {
+              "name": "<green>Click to set <yellow>Color</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>Color</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_color": {
+              "name": "<red>Remove <yellow>Color</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the <red>Color</red> Custom Model Data value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            }
+          },
           "consume": {
             "option": {
               "name": "<gold>失去耐久值与替换",
@@ -1923,7 +2053,7 @@
               "<dark_grey>[<green>点击</green>]</dark_grey> <yellow>关闭自动解锁</yellow>"
             ]
           },
-          "vanilla_book_no_discover" : {
+          "vanilla_book_no_discover": {
             "name": "<grey><b>\u274F </b></grey><gold><b>原版配方书</b></gold>",
             "lore": [
               "<yellow>配方将在原版配方书中隐藏。</yellow>",
@@ -2060,7 +2190,7 @@
         "override": "<white>输入文件夹及配方名称",
         "valid_number": "<red>请输入有效数字!</red>",
         "group_id": {
-          "invalid" : "<red>组名称包含无效字符. 请注意在这些名称中使用彩色字符是没有必要的，因为它们并不会给玩家显示!"
+          "invalid": "<red>组名称包含无效字符. 请注意在这些名称中使用彩色字符是没有必要的，因为它们并不会给玩家显示!"
         },
         "save": {
           "input": "<white>输入保存物品的 <hover:show_text:'自定义物品在下列文件中保存: <yellow>/data/<folder>/items/<item_name>.conf</yellow><br><br>文件夹可用于整理物品，且支持子文件夹！<br>像这样输入你的文件夹名称: <yellow>/wui <文件夹> <名称></yellow><br><br><red>确保文件夹和文件名称都只包含: <br> - 小写字母,<br> - 数字,<br> - 下划线 (_),<br> - 或英文横杠(-)!<br>使用命令 <yellow>/wui </yellow>来获取输入帮助，例如 TAB 补全!</red>'><yellow>文件夹和物品名称</yellow></hover>。",
@@ -3325,7 +3455,7 @@
         "gui_name": "<category_name>",
         "items": {
         }
-      } 
+      }
     },
     "recipe_view": {
       "single_recipe": {
@@ -3680,7 +3810,7 @@
               ]
             }
           },
-          "indicator":{
+          "indicator": {
             "water": {
               "name": "<blue><level></blue>"
             },

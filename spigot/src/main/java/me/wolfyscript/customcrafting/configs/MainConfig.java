@@ -22,16 +22,18 @@
 
 package me.wolfyscript.customcrafting.configs;
 
-import java.util.*;
-import java.util.function.Function;
-
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.config.YamlConfiguration;
 import me.wolfyscript.utilities.util.NamespacedKey;
-
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.function.Function;
 
 public class MainConfig extends YamlConfiguration {
 

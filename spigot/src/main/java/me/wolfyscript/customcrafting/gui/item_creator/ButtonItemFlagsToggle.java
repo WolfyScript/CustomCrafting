@@ -23,7 +23,6 @@
 package me.wolfyscript.customcrafting.gui.item_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;

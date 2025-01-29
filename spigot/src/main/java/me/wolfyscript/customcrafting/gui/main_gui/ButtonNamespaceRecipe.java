@@ -29,7 +29,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 

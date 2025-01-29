@@ -23,9 +23,6 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -46,6 +43,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 public class MenuCategoryOverview extends CCWindow {
 

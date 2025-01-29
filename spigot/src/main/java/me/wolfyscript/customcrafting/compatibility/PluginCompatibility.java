@@ -23,12 +23,8 @@
 package me.wolfyscript.customcrafting.compatibility;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-//import me.wolfyscript.customcrafting.compatibility.protocollib.ProtocolLib;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.util.version.WUVersion;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
 public class PluginCompatibility {
 

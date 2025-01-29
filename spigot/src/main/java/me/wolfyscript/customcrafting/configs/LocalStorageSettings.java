@@ -22,11 +22,12 @@
 
 package me.wolfyscript.customcrafting.configs;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LocalStorageSettings  implements ConfigurationSerializable {
 

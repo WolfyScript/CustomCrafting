@@ -23,11 +23,6 @@
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
@@ -38,20 +33,21 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.lib.net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
-import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.MiniMessage;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.Tag;
 import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.eval.context.EvalContext;
 import me.wolfyscript.utilities.util.eval.context.EvalContextPlayer;
-import me.wolfyscript.utilities.util.eval.operators.BoolOperator;
 import me.wolfyscript.utilities.util.eval.value_providers.ValueProvider;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class DisplayLoreMergeAdapter extends MergeAdapter {
 

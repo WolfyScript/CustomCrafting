@@ -27,7 +27,6 @@ import com.wolfyscript.utilities.bukkit.world.items.reference.WolfyUtilsStackIde
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import org.bukkit.inventory.ItemStack;
 
 /**

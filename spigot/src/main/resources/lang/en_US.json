@@ -824,6 +824,26 @@
             "success": "<green>Set Model Data to <gold>%VALUE%</gold>!</green>",
             "invalid_value": "<red>The value <dark_red>%VALUE%</dark_red> is not a valid Model Data number!</red>"
           },
+          "custom_model_data_new":{
+            "disabled": "<red><b>Disabled</b></red>",
+            "success_string_add": "<green>Set String Model Data to <gold>%VALUE%</gold>!</green>",
+            "success_float_add": "<green>Set Float Model Data to <gold>%VALUE%</gold>!</green>",
+            "error_invalid_value": "<red>The value <dark_red>%VALUE%</dark_red> is not a valid Model Data <yellow>%DATA_TYPE%</yellow> value!</red>",
+            "success_string_remove": "<green>Removed String Model Data <gold>%VALUE%</gold>!</green>",
+            "success_float_remove": "<green>Removed Float Model Data <gold>%VALUE%</gold>!</green>",
+            "success_color_add": "<green>Set Color Model Data to <gold>%VALUE%</gold>!</green>",
+            "success_color_remove": "<green>Removed Color Model Data <gold>%VALUE%</gold>!</green>",
+            "error_not_enough_args_rgb": "<red>Not enough arguments provided - 'RGB 100 100 100' is valid format!</red>",
+            "error_argb": "<red>Error with ARGB parse occurred - <yellow>%ERROR%</yellow>!</red>",
+            "error_rgb": "<red>Error with RGB parse occurred - <yellow>%ERROR%</yellow>!</red>",
+            "error_not_enough_args_argb": "<red>Not enough arguments provided - 'ARGB 255 100 100 100' is valid format!</red>",
+            "color_error": "<red>Invalid arguments provided - 'RGB 1 1 1' or 'ARGB 1 1 1 1' or 'AQUA' (+ other colors) are valid!</red>"
+          },
+          "item_model": {
+            "set": "<green>Set Item Model to <gold>%VALUE%</gold>!</green>",
+            "reset": "<green>Removed Item Model!</green>",
+            "invalid_namespace": "<red>Namespace <yellow>%VAL%</yellow> is invalid!"
+          },
           "consume": {
             "valid": "<green>Set the durability cost to </green><yellow>%VALUE%</yellow>",
             "invalid": "<red>This is not a Number! Please type in a Valid number e.g. <yellow>1 </yellow>or<yellow> -1</yellow></red>"
@@ -1413,6 +1433,116 @@
                   "<grey>Cannot be used in Smoker</grey>"
                 ]
               }
+            }
+          },
+          "item_model": {
+            "option":{
+              "name": "<gold>Item Model </gold><dark_grey>[<grey>Beta</grey>]</dark_grey>",
+              "lore":[
+                "<grey>Set Item Model values.</grey>",
+                "<red>Available since Minecraft 1.21.4</red>"
+              ]
+            },
+            "info":{
+              "name": "<grey>Item Model:</grey> <red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Item Model</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set": {
+              "name": "<green>Click to <red>set</red></green> <yellow>Item Model</yellow>",
+              "help": [
+                "<grey>Sets the <yellow>Item Model</yellow> value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Item Model (/wui <namespace> <key>)!</yellow>"
+            },
+            "reset":{
+              "name": "<green>Click to <red>reset</red></green> <yellow>Item Model</yellow>",
+              "help": [
+                "<grey><red>Resets</red> the <yellow>Item Model</yellow> value</grey>",
+                "<grey>for this item!</grey>"
+              ]
+            }
+          },
+          "custom_model_data_new": {
+            "option": {
+              "name": "<gold>Custom Model Data </gold><dark_grey>[<grey>Beta</grey>]</dark_grey>",
+              "lore": [
+                "<grey>Set Custom Model values.</grey>",
+                "<grey>Floats, Strings, Flags, Colors</grey>",
+                "<red>Available since Minecraft 1.21.4</red>"
+              ]
+            },
+            "info_string": {
+              "name": "<yellow>String</yellow> <grey>Model Data:</grey> <red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>String</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_string": {
+              "name": "<green>Click to set <yellow>String</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>String</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_string": {
+              "name": "<red>Remove <yellow>String</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the Custom Model Data <red>String</red> value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "info_float": {
+              "name": "<yellow>Float</yellow><grey> Model Data: </grey><red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Float</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_float": {
+              "name": "<green>Click to set <yellow>Float</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>Float</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_float": {
+              "name": "<red>Remove <yellow>Float</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the <red>Float</red> Custom Model Data value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "info_color": {
+              "name": "<yellow>Color</yellow><grey> Model Data: </grey><red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Color</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_color": {
+              "name": "<green>Click to set <yellow>Color</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>Color</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_color": {
+              "name": "<red>Remove <yellow>Color</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the <red>Color</red> Custom Model Data value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
             }
           },
           "custom_model_data": {
