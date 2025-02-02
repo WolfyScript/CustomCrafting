@@ -144,6 +144,10 @@ public class MainConfig extends YamlConfiguration {
         return getBoolean("recipes.pretty_printing");
     }
 
+    public boolean isIaFix(){
+        return getBoolean("recipes.ia_fix");
+    }
+
     @Deprecated(forRemoval = true)
     public boolean isNMSBasedCrafting() {
         return false;
