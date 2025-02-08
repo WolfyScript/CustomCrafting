@@ -26,7 +26,6 @@ import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
-import java.util.Map;
 import java.util.Optional;
 
 public class AnvilData extends RecipeData<CustomRecipeAnvil> {

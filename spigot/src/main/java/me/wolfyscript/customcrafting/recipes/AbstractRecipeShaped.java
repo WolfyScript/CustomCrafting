@@ -186,7 +186,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         }
         this.shape = keepShapeAsIs ? shape : RecipeUtil.formatShape(shape).toArray(new String[0]);
         var flattenShape = String.join("", this.shape);
-        Preconditions.checkArgument(!flattenShape.isEmpty() && !flattenShape.isBlank(), "Shape must not be empty! (Shape: \"" + Arrays.toString(this.shape) + "\")!");
+        Preconditions.checkArgument(!flattenShape.isBlank(), "Shape must not be empty! (Shape: \"" + Arrays.toString(this.shape) + "\")!");
         Map<Character, Ingredient> newIngredients = new HashMap<>();
         flattenShape.chars().mapToObj(value -> (char) value).forEach(character -> newIngredients.put(character, this.mappedIngredients.get(character)));
         this.mappedIngredients = newIngredients;
@@ -199,7 +199,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private void createFlatIngredients() {
         //Create flatten ingredients. This makes it possible to use a key multiple times in one shape.
         var flattenShape = String.join("", this.shape);
-        Preconditions.checkArgument(!flattenShape.isEmpty() && !flattenShape.isBlank(), "Shape must not be empty! (Shape: \"" + Arrays.toString(this.shape) + "\")!");
+        Preconditions.checkArgument(!flattenShape.isBlank(), "Shape must not be empty! (Shape: \"" + Arrays.toString(this.shape) + "\")!");
         this.ingredients = flattenShape.chars().mapToObj(key -> mappedIngredients.getOrDefault((char) key, new Ingredient())).toList();
         //Create internal shape, which is more performant when used in checks later on.
         this.internalShape = new Shape();

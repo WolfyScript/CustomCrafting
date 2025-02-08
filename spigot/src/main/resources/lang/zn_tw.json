@@ -66,26 +66,26 @@
   },
   "recipe": {
     "type": {
-      "crafting" : {
+      "crafting": {
         "crafting_shaped": "有序配方",
         "crafting_shapeless": "無序配方"
       },
-      "elite_crafting" : {
+      "elite_crafting": {
         "elite_crafting_shaped": "有序配方高級配方",
         "elite_crafting_shapeless": "無序高級配方"
       },
-      "cooking" : {
+      "cooking": {
         "furnace": "熔爐配方",
         "blast_furnace": "高爐配方",
         "smoker": "煙薰爐配方",
         "campfire": "營火配方"
       },
-      "brewing_stand" : "釀造配方",
-      "anvil" : "鐵砧配方",
-      "stonecutter" : "切石機配方",
-      "grindstone" : "磨石配方",
-      "smithing" : "鍛造台配方",
-      "cauldron" : "鍋釜配方"
+      "brewing_stand": "釀造配方",
+      "anvil": "鐵砧配方",
+      "stonecutter": "切石機配方",
+      "grindstone": "磨石配方",
+      "smithing": "鍛造台配方",
+      "cauldron": "鍋釜配方"
     }
   },
   "msg": {
@@ -121,8 +121,8 @@
         "<yellow>請重新輸入文件夾和 key !</yellow>"
       ]
     },
-    "input":{
-      "mini_message" : "<#00ccff>使用 <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>MiniMessage 使用標籤而不是傳統的顏色代碼!<br>這些標籤可用於指定: <br>* 顏色: <#FD6684><_colorname_></#FD6684><br>    <#FD6684>\\<green></#FD6684>: <green>綠</green><br>    <#FD6684>\\<#5662F6></#FD6684>: <#5662F6>Hex-Color</#5662F6><br>    ... etc.<br><br>* 裝飾:<br>    <#FD6684>\\<bold></#FD6684>, <#FD6684>\\<b></#FD6684>: <b>Bold</b>,<br>    <#FD6684>\\<italic></#FD6684>, <#FD6684>\\<em></#FD6684>, <#FD6684>\\<i></#FD6684>: <em>斜體</em>,<br>    <#FD6684>\\<underline></#FD6684>, <#FD6684>\\<u></#FD6684>: <u>下劃線</u>,<br>    <#FD6684>\\<strikethrough></#FD6684>, <#FD6684>\\<st></#FD6684>: <st>Strikethrough</st>,<br>    <#FD6684>\\<obfuscated></#FD6684>, <#FD6684>\\<obf></#FD6684>: <obf>亂碼</obf><br><br>* Gradients: <#FD6684><gradient:<#50E975>[color1]</#50E975>:<#50E975>[color...]</#50E975>:<#50E975>[phase]</#50E975>></#FD6684><br>    <#FD6684>\\<gradient></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>:<#50E975>red</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459:red>||||||||||||||||||||||||</gradient><br><br>* 格式: <#FD6684>\\<font:<#50E975>key</#50E975>></#FD6684><br>    <#FD6684>\\<font:<#50E975>uniform</#50E975>></#FD6684>Uniform<#FD6684>\\</font></#FD6684>: <font:uniform>Uniform</font><br>    <#FD6684>\\<font:<#50E975>alt</#50E975>></#FD6684>Alt<#FD6684>\\</font></#FD6684>: <font:alt>Alt</font><br><br>* 和更多    <br><br><grey>(<green>點擊/green>)</grey> <yellow>打開鏈接到 Wiki'><yellow>MiniMessage</yellow></hover></click> 用於顏色和格式!",
+    "input": {
+      "mini_message": "<#00ccff>使用 <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>MiniMessage 使用標籤而不是傳統的顏色代碼!<br>這些標籤可用於指定: <br>* 顏色: <#FD6684><_colorname_></#FD6684><br>    <#FD6684>\\<green></#FD6684>: <green>綠</green><br>    <#FD6684>\\<#5662F6></#FD6684>: <#5662F6>Hex-Color</#5662F6><br>    ... etc.<br><br>* 裝飾:<br>    <#FD6684>\\<bold></#FD6684>, <#FD6684>\\<b></#FD6684>: <b>Bold</b>,<br>    <#FD6684>\\<italic></#FD6684>, <#FD6684>\\<em></#FD6684>, <#FD6684>\\<i></#FD6684>: <em>斜體</em>,<br>    <#FD6684>\\<underline></#FD6684>, <#FD6684>\\<u></#FD6684>: <u>下劃線</u>,<br>    <#FD6684>\\<strikethrough></#FD6684>, <#FD6684>\\<st></#FD6684>: <st>Strikethrough</st>,<br>    <#FD6684>\\<obfuscated></#FD6684>, <#FD6684>\\<obf></#FD6684>: <obf>亂碼</obf><br><br>* Gradients: <#FD6684><gradient:<#50E975>[color1]</#50E975>:<#50E975>[color...]</#50E975>:<#50E975>[phase]</#50E975>></#FD6684><br>    <#FD6684>\\<gradient></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>:<#50E975>red</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459:red>||||||||||||||||||||||||</gradient><br><br>* 格式: <#FD6684>\\<font:<#50E975>key</#50E975>></#FD6684><br>    <#FD6684>\\<font:<#50E975>uniform</#50E975>></#FD6684>Uniform<#FD6684>\\</font></#FD6684>: <font:uniform>Uniform</font><br>    <#FD6684>\\<font:<#50E975>alt</#50E975>></#FD6684>Alt<#FD6684>\\</font></#FD6684>: <font:alt>Alt</font><br><br>* 和更多    <br><br><grey>(<green>點擊/green>)</grey> <yellow>打開鏈接到 Wiki'><yellow>MiniMessage</yellow></hover></click> 用於顏色和格式!",
       "wui_command": "<#00ccff>使用 <click:suggest_command:'/wui '><hover:show_text:'<white>Use the <yellow>/wui</yellow> 命令輸入您的值，而不是直接在聊天中輸入!<br>它提供選項卡完成並防止聊天插件出現問題!<br><br>只需在命令後輸入您的輸入，中間留一個空格.<br>像這樣: <yellow>/wui <green>你在這裡輸入</green></yellow><br><br><grey>(<green>點擊</green>)</grey> <yellow>填寫指令'><yellow>/wui</yellow></hover></click> 輸入您的值的命令!"
     },
     "chat_editor": {
@@ -770,6 +770,26 @@
             "success": "<green>將模型數據設置為 <gold>%VALUE%</gold>!</green>",
             "invalid_value": "<red>此數值 <dark_red>%VALUE%</dark_red> 不是有效的模型數據編號!</red>"
           },
+          "custom_model_data_new": {
+            "disabled": "<red><b>Disabled</b></red>",
+            "success_string_add": "<green>Set String Model Data to <gold>%VALUE%</gold>!</green>",
+            "success_float_add": "<green>Set Float Model Data to <gold>%VALUE%</gold>!</green>",
+            "error_invalid_value": "<red>The value <dark_red>%VALUE%</dark_red> is not a valid Model Data <yellow>%DATA_TYPE%</yellow> value!</red>",
+            "success_string_remove": "<green>Removed String Model Data <gold>%VALUE%</gold>!</green>",
+            "success_float_remove": "<green>Removed Float Model Data <gold>%VALUE%</gold>!</green>",
+            "success_color_add": "<green>Set Color Model Data to <gold>%VALUE%</gold>!</green>",
+            "success_color_remove": "<green>Removed Color Model Data <gold>%VALUE%</gold>!</green>",
+            "error_not_enough_args_rgb": "<red>Not enough arguments provided - 'RGB 100 100 100' is valid format!</red>",
+            "error_argb": "<red>Error with ARGB parse occurred - <yellow>%ERROR%</yellow>!</red>",
+            "error_rgb": "<red>Error with RGB parse occurred - <yellow>%ERROR%</yellow>!</red>",
+            "error_not_enough_args_argb": "<red>Not enough arguments provided - 'ARGB 255 100 100 100' is valid format!</red>",
+            "color_error": "<red>Invalid arguments provided - 'RGB 1 1 1' or 'ARGB 1 1 1 1' or 'AQUA' (+ other colors) are valid!</red>"
+          },
+          "item_model": {
+            "set": "<green>Set Item Model to <gold>%VALUE%</gold>!</green>",
+            "reset": "<green>Removed Item Model!</green>",
+            "invalid_namespace": "<red>Namespace <yellow>%VAL%</yellow> is invalid!"
+          },
           "consume": {
             "valid": "<green>將耐久性成本設置為 </green><yellow>%VALUE%</yellow>",
             "invalid": "<red>這不是一個數字! 請輸入有效的數字 例如. <yellow>1 </yellow>or<yellow> -1</yellow></red>"
@@ -1369,6 +1389,116 @@
               ]
             }
           },
+          "item_model": {
+            "option": {
+              "name": "<gold>Item Model </gold><dark_grey>[<grey>Beta</grey>]</dark_grey>",
+              "lore": [
+                "<grey>Set Item Model values.</grey>",
+                "<red>Available since Minecraft 1.21.4</red>"
+              ]
+            },
+            "info": {
+              "name": "<grey>Item Model:</grey> <red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Item Model</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set": {
+              "name": "<green>Click to <red>set</red></green> <yellow>Item Model</yellow>",
+              "help": [
+                "<grey>Sets the <yellow>Item Model</yellow> value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Item Model (/wui <namespace> <key>)!</yellow>"
+            },
+            "reset": {
+              "name": "<green>Click to <red>reset</red></green> <yellow>Item Model</yellow>",
+              "help": [
+                "<grey><red>Resets</red> the <yellow>Item Model</yellow> value</grey>",
+                "<grey>for this item!</grey>"
+              ]
+            }
+          },
+          "custom_model_data_new": {
+            "option": {
+              "name": "<gold>Custom Model Data </gold><dark_grey>[<grey>Beta</grey>]</dark_grey>",
+              "lore": [
+                "<grey>Set Custom Model values.</grey>",
+                "<grey>Floats, Strings, Flags, Colors</grey>",
+                "<red>Available since Minecraft 1.21.4</red>"
+              ]
+            },
+            "info_string": {
+              "name": "<yellow>String</yellow> <grey>Model Data:</grey> <red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>String</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_string": {
+              "name": "<green>Click to set <yellow>String</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>String</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_string": {
+              "name": "<red>Remove <yellow>String</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the Custom Model Data <red>String</red> value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "info_float": {
+              "name": "<yellow>Float</yellow><grey> Model Data: </grey><red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Float</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_float": {
+              "name": "<green>Click to set <yellow>Float</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>Float</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_float": {
+              "name": "<red>Remove <yellow>Float</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the <red>Float</red> Custom Model Data value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "info_color": {
+              "name": "<yellow>Color</yellow><grey> Model Data: </grey><red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Color</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_color": {
+              "name": "<green>Click to set <yellow>Color</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>Color</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_color": {
+              "name": "<red>Remove <yellow>Color</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the <red>Color</red> Custom Model Data value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            }
+          },
           "consume": {
             "option": {
               "name": "<gold>失去耐久值或被替換</gold>",
@@ -1846,7 +1976,7 @@
               "<dark_grey>[<green>點擊</green>]</dark_grey> <yellow>禁用原版知識之書</yellow>"
             ]
           },
-          "vanilla_book_no_discover" : {
+          "vanilla_book_no_discover": {
             "name": "<grey><b>\u274F </b></grey><gold><b>原版知識之書</b></gold>",
             "lore": [
               "<yellow>菜譜將在原版知識之書中可見.</yellow>",
@@ -3193,7 +3323,6 @@
       "category_overview": {
         "gui_name": "<category_name>",
         "items": {
-
         }
       }
     },
@@ -3562,7 +3691,7 @@
               ]
             }
           },
-          "indicator":{
+          "indicator": {
             "water": {
               "name": "<blue><level></blue>"
             },

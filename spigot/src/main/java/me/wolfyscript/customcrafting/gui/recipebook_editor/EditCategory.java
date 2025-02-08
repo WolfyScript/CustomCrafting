@@ -28,7 +28,6 @@ import me.wolfyscript.lib.net.kyori.adventure.text.minimessage.tag.resolver.Plac
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import org.bukkit.Material;
 
 public class EditCategory extends EditCategorySetting {

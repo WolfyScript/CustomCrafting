@@ -23,15 +23,7 @@
 package me.wolfyscript.customcrafting.data;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.cache.BrewingGUICache;
-import me.wolfyscript.customcrafting.data.cache.CacheCauldronWorkstation;
-import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
-import me.wolfyscript.customcrafting.data.cache.CacheRecipeView;
-import me.wolfyscript.customcrafting.data.cache.ChatLists;
-import me.wolfyscript.customcrafting.data.cache.ParticleCache;
-import me.wolfyscript.customcrafting.data.cache.RecipeBookCache;
-import me.wolfyscript.customcrafting.data.cache.RecipeBookEditorCache;
-import me.wolfyscript.customcrafting.data.cache.RecipeList;
+import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.potions.ApplyPotionEffect;

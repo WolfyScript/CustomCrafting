@@ -26,7 +26,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("io.github.goooler.shadow") version "8.1.7"
-    id("com.wolfyscript.devtools.docker.minecraft_servers") version "2.0-SNAPSHOT"
+//    id("com.wolfyscript.devtools.docker.minecraft_servers") version "2.0-SNAPSHOT"
     id("com.jfrog.artifactory") version "5.2.0"
 }
 
@@ -43,19 +43,20 @@ repositories {
 }
 
 dependencies {
-    api("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
-    api("org.bstats:bstats-bukkit:3.0.0")
+    //api("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
+    api("org.bstats:bstats-bukkit:3.0.2")
     compileOnly("io.lumine:Mythic-Dist:5.3.5")
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.mojang:authlib:3.11.50")
-    compileOnly("org.jetbrains:annotations:23.0.0")
-    compileOnly("io.netty:netty-all:4.1.85.Final")
-    compileOnly("me.clip:placeholderapi:2.10.4")
+    compileOnly("org.jetbrains:annotations:24.1.0")
+    compileOnly("io.netty:netty-all:4.1.111.Final")
+    compileOnly("me.clip:placeholderapi:2.11.1")
     compileOnly("io.th0rgal:oraxen:1.170.0")
-    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.17-beta.2-SNAPSHOT")
+    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.18.1-petu")
+    compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1")
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 tasks.named<ProcessResources>("processResources") {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE

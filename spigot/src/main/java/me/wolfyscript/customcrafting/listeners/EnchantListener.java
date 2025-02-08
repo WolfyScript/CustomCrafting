@@ -43,7 +43,7 @@ public class EnchantListener implements Listener {
             if (offer != null) {
                 System.out.println("    " + offer.getEnchantment());
             } else {
-                offers[i] = new EnchantmentOffer(Enchantment.PROTECTION_ENVIRONMENTAL, 2, 3);
+                offers[i] = new EnchantmentOffer(Enchantment.PROTECTION, 2, 3);
             }
         }
         System.out.println(event.isCancelled());

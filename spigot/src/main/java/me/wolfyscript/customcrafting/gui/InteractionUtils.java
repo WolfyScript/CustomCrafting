@@ -22,20 +22,17 @@
 
 package me.wolfyscript.customcrafting.gui;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.event.inventory.*;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class InteractionUtils {
 

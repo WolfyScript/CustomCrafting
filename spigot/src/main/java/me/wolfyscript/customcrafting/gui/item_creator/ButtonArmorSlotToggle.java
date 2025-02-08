@@ -46,7 +46,7 @@ public class ButtonArmorSlotToggle extends ToggleButton<CCCache> {
         super(key(slot), (cache, guiHandler, player, guiInventory, i) -> {
             CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.hasEquipmentSlot(slot);
-        }, new ButtonState<>(key(slot) + ".enabled", new ItemBuilder(material).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create(), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        }, new ButtonState<>(key(slot) + ".enabled", new ItemBuilder(material).addEnchantment(Enchantment.UNBREAKING, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create(), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             items.getItem().removeEquipmentSlots(slot);
             return true;
         }), new ButtonState<>(key(slot) + ".disabled", material, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {

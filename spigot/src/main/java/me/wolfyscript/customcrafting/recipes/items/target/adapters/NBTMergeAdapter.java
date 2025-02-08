@@ -22,15 +22,14 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
-import com.wolfyscript.lib.nbt.nbtapi.NBTCompound;
-import com.wolfyscript.lib.nbt.nbtapi.NBTItem;
 import com.wolfyscript.utilities.bukkit.nbt.NBTQuery;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import de.tr7zw.nbtapi.NBTCompound;
+import de.tr7zw.nbtapi.NBTItem;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.block.Block;
