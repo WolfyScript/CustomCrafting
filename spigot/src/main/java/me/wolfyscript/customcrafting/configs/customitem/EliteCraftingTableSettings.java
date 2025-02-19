@@ -24,9 +24,10 @@ package me.wolfyscript.customcrafting.configs.customitem;
 
 import com.wolfyscript.utilities.KeyedStaticId;
 import com.wolfyscript.utilities.bukkit.items.CustomItemData;
-import java.util.Objects;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
+
+import java.util.Objects;
 
 @KeyedStaticId(EliteCraftingTableSettings.ID)
 public class EliteCraftingTableSettings extends CustomItemData {

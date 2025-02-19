@@ -22,9 +22,6 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
-import java.io.File;
-import java.io.IOException;
-
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.wolfyscript.utilities.dependency.Dependency;
@@ -42,7 +39,10 @@ import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keyed {
 
@@ -55,7 +55,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
     private boolean replaceData = false;
     private boolean doneLoading = false;
 
-    protected final Multimap<CustomRecipe<?>, Dependency> recipeDependencies = Multimaps.newSetMultimap(new HashMap<>(), HashSet::new);
+    protected final Multimap<CustomRecipe<?>, Dependency> recipeDependencies = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), HashSet::new);
     protected final List<VerificationResult<? extends CustomRecipe<?>>> invalidRecipes = new ArrayList<>();
     protected final List<NamespacedKey> failedRecipes = new ArrayList<>();
     private final Deque<ScheduledPluginIntegrationTask> scheduledPluginIntegrationTasks = new ArrayDeque<>();

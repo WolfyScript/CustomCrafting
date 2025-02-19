@@ -24,14 +24,6 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
-import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
-
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.dependency.DependencySource;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -47,11 +39,7 @@ import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -63,6 +51,9 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.io.IOException;
+import java.util.*;
 
 public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 

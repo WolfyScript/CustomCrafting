@@ -65,6 +65,8 @@ public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace
     public FurnaceRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
             FurnaceRecipe placeholderRecipe = new FurnaceRecipe(ICustomVanillaRecipe.toPlaceholder(getNamespacedKey()).bukkit(), getResult().getItemStack(), getMaterialSourceChoice(), getExp(), getCookingTime());
+            if(Bukkit.getRecipe(placeholderRecipe.getKey())!=null)
+                Bukkit.removeRecipe(placeholderRecipe.getKey());
             Bukkit.addRecipe(placeholderRecipe);
             //registerRecipeIntoMinecraft(new FunctionalRecipeBuilderSmelting(getNamespacedKey(), getResult().getItemStack(), getRecipeChoice()));
             return new FurnaceRecipe(ICustomVanillaRecipe.toDisplayKey(getNamespacedKey()).bukkit(), getResult().getItemStack(), getSourceChoice(), getExp(), getCookingTime());

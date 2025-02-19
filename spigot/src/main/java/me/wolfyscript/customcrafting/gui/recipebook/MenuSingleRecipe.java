@@ -41,9 +41,9 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
-import org.jetbrains.annotations.Nullable;
 
 public class MenuSingleRecipe extends CCWindow {
 

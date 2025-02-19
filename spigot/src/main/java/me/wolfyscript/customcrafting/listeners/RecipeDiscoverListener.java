@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
-import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
@@ -30,6 +29,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
+
+import java.util.List;
 
 public class RecipeDiscoverListener implements Listener {
 

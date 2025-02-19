@@ -22,8 +22,6 @@
 
 package me.wolfyscript.customcrafting.listeners.cooking;
 
-import java.util.*;
-
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -32,6 +30,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CookingManager {

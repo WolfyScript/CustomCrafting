@@ -23,16 +23,16 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
 import com.google.common.base.Preconditions;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This object contains data of pre-crafted recipes like the recipe, ingredients and their slot ({@link IngredientData}), and the {@link Result}.

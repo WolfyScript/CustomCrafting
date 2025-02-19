@@ -38,19 +38,19 @@
       "building_blocks": {
         "name": "<grey>\u274F</grey> <gold><b>Строительные блоки</b></gold>"
       },
-      "colored_blocks" : {
+      "colored_blocks": {
         "name": "<grey>\u274F</grey> <gold><b>Разноцветные блоки</b></gold>"
       },
-      "natural_blocks" : {
+      "natural_blocks": {
         "name": "<grey>\u274F</grey> <gold><b>Природные блоки</b></gold>"
       },
-      "functional_blocks" : {
+      "functional_blocks": {
         "name": "<grey>\u274F</grey> <gold><b>Функциональные блоки</b></gold>"
       },
-      "redstone_blocks" : {
+      "redstone_blocks": {
         "name": "<grey>\u274F</grey> <gold><b>Редстоун-механика</b></gold>"
       },
-      "tools_and_utilities" : {
+      "tools_and_utilities": {
         "name": "<grey>\u274F</grey> <gold><b>Инструменты и приспособления</b></gold>"
       },
       "combat": {
@@ -90,26 +90,26 @@
   },
   "recipe": {
     "type": {
-      "crafting" : {
+      "crafting": {
         "crafting_shaped": "Рецепт форменного создания",
         "crafting_shapeless": "Рецепт бесформенного создания"
       },
-      "elite_crafting" : {
+      "elite_crafting": {
         "elite_crafting_shaped": "Элитный рецепт форменного создания",
         "elite_crafting_shapeless": "Элитный рецепт бесформенного создания"
       },
-      "cooking" : {
+      "cooking": {
         "furnace": "Рецепт печи",
         "blast_furnace": "Рецепт плавильни",
         "smoker": "Рецепт коптильни",
         "campfire": "Рецепт костра"
       },
-      "brewing_stand" : "Рецепт зельеварки",
-      "anvil" : "Рецепт наковальни",
-      "stonecutter" : "Рецепт камнереза",
-      "grindstone" : "Рецепт точила",
-      "smithing" : "Рецепт стола кузнеца",
-      "cauldron" : "Рецепт котла"
+      "brewing_stand": "Рецепт зельеварки",
+      "anvil": "Рецепт наковальни",
+      "stonecutter": "Рецепт камнереза",
+      "grindstone": "Рецепт точила",
+      "smithing": "Рецепт стола кузнеца",
+      "cauldron": "Рецепт котла"
     }
   },
   "msg": {
@@ -145,8 +145,8 @@
         "<yellow>Введите раздел и название файла ещё раз!</yellow>"
       ]
     },
-    "input":{
-      "mini_message" : "<#00ccff>Используйте <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>MiniMessage использует теги вместо устаревших цветовых кодов!<br>Эти теги можно использовать для указания: <br>* Цветов: <#FD6684><_название_цвета_></#FD6684><br>    <#FD6684>\\<green></#FD6684>: <green>Зелёный</green><br>    <#FD6684>\\<#5662F6></#FD6684>: <#5662F6>Шестнадцатеричный цвет</#5662F6><br>    ... и т.д.<br><br>* Форматирования:<br>    <#FD6684>\\<bold></#FD6684>, <#FD6684>\\<b></#FD6684>: <b>Жирный текст</b>,<br>    <#FD6684>\\<italic></#FD6684>, <#FD6684>\\<em></#FD6684>, <#FD6684>\\<i></#FD6684>: <em>Косой текст</em>,<br>    <#FD6684>\\<underline></#FD6684>, <#FD6684>\\<u></#FD6684>: <u>Подчёркнутый текст</u>,<br>    <#FD6684>\\<strikethrough></#FD6684>, <#FD6684>\\<st></#FD6684>: <st>Зачёркнутый текст</st>,<br>    <#FD6684>\\<obfuscated></#FD6684>, <#FD6684>\\<obf></#FD6684>: <obf>Запутанный текст</obf><br><br>* Градиентов: <#FD6684><gradient:<#50E975>[цвет1]</#50E975>:<#50E975>[цвет...]</#50E975>:<#50E975>[переход]</#50E975>></#FD6684><br>    <#FD6684>\\<gradient></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>:<#50E975>red</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459:red>||||||||||||||||||||||||</gradient><br><br>* Шрифтов: <#FD6684>\\<font:<#50E975>название</#50E975>></#FD6684><br>    <#FD6684>\\<font:<#50E975>uniform</#50E975>></#FD6684>Uniform<#FD6684>\\</font></#FD6684>: <font:uniform>Uniform</font><br>    <#FD6684>\\<font:<#50E975>alt</#50E975>></#FD6684>Alt<#FD6684>\\</font></#FD6684>: <font:alt>Alt</font><br><br>* и т.д.    <br><br><grey>(<green>Нажмите</green>)</grey> <yellow>Чтобы открыть ссылку на Wiki'><u><yellow>MiniMessage</yellow></u></hover></click> для установки цветов и форматирования!",
+    "input": {
+      "mini_message": "<#00ccff>Используйте <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html'><hover:show_text:'<white>MiniMessage использует теги вместо устаревших цветовых кодов!<br>Эти теги можно использовать для указания: <br>* Цветов: <#FD6684><_название_цвета_></#FD6684><br>    <#FD6684>\\<green></#FD6684>: <green>Зелёный</green><br>    <#FD6684>\\<#5662F6></#FD6684>: <#5662F6>Шестнадцатеричный цвет</#5662F6><br>    ... и т.д.<br><br>* Форматирования:<br>    <#FD6684>\\<bold></#FD6684>, <#FD6684>\\<b></#FD6684>: <b>Жирный текст</b>,<br>    <#FD6684>\\<italic></#FD6684>, <#FD6684>\\<em></#FD6684>, <#FD6684>\\<i></#FD6684>: <em>Косой текст</em>,<br>    <#FD6684>\\<underline></#FD6684>, <#FD6684>\\<u></#FD6684>: <u>Подчёркнутый текст</u>,<br>    <#FD6684>\\<strikethrough></#FD6684>, <#FD6684>\\<st></#FD6684>: <st>Зачёркнутый текст</st>,<br>    <#FD6684>\\<obfuscated></#FD6684>, <#FD6684>\\<obf></#FD6684>: <obf>Запутанный текст</obf><br><br>* Градиентов: <#FD6684><gradient:<#50E975>[цвет1]</#50E975>:<#50E975>[цвет...]</#50E975>:<#50E975>[переход]</#50E975>></#FD6684><br>    <#FD6684>\\<gradient></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>:<#50E975>red</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459:red>||||||||||||||||||||||||</gradient><br><br>* Шрифтов: <#FD6684>\\<font:<#50E975>название</#50E975>></#FD6684><br>    <#FD6684>\\<font:<#50E975>uniform</#50E975>></#FD6684>Uniform<#FD6684>\\</font></#FD6684>: <font:uniform>Uniform</font><br>    <#FD6684>\\<font:<#50E975>alt</#50E975>></#FD6684>Alt<#FD6684>\\</font></#FD6684>: <font:alt>Alt</font><br><br>* и т.д.    <br><br><grey>(<green>Нажмите</green>)</grey> <yellow>Чтобы открыть ссылку на Wiki'><u><yellow>MiniMessage</yellow></u></hover></click> для установки цветов и форматирования!",
       "wui_command": "<#00ccff>Используйте команду <click:suggest_command:'/wui '><hover:show_text:'<white>Используйте команду <yellow>/wui</yellow> для ввода значений, вместо их ручного ввода в чат!<br>Она обеспечивает авто-подстановку и устраняет проблемы с плагинами чата!<br><br>Просто введите значения в команду через пробел.<br>Вот так: <yellow>/wui <green>ваш ввод</green></yellow><br><br><grey>(<green>Нажмите</green>)</grey> <yellow>Чтобы ввести команду'><u><yellow>/wui</yellow></u></hover></click> для ввода ваших значений!"
     },
     "chat_editor": {
@@ -824,6 +824,26 @@
             "success": "<green>Значение данных модели установлено на <gold>%VALUE%</gold>!</green>",
             "invalid_value": "<red>Значение <dark_red>%VALUE%</dark_red> не является подходящим числом для данных модели!</red>"
           },
+          "custom_model_data_new": {
+            "disabled": "<red><b>Disabled</b></red>",
+            "success_string_add": "<green>Set String Model Data to <gold>%VALUE%</gold>!</green>",
+            "success_float_add": "<green>Set Float Model Data to <gold>%VALUE%</gold>!</green>",
+            "error_invalid_value": "<red>The value <dark_red>%VALUE%</dark_red> is not a valid Model Data <yellow>%DATA_TYPE%</yellow> value!</red>",
+            "success_string_remove": "<green>Removed String Model Data <gold>%VALUE%</gold>!</green>",
+            "success_float_remove": "<green>Removed Float Model Data <gold>%VALUE%</gold>!</green>",
+            "success_color_add": "<green>Set Color Model Data to <gold>%VALUE%</gold>!</green>",
+            "success_color_remove": "<green>Removed Color Model Data <gold>%VALUE%</gold>!</green>",
+            "error_not_enough_args_rgb": "<red>Not enough arguments provided - 'RGB 100 100 100' is valid format!</red>",
+            "error_argb": "<red>Error with ARGB parse occurred - <yellow>%ERROR%</yellow>!</red>",
+            "error_rgb": "<red>Error with RGB parse occurred - <yellow>%ERROR%</yellow>!</red>",
+            "error_not_enough_args_argb": "<red>Not enough arguments provided - 'ARGB 255 100 100 100' is valid format!</red>",
+            "color_error": "<red>Invalid arguments provided - 'RGB 1 1 1' or 'ARGB 1 1 1 1' or 'AQUA' (+ other colors) are valid!</red>"
+          },
+          "item_model": {
+            "set": "<green>Set Item Model to <gold>%VALUE%</gold>!</green>",
+            "reset": "<green>Removed Item Model!</green>",
+            "invalid_namespace": "<red>Namespace <yellow>%VAL%</yellow> is invalid!"
+          },
           "consume": {
             "valid": "<green>Значение стоимость прочности установлено на </green><yellow>%VALUE%</yellow>",
             "invalid": "<red>Это не число! Пожалуйста, введите настоящее число, например <yellow>1 </yellow>или<yellow> -1</yellow></red>"
@@ -1440,6 +1460,116 @@
               ]
             }
           },
+          "item_model": {
+            "option": {
+              "name": "<gold>Item Model </gold><dark_grey>[<grey>Beta</grey>]</dark_grey>",
+              "lore": [
+                "<grey>Set Item Model values.</grey>",
+                "<red>Available since Minecraft 1.21.4</red>"
+              ]
+            },
+            "info": {
+              "name": "<grey>Item Model:</grey> <red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Item Model</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set": {
+              "name": "<green>Click to <red>set</red></green> <yellow>Item Model</yellow>",
+              "help": [
+                "<grey>Sets the <yellow>Item Model</yellow> value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Item Model (/wui <namespace> <key>)!</yellow>"
+            },
+            "reset": {
+              "name": "<green>Click to <red>reset</red></green> <yellow>Item Model</yellow>",
+              "help": [
+                "<grey><red>Resets</red> the <yellow>Item Model</yellow> value</grey>",
+                "<grey>for this item!</grey>"
+              ]
+            }
+          },
+          "custom_model_data_new": {
+            "option": {
+              "name": "<gold>Custom Model Data </gold><dark_grey>[<grey>Beta</grey>]</dark_grey>",
+              "lore": [
+                "<grey>Set Custom Model values.</grey>",
+                "<grey>Floats, Strings, Flags, Colors</grey>",
+                "<red>Available since Minecraft 1.21.4</red>"
+              ]
+            },
+            "info_string": {
+              "name": "<yellow>String</yellow> <grey>Model Data:</grey> <red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>String</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_string": {
+              "name": "<green>Click to set <yellow>String</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>String</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_string": {
+              "name": "<red>Remove <yellow>String</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the Custom Model Data <red>String</red> value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "info_float": {
+              "name": "<yellow>Float</yellow><grey> Model Data: </grey><red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Float</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_float": {
+              "name": "<green>Click to set <yellow>Float</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>Float</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_float": {
+              "name": "<red>Remove <yellow>Float</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the <red>Float</red> Custom Model Data value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "info_color": {
+              "name": "<yellow>Color</yellow><grey> Model Data: </grey><red>%VAR%</red>",
+              "help": [
+                "<grey>Shows the <yellow>Color</yellow> values</grey>",
+                "<grey>of this item!</grey>"
+              ]
+            },
+            "set_color": {
+              "name": "<green>Click to set <yellow>Color</yellow> Model data</green>",
+              "help": [
+                "<grey>Sets the <yellow>Color</yellow> Custom Model Data value</grey>",
+                "<grey>for this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            },
+            "remove_color": {
+              "name": "<red>Remove <yellow>Color</yellow> Model Data</red>",
+              "help": [
+                "<grey>Removes the <red>Color</red> Custom Model Data value</grey>",
+                "<grey>from this item!</grey>"
+              ],
+              "message": "<yellow>Type in the Custom Model Data!</yellow>"
+            }
+          },
           "consume": {
             "option": {
               "name": "<gold>Затраты прочности и замена</gold>",
@@ -1936,7 +2066,7 @@
               "<dark_grey>[<green>Нажмите</green>]</dark_grey> <yellow>Чтобы выключить авто-открытие</yellow>"
             ]
           },
-          "vanilla_book_no_discover" : {
+          "vanilla_book_no_discover": {
             "name": "<grey><b>\u274F </b></grey><gold><b>Стандартная книга рецептов</b></gold>",
             "lore": [
               "<yellow>Рецепт будет виден в обычной книге рецептов</yellow>",
@@ -2090,7 +2220,7 @@
         "override": "<white>Введите раздел и ключ рецепта",
         "valid_number": "<red>Введите действительный номер!</red>",
         "group_id": {
-          "invalid" : "<red>Группа содержит недопустимый символ. Обратите внимание, что цветовые коды не нужны, так как идентификаторы используются только внутри группы!"
+          "invalid": "<red>Группа содержит недопустимый символ. Обратите внимание, что цветовые коды не нужны, так как идентификаторы используются только внутри группы!"
         },
         "save": {
           "input": "<white>Введите <hover:show_text:'Рецепты сохраняются в: <yellow>/data/<раздел>/recipes/<имя_рецепта>.conf</yellow><br><br>Раздел может быть использован для группировки рецептов, при этом допускается использование вложенных разделов! <br>Введите название раздела подобно этому: <yellow>/wui <раздел> <имя></yellow><br><br><red>Убедитесь, что имя содержит только: <br> - малые латинские буквы,<br> - числа,<br> - нижние подчёркивания,<br> - или дефисы!<br>Используйте <yellow>/wui </yellow>для получения помощи при вводе!</red>'><yellow>раздел и имя рецепта</yellow></hover>, под которым вы хотите сохранить рецепт",
@@ -3379,7 +3509,6 @@
       "category_overview": {
         "gui_name": "<category_name>",
         "items": {
-
         }
       }
     },
@@ -3776,7 +3905,7 @@
               ]
             }
           },
-          "indicator":{
+          "indicator": {
             "water": {
               "name": "<blue><level></blue>"
             },

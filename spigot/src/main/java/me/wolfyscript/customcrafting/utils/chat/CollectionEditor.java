@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.utils.chat;
 
-import java.util.Collection;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.event.ClickEvent;
 import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
@@ -35,6 +34,8 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.entity.Player;
+
+import java.util.Collection;
 
 public class CollectionEditor<C extends CustomCache, T> {
 

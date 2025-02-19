@@ -23,8 +23,6 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import com.wolfyscript.utilities.bukkit.TagResolverUtil;
-import java.util.List;
-import java.util.function.Supplier;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -54,6 +52,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 public class MenuRecipeOverview extends CCWindow {
 

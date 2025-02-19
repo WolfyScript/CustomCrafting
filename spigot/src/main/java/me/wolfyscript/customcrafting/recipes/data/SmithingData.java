@@ -28,7 +28,6 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.version.MinecraftVersion;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 
-import java.util.Map;
 import java.util.Optional;
 
 public class SmithingData extends RecipeData<CustomRecipeSmithing> implements ISmithingData<CustomRecipeSmithing>{

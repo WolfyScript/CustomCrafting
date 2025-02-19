@@ -24,18 +24,14 @@ package me.wolfyscript.customcrafting.listeners.crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
-
-import java.util.List;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.plugin.RegisteredListener;
 
 public class CraftListener implements Listener {
 
@@ -45,6 +41,19 @@ public class CraftListener implements Listener {
     public CraftListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
         this.craftManager = customCrafting.getCraftManager();
+
+        if(customCrafting.getConfigHandler().getConfig().isIaFix()) {
+            HandlerList handlerList = PrepareItemCraftEvent.getHandlerList();
+            for (RegisteredListener rl : handlerList.getRegisteredListeners()) {
+                if (rl.getListener().getClass().getCanonicalName().contains("itemsadder")) {
+                    if (rl.getPriority() == EventPriority.MONITOR) {
+                        RegisteredListener newRl = new RegisteredListener(rl.getListener(), rl.getExecutor(), EventPriority.HIGHEST, rl.getPlugin(), rl.isIgnoringCancelled());
+                        handlerList.unregister(rl);
+                        handlerList.register(newRl);
+                    }
+                }
+            }
+        }
         Bukkit.getPluginManager().registerEvents(new EventBasedCraftRecipeHandler(customCrafting, craftManager), customCrafting);
     }
 

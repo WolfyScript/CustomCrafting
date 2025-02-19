@@ -32,8 +32,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.CampfireRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
 
 public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfire, CampfireRecipe> {
 

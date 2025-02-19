@@ -23,15 +23,6 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import com.google.common.base.Preconditions;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.customitem.EliteCraftingTableSettings;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -51,6 +42,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Conditions {
 

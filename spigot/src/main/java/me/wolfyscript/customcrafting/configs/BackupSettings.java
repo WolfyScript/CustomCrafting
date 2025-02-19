@@ -22,11 +22,9 @@
 
 package me.wolfyscript.customcrafting.configs;
 
-import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.time.Duration;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 

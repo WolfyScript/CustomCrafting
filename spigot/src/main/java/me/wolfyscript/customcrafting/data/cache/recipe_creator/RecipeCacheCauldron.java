@@ -22,13 +22,14 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
 

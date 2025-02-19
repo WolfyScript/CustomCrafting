@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.listeners.crafting;
 
-import java.util.stream.Stream;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -43,6 +42,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.stream.Stream;
 
 public class EventBasedCraftRecipeHandler implements Listener {
 

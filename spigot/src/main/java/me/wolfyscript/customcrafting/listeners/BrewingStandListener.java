@@ -22,9 +22,8 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
-import com.wolfyscript.lib.nbt.nbtapi.NBTTileEntity;
-import com.wolfyscript.utilities.bukkit.world.items.reference.ItemCreateContext;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
+import de.tr7zw.nbtapi.NBTTileEntity;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -49,11 +48,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BrewingStandListener implements Listener {

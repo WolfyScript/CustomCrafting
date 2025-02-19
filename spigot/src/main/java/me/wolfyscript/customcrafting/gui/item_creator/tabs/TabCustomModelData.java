@@ -38,7 +38,10 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TabCustomModelData extends ItemCreatorTabVanilla {
 
@@ -48,21 +51,29 @@ public class TabCustomModelData extends ItemCreatorTabVanilla {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ButtonOption(Material.REDSTONE, this));
         creator.registerButton(new ChatInputButton<>("custom_model_data.set", Material.GREEN_CONCRETE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             var items = guiHandler.getCustomCache().getItems();
-            hashMap.put("%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : "&7&l/") + "");
+            hashMap.put("%VAR%", items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelDataComponent().getFloats().isEmpty() ? "&7&l/" :
+                    String.join("\n»", items.getItem().getItemMeta().getCustomModelDataComponent().getFloats().stream().map(String::valueOf).toList()) : "&7&l/");
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
             BukkitStackIdentifier identifier = guiHandler.getCustomCache().getItems().asBukkitIdentifier().orElse(null);
             if (identifier != null) {
                 try {
-                    int value = Integer.parseInt(s);
+                    float value = Float.parseFloat(s);
                     guiHandler.getCustomCache().getItems().modifyOriginalStack(stack -> {
                         var itemMeta = stack.getItemMeta();
-                        itemMeta.setCustomModelData(value);
+                        CustomModelDataComponent component = itemMeta.getCustomModelDataComponent();
+                        List<Float> floats = new ArrayList<>(component.getFloats());
+                        if(!floats.contains(value)){
+                            floats.add(value);
+                        }
+                        component.setFloats(floats);
+                        itemMeta.setCustomModelDataComponent(component);
                         stack.setItemMeta(itemMeta);
                     });
                     creator.sendMessage(player, "custom_model_data.success", new Pair<>("%VALUE%", String.valueOf(value)));
@@ -76,7 +87,11 @@ public class TabCustomModelData extends ItemCreatorTabVanilla {
         creator.registerButton(new ActionButton<>("custom_model_data.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             guiHandler.getCustomCache().getItems().modifyOriginalStack(stack -> {
                 var itemMeta = stack.getItemMeta();
-                itemMeta.setCustomModelData(null);
+                CustomModelDataComponent component = itemMeta.getCustomModelDataComponent();
+                List<Float> floats = new ArrayList<>(component.getFloats());
+                floats.removeFirst();
+                component.setFloats(floats);
+                itemMeta.setCustomModelDataComponent(component);
                 stack.setItemMeta(itemMeta);
             });
             return true;

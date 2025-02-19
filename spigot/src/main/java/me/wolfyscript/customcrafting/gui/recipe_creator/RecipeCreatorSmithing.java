@@ -65,7 +65,7 @@ public class RecipeCreatorSmithing extends RecipeCreator {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(true);
             return true;
         })).register();
-        btnB.toggle(PRESERVE_DAMAGE).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveDamage()).enabledState(s -> s.subKey("enabled").icon(new ItemBuilder(Material.IRON_SWORD).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()).action((cache, handler, player, inv, i, e) -> {
+        btnB.toggle(PRESERVE_DAMAGE).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveDamage()).enabledState(s -> s.subKey("enabled").icon(new ItemBuilder(Material.IRON_SWORD).addUnsafeEnchantment(Enchantment.UNBREAKING, 0).create()).action((cache, handler, player, inv, i, e) -> {
             cache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(false);
             return true;
         })).disabledState(s -> s.subKey("disabled").icon(Material.IRON_SWORD).action((cache, handler, player, inv, i, e) -> {
@@ -73,7 +73,7 @@ public class RecipeCreatorSmithing extends RecipeCreator {
             return true;
         })).register();
         if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
-            btnB.toggle(PRESERVE_TRIM).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveTrim()).enabledState(s -> s.subKey("enabled").icon(new ItemBuilder(Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()).action((cache, handler, player, inv, i, e) -> {
+            btnB.toggle(PRESERVE_TRIM).stateFunction((cache, handler, player, inv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveTrim()).enabledState(s -> s.subKey("enabled").icon(new ItemBuilder(Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE).addUnsafeEnchantment(Enchantment.UNBREAKING, 0).create()).action((cache, handler, player, inv, i, e) -> {
                 cache.getRecipeCreatorCache().getSmithingCache().setPreserveTrim(false);
                 return true;
             })).disabledState(s -> s.subKey("disabled").icon(Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE).action((cache, handler, player, inv, i, e) -> {

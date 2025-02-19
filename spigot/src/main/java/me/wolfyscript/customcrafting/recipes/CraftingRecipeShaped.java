@@ -22,9 +22,6 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.verification.Verifier;
 import com.wolfyscript.utilities.verification.VerifierBuilder;
@@ -40,6 +37,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeShaped, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapedRecipe> {
 
@@ -87,6 +87,10 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
             placeholderRecipe.shape(getShape());
             mappedIngredients.forEach((character, items) -> placeholderRecipe.setIngredient(character, getMaterialRecipeChoiceFor(items)));
             placeholderRecipe.setGroup(getGroup());
+
+            if(Bukkit.getRecipe(placeholderRecipe.getKey())!=null) {
+                Bukkit.removeRecipe(placeholderRecipe.getKey());
+            }
             Bukkit.addRecipe(placeholderRecipe);
 
             // Return display recipe

@@ -22,9 +22,6 @@
 
 package me.wolfyscript.customcrafting.gui.elite_crafting;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.CacheEliteCraftingTable;
@@ -47,6 +44,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 abstract class CraftingWindow extends CCWindow {
 

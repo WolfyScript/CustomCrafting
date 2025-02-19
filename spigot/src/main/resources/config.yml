@@ -155,6 +155,8 @@ custom_items:
   update: true
 
 recipes:
+  # Allow ItemsAdder items to be used as ingredient or a result item in recipes. (Might break crafting of ItemsAdder items so if you encounter issues, turn this off)
+  ia_fix: true
   # Toggle the Brewing Recipes. They are off by default to prevent possible duplication issues
   brewing: false
   # Used to block any kind of custom recipe. If enabled no one will be able to craft any custom recipe anymore.

@@ -25,8 +25,6 @@ package me.wolfyscript.customcrafting.recipes.data;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
 
-import java.util.Map;
-
 /**
  * Besides the usual use case for {@link MergeOption}s,
  * this data is also used internally when a player takes out the result so the recipe doesn't need to be verified again.
