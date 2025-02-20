@@ -28,6 +28,7 @@ plugins {
     id("io.github.goooler.shadow") version "8.1.7"
     //id("com.wolfyscript.devtools.docker.minecraft_servers") version "2.0-SNAPSHOT"
     id("com.jfrog.artifactory") version "5.2.0"
+    id("com.modrinth.minotaur") version "2.+"
 }
 
 repositories {
@@ -148,8 +149,8 @@ artifactory {
         contextUrl = "https://artifacts.wolfyscript.com/artifactory"
         repository {
             repoKey = "gradle-dev-local"
-            username = project.properties["wolfyRepoPublishUsername"].toString()
-            password = project.properties["wolfyRepoPublishToken"].toString()
+            username = System.getenv("wolfyRepoPublishUsername")
+            password = System.getenv("wolfyRepoPublishToken")
         }
         defaults {
             publications("maven")
@@ -157,6 +158,24 @@ artifactory {
             setPublishPom(true)
             isPublishBuildInfo = false
         }
+    }
+}
+
+// build.gradle.kts
+modrinth {
+    token.set(System.getenv("MODRINTH_TOKEN")) // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
+    projectId.set("customcrafting") // This can be the project ID or the slug. Either will work!
+    versionNumber.set(project.version.toString()) // You don't need to set this manually. Will fail if Modrinth has this version already
+    versionType.set("release") // TODO: Automatically determine this from the version
+    uploadFile.set(tasks.shadowJar) // Use the shadowed jar !!
+    changelog.set(System.getenv("CHANGELOG"))
+    gameVersions.addAll("1.21.4") // Must be an array, even with only one version
+    loaders.addAll("bukkit", "spigot", "paper", "purpur") // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
+    dependencies { // A special DSL for creating dependencies
+        // scope.type
+        // The scope can be `required`, `optional`, `incompatible`, or `embedded`
+        // The type can either be `project` or `version`
+        required.project("wolfyutils") // Creates a new required dependency on Fabric API
     }
 }
 
