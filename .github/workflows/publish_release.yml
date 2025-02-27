@@ -17,13 +17,13 @@ jobs:
           distribution: temurin
 
       - name: Setup Gradle
-        uses: gradle/action/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Execute Gradle build
         run: gradle artifactoryPublish
         env:
-          wolfyRepoPublishUsername: ${{ secrets.ARTIFACTORY_USERNAME }}
-          wolfyRepoPublishToken: ${{ secrets.ARTIFACTORY_TOKEN }}
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
   publish-modrinth:
     runs-on: ubuntu-latest
     steps:
@@ -37,7 +37,7 @@ jobs:
           distribution: temurin
 
       - name: Setup Gradle
-        uses: gradle/action/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Execute Gradle build
         run: gradle modrinth

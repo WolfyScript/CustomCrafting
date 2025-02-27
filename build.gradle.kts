@@ -149,8 +149,8 @@ artifactory {
         contextUrl = "https://artifacts.wolfyscript.com/artifactory"
         repository {
             repoKey = "gradle-dev-local"
-            username = System.getenv("wolfyRepoPublishUsername")
-            password = System.getenv("wolfyRepoPublishToken")
+            username = System.getenv("ARTIFACTORY_USERNAME")
+            password = System.getenv("ARTIFACTORY_TOKEN")
         }
         defaults {
             publications("maven")
