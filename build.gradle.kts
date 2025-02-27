@@ -26,7 +26,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("io.github.goooler.shadow") version "8.1.7"
-    //id("com.wolfyscript.devtools.docker.minecraft_servers") version "2.0-SNAPSHOT"
+    id("com.wolfyscript.devtools.docker.minecraft_servers") version "a2.0.0.1"
     id("com.jfrog.artifactory") version "5.2.0"
     id("com.modrinth.minotaur") version "2.+"
 }
@@ -72,7 +72,6 @@ tasks.withType<Javadoc> {
 
 val debugPort: String = "5006"
 
-/*
 minecraftDockerRun {
     val customEnv = env.get().toMutableMap()
     customEnv["MEMORY"] = "2G"
@@ -80,9 +79,7 @@ minecraftDockerRun {
     env.set(customEnv)
     arguments("--cpus", "2", "-it") // Constrain to only use 2 cpus, and allow for console interactivity with 'docker attach'
 }
-*/
 
-/*
 minecraftServers {
     serversDir.set(file("${System.getProperty("user.home")}${File.separator}minecraft${File.separator}test_servers_v4"))
     libName.set("${project.name}-${version}.jar")
@@ -142,7 +139,6 @@ minecraftServers {
         }
     }
 }
-*/
 
 artifactory {
     publish {
