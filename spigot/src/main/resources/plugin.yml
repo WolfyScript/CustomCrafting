@@ -2,7 +2,7 @@ name: CustomCrafting
 authors: [ WolfyScript ]
 main: me.wolfyscript.customcrafting.CustomCrafting
 version: ${version}
-api-version: "1.16"
+api-version: "1.21.4"
 depend: [ WolfyUtilities, NBTAPI ]
 loadbefore:
   - DiSky
