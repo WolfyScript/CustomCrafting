@@ -51,7 +51,6 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 tasks.named<ShadowJar>("shadowJar") {
     archiveClassifier.set("")
 
-    from(project(":spigot1_21").tasks.jar.get().archiveFile)
     from(project(":spigot").tasks.shadowJar.get().archiveFile)
 }
 

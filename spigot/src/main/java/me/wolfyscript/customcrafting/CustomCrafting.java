@@ -57,6 +57,7 @@ import me.wolfyscript.customcrafting.listeners.cooking.CampfireListener;
 import me.wolfyscript.customcrafting.listeners.cooking.CookingManager;
 import me.wolfyscript.customcrafting.listeners.cooking.FurnaceListener;
 import me.wolfyscript.customcrafting.listeners.crafting.CraftListener;
+import me.wolfyscript.customcrafting.listeners.crafting.CrafterListener;
 import me.wolfyscript.customcrafting.listeners.smithing.SmithingListener;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
@@ -359,6 +360,7 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new PlayerListener(this), this);
         pM.registerEvents(new RecipeDiscoverListener(this), this);
         pM.registerEvents(new CraftListener(this), this);
+        pM.registerEvents(new CrafterListener(this), this);
         pM.registerEvents(new FurnaceListener(this, cookingManager), this);
         pM.registerEvents(new AnvilListener(this), this);
         pM.registerEvents(new CauldronListener(this), this);
@@ -371,9 +373,6 @@ public class CustomCrafting extends JavaPlugin {
             pM.registerEvents(new Campfire1_20Listener(this), this);
         }
         pM.registerEvents(new CampfireListener(this), this);
-
-        // Register events that might only be available in later API versions
-        getSpigotAPIModule().ifPresent(CustomCraftingSpigotAPIModule::registerListeners);
     }
 
     private void registerCommands() {
