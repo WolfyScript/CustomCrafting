@@ -136,7 +136,6 @@ public class CustomCrafting extends JavaPlugin {
     //Compatibility
     private final PluginCompatibility pluginCompatibility;
     private final boolean isPaper;
-    private CustomCraftingSpigotAPIModule spigotAPIModule = null;
 
     public CustomCrafting() {
         super();
@@ -292,12 +291,6 @@ public class CustomCrafting extends JavaPlugin {
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, resultMergeAdapters);
         KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) (Object) Condition.class, recipeConditions);
         KeyedTypeIdResolver.registerTypeRegistry(RepairTask.class, anvilRecipeRepairTasks);
-
-        // Load Spigot API Module
-        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 21, 0))) {
-            spigotAPIModule = CustomCraftingSpigotAPIModule.create1_21Module(this);
-            spigotAPIModule.load();
-        }
     }
 
     @Override
@@ -519,7 +512,4 @@ public class CustomCrafting extends JavaPlugin {
         return registries;
     }
 
-    private Optional<CustomCraftingSpigotAPIModule> getSpigotAPIModule() {
-        return Optional.ofNullable(spigotAPIModule);
-    }
 }
