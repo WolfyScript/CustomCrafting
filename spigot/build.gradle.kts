@@ -25,35 +25,36 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     `java-library`
     `maven-publish`
-    id("io.github.goooler.shadow") version "8.1.7"
-//    id("com.wolfyscript.devtools.docker.minecraft_servers") version "2.0-SNAPSHOT"
-    id("com.jfrog.artifactory") version "5.2.0"
+    alias(libs.plugins.goooler.shadow)
+    alias(libs.plugins.jfrog.artifactory)
 }
 
 repositories {
     mavenCentral()
     mavenLocal()
-    maven (url = "https://repo.codemc.io/repository/maven-public/")
+    maven(url = "https://repo.codemc.io/repository/maven-public/")
     maven(url = "https://repo.papermc.io/repository/maven-public/")
     maven(url = "https://artifacts.wolfyscript.com/artifactory/gradle-dev")
     maven(url = "https://repo.dmulloy2.net/repository/public/")
     maven(url = "https://repo.maven.apache.org/maven2/")
     maven(url = "https://mvn.lumine.io/repository/maven-public/")
     maven(url = "https://repo.oraxen.com/releases")
+    maven(url = "https://repo.extendedclip.com/releases/")
+    maven(url = "https://repo.dmulloy2.net/repository/public/")
 }
 
 dependencies {
-    //api("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
-    api("org.bstats:bstats-bukkit:3.0.2")
-    compileOnly("io.lumine:Mythic-Dist:5.3.5")
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
-    compileOnly("com.mojang:authlib:3.11.50")
-    compileOnly("org.jetbrains:annotations:24.1.0")
-    compileOnly("io.netty:netty-all:4.1.111.Final")
-    compileOnly("me.clip:placeholderapi:2.11.1")
-    compileOnly("io.th0rgal:oraxen:1.170.0")
-    compileOnly("com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot:4.18.4")
-    compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1")
+    api(libs.protocollib)
+    api(libs.bstats)
+    compileOnly(libs.mythic.dist)
+    compileOnly(libs.io.papermc.paper)
+    compileOnly(libs.mojang.authlib)
+    compileOnly(libs.jetbrains.annotations)
+    compileOnly(libs.netty)
+    compileOnly(libs.placeholderapi)
+    compileOnly(libs.oraxen)
+    compileOnly(libs.wolfyutils.spigot)
+    compileOnly(libs.nbtapi)
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_21
@@ -69,7 +70,7 @@ tasks.named<ShadowJar>("shadowJar") {
     archiveClassifier.set("")
     dependencies {
         include(dependency("com.wolfyscript.customcrafting:.*"))
-        include(dependency("org.bstats:.*"))
+        include(dependency("${libs.bstats.get().group}:.*"))
     }
 
     relocate("org.bstats", "com.wolfyscript.customcrafting.bukkit.metrics")

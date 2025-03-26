@@ -25,10 +25,10 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     `java-library`
     `maven-publish`
-    id("io.github.goooler.shadow") version "8.1.7"
-    id("com.wolfyscript.devtools.docker.minecraft_servers") version "a2.0.0.1"
-    id("com.jfrog.artifactory") version "5.2.0"
-    id("com.modrinth.minotaur") version "2.+"
+    alias(libs.plugins.goooler.shadow)
+    alias(libs.plugins.devtools.docker.minecraft)
+    alias(libs.plugins.modrinth.minotaur)
+    alias(libs.plugins.jfrog.artifactory)
 }
 
 repositories {

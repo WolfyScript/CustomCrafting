@@ -1,0 +1,63 @@
+# https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
+
+[versions]
+jackson = "2.15.4"
+authlib = "3.11.50"
+bstats = "3.0.0"
+dataformat-hocon = "2.1-SNAPSHOT"
+netty = "4.1.85.Final"
+jetbrains-annotations = "23.0.0"
+typesafe-config = "1.3.1"
+
+## gradle plugins
+shadow = "8.1.7"
+devtools-docker = "a2.0.0.1"
+minotaur = "2.+"
+jfrog = "5.2.0"
+
+## Spigot specific dependencies
+papermc = "1.21.4-R0.1-SNAPSHOT"
+wolfyutils = "4.18.6"
+nbtapi = "2.14.1"
+mythic = "5.3.5"
+placeholderapi = "2.11.6"
+oraxen = "1.170.0"
+protocollib = "5.1.0"
+
+## Testing
+junit-jupiter = "5.8.2"
+
+[libraries]
+# Kotlin & Jetbrains dependencies
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+
+# Misc (Utils, Datastructurs, etc.)
+netty = { module = "io.netty:netty-all", version.ref = "netty" }
+mojang-authlib = { module = "com.mojang:authlib", version.ref = "authlib" }
+
+# Configs (Jackson + HOCON)
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
+jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
+jackson-dataformat-hocon = { module = "com.wolfyscript:jackson-dataformat-hocon", version.ref = "dataformat-hocon" }
+typesafe-config = { module = "com.typesafe:config", version.ref = "typesafe-config" }
+
+## Spigot specific dependencies ##
+io-papermc-paper = { module = "io.papermc.paper:paper-api", version.ref = "papermc" }
+wolfyutils-spigot = { module = "com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot", version.ref = "wolfyutils" }
+bstats = { module = "org.bstats:bstats-bukkit", version.ref = "bstats" }
+nbtapi = { module = "de.tr7zw:item-nbt-api-plugin", version.ref = "nbtapi"}
+mythic-dist = { module = "io.lumine:Mythic-Dist", version.ref = "mythic" }
+placeholderapi = { module = "me.clip:placeholderapi", version.ref = "placeholderapi" }
+oraxen = { module = "io.th0rgal:oraxen", version.ref = "oraxen"}
+protocollib = { module = "com.comphenix.protocol:ProtocolLib", version.ref = "protocollib" }
+
+## Testing
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+
+[plugins]
+goooler-shadow = { id = "io.github.goooler.shadow", version.ref = "shadow" }
+devtools-docker-run = { id = "com.wolfyscript.devtools.docker.run", version.ref = "devtools-docker" }
+devtools-docker-minecraft = { id = "com.wolfyscript.devtools.docker.minecraft_servers", version.ref = "devtools-docker" }
+modrinth-minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
+jfrog-artifactory = { id = "com.jfrog.artifactory", version.ref = "jfrog" }
