@@ -1,0 +1,82 @@
+{
+  "categories": [
+    {
+      "title": "## ✨ Next Generation Features & Changes",
+      "labels": [
+        "epoch-change"
+      ]
+    },
+    {
+      "title": "## 🚧 Breaking Changes",
+      "labels": [
+        "breaking-change"
+      ]
+    },
+    {
+      "title": "## 🚀 Features",
+      "labels": [
+        "enhancement",
+        "feat"
+      ]
+    },
+    {
+      "title": "## 🐛 Fixes",
+      "labels": [
+        "fix",
+        "bug"
+      ]
+    },
+    {
+      "title": "## 🧪 Tests",
+      "labels": [
+        "test"
+      ]
+    },
+    {
+      "title": "## ⚙️ CI/CD",
+      "labels": [
+        "ci", "cd"
+      ]
+    },
+    {
+      "title": "## 📦 Misc",
+      "labels": []
+    }
+  ],
+  "ignore_labels": [
+    "skip-changelog"
+  ],
+  "label_extractor": [
+    {
+      "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\\([\\w\\-\\.]+\\))?(!)?: ([\\w ])+([\\s\\S]*)",
+      "target": "$1"
+    },
+    {
+      "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\\([\\w\\-\\.]+\\)){1}(!)?: ([\\w ])+([\\s\\S]*)",
+      "target": "scope-$2"
+    },
+    {
+      "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\\([\\w\\-\\.]+\\))?!: ([\\w ])+([\\s\\S]*)",
+      "target": "breaking-change"
+    },
+    {
+      "pattern": "^BREAKING CHANGE:(.*)",
+      "target": "breaking-change"
+    },
+    {
+      "pattern": "^ignore(\\([\\w\\-\\.]+\\))?: ([\\w ])+([\\s\\S]*)",
+      "target": "skip-changelog"
+    }
+  ],
+  "tag_resolver": {
+    "method": "sort"
+  },
+  "sort": {
+    "order": "ASC",
+    "on_property": "mergedAt"
+  },
+  "template": "#{{CHANGELOG}}\n\n",
+  "pr_template": "- #{{TITLE}} (##{{NUMBER}}) - #{{AUTHOR}}",
+  "commit_template": "- #{{TITLE}} ([`details`](https://github.com/WolfyScript/dev-tools/commit/#{{MERGE_SHA}}))",
+  "empty_template": "- no changes"
+}

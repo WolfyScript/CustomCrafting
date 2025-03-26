@@ -1,0 +1,38 @@
+name: create_release.yml
+on:
+  push:
+    tags:
+      - "v-**"
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  release:
+    if: ${{ startsWith(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4
+
+      - name: Get actual Version
+        id: get_version
+        run: |
+          version=$(echo ${{github.ref_name}} | cut -d- -f2)
+          echo "::set-output name=version::$version"
+
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          mode: HYBRID
+          configuration: .github/release_config.json
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{steps.get_version.outputs.version}}
+          body: ${{steps.github_release.outputs.changelog}}
