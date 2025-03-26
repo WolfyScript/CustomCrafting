@@ -40,6 +40,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockCookEvent;
+import org.bukkit.event.block.CampfireStartEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -56,6 +57,29 @@ public class CampfireListener implements Listener {
 
     public CampfireListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
+    }
+
+    /**
+     * Since Spigot 1.20 we have access to the CampfireStartEvent that we can use to make sure the correct recipe is used and cancel invalid recipes.
+     */
+    @EventHandler
+    public void onStartCampfireSmelt(CampfireStartEvent event) {
+        ItemStack source = event.getSource();
+        customCrafting.getRegistries().getRecipes().get(RecipeType.CAMPFIRE).stream()
+                .filter(recipe -> recipe.checkConditions(Conditions.Data.of(event.getBlock())))
+                .filter(recipe -> recipe.getSource().checkChoices(source, recipe.isCheckNBT()).isPresent())
+                .findFirst()
+                .ifPresentOrElse(
+                        campfireRecipe -> event.setTotalCookTime(campfireRecipe.getCookingTime()),
+                        () -> {
+                            // Check if the CustomItem is allowed in Vanilla recipes
+                            customCrafting.getApi().getCore().getRegistries().getCustomItems().getByItemStack(source)
+                                    .ifPresent(customItem -> {
+                                        if (customItem.isBlockVanillaRecipes()) {
+                                            event.setTotalCookTime(-1); // "Cancel" the process if it is.
+                                        }
+                                    });
+                        });
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -52,7 +52,6 @@ import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.listeners.*;
-import me.wolfyscript.customcrafting.listeners.cooking.Campfire1_20Listener;
 import me.wolfyscript.customcrafting.listeners.cooking.CampfireListener;
 import me.wolfyscript.customcrafting.listeners.cooking.CookingManager;
 import me.wolfyscript.customcrafting.listeners.cooking.FurnaceListener;
@@ -94,7 +93,6 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @JsonIncludeProperties(/* Do not include properties because it is injected and there is no need to serialize this class! */)
 public class CustomCrafting extends JavaPlugin {
@@ -362,9 +360,6 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new BrewingStandListener(api, this), this);
         pM.registerEvents(new RecipeBookListener(this), this);
         pM.registerEvents(new SmithingListener(this), this);
-        if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 20, 0))) {
-            pM.registerEvents(new Campfire1_20Listener(this), this);
-        }
         pM.registerEvents(new CampfireListener(this), this);
     }
 
@@ -391,10 +386,8 @@ public class CustomCrafting extends JavaPlugin {
         registry.register(new TabConsume());
         registry.register(new TabCustomDurability());
         registry.register(new TabCustomModelData());
-        if(ServerVersion.isAfterOrEq(MinecraftVersion.of(1,21,4))) {
-            registry.register(new TabNewCustomModelData());
-            registry.register(new TabItemModel());
-        }
+        registry.register(new TabNewCustomModelData());
+        registry.register(new TabItemModel());
         registry.register(new TabDamage());
         registry.register(new TabDisplayName());
         registry.register(new TabEliteCraftingTable());
