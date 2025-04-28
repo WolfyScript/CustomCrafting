@@ -26,13 +26,35 @@
  * This project uses @Incubating APIs which are subject to change.
  */
 
-rootProject.name = "customcrafting-spigot"
+rootProject.name = "customcrafting"
 
 pluginManagement {
     repositories {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            name = "Fabric"
+            url = uri("https://maven.fabricmc.net")
+            content {
+                includeGroup("net.fabricmc")
+                includeGroup("fabric-loom")
+            }
+        }
+        maven {
+            name = "Sponge"
+            url = uri("https://repo.spongepowered.org/repository/maven-public")
+            content {
+                includeGroupAndSubgroups("org.spongepowered")
+            }
+        }
+        maven {
+            name = "Forge"
+            url = uri("https://maven.minecraftforge.net")
+            content {
+                includeGroupAndSubgroups("net.minecraftforge")
+            }
+        }
         maven("https://artifacts.wolfyscript.com/artifactory/gradle-dev")
     }
 }
@@ -47,3 +69,6 @@ sequenceOf(
     include(":${it}")
     project(":${it}").projectDir = file(it.replace(":", "/"))
 }
+
+include("api")
+include("common")

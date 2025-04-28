@@ -23,10 +23,13 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
+    kotlin("jvm")
     `java-library`
     `maven-publish`
-    alias(libs.plugins.goooler.shadow)
-    alias(libs.plugins.jfrog.artifactory)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.artifactory)
+    alias(libs.plugins.paperweight.userdev)
+    id("build.settings.default")
 }
 
 repositories {
@@ -47,17 +50,16 @@ dependencies {
     api(libs.protocollib)
     api(libs.bstats)
     compileOnly(libs.mythic.dist)
-    compileOnly(libs.io.papermc.paper)
+    compileOnly(libs.papermc.paper)
     compileOnly(libs.mojang.authlib)
     compileOnly(libs.jetbrains.annotations)
-    compileOnly(libs.netty)
+    compileOnly(libs.netty.all)
     compileOnly(libs.placeholderapi)
     compileOnly(libs.oraxen)
     compileOnly(libs.wolfyutils.spigot)
     compileOnly(libs.nbtapi)
+    paperweight.paperDevBundle(libs.versions.papermc.get())
 }
-
-java.sourceCompatibility = JavaVersion.VERSION_21
 
 tasks.named<ProcessResources>("processResources") {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -81,12 +83,4 @@ publishing {
         from(components["java"])
         artifact(file("$rootDir/gradle.properties"))
     }
-}
-
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
-
-tasks.withType<Javadoc> {
-    options.encoding = "UTF-8"
 }
