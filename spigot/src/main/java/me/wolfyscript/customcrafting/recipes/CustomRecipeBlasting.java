@@ -28,7 +28,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -41,10 +40,6 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
                 .name(container -> "Blasting Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
                 .build();
         CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
-    }
-
-    public CustomRecipeBlasting(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
     }
 
     @JsonCreator

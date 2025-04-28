@@ -36,24 +36,18 @@ import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.List;
 
 public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T extends CookingRecipe<?>> extends CustomRecipe<C> implements ICustomVanillaRecipe<T> {
@@ -69,13 +63,6 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     private Ingredient source;
     private float exp;
     private int cookingTime;
-
-    protected CustomRecipeCooking(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
-        this.exp = node.path("exp").floatValue();
-        this.cookingTime = node.path("cooking_time").asInt();
-        this.source = ItemLoader.loadIngredient(node.path("source"));
-    }
 
     protected CustomRecipeCooking(NamespacedKey key, CustomCrafting customCrafting) {
         super(key, customCrafting);
@@ -177,26 +164,6 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         event.setButton(20, data.getLightBackground());
         event.setButton(11, ButtonContainerIngredient.key(cluster, 11));
         event.setButton(24, ButtonContainerIngredient.key(cluster, 24));
-    }
-
-    @Deprecated
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
-        gen.writeNumberField("cooking_time", cookingTime);
-        gen.writeNumberField("exp", exp);
-        gen.writeObjectField("result", result);
-        gen.writeObjectField("source", source);
-    }
-
-    @Override
-    public void writeToBuf(MCByteBuf byteBuf) {
-        super.writeToBuf(byteBuf);
-
-        byteBuf.writeVarInt(source.size());
-        for (StackReference choice : source.choices()) {
-            byteBuf.writeItemStack(choice.referencedStack());
-        }
     }
 
     @Override

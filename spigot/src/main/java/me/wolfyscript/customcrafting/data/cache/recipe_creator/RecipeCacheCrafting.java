@@ -40,7 +40,7 @@ public class RecipeCacheCrafting extends RecipeCacheCraftingAbstract<AdvancedRec
 
     @Override
     protected CraftingRecipe<?, AdvancedRecipeSettings> constructRecipe() {
-        return create(shapeless ? new CraftingRecipeShapeless(key) : new CraftingRecipeShaped(key));
+        return create(shapeless ? new CraftingRecipeShapeless(key, customCrafting) : new CraftingRecipeShaped(key, customCrafting));
     }
 
 }

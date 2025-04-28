@@ -28,7 +28,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.CampfireRecipe;
@@ -40,10 +39,6 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
                 .name(container -> "Campfire Recipe" + container.value().map(customRecipeSmithing -> " [" + customRecipeSmithing.getNamespacedKey() + "]").orElse(""))
                 .build();
         CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
-    }
-
-    public CustomRecipeCampfire(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
     }
 
     @JsonCreator

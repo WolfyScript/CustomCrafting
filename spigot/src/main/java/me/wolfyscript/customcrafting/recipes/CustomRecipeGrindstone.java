@@ -33,22 +33,16 @@ import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 
 public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone> {
 
@@ -70,14 +64,6 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
     @DependencySource
     private Ingredient inputBottom;
     private int xp;
-
-    public CustomRecipeGrindstone(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
-        this.type = RecipeType.GRINDSTONE;
-        this.xp = node.path("exp").intValue();
-        this.inputTop = ItemLoader.loadIngredient(node.path("input_top"));
-        this.inputBottom = ItemLoader.loadIngredient(node.path("input_bottom"));
-    }
 
     @JsonCreator
     public CustomRecipeGrindstone(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting, @JsonProperty("inputTop") Ingredient inputTop, @JsonProperty("inputBottom") Ingredient inputBottom) {
@@ -146,15 +132,6 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
     @Override
     public CustomRecipeGrindstone clone() {
         return new CustomRecipeGrindstone(this);
-    }
-
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
-        gen.writeNumberField("exp", xp);
-        gen.writeObjectField("result", result);
-        gen.writeObjectField("input_top", getInputTop());
-        gen.writeObjectField("input_bottom", getInputBottom());
     }
 
     @Override

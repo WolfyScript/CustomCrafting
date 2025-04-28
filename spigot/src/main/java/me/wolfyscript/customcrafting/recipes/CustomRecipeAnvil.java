@@ -38,11 +38,7 @@ import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDurability;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -52,7 +48,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -107,44 +102,6 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     final private Ingredient base;
     @DependencySource
     final private Ingredient addition;
-
-    public CustomRecipeAnvil(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
-        // Convert old mode settings to new RepairMode
-        JsonNode modeNode = node.path("mode");
-        Mode mode = Mode.valueOf(modeNode.get("usedMode").asText("DURABILITY"));
-        repairTask = switch (mode) {
-            case NONE -> new RepairTaskDefault();
-            case RESULT -> {
-                var repairModeResult = new RepairTaskResult();
-                repairModeResult.setResult(ItemLoader.loadResult(modeNode.path("result"), this.customCrafting));
-                yield repairModeResult;
-            }
-            case DURABILITY -> {
-                var durabilityMode = new RepairTaskDurability();
-                durabilityMode.setDurability(modeNode.path("durability").asInt(0));
-                yield durabilityMode;
-            }
-        };
-        this.result = new Result();
-
-        // Load the old or new input nodes
-        if (node.has("input_left") || node.has("input_right")) {
-            this.base = ItemLoader.loadIngredient(node.path("input_left"));
-            this.addition = ItemLoader.loadIngredient(node.path("input_right"));
-        } else {
-            this.base = ItemLoader.loadIngredient(node.path("base"));
-            this.addition = ItemLoader.loadIngredient(node.path("addition"));
-        }
-
-        this.blockEnchant = node.path("block_enchant").asBoolean(false);
-        this.blockRename = node.path("block_rename").asBoolean(false);
-        this.blockRepair = node.path("block_repair").asBoolean(false);
-        JsonNode repairNode = node.path("repair_cost");
-        setRepairCost(repairNode.path("amount").asInt(1));
-        this.applyRepairCost = repairNode.path("apply_to_result").asBoolean(true);
-        this.repairCostMode = RepairCostMode.valueOf(repairNode.path("mode").asText("NONE"));
-    }
 
     @JsonCreator
     public CustomRecipeAnvil(@JsonProperty("key") @JacksonInject("key") NamespacedKey key,
@@ -311,24 +268,6 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     @Override
     public CustomRecipeAnvil clone() {
         return new CustomRecipeAnvil(this);
-    }
-
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
-        gen.writeBooleanField("block_enchant", blockEnchant);
-        gen.writeBooleanField("block_rename", blockRename);
-        gen.writeBooleanField("block_repair", blockRepair);
-        {
-            gen.writeObjectFieldStart("repair_cost");
-            gen.writeNumberField("amount", repairCost);
-            gen.writeBooleanField("apply_to_result", applyRepairCost);
-            gen.writeStringField("mode", repairCostMode.toString());
-            gen.writeEndObject();
-        }
-        gen.writeObjectField("mode", repairTask);
-        gen.writeObjectField("base", this.base);
-        gen.writeObjectField("addition", this.addition);
     }
 
     @Override

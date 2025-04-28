@@ -24,7 +24,6 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
-import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.verification.ObjectVerifier;
 import com.wolfyscript.utilities.verification.VerifierBuilder;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -41,14 +40,10 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -282,22 +277,4 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         return true;
     }
 
-    @Deprecated
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
-        gen.writeObjectField(INGREDIENTS_KEY, this.ingredients);
-    }
-
-    @Override
-    public void writeToBuf(MCByteBuf byteBuf) {
-        super.writeToBuf(byteBuf);
-        byteBuf.writeVarInt(ingredients.size());
-        ingredients.forEach(ingredient -> {
-            byteBuf.writeVarInt(ingredient.size());
-            for (StackReference choice : ingredient.choices()) {
-                byteBuf.writeItemStack(choice.referencedStack());
-            }
-        });
-    }
 }

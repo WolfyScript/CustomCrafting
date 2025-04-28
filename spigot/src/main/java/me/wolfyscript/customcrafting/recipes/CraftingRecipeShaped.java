@@ -31,7 +31,6 @@ import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -50,24 +49,13 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
         CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
     }
 
-    @Deprecated
-    public CraftingRecipeShaped(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
-    }
-
     @JsonCreator
     public CraftingRecipeShaped(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting, @JsonProperty("symmetry") Symmetry symmetry, @JsonProperty(value = "keepShapeAsIs") boolean keepShapeAsIs, @JsonProperty("shape") String[] shape) {
         super(key, customCrafting, symmetry, keepShapeAsIs, shape, 3, new AdvancedRecipeSettings());
     }
 
-    @Deprecated
-    public CraftingRecipeShaped(NamespacedKey key, Symmetry symmetry, String[] shape) {
-        this(key, CustomCrafting.inst(), symmetry, false, shape);
-    }
-
-    @Deprecated
-    public CraftingRecipeShaped(NamespacedKey key) {
-        super(key, CustomCrafting.inst(), new Symmetry(), false, 3, new AdvancedRecipeSettings());
+    public CraftingRecipeShaped(NamespacedKey key, CustomCrafting customCrafting) {
+        super(key, customCrafting, new Symmetry(), false, 3, new AdvancedRecipeSettings());
     }
 
     private CraftingRecipeShaped(CraftingRecipeShaped craftingRecipe) {

@@ -34,22 +34,17 @@ import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
@@ -69,14 +64,6 @@ import java.util.Objects;
 @JsonPropertyOrder(value = {"@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions"})
 public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, Comparable<CustomRecipe<C>> {
 
-    protected static final String KEY_RESULT = "result";
-    protected static final String KEY_GROUP = "group";
-    protected static final String KEY_VANILLA_BOOK = "vanillaBook";
-    protected static final String KEY_AUTO_DISCOVER = "autoDiscover";
-    protected static final String KEY_PRIORITY = "priority";
-    protected static final String KEY_EXACT_META = "exactItemMeta";
-    protected static final String KEY_CONDITIONS = "conditions";
-    protected static final String KEY_HIDDEN = "hidden";
     protected static final String ERROR_MSG_KEY = "Not a valid key! The key cannot be null!";
 
     @JsonIgnore
@@ -103,43 +90,6 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
     protected String group;
     @DependencySource
     protected Result result;
-
-    /**
-     * @param namespacedKey The namespaced key of the recipe.
-     * @param node          The json node read from the recipe file.
-     * @deprecated Used only for deserializing recipes from old json files.
-     */
-    @Deprecated
-    protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
-        this.loadedFromOldOrLegacy = true;
-        this.type = RecipeType.valueOfRecipe(this);
-        this.namespacedKey = Objects.requireNonNull(namespacedKey, ERROR_MSG_KEY);
-        this.customCrafting = CustomCrafting.inst(); //TODO: Dependency Injection (v5)
-        this.mapper = customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper();
-        this.api = this.customCrafting.getApi();
-        //Get fields from JsonNode
-        this.group = node.path(KEY_GROUP).asText("");
-        this.priority = mapper.convertValue(node.path(KEY_PRIORITY).asText("NORMAL"), RecipePriority.class);
-        this.checkAllNBT = node.path(KEY_EXACT_META).asBoolean(false);
-        try {
-            var injectableValues = new InjectableValues.Std();
-            injectableValues.addValue("key", namespacedKey);
-            injectableValues.addValue("customcrafting", customCrafting);
-            this.conditions = mapper.reader(injectableValues).readValue(node.path(KEY_CONDITIONS), Conditions.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        if (this.conditions == null) {
-            this.conditions = new Conditions(customCrafting);
-        }
-        this.vanillaBook = node.path(KEY_VANILLA_BOOK).asBoolean(true);
-        this.autoDiscover = node.path(KEY_AUTO_DISCOVER).asBoolean(true);
-        this.hidden = node.path(KEY_HIDDEN).asBoolean(false);
-        //Sets the result of the recipe if one exists in the config
-        if (node.has(KEY_RESULT) && !(this instanceof CustomRecipeStonecutter)) {
-            setResult(ItemLoader.loadResult(node.path(KEY_RESULT), customCrafting));
-        }
-    }
 
     @JsonCreator
     protected CustomRecipe(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
@@ -213,18 +163,6 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
         this.priority = priority;
     }
 
-    @JsonIgnore
-    @Deprecated
-    public boolean isExactMeta() {
-        return checkAllNBT;
-    }
-
-    @JsonIgnore
-    @Deprecated
-    public void setExactMeta(boolean exactMeta) {
-        this.checkAllNBT = exactMeta;
-    }
-
     @JsonSetter("checkNBT")
     public void setCheckNBT(boolean checkAllNBT) {
         this.checkAllNBT = checkAllNBT;
@@ -285,12 +223,6 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
     @JsonGetter("@type")
     private NamespacedKey getType() {
         return type.getNamespacedKey();
-    }
-
-    @JsonIgnore
-    @Deprecated(forRemoval = true, since = "4.16.9")
-    public List<CustomItem> getRecipeBookItems() {
-        return recipeBookStacks().stream().map(StackReference::convertToLegacy).toList();
     }
 
     @JsonIgnore
@@ -355,7 +287,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
     }
 
     /**
-     * Saves the recipe to the default {@link RecipeLoader} that is used to save data.<br>
+     * Saves the recipe to the default {@link ResourceLoader} that is used to save data.<br>
      * Default would be the {@link me.wolfyscript.customcrafting.handlers.LocalStorageLoader}, that saves data to the data folder.
      *
      * @return If the saving was successful.
@@ -390,34 +322,6 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed, 
     @Override
     public int compareTo(@NotNull CustomRecipe<C> other) {
         return getPriority().compareTo(other.getPriority());
-    }
-
-    /**
-     * Writes the recipe to json using the specified generator and provider.
-     *
-     * @param gen      The JsonGenerator
-     * @param provider The SerializerProvider
-     * @throws IOException Any exception caused when writing it to json.
-     * @deprecated This is no longer used. Instead, the recipe object can be written to json directly.
-     */
-    @Deprecated
-    public void writeToJson(JsonGenerator gen, SerializerProvider provider) throws IOException {
-        gen.writeStringField(KEY_GROUP, group);
-        gen.writeBooleanField(KEY_HIDDEN, hidden);
-        if (vanillaBook) {
-            gen.writeBooleanField(KEY_VANILLA_BOOK, true);
-        }
-        gen.writeStringField(KEY_PRIORITY, priority.toString());
-        gen.writeBooleanField(KEY_EXACT_META, checkAllNBT);
-        gen.writeObjectField(KEY_CONDITIONS, conditions);
-    }
-
-    public void writeToBuf(MCByteBuf byteBuf) {
-        byteBuf.writeUtf(getRecipeType().name());
-        byteBuf.writeUtf(namespacedKey.toString());
-        byteBuf.writeBoolean(checkAllNBT);
-        byteBuf.writeUtf(group);
-        byteBuf.writeCollection(result.choices(), (mcByteBuf, reference) -> mcByteBuf.writeItemStack(reference.referencedStack()));
     }
 
     @Override

@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.AbstractRecipeShaped;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipeEliteShaped;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipeEliteShapeless;
@@ -40,6 +41,6 @@ public class RecipeCacheCraftingElite extends RecipeCacheCraftingAbstract<EliteR
 
     @Override
     protected CraftingRecipe<?, EliteRecipeSettings> constructRecipe() {
-        return create(shapeless ? new CraftingRecipeEliteShapeless(key) : new CraftingRecipeEliteShaped(key));
+        return create(shapeless ? new CraftingRecipeEliteShapeless(key, customCrafting) : new CraftingRecipeEliteShaped(key, customCrafting, new AbstractRecipeShaped.Symmetry(), false));
     }
 }

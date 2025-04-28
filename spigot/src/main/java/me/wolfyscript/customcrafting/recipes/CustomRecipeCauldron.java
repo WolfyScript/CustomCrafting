@@ -40,9 +40,7 @@ import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -52,7 +50,6 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
 import java.util.*;
 
 public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
@@ -73,28 +70,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     private boolean soulCampfire;
     private boolean requiresLitCampfire;
     private boolean signalFire;
-
-    public CustomRecipeCauldron(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
-        this.xp = node.path("exp").asInt(0);
-        this.cookingTime = node.path("cookingTime").asInt(60);
-        this.fluidLevel = node.path("waterLevel").asInt(1);
-        this.canCookInLava = false;
-        this.canCookInWater = node.path("water").asBoolean(true);
-        this.campfire = this.requiresLitCampfire = node.path("fire").asBoolean(true);
-        this.additionalResults = new Result[] { new Result(), new Result(), new Result() };
-        this.ingredients = new ArrayDeque<>();
-        JsonNode ingredientsNode = node.path("ingredients");
-        if (ingredientsNode.isObject()) {
-            ItemLoader.loadIngredient(ingredientsNode).choices().stream().map(reference -> {
-                Ingredient ingredient = new Ingredient(reference);
-                ingredient.buildChoices();
-                return ingredient;
-            }).forEach(ingredients::add);
-        } else {
-            Streams.stream(ingredientsNode.elements()).map(ItemLoader::loadIngredient).forEach(this::addIngredients);
-        }
-    }
 
     @JsonCreator
     public CustomRecipeCauldron(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
@@ -347,15 +322,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
     @Override
     public CustomRecipeCauldron clone() {
         return new CustomRecipeCauldron(this);
-    }
-
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
-        gen.writeNumberField("exp", xp);
-        gen.writeNumberField("cookingTime", cookingTime);
-        gen.writeObjectField("result", this.result);
-        gen.writeObjectField("ingredients", ingredients);
     }
 
     @Override

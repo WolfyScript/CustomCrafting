@@ -23,7 +23,6 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Streams;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.verification.ObjectVerifier;
 import com.wolfyscript.utilities.verification.VerifierBuilder;
@@ -36,15 +35,11 @@ import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
@@ -54,7 +49,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -63,8 +57,6 @@ import java.util.stream.Stream;
 @JsonPropertyOrder(value = {"@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions", "symmetry", "keepShapeAsIs", "shape", "ingredients"})
 public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
-    private static final String SHAPE_KEY = "shape";
-    private static final String MIRROR_KEY = "mirror";
     private static final String HORIZONTAL_KEY = "horizontal";
     private static final String VERTICAL_KEY = "vertical";
     private static final String ROTATION_KEY = "rotation";
@@ -85,21 +77,6 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private boolean keepShapeAsIs = false;
     private String[] shape;
     private final Symmetry symmetry;
-
-    @Deprecated
-    protected AbstractRecipeShaped(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
-        super(namespacedKey, node, gridSize, settingsType);
-        this.symmetry = Symmetry.ofLegacy(node.path(MIRROR_KEY));
-        this.mappedIngredients = Map.of();
-
-        Map<Character, Ingredient> loadedIngredients = Streams.stream(node.path(INGREDIENTS_KEY).fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue())));
-        if (node.has(SHAPE_KEY)) {
-            setShape(mapper.convertValue(node.path(SHAPE_KEY), String[].class));
-        } else {
-            generateMissingShape(List.copyOf(loadedIngredients.keySet()));
-        }
-        setIngredients(loadedIngredients);
-    }
 
     protected AbstractRecipeShaped(NamespacedKey key, CustomCrafting customCrafting, Symmetry symmetry, boolean keepShapeAsIs, String[] shape, int gridSize, S settings) {
         this(key, customCrafting, symmetry, keepShapeAsIs, gridSize, settings);
@@ -331,29 +308,6 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         }
     }
 
-    @Deprecated
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
-        gen.writeObjectField(SHAPE_KEY, shape);
-        gen.writeObjectFieldStart(MIRROR_KEY);
-        gen.writeBooleanField(HORIZONTAL_KEY, symmetry.horizontal);
-        gen.writeBooleanField(VERTICAL_KEY, symmetry.vertical);
-        gen.writeBooleanField(ROTATION_KEY, symmetry.rotate);
-        gen.writeEndObject();
-        gen.writeObjectField(INGREDIENTS_KEY, this.mappedIngredients);
-    }
-
-    @Override
-    public void writeToBuf(MCByteBuf byteBuf) {
-        super.writeToBuf(byteBuf);
-        byteBuf.writeVarInt(shape.length);
-        for (String s : shape) {
-            byteBuf.writeUtf(s, maxGridDimension);
-        }
-        internalShape.writeToBuf(byteBuf);
-    }
-
     /**
      * This generates and stores the flipped states of the recipe shape.<br>
      * This pre-calculates the different states of the recipe on start-up for better performance on runtime.
@@ -467,14 +421,6 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
             this.horizontal = other.horizontal;
             this.vertical = other.vertical;
             this.rotate = other.rotate;
-        }
-
-        private static Symmetry ofLegacy(JsonNode node) {
-            var symmetry = new Symmetry();
-            symmetry.horizontal = node.path(HORIZONTAL_KEY).asBoolean(false);
-            symmetry.vertical = node.path(VERTICAL_KEY).asBoolean(false);
-            symmetry.rotate = node.path(ROTATION_KEY).asBoolean(false);
-            return symmetry;
         }
 
         public void setHorizontal(boolean horizontal) {

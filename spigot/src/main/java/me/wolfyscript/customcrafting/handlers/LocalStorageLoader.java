@@ -31,8 +31,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.BackupSettings;
 import me.wolfyscript.customcrafting.configs.DataSettings;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.RecipeLoader;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
@@ -47,7 +45,6 @@ import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -174,8 +171,6 @@ public class LocalStorageLoader extends ResourceLoader {
             new NewDataLoader(dirs).load();
             //Loading old & legacy recipes
             //The recipes are only loaded if they are not already loaded in previous stages! So if a new version of a recipe exists, then the older ones are ignored.
-            new OldDataLoader(dirs).load();
-            new LegacyDataLoader(dirs).load();
 
             executor.shutdown();
 
@@ -517,86 +512,6 @@ public class LocalStorageLoader extends ResourceLoader {
                 return FileVisitResult.CONTINUE;
             });
         }
-    }
-
-    private class LegacyDataLoader extends OldDataLoader {
-
-        private LegacyDataLoader(String[] dirs) {
-            super(dirs);
-        }
-
-        @Override
-        protected void load() {
-            for (String dir : this.dirs) {
-                String[] typeFolders = getOldTypeFolders(dir);
-                if (typeFolders != null && typeFolders.length > 0) {
-                    loadAndRegisterOldOrLegacyRecipe(RecipeType.Container.CRAFTING, dir);
-                    loadAndRegisterOldOrLegacyRecipe(RecipeType.Container.ELITE_CRAFTING, dir);
-                }
-            }
-        }
-    }
-
-    private class OldDataLoader extends DataLoader {
-
-        private OldDataLoader(String[] dirs) {
-            super(dirs);
-        }
-
-        protected void load() {
-            for (String dir : this.dirs) {
-                String[] typeFolders = getOldTypeFolders(dir);
-                if (typeFolders != null && typeFolders.length > 0) {
-                    for (RecipeType<? extends CustomRecipe<?>> type : RecipeType.values()) {
-                        loadAndRegisterOldOrLegacyRecipe(type, dir);
-                    }
-                }
-            }
-        }
-
-        protected List<File> getOldOrLegacyFiles(String subFolder, String type) {
-            var data = new File(DATA_FOLDER, subFolder + File.separator + type);
-            if (!data.exists()) return new ArrayList<>();
-            File[] files = data.listFiles(file -> file.isFile() && file.getName().endsWith(".json"));
-            return files != null ? Arrays.stream(files).toList() : new ArrayList<>();
-        }
-
-        protected void loadAndRegisterOldOrLegacyRecipe(RecipeLoader<?> loader, String namespace) {
-            if (loader instanceof RecipeType.Container<?> container && container.hasLegacy()) {
-                //Loading legacy recipes
-                List<File> legacyFiles = getOldOrLegacyFiles(namespace, container.getLegacyID());
-                if (!legacyFiles.isEmpty()) { //If there are no legacy recipes we can skip it.
-                    loadOldOrLegacyRecipeFiles(loader, legacyFiles, namespace);
-                }
-                return;
-            }
-            loadOldOrLegacyRecipeFiles(loader, getOldOrLegacyFiles(namespace, loader.getId()), namespace);
-        }
-
-        protected void loadOldOrLegacyRecipeFiles(RecipeLoader<?> loader, List<File> files, String namespace) {
-            for (File file : files) {
-                var name = file.getName();
-                if (isValidFile(file)) continue;
-                var namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
-                if (!customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
-                    executeTask(() -> {
-                        try {
-                            CustomRecipe<?> recipe = loader.getInstance(namespacedKey, objectMapper.readTree(file));
-                            checkDependenciesAndRegister(recipe);
-                        } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException |
-                                 IllegalAccessException e) {
-                            ChatUtils.sendRecipeItemLoadingError("[LOCAL_OLD] ", namespacedKey.getNamespace(), namespacedKey.getKey(), e);
-                            markFailed(namespacedKey);
-                        }
-                    });
-                }
-            }
-        }
-
-        protected String[] getOldTypeFolders(String namespace) {
-            return new File(DATA_FOLDER + "/" + namespace).list((dir1, name) -> !name.equals(ITEMS_FOLDER) && !name.equals(RECIPES_FOLDER));
-        }
-
     }
 
     /**

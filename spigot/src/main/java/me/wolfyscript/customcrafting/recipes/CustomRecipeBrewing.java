@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.google.common.collect.Streams;
 import com.wolfyscript.utilities.bukkit.world.items.reference.StackReference;
 import com.wolfyscript.utilities.dependency.DependencySource;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -34,12 +33,7 @@ import me.wolfyscript.customcrafting.recipes.brewing.EffectSettingsRequired;
 import me.wolfyscript.customcrafting.recipes.brewing.EffectSettingsUpgrade;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -56,7 +50,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -91,25 +84,6 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     private Map<PotionEffectType, EffectSettingsUpgrade> effectUpgradesByEffectType;
     @JsonIgnore
     private Map<PotionEffectType, EffectSettingsRequired> requiredEffectsByEffectType;
-
-    public CustomRecipeBrewing(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
-        this.ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
-        this.result = ItemLoader.loadResult(node.path("results"), this.customCrafting);
-        this.fuelCost = node.path("fuel_cost").asInt(1);
-        this.brewTime = node.path("brew_time").asInt(80);
-        this.allowedItems = ItemLoader.loadIngredient(node.path("allowed_items"));
-
-        setDurationChange(node.path("duration_change").asInt());
-        setAmplifierChange(node.path("amplifier_change").asInt());
-        setResetEffects(node.path("reset_effects").asBoolean(false));
-        setEffectColor(node.has("color") ? mapper.convertValue(node.path("color"), Color.class) : null);
-
-        setEffectRemovals(Streams.stream(node.path("effect_removals").elements()).map(n -> mapper.convertValue(n, PotionEffectType.class)).toList());
-        setEffectAdditions(mapper.convertValue(node.path("effect_additions"), new TypeReference<List<EffectAddition>>() {}));
-        setEffectUpgrades(mapper.convertValue(node.path("effect_upgrades"), new TypeReference<List<EffectSettingsUpgrade>>() {}));
-        setRequiredEffects(mapper.convertValue(node.path("required_effects"), new TypeReference<List<EffectSettingsRequired>>() {}));
-    }
 
     @JsonCreator
     public CustomRecipeBrewing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
@@ -365,36 +339,6 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     @Override
     public CustomRecipeBrewing clone() {
         return new CustomRecipeBrewing(this);
-    }
-
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
-
-        gen.writeObjectField("ingredients", ingredients);
-
-        gen.writeNumberField("fuel_cost", fuelCost);
-        gen.writeNumberField("brew_time", brewTime);
-
-        gen.writeObjectField("allowed_items", allowedItems);
-
-        gen.writeObjectField("results", result);
-
-        //Load options
-        gen.writeNumberField("duration_change", durationChange);
-        gen.writeNumberField("amplifier_change", amplifierChange);
-        gen.writeBooleanField("reset_effects", resetEffects);
-        gen.writeObjectField("color", effectColor);
-
-        //Load advanced options
-        gen.writeArrayFieldStart("effect_removals");
-        for (PotionEffectType effectRemoval : effectRemovals) {
-            gen.writeObject(effectRemoval);
-        }
-        gen.writeEndArray();
-        gen.writeObjectField("effect_additions", effectAdditions);
-        gen.writeObjectField("effect_upgrades", effectUpgrades);
-        gen.writeObjectField("required_effects", requiredEffects);
     }
 
     @Override

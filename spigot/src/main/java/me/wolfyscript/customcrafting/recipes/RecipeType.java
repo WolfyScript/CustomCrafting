@@ -26,16 +26,14 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.annotations.OptionalKeyReference;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @OptionalKeyReference(field = "key")
-public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, Keyed {
+public interface RecipeType<C extends CustomRecipe<?>> extends Keyed {
 
     //Crafting recipes
     RecipeType<CraftingRecipeShaped> CRAFTING_SHAPED = new RecipeTypeImpl<>(Type.CRAFTING_SHAPED, CraftingRecipeShaped.class);
@@ -79,8 +77,6 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
 
     Type getType();
 
-    String getCreatorID();
-
     Container<? super C> getContainer();
 
     Class<C> getRecipeClass();
@@ -106,32 +102,21 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
      */
     interface Container<C extends CustomRecipe<?>> {
 
-        CraftingContainer<AdvancedRecipeSettings> CRAFTING = new CraftingContainer<>("workbench", "crafting", CRAFTING_SHAPED, CRAFTING_SHAPELESS);
-        CraftingContainer<EliteRecipeSettings> ELITE_CRAFTING = new CraftingContainer<>("elite_workbench", "elite_crafting", ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS);
+        CraftingContainer<AdvancedRecipeSettings> CRAFTING = new CraftingContainer<>("crafting", CRAFTING_SHAPED, CRAFTING_SHAPELESS);
+        CraftingContainer<EliteRecipeSettings> ELITE_CRAFTING = new CraftingContainer<>("elite_crafting", ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS);
         Container<CustomRecipeCooking<?, ?>> COOKING = new ContainerImpl<>((Class<CustomRecipeCooking<?, ?>>) (Object) CustomRecipeCooking.class, "cooking", List.of(FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE));
 
         static Collection<Container<? extends CustomRecipe<?>>> values() {
             return ContainerImpl.values.values();
         }
 
-        static boolean isLegacy(String id) {
-            return !ContainerImpl.values.containsKey(id) && ContainerImpl.legacyValues.containsKey(id);
-        }
-
         static Container<?> valueOf(String id) {
-            if (ContainerImpl.values.containsKey(id)) {
-                return ContainerImpl.values.get(id);
-            }
-            return ContainerImpl.legacyValues.get(id);
+            return ContainerImpl.values.get(id);
         }
 
         List<RecipeType<? extends C>> getTypes();
 
         String getId();
-
-        String getLegacyID();
-
-        boolean hasLegacy();
 
         String getCreatorID();
 
@@ -157,15 +142,10 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
          */
         C cast(CustomRecipe<?> recipe);
 
-        final class CraftingContainer<S extends CraftingRecipeSettings<S>> extends Container.ContainerImpl<CraftingRecipe<?, S>> implements RecipeLoader<CraftingRecipe<?, S>> {
+        final class CraftingContainer<S extends CraftingRecipeSettings<S>> extends Container.ContainerImpl<CraftingRecipe<?, S>> {
 
-            private CraftingContainer(String legacyID, String id, RecipeType<? extends CraftingRecipe<?, S>> shaped, RecipeType<? extends CraftingRecipe<?, S>> shapeless) {
-                super((Class<CraftingRecipe<?, S>>) (Object) CraftingRecipe.class, id, legacyID, id, List.of(shaped, shapeless));
-            }
-
-            @Override
-            public CraftingRecipe<?, S> getInstance(NamespacedKey namespacedKey, JsonNode node) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
-                return !node.path("shapeless").asBoolean() ? types.get(0).getInstance(namespacedKey, node) : types.get(1).getInstance(namespacedKey, node);
+            private CraftingContainer(String id, RecipeType<? extends CraftingRecipe<?, S>> shaped, RecipeType<? extends CraftingRecipe<?, S>> shapeless) {
+                super((Class<CraftingRecipe<?, S>>) (Object) CraftingRecipe.class, id, List.of(shaped, shapeless));
             }
 
         }
@@ -173,11 +153,9 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         class ContainerImpl<C extends CustomRecipe<?>> implements Container<C> {
 
             static final Map<String, Container<?>> values = new HashMap<>();
-            static final Map<String, Container<?>> legacyValues = new HashMap<>();
 
             protected final List<RecipeType<? extends C>> types;
             private final String id;
-            private final String legacyID;
             private final String creatorID;
             private final Class<C> clazz;
 
@@ -186,10 +164,6 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
             }
 
             private ContainerImpl(Class<C> clazz, String id, String creatorID, List<RecipeType<? extends C>> types) {
-                this(clazz, id, null, creatorID, types);
-            }
-
-            private ContainerImpl(Class<C> clazz, String id, String legacyID, String creatorID, List<RecipeType<? extends C>> types) {
                 this.types = types;
                 for (RecipeType<? extends C> type : this.types) {
                     if (type instanceof RecipeTypeImpl<?> recipeTypeImpl) {
@@ -198,10 +172,8 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
                 }
                 this.clazz = clazz;
                 this.id = id;
-                this.legacyID = legacyID;
                 this.creatorID = creatorID;
                 values.putIfAbsent(id, this);
-                legacyValues.putIfAbsent(legacyID, this);
             }
 
             @Override
@@ -212,16 +184,6 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
             @Override
             public String getId() {
                 return id;
-            }
-
-            @Override
-            public String getLegacyID() {
-                return legacyID;
-            }
-
-            @Override
-            public boolean hasLegacy() {
-                return legacyID != null && !legacyID.isBlank();
             }
 
             @Override
@@ -277,20 +239,14 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         private final NamespacedKey key;
         private final String id;
         private final Type type;
-        private final String creatorID;
         private final Class<C> clazz;
         private Container<? super C> parent;
 
         private RecipeTypeImpl(Type type, Class<C> clazz) {
-            this(type, clazz, type.toString().toLowerCase(Locale.ROOT));
-        }
-
-        private RecipeTypeImpl(Type type, Class<C> clazz, String creatorID) {
-            this.key = new NamespacedKey(CustomCrafting.inst(), creatorID);
+            this.id = type.toString().toLowerCase(Locale.ROOT);
+            this.key = new NamespacedKey(CustomCrafting.inst(), id);
             this.type = type;
             this.clazz = clazz;
-            this.id = type.toString().toLowerCase(Locale.ROOT);
-            this.creatorID = creatorID;
             this.parent = null;
             values.put(id, this);
         }
@@ -298,16 +254,6 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         @Override
         public Type getType() {
             return type;
-        }
-
-        @Override
-        public String getId() {
-            return id;
-        }
-
-        @Override
-        public String getCreatorID() {
-            return parent == null ? creatorID : parent.getCreatorID();
         }
 
         @Override
@@ -335,11 +281,6 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         }
 
         @Override
-        public C getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-            return clazz.getDeclaredConstructor(NamespacedKey.class, JsonNode.class).newInstance(namespacedKey, node);
-        }
-
-        @Override
         public String name() {
             return getType().toString();
         }
@@ -348,7 +289,6 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         public String toString() {
             return "RecipeType{" +
                     "id='" + id + '\'' +
-                    ", creatorID='" + creatorID + '\'' +
                     ", clazz=" + clazz +
                     ", type=" + type +
                     '}';

@@ -35,21 +35,17 @@ import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
@@ -68,21 +64,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     protected final int maxIngredients;
 
     private final S settings;
-
-    @Deprecated
-    protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
-        super(namespacedKey, node);
-        this.ingredients = List.of();
-        this.maxGridDimension = gridSize;
-        this.maxIngredients = maxGridDimension * maxGridDimension;
-        this.settings = Objects.requireNonNullElseGet(mapper.convertValue(node.path("settings"), settingsType), () -> {
-            try {
-                return settingsType.getDeclaredConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                return null;
-            }
-        });
-    }
 
     protected CraftingRecipe(NamespacedKey key, CustomCrafting customCrafting, int gridSize, S settings) {
         super(key, customCrafting);
@@ -199,20 +180,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
             }
             event.setButton(25, ButtonContainerIngredient.key(cluster, maxIngredients));
         }
-    }
-
-    @Deprecated
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
-        gen.writeObjectField(KEY_RESULT, result);
-    }
-
-    @Override
-    public void writeToBuf(MCByteBuf byteBuf) {
-        super.writeToBuf(byteBuf);
-        byteBuf.writeInt(maxGridDimension);
-        byteBuf.writeCollection(ingredients, (buf, ingredient) -> buf.writeCollection(ingredient.choices(), (buf1, reference) -> buf1.writeItemStack(reference.referencedStack())));
     }
 
 }

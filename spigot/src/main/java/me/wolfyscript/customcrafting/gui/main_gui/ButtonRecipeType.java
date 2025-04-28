@@ -36,7 +36,7 @@ class ButtonRecipeType extends ActionButton<CCCache> {
         super(key, icon, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeCreatorCache().setRecipeType(recipeType);
             cache.setSetting(Setting.RECIPE_CREATOR);
-            guiHandler.openWindow(new NamespacedKey("recipe_creator", recipeType.getCreatorID()));
+            guiHandler.openWindow(new NamespacedKey("recipe_creator", recipeType.getId()));
             return true;
         });
     }

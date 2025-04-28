@@ -25,8 +25,6 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.DatabaseSettings;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.RecipeLoader;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonProcessingException;
@@ -240,14 +238,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                     if (typeID == null || typeID.isBlank()) {
                         return objectMapper.reader(injectableValues).readValue(data, CustomRecipe.class);
                     }
-                    RecipeLoader<?> loader = RecipeType.valueOf(typeID);
-                    if (loader == null && RecipeType.Container.valueOf(typeID) instanceof RecipeLoader<?> recipeLoader) {
-                        loader = recipeLoader;
-                    }
-                    if (loader != null) {
-                        return loader.getInstance(namespacedKey, customCrafting.getApi().getJacksonMapperUtil().getGlobalMapper().readTree(data));
-                    }
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | IOException e) {
+                } catch (IOException e) {
                     ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
                 }
             }

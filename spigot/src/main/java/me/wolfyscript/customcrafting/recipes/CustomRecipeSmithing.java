@@ -38,11 +38,7 @@ import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.ArmorTrimMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -59,7 +55,6 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmithingRecipe;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -120,16 +115,6 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
 
     @JsonIgnore
     private List<MergeAdapter> internalMergeAdapters = new ArrayList<>(3);
-
-    public CustomRecipeSmithing(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
-        this.type = RecipeType.SMITHING;
-        setBase(ItemLoader.loadIngredient(node.path(KEY_BASE)));
-        setAddition(ItemLoader.loadIngredient(node.path(KEY_ADDITION)));
-        setOnlyChangeMaterial(node.path("onlyChangeMaterial").asBoolean(false));
-        setPreserveEnchants(node.path("preserve_enchants").asBoolean(true));
-        setPreserveDamage(node.path("preserveDamage").asBoolean(true));
-    }
 
     @JsonCreator
     public CustomRecipeSmithing(
@@ -306,17 +291,6 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> imp
         event.setButton(21, ButtonContainerIngredient.key(cluster, 2));
         event.setButton(23, new NamespacedKey(ClusterRecipeBook.KEY, "smithing"));
         event.setButton(25, ButtonContainerIngredient.key(cluster, 3));
-    }
-
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
-        gen.writeBooleanField("preserve_enchants", preserveEnchants);
-        gen.writeBooleanField("preserveDamage", preserveDamage);
-        gen.writeBooleanField("onlyChangeMaterial", onlyChangeMaterial);
-        gen.writeObjectField(KEY_RESULT, result);
-        gen.writeObjectField(KEY_BASE, base);
-        gen.writeObjectField(KEY_ADDITION, addition);
     }
 
     @Override

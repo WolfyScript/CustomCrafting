@@ -111,7 +111,7 @@ class ButtonContainerRecipeList extends Button<CCCache> {
                     cache.setSetting(Setting.RECIPE_CREATOR);
                     cache.getRecipeCreatorCache().setRecipeType(customRecipe.getRecipeType());
                     cache.getRecipeCreatorCache().loadRecipeIntoCache(customRecipe);
-                    Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(new NamespacedKey(ClusterRecipeCreator.KEY, cache.getRecipeCreatorCache().getRecipeType().getCreatorID())), 1);
+                    Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(new NamespacedKey(ClusterRecipeCreator.KEY, cache.getRecipeCreatorCache().getRecipeType().getId())), 1);
                 } catch (IllegalArgumentException ex) {
                     window.sendMessage(guiHandler, window.translatedMsgKey("invalid_recipe", Placeholder.unparsed("recipe_type", cache.getRecipeCreatorCache().getRecipeType().name())));
                 }

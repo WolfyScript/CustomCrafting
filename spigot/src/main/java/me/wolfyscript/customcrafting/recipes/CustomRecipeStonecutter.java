@@ -38,9 +38,7 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -52,11 +50,7 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutter> implements ICustomVanillaRecipe<StonecuttingRecipe> {
-
-    private static final String KEY_SOURCE = "source";
 
     static {
         final Verifier<CustomRecipeStonecutter> VERIFIER = VerifierBuilder.<CustomRecipeStonecutter>object(RecipeType.STONECUTTER.getNamespacedKey())
@@ -69,15 +63,6 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
 
     @DependencySource
     private Ingredient source;
-
-    public CustomRecipeStonecutter(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
-        if (node.has(KEY_RESULT)) {
-            //Some old config format, which saved the item directly as a reference
-            setResult(node.path(KEY_RESULT).has("custom_amount") ? new Result(CustomCrafting.inst().getApi().getJacksonMapperUtil().getGlobalMapper().convertValue(node.path(KEY_RESULT), APIReference.class)) : ItemLoader.loadResult(node.path(KEY_RESULT), this.customCrafting));
-        }
-        setSource(ItemLoader.loadIngredient(node.path(KEY_SOURCE)));
-    }
 
     @JsonCreator
     public CustomRecipeStonecutter(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
@@ -110,13 +95,6 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
     @Override
     protected void setResult(JsonNode node) {
         setResult(node.has("custom_amount") ? new Result(mapper.convertValue(node, APIReference.class)) : ItemLoader.loadResult(node, this.customCrafting));
-    }
-
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
-        gen.writeObjectField(KEY_RESULT, this.result);
-        gen.writeObjectField(KEY_SOURCE, this.source);
     }
 
     @Override

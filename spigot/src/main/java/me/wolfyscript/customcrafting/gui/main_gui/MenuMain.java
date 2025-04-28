@@ -51,8 +51,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class MenuMain extends CCWindow {
 
-    private static final String CRAFTING = RecipeType.Container.CRAFTING.getCreatorID();
-    private static final String ELITE_CRAFTING = RecipeType.Container.ELITE_CRAFTING.getCreatorID();
+    private static final String CRAFTING = RecipeType.Container.CRAFTING.getId();
+    private static final String ELITE_CRAFTING = RecipeType.Container.ELITE_CRAFTING.getId();
     private static final String FURNACE = RecipeType.FURNACE.getId();
     private static final String ANVIL = RecipeType.ANVIL.getId();
     private static final String BLAST_FURNACE = RecipeType.BLAST_FURNACE.getId();
