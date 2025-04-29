@@ -2,32 +2,34 @@ package com.wolfyscript.customcrafting.recipes
 
 interface CustomRecipeCrafting : CustomRecipe<CustomRecipeCrafting> {
 
-    val formula: Formula
+    val formula: CraftingFormula
 
-    interface Formula {
+    val result: RecipeResult
 
-        val ingredients: List<Ingredient>
+}
 
-        interface Shapeless : Formula {
+interface CraftingFormula {
 
-        }
+    val ingredients: List<Ingredient>
 
-        interface Shaped : Formula {
-
-            val shape: CraftingShape
-
-            val symmetry: CraftingShapeSymmetry
-
-        }
+    interface Shapeless : CraftingFormula {
 
     }
 
-}
+    interface Shaped : CraftingFormula {
 
-interface CraftingShapeSymmetry {
+        val shape: Shape
 
-}
+        val symmetry: ShapeSymmetry
 
-interface CraftingShape {
+        interface ShapeSymmetry {
 
+        }
+
+        interface Shape {
+
+        }
+        
+    }
+    
 }

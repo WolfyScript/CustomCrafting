@@ -77,23 +77,6 @@ public abstract class MergeAdapter implements Keyed {
     }
 
     /**
-     * Only called when {@link #merge(RecipeData, Player, Block, StackReference, ItemStack)} is unimplemented, for backwards compatibility!<br>
-     * <b>Implement {@link #merge(RecipeData, Player, Block, StackReference, ItemStack)} Instead!</b>
-     *
-     * @param recipeData   The {@link RecipeData}, that contains all the data of the pre-crafted recipe, like ingredients and their slots, result, and the recipe itself.
-     * @param player       The player that has crafted the item. <strong>Might be null! e.g. Furnaces, and other workstations without player interaction!</strong>
-     * @param block        The block that has processed the recipe. <strong>Might be null! e.g. for the 2x2 player crafting grid!</strong>
-     * @param customResult The {@link CustomItem} of the crafted item.
-     * @param result       The actual manipulable result {@link ItemStack}. <strong>Previous adapters might have already manipulated this item!</strong>
-     * @return The manipulated {@link ItemStack} that should be passed to the next adapter or set as the end result.
-     * @deprecated CustomItems are no longer used as references! <b>Implement {@link #merge(RecipeData, Player, Block, StackReference, ItemStack)} instead!</b>
-     */
-    @Deprecated(forRemoval = true, since = "4.16.9")
-    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
-        return result;
-    }
-
-    /**
      * Called when the data is merged inside of recipes like Furnace, Smithing Table, etc.
      *
      * @param recipeData   The {@link RecipeData}, that contains all the data of the pre-crafted recipe, like ingredients and their slots, result, and the recipe itself.
@@ -104,24 +87,9 @@ public abstract class MergeAdapter implements Keyed {
      * @return The manipulated {@link ItemStack} that should be passed to the next adapter or set as the end result.
      */
     public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, StackReference resultReference, ItemStack result) {
-        return merge(recipeData,
-                player,
-                block,
-                resultReference.identifier()
-                        .map(identifier -> identifier instanceof WolfyUtilsStackIdentifier wuIdentifier ? wuIdentifier : null)
-                        .map(wolfyUtilsStackIdentifier -> wolfyUtilsStackIdentifier.customItem().orElse(new CustomItem(Material.AIR)))
-                        .orElse(new CustomItem(resultReference)),
-                result
-        );
+        return result;
     }
 
     public abstract MergeAdapter clone();
 
-    /**
-     * @deprecated Not called! Replaced with {@link #merge(RecipeData, Player, Block, CustomItem, ItemStack)}!
-     */
-    @Deprecated
-    public ItemStack merge(ItemStack[] ingredients, @Nullable Player player, CustomItem customResult, ItemStack result) {
-        return result;
-    }
 }
