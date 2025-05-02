@@ -2,12 +2,25 @@ package com.wolfyscript.customcrafting.recipes.data
 
 import com.wolfyscript.customcrafting.recipes.Ingredient
 
+/**
+ * Holds information about an ingredient that was selected after a recipe was evaluated.
+ */
 interface IngredientData {
 
+    /**
+     * The slot of the ingredient in the inventory.
+     * For example, the slot in the crafting grid
+     */
     val invSlot: Int
 
+    /**
+     * The index of the ingredient in the recipe
+     */
     val recipeIndex: Int
 
+    /**
+     * The ingredient associated with this information
+     */
     val selectedIngredient: Ingredient
 
 
