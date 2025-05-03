@@ -12,13 +12,13 @@ import com.wolfyscript.scafall.config.jackson.KeyedTypeResolver
 @JsonTypeIdResolver(KeyedTypeIdResolver::class)
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.CUSTOM,
-    include = JsonTypeInfo.As.EXISTING_PROPERTY,
-    property = "key"
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type"
 )
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonPropertyOrder(value = ["key"])
+@JsonPropertyOrder(value = ["type"])
 interface ResultAction {
 
-
+    // TODO
 
 }
