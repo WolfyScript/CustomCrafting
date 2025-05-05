@@ -4,12 +4,36 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
+import com.wolfyscript.customcrafting.recipes.data.RecipeData
 
+/**
+ * A custom recipe for the player inventory crafting grid, crafting table, and auto-crafter.
+ *
+ * The [formula] defines how the recipe is evaluated. (Shapeless or Shaped)
+ *
+ */
 interface CustomRecipeCrafting : CustomRecipe<CustomRecipeCrafting> {
 
+    /**
+     * The formula used to evaluate the recipe.
+     *
+     * For example, a shapeless recipe would use [CraftingFormula.Shapeless]
+     * and a shaped recipe would use [CraftingFormula.Shaped]
+     */
     val formula: CraftingFormula
 
+    /**
+     * The result of the recipe.
+     */
     val result: RecipeResult
+
+    /**
+     * Evaluates the recipe based on the given matrix.
+     *
+     * @return The resulting recipe data; or null if the recipe cannot be evaluated.
+     */
+    fun evaluate(matrix: CraftingMatrixData): RecipeData<CustomRecipeCrafting>?
 
 }
 
@@ -25,12 +49,12 @@ interface CraftingFormula {
 
     val ingredients: List<Ingredient>
 
+    fun evaluate(matrix: CraftingMatrixData): RecipeData<CustomRecipeCrafting>?
+
     /**
      * A crafting formula with a list of ingredients that can be arranged in any order
      */
-    interface Shapeless : CraftingFormula {
-
-    }
+    interface Shapeless : CraftingFormula
 
     /**
      * A crafting formula that requires ingredients to be arranged in a specified shape.
@@ -43,9 +67,23 @@ interface CraftingFormula {
 
         val symmetry: ShapeSymmetry
 
+        /**
+         * Defines how the shape of the crafting grid may be mirrored.
+         */
         interface ShapeSymmetry {
+            /**
+             * Whether the shape may be mirrored horizontally.
+             */
             val horizontal: Boolean
+
+            /**
+             * Whether the shape may be mirrored vertically.
+             */
             val vertical: Boolean
+
+            /**
+             * Whether the shape may be mirrored in both directions at once.
+             */
             val rotate: Boolean
         }
 
