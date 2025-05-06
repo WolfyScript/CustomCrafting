@@ -33,7 +33,7 @@ interface CustomRecipeCrafting : CustomRecipe<CustomRecipeCrafting> {
      *
      * @return The resulting recipe data; or null if the recipe cannot be evaluated.
      */
-    fun evaluate(matrix: CraftingMatrixData): RecipeData<CustomRecipeCrafting>?
+    fun evaluate(matrix: CraftingMatrixData, context: EvaluationContext): RecipeData<CustomRecipeCrafting>?
 
 }
 

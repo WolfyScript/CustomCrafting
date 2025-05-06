@@ -1,4 +1,4 @@
 package com.wolfyscript.customcrafting.recipes
 
-interface CustomRecipeGrinding {
+interface CustomRecipeGrinding : CustomRecipe<CustomRecipeGrinding> {
 }

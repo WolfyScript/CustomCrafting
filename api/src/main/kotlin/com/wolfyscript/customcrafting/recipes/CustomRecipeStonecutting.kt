@@ -1,4 +1,4 @@
 package com.wolfyscript.customcrafting.recipes
 
-interface CustomRecipeStonecutting {
+interface CustomRecipeStonecutting : CustomRecipe<CustomRecipeStonecutting> {
 }

@@ -6,4 +6,6 @@ interface CustomRecipe<T> {
 
     val priority: Int
 
+    val conditions: RecipeConditions
+
 }

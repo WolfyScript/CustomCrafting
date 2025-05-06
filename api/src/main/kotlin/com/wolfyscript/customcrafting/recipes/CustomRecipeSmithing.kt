@@ -1,4 +1,4 @@
 package com.wolfyscript.customcrafting.recipes
 
-interface CustomRecipeSmithing {
+interface CustomRecipeSmithing : CustomRecipe<CustomRecipeSmithing> {
 }
