@@ -14,6 +14,9 @@ publishing {
             from(components.getByName("java"))
             groupId = "com.wolfyscript.customcrafting.api"
             artifactId = "api"
+            artifact(tasks.kotlinSourcesJar) {
+                classifier = "sources"
+            }
         }
     }
 }
