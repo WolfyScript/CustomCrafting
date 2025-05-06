@@ -31,7 +31,7 @@ reflections = "0.10.2"
 
 # Spigot/Paper/Folia
 wolfyutils = "4.19-SNAPSHOT"
-papermc = "1.21.1-R0.1-SNAPSHOT"
+papermc = "1.21.5-R0.1-SNAPSHOT"
 bstats-bukkit = "3.0.0"
 item-nbt-api = "2.11.3"
 mythic = "5.3.5"
