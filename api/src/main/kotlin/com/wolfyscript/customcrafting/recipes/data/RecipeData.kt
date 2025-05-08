@@ -26,6 +26,6 @@ interface RecipeData<T: CustomRecipe<*>> {
     /**
      * Gets all the ingredients in order of appearance, skipping empty ingredients.
      */
-    fun nonNullIngredients(): List<IngredientData>
+    val nonNullIngredients: List<IngredientData>
 
 }
