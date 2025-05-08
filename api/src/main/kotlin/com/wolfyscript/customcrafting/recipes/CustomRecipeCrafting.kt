@@ -49,7 +49,7 @@ interface CraftingFormula {
 
     val ingredients: List<Ingredient>
 
-    fun evaluate(matrix: CraftingMatrixData): RecipeData<CustomRecipeCrafting>?
+    fun evaluate(matrix: CraftingMatrixData, recipeCrafting: CustomRecipeCrafting): RecipeData<CustomRecipeCrafting>?
 
     /**
      * A crafting formula with a list of ingredients that can be arranged in any order
@@ -64,8 +64,6 @@ interface CraftingFormula {
     interface Shaped : CraftingFormula {
 
         val shape: Shape
-
-        val symmetry: ShapeSymmetry
 
         /**
          * Defines how the shape of the crafting grid may be mirrored.
@@ -89,11 +87,25 @@ interface CraftingFormula {
 
         interface Shape {
 
+            val symmetry: ShapeSymmetry
+
+            val width: Int
+
+            val height: Int
+
+            /**
+             * Whether the shape should be trimmed to remove leading and trailing empty rows and columns.
+             * When disabled even a shape only occupying a 2x2 area will only work if placed exactly how defined by shape [rows].
+             */
+            val trim: Boolean
+
             /**
              * A list of rows each with character keys that are associated with ingredients.
              * The length of the list is fixed at 3, and so is the length of each row.
              */
             val rows: List<String>
+
+            val variations: List<Array<Int>>
 
         }
         
