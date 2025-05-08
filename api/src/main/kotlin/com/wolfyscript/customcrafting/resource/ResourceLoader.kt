@@ -47,6 +47,8 @@ interface ResourceLoader {
 
         val filter: Filter?
 
+        fun load()
+
         /**
          * Tries to save the recipe to this destination.
          *
@@ -63,7 +65,7 @@ interface ResourceLoader {
 
         interface Filter {
 
-            fun accepts(recipe: CustomRecipe<*>)
+            fun accepts(recipe: CustomRecipe<*>) : Boolean
 
         }
 

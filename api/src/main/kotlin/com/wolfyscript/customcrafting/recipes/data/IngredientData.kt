@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.recipes.data
 
 import com.wolfyscript.customcrafting.recipes.Ingredient
+import com.wolfyscript.scafall.items.ItemStackRef
 
 /**
  * Holds information about an ingredient that was selected after a recipe was evaluated.
@@ -23,5 +24,6 @@ interface IngredientData {
      */
     val selectedIngredient: Ingredient
 
+    val matchedItemStackRef: ItemStackRef
 
 }
