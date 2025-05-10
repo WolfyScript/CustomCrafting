@@ -1,9 +1,11 @@
 package com.wolfyscript.customcrafting.recipes
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.wolfyscript.customcrafting.recipes.data.*
+import net.minecraft.util.ArrayListDeque
 import org.apache.commons.lang3.ArrayUtils
 
-class CustomRecipeCraftingImpl(
+class CustomRecipeCraftingImpl @JsonCreator constructor(
     override val priority: Int,
     override val conditions: RecipeConditions,
     override val formula: CraftingFormula,
@@ -25,10 +27,18 @@ class CustomRecipeCraftingImpl(
         get() = TODO("Not yet implemented")
 }
 
-class ShapedCraftingFormulaImpl(
-    override val ingredients: List<Ingredient>,
+class ShapedCraftingFormulaImpl @JsonCreator constructor(
+    val mappedIngredients: Map<Char, Ingredient>,
     override val shape: CraftingFormula.Shaped.Shape,
 ) : CraftingFormula.Shaped {
+
+    /**
+     * Converts the mapped ingredients to a more efficient lookup using indices instead.
+     * This constructs a list of Ingredients by replacing the [shapes][shape] ingredient indices with their corresponding ingredient.
+     */
+    override val ingredients: List<Ingredient> = shape.ingredientIndices.map {
+        mappedIngredients[it] ?: throw IllegalArgumentException("No ingredient for character '$it'")
+    }
 
     override fun evaluate(
         matrix: CraftingMatrixData,
@@ -78,7 +88,7 @@ class ShapedCraftingFormulaImpl(
     }
 
 
-    class ShapeImpl(
+    class ShapeImpl @JsonCreator constructor(
         override val rows: List<String>,
         override val symmetry: CraftingFormula.Shaped.ShapeSymmetry,
         override val trim: Boolean = true,
@@ -88,8 +98,8 @@ class ShapedCraftingFormulaImpl(
             private set
         override var height: Int = rows.size
             private set
-        override var variations: MutableList<Array<Int>> = mutableListOf()
-            private set
+        override val variations: MutableList<Array<Int>> = mutableListOf()
+        override val ingredientIndices: MutableList<Char> = mutableListOf()
 
         init {
             var original: Array<Int> = Array(height * width) { -1 }
@@ -99,7 +109,12 @@ class ShapedCraftingFormulaImpl(
                     original[index] = if (column.isWhitespace()) {
                         -1
                     } else {
-                        index
+                        var i = ingredientIndices.indexOf(column)
+                        if (i < 0) {
+                            ingredientIndices.add(column)
+                            i = ingredientIndices.size - 1
+                        }
+                        i
                     }
                     index++
                 }

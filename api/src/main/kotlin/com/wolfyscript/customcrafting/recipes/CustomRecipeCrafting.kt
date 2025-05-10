@@ -105,7 +105,16 @@ interface CraftingFormula {
              */
             val rows: List<String>
 
+            /**
+             * A list of possible arrangements the shape can be in.
+             * The 2d shapes are represented as 1d arrays of the ingredient indices based on the [ingredientIndices].
+             */
             val variations: List<Array<Int>>
+
+            /**
+             * List of the ingredient keys in the shape in order of appearance.
+             */
+            val ingredientIndices: List<Char>
 
         }
         
