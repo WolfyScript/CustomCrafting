@@ -187,7 +187,64 @@ class ShapelessCraftingFormulaImpl(override val ingredients: List<Ingredient>) :
         matrix: CraftingMatrixData,
         recipeCrafting: CustomRecipeCrafting,
     ): RecipeData<CustomRecipeCrafting>? {
-        TODO("Not yet implemented")
+        val pickedIngredients = Array<IngredientData?>(ingredients.size) { null }
+        val path = ArrayListDeque<Int>(ingredients.size).apply { push(-1) }
+
+        /**
+         * A matrix specifying which edges between ingredients have been checked.
+         * This includes a root node from which an edge goes to each ingredient.
+         *
+         *
+         * | from \ to | A | B | C | ...
+         * | :-------: | - | :--: | :--: | -
+         * | ROOT      | 0 | 0 | 0 | ...
+         * | A         | x | 0 | 0 | ...
+         * | B         | 0 | x | 0 | ...
+         * | C         | 0 | 0 | x | ...
+         * | ...       | 0 | 0 | 0 | ...
+         *
+         */
+        val checkedEdges: Array<Int> = Array(ingredients.size + 1) { 0 }
+
+        var itemIndex = 0
+        while (itemIndex < matrix.items.size) {
+            val currentIngredientIndex = path.peek() ?: -1
+
+            // Try to match the ingredient at the current index
+            for ((index, ingredient) in ingredients.withIndex()) {
+                if (checkedEdges[currentIngredientIndex + 1].and(1 shl index) == 1) {
+                    continue
+                }
+                val matchedRef = ingredient.match(matrix.items[index], true)
+                if (matchedRef == null) {
+                    continue
+                }
+                // Found matching ingredient
+                pickedIngredients[index] = IngredientDataImpl(
+                    invSlot = itemIndex, // TODO: That is not yet the proper offset slot
+                    recipeIndex = index,
+                    selectedIngredient = ingredient,
+                    matchedItemStackRef = matchedRef
+                )
+                itemIndex++
+                checkedEdges[currentIngredientIndex + 1] = checkedEdges[currentIngredientIndex + 1].or(1 shl index)
+                path.push(index)
+                break
+            }
+            // If it either fails on the first item or backtracks back to the root node, then there are no ingredients left to match.
+            if (path.isEmpty() || path.peek() == -1) {
+                return null
+            }
+            // No matching node found. Backtrack
+            pickedIngredients[currentIngredientIndex] = null
+            itemIndex--
+        }
+
+        // Make sure all ingredients are on the path, that should be the case already, so simply check for size
+        if (path.size - 1 == ingredients.size) {
+            return RecipeDataImpl(recipeCrafting, recipeCrafting.result, pickedIngredients)
+        }
+        return null
     }
 
 }
