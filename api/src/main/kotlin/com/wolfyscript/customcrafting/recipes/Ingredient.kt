@@ -1,16 +1,13 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 interface Ingredient {
 
-    val stacks: List<ItemStackRef>
-    val tags: List<Key>
+    val choices: RecipeChoices
 
     val replaceWithRemains: Boolean
-    val mayBeEmpty: Boolean
 
     /**
      * Matches this ingredient against the given stack.

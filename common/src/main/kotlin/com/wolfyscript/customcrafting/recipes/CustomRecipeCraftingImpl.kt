@@ -1,11 +1,10 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.fasterxml.jackson.annotation.JsonCreator
 import com.wolfyscript.customcrafting.recipes.data.*
 import net.minecraft.util.ArrayListDeque
 import org.apache.commons.lang3.ArrayUtils
 
-class CustomRecipeCraftingImpl @JsonCreator constructor(
+class CustomRecipeCraftingImpl(
     override val priority: Int,
     override val conditions: RecipeConditions,
     override val formula: CraftingFormula,
@@ -27,7 +26,7 @@ class CustomRecipeCraftingImpl @JsonCreator constructor(
         get() = TODO("Not yet implemented")
 }
 
-class ShapedCraftingFormulaImpl @JsonCreator constructor(
+class ShapedCraftingFormulaImpl(
     val mappedIngredients: Map<Char, Ingredient>,
     override val shape: CraftingFormula.Shaped.Shape,
 ) : CraftingFormula.Shaped {
@@ -87,8 +86,7 @@ class ShapedCraftingFormulaImpl @JsonCreator constructor(
         return RecipeDataImpl(recipeCrafting, recipeCrafting.result, ingredientData)
     }
 
-
-    class ShapeImpl @JsonCreator constructor(
+    class ShapeImpl(
         override val rows: List<String>,
         override val symmetry: CraftingFormula.Shaped.ShapeSymmetry,
         override val trim: Boolean = true,
@@ -177,11 +175,19 @@ class ShapedCraftingFormulaImpl @JsonCreator constructor(
                 variations.add(original.reversedArray())
             }
         }
-
     }
+
+    data class ShapeSymmetryImpl(
+        override val horizontal: Boolean,
+        override val vertical: Boolean,
+        override val rotate: Boolean
+    ) : CraftingFormula.Shaped.ShapeSymmetry
+
 }
 
-class ShapelessCraftingFormulaImpl(override val ingredients: List<Ingredient>) : CraftingFormula.Shapeless {
+class ShapelessCraftingFormulaImpl(
+    override val ingredients: List<Ingredient>
+) : CraftingFormula.Shapeless {
 
     override fun evaluate(
         matrix: CraftingMatrixData,

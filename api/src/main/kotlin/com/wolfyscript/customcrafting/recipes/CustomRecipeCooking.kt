@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 interface CustomRecipeCooking : CustomRecipe<CustomRecipeCooking> {
 
     val processingType: ProcessingType
 
-    val source: ItemStack
+    val result: RecipeResult
 
-    val result: ItemStack
+    fun evaluate(stack: ItemStack, context: EvaluationContext): RecipeData<CustomRecipeCooking>?
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "type")
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
@@ -25,7 +26,11 @@ interface CustomRecipeCooking : CustomRecipe<CustomRecipeCooking> {
     @JsonPropertyOrder(value = ["type"])
     interface ProcessingType {
 
+        val source: Ingredient
+
         val processingTime: Int
+
+        fun evaluate(stack: ItemStack, recipe: CustomRecipeCooking, context: EvaluationContext): RecipeData<CustomRecipeCooking>?
 
         interface Blasting : ProcessingType
 

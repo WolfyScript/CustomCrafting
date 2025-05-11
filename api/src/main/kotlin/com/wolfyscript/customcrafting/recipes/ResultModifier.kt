@@ -18,7 +18,7 @@ interface ResultModifier {
 
     val transformations: List<Transformation>
 
-    fun modify(recipeData: RecipeData<*>, result: ItemStack): ItemStack
+    fun modify(recipeData: RecipeData<*>, result: ItemStack, context: EvaluationContext): ItemStack
 
     /**
      * Modifies the result using the data from the specified ingredients in the recipe.
@@ -35,7 +35,7 @@ interface ResultModifier {
          */
         val transmuter: Transmuter
 
-        fun transform(recipeData: RecipeData<*>, result: ItemStack): ItemStack
+        fun transform(recipeData: RecipeData<*>, result: ItemStack, context: EvaluationContext): ItemStack
 
         /**
          * Gets the data from the specified ingredients and modifies the result with it.
@@ -48,7 +48,7 @@ interface ResultModifier {
         @JsonPropertyOrder(value = ["type"])
         interface Transmuter {
 
-            fun mutate(transformation: Transformation, recipeData: RecipeData<*>, result: ItemStack): ItemStack
+            fun mutate(transformation: Transformation, recipeData: RecipeData<*>, result: ItemStack, context: EvaluationContext): ItemStack
 
         }
 

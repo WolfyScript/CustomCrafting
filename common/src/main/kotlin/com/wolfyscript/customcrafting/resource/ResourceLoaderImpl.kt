@@ -81,7 +81,18 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
     }
 
     override fun delete(recipe: CustomRecipe<*>) {
-
+        for (destination in destinations) {
+            if (!(destination.filter?.accepts(recipe) ?: true)) {
+                continue
+            }
+            if (destination.settings.backup != null) {
+                continue
+            }
+            val result = destination.delete(recipe)
+            if (result.isSuccess) {
+                // TODO: Propagate deletion?
+            }
+        }
     }
 
     override fun createBackup() {

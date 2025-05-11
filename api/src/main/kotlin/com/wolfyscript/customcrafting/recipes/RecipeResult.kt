@@ -12,8 +12,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
  */
 interface RecipeResult {
 
-    val stacks: List<ItemStackRef>
-    val tags: List<Key>
+    val choices: RecipeChoices
 
     /**
      * The modifier applied to the result of the recipe.
@@ -35,6 +34,8 @@ interface RecipeResult {
      *
      * If already computed, this simply returns the previously computed value.
      */
-    fun computeOrGet(recipeData: RecipeData<*>, player: Player?, location: Location?): ItemStack
+    fun computeOrGet(recipeData: RecipeData<*>, context: EvaluationContext): ItemStack
+
+    fun runActions(context: EvaluationContext, count: Int = 1)
 
 }

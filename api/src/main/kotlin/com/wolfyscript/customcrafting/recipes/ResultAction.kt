@@ -19,6 +19,6 @@ import com.wolfyscript.scafall.config.jackson.KeyedTypeResolver
 @JsonPropertyOrder(value = ["type"])
 interface ResultAction {
 
-    // TODO
+    fun run(context: EvaluationContext, bulk: Boolean = false)
 
 }
