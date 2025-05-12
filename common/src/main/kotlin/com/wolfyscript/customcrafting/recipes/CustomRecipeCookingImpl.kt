@@ -6,7 +6,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 class CustomRecipeCookingImpl(
-    override val processingType: CustomRecipeCooking.ProcessingType,
+    override val processing: CustomRecipeCooking.WorkstationProcessing,
     override val result: RecipeResult,
     override val priority: Int,
     override val conditions: RecipeConditions,
@@ -19,15 +19,15 @@ class CustomRecipeCookingImpl(
         if (!conditions.areSatisfied(context)) {
             return null
         }
-        return processingType.evaluate(stack, this, context)
+        return processing.evaluate(stack, this, context)
     }
 
     override val type: RecipeType<CustomRecipeCooking>
         get() = TODO("Not yet implemented")
 
-    class ProcessingTypeSmelting(
+    class WorkstationProcessingSmelting(
         override val processingTime: Int, override val source: Ingredient,
-    ) : CustomRecipeCooking.ProcessingType.Smelting {
+    ) : CustomRecipeCooking.WorkstationProcessing.Smelting {
 
         override fun evaluate(
             stack: ItemStack,
@@ -43,9 +43,9 @@ class CustomRecipeCookingImpl(
 
     }
 
-    class ProcessingTypeBlasting(
+    class WorkstationProcessingBlasting(
         override val processingTime: Int, override val source: Ingredient,
-    ) : CustomRecipeCooking.ProcessingType.Blasting {
+    ) : CustomRecipeCooking.WorkstationProcessing.Blasting {
 
         override fun evaluate(
             stack: ItemStack,
@@ -61,9 +61,9 @@ class CustomRecipeCookingImpl(
 
     }
 
-    class ProcessingTypeSmoking(
+    class WorkstationProcessingSmoking(
         override val processingTime: Int, override val source: Ingredient,
-    ) : CustomRecipeCooking.ProcessingType.Smoking {
+    ) : CustomRecipeCooking.WorkstationProcessing.Smoking {
 
         override fun evaluate(
             stack: ItemStack,
@@ -79,12 +79,12 @@ class CustomRecipeCookingImpl(
 
     }
 
-    class ProcessingTypeCampfire(
+    class WorkstationProcessingCampfire(
         override val soulCampfire: Boolean,
         override val normalCampfire: Boolean,
         override val processingTime: Int,
         override val source: Ingredient,
-    ) : CustomRecipeCooking.ProcessingType.Campfire {
+    ) : CustomRecipeCooking.WorkstationProcessing.Campfire {
 
         override fun evaluate(
             stack: ItemStack,
