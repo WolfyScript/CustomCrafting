@@ -61,7 +61,7 @@ fabric-loom = "1.10-SNAPSHOT"
 shadow = "8.1.7"
 dev-tools = "a2.0.1.0"
 artifactory = "5+"
-paperweight-userdev = "2.0.0-beta.16"
+paperweight-userdev = "2.0.0-beta.17"
 minotaur = "2.+"
 
 [libraries]
