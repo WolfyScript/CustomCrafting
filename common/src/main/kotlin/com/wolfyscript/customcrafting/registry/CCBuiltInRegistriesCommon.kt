@@ -12,10 +12,10 @@ import com.wolfyscript.scafall.registry.TypeRegistrySimple
 class CCBuiltInRegistriesCommon : CCBuiltInRegistries {
 
     // Type Registries
-    override val recipeTypes: TypeRegistry<RecipeType<*>> = TypeRegistrySimple(Key.key("customcrafting", "types/recipes"))
     override val recipeConditionTypes: TypeRegistry<Condition> = TypeRegistrySimple(Key.key("customcrafting", "types/recipe_conditions"))
 
     // Value Registries
-    override val customRecipes: Registry<CustomRecipe<*>> = RegistrySimple(Key.key("customcrafting", "recipes"))
+    override val recipeTypes: Registry<RecipeType<*>> = RegistrySimple(Key.key("customcrafting", "recipe_types"))
+    override val customRecipes: Registry<CustomRecipe> = RegistrySimple(Key.key("customcrafting", "recipes"))
 
 }

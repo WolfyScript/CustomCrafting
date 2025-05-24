@@ -4,7 +4,10 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
-interface CustomRecipeSmithing : CustomRecipe<CustomRecipeSmithing> {
+interface CustomRecipeSmithing : CustomRecipe {
+
+    override val type: RecipeType<CustomRecipeSmithing>
+        get() = RecipeTypes.smithing
 
     /**
      * The template required to upgrade the [base]

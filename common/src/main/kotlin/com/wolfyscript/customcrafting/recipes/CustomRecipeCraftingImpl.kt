@@ -22,8 +22,6 @@ class CustomRecipeCraftingImpl(
         return formula.evaluate(matrix, this)
     }
 
-    override val type: RecipeType<CustomRecipeCrafting>
-        get() = TODO("Not yet implemented")
 }
 
 class ShapedCraftingFormulaImpl(

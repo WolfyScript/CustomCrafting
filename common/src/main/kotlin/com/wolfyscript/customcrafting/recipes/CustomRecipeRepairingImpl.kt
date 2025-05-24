@@ -5,6 +5,4 @@ class CustomRecipeRepairingImpl(
     override val conditions: RecipeConditions,
 ) : CustomRecipeRepairing {
 
-    override val type: RecipeType<CustomRecipeRepairing>
-        get() = TODO("Not yet implemented")
 }

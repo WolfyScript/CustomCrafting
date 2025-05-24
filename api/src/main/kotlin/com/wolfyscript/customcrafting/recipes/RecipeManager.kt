@@ -21,14 +21,14 @@ interface RecipeManager {
 
     fun evaluateMixingRecipes(input: Array<ItemStack>, context: EvaluationContext): RecipeData<CustomRecipeMixing>? // TODO
 
-    fun disableRecipe(recipe: CustomRecipe<*>)
+    fun disableRecipe(recipe: CustomRecipe)
 
     fun enableRecipe(key: Key)
 
-    fun getRecipe(key: Key): CustomRecipe<*>?
+    fun getRecipe(key: Key): CustomRecipe?
 
     fun removeRecipe(key: Key)
 
-    fun updateRecipe(key: Key, recipe: CustomRecipe<*>)
+    fun updateRecipe(key: Key, recipe: CustomRecipe)
 
 }

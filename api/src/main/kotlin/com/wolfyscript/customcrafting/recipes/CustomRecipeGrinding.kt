@@ -1,10 +1,12 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
-interface CustomRecipeGrinding : CustomRecipe<CustomRecipeGrinding> {
+interface CustomRecipeGrinding : CustomRecipe {
+
+    override val type: RecipeType<CustomRecipeGrinding>
+        get() = RecipeTypes.grinding
 
     /**
      * A list of ingredients to be used in the Grindstone.

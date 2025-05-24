@@ -30,8 +30,8 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
     }
 
     val awaitingDependenciesRecipes: MutableMap<Key, LoadedRecipe> = Reference2ObjectOpenHashMap()
-    val awaitingVerificationRecipes: MutableMap<Key, CustomRecipe<*>> = Reference2ObjectOpenHashMap()
-    val invalidRecipes: MutableList<VerificationResult<CustomRecipe<*>>> = mutableListOf()
+    val awaitingVerificationRecipes: MutableMap<Key, CustomRecipe> = Reference2ObjectOpenHashMap()
+    val invalidRecipes: MutableList<VerificationResult<CustomRecipe>> = mutableListOf()
 
     fun addRecipeFrom(recipe: LoadedRecipe, destination: AbstractDestination<*>) {
         if (!destination.settings.overwriteExisting && awaitingDependenciesRecipes.containsKey(recipe.key)) {
@@ -64,7 +64,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
         }
     }
 
-    override fun save(recipe: CustomRecipe<*>) {
+    override fun save(recipe: CustomRecipe) {
 
         for (destination in destinations) {
             if (!(destination.filter?.accepts(recipe) ?: true)) {
@@ -80,7 +80,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
 
     }
 
-    override fun delete(recipe: CustomRecipe<*>) {
+    override fun delete(recipe: CustomRecipe) {
         for (destination in destinations) {
             if (!(destination.filter?.accepts(recipe) ?: true)) {
                 continue
@@ -99,7 +99,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
 
     }
 
-    data class LoadedRecipe(val key: Key, val recipe: CustomRecipe<*>, val dependencies: List<Dependency>) {
+    data class LoadedRecipe(val key: Key, val recipe: CustomRecipe, val dependencies: List<Dependency>) {
 
         fun areDependenciesSatisfied(): Boolean {
             return dependencies.all { it.isAvailable }
@@ -121,7 +121,7 @@ abstract class AbstractDestination<T: DestinationSettings>(val customCrafting: C
 class DestinationFilter(val customCrafting: CustomCrafting, val resourceLoaderImpl: ResourceLoaderImpl, val settings: DestinationSettings.FilterSettings) :
     ResourceLoader.Destination.Filter {
 
-    override fun accepts(recipe: CustomRecipe<*>): Boolean {
+    override fun accepts(recipe: CustomRecipe): Boolean {
         val key = customCrafting.registries.customRecipes.getKey(recipe) ?: return false
         if (settings.excludeNamespaces.contains(key.namespace)) return false
         if (settings.includeNamespaces.isNotEmpty() && !settings.includeNamespaces.contains(key.namespace)) return false
@@ -140,11 +140,11 @@ class SQLDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resourc
         TODO("Not yet implemented")
     }
 
-    override fun save(recipe: CustomRecipe<*>): Result<Boolean> {
+    override fun save(recipe: CustomRecipe): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override fun delete(recipe: CustomRecipe<*>): Result<Boolean> {
+    override fun delete(recipe: CustomRecipe): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
@@ -175,7 +175,7 @@ class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resou
 
                 val key = relative.toKey(namespaceDir.name)
                 try {
-                    val recipe = customCrafting.dataManager.jacksonObjectMapper.reader(injectableValues).readValue<CustomRecipe<*>>(file.toFile())
+                    val recipe = customCrafting.dataManager.jacksonObjectMapper.reader(injectableValues).readValue<CustomRecipe>(file.toFile())
 
                     // Temporarily store the recipe to check dependencies later
                     resourceLoaderImpl.addRecipeFrom(ResourceLoaderImpl.LoadedRecipe(key, recipe, listOf()), this)
@@ -188,7 +188,7 @@ class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resou
 
     }
 
-    override fun save(recipe: CustomRecipe<*>): Result<Boolean> {
+    override fun save(recipe: CustomRecipe): Result<Boolean> {
         val key = customCrafting.registries.customRecipes.getKey(recipe) ?: return Result.failure(Exception("No key found for recipe $recipe!"))
         val destPath = "${path}/${key.namespace}/recipes/${key.value}.conf"
 
@@ -207,7 +207,7 @@ class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resou
         return Result.failure(Exception("Could not create file $destPath to save recipe $key!"))
     }
 
-    override fun delete(recipe: CustomRecipe<*>): Result<Boolean> {
+    override fun delete(recipe: CustomRecipe): Result<Boolean> {
         val key = customCrafting.registries.customRecipes.getKey(recipe) ?: return Result.failure(Exception("No key found for recipe $recipe!"))
         val destPath = "${path}/${key.namespace}/recipes/${key.value}.conf"
         val destFile = File(destPath)

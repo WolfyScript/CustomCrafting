@@ -3,7 +3,10 @@ package com.wolfyscript.customcrafting.recipes
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
-interface CustomRecipeStonecutting : CustomRecipe<CustomRecipeStonecutting> {
+interface CustomRecipeStonecutting : CustomRecipe {
+
+    override val type: RecipeType<CustomRecipeStonecutting>
+        get() = RecipeTypes.stonecutting
 
     val source: Ingredient
 

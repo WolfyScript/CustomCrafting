@@ -1,9 +1,11 @@
 package com.wolfyscript.customcrafting.recipes
 
-interface RecipeType<RT> {
+interface RecipeType<T: CustomRecipe> {
 
-    val type: Class<RT>
+    val type: Class<T>
 
-    fun isInstance(recipe: CustomRecipe<*>): Boolean
+    val recipeClass: Class<T>
+
+    fun isInstance(recipe: CustomRecipe): Boolean
 
 }

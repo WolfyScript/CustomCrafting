@@ -8,10 +8,10 @@ import com.wolfyscript.scafall.registry.TypeRegistry
 
 interface CCBuiltInRegistries {
 
-    val recipeTypes: TypeRegistry<RecipeType<*>>
+    val recipeTypes: Registry<RecipeType<*>>
 
     val recipeConditionTypes: TypeRegistry<Condition>
 
-    val customRecipes: Registry<CustomRecipe<*>>
+    val customRecipes: Registry<CustomRecipe>
 
 }

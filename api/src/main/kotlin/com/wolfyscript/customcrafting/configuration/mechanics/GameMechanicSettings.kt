@@ -24,6 +24,8 @@ interface CraftingSettings {
 
 interface CauldronSettings {
 
+    val interactionType: String // TODO
+
 }
 
 interface AnvilSettings {

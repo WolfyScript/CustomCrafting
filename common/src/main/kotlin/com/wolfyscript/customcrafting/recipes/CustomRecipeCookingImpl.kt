@@ -22,9 +22,6 @@ class CustomRecipeCookingImpl(
         return processing.evaluate(stack, this, context)
     }
 
-    override val type: RecipeType<CustomRecipeCooking>
-        get() = TODO("Not yet implemented")
-
     class WorkstationProcessingSmelting(
         override val processingTime: Int, override val source: Ingredient,
     ) : CustomRecipeCooking.WorkstationProcessing.Smelting {

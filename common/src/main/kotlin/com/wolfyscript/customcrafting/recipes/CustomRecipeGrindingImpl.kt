@@ -11,9 +11,6 @@ class CustomRecipeGrindingImpl(
     override val result: RecipeResult,
 ) : CustomRecipeGrinding {
 
-    override val type: RecipeType<CustomRecipeGrinding>
-        get() = TODO("Not yet implemented")
-
     override fun evaluate(
         context: EvaluationContext,
         topStack: ItemStack?,

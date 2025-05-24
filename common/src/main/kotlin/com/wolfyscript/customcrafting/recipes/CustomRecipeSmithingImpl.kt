@@ -17,9 +17,6 @@ class CustomRecipeSmithingImpl(
     override val result: RecipeResult,
 ) : CustomRecipeSmithing {
 
-    override val type: RecipeType<CustomRecipeSmithing>
-        get() = TODO("Not yet implemented")
-
     override fun evaluate(
         context: EvaluationContext,
         templateStack: ItemStack?,

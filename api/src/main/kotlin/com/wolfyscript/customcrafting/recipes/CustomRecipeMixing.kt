@@ -6,7 +6,10 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 /**
  * Recipe used to mix items in the Cauldron
  */
-interface CustomRecipeMixing : CustomRecipe<CustomRecipeMixing> {
+interface CustomRecipeMixing : CustomRecipe {
+
+    override val type: RecipeType<CustomRecipeMixing>
+        get() = RecipeTypes.mixing
 
     val processingTime: Int
 

@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.recipes.data
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 
-data class RecipeDataImpl<T: CustomRecipe<*>>(
+data class RecipeDataImpl<T: CustomRecipe>(
     override val recipe: T,
     override var result: RecipeResult,
     val ingredients: Array<IngredientData?>

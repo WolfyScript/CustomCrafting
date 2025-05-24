@@ -13,7 +13,10 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeData
  * The [formula] defines how the recipe is evaluated. (Shapeless or Shaped)
  *
  */
-interface CustomRecipeCrafting : CustomRecipe<CustomRecipeCrafting> {
+interface CustomRecipeCrafting : CustomRecipe {
+
+    override val type: RecipeType<CustomRecipeCrafting>
+        get() = RecipeTypes.crafting
 
     /**
      * The formula used to evaluate the recipe.

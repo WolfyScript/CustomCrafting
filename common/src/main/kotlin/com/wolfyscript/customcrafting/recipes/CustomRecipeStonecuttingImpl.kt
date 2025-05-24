@@ -12,9 +12,6 @@ class CustomRecipeStonecuttingImpl(
     override val result: RecipeResult
 ) : CustomRecipeStonecutting {
 
-    override val type: RecipeType<CustomRecipeStonecutting>
-        get() = TODO("Not yet implemented")
-
     override fun evaluate(
         context: EvaluationContext,
         stack: ItemStack,

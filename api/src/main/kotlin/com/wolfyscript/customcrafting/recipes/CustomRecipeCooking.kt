@@ -6,7 +6,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
-interface CustomRecipeCooking : CustomRecipe<CustomRecipeCooking> {
+interface CustomRecipeCooking : CustomRecipe {
+
+    override val type: RecipeType<CustomRecipeCooking>
+        get() = RecipeTypes.cooking
 
     val processing: WorkstationProcessing
 

@@ -14,9 +14,6 @@ class CustomRecipeMixingImpl(
     override val campfireRequirement: CustomRecipeMixing.CampfireRequirement?
 ) : CustomRecipeMixing {
 
-    override val type: RecipeType<CustomRecipeMixing>
-        get() = TODO("Not yet implemented")
-
     override fun evaluate(
         context: EvaluationContext,
         stacks: List<ItemStack?>,
