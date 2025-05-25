@@ -1,4 +1,8 @@
 package com.wolfyscript.customcrafting.editor.recipe_stores
 
-interface RecipeGrindingStore {
+import com.wolfyscript.customcrafting.editor.RecipeStore
+import com.wolfyscript.customcrafting.recipes.CustomRecipeGrinding
+
+interface RecipeGrindingStore : RecipeStore.RecipeTypeSpecificStore<CustomRecipeGrinding> {
+
 }

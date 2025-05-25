@@ -5,9 +5,7 @@ import com.wolfyscript.scafall.identifier.Key
 
 interface SessionState {
 
-    val recipeType: RecipeType<*>
-
-    val recipeStore: RecipeStore
+    val recipeStore: RecipeStore<*>
 
     fun save()
 
