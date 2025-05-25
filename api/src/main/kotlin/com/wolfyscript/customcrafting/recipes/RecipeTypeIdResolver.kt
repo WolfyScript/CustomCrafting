@@ -9,11 +9,12 @@ import com.fasterxml.jackson.databind.jsontype.NamedType
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder
+import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase
 import com.fasterxml.jackson.databind.type.TypeFactory
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.scafall.identifier.Key
 
-class RecipeTypeIdResolver : com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase() {
+class RecipeTypeIdResolver : TypeIdResolverBase() {
 
     private lateinit var superType: JavaType
 
