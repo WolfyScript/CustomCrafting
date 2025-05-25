@@ -12,7 +12,7 @@ import com.wolfyscript.customcrafting.resource.DataManagerCommon
 abstract class CustomCraftingCommon : CustomCrafting {
 
     override val configurationManager: ConfigurationManager = ConfigurationManagerImpl()
-    override val recipeManager: RecipeManager = RecipeManagerCommon()
+    override val recipeManager: RecipeManager = RecipeManagerCommon(this)
     override val dataManager: DataManager = DataManagerCommon(this)
     override val registries: CCBuiltInRegistries = CCBuiltInRegistriesCommon()
 
