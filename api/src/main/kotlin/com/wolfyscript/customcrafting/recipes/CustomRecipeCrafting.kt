@@ -50,14 +50,16 @@ interface CustomRecipeCrafting : CustomRecipe {
 @JsonPropertyOrder(value = ["type"])
 interface CraftingFormula {
 
-    val ingredients: List<Ingredient>
-
     fun evaluate(matrix: CraftingMatrixData, recipeCrafting: CustomRecipeCrafting): RecipeData<CustomRecipeCrafting>?
 
     /**
      * A crafting formula with a list of ingredients that can be arranged in any order
      */
-    interface Shapeless : CraftingFormula
+    interface Shapeless : CraftingFormula {
+
+        val ingredients: List<Ingredient>
+
+    }
 
     /**
      * A crafting formula that requires ingredients to be arranged in a specified shape.
@@ -65,6 +67,8 @@ interface CraftingFormula {
      * The shape may allow ingredients to be arranged mirrored (see [ShapeSymmetry]).
      */
     interface Shaped : CraftingFormula {
+
+        val ingredients: List<Ingredient>
 
         val shape: Shape
 
