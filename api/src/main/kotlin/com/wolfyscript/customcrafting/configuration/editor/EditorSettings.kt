@@ -5,4 +5,6 @@ package com.wolfyscript.customcrafting.configuration.editor
  */
 interface EditorSettings {
 
+    val maxConcurrentSessions: Int
+
 }
