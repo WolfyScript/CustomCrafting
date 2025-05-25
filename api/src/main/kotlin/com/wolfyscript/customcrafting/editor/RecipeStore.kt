@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.editor
 
+import com.wolfyscript.customcrafting.editor.conditions.RecipeConditionsStore
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.recipes.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.RecipeType
 
 /**
@@ -14,13 +14,18 @@ interface RecipeStore<T: CustomRecipe> {
 
     val recipeType: RecipeType<T>
 
-    val priority: Int
-
-    val condition: RecipeConditions?
-
     val recipeTypeSpecificStore: RecipeTypeSpecificStore<T>
 
-    fun complete() : T
+    var priority: Int
+
+    var condition: RecipeConditionsStore?
+
+    /**
+     * Completes the settings for the recipe.
+     *
+     * @return The completed recipe; or an error if there was a problem completing the recipe.
+     */
+    fun complete() : Result<T>
 
     /**
      * Stores the settings for a specific type of recipe.
