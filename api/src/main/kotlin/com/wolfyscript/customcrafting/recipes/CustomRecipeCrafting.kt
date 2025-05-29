@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 /**
  * A custom recipe for the player inventory crafting grid, crafting table, and auto-crafter.
@@ -37,6 +38,13 @@ interface CustomRecipeCrafting : CustomRecipe {
      * @return The resulting recipe data; or null if the recipe cannot be evaluated.
      */
     fun evaluate(matrix: CraftingMatrixData, context: EvaluationContext): RecipeData<CustomRecipeCrafting>?
+
+    /**
+     * Shrinks the given matrix by the given count (if possible).
+     *
+     * @param applyStacks A function that is called for each stack in the matrix that is shrunk.
+     */
+    fun shrink(matrixData: CraftingMatrixData, recipeData: RecipeData<CustomRecipeCrafting>, context: EvaluationContext, count: Int, applyStacks: (index: Int, new: ItemStack) -> Unit)
 
 }
 

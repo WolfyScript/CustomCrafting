@@ -6,6 +6,6 @@ interface RecipeConditionsStore {
 
     val conditions: List<ConditionStore<*>>
 
-    fun complete(): Result<List<RecipeConditions>>
+    fun complete(): Result<RecipeConditions>
 
 }

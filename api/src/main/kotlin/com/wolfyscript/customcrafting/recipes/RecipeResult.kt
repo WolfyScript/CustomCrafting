@@ -1,11 +1,8 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
-import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.items.ItemStackRef
-import com.wolfyscript.scafall.wrappers.world.Location
-import com.wolfyscript.scafall.wrappers.world.entity.Player
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import kotlin.random.Random
 
 /**
  * The result of a recipe with modifiers and actions.
@@ -34,7 +31,7 @@ interface RecipeResult {
      *
      * If already computed, this simply returns the previously computed value.
      */
-    fun computeOrGet(recipeData: RecipeData<*>, context: EvaluationContext): ItemStack
+    fun compute(recipeData: RecipeData<*>, context: EvaluationContext, random: Random): ItemStack
 
     fun runActions(context: EvaluationContext, count: Int = 1)
 

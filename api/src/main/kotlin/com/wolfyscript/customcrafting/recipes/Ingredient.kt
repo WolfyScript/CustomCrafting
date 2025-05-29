@@ -16,4 +16,6 @@ interface Ingredient {
      */
     fun match(stack: ItemStack, exact: Boolean): ItemStackRef?
 
+    fun shrink(stack: ItemStack, amount: Int): ItemStack
+
 }

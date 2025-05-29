@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.recipes.data
 
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 /**
@@ -52,4 +53,10 @@ interface CraftingMatrixData {
      * The amount of columns this trimmed matrix is offset within the original matrix.
      */
     val columnOffset: Int
+
+    companion object {
+
+        fun of(ingredients: List<ItemStack?>): CraftingMatrixData = CustomCraftingProvider.get().factories.recipeFactory.createMatrixData(ingredients)
+
+    }
 }

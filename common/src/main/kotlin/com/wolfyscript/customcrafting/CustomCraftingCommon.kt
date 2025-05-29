@@ -2,6 +2,7 @@ package com.wolfyscript.customcrafting
 
 import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
+import com.wolfyscript.customcrafting.factories.Factories
 import com.wolfyscript.customcrafting.recipes.RecipeManager
 import com.wolfyscript.customcrafting.recipes.RecipeManagerCommon
 import com.wolfyscript.customcrafting.registry.CCBuiltInRegistries
@@ -15,10 +16,15 @@ abstract class CustomCraftingCommon : CustomCrafting {
     override val recipeManager: RecipeManager = RecipeManagerCommon(this)
     override val dataManager: DataManager = DataManagerCommon(this)
     override val registries: CCBuiltInRegistries = CCBuiltInRegistriesCommon()
+    override val factories: Factories
+        get() = TODO("Not yet implemented")
 
-    init {
-
-
+    fun load() {
 
     }
+
+    fun unload() {
+
+    }
+
 }

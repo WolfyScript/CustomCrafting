@@ -47,8 +47,11 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":common"))
     api(libs.protocollib)
     api(libs.bstats)
+    api(libs.scafall.spigot.api)
+    implementation(libs.caffeine)
     compileOnly(libs.mythic.dist)
     compileOnly(libs.papermc.paper)
     compileOnly(libs.mojang.authlib)

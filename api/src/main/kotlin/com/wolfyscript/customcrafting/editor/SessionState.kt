@@ -1,6 +1,5 @@
 package com.wolfyscript.customcrafting.editor
 
-import com.wolfyscript.customcrafting.recipes.RecipeType
 import com.wolfyscript.scafall.identifier.Key
 
 interface SessionState {

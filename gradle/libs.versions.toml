@@ -28,6 +28,7 @@ guice = "7.0.0"
 commons-lang3 = "3.12.0"
 junit-jupiter = "5.8.2"
 reflections = "0.10.2"
+caffeine = "3.2.0"
 
 # Spigot/Paper/Folia
 wolfyutils = "4.19-SNAPSHOT"
@@ -79,7 +80,6 @@ typesafe-config = { module = "com.typesafe:config", version.ref = "typesafe-conf
 # cross-platform APIs
 scafall-api = { module = "com.wolfyscript.scafall:api", version.ref = "scafall" }
 scafall-loader = { module = "com.wolfyscript.scafall.loader:loader-api", version.ref = "scafall" }
-scafall-spigot-impl = { module = "com.wolfyscript.scafall.spigot:spigot", version.ref = "scafall" }
 scafall-sponge-impl = { module = "com.wolfyscript.scafall.sponge:sponge", version.ref = "scafall" }
 ## Adventure
 adventure-api = { module = "net.kyori:adventure-api", version.ref = "adventure-api" }
@@ -97,11 +97,13 @@ inject-guice = { module = "com.google.inject:guice", version.ref = "guice" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
 org-reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
+caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine"}
 
 # Testing
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 
 # Spigot/Paper/Folia
+scafall-spigot-api = { module = "com.wolfyscript.scafall.spigot:spigot-api", version.ref = "scafall" }
 wolfyutils-spigot = { module = "com.wolfyscript.wolfyutils.spigot:wolfyutils-spigot", version.ref = "wolfyutils" }
 papermc-paper = { module = "io.papermc.paper:paper-api", version.ref = "papermc" }
 adventure-platform-bukkit = { module = "net.kyori:adventure-platform-bukkit", version.ref = "adventure-platform-api" }

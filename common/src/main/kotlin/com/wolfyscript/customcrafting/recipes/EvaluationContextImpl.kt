@@ -3,10 +3,10 @@ package com.wolfyscript.customcrafting.recipes
 import com.wolfyscript.scafall.wrappers.world.ScafallGlobalPrecisePos
 import com.wolfyscript.scafall.wrappers.world.entity.Player
 
-interface EvaluationContext {
+class EvaluationContextImpl(
+    override val player: Player?,
+    override val location: ScafallGlobalPrecisePos?
+) : EvaluationContext {
 
-    val player: Player?
-
-    val location: ScafallGlobalPrecisePos?
 
 }

@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.*
+import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import net.minecraft.util.ArrayListDeque
 import org.apache.commons.lang3.ArrayUtils
 
@@ -20,6 +21,18 @@ class CustomRecipeCraftingImpl(
         }
 
         return formula.evaluate(matrix, this)
+    }
+
+    override fun shrink(
+        matrixData: CraftingMatrixData,
+        recipeData: RecipeData<CustomRecipeCrafting>,
+        context: EvaluationContext,
+        count: Int,
+        applyStacks: (Int, ItemStack) -> Unit
+    ) {
+        for ((index, value) in recipeData.nonNullIngredients.withIndex()) {
+            value.selectedIngredient.shrink(matrixData.items[index], count)
+        }
     }
 
 }

@@ -18,7 +18,7 @@ class CustomCraftingProvider {
 
         @JvmSynthetic
         @ApiStatus.Internal
-        internal fun register(instance: CustomCrafting) {
+        fun register(instance: CustomCrafting) {
             if (registered()) {
                 throw IllegalStateException("CustomCrafting already initialized")
             }

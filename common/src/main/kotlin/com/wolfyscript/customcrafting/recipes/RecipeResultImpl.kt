@@ -2,6 +2,7 @@ package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import kotlin.random.Random
 
 class RecipeResultImpl(
     override val choices: RecipeChoices,
@@ -10,8 +11,8 @@ class RecipeResultImpl(
     override val bulkActions: List<ResultAction>
 ) : RecipeResult {
 
-    override fun computeOrGet(recipeData: RecipeData<*>, context: EvaluationContext): ItemStack {
-        val pickedChoice = choices.allFor(context).random() // TODO: custom weighting
+    override fun compute(recipeData: RecipeData<*>, context: EvaluationContext, random: Random): ItemStack {
+        val pickedChoice = choices.allFor(context).random(random) // TODO: custom weighting?
         val stack = pickedChoice.create()
         modifier.modify(recipeData, stack, context)
         return stack
