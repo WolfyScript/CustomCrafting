@@ -39,7 +39,7 @@ class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resou
 
                 val key = relative.toKey(namespaceDir.name)
                 try {
-                    val recipe = customCrafting.dataManager.jacksonObjectMapper.reader(injectableValues).readValue<CustomRecipe>(file.toFile())
+                    val recipe = customCrafting.dataManager.jacksonObjectMapper.reader(injectableValues).readValue<CustomRecipe<*,*>>(file.toFile())
 
                     // Temporarily store the recipe to check dependencies later
                     resourceLoaderImpl.addRecipeFrom(ResourceLoaderImpl.LoadedRecipe(key, recipe, listOf()), this)
@@ -52,7 +52,7 @@ class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resou
 
     }
 
-    override fun save(recipe: CustomRecipe): Result<Boolean> {
+    override fun save(recipe: CustomRecipe<*,*>): Result<Boolean> {
         val key = customCrafting.registries.customRecipes.getKey(recipe) ?: return Result.failure(Exception("No key found for recipe $recipe!"))
         val destPath = "${path}/${key.namespace}/recipes/${key.value}.conf"
 
@@ -71,7 +71,7 @@ class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resou
         return Result.failure(Exception("Could not create file $destPath to save recipe $key!"))
     }
 
-    override fun delete(recipe: CustomRecipe): Result<Boolean> {
+    override fun delete(recipe: CustomRecipe<*,*>): Result<Boolean> {
         val key = customCrafting.registries.customRecipes.getKey(recipe) ?: return Result.failure(Exception("No key found for recipe $recipe!"))
         val destPath = "${path}/${key.namespace}/recipes/${key.value}.conf"
         val destFile = File(destPath)

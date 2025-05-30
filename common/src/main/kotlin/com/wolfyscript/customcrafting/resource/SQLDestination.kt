@@ -14,11 +14,11 @@ class SQLDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resourc
         TODO("Not yet implemented")
     }
 
-    override fun save(recipe: CustomRecipe): Result<Boolean> {
+    override fun save(recipe: CustomRecipe<*,*>): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override fun delete(recipe: CustomRecipe): Result<Boolean> {
+    override fun delete(recipe: CustomRecipe<*,*>): Result<Boolean> {
         TODO("Not yet implemented")
     }
 

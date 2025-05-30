@@ -16,7 +16,7 @@ interface CCBuiltInRegistries {
 
     val recipeTypes: Registry<RecipeType<*>>
 
-    val customRecipes: Registry<CustomRecipe>
+    val customRecipes: Registry<CustomRecipe<*,*>>
 
     //
     // Type Registries

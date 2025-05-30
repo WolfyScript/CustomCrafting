@@ -1,12 +1,11 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
 /**
  * Recipe used to mix items in the Cauldron
  */
-interface CustomRecipeMixing : CustomRecipe {
+interface CustomRecipeMixing : CustomRecipe<RecipeInput.MixingRecipeInput, CustomRecipeMixing> {
 
     override val type: RecipeType<CustomRecipeMixing>
         get() = RecipeTypes.mixing
@@ -22,8 +21,6 @@ interface CustomRecipeMixing : CustomRecipe {
     val fluidRequirement: FluidRequirement?
 
     val campfireRequirement: CampfireRequirement?
-
-    fun evaluate(context: EvaluationContext, stacks: List<ItemStack?>): RecipeData<CustomRecipeMixing>?
 
     interface FluidRequirement {
 

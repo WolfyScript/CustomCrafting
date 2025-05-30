@@ -1,10 +1,9 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
-interface CustomRecipeSmithing : CustomRecipe {
+interface CustomRecipeSmithing : CustomRecipe<RecipeInput.SmithingRecipeInput, CustomRecipeSmithing> {
 
     override val type: RecipeType<CustomRecipeSmithing>
         get() = RecipeTypes.smithing
@@ -32,8 +31,6 @@ interface CustomRecipeSmithing : CustomRecipe {
      * Optional; when not specified, then the vanilla behaviour is used. (copying all components)
      */
     val copyOptions: CopyOptions?
-
-    fun evaluate(context: EvaluationContext, templateStack: ItemStack?, baseStack: ItemStack?, additionStack: ItemStack?): RecipeData<CustomRecipeSmithing>?
 
     interface CopyOptions {
 

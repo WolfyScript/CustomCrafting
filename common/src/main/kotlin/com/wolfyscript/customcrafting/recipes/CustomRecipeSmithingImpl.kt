@@ -1,11 +1,10 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.recipes.data.IngredientData
 import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 class CustomRecipeSmithingImpl(
     override val priority: Int,
@@ -18,38 +17,36 @@ class CustomRecipeSmithingImpl(
 ) : CustomRecipeSmithing {
 
     override fun evaluate(
-        context: EvaluationContext,
-        templateStack: ItemStack?,
-        baseStack: ItemStack?,
-        additionStack: ItemStack?,
+        input: RecipeInput.SmithingRecipeInput,
+        context: EvaluationContext
     ): RecipeData<CustomRecipeSmithing>? {
         if (!conditions.areSatisfied(context)) {
             return null
         }
 
-        if (template == null && templateStack != null || template != null && templateStack == null) {
+        if (template == null && input.template != null || template != null && input.template == null) {
             return null
         }
         val matchedTemplate = template?.let {
-            it.match(templateStack!!, true)?.let { templateMatch ->
+            it.match(input.template!!, true)?.let { templateMatch ->
                 IngredientDataImpl(0, 0, template, templateMatch)
             } ?: return null
         }
 
-        if (base == null && baseStack != null || base != null && baseStack == null) {
+        if (base == null && input.base != null || base != null && input.base == null) {
             return null
         }
         val matchedBase = base?.let {
-            it.match(baseStack!!, true)?.let { baseMatch ->
+            it.match(input.base!!, true)?.let { baseMatch ->
                 IngredientDataImpl(1, 1, base, baseMatch)
             } ?: return null
         }
 
-        if (addition == null && additionStack != null || addition != null && additionStack == null) {
+        if (addition == null && input.addition != null || addition != null && input.addition == null) {
             return null
         }
         val matchedAddition = addition?.let {
-            it.match(additionStack!!, true)?.let { additionMatch ->
+            it.match(input.addition!!, true)?.let { additionMatch ->
                 IngredientDataImpl(2, 2, addition, additionMatch)
             } ?: return null
         }

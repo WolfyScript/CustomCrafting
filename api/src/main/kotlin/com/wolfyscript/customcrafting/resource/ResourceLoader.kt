@@ -25,12 +25,12 @@ interface ResourceLoader {
      * Stores the recipe to the destinations.
      * To which destination the recipe is stored depends on the configuration.
      */
-    fun save(recipe: CustomRecipe)
+    fun save(recipe: CustomRecipe<*,*>)
 
     /**
      * Deletes the recipe from every destination.
      */
-    fun delete(recipe: CustomRecipe)
+    fun delete(recipe: CustomRecipe<*,*>)
 
     /**
      * Creates a backup and stores it to backup-destinations (if available)
@@ -54,18 +54,18 @@ interface ResourceLoader {
          *
          * @return A Result of whether the recipe was stored; or an exception when an error occurred.
          */
-        fun save(recipe: CustomRecipe): Result<Boolean>
+        fun save(recipe: CustomRecipe<*,*>): Result<Boolean>
 
         /**
          * Tries to delete the recipe from this destination.
          *
          * @return A Result of whether the recipe was deleted; or an exception when an error occurred.
          */
-        fun delete(recipe: CustomRecipe): Result<Boolean>
+        fun delete(recipe: CustomRecipe<*,*>): Result<Boolean>
 
         interface Filter {
 
-            fun accepts(recipe: CustomRecipe) : Boolean
+            fun accepts(recipe: CustomRecipe<*,*>) : Boolean
 
         }
 

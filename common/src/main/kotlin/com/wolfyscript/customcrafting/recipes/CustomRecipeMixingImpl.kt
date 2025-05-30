@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
 class CustomRecipeMixingImpl(
     override val priority: Int,
@@ -15,8 +15,8 @@ class CustomRecipeMixingImpl(
 ) : CustomRecipeMixing {
 
     override fun evaluate(
-        context: EvaluationContext,
-        stacks: List<ItemStack?>,
+        input: RecipeInput.MixingRecipeInput,
+        context: EvaluationContext
     ): RecipeData<CustomRecipeMixing>? {
         TODO("Not yet implemented")
     }

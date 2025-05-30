@@ -13,25 +13,25 @@ class CustomRecipeCraftingImpl(
 ) : CustomRecipeCrafting {
 
     override fun evaluate(
-        matrix: CraftingMatrixData,
-        context: EvaluationContext,
+        input: RecipeInput.CraftingRecipeInput,
+        context: EvaluationContext
     ): RecipeData<CustomRecipeCrafting>? {
         if (!conditions.areSatisfied(context)) {
             return null
         }
 
-        return formula.evaluate(matrix, this)
+        return formula.evaluate(input, this)
     }
 
     override fun shrink(
-        matrixData: CraftingMatrixData,
+        input: RecipeInput.CraftingRecipeInput,
         recipeData: RecipeData<CustomRecipeCrafting>,
         context: EvaluationContext,
         count: Int,
         applyStacks: (Int, ItemStack) -> Unit
     ) {
         for ((index, value) in recipeData.nonNullIngredients.withIndex()) {
-            value.selectedIngredient.shrink(matrixData.items[index], count)
+            applyStacks(index, value.selectedIngredient.shrink(input.matrixData.items[index], count))
         }
     }
 
@@ -51,11 +51,11 @@ class ShapedCraftingFormulaImpl(
     }
 
     override fun evaluate(
-        matrix: CraftingMatrixData,
+        input: RecipeInput.CraftingRecipeInput,
         recipeCrafting: CustomRecipeCrafting,
     ): RecipeData<CustomRecipeCrafting>? {
         for (variant in shape.variations) {
-            val result = evaluateShape(matrix, variant, recipeCrafting)
+            val result = evaluateShape(input.matrixData, variant, recipeCrafting)
             if (result != null) {
                 return result
             }
@@ -201,7 +201,7 @@ class ShapelessCraftingFormulaImpl(
 ) : CraftingFormula.Shapeless {
 
     override fun evaluate(
-        matrix: CraftingMatrixData,
+        input: RecipeInput.CraftingRecipeInput,
         recipeCrafting: CustomRecipeCrafting,
     ): RecipeData<CustomRecipeCrafting>? {
         val pickedIngredients = Array<IngredientData?>(ingredients.size) { null }
@@ -224,7 +224,7 @@ class ShapelessCraftingFormulaImpl(
         val checkedEdges: Array<Int> = Array(ingredients.size + 1) { 0 }
 
         var itemIndex = 0
-        while (itemIndex < matrix.items.size) {
+        while (itemIndex < input.matrixData.items.size) {
             val currentIngredientIndex = path.peek() ?: -1
 
             // Try to match the ingredient at the current index
@@ -232,7 +232,7 @@ class ShapelessCraftingFormulaImpl(
                 if (checkedEdges[currentIngredientIndex + 1].and(1 shl index) == 1) {
                     continue
                 }
-                val matchedRef = ingredient.match(matrix.items[index], true)
+                val matchedRef = ingredient.match(input.matrixData.items[index], true)
                 if (matchedRef == null) {
                     continue
                 }

@@ -6,7 +6,7 @@ import com.wolfyscript.customcrafting.recipes.RecipeResult
 /**
  * Holds information about the selected recipe after evaluation.
  */
-interface RecipeData<T: CustomRecipe> {
+interface RecipeData<T: CustomRecipe<*,*>> {
 
     /**
      * The selected recipe

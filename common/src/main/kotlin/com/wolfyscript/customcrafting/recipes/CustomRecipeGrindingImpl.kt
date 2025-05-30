@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
 class CustomRecipeGrindingImpl(
     override val priority: Int,
@@ -12,9 +12,8 @@ class CustomRecipeGrindingImpl(
 ) : CustomRecipeGrinding {
 
     override fun evaluate(
-        context: EvaluationContext,
-        topStack: ItemStack?,
-        bottomStack: ItemStack?,
+        input: RecipeInput.GrindingRecipeInput,
+        context: EvaluationContext
     ): RecipeData<CustomRecipeGrinding>? {
         TODO("Not yet implemented")
     }

@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.recipes
 import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
 class CustomRecipeCookingImpl(
     override val processing: CustomRecipeCooking.WorkstationProcessing,
@@ -13,13 +13,13 @@ class CustomRecipeCookingImpl(
 ) : CustomRecipeCooking {
 
     override fun evaluate(
-        stack: ItemStack,
-        context: EvaluationContext,
+        input: RecipeInput.CookingRecipeInput,
+        context: EvaluationContext
     ): RecipeData<CustomRecipeCooking>? {
         if (!conditions.areSatisfied(context)) {
             return null
         }
-        return processing.evaluate(stack, this, context)
+        return processing.evaluate(input, this, context)
     }
 
     class WorkstationProcessingSmelting(
@@ -27,11 +27,11 @@ class CustomRecipeCookingImpl(
     ) : CustomRecipeCooking.WorkstationProcessing.Smelting {
 
         override fun evaluate(
-            stack: ItemStack,
+            input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
-            context: EvaluationContext,
+            context: EvaluationContext
         ): RecipeData<CustomRecipeCooking>? {
-            val result = source.match(stack, true)
+            val result = source.match(input.source, true)
             if (result == null) {
                 return null
             }
@@ -45,11 +45,11 @@ class CustomRecipeCookingImpl(
     ) : CustomRecipeCooking.WorkstationProcessing.Blasting {
 
         override fun evaluate(
-            stack: ItemStack,
+            input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
-            context: EvaluationContext,
+            context: EvaluationContext
         ): RecipeData<CustomRecipeCooking>? {
-            val result = source.match(stack, true)
+            val result = source.match(input.source, true)
             if (result == null) {
                 return null
             }
@@ -63,11 +63,11 @@ class CustomRecipeCookingImpl(
     ) : CustomRecipeCooking.WorkstationProcessing.Smoking {
 
         override fun evaluate(
-            stack: ItemStack,
+            input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
-            context: EvaluationContext,
+            context: EvaluationContext
         ): RecipeData<CustomRecipeCooking>? {
-            val result = source.match(stack, true)
+            val result = source.match(input.source, true)
             if (result == null) {
                 return null
             }
@@ -84,14 +84,14 @@ class CustomRecipeCookingImpl(
     ) : CustomRecipeCooking.WorkstationProcessing.Campfire {
 
         override fun evaluate(
-            stack: ItemStack,
+            input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
-            context: EvaluationContext,
+            context: EvaluationContext
         ): RecipeData<CustomRecipeCooking>? {
             if (context.location == null) {
                 return null
             }
-            val result = source.match(stack, true)
+            val result = source.match(input.source, true)
             if (result == null) {
                 return null
             }

@@ -16,7 +16,7 @@ interface RecipeTypes {
         val stonecutting: RecipeType<CustomRecipeStonecutting> = expect("stonecutting")
         val grinding: RecipeType<CustomRecipeGrinding> = expect("grinding")
 
-        private inline fun <reified T: CustomRecipe> expect(name: String): RecipeType<T> {
+        private inline fun <reified T: CustomRecipe<*,*>> expect(name: String): RecipeType<T> {
             val registryKey =
                 RegistryKey.of(CustomCraftingProvider.get().registries.recipeTypes, Key.key("customcrafting", name))
             val result = registryKey.get()

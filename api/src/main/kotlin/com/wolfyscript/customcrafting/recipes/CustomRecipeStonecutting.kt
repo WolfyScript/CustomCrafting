@@ -1,9 +1,8 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
-interface CustomRecipeStonecutting : CustomRecipe {
+interface CustomRecipeStonecutting : CustomRecipe<RecipeInput.StonecuttingRecipeInput, CustomRecipeStonecutting> {
 
     override val type: RecipeType<CustomRecipeStonecutting>
         get() = RecipeTypes.stonecutting
@@ -11,7 +10,5 @@ interface CustomRecipeStonecutting : CustomRecipe {
     val source: Ingredient
 
     val result: RecipeResult
-
-    fun evaluate(context: EvaluationContext, stack: ItemStack): RecipeData<CustomRecipeStonecutting>?
 
 }

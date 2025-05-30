@@ -89,6 +89,8 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon) : DataManager 
     }
 
     override fun loadData() {
-        TODO("Not yet implemented")
+        resourceLoader.loadResources()
+
+        resourceLoader.verifyResources()
     }
 }

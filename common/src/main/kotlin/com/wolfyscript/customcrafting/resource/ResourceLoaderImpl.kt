@@ -21,8 +21,8 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
     }
 
     val awaitingDependenciesRecipes: MutableMap<Key, LoadedRecipe> = Reference2ObjectOpenHashMap()
-    val awaitingVerificationRecipes: MutableMap<Key, CustomRecipe> = Reference2ObjectOpenHashMap()
-    val invalidRecipes: MutableList<VerificationResult<CustomRecipe>> = mutableListOf()
+    val awaitingVerificationRecipes: MutableMap<Key, CustomRecipe<*,*>> = Reference2ObjectOpenHashMap()
+    val invalidRecipes: MutableList<VerificationResult<CustomRecipe<*,*>>> = mutableListOf()
 
     fun addRecipeFrom(recipe: LoadedRecipe, destination: AbstractDestination<*>) {
         if (!destination.settings.overwriteExisting && awaitingDependenciesRecipes.containsKey(recipe.key)) {
@@ -55,7 +55,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
         }
     }
 
-    override fun save(recipe: CustomRecipe) {
+    override fun save(recipe: CustomRecipe<*,*>) {
 
         for (destination in destinations) {
             if (!(destination.filter?.accepts(recipe) ?: true)) {
@@ -71,7 +71,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
 
     }
 
-    override fun delete(recipe: CustomRecipe) {
+    override fun delete(recipe: CustomRecipe<*,*>) {
         for (destination in destinations) {
             if (!(destination.filter?.accepts(recipe) ?: true)) {
                 continue
@@ -90,7 +90,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
 
     }
 
-    data class LoadedRecipe(val key: Key, val recipe: CustomRecipe, val dependencies: List<Dependency>) {
+    data class LoadedRecipe(val key: Key, val recipe: CustomRecipe<*,*>, val dependencies: List<Dependency>) {
 
         fun areDependenciesSatisfied(): Boolean {
             return dependencies.all { it.isAvailable }

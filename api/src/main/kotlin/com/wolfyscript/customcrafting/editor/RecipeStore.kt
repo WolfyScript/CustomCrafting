@@ -10,7 +10,7 @@ import com.wolfyscript.customcrafting.recipes.RecipeType
  * These settings are completed by the user in a GUI or otherwise and once complete used to construct a [CustomRecipe].
  * Before the recipe is constructed, the values are validated to make sure they create a valid recipe.
  */
-interface RecipeStore<T: CustomRecipe> {
+interface RecipeStore<T: CustomRecipe<*,*>> {
 
     val recipeType: RecipeType<T>
 
@@ -30,7 +30,7 @@ interface RecipeStore<T: CustomRecipe> {
     /**
      * Stores the settings for a specific type of recipe.
      */
-    interface RecipeTypeSpecificStore<T: CustomRecipe> {
+    interface RecipeTypeSpecificStore<T: CustomRecipe<*,*>> {
 
         fun complete() : Result<T>
 

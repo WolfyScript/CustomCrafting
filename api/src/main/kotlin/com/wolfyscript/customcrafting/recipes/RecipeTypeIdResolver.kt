@@ -32,7 +32,7 @@ class RecipeTypeIdResolver : TypeIdResolverBase() {
     }
 
     private fun getKey(value: Any?): String {
-        if (value is CustomRecipe) {
+        if (value is CustomRecipe<*,*>) {
             return CustomCraftingProvider.get().registries.recipeTypes.getKey(value.type)?.toString()
                 ?: throw IllegalArgumentException("No key found for recipe $value!")
         }

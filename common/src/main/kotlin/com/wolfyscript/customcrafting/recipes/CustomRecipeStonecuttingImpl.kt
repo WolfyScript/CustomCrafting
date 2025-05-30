@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.recipes
 import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
 class CustomRecipeStonecuttingImpl(
     override val priority: Int,
@@ -13,14 +13,14 @@ class CustomRecipeStonecuttingImpl(
 ) : CustomRecipeStonecutting {
 
     override fun evaluate(
-        context: EvaluationContext,
-        stack: ItemStack,
+        input: RecipeInput.StonecuttingRecipeInput,
+        context: EvaluationContext
     ): RecipeData<CustomRecipeStonecutting>? {
         if (!conditions.areSatisfied(context)) {
             return null
         }
 
-        val matchResult = source.match(stack, true)
+        val matchResult = source.match(input.source, true)
         if (matchResult == null) {
             return null
         }

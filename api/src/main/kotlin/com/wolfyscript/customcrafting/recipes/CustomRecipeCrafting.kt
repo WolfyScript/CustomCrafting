@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 /**
@@ -14,7 +14,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
  * The [formula] defines how the recipe is evaluated. (Shapeless or Shaped)
  *
  */
-interface CustomRecipeCrafting : CustomRecipe {
+interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, CustomRecipeCrafting> {
 
     override val type: RecipeType<CustomRecipeCrafting>
         get() = RecipeTypes.crafting
@@ -33,18 +33,11 @@ interface CustomRecipeCrafting : CustomRecipe {
     val result: RecipeResult
 
     /**
-     * Evaluates the recipe based on the given matrix.
-     *
-     * @return The resulting recipe data; or null if the recipe cannot be evaluated.
-     */
-    fun evaluate(matrix: CraftingMatrixData, context: EvaluationContext): RecipeData<CustomRecipeCrafting>?
-
-    /**
      * Shrinks the given matrix by the given count (if possible).
      *
      * @param applyStacks A function that is called for each stack in the matrix that is shrunk.
      */
-    fun shrink(matrixData: CraftingMatrixData, recipeData: RecipeData<CustomRecipeCrafting>, context: EvaluationContext, count: Int, applyStacks: (index: Int, new: ItemStack) -> Unit)
+    fun shrink(input: RecipeInput.CraftingRecipeInput, recipeData: RecipeData<CustomRecipeCrafting>, context: EvaluationContext, count: Int, applyStacks: (index: Int, new: ItemStack) -> Unit)
 
 }
 
@@ -58,7 +51,7 @@ interface CustomRecipeCrafting : CustomRecipe {
 @JsonPropertyOrder(value = ["type"])
 interface CraftingFormula {
 
-    fun evaluate(matrix: CraftingMatrixData, recipeCrafting: CustomRecipeCrafting): RecipeData<CustomRecipeCrafting>?
+    fun evaluate(input: RecipeInput.CraftingRecipeInput, recipeCrafting: CustomRecipeCrafting): RecipeData<CustomRecipeCrafting>?
 
     /**
      * A crafting formula with a list of ingredients that can be arranged in any order

@@ -1,9 +1,8 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
-interface CustomRecipeGrinding : CustomRecipe {
+interface CustomRecipeGrinding : CustomRecipe<RecipeInput.GrindingRecipeInput, CustomRecipeGrinding> {
 
     override val type: RecipeType<CustomRecipeGrinding>
         get() = RecipeTypes.grinding
@@ -17,7 +16,5 @@ interface CustomRecipeGrinding : CustomRecipe {
     val result: RecipeResult
 
     val xp: Int
-
-    fun evaluate(context: EvaluationContext, topStack: ItemStack?, bottomStack: ItemStack?): RecipeData<CustomRecipeGrinding>?
 
 }

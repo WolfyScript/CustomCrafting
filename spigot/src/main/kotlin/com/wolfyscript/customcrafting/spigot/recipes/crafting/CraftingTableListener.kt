@@ -5,8 +5,10 @@ import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeResult
+import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
@@ -79,14 +81,18 @@ class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener
         event.isCancelled = true
         val player = event.whoClicked as Player
         if (event.isShiftClick || ItemUtils.isAirOrNull(cursor) || cursor.amount + resultItem!!.amount <= cursor.maxStackSize) {
+            matrixDataCache.invalidate(player.uniqueId)
+            craftingDataCache.invalidate(player.uniqueId)
+
             val context: EvaluationContext =
                 EvaluationContextImpl(player.wrap(), event.inventory.location?.toPreciseGlobal())
 
             // At this point do not change the inventory! Because that would call the PrepareItemCraftEvent, invalidating the recipe and preventing consumption of the recipe!
             val count: Int = collectResult(event, player, craftingData, matrixData, context)
+            val input = RecipeInput.CraftingRecipeInput.of(matrixData)
 
             val matrix: Array<ItemStack?> = Array(inventory.matrix.size) { null }
-            craftingData.recipe.shrink(matrixData, craftingData, context, count) { index, new ->
+            craftingData.recipe.shrink(input, craftingData, context, count) { index, new ->
                 matrix[index] = new.unwrap()
             }
             // Now all calculations are done, so we can update the inventory
@@ -100,11 +106,12 @@ class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener
         val player = e.view.player as Player
         try {
             val matrix = CraftingMatrixData.of(e.inventory.matrix.map { it?.wrap() }.toList())
+            val input = RecipeInput.CraftingRecipeInput.of(matrix)
             matrixDataCache.put(player.uniqueId, matrix)
 
             val block = e.inventory.location?.block ?: player.location.block
             val context: EvaluationContext = EvaluationContextImpl(player.wrap(), block.location.toPreciseGlobal())
-            val resultStack = recipeManager.evaluateCraftingRecipes(matrix, context)?.let {
+            val resultStack = recipeManager.evaluateRecipesOfType(RecipeTypes.crafting, input, context)?.let {
                 craftingDataCache.put(player.uniqueId, it)
                 it.result.compute(it, context, Random(getCraftSeed(player)))
             }
@@ -145,6 +152,7 @@ class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener
             ex.printStackTrace()
             customCrafting.logger.error("-------- [Error occurred while crafting Recipe!] --------")
             craftingDataCache.invalidate(player.uniqueId)
+            matrixDataCache.invalidate(player.uniqueId)
             e.inventory.result = ItemStack(Material.AIR)
         }
     }
@@ -152,11 +160,13 @@ class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener
     @EventHandler
     fun onCloseInv(event: InventoryCloseEvent) {
         craftingDataCache.invalidate(event.player.uniqueId)
+        matrixDataCache.invalidate(event.player.uniqueId)
     }
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
         craftingDataCache.invalidate(event.player.uniqueId)
+        matrixDataCache.invalidate(event.player.uniqueId)
     }
 
     fun collectResult(
@@ -192,19 +202,14 @@ class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener
         context: EvaluationContext,
     ): Int {
         val random = Random(getCraftSeed(bukkitPlayer))
-
         var maxPossible = possibleResultAmount(craftingData, matrixData)
 
         if (!event.isShiftClick) {
-            val result = recipeResult.compute(craftingData, context, random).unwrap()
-            maxPossible = min(
-                InventoryUtils.getInventorySpace(bukkitPlayer.inventory, result) / result.amount,
-                maxPossible
-            )
             if (maxPossible <= 0) {
                 return 0
             }
-            recipeResult.runActions(context, maxPossible)
+            val result = recipeResult.compute(craftingData, context, random).unwrap()
+            recipeResult.runActions(context, 1)
 
             val cursor = event.cursor
             if (ItemUtils.isAirOrNull(cursor) || (result.isSimilar(cursor) && cursor.amount + result.amount <= cursor.maxStackSize)) {
@@ -213,22 +218,28 @@ class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener
                 } else {
                     cursor.amount = cursor.amount + result.amount
                 }
-                return maxPossible
+                return 1
             }
             return 0
         }
 
         if (event.isShiftClick) {
-            for (i in 0..<maxPossible) {
-                val stack = recipeResult.compute(craftingData, context, random).unwrap()
-                if (!InventoryUtils.hasInventorySpace(bukkitPlayer, stack)) {
-                    return i
-                }
-                bukkitPlayer.inventory.addItem(stack)
-            }
+            maxPossible = quickCraft(maxPossible, bukkitPlayer, craftingData, recipeResult, context, random)
+            recipeResult.runActions(context, maxPossible)
             return maxPossible
         }
         return 0
+    }
+
+    private fun quickCraft(maxPossible: Int, bukkitPlayer: Player, craftingData: RecipeData<CustomRecipeCrafting>, recipeResult: RecipeResult, context: EvaluationContext, random: Random) : Int {
+        for (i in 0..<maxPossible) {
+            val stack = recipeResult.compute(craftingData, context, random).unwrap()
+            if (!InventoryUtils.hasInventorySpace(bukkitPlayer, stack)) {
+                return i
+            }
+            bukkitPlayer.inventory.addItem(stack)
+        }
+        return maxPossible
     }
 
 }

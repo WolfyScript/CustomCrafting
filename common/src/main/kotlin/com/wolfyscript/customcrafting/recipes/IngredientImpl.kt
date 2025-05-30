@@ -23,4 +23,11 @@ class IngredientImpl(
         return null
     }
 
+    override fun shrink(
+        stack: ItemStack,
+        amount: Int,
+    ): ItemStack {
+        TODO("Not yet implemented")
+    }
+
 }

@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
-interface CustomRecipeCooking : CustomRecipe {
+interface CustomRecipeCooking : CustomRecipe<RecipeInput.CookingRecipeInput, CustomRecipeCooking> {
 
     override val type: RecipeType<CustomRecipeCooking>
         get() = RecipeTypes.cooking
@@ -14,8 +14,6 @@ interface CustomRecipeCooking : CustomRecipe {
     val processing: WorkstationProcessing
 
     val result: RecipeResult
-
-    fun evaluate(stack: ItemStack, context: EvaluationContext): RecipeData<CustomRecipeCooking>?
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "type")
     @JsonPropertyOrder(value = ["type"])
@@ -25,7 +23,7 @@ interface CustomRecipeCooking : CustomRecipe {
 
         val processingTime: Int
 
-        fun evaluate(stack: ItemStack, recipe: CustomRecipeCooking, context: EvaluationContext): RecipeData<CustomRecipeCooking>?
+        fun evaluate(input: RecipeInput.CookingRecipeInput, recipe: CustomRecipeCooking, context: EvaluationContext): RecipeData<CustomRecipeCooking>?
 
         @JsonTypeName("blasting")
         interface Blasting : WorkstationProcessing
