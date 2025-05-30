@@ -62,7 +62,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
                 continue
             }
             val result = destination.save(recipe)
-            if (result.isSuccess) {
+            if (result.isSuccess && result.getOrNull() == true) {
                 if (!destination.settings.propagateSavedResources) {
                     break
                 }
@@ -80,7 +80,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
                 continue
             }
             val result = destination.delete(recipe)
-            if (result.isSuccess) {
+            if (result.isSuccess && result.getOrNull() == true) {
                 // TODO: Propagate deletion?
             }
         }

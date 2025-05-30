@@ -19,7 +19,7 @@ interface ConfigurationManager {
 
     val guiSettings: GUISettings
 
-    val clicSettings: CLISettings
+    val cliSettings: CLISettings
 
     val editorSettings: EditorSettings
 

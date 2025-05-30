@@ -10,10 +10,11 @@ import com.wolfyscript.customcrafting.registry.CCBuiltInRegistries
 import com.wolfyscript.customcrafting.registry.CCBuiltInRegistriesCommon
 import com.wolfyscript.customcrafting.resource.DataManager
 import com.wolfyscript.customcrafting.resource.DataManagerCommon
+import kotlin.io.path.Path
 
 abstract class CustomCraftingCommon : CustomCrafting {
 
-    override val configurationManager: ConfigurationManager = ConfigurationManagerImpl()
+    override val configurationManager: ConfigurationManager = ConfigurationManagerImpl(Path("config"))
     override val recipeManager: RecipeManager = RecipeManagerCommon(this)
     override val dataManager: DataManager = DataManagerCommon(this)
     override val registries: CCBuiltInRegistries = CCBuiltInRegistriesCommon()

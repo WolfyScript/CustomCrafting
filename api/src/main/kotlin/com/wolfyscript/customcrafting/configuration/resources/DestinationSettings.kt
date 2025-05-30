@@ -1,8 +1,20 @@
 package com.wolfyscript.customcrafting.configuration.resources
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect
+import com.fasterxml.jackson.annotation.JsonPropertyOrder
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+
 /**
  * Settings for a destination to save resources to and load resources from.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "type")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonSubTypes(
+    JsonSubTypes.Type(value = DestinationSettings.SQLDestinationSettings::class, name = "sql"),
+    JsonSubTypes.Type(value = DestinationSettings.LocalDestinationSettings::class, name = "local")
+)
+@JsonPropertyOrder(value = ["type"])
 interface DestinationSettings {
 
     /**
