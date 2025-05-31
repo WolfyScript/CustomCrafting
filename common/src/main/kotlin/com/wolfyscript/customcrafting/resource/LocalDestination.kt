@@ -20,7 +20,7 @@ class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resou
     val path: String = settings.path ?: "/resources"
 
     override val filter: ResourceLoader.Destination.Filter? =
-        settings.filter?.let { DestinationFilter(customCrafting, resourceLoaderImpl, it) }
+        settings.filter?.let { DestinationFilter(customCrafting, it) }
 
     override fun load() {
         val rootDir = File(path)

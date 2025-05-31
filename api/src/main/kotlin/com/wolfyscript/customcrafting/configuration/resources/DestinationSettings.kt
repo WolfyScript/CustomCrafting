@@ -64,16 +64,40 @@ interface DestinationSettings {
     interface FilterSettings {
 
         /**
-         * Namespaces that are saved to this destination.
-         * Only resources with these namespaces will be saved to this destination.
+         * Which resources to include in this destination.
+         * Includes everything when not specified.
          */
-        val includeNamespaces: List<String>
+        val includes: FilterEntry?
 
         /**
-         * Namespaces that are not saved to this destination.
-         * Resources with these namespaces will not be saved to this destination.
+         * Which resources to exclude from this destination.
          */
-        val excludeNamespaces: List<String>
+        val excludes: FilterEntry?
+
+        interface FilterEntry {
+
+            /**
+             * Namespaces that are filtered.
+             */
+            val namespaces: List<String>
+
+            /**
+             * Resource paths that are filtered.
+             * Emtpy String means root path (recipes without a parent directory)
+             *
+             * **Does not include subdirectories!**
+             * Only the direct children of the specified path are filtered!
+             *
+             * `<namespace>:<**This path here**>/recipe`
+             */
+            val paths: List<String>
+
+            /**
+             * Resources matching the specified regex will be filtered.
+             */
+            val regex: List<String>
+
+        }
 
     }
 

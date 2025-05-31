@@ -24,6 +24,12 @@ class SQLDestinationSettingsImpl(
 class BackupSettingsImpl() : DestinationSettings.BackupSettings
 
 class FilterSettingsImpl(
-    override val includeNamespaces: List<String>,
-    override val excludeNamespaces: List<String>
+    override val includes: DestinationSettings.FilterSettings.FilterEntry? = null,
+    override val excludes: DestinationSettings.FilterSettings.FilterEntry? = null
 ) : DestinationSettings.FilterSettings
+
+class FilterEntryImpl(
+    override val namespaces: List<String> = emptyList(),
+    override val paths: List<String> = emptyList(),
+    override val regex: List<String> = emptyList()
+) : DestinationSettings.FilterSettings.FilterEntry

@@ -8,7 +8,7 @@ class SQLDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resourc
     AbstractDestination<DestinationSettings.SQLDestinationSettings>(customCrafting, resourceLoaderImpl, settings) {
 
     override val filter: ResourceLoader.Destination.Filter? =
-        settings.filter?.let { DestinationFilter(customCrafting, resourceLoaderImpl, it) }
+        settings.filter?.let { DestinationFilter(customCrafting, it) }
 
     override fun load() {
         TODO("Not yet implemented")

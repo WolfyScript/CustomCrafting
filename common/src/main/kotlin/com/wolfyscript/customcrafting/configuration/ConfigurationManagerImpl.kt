@@ -7,6 +7,7 @@ import com.wolfyscript.customcrafting.configuration.gui.GUISettings
 import com.wolfyscript.customcrafting.configuration.mechanics.GameMechanicSettings
 import com.wolfyscript.customcrafting.configuration.resources.BackupSettingsImpl
 import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
+import com.wolfyscript.customcrafting.configuration.resources.FilterEntryImpl
 import com.wolfyscript.customcrafting.configuration.resources.FilterSettingsImpl
 import com.wolfyscript.customcrafting.configuration.resources.LocalDestinationSettingsImpl
 import com.wolfyscript.customcrafting.configuration.resources.ResourceSettings
@@ -40,7 +41,7 @@ class ConfigurationManagerImpl(val path: Path) : ConfigurationManager {
             addAbstractTypeMapping(DestinationSettings.LocalDestinationSettings::class.java, LocalDestinationSettingsImpl::class.java)
             addAbstractTypeMapping(DestinationSettings.BackupSettings::class.java, BackupSettingsImpl::class.java)
             addAbstractTypeMapping(DestinationSettings.FilterSettings::class.java, FilterSettingsImpl::class.java)
-
+            addAbstractTypeMapping(DestinationSettings.FilterSettings.FilterEntry::class.java, FilterEntryImpl::class.java)
 
         }
         configMapper.registerModule(mappingModule)
