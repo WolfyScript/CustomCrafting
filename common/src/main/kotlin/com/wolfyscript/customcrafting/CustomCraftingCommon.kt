@@ -16,7 +16,6 @@ abstract class CustomCraftingCommon : CustomCrafting {
 
     override val configurationManager: ConfigurationManager = ConfigurationManagerImpl(Path("config"))
     override val recipeManager: RecipeManager = RecipeManagerCommon(this)
-    override val dataManager: DataManager = DataManagerCommon(this)
     override val registries: CCBuiltInRegistries = CCBuiltInRegistriesCommon()
     override val factories: Factories = FactoriesCommon()
 

@@ -8,8 +8,9 @@ import com.wolfyscript.scafall.dependency.Dependency
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.verification.VerificationResult
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap
+import java.io.File
 
-class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: ResourceSettings) : ResourceLoader {
+class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: ResourceSettings, val directory: File) : ResourceLoader {
 
     override val destinations: List<AbstractDestination<*>> = settings.destinations.mapNotNull {
         return@mapNotNull when (it) {
@@ -56,7 +57,6 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
     }
 
     override fun save(recipe: CustomRecipe<*,*>) {
-
         for (destination in destinations) {
             if (!(destination.filter?.accepts(recipe) ?: true)) {
                 continue
@@ -68,7 +68,6 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
                 }
             }
         }
-
     }
 
     override fun delete(recipe: CustomRecipe<*,*>) {

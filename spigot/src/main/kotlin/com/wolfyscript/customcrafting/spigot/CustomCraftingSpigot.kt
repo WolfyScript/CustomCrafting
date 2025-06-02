@@ -9,6 +9,8 @@ import org.slf4j.Logger
 class CustomCraftingSpigot(val bootstrap: CustomCraftingSpigotBootstrap, override val logger: Logger) :
     CustomCraftingCommon() {
 
+    override val dataManager: DataManager = DataManagerCommon(this, bootstrap.dataFolder)
+
     override fun load() {
         dataManager.loadData()
 

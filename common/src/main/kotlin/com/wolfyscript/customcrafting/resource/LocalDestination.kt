@@ -17,7 +17,7 @@ import java.nio.file.attribute.BasicFileAttributes
 class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: ResourceLoaderImpl, settings: DestinationSettings.LocalDestinationSettings) :
     AbstractDestination<DestinationSettings.LocalDestinationSettings>(customCrafting, resourceLoaderImpl, settings) {
 
-    val path: String = settings.path ?: "/resources"
+    val path: String = settings.path ?: resourceLoaderImpl.directory.path
 
     override val filter: ResourceLoader.Destination.Filter? =
         settings.filter?.let { DestinationFilter(customCrafting, it) }
