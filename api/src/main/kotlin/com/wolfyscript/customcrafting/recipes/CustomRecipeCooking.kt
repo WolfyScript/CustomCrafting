@@ -15,6 +15,8 @@ interface CustomRecipeCooking : CustomRecipe<RecipeInput.CookingRecipeInput, Cus
 
     val result: RecipeResult
 
+    val xp: Float
+
     @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "type")
     @JsonPropertyOrder(value = ["type"])
     sealed interface WorkstationProcessing {

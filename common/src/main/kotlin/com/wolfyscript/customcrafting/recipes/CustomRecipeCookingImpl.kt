@@ -4,17 +4,23 @@ import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.scafall.ScafallProvider
+import com.wolfyscript.scafall.wrappers.utils.unwrap
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Vec3i
+import net.minecraft.world.level.block.entity.BlockEntityType
 
 class CustomRecipeCookingImpl(
     override val processing: CustomRecipeCooking.WorkstationProcessing,
     override val result: RecipeResult,
     override val priority: Int,
     override val conditions: RecipeConditions,
+    override val xp: Float,
 ) : CustomRecipeCooking {
 
     override fun evaluate(
         input: RecipeInput.CookingRecipeInput,
-        context: EvaluationContext
+        context: EvaluationContext,
     ): RecipeData<CustomRecipeCooking>? {
         if (!conditions.areSatisfied(context)) {
             return null
@@ -29,8 +35,17 @@ class CustomRecipeCookingImpl(
         override fun evaluate(
             input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
-            context: EvaluationContext
+            context: EvaluationContext,
         ): RecipeData<CustomRecipeCooking>? {
+            val (pos, level) = context.location?.unwrap() ?: return null
+            val type = ScafallProvider.get().server.minecraftServer.getLevel(level)
+                ?.getBlockEntity(BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt())))?.let {
+                    it.type
+                }
+            if (type == null || type != BlockEntityType.FURNACE) {
+                return null
+            }
+
             val result = source.match(input.source, true)
             if (result == null) {
                 return null
@@ -47,8 +62,16 @@ class CustomRecipeCookingImpl(
         override fun evaluate(
             input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
-            context: EvaluationContext
+            context: EvaluationContext,
         ): RecipeData<CustomRecipeCooking>? {
+            val (pos, level) = context.location?.unwrap() ?: return null
+            val type = ScafallProvider.get().server.minecraftServer.getLevel(level)
+                        ?.getBlockEntity(BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt())))?.type
+            if (type == null || type != BlockEntityType.BLAST_FURNACE) {
+                return null
+            }
+
+
             val result = source.match(input.source, true)
             if (result == null) {
                 return null
@@ -65,8 +88,15 @@ class CustomRecipeCookingImpl(
         override fun evaluate(
             input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
-            context: EvaluationContext
+            context: EvaluationContext,
         ): RecipeData<CustomRecipeCooking>? {
+            val (pos, level) = context.location?.unwrap() ?: return null
+            val type = ScafallProvider.get().server.minecraftServer.getLevel(level)
+                        ?.getBlockEntity(BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt())))?.type
+            if (type == null || type != BlockEntityType.SMOKER) {
+                return null
+            }
+
             val result = source.match(input.source, true)
             if (result == null) {
                 return null
@@ -86,11 +116,15 @@ class CustomRecipeCookingImpl(
         override fun evaluate(
             input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
-            context: EvaluationContext
+            context: EvaluationContext,
         ): RecipeData<CustomRecipeCooking>? {
-            if (context.location == null) {
+            val (pos, level) = context.location?.unwrap() ?: return null
+            val type = ScafallProvider.get().server.minecraftServer.getLevel(level)
+                        ?.getBlockEntity(BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt())))?.type
+            if (type == null || type != BlockEntityType.CAMPFIRE) {
                 return null
             }
+
             val result = source.match(input.source, true)
             if (result == null) {
                 return null

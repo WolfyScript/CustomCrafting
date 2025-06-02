@@ -16,6 +16,7 @@ class CustomCraftingSpigotBootstrap : JavaPlugin() {
     }
 
     override fun onLoad() {
+        customCrafting.load()
 
     }
 
@@ -24,7 +25,7 @@ class CustomCraftingSpigotBootstrap : JavaPlugin() {
     }
 
     override fun onDisable() {
-
+        customCrafting.unload()
     }
 
 }

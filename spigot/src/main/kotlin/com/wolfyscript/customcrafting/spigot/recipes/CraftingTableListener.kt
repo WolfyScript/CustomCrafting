@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.spigot.recipes.crafting
+package com.wolfyscript.customcrafting.spigot.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
@@ -31,8 +31,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.CraftingInventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import java.util.*
-import kotlin.math.min
+import java.util.UUID
 import kotlin.random.Random
 
 class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener {
@@ -105,13 +104,13 @@ class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener
     fun onPreCraft(e: PrepareItemCraftEvent) {
         val player = e.view.player as Player
         try {
-            val matrix = CraftingMatrixData.of(e.inventory.matrix.map { it?.wrap() }.toList())
+            val matrix = CraftingMatrixData.Companion.of(e.inventory.matrix.map { it?.wrap() }.toList())
             val input = RecipeInput.CraftingRecipeInput.of(matrix)
             matrixDataCache.put(player.uniqueId, matrix)
 
             val block = e.inventory.location?.block ?: player.location.block
             val context: EvaluationContext = EvaluationContextImpl(player.wrap(), block.location.toPreciseGlobal())
-            val resultStack = recipeManager.evaluateRecipesOfType(RecipeTypes.crafting, input, context)?.let {
+            val resultStack = recipeManager.evaluateRecipesOfType(RecipeTypes.Companion.crafting, input, context)?.let {
                 craftingDataCache.put(player.uniqueId, it)
                 it.result.compute(it, context, Random(getCraftSeed(player)))
             }
@@ -183,9 +182,9 @@ class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener
 
     fun getCraftSeed(bukkitPlayer: Player): Long {
         return bukkitPlayer.persistentDataContainer.get(
-            CustomCraftingSpigot.playerCraftingSeedKey,
+            CustomCraftingSpigot.Companion.playerCraftingSeedKey,
             PersistentDataType.LONG
-        ) ?: Random.nextLong()
+        ) ?: Random.Default.nextLong()
     }
 
     fun possibleResultAmount(recipeData: RecipeData<CustomRecipeCrafting>, matrixData: CraftingMatrixData): Int =
