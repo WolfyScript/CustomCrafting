@@ -51,7 +51,7 @@ public class MainConfig extends YamlConfiguration {
     }
 
     public String getRecipeBookTypeName(RecipeType<?> recipeType) {
-        return getString("recipe_book.recipe_type_titles." + recipeType.getId());
+        return "";
     }
 
     public boolean isGUIDrawBackground() {

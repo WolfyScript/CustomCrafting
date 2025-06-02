@@ -369,12 +369,6 @@ public class LocalStorageLoader extends ResourceLoader {
 
     @Override
     public boolean delete(CustomRecipe<?> recipe) throws IOException {
-        // Deletes the recipe file that is saved under the recipe type specific folder
-        File legacyFile = getFileAt(recipe.getNamespacedKey(), recipe.getRecipeType().getId());
-        if (legacyFile.exists()) {
-            Files.delete(legacyFile.toPath());
-        }
-
         // Deletes both the HOCON and JSON file
         File hoconFile = getFileAt(recipe.getNamespacedKey(), RECIPES_FOLDER);
         if (hoconFile.exists()) {
