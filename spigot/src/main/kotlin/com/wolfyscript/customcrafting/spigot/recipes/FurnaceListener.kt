@@ -202,7 +202,6 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
 
     @EventHandler
     fun onCollectExperience(event: BlockExpEvent) {
-        val blockPos = event.block.location.toBlockPos()
         val state = event.block.state
 
         if (state is Furnace) {
