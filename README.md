@@ -2,6 +2,22 @@
   <img src="https://i.imgur.com/wLHwJ1c.png" alt="CustomCrafting" />
 </div>
 
+> [!note]  
+> v5 is in early alpha and may not work properly yet.
+> Breaking API changes may be introduced at anytime without prior warning!
+> 
+> ## Breaking Changes & Planned New Features
+> * Removed Elite Crafting Table
+> * Removed CustomItem; Focus is instead on integrating items from other plugins/mods
+> * Removed Advanced Crafting Table
+> * New Recipe structure: more composable recipes
+> * New Resource Loader for multiple SQL and custom local destinations
+> * Editor API: create and edit recipes via CLI or GUI
+> * Cross-Platform: Spigot, Paper, Sponge, Fabric, and more in the future
+> * Modded: Makes use of Minecraft internals to better support custom recipes
+> * ...
+> 
+
 # CustomCrafting
 
 ![bStats Servers](https://img.shields.io/bstats/servers/3211)
@@ -31,6 +47,14 @@ For any questions join the [Discord](https://discord.gg/qGhDTSr).
 
 [![](https://bstats.org/signatures/bukkit/CustomCrafting.svg)](https://bstats.org/plugin/bukkit/CustomCrafting/3211)
 
+## Config & Resource Directory Structure
+
+* `<root>` - actual location depends on the platform. (on spigot `plugins/customcrafting`)
+  * `.data` - data that is cached and used internally by CC
+  * `config` - CC configuration
+  * `resources` - default location for resources
+    * `defaults` - the default recipes shipped with CC
+    * `*/**` - directories created by users from which to load recipes
 
 ## Check out my partner!
 <a href="https://billing.kinetichosting.net/aff.php?aff=345">
