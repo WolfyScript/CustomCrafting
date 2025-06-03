@@ -82,16 +82,12 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
                 )
 
                 val result = cache.recipeData.result
-                val currentResultSeed = (block.state as Furnace).persistentDataContainer.get(
-                    CustomCraftingSpigot.cookingSeedKey,
-                    PersistentDataType.LONG
-                ) ?: Random.Default.nextLong()
 
                 val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
                 val pickedStack = result.compute(
                     cache.recipeData,
                     context,
-                    Random(currentResultSeed)
+                    Random(getCookingSeed(block.state as Furnace))
                 ).unwrap()
 
                 //Need to set the result to air to bypass the vanilla result computation (See net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity#burn).
@@ -136,6 +132,22 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
                 event.isCancelled = true
             }
         }
+    }
+
+    private fun getCookingSeed(state: Furnace): Long {
+        var seed = state.persistentDataContainer.get(
+            CustomCraftingSpigot.cookingSeedKey,
+            PersistentDataType.LONG
+        )
+        if (seed == null) {
+            seed = Random.Default.nextLong()
+            state.persistentDataContainer.set(
+                CustomCraftingSpigot.cookingSeedKey,
+                PersistentDataType.LONG,
+                seed
+            )
+        }
+        return seed
     }
 
     /* **************************************************************************************** *
