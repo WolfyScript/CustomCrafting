@@ -19,8 +19,10 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareSmithingEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.SmithingInventory
 import org.bukkit.persistence.PersistentDataType
@@ -31,7 +33,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
     val recipeCache = Caffeine.newBuilder().build<UUID, RecipeData<CustomRecipeSmithing>>()
 
-    fun getCraftSeed(bukkitPlayer: Player): Long {
+    private fun getSmithingSeed(bukkitPlayer: Player): Long {
         var seed = bukkitPlayer.persistentDataContainer.get(
             CustomCraftingSpigot.playerSmithingSeedKey,
             PersistentDataType.LONG
@@ -51,6 +53,8 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
     fun onPrepare(event: PrepareSmithingEvent) {
         val inventory = event.inventory
         val resultStack = event.result
+
+        recipeCache.invalidate(event.view.player.uniqueId)
 
         if (resultStack != null && !resultStack.isEmpty) {
             // Check for disabled vanilla recipes
@@ -78,7 +82,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
             val endResult = data.result.compute(
                 data,
-                context, Random(getCraftSeed(event.view.player as Player))
+                context, Random(getSmithingSeed(event.view.player as Player))
             ).unwrap()
 
             if (data.recipe.copyOptions == null) {
@@ -129,7 +133,6 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         if (data == null) {
             return // Vanilla recipe
         }
-        recipeCache.invalidate(player.uniqueId)
 
         val resultStack = inventory.result
         if (resultStack == null || resultStack.isEmpty) {
@@ -177,6 +180,19 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
         // Reset seed for next result generation
         player.persistentDataContainer.set(CustomCraftingSpigot.playerSmithingSeedKey, PersistentDataType.LONG, Random.Default.nextLong())
+        recipeCache.invalidate(player.uniqueId)
+    }
+
+    @EventHandler
+    fun onClose(event: InventoryCloseEvent) {
+        if (event.inventory is SmithingInventory) {
+            recipeCache.invalidate(event.player.uniqueId)
+        }
+    }
+
+    @EventHandler
+    fun onQuit(event: PlayerQuitEvent) {
+        recipeCache.invalidate(event.player.uniqueId)
     }
 
 }
