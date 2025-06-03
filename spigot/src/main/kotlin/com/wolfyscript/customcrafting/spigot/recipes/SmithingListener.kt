@@ -158,23 +158,25 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         }
 
         val context = EvaluationContextImpl((event.whoClicked as Player).wrap(), inventory.location?.toPreciseGlobal())
-        val templateStack = inventory.getItem(0) ?: ItemStack(Material.AIR)
-        val baseStack = inventory.getItem(1) ?: ItemStack(Material.AIR)
-        val additionStack = inventory.getItem(2) ?: ItemStack(Material.AIR)
 
         data.recipe.result.runActions(context, 1)
 
         // TODO: craft remains
         data.bySlot(0)?.let {
+            val templateStack = inventory.getItem(0) ?: ItemStack(Material.AIR)
             templateStack.amount = templateStack.amount - it.matchedItemStackRef.amount
         }
         data.bySlot(1)?.let {
+            val baseStack = inventory.getItem(1) ?: ItemStack(Material.AIR)
             baseStack.amount = baseStack.amount + it.matchedItemStackRef.amount
         }
         data.bySlot(2)?.let {
+            val additionStack = inventory.getItem(2) ?: ItemStack(Material.AIR)
             additionStack.amount = additionStack.amount + it.matchedItemStackRef.amount
         }
 
+        // Reset seed for next result generation
+        player.persistentDataContainer.set(CustomCraftingSpigot.playerSmithingSeedKey, PersistentDataType.LONG, Random.Default.nextLong())
     }
 
 }
