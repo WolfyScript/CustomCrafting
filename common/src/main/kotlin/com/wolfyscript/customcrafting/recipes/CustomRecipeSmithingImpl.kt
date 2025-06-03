@@ -5,6 +5,11 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.scafall.identifier.Key
+import com.wolfyscript.scafall.wrappers.utils.unwrap
+import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import net.minecraft.core.component.DataComponentType
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.ResourceLocation
 
 class CustomRecipeSmithingImpl(
     override val priority: Int,
@@ -55,5 +60,32 @@ class CustomRecipeSmithingImpl(
     }
 
     data class CopyOptionsImpl(override val preserveComponents: List<Key>) : CustomRecipeSmithing.CopyOptions
+
+}
+
+class SmithingUtils {
+
+    companion object {
+
+        fun copyDataComponentsTo(source: ItemStack, dest: ItemStack, components: List<Key>) {
+            val sourceStack = source.unwrap()
+            val destStack = dest.unwrap()
+
+            for (key in components) {
+                BuiltInRegistries.DATA_COMPONENT_TYPE.get(ResourceLocation.fromNamespaceAndPath(key.namespace, key.value)).ifPresent {
+                    copyDataComponent(sourceStack, destStack, it.value())
+                }
+            }
+        }
+
+        private fun <T> copyDataComponent(source: net.minecraft.world.item.ItemStack, dest: net.minecraft.world.item.ItemStack, type: DataComponentType<T>) {
+            val value = source.get(type)
+            if (value == null) {
+                return
+            }
+            dest.set(type, value)
+        }
+
+    }
 
 }

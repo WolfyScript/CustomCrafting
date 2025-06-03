@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
+import com.wolfyscript.customcrafting.recipes.SmithingUtils
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
@@ -91,7 +92,11 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                     amount = endResult.amount
                 }
             } else {
-                // TODO: copy specific data components
+                if (baseStack == null) {
+                    event.result = null
+                    return
+                }
+                SmithingUtils.copyDataComponentsTo(baseStack.wrap(), endResult.wrap(), data.recipe.copyOptions!!.preserveComponents)
                 event.result = endResult
             }
             return
