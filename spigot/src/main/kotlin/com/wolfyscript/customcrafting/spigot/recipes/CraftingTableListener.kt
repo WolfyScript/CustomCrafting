@@ -1,11 +1,7 @@
 package com.wolfyscript.customcrafting.spigot.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.recipes.EvaluationContext
-import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.recipes.RecipeResult
-import com.wolfyscript.customcrafting.recipes.RecipeTypes
+import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
@@ -31,7 +27,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.CraftingInventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import java.util.UUID
+import java.util.*
 import kotlin.random.Random
 
 class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener {
@@ -181,10 +177,19 @@ class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener
     }
 
     fun getCraftSeed(bukkitPlayer: Player): Long {
-        return bukkitPlayer.persistentDataContainer.get(
-            CustomCraftingSpigot.Companion.playerCraftingSeedKey,
+        var seed = bukkitPlayer.persistentDataContainer.get(
+            CustomCraftingSpigot.playerCraftingSeedKey,
             PersistentDataType.LONG
-        ) ?: Random.Default.nextLong()
+        )
+        if (seed == null) {
+            seed = Random.Default.nextLong()
+            bukkitPlayer.persistentDataContainer.set(
+                CustomCraftingSpigot.playerCraftingSeedKey,
+                PersistentDataType.LONG,
+                seed
+            )
+        }
+        return seed
     }
 
     fun possibleResultAmount(recipeData: RecipeData<CustomRecipeCrafting>, matrixData: CraftingMatrixData): Int =
@@ -230,7 +235,14 @@ class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener
         return 0
     }
 
-    private fun quickCraft(maxPossible: Int, bukkitPlayer: Player, craftingData: RecipeData<CustomRecipeCrafting>, recipeResult: RecipeResult, context: EvaluationContext, random: Random) : Int {
+    private fun quickCraft(
+        maxPossible: Int,
+        bukkitPlayer: Player,
+        craftingData: RecipeData<CustomRecipeCrafting>,
+        recipeResult: RecipeResult,
+        context: EvaluationContext,
+        random: Random,
+    ): Int {
         for (i in 0..<maxPossible) {
             val stack = recipeResult.compute(craftingData, context, random).unwrap()
             if (!InventoryUtils.hasInventorySpace(bukkitPlayer, stack)) {
