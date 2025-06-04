@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.spigot.recipes.AnvilListener
 import com.wolfyscript.customcrafting.spigot.recipes.CampfireListener
 import com.wolfyscript.customcrafting.spigot.recipes.CauldronListener
 import com.wolfyscript.customcrafting.spigot.recipes.CrafterListener
-import com.wolfyscript.customcrafting.spigot.recipes.CraftingTableListener
+import com.wolfyscript.customcrafting.spigot.recipes.CraftingListener
 import com.wolfyscript.customcrafting.spigot.recipes.FurnaceListener
 import com.wolfyscript.customcrafting.spigot.recipes.GrindstoneListener
 import com.wolfyscript.customcrafting.spigot.recipes.SmithingListener
@@ -36,7 +36,7 @@ class CustomCraftingSpigot(
             registerEvents(CampfireListener(this@CustomCraftingSpigot), bootstrap)
             registerEvents(CauldronListener(this@CustomCraftingSpigot), bootstrap)
             registerEvents(CrafterListener(this@CustomCraftingSpigot), bootstrap)
-            registerEvents(CraftingTableListener(this@CustomCraftingSpigot), bootstrap)
+            registerEvents(CraftingListener(this@CustomCraftingSpigot), bootstrap)
             registerEvents(FurnaceListener(this@CustomCraftingSpigot), bootstrap)
             registerEvents(GrindstoneListener(this@CustomCraftingSpigot), bootstrap)
             registerEvents(SmithingListener(this@CustomCraftingSpigot), bootstrap)

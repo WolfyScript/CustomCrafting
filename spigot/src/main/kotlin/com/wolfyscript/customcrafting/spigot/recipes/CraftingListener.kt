@@ -30,7 +30,7 @@ import org.bukkit.persistence.PersistentDataType
 import java.util.*
 import kotlin.random.Random
 
-class CraftingTableListener(val customCrafting: CustomCraftingSpigot) : Listener {
+class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
     val recipeManager = customCrafting.recipeManager
 
