@@ -17,7 +17,7 @@ data class GrindingRecipeInputImpl(
 data class MixingRecipeInputImpl(override val input: Collection<ItemStack?>) : RecipeInput.MixingRecipeInput
 
 data class RepairingRecipeInputImpl(
-    override val base: ItemStack?,
+    override val base: ItemStack,
     override val addition: ItemStack?
 ) : RecipeInput.RepairingRecipeInput
 

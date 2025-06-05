@@ -38,7 +38,7 @@ class RecipeFactoryCommon : RecipeFactory {
     }
 
     override fun createRepairingRecipeInput(
-        base: ItemStack?,
+        base: ItemStack,
         addition: ItemStack?,
     ): RecipeInput.RepairingRecipeInput {
         return RepairingRecipeInputImpl(base, addition)
