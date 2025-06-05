@@ -62,7 +62,7 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
             orb.experience = data.recipe.xp
         }
 
-        data.result.runActions(context)
+        data.recipe.result.runActions(context)
 
         // TODO: Craft remains
         data.bySlot(0)?.let {
@@ -96,7 +96,7 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
             return
         }
 
-        event.result = data.result.compute(data, context, Random(getGrindingSeed(event.view.player as Player))).unwrap()
+        event.result = data.recipe.result.compute(data, context, Random(getGrindingSeed(event.view.player as Player))).unwrap()
 
         recipeCache.put(event.view.player.uniqueId, data)
     }

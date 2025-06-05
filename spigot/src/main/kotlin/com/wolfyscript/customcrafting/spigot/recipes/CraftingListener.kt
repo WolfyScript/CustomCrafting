@@ -108,7 +108,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             val context: EvaluationContext = EvaluationContextImpl(player.wrap(), block.location.toPreciseGlobal())
             val resultStack = recipeManager.evaluateRecipesOfType(RecipeTypes.Companion.crafting, input, context)?.let {
                 craftingDataCache.put(player.uniqueId, it)
-                it.result.compute(it, context, Random(getCraftSeed(player)))
+                it.recipe.result.compute(it, context, Random(getCraftSeed(player)))
             }
 
             if (resultStack != null) {
@@ -172,7 +172,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         context: EvaluationContext,
     ): Int {
         if (event.clickedInventory == null) return 0
-        val recipeResult = craftingData.result
+        val recipeResult = craftingData.recipe.result
         return calculateClick(event, bukkitPlayer, craftingData, recipeResult, matrixData, context)
     }
 

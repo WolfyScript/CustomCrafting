@@ -80,7 +80,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         if (data != null) {
             recipeCache.put(event.view.player.uniqueId, data)
 
-            val endResult = data.result.compute(
+            val endResult = data.recipe.result.compute(
                 data,
                 context, Random(getSmithingSeed(event.view.player as Player))
             ).unwrap()

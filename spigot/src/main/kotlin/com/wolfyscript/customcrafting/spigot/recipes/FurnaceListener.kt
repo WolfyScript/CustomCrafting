@@ -81,7 +81,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
                     customCrafting.registries.customRecipes.getKey(cache.recipeData.recipe)!!
                 )
 
-                val result = cache.recipeData.result
+                val result = cache.recipeData.recipe.result
 
                 val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
                 val pickedStack = result.compute(

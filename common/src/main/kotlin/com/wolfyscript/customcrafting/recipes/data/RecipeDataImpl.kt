@@ -5,7 +5,6 @@ import com.wolfyscript.customcrafting.recipes.RecipeResult
 
 data class RecipeDataImpl<T: CustomRecipe<*,*>>(
     override val recipe: T,
-    override var result: RecipeResult,
     val ingredients: Array<IngredientData?>
 ) : RecipeData<T> {
 
@@ -21,7 +20,6 @@ data class RecipeDataImpl<T: CustomRecipe<*,*>>(
         if (other !is RecipeDataImpl<*>) return false
 
         if (recipe != other.recipe) return false
-        if (result != other.result) return false
         if (!ingredients.contentEquals(other.ingredients)) return false
         if (nonNullIngredients != other.nonNullIngredients) return false
 
@@ -30,7 +28,6 @@ data class RecipeDataImpl<T: CustomRecipe<*,*>>(
 
     override fun hashCode(): Int {
         var result1 = recipe.hashCode()
-        result1 = 31 * result1 + result.hashCode()
         result1 = 31 * result1 + ingredients.contentHashCode()
         result1 = 31 * result1 + nonNullIngredients.hashCode()
         return result1

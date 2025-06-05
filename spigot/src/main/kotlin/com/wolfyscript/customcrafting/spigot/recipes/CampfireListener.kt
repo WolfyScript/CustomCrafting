@@ -110,7 +110,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         if (data == null) {
             return
         }
-        event.result = data.result.compute(
+        event.result = data.recipe.result.compute(
             data,
             context,
             // No need to store the seed. Cannot determine the result beforehand to cheese it.

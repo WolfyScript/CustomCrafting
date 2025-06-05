@@ -14,11 +14,6 @@ interface RecipeData<T: CustomRecipe<*,*>> {
     val recipe: T
 
     /**
-     * The result of the recipe
-     */
-    var result: RecipeResult
-
-    /**
      * Gets the IngredientData at the specified slot **in the recipe**
      */
     fun bySlot(slot: Int): IngredientData?
