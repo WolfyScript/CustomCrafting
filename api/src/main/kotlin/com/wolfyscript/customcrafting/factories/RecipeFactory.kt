@@ -16,7 +16,7 @@ interface RecipeFactory {
 
     fun createMixingRecipeInput(input: Collection<ItemStack?>) : RecipeInput.MixingRecipeInput
 
-    fun createRepairingRecipeInput(base: ItemStack?, addition: ItemStack?) : RecipeInput.RepairingRecipeInput
+    fun createRepairingRecipeInput(base: ItemStack, addition: ItemStack?) : RecipeInput.RepairingRecipeInput
 
     fun createSmithingRecipeInput(template: ItemStack?, base: ItemStack?, addition: ItemStack?) : RecipeInput.SmithingRecipeInput
 

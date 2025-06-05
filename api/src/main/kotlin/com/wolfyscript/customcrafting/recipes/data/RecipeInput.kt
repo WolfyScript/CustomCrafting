@@ -90,13 +90,13 @@ interface RecipeInput {
 
     interface RepairingRecipeInput : RecipeInput {
 
-        val base: ItemStack?
+        val base: ItemStack
 
         val addition: ItemStack?
 
         companion object {
 
-            fun of(base: ItemStack?, addition: ItemStack?) = CustomCraftingProvider.get().factories.recipeFactory.createRepairingRecipeInput(base, addition)
+            fun of(base: ItemStack, addition: ItemStack?) = CustomCraftingProvider.get().factories.recipeFactory.createRepairingRecipeInput(base, addition)
 
         }
 
