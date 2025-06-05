@@ -55,6 +55,7 @@ class CustomCraftingSpigot(
         val playerCraftingSeedKey: NamespacedKey = NamespacedKey("customcrafting", "crafting_seed")
         val playerSmithingSeedKey: NamespacedKey = NamespacedKey("customcrafting", "smithing_seed")
         val playerGrindingSeedKey: NamespacedKey = NamespacedKey("customcrafting", "grinding_seed")
+        val playerRepairingSeedKey: NamespacedKey = NamespacedKey("customcrafting", "repairing_seed")
 
         val cookingSeedKey: NamespacedKey = NamespacedKey("customcrafting", "cooking_seed")
 
