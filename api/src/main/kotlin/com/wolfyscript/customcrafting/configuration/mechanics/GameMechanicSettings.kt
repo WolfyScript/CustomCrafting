@@ -24,7 +24,12 @@ interface CraftingSettings {
 
 interface CauldronSettings {
 
-    val interactionType: String // TODO
+    val interactionType: InteractionType
+
+    enum class InteractionType {
+        SNEAKING,
+        DEFAULT
+    }
 
 }
 

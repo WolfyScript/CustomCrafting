@@ -56,7 +56,7 @@ class CustomRecipeSmithingImpl(
             } ?: return null
         }
 
-        return RecipeDataImpl(this, result, arrayOf(matchedTemplate, matchedBase, matchedAddition))
+        return RecipeDataImpl(this, arrayOf(matchedTemplate, matchedBase, matchedAddition))
     }
 
     data class CopyOptionsImpl(override val preserveComponents: List<Key>) : CustomRecipeSmithing.CopyOptions
