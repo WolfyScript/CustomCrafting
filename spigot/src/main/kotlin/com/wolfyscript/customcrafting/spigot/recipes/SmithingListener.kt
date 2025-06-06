@@ -147,7 +147,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             }
         }
         // A quick implementation to collect the result. Things like moving the item to the hotbar won't work!
-        if (event.cursor.isEmpty) {
+        if (event.cursor.type == Material.AIR) {
             Bukkit.getScheduler().runTask(customCrafting.bootstrap, Runnable {
                 event.view.setCursor(resultStack)
             })

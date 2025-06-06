@@ -1,7 +1,6 @@
 package com.wolfyscript.customcrafting.spigot.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
@@ -11,9 +10,13 @@ import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
+import net.minecraft.world.entity.Entity
+import org.bukkit.Bukkit
 import org.bukkit.Effect
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -24,7 +27,7 @@ import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 import kotlin.random.Random
 
-class AnvilListener(val customCrafting: CustomCrafting) : Listener {
+class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
     private val recipeCache = Caffeine.newBuilder().build<UUID, RecipeData<CustomRecipeRepairing>>()
 
@@ -70,10 +73,10 @@ class AnvilListener(val customCrafting: CustomCrafting) : Listener {
         }
         val base = inventory.getItem(1)
         if (base == null || base.type == Material.AIR) {
-            return
+            return // The base item cannot be emtpy!
         }
-        val result = event.currentItem
-        if (event.slot != 2 || result == null || result.type == Material.AIR ) {
+        val resultStack = event.currentItem
+        if (event.slot != 2 || resultStack == null || resultStack.type == Material.AIR ) {
             return
         }
         val player = event.whoClicked as Player
@@ -81,14 +84,40 @@ class AnvilListener(val customCrafting: CustomCrafting) : Listener {
         if (data == null) {
             return
         }
-
-        val context = EvaluationContextImpl(player.wrap(), inventory.location?.toPreciseGlobal())
-        val input = RecipeInput.RepairingRecipeInput.of(base.wrap(), inventory.getItem(1)?.wrap())
+        if (player.level < view.repairCost) {
+            return // The player level may have changed, making the recipe invalid
+        }
+        event.result = Event.Result.DENY // Deny the click event, we do our own calculations
 
         val cursor = event.cursor
 
-        // TODO: Cursor pickup
+        // A quick implementation to collect the result.
+        if (event.isShiftClick) {
+            if (event.view.bottomInventory.addItem(resultStack).isNotEmpty()) {
+                return
+            }
+        }
+        if (cursor.type == Material.AIR) {
+            Bukkit.getScheduler().runTask(customCrafting.bootstrap, Runnable {
+                event.view.setCursor(resultStack)
+            })
+        } else if (cursor.isSimilar(resultStack)) {
+            if (cursor.amount + resultStack.amount > cursor.maxStackSize) {
+                // TODO: try and put item into inventory
+                return // does not fit on the cursor. cancel recipe processing.
+            }
+            Bukkit.getScheduler().runTask(customCrafting.bootstrap, Runnable {
+                // since this is called next tick, the cursor might have changed, so use the latest
+                event.view.cursor.amount = event.view.cursor.amount + resultStack.amount
+            })
+        }
 
+        // At this point, the result was successfully picked up and all requirements are satisfied.
+        // Continue to process level, actions, ingredients, etc.
+
+        player.level = player.level - view.repairCost
+
+        val context = EvaluationContextImpl(player.wrap(), inventory.location?.toPreciseGlobal())
 
         val process = data.recipe.process
         if (process is CustomRecipeRepairing.RepairProcess.FixedResult) {
@@ -97,15 +126,23 @@ class AnvilListener(val customCrafting: CustomCrafting) : Listener {
 
         val location = inventory.location
         if (location != null && location.world != null) {
-            // TODO: damage anvil block
+            // Mirror the vanilla behaviour of damaging the Anvil
+            if (player.gameMode != GameMode.CREATIVE && Entity.SHARED_RANDOM.nextFloat() < 0.12) {
+                // TODO: In Paper we could call the AnvilDamageEvent here for better compatibility with other plugins that may use it
+                val block = location.block
+                block.type = when (block.type) {
+                    block.type -> Material.CHIPPED_ANVIL
+                    block.type -> Material.DAMAGED_ANVIL
+                    else -> Material.AIR
+                }
+            }
+
             location.world.playEffect(location, Effect.ANVIL_USE, 0)
         }
 
-        if (player.level >= view.repairCost) {
-            player.level = player.level - view.repairCost
-        }
         event.currentItem = null
 
+        // TODO: Craft remains!
         data.bySlot(0)?.let {
             inventory.getItem(0)?.apply {
                 amount -= it.matchedItemStackRef.amount
@@ -118,6 +155,12 @@ class AnvilListener(val customCrafting: CustomCrafting) : Listener {
             }
         }
 
+        // By this point, the recipe was processed, levels and ingredients consumed,
+        // Now clear the cache
+        recipeCache.invalidate(player.uniqueId)
+        player.persistentDataContainer.set(CustomCraftingSpigot.playerRepairingSeedKey, PersistentDataType.LONG, Random.Default.nextLong())
+        // and reset the cost, as vanilla would do normally
+        view.repairCost = -1
     }
 
     fun getRepairingSeed(bukkitPlayer: Player): Long {

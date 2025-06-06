@@ -22,7 +22,12 @@ interface CustomRecipeRepairing : CustomRecipe<RecipeInput.RepairingRecipeInput,
     interface RepairProcess {
 
         /**
-         * Computes the result based on the data and context
+         * Computes the result based on the data and context.
+         *
+         * The [random] may be used to create consistent output based on the players stored repairing seed.
+         * A new seed is picked whenever the player successfully collects the result from the inventory.
+         * Therefore, when the result contains multiple items, it always picks the same item given the same seed.
+         * Preventing players from rerolling the result.
          */
         fun compute(recipeData: RecipeData<CustomRecipeRepairing>, context: EvaluationContext, random: Random): ItemStack
 

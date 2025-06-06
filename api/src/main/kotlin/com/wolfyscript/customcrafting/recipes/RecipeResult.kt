@@ -27,9 +27,12 @@ interface RecipeResult {
     val bulkActions: List<ResultAction>
 
     /**
-     * Computes the result of the recipe based on the cached [RecipeData].
+     * Computes the result of the recipe based on the cached [RecipeData] and [EvaluationContext]
      *
-     * If already computed, this simply returns the previously computed value.
+     * The [random] may be used to create consistent output based on the given seed (stored on player or tile-entity).
+     * A new seed is picked whenever the result is successfully collected/produced (e.g. stored in furnace result slot, picked up from inventory).
+     * Therefore, when the result contains multiple items, it always picks the same item given the same seed.
+     * Preventing players from rerolling the result.
      */
     fun compute(recipeData: RecipeData<*>, context: EvaluationContext, random: Random): ItemStack
 
