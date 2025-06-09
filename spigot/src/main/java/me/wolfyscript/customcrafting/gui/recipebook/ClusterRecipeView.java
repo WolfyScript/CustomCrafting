@@ -55,7 +55,7 @@ public class ClusterRecipeView extends CCCluster {
         btnB.dummy(ClusterRecipeBook.COOKING_ICON.getKey()).state(s -> s.key(ClusterRecipeBook.COOKING_ICON).icon(Material.FURNACE).render((cache, guiHandler, player, guiInventory, itemStack, i) -> cache.getCacheRecipeView().getRecipe().map(customRecipe -> {
             RecipeType<?> recipeType = customRecipe.getRecipeType();
             itemStack.setType(Material.matchMaterial(recipeType.name()));
-            TagResolver typePlaceholder = Placeholder.unparsed("type", StringUtils.capitalize(recipeType.getId().replace("_", " ")));
+            TagResolver typePlaceholder = Placeholder.unparsed("type", StringUtils.capitalize(recipeType.toString().replace("_", " ")));
             if (customRecipe instanceof CustomRecipeCooking<?, ?> cookingRecipe) {
                 return CallbackButtonRender.UpdateResult.of(TagResolver.resolver(typePlaceholder, Placeholder.unparsed("time", String.valueOf(cookingRecipe.getCookingTime())), Placeholder.unparsed("xp", String.valueOf(cookingRecipe.getExp()))));
             }

@@ -53,16 +53,16 @@ public class MenuMain extends CCWindow {
 
     private static final String CRAFTING = RecipeType.Container.CRAFTING.getId();
     private static final String ELITE_CRAFTING = RecipeType.Container.ELITE_CRAFTING.getId();
-    private static final String FURNACE = RecipeType.FURNACE.getId();
-    private static final String ANVIL = RecipeType.ANVIL.getId();
-    private static final String BLAST_FURNACE = RecipeType.BLAST_FURNACE.getId();
-    private static final String SMOKER = RecipeType.SMOKER.getId();
-    private static final String CAMPFIRE = RecipeType.CAMPFIRE.getId();
-    private static final String STONECUTTER = RecipeType.STONECUTTER.getId();
-    private static final String GRINDSTONE = RecipeType.GRINDSTONE.getId();
-    private static final String BREWING_STAND = RecipeType.BREWING_STAND.getId();
-    private static final String CAULDRON = RecipeType.CAULDRON.getId();
-    private static final String SMITHING = RecipeType.SMITHING.getId();
+    private static final String FURNACE = RecipeType.FURNACE.toString();
+    private static final String ANVIL = RecipeType.ANVIL.toString();
+    private static final String BLAST_FURNACE = RecipeType.BLAST_FURNACE.toString();
+    private static final String SMOKER = RecipeType.SMOKER.toString();
+    private static final String CAMPFIRE = RecipeType.CAMPFIRE.toString();
+    private static final String STONECUTTER = RecipeType.STONECUTTER.toString();
+    private static final String GRINDSTONE = RecipeType.GRINDSTONE.toString();
+    private static final String BREWING_STAND = RecipeType.BREWING_STAND.toString();
+    private static final String CAULDRON = RecipeType.CAULDRON.toString();
+    private static final String SMITHING = RecipeType.SMITHING.toString();
 
     private static final String SETTINGS = "settings";
 

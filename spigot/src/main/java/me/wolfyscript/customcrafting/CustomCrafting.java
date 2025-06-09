@@ -25,8 +25,6 @@ package me.wolfyscript.customcrafting;
 import com.wolfyscript.jackson.dataformat.hocon.HoconFactory;
 import com.wolfyscript.jackson.dataformat.hocon.HoconGenerator;
 import com.wolfyscript.jackson.dataformat.hocon.HoconMapper;
-import me.wolfyscript.customcrafting.commands.CommandCC;
-import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.compatibility.PluginCompatibility;
 import me.wolfyscript.customcrafting.configs.DatabaseSettings;
 import me.wolfyscript.customcrafting.configs.LocalStorageSettings;
@@ -363,8 +361,6 @@ public class CustomCrafting extends JavaPlugin {
         serverCommandMap.setAccessible(true);
         try {
             var commandMap = (CommandMap) serverCommandMap.get(Bukkit.getServer());
-            commandMap.register("customcrafting", new CommandCC(this));
-            commandMap.register("recipes", "customcrafting", new CommandRecipe(this));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }

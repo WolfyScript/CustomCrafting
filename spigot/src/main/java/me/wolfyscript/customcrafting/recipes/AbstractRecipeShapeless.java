@@ -65,15 +65,6 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
                 .build();
     }
 
-    @Deprecated
-    protected AbstractRecipeShapeless(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
-        super(namespacedKey, node, gridSize, settingsType);
-
-        JsonNode ingredientNode = node.path(INGREDIENTS_KEY);
-        Preconditions.checkArgument(ingredientNode.isObject() || ingredientNode.isArray(), "Error reading ingredients! Ingredient node type must be Array or Object!");
-        setIngredients(Streams.stream(node.path(INGREDIENTS_KEY).elements()).map(ItemLoader::loadIngredient).toList());
-    }
-
     protected AbstractRecipeShapeless(NamespacedKey key, CustomCrafting customCrafting, int gridSize, S settings) {
         super(key, customCrafting, gridSize, settings);
     }

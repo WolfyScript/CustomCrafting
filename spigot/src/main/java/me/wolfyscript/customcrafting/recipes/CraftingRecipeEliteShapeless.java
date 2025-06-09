@@ -41,10 +41,6 @@ public class CraftingRecipeEliteShapeless extends AbstractRecipeShapeless<Crafti
         CustomCrafting.inst().getRegistries().getVerifiers().register(VERIFIER);
     }
 
-    public CraftingRecipeEliteShapeless(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node, 6, EliteRecipeSettings.class);
-    }
-
     @JsonCreator
     public CraftingRecipeEliteShapeless(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JacksonInject("customcrafting") CustomCrafting customCrafting) {
         super(key, customCrafting, 6, new EliteRecipeSettings());

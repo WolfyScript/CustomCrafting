@@ -50,7 +50,7 @@ class CustomRecipeCookingImpl(
             if (result == null) {
                 return null
             }
-            return RecipeDataImpl(recipe, recipe.result, arrayOf(IngredientDataImpl(0, 0, source, result)))
+            return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
     }
@@ -76,7 +76,7 @@ class CustomRecipeCookingImpl(
             if (result == null) {
                 return null
             }
-            return RecipeDataImpl(recipe, recipe.result, arrayOf(IngredientDataImpl(0, 0, source, result)))
+            return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
     }
@@ -101,7 +101,7 @@ class CustomRecipeCookingImpl(
             if (result == null) {
                 return null
             }
-            return RecipeDataImpl(recipe, recipe.result, arrayOf(IngredientDataImpl(0, 0, source, result)))
+            return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
     }
@@ -130,7 +130,7 @@ class CustomRecipeCookingImpl(
                 return null
             }
             // TODO: Get proper slot in campfire. Perhaps through the context?
-            return RecipeDataImpl(recipe, recipe.result, arrayOf(IngredientDataImpl(0, 0, source, result)))
+            return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
     }

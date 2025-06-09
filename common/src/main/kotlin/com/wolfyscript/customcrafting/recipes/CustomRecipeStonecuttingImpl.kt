@@ -25,7 +25,7 @@ class CustomRecipeStonecuttingImpl(
             return null
         }
 
-        return RecipeDataImpl(this, result, arrayOf(IngredientDataImpl(0, 0, source, matchResult)))
+        return RecipeDataImpl(this, arrayOf(IngredientDataImpl(0, 0, source, matchResult)))
     }
 
 

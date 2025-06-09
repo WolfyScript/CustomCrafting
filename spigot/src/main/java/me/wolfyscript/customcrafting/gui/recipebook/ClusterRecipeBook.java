@@ -160,7 +160,7 @@ public class ClusterRecipeBook extends CCCluster {
             CustomRecipeCooking<?, ?> cookingRecipe = ((CustomRecipeCooking<?, ?>) knowledgeBook.getCurrentRecipe());
             itemStack.setType(Material.matchMaterial(recipeType.name()));
             return CallbackButtonRender.UpdateResult.of(itemStack,
-                    Placeholder.unparsed("type", StringUtils.capitalize(recipeType.getId().replace("_", " "))),
+                    Placeholder.unparsed("type", StringUtils.capitalize(recipeType.toString().replace("_", " "))),
                     Placeholder.unparsed("time", String.valueOf(cookingRecipe.getCookingTime())),
                     Placeholder.unparsed("xp", String.valueOf(cookingRecipe.getExp()))
             );

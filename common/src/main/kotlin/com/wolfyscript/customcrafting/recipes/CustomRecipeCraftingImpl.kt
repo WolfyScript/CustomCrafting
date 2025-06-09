@@ -94,7 +94,7 @@ class ShapedCraftingFormulaImpl(
                 matchedItemStackRef = matchedRef
             )
         }
-        return RecipeDataImpl(recipeCrafting, recipeCrafting.result, ingredientData)
+        return RecipeDataImpl(recipeCrafting, ingredientData)
     }
 
     class ShapeImpl(
@@ -259,7 +259,7 @@ class ShapelessCraftingFormulaImpl(
 
         // Make sure all ingredients are on the path, that should be the case already, so simply check for size
         if (path.size - 1 == ingredients.size) {
-            return RecipeDataImpl(recipeCrafting, recipeCrafting.result, pickedIngredients)
+            return RecipeDataImpl(recipeCrafting, pickedIngredients)
         }
         return null
     }
