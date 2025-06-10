@@ -1,6 +1,8 @@
 package com.wolfyscript.customcrafting.spigot
 
 import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.configuration.ConfigurationManager
+import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
 import com.wolfyscript.customcrafting.resource.DataManager
 import com.wolfyscript.customcrafting.resource.DataManagerCommon
 import com.wolfyscript.customcrafting.spigot.recipes.AnvilListener
@@ -23,7 +25,8 @@ class CustomCraftingSpigot(
 ) :
     CustomCraftingCommon() {
 
-    override val dataManager: DataManager = DataManagerCommon(this, bootstrap.dataFolder)
+    override val configurationManager: ConfigurationManager = ConfigurationManagerImpl(bootstrap.plugin.dataFolder)
+    override val dataManager: DataManager = DataManagerCommon(this, bootstrap.plugin.dataFolder)
 
     override fun load() {
         dataManager.loadData()
@@ -32,15 +35,15 @@ class CustomCraftingSpigot(
         registerPlaceholderRecipes(registries.customRecipes.values())
 
         Bukkit.getPluginManager().apply {
-            registerEvents(AnvilListener(this@CustomCraftingSpigot), bootstrap)
-            registerEvents(CampfireListener(this@CustomCraftingSpigot), bootstrap)
-            registerEvents(CauldronListener(this@CustomCraftingSpigot), bootstrap)
-            registerEvents(CrafterListener(this@CustomCraftingSpigot), bootstrap)
-            registerEvents(CraftingListener(this@CustomCraftingSpigot), bootstrap)
-            registerEvents(FurnaceListener(this@CustomCraftingSpigot), bootstrap)
-            registerEvents(GrindstoneListener(this@CustomCraftingSpigot), bootstrap)
-            registerEvents(SmithingListener(this@CustomCraftingSpigot), bootstrap)
-            registerEvents(StonecutterListener(this@CustomCraftingSpigot), bootstrap)
+            registerEvents(AnvilListener(this@CustomCraftingSpigot), bootstrap.plugin)
+            registerEvents(CampfireListener(this@CustomCraftingSpigot), bootstrap.plugin)
+            registerEvents(CauldronListener(this@CustomCraftingSpigot), bootstrap.plugin)
+            registerEvents(CrafterListener(this@CustomCraftingSpigot), bootstrap.plugin)
+            registerEvents(CraftingListener(this@CustomCraftingSpigot), bootstrap.plugin)
+            registerEvents(FurnaceListener(this@CustomCraftingSpigot), bootstrap.plugin)
+            registerEvents(GrindstoneListener(this@CustomCraftingSpigot), bootstrap.plugin)
+            registerEvents(SmithingListener(this@CustomCraftingSpigot), bootstrap.plugin)
+            registerEvents(StonecutterListener(this@CustomCraftingSpigot), bootstrap.plugin)
         }
     }
 

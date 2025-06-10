@@ -82,9 +82,9 @@ public class ConfigHandler {
 
     public void loadRecipeBookConfig() throws IOException {
         var recipeBookFileJson = new File(customCrafting.getDataFolder(), "recipe_book.json");
-        var recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.conf");
+        var recipeBookFile = new File(customCrafting.getDataFolder(), "com/wolfyscript/customcrafting/recipes/default/recipe_book.conf");
         if (!recipeBookFileJson.exists() && !recipeBookFile.exists()) {
-            customCrafting.saveResource("recipe_book.conf", true);
+            customCrafting.saveResource("com/wolfyscript/customcrafting/recipes/default/recipe_book.conf", true);
         } else if (recipeBookFileJson.exists() && !recipeBookFile.exists()) {
             // The old json file is used and there is no hocon file available, so let's rename it.
             Files.move(recipeBookFileJson.toPath(), recipeBookFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -166,7 +166,7 @@ public class ConfigHandler {
 
     public void saveNewRecipeBookConfig(RecipeBookConfig editorCopy, GuiWindow<CCCache> window, GuiHandler<CCCache> guiHandler) {
         try {
-            File recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.conf");
+            File recipeBookFile = new File(customCrafting.getDataFolder(), "com/wolfyscript/customcrafting/recipes/default/recipe_book.conf");
             if (!recipeBookFile.renameTo(new File(customCrafting.getDataFolder(), "recipe_book_backup.conf"))) {
                 window.sendMessage(guiHandler, window.getCluster().translatedMsgKey("save.failed_backup"));
             }

@@ -20,6 +20,8 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     kotlin("jvm")
     `java-library`
@@ -46,56 +48,75 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":api"))
-    implementation(project(":common"))
+    api(project(":api"))
     implementation(libs.scafall.loader)
-    api(libs.protocollib)
-    api(libs.bstats)
-    api(libs.scafall.spigot.api)
-    implementation(libs.caffeine)
-    compileOnly(libs.mythic.dist)
-    compileOnly(libs.papermc.paper)
-    compileOnly(libs.mojang.authlib)
-    compileOnly(libs.jetbrains.annotations)
-    compileOnly(libs.netty.all)
-    compileOnly(libs.placeholderapi)
-    compileOnly(libs.oraxen)
-    compileOnly(libs.wolfyutils.spigot)
-    compileOnly(libs.nbtapi)
+
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
 tasks {
+    processResources {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        filesMatching("**/*.yml") {
+            expand(project.properties)
+        }
+    }
+
     shadowJar {
-        archiveFileName = "customcrafting-spigot-mojmap.jar"
-
+        dependsOn(project(":spigot").tasks.getByName<Copy>("createInnerJar"))
+        mustRunAfter(jar)
+        archiveClassifier.set("")
         dependencies {
-            include(project(":common"))
-
-            include(dependency("${libs.bstats.get().group}:.*"))
+            include(project(":api"))
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
 
-        relocate("org.bstats", "com.wolfyscript.customcrafting.bukkit.metrics")
+        // Include inner jar file
+        from(project(":spigot").tasks.getByName("createInnerJar"))
     }
-    assemble {
-        dependsOn(reobfJar)
+
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
     }
-    reobfJar {
-        outputJar.set(layout.buildDirectory.file("libs/customcrafting-spigot-reobf.jar"))
-    }
-    register<Copy>("createInnerJar") {
-        mustRunAfter(reobfJar)
-        dependsOn(reobfJar)
-        from(reobfJar)
-        into(layout.buildDirectory.file("inner"))
-        rename { "customcrafting-spigot.innerjar" }
+
+    withType<Javadoc> {
+        options.encoding = "UTF-8"
     }
 }
 
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-        artifact(file("$rootDir/gradle.properties"))
+artifacts {
+    archives(tasks.shadowJar)
+}
+
+val debugPort: String = "5006"
+
+minecraftDockerRun {
+    val customEnv = env.get().toMutableMap()
+    customEnv["MEMORY"] = "2G"
+    customEnv["JVM_OPTS"] = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${debugPort}"
+    env.set(customEnv)
+    arguments("--cpus", "2", "-it") // Constrain to only use 2 cpus, and allow for console interactivity with 'docker attach'
+}
+
+minecraftServers {
+    serversDir.set(file("${System.getProperty("user.home")}${File.separator}minecraft${File.separator}test_servers_v5"))
+    libName.set("${project.name}-${version}.jar")
+    val debugPortMapping = "${debugPort}:${debugPort}"
+    servers {
+        register("spigot_1_21") {
+            destFileName.set("customcrafting.jar")
+            version.set("1.21.5")
+            type.set("SPIGOT")
+            extraEnv.put("BUILD_FROM_SOURCE", "true")
+            imageVersion.set("java21-graalvm") // graalvm contains the jdk required to build from source
+            ports.set(setOf(debugPortMapping, "25569:25565"))
+        }
+        register("paper_1_21") {
+            destFileName.set("customcrafting.jar")
+            version.set("1.21.5")
+            type.set("PAPER")
+            imageVersion.set("java21")
+            ports.set(setOf("5007:5007", "25570:25565"))
+        }
     }
 }

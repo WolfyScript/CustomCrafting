@@ -113,7 +113,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
             if (resultStack != null) {
                 e.inventory.result = resultStack.unwrap()
-                Bukkit.getScheduler().runTask(customCrafting.bootstrap, Runnable { player.updateInventory() })
+                Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
             } else {
                 // No valid custom recipes found
                 if (e.recipe !is Keyed) return
@@ -123,7 +123,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 if (ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe((e.recipe as Keyed).key)) {
                     // TODO: Can't determine the vanilla recipe! We may need NMS for that in the future. For now simply override vanilla recipes.
                     e.inventory.result = ItemUtils.AIR
-                    Bukkit.getScheduler().runTask(customCrafting.bootstrap, Runnable { player.updateInventory() })
+                    Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
                     return
                 }
 
@@ -135,12 +135,12 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 ) {
                     //Recipe is disabled or it is a custom recipe!
                     e.inventory.result = ItemUtils.AIR
-                    Bukkit.getScheduler().runTask(customCrafting.bootstrap, Runnable { player.updateInventory() })
+                    Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
                     return
                 }
 
                 //At this point the vanilla recipe is valid and can be crafted
-                Bukkit.getScheduler().runTask(customCrafting.bootstrap, Runnable { player.updateInventory() })
+                Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
             }
         } catch (ex: Exception) {
             customCrafting.logger.error("-------- [Error occurred while crafting Recipe!] --------")

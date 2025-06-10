@@ -14,7 +14,6 @@ import kotlin.io.path.Path
 
 abstract class CustomCraftingCommon : CustomCrafting {
 
-    override val configurationManager: ConfigurationManager = ConfigurationManagerImpl(Path("config"))
     override val recipeManager: RecipeManager = RecipeManagerCommon(this)
     override val registries: CCBuiltInRegistries = CCBuiltInRegistriesCommon()
     override val factories: Factories = FactoriesCommon()

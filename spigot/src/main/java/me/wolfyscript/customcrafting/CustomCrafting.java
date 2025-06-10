@@ -48,12 +48,6 @@ import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.listeners.*;
-import me.wolfyscript.customcrafting.listeners.cooking.CampfireListener;
-import me.wolfyscript.customcrafting.listeners.cooking.CookingManager;
-import me.wolfyscript.customcrafting.listeners.cooking.FurnaceListener;
-import me.wolfyscript.customcrafting.listeners.crafting.CraftListener;
-import me.wolfyscript.customcrafting.listeners.crafting.CrafterListener;
-import me.wolfyscript.customcrafting.listeners.smithing.SmithingListener;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
 import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDefault;
@@ -119,7 +113,6 @@ public class CustomCrafting extends JavaPlugin {
     private final CCRegistries registries;
     //Recipe Managers / API
     private final CraftManager craftManager;
-    private final CookingManager cookingManager;
     private DisableRecipesHandler disableRecipesHandler;
     //File Handlers to load, save or edit data
     private ConfigHandler configHandler;
@@ -160,7 +153,6 @@ public class CustomCrafting extends JavaPlugin {
         this.updateChecker = new UpdateChecker(this, 55883);
 
         this.craftManager = new CraftManager(this);
-        this.cookingManager = new CookingManager(this);
     }
 
     /**
@@ -343,17 +335,7 @@ public class CustomCrafting extends JavaPlugin {
         var pM = Bukkit.getPluginManager();
         pM.registerEvents(new PlayerListener(this), this);
         pM.registerEvents(new RecipeDiscoverListener(this), this);
-        pM.registerEvents(new CraftListener(this), this);
-        pM.registerEvents(new CrafterListener(this), this);
-        pM.registerEvents(new FurnaceListener(this, cookingManager), this);
-        pM.registerEvents(new AnvilListener(this), this);
-        pM.registerEvents(new CauldronListener(this), this);
-        pM.registerEvents(new EliteWorkbenchListener(api), this);
-        pM.registerEvents(new GrindStoneListener(this), this);
-        pM.registerEvents(new BrewingStandListener(api, this), this);
         pM.registerEvents(new RecipeBookListener(this), this);
-        pM.registerEvents(new SmithingListener(this), this);
-        pM.registerEvents(new CampfireListener(this), this);
     }
 
     private void registerCommands() {
@@ -446,10 +428,6 @@ public class CustomCrafting extends JavaPlugin {
      */
     public CraftManager getCraftManager() {
         return craftManager;
-    }
-
-    public CookingManager getCookingManager() {
-        return cookingManager;
     }
 
     public ChatUtils getChatUtils() {

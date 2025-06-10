@@ -13,13 +13,14 @@ import com.wolfyscript.customcrafting.configuration.resources.LocalDestinationSe
 import com.wolfyscript.customcrafting.configuration.resources.ResourceSettings
 import com.wolfyscript.customcrafting.configuration.resources.ResourceSettingsImpl
 import com.wolfyscript.customcrafting.configuration.resources.SQLDestinationSettingsImpl
+import com.wolfyscript.customcrafting.util.exportResource
 import com.wolfyscript.jackson.dataformat.hocon.HoconMapper
 import java.io.File
-import java.nio.file.Path
 import kotlin.jvm.java
 
-class ConfigurationManagerImpl(val path: Path) : ConfigurationManager {
+class ConfigurationManagerImpl(val rootDir: File) : ConfigurationManager {
 
+    private val configDir = File(rootDir, "config")
     private val configMapper = HoconMapper()
 
     override var resourceSettings: ResourceSettings = ResourceSettingsImpl(emptyList())
@@ -31,6 +32,12 @@ class ConfigurationManagerImpl(val path: Path) : ConfigurationManager {
         get() = TODO("Not yet implemented")
     override val editorSettings: EditorSettings
         get() = TODO("Not yet implemented")
+
+    private val resourcesSettingsFile = File(configDir, "resources/resources.conf")
+    private val gameMechanicSettingsFile = File(configDir, "mechanics/mechanics.conf")
+    private val guiSettingsFile = File(configDir, "gui/gui.conf")
+    private val cliSettingsFile = File(configDir, "cli/cli.conf")
+    private val editorSettingsFile = File(configDir, "editor/editor.conf")
 
     init {
         val mappingModule = SimpleModule().apply {
@@ -47,10 +54,20 @@ class ConfigurationManagerImpl(val path: Path) : ConfigurationManager {
         configMapper.registerModule(mappingModule)
     }
 
+    fun saveDefaults() {
+        if (!resourcesSettingsFile.exists()) {
+            exportResource("com/wolfyscript/customcrafting/configuration/default/resources/resources.conf", resourcesSettingsFile)
+        }
+
+
+
+    }
+
 
     override fun load() {
-        val resourceSettingsFile = File(path.toFile(), "resources/resource_settings.conf")
-        resourceSettings = configMapper.readValue(resourceSettingsFile, ResourceSettingsImpl::class.java)
+        saveDefaults()
+
+        resourceSettings = configMapper.readValue(resourcesSettingsFile, ResourceSettingsImpl::class.java)
 
 
 

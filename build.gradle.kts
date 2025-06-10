@@ -27,7 +27,6 @@ plugins {
     `maven-publish`
     kotlin("jvm")
     alias(libs.plugins.shadow)
-    alias(libs.plugins.devtools.docker.minecraft)
     alias(libs.plugins.modrinth.minotaur)
     alias(libs.plugins.artifactory)
 }
@@ -68,37 +67,6 @@ tasks.withType<JavaCompile> {
 
 tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
-}
-
-val debugPort: String = "5006"
-
-minecraftDockerRun {
-    val customEnv = env.get().toMutableMap()
-    customEnv["MEMORY"] = "2G"
-    customEnv["JVM_OPTS"] = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${debugPort}"
-    env.set(customEnv)
-    arguments("--cpus", "2", "-it") // Constrain to only use 2 cpus, and allow for console interactivity with 'docker attach'
-}
-
-minecraftServers {
-    serversDir.set(file("${System.getProperty("user.home")}${File.separator}minecraft${File.separator}test_servers_v4"))
-    libName.set("${project.name}-${version}.jar")
-    val debugPortMapping = "${debugPort}:${debugPort}"
-    servers {
-        register("spigot_1_21") {
-            version.set("1.21.5")
-            type.set("SPIGOT")
-            extraEnv.put("BUILD_FROM_SOURCE", "true")
-            imageVersion.set("java21-graalvm") // graalvm contains the jdk required to build from source
-            ports.set(setOf(debugPortMapping, "25569:25565"))
-        }
-        register("paper_1_21") {
-            version.set("1.21.5")
-            type.set("PAPER")
-            imageVersion.set("java21")
-            ports.set(setOf("5007:5007", "25570:25565"))
-        }
-    }
 }
 
 artifactory {

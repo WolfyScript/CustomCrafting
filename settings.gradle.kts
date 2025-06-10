@@ -65,6 +65,7 @@ plugins {
 
 sequenceOf(
     "spigot",
+    "spigot:loader"
 ).forEach {
     include(":${it}")
     project(":${it}").projectDir = file(it.replace(":", "/"))

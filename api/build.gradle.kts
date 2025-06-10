@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+    compileOnly(libs.scafall.loader)
 
 }
 

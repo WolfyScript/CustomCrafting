@@ -1,9 +1,9 @@
 name: CustomCrafting
 authors: [ WolfyScript ]
-main: com.wolfyscript.customcrafting.spigot.CustomCraftingSpigotBootstrap
+main: com.wolfyscript.customcrafting.spigot.loader.SpigotLoaderPlugin
 version: ${version}
 api-version: "1.21.5"
-depend: [ scafall, NBTAPI ]
+depend: [ scafall ]
 loadbefore:
   - DiSky
   - EpicWorldGenerator

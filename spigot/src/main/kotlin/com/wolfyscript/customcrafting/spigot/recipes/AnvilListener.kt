@@ -98,7 +98,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
             }
         }
         if (cursor.type == Material.AIR) {
-            Bukkit.getScheduler().runTask(customCrafting.bootstrap, Runnable {
+            Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable {
                 event.view.setCursor(resultStack)
             })
         } else if (cursor.isSimilar(resultStack)) {
@@ -106,7 +106,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 // TODO: try and put item into inventory
                 return // does not fit on the cursor. cancel recipe processing.
             }
-            Bukkit.getScheduler().runTask(customCrafting.bootstrap, Runnable {
+            Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable {
                 // since this is called next tick, the cursor might have changed, so use the latest
                 event.view.cursor.amount = event.view.cursor.amount + resultStack.amount
             })

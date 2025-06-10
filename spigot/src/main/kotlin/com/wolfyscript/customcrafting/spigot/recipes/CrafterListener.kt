@@ -67,7 +67,7 @@ class CrafterListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 inventory.setItem(index, new.unwrap())
             }
             // Now all calculations are done, so we can update the inventory
-            Bukkit.getScheduler().runTask(customCrafting.bootstrap, Runnable {
+            Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable {
                 state.update(true)
             })
             return
