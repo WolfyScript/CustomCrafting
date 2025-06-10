@@ -72,6 +72,10 @@ tasks {
         dependencies {
             include(project(":common"))
 
+            include(dependency("${libs.jackson.dataformat.hocon.get()}:.*"))
+            include(dependency("${libs.jackson.databind.get()}:.*"))
+            include(dependency("${libs.caffeine.get()}:.*"))
+            include(dependency("${libs.jetbrains.annotations.get()}:.*"))
             include(dependency("${libs.bstats.get().group}:.*"))
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
