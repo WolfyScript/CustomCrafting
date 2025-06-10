@@ -28,8 +28,8 @@ import kotlin.random.Random
 
 class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
 
-    private val backingRecipesUsedKey = NamespacedKey("customCrafting", "backing_recipes_used")
-    private val customRecipesUsedKey = NamespacedKey("customCrafting", "recipes_used")
+    private val backingRecipesUsedKey = NamespacedKey("customcrafting", "backing_recipes_used")
+    private val customRecipesUsedKey = NamespacedKey("customcrafting", "recipes_used")
 
     private val recipeCache = Caffeine.newBuilder().build<ScafallBlockPos, CookingRecipeCache>()
 
