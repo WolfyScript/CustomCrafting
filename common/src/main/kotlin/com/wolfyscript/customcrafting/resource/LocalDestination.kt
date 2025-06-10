@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.InjectableValues
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
 import java.io.IOException
@@ -14,7 +15,11 @@ import java.nio.file.Path
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
 
-class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: ResourceLoaderImpl, settings: DestinationSettings.LocalDestinationSettings) :
+class LocalDestination(
+    customCrafting: CustomCrafting,
+    resourceLoaderImpl: ResourceLoaderImpl,
+    settings: DestinationSettings.LocalDestinationSettings,
+) :
     AbstractDestination<DestinationSettings.LocalDestinationSettings>(customCrafting, resourceLoaderImpl, settings) {
 
     val path: String = settings.path ?: resourceLoaderImpl.directory.path
@@ -22,46 +27,56 @@ class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resou
     override val filter: ResourceLoader.Destination.Filter? =
         settings.filter?.let { DestinationFilter(customCrafting, it) }
 
+    private fun assureDir() {
+        val file = File(path)
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+    }
+
     override fun load() {
+        assureDir()
+
         val rootDir = File(path)
         if (!rootDir.exists()) rootDir.mkdirs()
         if (settings.backup != null) {
             return
         }
 
-        rootDir.listFiles { it -> it.isDirectory }?.forEach { namespaceDir ->
-            readFiles(namespaceDir.name, "recipes") { relative: Path, file: Path, attrs: BasicFileAttributes ->
-
-                val injectableValues = InjectableValues.Std().apply {
-                    addValue("customCrafting", customCrafting)
-                    addValue(CustomCrafting::class.java, customCrafting)
-                }
-
-                val key = relative.toKey(namespaceDir.name)
-                try {
-                    val recipe = customCrafting.dataManager.jacksonObjectMapper.reader(injectableValues).readValue<CustomRecipe<*,*>>(file.toFile())
-
-                    // Temporarily store the recipe to check dependencies later
-                    resourceLoaderImpl.addRecipeFrom(ResourceLoaderImpl.LoadedRecipe(key, recipe, listOf()), this)
-                } catch (e: Exception) {
-                    // TODO
-                }
-                return@readFiles FileVisitResult.CONTINUE
+        readFiles(path) { relative: Path, file: Path, attrs: BasicFileAttributes ->
+            val injectableValues = InjectableValues.Std().apply {
+                addValue("customCrafting", customCrafting)
+                addValue(CustomCrafting::class.java, customCrafting)
             }
-        }
 
+            val key = relative.toKey(Key.CUSTOMCRAFTING_NAMESPACE)
+            try {
+                val recipe = customCrafting.dataManager.jacksonObjectMapper.reader(injectableValues)
+                    .readValue<CustomRecipe<*, *>>(file.toFile())
+
+                // Temporarily store the recipe to check dependencies later
+                resourceLoaderImpl.addRecipeFrom(ResourceLoaderImpl.LoadedRecipe(key, recipe, listOf()), this)
+            } catch (e: Exception) {
+                // TODO
+            }
+            return@readFiles FileVisitResult.CONTINUE
+        }
     }
 
-    override fun save(recipe: CustomRecipe<*,*>): Result<Boolean> {
-        val key = customCrafting.registries.customRecipes.getKey(recipe) ?: return Result.failure(Exception("No key found for recipe $recipe!"))
-        val destPath = "${path}/${key.namespace}/recipes/${key.value}.conf"
+    override fun save(recipe: CustomRecipe<*, *>): Result<Boolean> {
+        assureDir()
+
+        val key = customCrafting.registries.customRecipes.getKey(recipe)
+            ?: return Result.failure(Exception("No key found for recipe $recipe!"))
+        val destPath = "${path}/${key.value}.conf"
 
         val destFile = File(destPath)
 
         if (destFile.getParentFile().exists() || destFile.getParentFile().mkdirs()) {
             try {
                 if (destFile.isFile() || destFile.createNewFile()) {
-                    customCrafting.dataManager.jacksonObjectMapper.writer(DefaultPrettyPrinter()).writeValue(destFile, recipe)
+                    customCrafting.dataManager.jacksonObjectMapper.writer(DefaultPrettyPrinter())
+                        .writeValue(destFile, recipe)
                     return Result.success(true)
                 }
             } catch (e: IOException) {
@@ -71,9 +86,10 @@ class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resou
         return Result.failure(Exception("Could not create file $destPath to save recipe $key!"))
     }
 
-    override fun delete(recipe: CustomRecipe<*,*>): Result<Boolean> {
-        val key = customCrafting.registries.customRecipes.getKey(recipe) ?: return Result.failure(Exception("No key found for recipe $recipe!"))
-        val destPath = "${path}/${key.namespace}/recipes/${key.value}.conf"
+    override fun delete(recipe: CustomRecipe<*, *>): Result<Boolean> {
+        val key = customCrafting.registries.customRecipes.getKey(recipe)
+            ?: return Result.failure(Exception("No key found for recipe $recipe!"))
+        val destPath = "${path}/${key.value}.conf"
         val destFile = File(destPath)
 
         return try {
@@ -84,8 +100,8 @@ class LocalDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resou
 
     }
 
-    private fun readFiles(namespace: String, directory: String, visitor: NamespaceFileVisitor.CustomFileVisitor) {
-        val directoryPath = File("${path}/${namespace}/${directory}")
+    private fun readFiles(root: String, visitor: NamespaceFileVisitor.CustomFileVisitor) {
+        val directoryPath = File(root)
         if (!directoryPath.exists()) return
         try {
             val root = directoryPath.toPath()

@@ -4,6 +4,7 @@ import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
 import com.wolfyscript.customcrafting.configuration.resources.ResourceSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.util.exportResource
 import com.wolfyscript.scafall.dependency.Dependency
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.verification.VerificationResult
@@ -32,7 +33,22 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
         awaitingDependenciesRecipes[recipe.key] = recipe
     }
 
+    private fun exportDefaults() {
+        val dir = "com/wolfyscript/customcrafting/recipes/default"
+        listOf(
+            "enchanted_golden_apple"
+        ).forEach {
+            exportResource("$dir/$it.conf", File(directory, "default/$it.conf"))
+        }
+    }
+
     override fun loadResources() {
+        exportDefaults()
+
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+
         // Load resources into a temporary storage
         destinations.forEach {
             it.load()
