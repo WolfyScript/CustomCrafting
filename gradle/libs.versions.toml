@@ -2,13 +2,14 @@
 
 [versions]
 # Kotlin & Jetbrains
-kotlin-stdlib = "2.0.21"
+kotlin-stdlib = "2.1.21"
 jetbrains-annotations = "23.0.0"
 
 # Configuration
-jackson = "2.15.4"
+jackson = "2.19.0"
 dataformat-hocon = "2.1-SNAPSHOT"
 typesafe-config = "1.3.1"
+jackson-kotlin = "2.19.0"
 
 # cross-platform APIs
 scafall = "alpha0.0.1.0-SNAPSHOT"
@@ -59,7 +60,7 @@ neoforge_loader_version_range = "[4,)"
 
 # Gradle plugins
 fabric-loom = "1.10-SNAPSHOT"
-shadow = "8.1.7"
+shadow = "9.0.0-beta15"
 dev-tools = "a2.0.1.0"
 artifactory = "5+"
 paperweight-userdev = "2.0.0-beta.17"
@@ -74,6 +75,7 @@ jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "j
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
 jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
+jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson-kotlin" }
 jackson-dataformat-hocon = { module = "com.wolfyscript:jackson-dataformat-hocon", version.ref = "dataformat-hocon" }
 typesafe-config = { module = "com.typesafe:config", version.ref = "typesafe-config" }
 
@@ -125,7 +127,7 @@ minecraft-deps = [ "mojang-authlib", "fastutil", "netty-all" ]
 testing = [ "junit-jupiter" ]
 
 [plugins]
-shadow = { id = "io.github.goooler.shadow", version.ref = "shadow" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 spongepowered-gradle = { id = "org.spongepowered.gradle.plugin", version.ref = "sponge-gradle" }
 devtools-docker-run = { id = "com.wolfyscript.devtools.docker.run", version.ref = "dev-tools" }
 devtools-docker-minecraft = { id = "com.wolfyscript.devtools.docker.minecraft_servers", version.ref = "dev-tools" }

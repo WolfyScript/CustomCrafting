@@ -48,7 +48,10 @@ repositories {
 dependencies {
     implementation(project(":api"))
     implementation(project(":common"))
+    implementation(kotlin("reflect"))
     implementation(libs.scafall.loader)
+    shadow(libs.bundles.jackson)
+    implementation(libs.jackson.kotlin)
     api(libs.protocollib)
     api(libs.bstats)
     api(libs.scafall.spigot.api)
@@ -72,11 +75,15 @@ tasks {
         dependencies {
             include(project(":common"))
 
-            include(dependency("${libs.jackson.dataformat.hocon.get()}:.*"))
-            include(dependency("${libs.jackson.databind.get()}:.*"))
-            include(dependency("${libs.caffeine.get()}:.*"))
-            include(dependency("${libs.jetbrains.annotations.get()}:.*"))
-            include(dependency("${libs.bstats.get().group}:.*"))
+            include(dependency(libs.typesafe.config))
+            include(dependency(libs.jackson.kotlin))
+            include(dependency(libs.jackson.dataformat.hocon))
+            include(dependency(libs.jackson.core))
+            include(dependency(libs.jackson.annotations))
+            include(dependency(libs.jackson.databind))
+            include(dependency(libs.caffeine))
+            include(dependency(libs.jetbrains.annotations))
+            include(dependency(libs.bstats))
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
 

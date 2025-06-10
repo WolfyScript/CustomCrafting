@@ -7,5 +7,6 @@ plugins {
 dependencies {
     api(project(":api"))
     minecraft(libs.minecraft)
+    compileOnly(libs.jackson.kotlin)
     mappings(loom.officialMojangMappings())
 }
