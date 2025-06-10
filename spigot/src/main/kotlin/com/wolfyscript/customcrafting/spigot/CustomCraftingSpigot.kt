@@ -25,10 +25,11 @@ class CustomCraftingSpigot(
 ) :
     CustomCraftingCommon() {
 
-    override val configurationManager: ConfigurationManager = ConfigurationManagerImpl(bootstrap.plugin.dataFolder)
+    override val configurationManager: ConfigurationManager = ConfigurationManagerImpl(this, bootstrap.plugin.dataFolder)
     override val dataManager: DataManager = DataManagerCommon(this, bootstrap.plugin.dataFolder)
 
     override fun load() {
+        configurationManager.load()
         dataManager.loadData()
 
         registerPlaceholderRecipes(registries.customRecipes.values())

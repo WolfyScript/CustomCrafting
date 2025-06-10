@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 /**
  * Settings for a destination to save resources to and load resources from.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonSubTypes(
     JsonSubTypes.Type(value = DestinationSettings.SQLDestinationSettings::class, name = "sql"),

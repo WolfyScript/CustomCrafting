@@ -1,6 +1,9 @@
 package com.wolfyscript.customcrafting.configuration
 
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.cli.CLISettings
 import com.wolfyscript.customcrafting.configuration.editor.EditorSettings
 import com.wolfyscript.customcrafting.configuration.gui.GUISettings
@@ -18,7 +21,7 @@ import com.wolfyscript.jackson.dataformat.hocon.HoconMapper
 import java.io.File
 import kotlin.jvm.java
 
-class ConfigurationManagerImpl(val rootDir: File) : ConfigurationManager {
+class ConfigurationManagerImpl(val customCrafting: CustomCrafting, val rootDir: File) : ConfigurationManager {
 
     private val configDir = File(rootDir, "config")
     private val configMapper = HoconMapper()
@@ -52,6 +55,7 @@ class ConfigurationManagerImpl(val rootDir: File) : ConfigurationManager {
 
         }
         configMapper.registerModule(mappingModule)
+        configMapper.registerKotlinModule()
     }
 
     fun saveDefaults() {
@@ -65,12 +69,10 @@ class ConfigurationManagerImpl(val rootDir: File) : ConfigurationManager {
 
 
     override fun load() {
+        customCrafting.logger.info("Loading configurations...")
+
         saveDefaults()
-
-        resourceSettings = configMapper.readValue(resourcesSettingsFile, ResourceSettingsImpl::class.java)
-
-
-
+        resourceSettings = configMapper.readValue<ResourceSettings>(resourcesSettingsFile)
 
     }
 
