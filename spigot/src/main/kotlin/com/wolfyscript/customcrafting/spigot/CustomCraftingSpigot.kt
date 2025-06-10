@@ -33,7 +33,9 @@ class CustomCraftingSpigot(
 
         registerPlaceholderRecipes(registries.customRecipes.values())
         registerPlaceholderRecipes(registries.customRecipes.values())
+    }
 
+    override fun enabled() {
         Bukkit.getPluginManager().apply {
             registerEvents(AnvilListener(this@CustomCraftingSpigot), bootstrap.plugin)
             registerEvents(CampfireListener(this@CustomCraftingSpigot), bootstrap.plugin)

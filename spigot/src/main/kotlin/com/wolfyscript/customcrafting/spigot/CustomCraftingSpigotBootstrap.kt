@@ -16,7 +16,7 @@ class CustomCraftingSpigotBootstrap(val innerJarClassloader: ClassLoader, val pl
     }
 
     override fun onEnable() {
-
+        bridge.enabled()
     }
 
     override fun onUnload() {

@@ -20,6 +20,8 @@ abstract class CustomCraftingCommon : CustomCrafting {
 
     abstract fun load()
 
+    abstract fun enabled()
+
     abstract fun unload()
 
 }
