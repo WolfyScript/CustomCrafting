@@ -5,7 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class CustomCraftingSpigotBootstrap(val plugin: JavaPlugin) : CustomCraftingBoostrap.CustomCraftingModule {
+class CustomCraftingSpigotBootstrap(val innerJarClassloader: ClassLoader, val plugin: JavaPlugin) : CustomCraftingBoostrap.CustomCraftingModule {
 
     val slf4jLogger: Logger = LoggerFactory.getLogger(plugin.logger.name)
 
