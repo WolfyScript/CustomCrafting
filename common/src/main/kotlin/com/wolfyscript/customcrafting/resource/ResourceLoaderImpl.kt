@@ -14,6 +14,7 @@ import java.io.File
 class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: ResourceSettings, val directory: File) : ResourceLoader {
 
     override val destinations: List<AbstractDestination<*>> = settings.destinations.mapNotNull {
+        customCrafting.logger.info("Construct destination: $it")
         return@mapNotNull when (it) {
             // TODO: hmmm
             is DestinationSettings.LocalDestinationSettings -> LocalDestination(customCrafting, this, it)
@@ -34,6 +35,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
     }
 
     private fun exportDefaults() {
+        customCrafting.logger.info("Exporting default recipes to $directory")
         val dir = "com/wolfyscript/customcrafting/recipes/default"
         listOf(
             "enchanted_golden_apple"
@@ -43,12 +45,12 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
     }
 
     override fun loadResources() {
-        exportDefaults()
-
         if (!directory.exists()) {
             directory.mkdirs()
         }
+        exportDefaults()
 
+        customCrafting.logger.info("Loading resources... ${destinations}")
         // Load resources into a temporary storage
         destinations.forEach {
             it.load()
