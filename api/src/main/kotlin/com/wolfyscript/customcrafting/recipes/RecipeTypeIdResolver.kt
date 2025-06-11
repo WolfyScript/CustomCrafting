@@ -32,20 +32,28 @@ class RecipeTypeIdResolver : TypeIdResolverBase() {
     }
 
     private fun getKey(value: Any?): String {
-        if (value is CustomRecipe<*,*>) {
-            return CustomCraftingProvider.get().registries.recipeTypes.getKey(value.type)?.toString()
-                ?: throw IllegalArgumentException("No key found for recipe $value!")
+        if (value == null) {
+            throw IllegalArgumentException("Failed to get recipe type null type!")
         }
-        throw IllegalArgumentException("Value must be a CustomRecipe!")
+        if (value is CustomRecipe<*,*>) {
+            val key = CustomCraftingProvider.get().registries.recipeTypes.getKey(value.type)
+            if (key != null) {
+                return key.toString()
+            }
+            throw IllegalArgumentException("Failed to get recipe type key of recipe class: ${value::class.java}! Make sure the type it uses is registered.")
+        }
+        throw IllegalArgumentException("Failed to get recipe type of class: ${value::class.java}! That is not a recipe.")
     }
 
-    override fun typeFromId(context: DatabindContext?, id: String?): JavaType? {
-        if (id == null) {
-            return TypeFactory.unknownType()
+    override fun typeFromId(context: DatabindContext, id: String): JavaType {
+        val namespacedKey = if (id.contains(':')) {
+            Key.parse(id)
+        } else {
+            Key.key(Key.SCAFFOLDING_NAMESPACE, id)
         }
-        val recipeType = CustomCraftingProvider.get().registries.recipeTypes[Key.parse(id)]
-        if (recipeType != null) {
-            return context?.constructSpecializedType(superType, recipeType.recipeClass)
+        val value = CustomCraftingProvider.get().registries.recipeTypes[namespacedKey]
+        if (value != null) {
+            return context.constructSpecializedType(superType, value.recipeClass)
         }
         return TypeFactory.unknownType()
     }
