@@ -58,21 +58,19 @@ class ConfigurationManagerImpl(val customCrafting: CustomCrafting, val rootDir: 
         configMapper.registerKotlinModule()
     }
 
+    init {
+        saveDefaults()
+        resourceSettings = configMapper.readValue<ResourceSettings>(resourcesSettingsFile)
+    }
+
     fun saveDefaults() {
         if (!resourcesSettingsFile.exists()) {
             exportResource("com/wolfyscript/customcrafting/configuration/default/resources/resources.conf", resourcesSettingsFile)
         }
-
-
-
     }
-
 
     override fun load() {
         customCrafting.logger.info("Loading configurations...")
-
-        saveDefaults()
-        resourceSettings = configMapper.readValue<ResourceSettings>(resourcesSettingsFile)
 
     }
 
