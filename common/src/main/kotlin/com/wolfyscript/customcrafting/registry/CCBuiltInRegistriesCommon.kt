@@ -6,9 +6,20 @@ import com.wolfyscript.customcrafting.editor.result.ResultActionStore
 import com.wolfyscript.customcrafting.editor.result.TransmuterStore
 import com.wolfyscript.customcrafting.recipes.Condition
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking
+import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.recipes.CustomRecipeGrinding
+import com.wolfyscript.customcrafting.recipes.CustomRecipeMixing
+import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
+import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
+import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting
 import com.wolfyscript.customcrafting.recipes.RecipeType
+import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.ResultAction
 import com.wolfyscript.customcrafting.recipes.ResultModifier
+import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.recipes.RecipeTypeIdResolver
+import com.wolfyscript.customcrafting.recipes.RecipeTypeImpl
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.Registry
 import com.wolfyscript.scafall.registry.RegistrySimple
@@ -32,4 +43,13 @@ class CCBuiltInRegistriesCommon : CCBuiltInRegistries {
     override val recipeTypes: Registry<RecipeType<*>> = RegistrySimple(Key.key("customcrafting", "recipe_types"))
     override val customRecipes: Registry<CustomRecipe<*,*>> = RegistrySimple(Key.key("customcrafting", "recipes"))
 
+    init {
+        recipeTypes.register(Key.customCrafting("crafting"), RecipeTypeImpl(CustomRecipeCrafting::class.java))
+        recipeTypes.register(Key.customCrafting("cooking"), RecipeTypeImpl(CustomRecipeCooking::class.java))
+        recipeTypes.register(Key.customCrafting("mixing"), RecipeTypeImpl(CustomRecipeMixing::class.java))
+        recipeTypes.register(Key.customCrafting("repairing"), RecipeTypeImpl(CustomRecipeRepairing::class.java))
+        recipeTypes.register(Key.customCrafting("smithing"), RecipeTypeImpl(CustomRecipeSmithing::class.java))
+        recipeTypes.register(Key.customCrafting("stonecutting"), RecipeTypeImpl(CustomRecipeStonecutting::class.java))
+        recipeTypes.register(Key.customCrafting("grinding"), RecipeTypeImpl(CustomRecipeGrinding::class.java))
+    }
 }
