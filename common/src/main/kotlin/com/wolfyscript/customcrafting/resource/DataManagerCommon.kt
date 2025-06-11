@@ -2,11 +2,13 @@ package com.wolfyscript.customcrafting.resource
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
 import com.wolfyscript.jackson.dataformat.hocon.HoconMapper
+import com.wolfyscript.scafall.config.jackson.registerScafallModule
 import java.io.File
 
 class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory: File) : DataManager {
@@ -22,6 +24,7 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
     init {
         val implementationTypeModule = SimpleModule("ImplementationTypeModule").apply {
             //
+            addAbstractTypeMapping(RecipeType::class.java, RecipeTypeImpl::class.java)
 
             // Recipe Components
             addAbstractTypeMapping(Ingredient::class.java, IngredientImpl::class.java)
@@ -33,8 +36,10 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
                 ResultModifier.Transformation::class.java,
                 ResultModifierImpl.ResultModifierTransformationImpl::class.java
             )
+            addAbstractTypeMapping(RecipeChoices::class.java, RecipeChoicesImpl::class.java)
 
             // Register Crafting Recipe Type Implementations
+            addAbstractTypeMapping(CustomRecipeCrafting::class.java, CustomRecipeCraftingImpl::class.java)
             addAbstractTypeMapping(CraftingFormula.Shaped::class.java, ShapedCraftingFormulaImpl::class.java)
             addAbstractTypeMapping(CraftingFormula.Shapeless::class.java, ShapelessCraftingFormulaImpl::class.java)
             addAbstractTypeMapping(
@@ -96,8 +101,8 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
 
         }
         jacksonObjectMapper.registerModule(implementationTypeModule)
-
-
+        jacksonObjectMapper.registerKotlinModule()
+        jacksonObjectMapper.registerScafallModule()
     }
 
     override fun loadData() {
