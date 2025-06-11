@@ -12,8 +12,10 @@ import java.io.IOException
 import java.nio.file.FileVisitResult
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
+import kotlin.io.path.pathString
 
 class LocalDestination(
     customCrafting: CustomCrafting,
@@ -37,13 +39,23 @@ class LocalDestination(
     override fun load() {
         assureDir()
 
-        val rootDir = File(path)
+        val resolvedPath = Paths.get(path)
+        val rootDir = if (!resolvedPath.isAbsolute) {
+            customCrafting.logger.info("Use relative path: ${resolvedPath.pathString}")
+            File(resourceLoaderImpl.directory, resolvedPath.pathString)
+        } else {
+            customCrafting.logger.info("Use absolute path: $path")
+            File(path)
+        }
+
         if (!rootDir.exists()) rootDir.mkdirs()
         if (settings.backup != null) {
             return
         }
 
-        readFiles(path) { relative: Path, file: Path, attrs: BasicFileAttributes ->
+        customCrafting.logger.info("Read files in ${rootDir.path}")
+        readFiles(rootDir.path) { relative: Path, file: Path, attrs: BasicFileAttributes ->
+            customCrafting.logger.info("  Found ${file.fileName}")
             val injectableValues = InjectableValues.Std().apply {
                 addValue("customCrafting", customCrafting)
                 addValue(CustomCrafting::class.java, customCrafting)
@@ -51,13 +63,16 @@ class LocalDestination(
 
             val key = relative.toKey(Key.CUSTOMCRAFTING_NAMESPACE)
             try {
-                val recipe = customCrafting.dataManager.jacksonObjectMapper.reader(injectableValues)
-                    .readValue<CustomRecipe<*, *>>(file.toFile())
+                val recipe = customCrafting.dataManager.jacksonObjectMapper
+                    .reader(injectableValues)
+                    .readValue(file.toFile(), CustomRecipe::class.java)
+
+                customCrafting.logger.info("Loaded recipe: $key")
 
                 // Temporarily store the recipe to check dependencies later
                 resourceLoaderImpl.addRecipeFrom(ResourceLoaderImpl.LoadedRecipe(key, recipe, listOf()), this)
             } catch (e: Exception) {
-                // TODO
+                customCrafting.logger.error("Error loading recipe: ", e)
             }
             return@readFiles FileVisitResult.CONTINUE
         }
@@ -105,6 +120,7 @@ class LocalDestination(
         if (!directoryPath.exists()) return
         try {
             val root = directoryPath.toPath()
+            customCrafting.logger.info("Walk file tree: $directoryPath")
             Files.walkFileTree(root, NamespaceFileVisitor(root, visitor))
         } catch (e: IOException) {
             e.printStackTrace()
@@ -131,7 +147,7 @@ class LocalDestination(
             // #205: Required to work with Windows file separators (And possibly other separators).
             pathString = pathString.replace(File.separatorChar, '/');
         }
-        return Key.key(namespace, pathString.substring(pathString.lastIndexOf('.')))
+        return Key.key(namespace, pathString.substring(0, pathString.lastIndexOf('.')))
     }
 
 }
