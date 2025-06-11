@@ -41,7 +41,7 @@ interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, C
 
 }
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 // This could in theory be expanded to allow custom types from a type registry, but for now there is no need for that
 @JsonSubTypes(
