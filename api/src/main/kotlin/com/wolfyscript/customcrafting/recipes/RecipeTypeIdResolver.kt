@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase
 import com.fasterxml.jackson.databind.type.TypeFactory
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 
 class RecipeTypeIdResolver : TypeIdResolverBase() {
@@ -49,7 +50,7 @@ class RecipeTypeIdResolver : TypeIdResolverBase() {
         val namespacedKey = if (id.contains(':')) {
             Key.parse(id)
         } else {
-            Key.key(Key.SCAFFOLDING_NAMESPACE, id)
+            Key.key(Key.CUSTOMCRAFTING_NAMESPACE, id)
         }
         val value = CustomCraftingProvider.get().registries.recipeTypes[namespacedKey]
         if (value != null) {
