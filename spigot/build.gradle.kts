@@ -76,13 +76,9 @@ tasks {
             include(project(":common"))
 
             include(dependency(libs.typesafe.config))
-            include(dependency(libs.jackson.kotlin))
+            include(dependency("${libs.jackson.kotlin.get().group}:.*"))
             include(dependency(libs.jackson.dataformat.hocon))
-            include(dependency(libs.jackson.core))
-            include(dependency(libs.jackson.annotations))
-            include(dependency(libs.jackson.databind))
             include(dependency(libs.caffeine))
-            include(dependency(libs.jetbrains.annotations))
             include(dependency(libs.bstats))
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
