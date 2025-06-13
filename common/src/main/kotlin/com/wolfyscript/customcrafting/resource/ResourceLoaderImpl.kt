@@ -8,6 +8,7 @@ import com.wolfyscript.customcrafting.util.exportResource
 import com.wolfyscript.scafall.dependency.Dependency
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.verification.VerificationResult
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap
 import java.io.File
 
@@ -23,8 +24,8 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
         }
     }
 
-    val awaitingDependenciesRecipes: MutableMap<Key, LoadedRecipe> = Reference2ObjectOpenHashMap()
-    val awaitingVerificationRecipes: MutableMap<Key, CustomRecipe<*,*>> = Reference2ObjectOpenHashMap()
+    val awaitingDependenciesRecipes: MutableMap<Key, LoadedRecipe> = Object2ObjectOpenHashMap()
+    val awaitingVerificationRecipes: MutableMap<Key, CustomRecipe<*,*>> = Object2ObjectOpenHashMap()
     val invalidRecipes: MutableList<VerificationResult<CustomRecipe<*,*>>> = mutableListOf()
 
     fun addRecipeFrom(recipe: LoadedRecipe, destination: AbstractDestination<*>) {
@@ -61,8 +62,8 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
         while (iterator.hasNext()) {
             val recipe = iterator.next()
             if (recipe.value.areDependenciesSatisfied()) {
+                awaitingVerificationRecipes.put(recipe.key, recipe.value.recipe)
                 iterator.remove()
-                awaitingVerificationRecipes[recipe.key] = recipe.value.recipe
             }
         }
     }
