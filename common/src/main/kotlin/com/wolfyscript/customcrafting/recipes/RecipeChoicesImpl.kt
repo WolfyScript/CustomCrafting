@@ -4,8 +4,8 @@ import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 
 class RecipeChoicesImpl(
-    override val stacks: List<ItemStackRef>,
-    override val tags: List<Key>
+    override val stacks: List<ItemStackRef> = emptyList(),
+    override val tags: List<Key> = emptyList(),
 ) : RecipeChoices {
 
     override fun all(): List<ItemStackRef> {

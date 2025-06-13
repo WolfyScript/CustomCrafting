@@ -7,8 +7,8 @@ import kotlin.random.Random
 class RecipeResultImpl(
     override val choices: RecipeChoices,
     override val modifier: ResultModifier,
-    override val actions: List<ResultAction>,
-    override val bulkActions: List<ResultAction>
+    override val actions: List<ResultAction> = listOf(),
+    override val bulkActions: List<ResultAction> = listOf(),
 ) : RecipeResult {
 
     override fun compute(recipeData: RecipeData<*>, context: EvaluationContext, random: Random): ItemStack {

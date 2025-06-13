@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.recipes
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
-class ResultModifierImpl(override val transformations: List<ResultModifier.Transformation>) : ResultModifier {
+class ResultModifierImpl(override val transformations: List<ResultModifier.Transformation> = listOf()) : ResultModifier {
 
     override fun modify(
         recipeData: RecipeData<*>,
