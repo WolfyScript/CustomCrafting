@@ -29,4 +29,8 @@ class RecipeResultImpl(
         }
     }
 
+    override fun toString(): String {
+        return "RecipeResultImpl(choices=$choices, modifier=$modifier, actions=$actions, bulkActions=$bulkActions)"
+    }
+
 }

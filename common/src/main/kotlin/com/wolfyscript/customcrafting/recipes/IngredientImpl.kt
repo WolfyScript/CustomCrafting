@@ -30,4 +30,8 @@ class IngredientImpl(
         TODO("Not yet implemented")
     }
 
+    override fun toString(): String {
+        return "IngredientImpl(choices=$choices, replaceWithRemains=$replaceWithRemains)"
+    }
+
 }

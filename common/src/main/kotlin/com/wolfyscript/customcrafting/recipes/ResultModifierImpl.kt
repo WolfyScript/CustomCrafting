@@ -14,6 +14,10 @@ class ResultModifierImpl(override val transformations: List<ResultModifier.Trans
         return result
     }
 
+    override fun toString(): String {
+        return "ResultModifierImpl(transformations=$transformations)"
+    }
+
     class ResultModifierTransformationImpl(
         override val ingredients: Array<Int>,
         override val transmuter: ResultModifier.Transformation.Transmuter
@@ -25,6 +29,10 @@ class ResultModifierImpl(override val transformations: List<ResultModifier.Trans
             context: EvaluationContext,
         ): ItemStack {
             return transmuter.mutate(this, recipeData, result, context)
+        }
+
+        override fun toString(): String {
+            return "ResultModifierTransformationImpl(ingredients=${ingredients.contentToString()}, transmuter=$transmuter)"
         }
 
     }

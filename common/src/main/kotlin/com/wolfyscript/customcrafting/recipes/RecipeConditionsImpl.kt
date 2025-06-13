@@ -6,4 +6,8 @@ class RecipeConditionsImpl(override val conditions: List<Condition>) : RecipeCon
         return conditions.all { it.isSatisfied(evaluationContext) }
     }
 
+    override fun toString(): String {
+        return "RecipeConditionsImpl(conditions=$conditions)"
+    }
+
 }

@@ -67,6 +67,7 @@ class LocalDestination(
                     .readValue(file.toFile(), CustomRecipe::class.java)
 
                 customCrafting.logger.info("  loaded recipe: $key")
+                customCrafting.logger.info(recipe.toString())
 
                 // Temporarily store the recipe to check dependencies later
                 resourceLoaderImpl.addRecipeFrom(ResourceLoaderImpl.LoadedRecipe(key, recipe, listOf()), this)

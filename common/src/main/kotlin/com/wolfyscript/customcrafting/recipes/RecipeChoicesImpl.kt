@@ -15,4 +15,9 @@ class RecipeChoicesImpl(
     override fun allFor(context: EvaluationContext): List<ItemStackRef> {
         TODO("Not yet implemented")
     }
+
+    override fun toString(): String {
+        return "RecipeChoicesImpl(stacks=$stacks, tags=$tags)"
+    }
+
 }
