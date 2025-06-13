@@ -26,36 +26,35 @@ class LocalDestination(
 
     val path: String = settings.path ?: resourceLoaderImpl.directory.path
 
+    val directory: File
+
+    init {
+        val resolvedPath = Paths.get(path)
+        directory = if (!resolvedPath.isAbsolute) {
+            // The path may be relative to the resources directory, make sure to complete it
+            File(resourceLoaderImpl.directory, resolvedPath.pathString)
+        } else {
+            File(path)
+        }
+    }
+
     override val filter: ResourceLoader.Destination.Filter? =
         settings.filter?.let { DestinationFilter(customCrafting, it) }
 
     private fun assureDir() {
-        val file = File(path)
-        if (!file.exists()) {
-            file.mkdirs()
+        if (!directory.exists()) {
+            directory.mkdirs()
         }
     }
 
     override fun load() {
         assureDir()
 
-        val resolvedPath = Paths.get(path)
-        val rootDir = if (!resolvedPath.isAbsolute) {
-            customCrafting.logger.info("Use relative path: ${resolvedPath.pathString}")
-            File(resourceLoaderImpl.directory, resolvedPath.pathString)
-        } else {
-            customCrafting.logger.info("Use absolute path: $path")
-            File(path)
-        }
-
-        if (!rootDir.exists()) rootDir.mkdirs()
         if (settings.backup != null) {
             return
         }
 
-        customCrafting.logger.info("Read files in ${rootDir.path}")
-        readFiles(rootDir.path) { relative: Path, file: Path, attrs: BasicFileAttributes ->
-            customCrafting.logger.info("  Found ${file.fileName}")
+        readFiles(directory) { relative: Path, file: Path, attrs: BasicFileAttributes ->
             val injectableValues = InjectableValues.Std().apply {
                 addValue("customCrafting", customCrafting)
                 addValue(CustomCrafting::class.java, customCrafting)
@@ -67,12 +66,12 @@ class LocalDestination(
                     .reader(injectableValues)
                     .readValue(file.toFile(), CustomRecipe::class.java)
 
-                customCrafting.logger.info("Loaded recipe: $key")
+                customCrafting.logger.info("  loaded recipe: $key")
 
                 // Temporarily store the recipe to check dependencies later
                 resourceLoaderImpl.addRecipeFrom(ResourceLoaderImpl.LoadedRecipe(key, recipe, listOf()), this)
             } catch (e: Exception) {
-                customCrafting.logger.error("Error loading recipe: ", e)
+                customCrafting.logger.error("  Error loading recipe: ", e)
             }
             return@readFiles FileVisitResult.CONTINUE
         }
@@ -83,9 +82,8 @@ class LocalDestination(
 
         val key = customCrafting.registries.customRecipes.getKey(recipe)
             ?: return Result.failure(Exception("No key found for recipe $recipe!"))
-        val destPath = "${path}/${key.value}.conf"
 
-        val destFile = File(destPath)
+        val destFile = File(directory, "${key.value}.conf")
 
         if (destFile.getParentFile().exists() || destFile.getParentFile().mkdirs()) {
             try {
@@ -98,29 +96,27 @@ class LocalDestination(
                 return Result.failure(e)
             }
         }
-        return Result.failure(Exception("Could not create file $destPath to save recipe $key!"))
+        return Result.failure(Exception("Could not create file $destFile to save recipe $key!"))
     }
 
     override fun delete(recipe: CustomRecipe<*, *>): Result<Boolean> {
         val key = customCrafting.registries.customRecipes.getKey(recipe)
             ?: return Result.failure(Exception("No key found for recipe $recipe!"))
-        val destPath = "${path}/${key.value}.conf"
-        val destFile = File(destPath)
+        val destFile = File(directory, "${key.value}.conf")
 
         return try {
             Result.success(destFile.delete())
         } catch (e: Exception) {
-            Result.failure(Exception("Could not delete file $destPath to delete recipe $key!", e))
+            Result.failure(Exception("Could not delete file $directory to delete recipe $key!", e))
         }
 
     }
 
-    private fun readFiles(root: String, visitor: NamespaceFileVisitor.CustomFileVisitor) {
-        val directoryPath = File(root)
-        if (!directoryPath.exists()) return
+    private fun readFiles(rootDir: File, visitor: NamespaceFileVisitor.CustomFileVisitor) {
+        customCrafting.logger.info("Read files in ${rootDir.path}")
+        if (!rootDir.exists()) return
         try {
-            val root = directoryPath.toPath()
-            customCrafting.logger.info("Walk file tree: $directoryPath")
+            val root = rootDir.toPath()
             Files.walkFileTree(root, NamespaceFileVisitor(root, visitor))
         } catch (e: IOException) {
             e.printStackTrace()
