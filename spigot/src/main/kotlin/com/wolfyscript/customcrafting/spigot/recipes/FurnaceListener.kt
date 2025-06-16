@@ -8,9 +8,9 @@ import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
+import com.wolfyscript.scafall.adventure.toAPI
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.*
-import com.wolfyscript.scafall.toAPI
 import com.wolfyscript.scafall.wrappers.world.ScafallBlockPos
 import org.bukkit.Material
 import org.bukkit.NamespacedKey

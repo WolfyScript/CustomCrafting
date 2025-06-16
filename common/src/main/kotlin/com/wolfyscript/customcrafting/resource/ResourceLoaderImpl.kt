@@ -71,7 +71,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
     override fun verifyResources() {
         for ((key, recipe) in awaitingVerificationRecipes) {
             // TODO: Verification
-            customCrafting.registries.customRecipes.register(recipe)
+            customCrafting.registries.customRecipes.register(key, recipe)
         }
     }
 

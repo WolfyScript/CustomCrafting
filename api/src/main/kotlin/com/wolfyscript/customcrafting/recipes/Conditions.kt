@@ -3,9 +3,7 @@ package com.wolfyscript.customcrafting.recipes
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
-import com.fasterxml.jackson.databind.annotation.JsonTypeResolver
-import com.wolfyscript.scafall.config.jackson.KeyedTypeIdResolver
-import com.wolfyscript.scafall.config.jackson.KeyedTypeResolver
+import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 
 /**
  * A collection of [Conditions][Condition] which checks if all of them are satisfied.
@@ -28,8 +26,7 @@ interface RecipeConditions {
  * Custom Condition types can be registered too from third-parties. The condition type is defined by the "type" property in the config file.
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "type")
-@JsonTypeResolver(KeyedTypeResolver::class)
-@JsonTypeIdResolver(KeyedTypeIdResolver::class)
+@JsonTypeIdResolver(RegistryKeyTypeIdResolver::class)
 @JsonPropertyOrder("type")
 interface Condition {
 

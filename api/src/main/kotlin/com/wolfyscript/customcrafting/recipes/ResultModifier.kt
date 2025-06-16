@@ -6,8 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
 import com.fasterxml.jackson.databind.annotation.JsonTypeResolver
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
-import com.wolfyscript.scafall.config.jackson.KeyedTypeIdResolver
-import com.wolfyscript.scafall.config.jackson.KeyedTypeResolver
+import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 /**
@@ -41,8 +40,7 @@ interface ResultModifier {
          * Gets the data from the specified ingredients and modifies the result with it.
          * For example, merging data components from an ingredient into the resulting stack.
          */
-        @JsonTypeResolver(KeyedTypeResolver::class)
-        @JsonTypeIdResolver(KeyedTypeIdResolver::class)
+        @JsonTypeIdResolver(RegistryKeyTypeIdResolver::class)
         @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "type")
         @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
         @JsonPropertyOrder(value = ["type"])

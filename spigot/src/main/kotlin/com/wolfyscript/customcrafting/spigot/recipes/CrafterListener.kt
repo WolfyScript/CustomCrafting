@@ -6,11 +6,11 @@ import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
+import com.wolfyscript.scafall.adventure.toAPI
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
-import com.wolfyscript.scafall.toAPI
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Crafter
