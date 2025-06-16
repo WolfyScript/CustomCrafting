@@ -35,7 +35,7 @@ fun Recipe.isPlaceholder(): Boolean {
 }
 
 fun Key.toPlaceholderRecipeKey(): NamespacedKey {
-    return NamespacedKey(this.namespace, "$PLACEHOLDER_RECIPE_PREFIX$this")
+    return NamespacedKey(this.namespace, "$PLACEHOLDER_RECIPE_PREFIX${this.value}")
 }
 
 fun CustomRecipe<*,*>.toPlaceholder(): Recipe? {

@@ -36,7 +36,7 @@ fun Recipe.isDisplay(): Boolean {
 }
 
 fun Key.toDisplayRecipeKey(): NamespacedKey {
-    return NamespacedKey(this.namespace, "$DISPLAY_RECIPE_PREFIX$this")
+    return NamespacedKey(this.namespace, "$DISPLAY_RECIPE_PREFIX${this.value}")
 }
 
 fun CustomRecipe<*,*>.toDisplay(): Recipe? {
