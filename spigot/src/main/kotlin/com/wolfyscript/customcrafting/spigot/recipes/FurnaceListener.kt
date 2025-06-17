@@ -7,6 +7,7 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.adventure.toAPI
 import com.wolfyscript.scafall.identifier.Key
@@ -46,7 +47,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
         val input = RecipeInput.CookingRecipeInput.of(source.wrap(), null)
         val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
 
-        val customRecipeData = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking, input, context)
+        val customRecipeData = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
         if (customRecipeData != null) {
             event.totalCookTime = customRecipeData.recipe.processing.processingTime
 
@@ -78,7 +79,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
                 updateRecipeExperience(
                     block,
                     event.recipe?.key,
-                    customCrafting.registries.customRecipes.getKey(cache.recipeData.recipe)!!
+                    CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(cache.recipeData.recipe)!!
                 )
 
                 val result = cache.recipeData.recipe.result

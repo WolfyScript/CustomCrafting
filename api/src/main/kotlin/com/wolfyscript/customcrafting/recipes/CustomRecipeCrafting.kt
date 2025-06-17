@@ -17,7 +17,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, CustomRecipeCrafting> {
 
     override val type: RecipeType<CustomRecipeCrafting>
-        get() = RecipeTypes.crafting
+        get() = RecipeTypes.crafting.resolveOrThrow()
 
     /**
      * The formula used to evaluate the recipe.

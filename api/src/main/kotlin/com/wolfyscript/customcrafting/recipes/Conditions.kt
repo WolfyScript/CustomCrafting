@@ -22,7 +22,7 @@ interface RecipeConditions {
 /**
  * A condition that determines if it is satisfied based on the [EvaluationContext].
  *
- * Types of Conditions are available in [CCBuiltInRegistries.recipeConditionTypes][com.wolfyscript.customcrafting.registry.CCBuiltInRegistries.recipeConditionTypes].
+ * Types of Conditions are available in [recipeConditionTypes][com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes.recipeConditionTypes].
  * Custom Condition types can be registered too from third-parties. The condition type is defined by the "type" property in the config file.
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "type")

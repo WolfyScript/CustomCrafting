@@ -106,7 +106,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
             val block = e.inventory.location?.block ?: player.location.block
             val context: EvaluationContext = EvaluationContextImpl(player.wrap(), block.location.toPreciseGlobal())
-            val resultStack = recipeManager.evaluateRecipesOfType(RecipeTypes.Companion.crafting, input, context)?.let {
+            val resultStack = recipeManager.evaluateRecipesOfType(RecipeTypes.crafting.resolveOrThrow(), input, context)?.let {
                 craftingDataCache.put(player.uniqueId, it)
                 it.recipe.result.compute(it, context, Random(getCraftSeed(player)))
             }

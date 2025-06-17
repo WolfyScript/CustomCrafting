@@ -29,7 +29,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
 
         val context = EvaluationContextImpl(null, event.block.location.toPreciseGlobal())
         val input = RecipeInput.CookingRecipeInput.of(source.wrap(), null)
-        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking, input, context)
+        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
 
         if (data == null) {
             return
@@ -67,7 +67,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
 
         val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
         val input = RecipeInput.CookingRecipeInput.of(stack.wrap(), null)
-        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking, input, context)
+        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
 
         if (data == null) {
             return // No recipe for item. Vanilla behaviour
@@ -106,7 +106,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         val source = event.source
         val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
         val input = RecipeInput.CookingRecipeInput.of(source.wrap(), null)
-        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking, input, context)
+        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
         if (data == null) {
             return
         }

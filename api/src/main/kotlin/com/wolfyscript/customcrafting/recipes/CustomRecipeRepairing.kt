@@ -12,7 +12,7 @@ import kotlin.random.Random
 interface CustomRecipeRepairing : CustomRecipe<RecipeInput.RepairingRecipeInput, CustomRecipeRepairing> {
 
     override val type: RecipeType<CustomRecipeRepairing>
-        get() = RecipeTypes.repairing
+        get() = RecipeTypes.repairing.resolveOrThrow()
 
     val process: RepairProcess
 

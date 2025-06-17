@@ -71,7 +71,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val additionStack = inventory.getItem(2)
 
         val data = customCrafting.recipeManager.evaluateRecipesOfType(
-            RecipeTypes.smithing,
+            RecipeTypes.smithing.resolveOrThrow(),
             RecipeInput.SmithingRecipeInput.of(
                 templateStack?.wrap(), baseStack?.wrap(), additionStack?.wrap()
             ),

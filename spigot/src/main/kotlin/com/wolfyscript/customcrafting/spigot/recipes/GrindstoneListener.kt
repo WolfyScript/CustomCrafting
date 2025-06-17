@@ -90,7 +90,7 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         val input =
             RecipeInput.GrindingRecipeInput.of(event.inventory.getItem(0)?.wrap(), event.inventory.getItem(1)?.wrap())
 
-        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.grinding, input, context)
+        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.grinding.resolveOrThrow(), input, context)
         if (data == null) {
             // Not a custom recipe
             return

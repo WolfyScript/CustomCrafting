@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.InjectableValues
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
@@ -81,7 +82,7 @@ class LocalDestination(
     override fun save(recipe: CustomRecipe<*, *>): Result<Boolean> {
         assureDir()
 
-        val key = customCrafting.registries.customRecipes.getKey(recipe)
+        val key = CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(recipe)
             ?: return Result.failure(Exception("No key found for recipe $recipe!"))
 
         val destFile = File(directory, "${key.value}.conf")
@@ -101,7 +102,7 @@ class LocalDestination(
     }
 
     override fun delete(recipe: CustomRecipe<*, *>): Result<Boolean> {
-        val key = customCrafting.registries.customRecipes.getKey(recipe)
+        val key = CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(recipe)
             ?: return Result.failure(Exception("No key found for recipe $recipe!"))
         val destFile = File(directory, "${key.value}.conf")
 

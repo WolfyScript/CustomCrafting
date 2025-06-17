@@ -60,6 +60,14 @@ class ConfigurationManagerImpl(val customCrafting: CustomCrafting, val rootDir: 
 
     init {
         saveDefaults()
+
+        println("classloader: ${this::class.java.classLoader}")
+        var parent = this::class.java.classLoader.parent
+        while (parent != null) {
+            println("  parent: $parent")
+            parent = parent.parent
+        }
+
         resourceSettings = configMapper.readValue<ResourceSettings>(resourcesSettingsFile)
     }
 

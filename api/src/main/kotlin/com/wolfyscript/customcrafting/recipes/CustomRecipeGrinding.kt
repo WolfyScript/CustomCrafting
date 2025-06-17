@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 interface CustomRecipeGrinding : CustomRecipe<RecipeInput.GrindingRecipeInput, CustomRecipeGrinding> {
 
     override val type: RecipeType<CustomRecipeGrinding>
-        get() = RecipeTypes.grinding
+        get() = RecipeTypes.grinding.resolveOrThrow()
 
     /**
      * A list of ingredients to be used in the Grindstone.

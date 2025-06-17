@@ -3,6 +3,7 @@ package com.wolfyscript.customcrafting.spigot
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
+import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.resource.DataManager
 import com.wolfyscript.customcrafting.resource.DataManagerCommon
 import com.wolfyscript.customcrafting.spigot.recipes.AnvilListener
@@ -14,6 +15,7 @@ import com.wolfyscript.customcrafting.spigot.recipes.FurnaceListener
 import com.wolfyscript.customcrafting.spigot.recipes.GrindstoneListener
 import com.wolfyscript.customcrafting.spigot.recipes.SmithingListener
 import com.wolfyscript.customcrafting.spigot.recipes.StonecutterListener
+import com.wolfyscript.customcrafting.spigot.recipes.registerDisplayRecipes
 import com.wolfyscript.customcrafting.spigot.recipes.registerPlaceholderRecipes
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -32,8 +34,8 @@ class CustomCraftingSpigot(
         configurationManager.load()
         dataManager.loadData()
 
-        registerPlaceholderRecipes(registries.customRecipes.values())
-        registerPlaceholderRecipes(registries.customRecipes.values())
+        registerPlaceholderRecipes(CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().values())
+        registerDisplayRecipes(CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().values())
     }
 
     override fun enabled() {

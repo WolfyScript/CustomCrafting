@@ -45,7 +45,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val context = EvaluationContextImpl(player.wrap(), inventory.location?.toPreciseGlobal())
         val input = RecipeInput.RepairingRecipeInput.of(base.wrap(), addition?.wrap())
 
-        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.repairing, input, context)
+        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.repairing.resolveOrThrow(), input, context)
         if (data == null) {
             // no custom recipe. Vanilla behaviour
             return

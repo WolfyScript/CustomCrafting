@@ -4,6 +4,7 @@ import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
 import org.bukkit.Bukkit
@@ -48,7 +49,7 @@ fun CustomRecipe<*,*>.toPlaceholder(): Recipe? {
 }
 
 fun CustomRecipeCrafting.toPlaceholder(): CraftingRecipe? {
-    val key = CustomCraftingProvider.get().registries.customRecipes.getKey(this)
+    val key = CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(this)
     if (key == null) {
         return null
     }

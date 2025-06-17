@@ -4,6 +4,7 @@ import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
 import com.wolfyscript.customcrafting.configuration.resources.ResourceSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.util.exportResource
 import com.wolfyscript.scafall.dependency.Dependency
 import com.wolfyscript.scafall.identifier.Key
@@ -71,7 +72,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
     override fun verifyResources() {
         for ((key, recipe) in awaitingVerificationRecipes) {
             // TODO: Verification
-            customCrafting.registries.customRecipes.register(key, recipe)
+            CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().register(key, recipe)
         }
     }
 

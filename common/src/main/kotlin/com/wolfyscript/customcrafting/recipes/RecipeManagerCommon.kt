@@ -4,6 +4,7 @@ import com.google.common.collect.Multimaps
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.scafall.identifier.Key
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
@@ -16,13 +17,13 @@ class RecipeManagerCommon(val customCraftingCommon: CustomCraftingCommon) : Reci
 
     fun indexRecipes() {
         recipesByType.clear()
-        for (recipe in customCraftingCommon.registries.customRecipes) {
+        for (recipe in CustomCraftingRegistryTypes.customRecipes.resolveOrThrow()) {
             recipesByType.put(recipe.type, recipe)
         }
     }
 
     inline fun <reified T: CustomRecipe<*,*>> getRecipeTyped(key: Key, type: RecipeType<T>): T? {
-        val recipe = customCraftingCommon.registries.customRecipes[key] ?: return null
+        val recipe = CustomCraftingRegistryTypes.customRecipes.resolveOrThrow()[key] ?: return null
         if (recipe.type != type) {
             return null
         }
@@ -42,7 +43,7 @@ class RecipeManagerCommon(val customCraftingCommon: CustomCraftingCommon) : Reci
     }
 
     override fun disableRecipe(recipe: CustomRecipe<*,*>) {
-        customCraftingCommon.registries.customRecipes.getKey(recipe)?.let {
+        CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(recipe)?.let {
             disabledRecipes.add(it)
         }
     }
@@ -52,7 +53,7 @@ class RecipeManagerCommon(val customCraftingCommon: CustomCraftingCommon) : Reci
     }
 
     override fun getRecipe(key: Key): CustomRecipe<*,*>? {
-        return customCraftingCommon.registries.customRecipes[key]
+        return CustomCraftingRegistryTypes.customRecipes.resolveOrThrow()[key]
     }
 
     override fun removeRecipe(key: Key) {

@@ -8,7 +8,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 interface CustomRecipeMixing : CustomRecipe<RecipeInput.MixingRecipeInput, CustomRecipeMixing> {
 
     override val type: RecipeType<CustomRecipeMixing>
-        get() = RecipeTypes.mixing
+        get() = RecipeTypes.mixing.resolveOrThrow()
 
     val processingTime: Int
 

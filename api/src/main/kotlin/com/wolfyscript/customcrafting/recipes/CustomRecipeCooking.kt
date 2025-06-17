@@ -9,7 +9,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 interface CustomRecipeCooking : CustomRecipe<RecipeInput.CookingRecipeInput, CustomRecipeCooking> {
 
     override val type: RecipeType<CustomRecipeCooking>
-        get() = RecipeTypes.cooking
+        get() = RecipeTypes.cooking.resolveOrThrow()
 
     val processing: WorkstationProcessing
 

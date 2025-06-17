@@ -6,7 +6,7 @@ import com.wolfyscript.scafall.identifier.Key
 interface CustomRecipeSmithing : CustomRecipe<RecipeInput.SmithingRecipeInput, CustomRecipeSmithing> {
 
     override val type: RecipeType<CustomRecipeSmithing>
-        get() = RecipeTypes.smithing
+        get() = RecipeTypes.smithing.resolveOrThrow()
 
     /**
      * The template required to upgrade the [base]

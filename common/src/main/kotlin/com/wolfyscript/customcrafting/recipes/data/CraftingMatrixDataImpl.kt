@@ -29,35 +29,36 @@ class CraftingMatrixDataImpl(
 
     init {
         // Find the leading and trailing empty rows
-        var rMax = gridSize
-        var rMin = 0
-        while ((0 until gridSize).all { originalMatrix[rMin * gridSize + it] == null }) {
-            rMin++
+        var lastRow = gridSize - 1
+        var firstRow = 0
+
+        while (firstRow < gridSize && (0 until gridSize).all { originalMatrix[firstRow * gridSize + it] == null }) {
+            firstRow++
         }
-        while ((0 until gridSize).all { originalMatrix[rMax * gridSize + it] == null }) {
-            rMax--
+        while (lastRow > firstRow && (0 until gridSize).all { originalMatrix[lastRow * gridSize + it] == null }) {
+            lastRow--
         }
 
         // Find the leading and trailing empty columns
-        var cMax = gridSize
-        var cMin = 0
-        while ((rMin until rMax).all { originalMatrix[it * gridSize + cMin] == null }) {
-            cMin++
+        var lastCol = gridSize - 1
+        var firstCol = 0
+        while (firstCol < gridSize && (firstRow until lastRow + 1).all { originalMatrix[it * gridSize + firstCol] == null }) {
+            firstCol++
         }
-        while ((rMin until rMax).all { originalMatrix[it * gridSize + cMax] == null }) {
-            cMax--
+        while (lastCol > firstCol && (firstRow until lastRow + 1).all { originalMatrix[it * gridSize + lastCol] == null }) {
+            lastCol--
         }
 
         // Trim the leading and trailing empty rows and columns
-        width = cMax - cMin
-        height = rMax - rMin
-        rowOffset = rMin
-        columnOffset = cMin
+        width = (lastCol + 1) - firstCol
+        height = (lastRow + 1) - firstRow
+        rowOffset = firstRow
+        columnOffset = firstCol
         matrix = Array(width * height) {
             // Copy the values from the original array by offsetting the row and column back to the original
             // <Row in trimmed shape> + rMin = <Row in original shape>
             // <Column in trimmed shape> + cMin = <Column in original shape>
-            originalMatrix[(it / width) + rMin + (it % width) + cMin]
+            originalMatrix[(it / width) + firstRow + (it % width) + firstCol]
         }
     }
 

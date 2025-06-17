@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase
 import com.fasterxml.jackson.databind.type.TypeFactory
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 
@@ -37,7 +38,7 @@ class RecipeTypeIdResolver : TypeIdResolverBase() {
             throw IllegalArgumentException("Failed to get recipe type null type!")
         }
         if (value is CustomRecipe<*,*>) {
-            val key = CustomCraftingProvider.get().registries.recipeTypes.getKey(value.type)
+            val key = CustomCraftingRegistryTypes.recipeTypes.resolveOrThrow().getKey(value.type)
             if (key != null) {
                 return key.toString()
             }
@@ -52,7 +53,7 @@ class RecipeTypeIdResolver : TypeIdResolverBase() {
         } else {
             Key.key(Key.CUSTOMCRAFTING_NAMESPACE, id)
         }
-        val value = CustomCraftingProvider.get().registries.recipeTypes[namespacedKey]
+        val value = CustomCraftingRegistryTypes.recipeTypes.resolveOrThrow()[namespacedKey]
         if (value != null) {
             return context.constructSpecializedType(superType, value.recipeClass)
         }

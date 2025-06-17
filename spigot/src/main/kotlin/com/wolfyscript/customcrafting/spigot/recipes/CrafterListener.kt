@@ -48,7 +48,7 @@ class CrafterListener(val customCrafting: CustomCraftingSpigot) : Listener {
             previousRecipe.evaluate(input, context)
         } else {
             customCrafting.recipeManager.evaluateRecipesOfType(
-                RecipeTypes.crafting,
+                RecipeTypes.crafting.resolveOrThrow(),
                 input,
                 context
             )
