@@ -28,24 +28,24 @@ object CustomCraftingRegistryTypes {
     // ---------------
     // Used to store all the available types of content. Allows for easy deserialization of custom types.
     //
-    val recipeConditionTypes = create<Class<Condition>>("types/recipes/conditions")
+    val recipeConditionTypes = create<Class<out Condition>>("types/recipes/conditions")
 
-    val resultTransmuters = create<Class<ResultModifier.Transformation.Transmuter>>("types/recipe/result/transmuters")
+    val resultTransmuters = create<Class<out ResultModifier.Transformation.Transmuter>>("types/recipe/result/transmuters")
 
-    val resultActions = create<Class<ResultAction>>("types/recipe/result/actions")
+    val resultActions = create<Class<out ResultAction>>("types/recipe/result/actions")
 
     //
     // Editor Store Registries
     // -----------------------
     // Used to store the types of content used in the editor. Usually associated with a type of the above type registries.
     //
-    val recipeTypeSpecificStores = create<Class<RecipeStore.RecipeTypeSpecificStore<*>>>("editor/types/recipe/types")
+    val recipeTypeSpecificStores = create<Class<out RecipeStore.RecipeTypeSpecificStore<*>>>("editor/types/recipe/types")
 
-    val conditionStores = create<Class<ConditionStore<*>>>("editor/types/recipe/conditions")
+    val conditionStores = create<Class<out ConditionStore<*>>>("editor/types/recipe/conditions")
 
-    val resultTransmuterStores = create<Class<TransmuterStore<*>>>("editor/types/recipe/result/transmuters")
+    val resultTransmuterStores = create<Class<out TransmuterStore<*>>>("editor/types/recipe/result/transmuters")
 
-    val resultActionStores = create<Class<ResultActionStore<*>>>("editor/types/recipe/result/actions")
+    val resultActionStores = create<Class<out ResultActionStore<*>>>("editor/types/recipe/result/actions")
 
     private fun <T> create(registryKey: String): RegistryReference<T> {
         return RegistryKey.of<T>(root, Key.customCrafting(registryKey)).reference { CustomCraftingProvider.get().registries }
