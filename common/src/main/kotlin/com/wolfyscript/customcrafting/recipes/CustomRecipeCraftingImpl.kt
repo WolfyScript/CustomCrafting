@@ -76,7 +76,7 @@ class ShapedCraftingFormulaImpl(
         ingredientShape: Array<Int>,
         recipeCrafting: CustomRecipeCrafting,
     ): RecipeData<CustomRecipeCrafting>? {
-        if (matrix.width < shape.width || matrix.height < shape.height) {
+        if (matrix.width != shape.width || matrix.height != shape.height) {
             return null
         }
         val ingredientData: Array<IngredientData?> = Array(matrix.width * shape.height) { null }
