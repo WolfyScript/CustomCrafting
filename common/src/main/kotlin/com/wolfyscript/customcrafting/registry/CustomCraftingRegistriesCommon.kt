@@ -1,16 +1,8 @@
 package com.wolfyscript.customcrafting.registry
 
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.recipes.CustomRecipeGrinding
-import com.wolfyscript.customcrafting.recipes.CustomRecipeMixing
-import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
-import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
-import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting
-import com.wolfyscript.customcrafting.recipes.RecipeType
-import com.wolfyscript.customcrafting.recipes.RecipeTypeImpl
-import com.wolfyscript.customcrafting.recipes.RecipeTypes
+import com.wolfyscript.customcrafting.recipes.*
+import com.wolfyscript.customcrafting.recipes.actions.CommandResultAction
+import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.Registry
 import com.wolfyscript.scafall.registry.RegistryKey
@@ -35,17 +27,30 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
         }
 
         createRegistry(CustomCraftingRegistryTypes.customRecipes) {
-            RegistrySimple<CustomRecipe<*,*>>(it)
+            RegistrySimple<CustomRecipe<*, *>>(it)
         }
 
         createRegistry(CustomCraftingRegistryTypes.recipeConditionTypes) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.resultTransmuters) { RegistrySimple(it) }
-        createRegistry(CustomCraftingRegistryTypes.resultActions) { RegistrySimple(it) }
+        createRegistry(CustomCraftingRegistryTypes.resultActions) {
+            RegistrySimple<Class<out ResultAction>>(it).apply {
+                register(ResultActions.command.key.key, CommandResultAction::class.java)
+            }
+        }
 
         createRegistry(CustomCraftingRegistryTypes.recipeTypeSpecificStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.conditionStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.resultTransmuterStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.resultActionStores) { RegistrySimple(it) }
+
+        registerJacksonTypes()
+    }
+
+    fun registerJacksonTypes() {
+        RegistryKeyTypeIdResolver.registerTypeRegistry(
+            ResultAction::class.java,
+            get(CustomCraftingRegistryTypes.resultActions.key).getOrThrow()
+        )
 
     }
 
