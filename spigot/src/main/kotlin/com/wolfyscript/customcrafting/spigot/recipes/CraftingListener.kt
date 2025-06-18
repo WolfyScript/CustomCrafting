@@ -6,13 +6,9 @@ import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
-import com.wolfyscript.scafall.adventure.toAPI
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
-import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe
-import me.wolfyscript.utilities.util.inventory.InventoryUtils
-import me.wolfyscript.utilities.util.inventory.ItemUtils
 import org.bukkit.Bukkit
 import org.bukkit.Keyed
 import org.bukkit.Material
@@ -56,7 +52,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         }
         val resultItem: ItemStack? = inventory.result
         val cursor = event.cursor
-        if (ItemUtils.isAirOrNull(resultItem) || (!ItemUtils.isAirOrNull(cursor) && !cursor.isSimilar(resultItem) && !event.isShiftClick)) {
+        if (resultItem?.type == Material.AIR || (cursor.type != Material.AIR && !cursor.isSimilar(resultItem) && !event.isShiftClick)) {
             // Make sure we don't consume the recipe if there is no result or the cursor cannot pick up the item
             event.isCancelled = true
             return
@@ -75,7 +71,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
         event.isCancelled = true
         val player = event.whoClicked as Player
-        if (event.isShiftClick || ItemUtils.isAirOrNull(cursor) || cursor.amount + resultItem!!.amount <= cursor.maxStackSize) {
+        if (event.isShiftClick || cursor.type == Material.AIR || cursor.amount + resultItem!!.amount <= cursor.maxStackSize) {
             matrixDataCache.invalidate(player.uniqueId)
             craftingDataCache.invalidate(player.uniqueId)
 
@@ -115,26 +111,27 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 e.inventory.result = resultStack.unwrap()
                 Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
             } else {
+                val recipe = e.recipe
                 // No valid custom recipes found
-                if (e.recipe !is Keyed) return
+                if (recipe !is Keyed) return
 
                 // We need placeholder recipes that simply use material choices, because otherwise we can get duplication issues and buggy behaviour like flickering.
                 // Here we need to disable those placeholder recipes and check for a vanilla recipe the placeholder may override.
-                if (ICustomVanillaRecipe.isPlaceholderOrDisplayRecipe((e.recipe as Keyed).key)) {
+                if (recipe.isPlaceholder() || recipe.isDisplay()) {
                     // TODO: Can't determine the vanilla recipe! We may need NMS for that in the future. For now simply override vanilla recipes.
-                    e.inventory.result = ItemUtils.AIR
+                    e.inventory.result = ItemStack(Material.AIR)
                     Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
                     return
                 }
 
-                val recipeKey = (e.recipe as Keyed).key.toAPI()
+                val recipeKey = recipe.key.wrap()
                 //Check for custom recipe that overrides the vanilla recipe
                 if (recipeManager.disabledRecipes.contains(recipeKey) || customCrafting.recipeManager.getRecipe(
                         recipeKey
                     ) != null
                 ) {
                     //Recipe is disabled or it is a custom recipe!
-                    e.inventory.result = ItemUtils.AIR
+                    e.inventory.result = ItemStack(Material.AIR)
                     Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
                     return
                 }
@@ -216,8 +213,8 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             recipeResult.runActions(context, 1)
 
             val cursor = event.cursor
-            if (ItemUtils.isAirOrNull(cursor) || (result.isSimilar(cursor) && cursor.amount + result.amount <= cursor.maxStackSize)) {
-                if (ItemUtils.isAirOrNull(cursor)) {
+            if (cursor.type == Material.AIR || (result.isSimilar(cursor) && cursor.amount + result.amount <= cursor.maxStackSize)) {
+                if (cursor.type == Material.AIR) {
                     event.setCursor(result)
                 } else {
                     cursor.amount = cursor.amount + result.amount
