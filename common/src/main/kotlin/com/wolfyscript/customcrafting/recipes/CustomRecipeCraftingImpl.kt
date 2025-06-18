@@ -33,7 +33,7 @@ class CustomRecipeCraftingImpl(
         applyStacks: (Int, ItemStack) -> Unit,
     ) {
         for ((index, value) in recipeData.nonNullIngredients.withIndex()) {
-            applyStacks(index, input.matrixData.items[index].unwrap().apply {
+            applyStacks(index, input.matrixData.items[value.invSlot].unwrap().apply {
                 shrink(value.matchedItemStackRef.amount * count)
             }.wrap())
         }
@@ -98,7 +98,7 @@ class ShapedCraftingFormulaImpl(
             } else {
                 matrix.rowOffset + matrix.columnOffset * matrix.gridSize + ((i / shape.width) * (matrix.gridSize - matrix.width))
             }
-            ingredientData[indexInRecipe] = IngredientDataImpl(
+            ingredientData[i] = IngredientDataImpl(
                 invSlot = i + invOffset,
                 recipeIndex = indexInRecipe,
                 selectedIngredient = ingredient,
