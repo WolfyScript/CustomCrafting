@@ -3,6 +3,7 @@ package com.wolfyscript.customcrafting.spigot
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
+import com.wolfyscript.customcrafting.recipes.RecipeManagerCommon
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.resource.DataManager
 import com.wolfyscript.customcrafting.resource.DataManagerCommon
@@ -36,6 +37,8 @@ class CustomCraftingSpigot(
 
         registerPlaceholderRecipes(CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().values())
         registerDisplayRecipes(CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().values())
+
+        (recipeManager as RecipeManagerCommon).indexRecipes()
     }
 
     override fun enabled() {
