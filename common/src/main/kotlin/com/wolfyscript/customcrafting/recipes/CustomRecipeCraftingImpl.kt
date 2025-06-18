@@ -1,6 +1,8 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.*
+import com.wolfyscript.scafall.wrappers.utils.unwrap
+import com.wolfyscript.scafall.wrappers.utils.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import net.minecraft.util.ArrayListDeque
 import org.apache.commons.lang3.ArrayUtils
@@ -14,7 +16,7 @@ class CustomRecipeCraftingImpl(
 
     override fun evaluate(
         input: RecipeInput.CraftingRecipeInput,
-        context: EvaluationContext
+        context: EvaluationContext,
     ): RecipeData<CustomRecipeCrafting>? {
         if (!conditions.areSatisfied(context)) {
             return null
@@ -28,10 +30,12 @@ class CustomRecipeCraftingImpl(
         recipeData: RecipeData<CustomRecipeCrafting>,
         context: EvaluationContext,
         count: Int,
-        applyStacks: (Int, ItemStack) -> Unit
+        applyStacks: (Int, ItemStack) -> Unit,
     ) {
         for ((index, value) in recipeData.nonNullIngredients.withIndex()) {
-            applyStacks(index, value.selectedIngredient.shrink(input.matrixData.items[index], count))
+            applyStacks(index, input.matrixData.items[index].unwrap().apply {
+                shrink(value.matchedItemStackRef.amount * count)
+            }.wrap())
         }
     }
 
@@ -207,7 +211,7 @@ class ShapedCraftingFormulaImpl(
     data class ShapeSymmetryImpl(
         override val horizontal: Boolean,
         override val vertical: Boolean,
-        override val rotate: Boolean
+        override val rotate: Boolean,
     ) : CraftingFormula.Shaped.ShapeSymmetry {
 
         override fun toString(): String {
@@ -218,7 +222,7 @@ class ShapedCraftingFormulaImpl(
 }
 
 class ShapelessCraftingFormulaImpl(
-    override val ingredients: List<Ingredient>
+    override val ingredients: List<Ingredient>,
 ) : CraftingFormula.Shapeless {
 
     override fun evaluate(
