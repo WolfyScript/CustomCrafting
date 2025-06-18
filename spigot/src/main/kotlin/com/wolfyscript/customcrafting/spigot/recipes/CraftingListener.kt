@@ -242,10 +242,14 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
     ): Int {
         for (i in 0..<maxPossible) {
             val stack = recipeResult.compute(craftingData, context, random).unwrap()
-            if (!InventoryUtils.hasInventorySpace(bukkitPlayer, stack)) {
+            val originalCount = stack.amount // Need to copy it here, because the addItem method **may** change the count of stack
+            val remains = bukkitPlayer.inventory.addItem(stack)
+            if (remains.isNotEmpty()) {
+                // revert the last added stack again, by removing the count
+                val toRemove = originalCount - remains[0]!!.amount
+                bukkitPlayer.inventory.last { it.isSimilar(stack) }?.amount -= toRemove
                 return i
             }
-            bukkitPlayer.inventory.addItem(stack)
         }
         return maxPossible
     }
