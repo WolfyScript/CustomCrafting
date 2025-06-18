@@ -1,5 +1,7 @@
 package com.wolfyscript.customcrafting.recipes
 
+import com.wolfyscript.customcrafting.CustomCrafting
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
@@ -17,7 +19,7 @@ object RecipeTypes {
     val grinding = create<CustomRecipeGrinding>("grinding")
 
     private inline fun <reified T: CustomRecipe<*, *>> create(key: String) : ValueReference<RecipeType<*>, RecipeType<T>> {
-        return CustomCraftingRegistryTypes.recipeTypes.key.referenced<RecipeType<*>, RecipeType<T>>(Key.customCrafting(key)).reference()
+        return CustomCraftingRegistryTypes.recipeTypes.key.referenced<RecipeType<*>, RecipeType<T>>(Key.customCrafting(key)).reference { CustomCraftingProvider.get().registries }
     }
 
 }
