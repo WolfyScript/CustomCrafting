@@ -56,9 +56,7 @@ class CraftingMatrixDataImpl(
         columnOffset = firstCol
         matrix = Array(width * height) {
             // Copy the values from the original array by offsetting the row and column back to the original
-            // <Row in trimmed shape> + rMin = <Row in original shape>
-            // <Column in trimmed shape> + cMin = <Column in original shape>
-            originalMatrix[(it / width) + firstRow + (it % width) + firstCol]
+            originalMatrix[(it / width) * gridSize + firstRow * gridSize + (it % width) + firstCol]
         }
     }
 
