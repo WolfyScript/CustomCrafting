@@ -39,8 +39,11 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
         customCrafting.logger.info("Exporting default recipes to $directory")
         val dir = "com/wolfyscript/customcrafting/recipes/default"
         listOf(
-            "enchanted_golden_apple"
+            "enchanted_golden_apple",
+            "rotten_flesh_to_leather_smelting",
+            "rotten_flesh_to_leather_smoking"
         ).forEach {
+            customCrafting.logger.info("  - recipe: $it")
             exportResource("$dir/$it.conf", File(directory, "default/$it.conf"))
         }
     }
