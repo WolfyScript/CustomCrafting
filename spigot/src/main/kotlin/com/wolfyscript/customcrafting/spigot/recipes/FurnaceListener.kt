@@ -78,7 +78,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
 
                 updateRecipeExperience(
                     block,
-                    event.recipe?.key,
+                    cache.bukkitRecipe,
                     CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(cache.recipeData.recipe)!!
                 )
 
@@ -105,6 +105,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
                         return
                     }
                     resultStack.amount = newAmount
+                    inventory.result = resultStack
                 } else {
                     inventory.result = pickedStack
                 }
@@ -114,17 +115,20 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
                     source.apply {
                         amount = amount - matchedRef.amount
                     }
+                    inventory.smelting = source
                     // TODO: Remains
                 }
 
                 result.runActions(context)
 
                 // Successfully smelted result, pick a new seed to pick the next random result
-                (block.state as Furnace).persistentDataContainer.set(
-                    CustomCraftingSpigot.cookingSeedKey,
-                    PersistentDataType.LONG,
-                    Random.Default.nextLong()
-                )
+                (block.state as Furnace).apply {
+                    persistentDataContainer.set(
+                        CustomCraftingSpigot.cookingSeedKey,
+                        PersistentDataType.LONG,
+                        Random.Default.nextLong()
+                    )
+                }.update()
                 recipeCache.invalidate(blockPos)
                 return
             }
@@ -236,7 +240,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
             // Add custom recipe experience
             val usedRecipes = rootContainer.get(customRecipesUsedKey, PersistentDataType.TAG_CONTAINER)?.let {
                 it.keys.associateWith { key -> it.get(key, PersistentDataType.INTEGER) ?: 0 }
-                    .mapKeys { (key, _) -> key.toAPI() }
+                    .mapKeys { (key, _) -> key.wrap() }
             } ?: emptyMap()
 
             for ((key, count) in usedRecipes) {
