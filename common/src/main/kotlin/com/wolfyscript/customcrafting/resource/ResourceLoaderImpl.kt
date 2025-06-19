@@ -10,7 +10,6 @@ import com.wolfyscript.scafall.dependency.Dependency
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.verification.VerificationResult
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap
 import java.io.File
 
 class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: ResourceSettings, val directory: File) : ResourceLoader {
@@ -19,7 +18,7 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
         customCrafting.logger.info("Construct destination: $it")
         return@mapNotNull when (it) {
             // TODO: hmmm
-            is DestinationSettings.LocalDestinationSettings -> LocalDestination(customCrafting, this, it)
+            is DestinationSettings.DirectoryDestinationSettings -> DirectoryDestination(customCrafting, this, it)
             is DestinationSettings.SQLDestinationSettings -> SQLDestination(customCrafting, this, it)
             else -> null
         }

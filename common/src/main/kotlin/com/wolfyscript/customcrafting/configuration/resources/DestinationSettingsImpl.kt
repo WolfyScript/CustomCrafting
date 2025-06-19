@@ -1,12 +1,12 @@
 package com.wolfyscript.customcrafting.configuration.resources
 
-class LocalDestinationSettingsImpl(
+class DirectoryDestinationSettingsImpl(
     override val path: String?,
     override val filter: DestinationSettings.FilterSettings? = null,
     override val overwriteExisting: Boolean,
     override val propagateSavedResources: Boolean,
     override val backup: DestinationSettings.BackupSettings? = null,
-) : DestinationSettings.LocalDestinationSettings {
+) : DestinationSettings.DirectoryDestinationSettings {
 
     override fun toString(): String {
         return "LocalDestinationSettingsImpl(path=$path, filter=$filter, overwriteExisting=$overwriteExisting, propagateSavedResources=$propagateSavedResources, backup=$backup)"
@@ -30,7 +30,7 @@ class SQLDestinationSettingsImpl(
     }
 }
 
-class BackupSettingsImpl() : DestinationSettings.BackupSettings
+class BackupSettingsImpl(override val compress: Boolean = false) : DestinationSettings.BackupSettings
 
 class FilterSettingsImpl(
     override val includes: DestinationSettings.FilterSettings.FilterEntry? = null,

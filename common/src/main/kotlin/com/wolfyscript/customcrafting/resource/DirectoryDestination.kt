@@ -18,12 +18,12 @@ import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.pathString
 
-class LocalDestination(
+class DirectoryDestination(
     customCrafting: CustomCrafting,
     resourceLoaderImpl: ResourceLoaderImpl,
-    settings: DestinationSettings.LocalDestinationSettings,
+    settings: DestinationSettings.DirectoryDestinationSettings,
 ) :
-    AbstractDestination<DestinationSettings.LocalDestinationSettings>(customCrafting, resourceLoaderImpl, settings) {
+    AbstractDestination<DestinationSettings.DirectoryDestinationSettings>(customCrafting, resourceLoaderImpl, settings) {
 
     val path: String = settings.path ?: resourceLoaderImpl.directory.path
 

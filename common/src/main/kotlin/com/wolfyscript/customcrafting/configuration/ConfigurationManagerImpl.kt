@@ -12,7 +12,7 @@ import com.wolfyscript.customcrafting.configuration.resources.BackupSettingsImpl
 import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
 import com.wolfyscript.customcrafting.configuration.resources.FilterEntryImpl
 import com.wolfyscript.customcrafting.configuration.resources.FilterSettingsImpl
-import com.wolfyscript.customcrafting.configuration.resources.LocalDestinationSettingsImpl
+import com.wolfyscript.customcrafting.configuration.resources.DirectoryDestinationSettingsImpl
 import com.wolfyscript.customcrafting.configuration.resources.ResourceSettings
 import com.wolfyscript.customcrafting.configuration.resources.ResourceSettingsImpl
 import com.wolfyscript.customcrafting.configuration.resources.SQLDestinationSettingsImpl
@@ -48,7 +48,7 @@ class ConfigurationManagerImpl(val customCrafting: CustomCrafting, val rootDir: 
             // Resource Settings
             addAbstractTypeMapping(ResourceSettings::class.java, ResourceSettingsImpl::class.java)
             addAbstractTypeMapping(DestinationSettings.SQLDestinationSettings::class.java, SQLDestinationSettingsImpl::class.java)
-            addAbstractTypeMapping(DestinationSettings.LocalDestinationSettings::class.java, LocalDestinationSettingsImpl::class.java)
+            addAbstractTypeMapping(DestinationSettings.DirectoryDestinationSettings::class.java, DirectoryDestinationSettingsImpl::class.java)
             addAbstractTypeMapping(DestinationSettings.BackupSettings::class.java, BackupSettingsImpl::class.java)
             addAbstractTypeMapping(DestinationSettings.FilterSettings::class.java, FilterSettingsImpl::class.java)
             addAbstractTypeMapping(DestinationSettings.FilterSettings.FilterEntry::class.java, FilterEntryImpl::class.java)

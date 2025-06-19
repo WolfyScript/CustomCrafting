@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonSubTypes(
     JsonSubTypes.Type(value = DestinationSettings.SQLDestinationSettings::class, name = "sql"),
-    JsonSubTypes.Type(value = DestinationSettings.LocalDestinationSettings::class, name = "local")
+    JsonSubTypes.Type(value = DestinationSettings.DirectoryDestinationSettings::class, name = "directory")
 )
 @JsonPropertyOrder(value = ["type"])
 interface DestinationSettings {
@@ -42,7 +42,7 @@ interface DestinationSettings {
      */
     val backup: BackupSettings?
 
-    interface LocalDestinationSettings : DestinationSettings {
+    interface DirectoryDestinationSettings : DestinationSettings {
 
         /**
          * An optional path to the resource directory.
@@ -104,6 +104,7 @@ interface DestinationSettings {
     interface BackupSettings {
 
         // TODO
+        val compress: Boolean
 
     }
 
