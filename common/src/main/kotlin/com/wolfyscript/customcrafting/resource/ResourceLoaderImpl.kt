@@ -41,7 +41,9 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
         listOf(
             "enchanted_golden_apple",
             "rotten_flesh_to_leather_smelting",
-            "rotten_flesh_to_leather_smoking"
+            "rotten_flesh_to_leather_smoking",
+            "stick_to_torch_campfire",
+            "stick_to_soul_torch_soul_campfire"
         ).forEach {
             customCrafting.logger.info("  - recipe: $it")
             exportResource("$dir/$it.conf", File(directory, "default/$it.conf"))
