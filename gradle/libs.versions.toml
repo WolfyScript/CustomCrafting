@@ -4,12 +4,22 @@
 # Kotlin & Jetbrains
 kotlin-stdlib = "2.1.21"
 jetbrains-annotations = "23.0.0"
+exposed = "1.0.0-beta-2"
 
 # Configuration
 jackson = "2.19.0"
 dataformat-hocon = "2.1-SNAPSHOT"
 typesafe-config = "1.3.1"
 jackson-kotlin = "2.13.4"
+
+# database drivers
+h2 = "2.2.224"
+mariadb = "3.3.1"
+mysql = "8.0.33"
+oracledb = "12.2.0.1"
+postgresql = "42.7.7"
+ms-sqlserver = "9.4.1.jre8"
+sqlite = "3.50.1.0"
 
 # cross-platform APIs
 scafall = "alpha0.0.1.0-SNAPSHOT"
@@ -70,6 +80,8 @@ minotaur = "2.+"
 # Kotlin & Jetbrains
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-stdlib" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 
 # Configurations
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
@@ -78,6 +90,15 @@ jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref
 jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson-kotlin" }
 jackson-dataformat-hocon = { module = "com.wolfyscript:jackson-dataformat-hocon", version.ref = "dataformat-hocon" }
 typesafe-config = { module = "com.typesafe:config", version.ref = "typesafe-config" }
+
+# database drivers
+db-h2 = { module = "com.h2database:h2", version.ref = "h2" }
+db-mariadb = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "mariadb" }
+db-mysql = { module = "mysql:mysql-connector-java", version.ref = "mysql" }
+db-oracle = { module = "com.oracle.database.jdbc:ojdbc8", version.ref = "oracledb" }
+db-postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+db-sqlserver = { module = "com.microsoft.sqlserver:mssql-jdbc", version.ref = "ms-sqlserver" }
+db-sqlite = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
 
 # cross-platform APIs
 scafall-api = { module = "com.wolfyscript.scafall:api", version.ref = "scafall" }
@@ -121,6 +142,8 @@ spongepowered-api = { module = "org.spongepowered:spongeapi", version.ref = "spo
 
 [bundles]
 jetbrains = [ "kotlin-stdlib", "jetbrains-annotations" ]
+exposed = [ "exposed-core", "exposed-jdbc" ]
+database-drivers = [ "db-h2", "db-mariadb", "db-mysql", "db-oracle", "db-postgresql", "db-sqlite", "db-sqlserver" ]
 adventure = [ "adventure-api", "adventure-minimessage", "adventure-platform-api" ]
 jackson = [ "jackson-databind", "jackson-dataformat-hocon" ]
 minecraft-deps = [ "mojang-authlib", "fastutil", "netty-all" ]
