@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.editor.RecipeStore
 import com.wolfyscript.customcrafting.editor.conditions.ConditionStore
 import com.wolfyscript.customcrafting.editor.result.ResultActionStore
 import com.wolfyscript.customcrafting.editor.result.TransmuterStore
-import com.wolfyscript.customcrafting.recipes.Condition
+import com.wolfyscript.customcrafting.recipes.conditions.Condition
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.RecipeType
 import com.wolfyscript.customcrafting.recipes.ResultAction

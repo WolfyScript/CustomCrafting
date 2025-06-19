@@ -1,5 +1,8 @@
 package com.wolfyscript.customcrafting.recipes
 
+import com.wolfyscript.customcrafting.recipes.conditions.Condition
+import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
+
 class RecipeConditionsImpl(override val conditions: List<Condition>) : RecipeConditions {
 
     override fun areSatisfied(evaluationContext: EvaluationContext): Boolean {

@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.editor.conditions
 
-import com.wolfyscript.customcrafting.recipes.Condition
+import com.wolfyscript.customcrafting.recipes.conditions.Condition
 
 /**
  * Stores the settings for a condition in the editor.

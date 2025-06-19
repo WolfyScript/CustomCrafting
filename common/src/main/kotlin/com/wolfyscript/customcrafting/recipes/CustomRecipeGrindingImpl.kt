@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.recipes
 
+import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
