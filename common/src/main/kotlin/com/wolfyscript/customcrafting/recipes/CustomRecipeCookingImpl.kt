@@ -9,6 +9,7 @@ import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.wrappers.utils.unwrap
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntityType
 
 class CustomRecipeCookingImpl(
@@ -124,8 +125,8 @@ class CustomRecipeCookingImpl(
     }
 
     class WorkstationProcessingCampfire(
-        override val soulCampfire: Boolean,
-        override val normalCampfire: Boolean,
+        override val soulCampfire: Boolean = true,
+        override val normalCampfire: Boolean = true,
         override val processingTime: Int,
         override val source: Ingredient,
     ) : CustomRecipeCooking.WorkstationProcessing.Campfire {
@@ -135,10 +136,14 @@ class CustomRecipeCookingImpl(
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeData<CustomRecipeCooking>? {
-            val (pos, level) = context.location?.unwrap() ?: return null
-            val type = ScafallProvider.get().server.minecraftServer.getLevel(level)
-                        ?.getBlockEntity(BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt())))?.type
-            if (type == null || type != BlockEntityType.CAMPFIRE) {
+            val (pos, levelKey) = context.location?.unwrap() ?: return null
+            val level = ScafallProvider.get().server.minecraftServer.getLevel(levelKey) ?: return null
+            val blockPos = BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt()))
+            val blockState = level.getBlockState(blockPos) ?: return null
+
+            val soul = blockState.block == Blocks.SOUL_CAMPFIRE
+            val normal = blockState.block == Blocks.CAMPFIRE
+            if (!normal && !soul || !soulCampfire && soul || !normalCampfire && normal) {
                 return null
             }
 
