@@ -61,8 +61,8 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         if (state !is Campfire) {
             return
         }
-        val slot: Int = (0 until state.size).firstOrNull {
-            state.getItem(it)?.type != Material.AIR
+        val slot: Int = (0 until state.size).firstOrNull { campfireSlot ->
+            state.getItem(campfireSlot)?.let { it.type == Material.AIR } ?: true
         } ?: return // Cannot place item. No empty slot!
 
         val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
