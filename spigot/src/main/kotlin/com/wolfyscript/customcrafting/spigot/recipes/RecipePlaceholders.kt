@@ -74,13 +74,7 @@ fun CustomRecipeCooking.toPlaceholder(): Recipe? {
             processing.processingTime
         )
 
-        is CustomRecipeCooking.WorkstationProcessing.Campfire -> CampfireRecipe(
-            key.toPlaceholderRecipeKey(),
-            spigotResult,
-            sourceChoices,
-            xp,
-            processing.processingTime
-        )
+        is CustomRecipeCooking.WorkstationProcessing.Campfire -> null // do not register Campfire recipes! Not necessary for function and cannot cancel conflicting vanilla behaviour!
 
         else -> null
     }
