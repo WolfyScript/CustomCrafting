@@ -11,7 +11,7 @@ fun getResourceAsStream(pathToResource: String): InputStream? {
 
 fun exportResource(pathToResource: String, outDest: File) {
     if (!outDest.exists()) {
-        if (!outDest.parentFile.mkdirs() || !outDest.createNewFile()) {
+        if (!outDest.parentFile.mkdirs() && !outDest.createNewFile()) {
             return
         }
     }
