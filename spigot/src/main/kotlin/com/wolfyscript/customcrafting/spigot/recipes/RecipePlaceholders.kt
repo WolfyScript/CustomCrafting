@@ -1,24 +1,17 @@
 package com.wolfyscript.customcrafting.spigot.recipes
 
-import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.recipes.CraftingFormula
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
 import org.bukkit.Bukkit
 import org.bukkit.Keyed
 import org.bukkit.NamespacedKey
-import org.bukkit.inventory.CraftingRecipe
-import org.bukkit.inventory.Recipe
-import org.bukkit.inventory.RecipeChoice
-import org.bukkit.inventory.ShapedRecipe
-import org.bukkit.inventory.ShapelessRecipe
+import org.bukkit.inventory.*
 
 const val PLACEHOLDER_RECIPE_PREFIX = "cc_placeholder."
 
-fun registerPlaceholderRecipes(recipes: Collection<CustomRecipe<*,*>>) {
+fun registerPlaceholderRecipes(recipes: Collection<CustomRecipe<*, *>>) {
     for (recipe in recipes) {
         val placeholder = recipe.toPlaceholder()
         if (placeholder == null) {
@@ -39,13 +32,62 @@ fun Key.toPlaceholderRecipeKey(): NamespacedKey {
     return NamespacedKey(this.namespace, "$PLACEHOLDER_RECIPE_PREFIX${this.value}")
 }
 
-fun CustomRecipe<*,*>.toPlaceholder(): Recipe? {
-    when (this) {
-        is CustomRecipeCrafting -> {
-            return this.toPlaceholder()
-        }
+fun CustomRecipe<*, *>.toPlaceholder(): Recipe? {
+    return when (this) {
+        is CustomRecipeCrafting -> toPlaceholder()
+        is CustomRecipeCooking -> toPlaceholder()
+        else -> null
     }
-    return null
+}
+
+fun CustomRecipeCooking.toPlaceholder(): Recipe? {
+    val key = CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(this)
+    if (key == null) {
+        return null
+    }
+
+    val processing = this.processing
+    val spigotResult = result.choices.all().first().create().unwrap()
+    val sourceChoices = processing.source.toMaterialChoice()
+    return when (processing) {
+        is CustomRecipeCooking.WorkstationProcessing.Smelting -> FurnaceRecipe(
+            key.toPlaceholderRecipeKey(),
+            spigotResult,
+            sourceChoices,
+            xp,
+            processing.processingTime
+        )
+
+        is CustomRecipeCooking.WorkstationProcessing.Blasting -> BlastingRecipe(
+            key.toPlaceholderRecipeKey(),
+            spigotResult,
+            sourceChoices,
+            xp,
+            processing.processingTime
+        )
+
+        is CustomRecipeCooking.WorkstationProcessing.Smoking -> SmokingRecipe(
+            key.toPlaceholderRecipeKey(),
+            spigotResult,
+            sourceChoices,
+            xp,
+            processing.processingTime
+        )
+
+        is CustomRecipeCooking.WorkstationProcessing.Campfire -> CampfireRecipe(
+            key.toPlaceholderRecipeKey(),
+            spigotResult,
+            sourceChoices,
+            xp,
+            processing.processingTime
+        )
+
+        else -> null
+    }
+}
+
+private fun Ingredient.toMaterialChoice(): RecipeChoice.MaterialChoice {
+    return RecipeChoice.MaterialChoice(choices.all().map { it.create().unwrap().type })
 }
 
 fun CustomRecipeCrafting.toPlaceholder(): CraftingRecipe? {
@@ -60,10 +102,7 @@ fun CustomRecipeCrafting.toPlaceholder(): CraftingRecipe? {
             recipe.shape(*formula.shape.rows.toTypedArray())
             for ((index, ingredientKey) in formula.shape.ingredientIndices.withIndex()) {
                 val ingredient = formula.ingredients[index]
-                recipe.setIngredient(
-                    ingredientKey,
-                    RecipeChoice.MaterialChoice(ingredient.choices.all().map { it.create().unwrap().type })
-                )
+                recipe.setIngredient(ingredientKey, ingredient.toMaterialChoice())
             }
             return recipe
         }
@@ -71,10 +110,7 @@ fun CustomRecipeCrafting.toPlaceholder(): CraftingRecipe? {
         is CraftingFormula.Shapeless -> {
             val recipe = ShapelessRecipe(key.toPlaceholderRecipeKey(), result.choices.all().first().create().unwrap())
             for (ingredient in formula.ingredients) {
-                recipe.addIngredient(
-                    RecipeChoice.MaterialChoice(
-                        ingredient.choices.all().map { it.create().unwrap().type })
-                )
+                recipe.addIngredient(ingredient.toMaterialChoice())
             }
 
             return recipe
