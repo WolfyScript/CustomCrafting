@@ -110,6 +110,9 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         if (data == null) {
             return
         }
+
+        data.recipe.result.runActions(context)
+
         event.result = data.recipe.result.compute(
             data,
             context,
