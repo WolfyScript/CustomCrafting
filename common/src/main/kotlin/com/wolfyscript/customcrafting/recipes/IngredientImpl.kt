@@ -31,7 +31,7 @@ class IngredientImpl(
     }
 
     override fun toString(): String {
-        return "IngredientImpl(choices=$choices, replaceWithRemains=$replaceWithRemains)"
+        return "{$choices, $replaceWithRemains}"
     }
 
 }

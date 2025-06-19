@@ -63,5 +63,8 @@ class CommandResultAction(
         }
     }
 
+    override fun toString(): String {
+        return "commands $commands"
+    }
 
 }

@@ -28,6 +28,10 @@ class CustomRecipeCookingImpl(
         return processing.evaluate(input, this, context)
     }
 
+    override fun toString(): String {
+        return "Recipe Cooking ($priority) $processing to $result, giving ${xp}xp, if $conditions"
+    }
+
     class WorkstationProcessingSmelting(
         override val processingTime: Int, override val source: Ingredient,
     ) : CustomRecipeCooking.WorkstationProcessing.Smelting {
@@ -51,6 +55,10 @@ class CustomRecipeCookingImpl(
                 return null
             }
             return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
+        }
+
+        override fun toString(): String {
+            return "smelting in $processingTime ticks from $source"
         }
 
     }
@@ -79,6 +87,10 @@ class CustomRecipeCookingImpl(
             return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
+        override fun toString(): String {
+            return "blasting in $processingTime ticks from $source"
+        }
+
     }
 
     class WorkstationProcessingSmoking(
@@ -102,6 +114,10 @@ class CustomRecipeCookingImpl(
                 return null
             }
             return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
+        }
+
+        override fun toString(): String {
+            return "smoking in $processingTime ticks from $source"
         }
 
     }
@@ -131,6 +147,10 @@ class CustomRecipeCookingImpl(
             }
             // TODO: Get proper slot in campfire. Perhaps through the context?
             return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
+        }
+
+        override fun toString(): String {
+            return "campfire in $processingTime ticks from $source on soul: $soulCampfire or normal: $normalCampfire"
         }
 
     }

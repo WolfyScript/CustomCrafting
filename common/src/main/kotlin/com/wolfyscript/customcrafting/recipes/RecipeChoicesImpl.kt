@@ -39,7 +39,7 @@ class RecipeChoicesImpl(
     }
 
     override fun toString(): String {
-        return "RecipeChoicesImpl(stacks=$stacks, tags=$tags)"
+        return "$stacks or $tags"
     }
 
 }

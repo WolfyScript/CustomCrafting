@@ -7,7 +7,7 @@ class RecipeConditionsImpl(override val conditions: List<Condition>) : RecipeCon
     }
 
     override fun toString(): String {
-        return "RecipeConditionsImpl(conditions=$conditions)"
+        return "$conditions"
     }
 
 }

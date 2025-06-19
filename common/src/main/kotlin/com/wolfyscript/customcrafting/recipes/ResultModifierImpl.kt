@@ -15,7 +15,7 @@ class ResultModifierImpl(override val transformations: List<ResultModifier.Trans
     }
 
     override fun toString(): String {
-        return "ResultModifierImpl(transformations=$transformations)"
+        return "$transformations"
     }
 
     class ResultModifierTransformationImpl(
@@ -32,7 +32,7 @@ class ResultModifierImpl(override val transformations: List<ResultModifier.Trans
         }
 
         override fun toString(): String {
-            return "ResultModifierTransformationImpl(ingredients=${ingredients.contentToString()}, transmuter=$transmuter)"
+            return "transformation(${ingredients.contentToString()}, transmuter=$transmuter)"
         }
 
     }
