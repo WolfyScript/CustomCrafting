@@ -85,24 +85,12 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 context, Random(getSmithingSeed(event.view.player as Player))
             ).unwrap()
 
-            if (data.recipe.copyOptions == null) {
-                // Take the base item and just change the material.
-                if (baseStack == null) {
-                    event.result = null
-                    return
-                }
-                event.result = baseStack.clone().apply {
-                    type = endResult.type
-                    amount = endResult.amount
-                }
-            } else {
-                if (baseStack == null) {
-                    event.result = null
-                    return
-                }
-                SmithingUtils.copyDataComponentsTo(baseStack.wrap(), endResult.wrap(), data.recipe.copyOptions!!.preserveComponents)
-                event.result = endResult
+            if (baseStack == null) {
+                event.result = null
+                return
             }
+
+            SmithingUtils.copyDataComponentsTo(baseStack.wrap(), endResult.wrap(), data.recipe.copyOptions!!)
             return
         }
 
