@@ -33,10 +33,13 @@ class CustomRecipeCraftingImpl(
         count: Int,
         applyStacks: (Int, ItemStack) -> Unit,
     ) {
-        for ((index, value) in recipeData.nonNullIngredients.withIndex()) {
-            applyStacks(index, input.matrixData.items[value.invSlot].unwrap().apply {
+        for (value in recipeData.nonNullIngredients) {
+            val stack = input.matrixData.originalMatrix[value.invSlot]?.unwrap()?.apply {
                 shrink(value.matchedItemStackRef.amount * count)
-            }.wrap())
+            }?.wrap()
+            if (stack != null) {
+                applyStacks(value.invSlot, stack)
+            }
         }
     }
 
