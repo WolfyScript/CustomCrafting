@@ -60,13 +60,47 @@ class CustomRecipeSmithingImpl(
         return RecipeDataImpl(this, arrayOf(matchedTemplate, matchedBase, matchedAddition))
     }
 
-    data class CopyOptionsImpl(override val preserveComponents: List<Key>) : CustomRecipeSmithing.CopyOptions
+    data class CopyOptionsImpl(override val preserveComponents: List<Key>,
+                               override val excludeComponents: List<Key>
+    ) : CustomRecipeSmithing.CopyOptions
 
 }
 
 class SmithingUtils {
 
     companion object {
+
+        fun copyDataComponentsTo(source: ItemStack, dest: ItemStack, options: CustomRecipeSmithing.CopyOptions?) {
+            val sourceStack = source.unwrap()
+            val destStack = dest.unwrap()
+
+            if (options == null) {
+                destStack.applyComponents(sourceStack.componentsPatch)
+                return
+            }
+
+            val registry = BuiltInRegistries.DATA_COMPONENT_TYPE
+            if (options.excludeComponents.isNotEmpty()) {
+                // Only include components that are not listed in the exclude list
+                for (component in sourceStack.components) {
+                    val typeKey = registry.getKey(component.type)
+                    if (typeKey != null) {
+                        val key = Key.key(typeKey.namespace, typeKey.path)
+                        if (options.excludeComponents.contains(key)) {
+                            continue
+                        }
+                    }
+                    copyDataComponent(sourceStack, destStack, component.type)
+                }
+            } else if(options.preserveComponents.isNotEmpty()) {
+                // Include all the components listed in the list
+                for (key in options.preserveComponents) {
+                    registry.get(ResourceLocation.fromNamespaceAndPath(key.namespace, key.value)).ifPresent {
+                        copyDataComponent(sourceStack, destStack, it.value())
+                    }
+                }
+            }
+        }
 
         fun copyDataComponentsTo(source: ItemStack, dest: ItemStack, components: List<Key>) {
             val sourceStack = source.unwrap()
