@@ -233,8 +233,16 @@ class ShapelessCraftingFormulaImpl(
         input: RecipeInput.CraftingRecipeInput,
         recipeCrafting: CustomRecipeCrafting,
     ): RecipeData<CustomRecipeCrafting>? {
+        if (input.matrixData.items.size != ingredients.size) {
+            return null
+        }
         val pickedIngredients = Array<IngredientData?>(ingredients.size) { null }
-        val path = ArrayListDeque<Int>(ingredients.size).apply { push(-1) }
+
+        /**
+         * The path of edges that were visited so far.
+         * The indices of ingredients are offset by 1 due to the root node being at index 0.
+         */
+        val path = ArrayListDeque<Int>(ingredients.size)
 
         /**
          * A matrix specifying which edges between ingredients have been checked.
@@ -247,47 +255,51 @@ class ShapelessCraftingFormulaImpl(
          * | A         | x | 0 | 0 | ...
          * | B         | 0 | x | 0 | ...
          * | C         | 0 | 0 | x | ...
-         * | ...       | 0 | 0 | 0 | ...
+         * | ...       | ... | ... | ... | ...
          *
          */
         val checkedEdges: Array<Int> = Array(ingredients.size + 1) { 0 }
 
-        var itemIndex = 0
-        while (itemIndex < input.matrixData.items.size) {
-            val currentIngredientIndex = path.peek() ?: -1
+        var invItemIndex = 0
+        while (invItemIndex < input.matrixData.items.size) {
+            val edgeFrom = path.peek() ?: 0 // If path is empty we are at the root
 
             // Try to match the ingredient at the current index
-            for ((index, ingredient) in ingredients.withIndex()) {
-                if (checkedEdges[currentIngredientIndex + 1].and(1 shl index) == 1) {
+            for ((ingredientIndex, ingredient) in ingredients.withIndex()) {
+                val edgeTo = 1 shl ingredientIndex
+                if (checkedEdges[edgeFrom].and(edgeTo) == edgeTo || path.contains(ingredientIndex + 1)) {
                     continue
                 }
-                val matchedRef = ingredient.match(input.matrixData.items[index], true)
+                val matchedRef = ingredient.match(input.matrixData.items[invItemIndex], true)
                 if (matchedRef == null) {
                     continue
                 }
                 // Found matching ingredient
-                pickedIngredients[index] = IngredientDataImpl(
-                    invSlot = itemIndex, // TODO: That is not yet the proper offset slot
-                    recipeIndex = index,
+                pickedIngredients[ingredientIndex] = IngredientDataImpl(
+                    invSlot = input.matrixData.itemIndices[invItemIndex] + input.matrixData.rowOffset * input.matrixData.gridSize + input.matrixData.columnOffset,
+                    recipeIndex = ingredientIndex,
                     selectedIngredient = ingredient,
                     matchedItemStackRef = matchedRef
                 )
-                itemIndex++
-                checkedEdges[currentIngredientIndex + 1] = checkedEdges[currentIngredientIndex + 1].or(1 shl index)
-                path.push(index)
+                invItemIndex++
+                checkedEdges[edgeFrom] = checkedEdges[edgeFrom].or(edgeTo)
+                path.push(ingredientIndex + 1)
                 break
             }
             // If it either fails on the first item or backtracks back to the root node, then there are no ingredients left to match.
-            if (path.isEmpty() || path.peek() == -1) {
+            if (path.isEmpty()) {
                 return null
             }
-            // No matching node found. Backtrack
-            pickedIngredients[currentIngredientIndex] = null
-            itemIndex--
+            if (path.peek() == edgeFrom) {
+                // No matching node found. Backtrack
+                path.pop()
+                pickedIngredients[edgeFrom - 1] = null
+                invItemIndex--
+            }
         }
 
         // Make sure all ingredients are on the path, that should be the case already, so simply check for size
-        if (path.size - 1 == ingredients.size) {
+        if (path.size == ingredients.size) {
             return RecipeDataImpl(recipeCrafting, pickedIngredients)
         }
         return null

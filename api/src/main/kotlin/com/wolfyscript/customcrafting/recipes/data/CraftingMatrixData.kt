@@ -29,6 +29,12 @@ interface CraftingMatrixData {
     val items: Array<ItemStack>
 
     /**
+     * The indices of the items in the matrix in order of appearance without empty slots.
+     * These indices can be associated with [items].
+     */
+    val itemIndices: List<Int>
+
+    /**
      * The size of the crafting grid.
      * For example, a 2x2 grid has a size of 2.
      */

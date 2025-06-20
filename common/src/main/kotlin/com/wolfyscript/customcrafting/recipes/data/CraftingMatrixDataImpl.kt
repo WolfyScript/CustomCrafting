@@ -20,6 +20,7 @@ class CraftingMatrixDataImpl(
     }
 
     override val items: Array<ItemStack> by lazy { ingredients.filterNotNull().toTypedArray() }
+    override val itemIndices: List<Int> by lazy { ingredients.mapIndexedNotNull { i, stack -> if (stack != null && !stack.isEmpty) i else null } }
 
     override val matrix: Array<ItemStack?>
     override val width: Int
