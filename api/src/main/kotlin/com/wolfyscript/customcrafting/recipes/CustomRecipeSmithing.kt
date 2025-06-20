@@ -39,6 +39,11 @@ interface CustomRecipeSmithing : CustomRecipe<RecipeInput.SmithingRecipeInput, C
          */
         val preserveComponents: List<Key>
 
+        /**
+         * List of data components to not copy from the base to the result stack
+         */
+        val excludeComponents: List<Key>
+
     }
 
 }
