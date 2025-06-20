@@ -44,7 +44,7 @@ class CustomRecipeCraftingImpl(
     }
 
     override fun toString(): String {
-        return "CustomRecipeCraftingImpl(priority=$priority, conditions=$conditions, formula=$formula, result=$result)"
+        return "crafting ($priority) with $formula producing $result if $conditions"
     }
 
 }
@@ -113,7 +113,7 @@ class ShapedCraftingFormulaImpl(
     }
 
     override fun toString(): String {
-        return "ShapedCraftingFormulaImpl(mappedIngredients=$mappedIngredients, shape=$shape, ingredients=$ingredients)"
+        return "shape $shape with $mappedIngredients"
     }
 
     class ShapeImpl(
@@ -207,7 +207,7 @@ class ShapedCraftingFormulaImpl(
         }
 
         override fun toString(): String {
-            return "ShapeImpl(rows=$rows, symmetry=$symmetry, trim=$trim, width=$width, height=$height, variations=$variations, ingredientIndices=$ingredientIndices)"
+            return "($rows, ${if (trim) "trimmed, " else ""}$symmetry, ${width}x${height}, ${ingredientIndices}: $variations)"
         }
 
     }
@@ -219,7 +219,7 @@ class ShapedCraftingFormulaImpl(
     ) : CraftingFormula.Shaped.ShapeSymmetry {
 
         override fun toString(): String {
-            return "ShapeSymmetryImpl(horizontal=$horizontal, vertical=$vertical, rotate=$rotate)"
+            return "(horizontal=$horizontal, vertical=$vertical, rotate=$rotate)"
         }
     }
 
@@ -306,7 +306,7 @@ class ShapelessCraftingFormulaImpl(
     }
 
     override fun toString(): String {
-        return "ShapelessCraftingFormulaImpl(ingredients=$ingredients)"
+        return "shapeless $ingredients"
     }
 
 }
