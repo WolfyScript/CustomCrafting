@@ -247,7 +247,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             if (remains.isNotEmpty()) {
                 // revert the last added stack again, by removing the count
                 val toRemove = originalCount - remains[0]!!.amount
-                bukkitPlayer.inventory.last { it.isSimilar(stack) }?.amount -= toRemove
+                bukkitPlayer.inventory.last { stack.isSimilar(it) }?.amount -= toRemove
                 return i
             }
         }
