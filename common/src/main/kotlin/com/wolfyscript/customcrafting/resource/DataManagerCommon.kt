@@ -87,6 +87,14 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
 
             // Repairing Recipes
             addAbstractTypeMapping(CustomRecipeRepairing::class.java, CustomRecipeRepairingImpl::class.java)
+            addAbstractTypeMapping(
+                CustomRecipeRepairing.RepairProcess.FixedResult::class.java,
+                CustomRecipeRepairingImpl.FixedResultImpl::class.java
+            )
+            addAbstractTypeMapping(
+                CustomRecipeRepairing.RepairProcess.CustomDamageRepair::class.java,
+                CustomRecipeRepairingImpl.CustomDamageImpl::class.java
+            )
 
             // Smithing Recipes
             addAbstractTypeMapping(CustomRecipeSmithing::class.java, CustomRecipeSmithingImpl::class.java)
