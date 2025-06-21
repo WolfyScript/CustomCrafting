@@ -60,9 +60,18 @@ class CustomRecipeSmithingImpl(
         return RecipeDataImpl(this, arrayOf(matchedTemplate, matchedBase, matchedAddition))
     }
 
-    data class CopyOptionsImpl(override val preserveComponents: List<Key>,
-                               override val excludeComponents: List<Key>
-    ) : CustomRecipeSmithing.CopyOptions
+    override fun toString(): String {
+        return "smithing ($priority), template=$template, base=$base, addition=$addition, copying $copyOptions, producing $result if $conditions"
+    }
+
+    data class CopyOptionsImpl(override val preserveComponents: List<Key> = emptyList(),
+                               override val excludeComponents: List<Key> = emptyList()
+    ) : CustomRecipeSmithing.CopyOptions {
+
+        override fun toString(): String {
+            return "(preserve $preserveComponents, exclude $excludeComponents)"
+        }
+    }
 
 }
 
@@ -74,7 +83,7 @@ class SmithingUtils {
             val sourceStack = source.unwrap()
             val destStack = dest.unwrap()
 
-            if (options == null) {
+            if (options == null || options.preserveComponents.isEmpty() && options.excludeComponents.isEmpty()) {
                 destStack.applyComponents(sourceStack.componentsPatch)
                 return
             }
