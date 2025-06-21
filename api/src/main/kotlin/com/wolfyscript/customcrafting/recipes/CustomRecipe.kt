@@ -14,12 +14,25 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 @JsonPropertyOrder("type")
 interface CustomRecipe<I: RecipeInput, R: CustomRecipe<I, R>> {
 
+    /**
+     * The type of the recipe.
+     */
     val type: RecipeType<*>
 
+    /**
+     * The priority of the recipe.
+     * Recipes of higher priority are checked before recipes of lower priority.
+     */
     val priority: Int
 
+    /**
+     * Conditions that must be met for the recipe to work.
+     */
     val conditions: RecipeConditions
 
+    /**
+     * Evaluates the recipe using its input and the context.
+     */
     fun evaluate(input: I, context: EvaluationContext): RecipeData<R>?
 
 }

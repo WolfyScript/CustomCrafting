@@ -1,6 +1,5 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.util.customCrafting
@@ -8,6 +7,11 @@ import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.ValueReference
 import com.wolfyscript.scafall.registry.referenced
 
+/**
+ * A list of all the default [RecipeTypes][RecipeType] that exist across all platforms.
+ *
+ * Some platforms or third-parties may register other types, but those won't be listed here.
+ */
 object RecipeTypes {
 
     val crafting = create<CustomRecipeCrafting>("crafting")

@@ -17,14 +17,28 @@ interface CustomRecipeCooking : CustomRecipe<RecipeInput.CookingRecipeInput, Cus
 
     val xp: Float
 
+    /**
+     * Determines the workstation of the cooking recipe.
+     *
+     * Each workstation may have its own specific settings.
+     */
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
     @JsonPropertyOrder(value = ["type"])
     sealed interface WorkstationProcessing {
 
+        /**
+         * The source of the cooking process
+         */
         val source: Ingredient
 
+        /**
+         * The duration of the cooking process in ticks
+         */
         val processingTime: Int
 
+        /**
+         * Evaluates the specified recipe for these workstation settings.
+         */
         fun evaluate(input: RecipeInput.CookingRecipeInput, recipe: CustomRecipeCooking, context: EvaluationContext): RecipeData<CustomRecipeCooking>?
 
         @JsonTypeName("blasting")
@@ -40,12 +54,12 @@ interface CustomRecipeCooking : CustomRecipe<RecipeInput.CookingRecipeInput, Cus
         interface Campfire : WorkstationProcessing {
 
             /**
-             * Weather the recipe can be processed on a soul campfire.
+             * Whether the recipe can be processed on a soul campfire.
              */
             val soulCampfire: Boolean
 
             /**
-             * Weather the recipe can be processed on a normal campfire.
+             * Whether the recipe can be processed on a normal campfire.
              */
             val normalCampfire: Boolean
         }

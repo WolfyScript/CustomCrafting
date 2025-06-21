@@ -11,11 +11,17 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase
 import com.fasterxml.jackson.databind.type.TypeFactory
-import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 
+/**
+ * Used to resolve the type of Recipes in JSON.
+ *
+ * On serialization the [RecipeType] is serialized to a [Key] and stored as a String (via property or otherwise specified via [JsonTypeInfo])
+ *
+ * On deserialization the [Key] is used to look up the type from [CustomCraftingRegistryTypes.recipeTypes], which determines the Class to deserialize the data.
+ */
 class RecipeTypeIdResolver : TypeIdResolverBase() {
 
     private lateinit var superType: JavaType

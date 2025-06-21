@@ -15,6 +15,9 @@ import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.RegistryKey
 import com.wolfyscript.scafall.registry.RegistryReference
 
+/**
+ * A list of all the [Registries][com.wolfyscript.scafall.registry.Registry] that are included with CustomCrafting.
+ */
 object CustomCraftingRegistryTypes {
 
     val root = Key.customCrafting("root")
