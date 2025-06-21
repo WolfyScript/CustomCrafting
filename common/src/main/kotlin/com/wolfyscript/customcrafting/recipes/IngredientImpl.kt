@@ -6,6 +6,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 class IngredientImpl(
     override val choices: RecipeChoices,
     override val replaceWithRemains: Boolean = false,
+    override val matchTags: Boolean = true,
 ) : Ingredient {
 
     override fun match(

@@ -34,7 +34,7 @@ class CustomRecipeSmithingImpl(
             return null
         }
         val matchedTemplate = template?.let {
-            it.match(input.template!!, true)?.let { templateMatch ->
+            it.match(input.template!!)?.let { templateMatch ->
                 IngredientDataImpl(0, 0, template, templateMatch)
             } ?: return null
         }
@@ -43,7 +43,7 @@ class CustomRecipeSmithingImpl(
             return null
         }
         val matchedBase = base?.let {
-            it.match(input.base!!, true)?.let { baseMatch ->
+            it.match(input.base!!)?.let { baseMatch ->
                 IngredientDataImpl(1, 1, base, baseMatch)
             } ?: return null
         }
@@ -52,7 +52,7 @@ class CustomRecipeSmithingImpl(
             return null
         }
         val matchedAddition = addition?.let {
-            it.match(input.addition!!, true)?.let { additionMatch ->
+            it.match(input.addition!!)?.let { additionMatch ->
                 IngredientDataImpl(2, 2, addition, additionMatch)
             } ?: return null
         }

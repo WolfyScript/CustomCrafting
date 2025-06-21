@@ -96,7 +96,7 @@ class ShapedCraftingFormulaImpl(
                 return null
             }
             val ingredient = ingredients[indexInRecipe]
-            val matchedRef = ingredient.match(stack, true) ?: return null
+            val matchedRef = ingredient.match(stack) ?: return null
             val invOffset = if (!shape.trim || matrix.columnOffset == 0 || matrix.rowOffset == 0) {
                 0
             } else {
@@ -270,7 +270,7 @@ class ShapelessCraftingFormulaImpl(
                 if (checkedEdges[edgeFrom].and(edgeTo) == edgeTo || path.contains(ingredientIndex + 1)) {
                     continue
                 }
-                val matchedRef = ingredient.match(input.matrixData.items[invItemIndex], true)
+                val matchedRef = ingredient.match(input.matrixData.items[invItemIndex])
                 if (matchedRef == null) {
                     continue
                 }

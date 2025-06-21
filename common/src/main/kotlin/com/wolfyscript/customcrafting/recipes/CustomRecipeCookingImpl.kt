@@ -52,7 +52,7 @@ class CustomRecipeCookingImpl(
                 return null
             }
 
-            val result = source.match(input.source, true)
+            val result = source.match(input.source)
             if (result == null) {
                 return null
             }
@@ -82,7 +82,7 @@ class CustomRecipeCookingImpl(
             }
 
 
-            val result = source.match(input.source, true)
+            val result = source.match(input.source)
             if (result == null) {
                 return null
             }
@@ -111,7 +111,7 @@ class CustomRecipeCookingImpl(
                 return null
             }
 
-            val result = source.match(input.source, true)
+            val result = source.match(input.source)
             if (result == null) {
                 return null
             }
@@ -147,7 +147,7 @@ class CustomRecipeCookingImpl(
                 return null
             }
 
-            val result = source.match(input.source, true)
+            val result = source.match(input.source)
             if (result == null) {
                 return null
             }

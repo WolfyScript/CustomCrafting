@@ -21,7 +21,7 @@ class CustomRecipeStonecuttingImpl(
             return null
         }
 
-        val matchResult = source.match(input.source, true)
+        val matchResult = source.match(input.source)
         if (matchResult == null) {
             return null
         }

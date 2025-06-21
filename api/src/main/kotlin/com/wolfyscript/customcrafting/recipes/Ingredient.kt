@@ -9,12 +9,16 @@ interface Ingredient {
 
     val replaceWithRemains: Boolean
 
+    val matchTags: Boolean
+
     /**
      * Matches this ingredient against the given stack.
      *
      * @return The matching [ItemStackRef] from the ingredient choices; or null if none match
      */
     fun match(stack: ItemStack, exact: Boolean): ItemStackRef?
+
+    fun match(stack: ItemStack): ItemStackRef? = match(stack, matchTags)
 
     fun shrink(stack: ItemStack, amount: Int): ItemStack
 
