@@ -16,6 +16,10 @@ interface CustomRecipeRepairing : CustomRecipe<RecipeInput.RepairingRecipeInput,
 
     val process: RepairProcess
 
+    val base: Ingredient
+
+    val addition: Ingredient?
+
     /**
      * The process in which the repairing is done.
      */
