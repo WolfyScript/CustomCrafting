@@ -56,10 +56,10 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
         recipeCache.invalidate(event.view.player.uniqueId)
 
-        if (resultStack != null && !resultStack.isEmpty) {
+        if (resultStack != null && resultStack.type != Material.AIR) {
             // Check for disabled vanilla recipes
             if (Bukkit.getRecipesFor(resultStack).any {
-                    customCrafting.recipeManager.disabledRecipes.contains((it as Keyed).key.toAPI())
+                    customCrafting.recipeManager.disabledRecipes.contains((it as Keyed).key.wrap())
                 }) {
                 event.result = null
             }
@@ -95,7 +95,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         }
 
         // No recipe was matched
-        if (event.result == null || event.result!!.isEmpty) {
+        if (event.result == null || event.result!!.type == Material.AIR) {
             return
         }
         if (inventory.recipe == null || inventory.recipe!!.isPlaceholder() || inventory.recipe!!.isDisplay()) {
@@ -110,7 +110,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         if (inventory == null || inventory !is SmithingInventory) {
             return
         }
-        if (event.slotType != InventoryType.SlotType.RESULT || event.currentItem == null || event.currentItem!!.isEmpty) {
+        if (event.slot != 3 || event.currentItem == null || event.currentItem!!.type == Material.AIR) {
             return
         }
 
@@ -123,7 +123,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         }
 
         val resultStack = inventory.result
-        if (resultStack == null || resultStack.isEmpty) {
+        if (resultStack == null || resultStack.type ==  Material.AIR) {
             return
         }
 
