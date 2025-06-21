@@ -8,20 +8,20 @@ import com.wolfyscript.customcrafting.recipes.SmithingUtils
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
-import com.wolfyscript.scafall.adventure.toAPI
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
 import org.bukkit.Bukkit
 import org.bukkit.Keyed
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.Player
+import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareSmithingEvent
+import org.bukkit.event.inventory.SmithItemEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.SmithingInventory
@@ -32,6 +32,7 @@ import kotlin.random.Random
 class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
     val recipeCache = Caffeine.newBuilder().build<UUID, RecipeData<CustomRecipeSmithing>>()
+    val collectsResult = Caffeine.newBuilder().build<UUID, Boolean>()
 
     private fun getSmithingSeed(bukkitPlayer: Player): Long {
         var seed = bukkitPlayer.persistentDataContainer.get(
@@ -105,7 +106,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
     }
 
     @EventHandler
-    fun onCollectResult(event: InventoryClickEvent) {
+    fun onCollectResult(event: SmithItemEvent) {
         val inventory = event.clickedInventory
         if (inventory == null || inventory !is SmithingInventory) {
             return
@@ -127,7 +128,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             return
         }
 
-        event.isCancelled = true // Cancel the event to prevent vanilla ingredient consumption
+        event.result = Event.Result.DENY  // Cancel the event to prevent vanilla ingredient consumption
 
         if (event.isShiftClick) {
             if (event.view.bottomInventory.addItem(resultStack).isNotEmpty()) {
@@ -153,18 +154,26 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         data.recipe.result.runActions(context, 1)
 
         // TODO: craft remains
-        data.bySlot(0)?.let {
-            val templateStack = inventory.getItem(0) ?: ItemStack(Material.AIR)
-            templateStack.amount = templateStack.amount - it.matchedItemStackRef.amount
-        }
-        data.bySlot(1)?.let {
-            val baseStack = inventory.getItem(1) ?: ItemStack(Material.AIR)
-            baseStack.amount = baseStack.amount + it.matchedItemStackRef.amount
-        }
-        data.bySlot(2)?.let {
-            val additionStack = inventory.getItem(2) ?: ItemStack(Material.AIR)
-            additionStack.amount = additionStack.amount + it.matchedItemStackRef.amount
-        }
+        // Use setContents so we batch slot updates and only cause one update, so PrepareSmithingEvent is just called once instead of three times.
+        inventory.contents = arrayOf(
+            data.bySlot(0)?.let {
+                inventory.getItem(0)?.clone()?.apply {
+                    amount -= it.matchedItemStackRef.amount
+                } ?: ItemStack(Material.AIR)
+            },
+            data.bySlot(1)?.let {
+                inventory.getItem(1)?.clone()?.apply {
+                    amount -= it.matchedItemStackRef.amount
+                } ?: ItemStack(Material.AIR)
+            },
+            data.bySlot(2)?.let {
+                inventory.getItem(2)?.clone()?.apply {
+                    amount -= it.matchedItemStackRef.amount
+                } ?: ItemStack(Material.AIR)
+            }
+        )
+
+        player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1f, 1f)
 
         // Reset seed for next result generation
         player.persistentDataContainer.set(CustomCraftingSpigot.playerSmithingSeedKey, PersistentDataType.LONG, Random.Default.nextLong())
