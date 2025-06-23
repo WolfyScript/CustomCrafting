@@ -11,7 +11,6 @@ import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
-import net.minecraft.world.entity.Entity
 import org.bukkit.Bukkit
 import org.bukkit.Effect
 import org.bukkit.GameMode
@@ -131,7 +130,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val location = inventory.location
         if (location != null && location.world != null) {
             // Mirror the vanilla behaviour of damaging the Anvil
-            if (player.gameMode != GameMode.CREATIVE && Entity.SHARED_RANDOM.nextFloat() < 0.12) {
+            if (player.gameMode != GameMode.CREATIVE && Random.nextFloat() < 0.12) {
                 // TODO: In Paper we could call the AnvilDamageEvent here for better compatibility with other plugins that may use it
                 val block = location.block
                 block.type = when (block.type) {
