@@ -85,10 +85,13 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         if (data == null || data !is RecipeData.RepairingRecipeData) {
             return
         }
+        event.result = Event.Result.DENY // Deny the click event, we do our own calculations
+        if (player.gameMode ==  GameMode.CREATIVE) {
+            player.level += view.repairCost
+        }
         if (player.level < view.repairCost) {
             return // The player level may have changed, making the recipe invalid
         }
-        event.result = Event.Result.DENY // Deny the click event, we do our own calculations
 
         val cursor = event.cursor
 
