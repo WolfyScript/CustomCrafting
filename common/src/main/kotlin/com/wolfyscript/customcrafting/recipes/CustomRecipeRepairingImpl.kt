@@ -26,7 +26,7 @@ import kotlin.random.Random
 class CustomRecipeRepairingImpl(
     override val priority: Int,
     override val conditions: RecipeConditions,
-    override val process: RepairProcess,
+    override val process: CombineProcess,
     override val base: Ingredient,
     override val addition: Ingredient?,
 ) : CustomRecipeRepairing {
@@ -53,7 +53,7 @@ class CustomRecipeRepairingImpl(
         override val result: RecipeResult, override val cost: Int?,
         override val rename: RenameOptions?,
     ) :
-        RepairProcess.FixedResult {
+        CombineProcess.FixedResult {
 
         override fun compute(
             recipeData: RecipeData.RepairingRecipeData,
@@ -71,7 +71,7 @@ class CustomRecipeRepairingImpl(
         override val damageCombine: DamageCombineOptions?,
         override val itemRepair: ItemRepairOptions?,
         override val enchanting: EnchantingOptions?,
-    ) : RepairProcess.CustomDamageRepair {
+    ) : CombineProcess.CustomCombineProcess {
 
         override fun compute(
             recipeData: RecipeData.RepairingRecipeData,

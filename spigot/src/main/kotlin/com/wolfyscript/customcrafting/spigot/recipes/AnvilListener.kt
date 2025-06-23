@@ -6,7 +6,7 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.repair.RepairProcess
+import com.wolfyscript.customcrafting.recipes.repair.CombineProcess
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
@@ -57,7 +57,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val result = process.compute(data, input, context, Random(getRepairingSeed(player)))
         event.result = result.unwrap()
 
-        if (process is RepairProcess.FixedResult) {
+        if (process is CombineProcess.FixedResult) {
             process.cost?.let {
                 event.view.repairCost = it
             }
@@ -121,7 +121,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val context = EvaluationContextImpl(player.wrap(), inventory.location?.toPreciseGlobal())
 
         val process = data.recipe.process
-        if (process is RepairProcess.FixedResult) {
+        if (process is CombineProcess.FixedResult) {
             process.result.runActions(context, 1)
         }
 

@@ -8,7 +8,7 @@ import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
-import com.wolfyscript.customcrafting.recipes.repair.RepairProcess
+import com.wolfyscript.customcrafting.recipes.repair.CombineProcess
 import com.wolfyscript.jackson.dataformat.hocon.HoconMapper
 import com.wolfyscript.scafall.config.jackson.registerScafallModule
 import java.io.File
@@ -89,11 +89,11 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
             // Repairing Recipes
             addAbstractTypeMapping(CustomRecipeRepairing::class.java, CustomRecipeRepairingImpl::class.java)
             addAbstractTypeMapping(
-                RepairProcess.FixedResult::class.java,
+                CombineProcess.FixedResult::class.java,
                 CustomRecipeRepairingImpl.FixedResultImpl::class.java
             )
             addAbstractTypeMapping(
-                RepairProcess.CustomDamageRepair::class.java,
+                CombineProcess.CustomCombineProcess::class.java,
                 CustomRecipeRepairingImpl.CustomDamageImpl::class.java
             )
 

@@ -15,7 +15,7 @@ import kotlin.random.Random
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonPropertyOrder(value = ["type"])
-sealed interface RepairProcess {
+sealed interface CombineProcess {
 
     /**
      * Computes the result based on the data and context.
@@ -36,7 +36,7 @@ sealed interface RepairProcess {
      * Always uses the specified result and computes the resulting stack based on the data and context.
      */
     @JsonTypeName("fixed_result")
-    interface FixedResult : RepairProcess {
+    interface FixedResult : CombineProcess {
 
         /**
          * Defines how the result should be renamed.
@@ -54,8 +54,8 @@ sealed interface RepairProcess {
     /**
      * Tries to mirror the vanilla logic of the anvil as much as possible, while providing lots of customization options.
      */
-    @JsonTypeName("custom_damage_repair")
-    interface CustomDamageRepair : RepairProcess {
+    @JsonTypeName("custom")
+    interface CustomCombineProcess : CombineProcess {
 
         /**
          * Defines how the result should be renamed.
