@@ -6,7 +6,7 @@ package com.wolfyscript.customcrafting.recipes.repair
  * - no addition, only base ([preserveBaseEnchants] applies)
  * - addition is an enchanted book (all options apply)
  * - addition is a damageable item and contains enchantments (all options apply)
- * - addition is a non-damageable item and contains enchantments and [ItemRepairOptions.combineEnchantsIfAvailable] is enabled (all options apply)
+ * - addition is a non-damageable item and contains enchantments and [ItemRepairOptions.combineEnchants] is enabled (all options apply)
  *
  */
 interface EnchantingOptions {

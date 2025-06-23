@@ -61,7 +61,7 @@ class CustomCombineProcessImpl(
         if (additionStack != null) {
             var tryCombineEnchantments = true
             if (itemRepair != null && !additionStack.isDamageableItem && result.isDamageableItem) {
-                tryCombineEnchantments = itemRepair.combineEnchantsIfAvailable
+                tryCombineEnchantments = itemRepair.combineEnchants
                 // Repair base stack with custom addition item count!
                 // While the "repairable" data component defines items/tags that can be used to repair an item, stacks with tags are not possible.
                 // This allows for more complex or third-party stacks to be used for repair!
@@ -79,7 +79,7 @@ class CustomCombineProcessImpl(
 
                     if (repairAmount <= 0) {
                         recipeData.itemRepairCost = i + 1
-                        cost += (i + 1) * itemRepair.repairItemCost
+                        cost += (i + 1) * itemRepair.cost
                         break
                     }
                 }

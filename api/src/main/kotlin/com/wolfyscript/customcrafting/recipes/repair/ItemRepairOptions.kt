@@ -12,12 +12,12 @@ interface ItemRepairOptions {
      *
      * Must be >= 1; Default: 1
      */
-    val repairItemCost: Int
+    val cost: Int
 
     /**
      * Whether to combine the enchantments from the repair item (if any), with the base.
      *
      * Default: false
      */
-    val combineEnchantsIfAvailable: Boolean
+    val combineEnchants: Boolean
 }
