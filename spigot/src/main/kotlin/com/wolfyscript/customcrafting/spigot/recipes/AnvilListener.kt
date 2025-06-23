@@ -146,18 +146,24 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
         event.currentItem = null
 
+        val baseStack = base.clone()
+        val additionStack = inventory.getItem(1)?.clone()
+
         // TODO: Craft remains!
         data.bySlot(0)?.let {
-            inventory.getItem(0)?.apply {
+            baseStack.apply {
                 amount -= it.matchedItemStackRef.amount
             }
         }
 
         data.bySlot(1)?.let {
-            inventory.getItem(1)?.apply {
+            additionStack?.apply {
                 amount -= it.matchedItemStackRef.amount * (data.itemRepairCost ?: 1)
             }
         }
+
+        inventory.setItem(0, baseStack)
+        inventory.setItem(1, additionStack)
 
         // By this point, the recipe was processed, levels and ingredients consumed,
         // Now clear the cache
