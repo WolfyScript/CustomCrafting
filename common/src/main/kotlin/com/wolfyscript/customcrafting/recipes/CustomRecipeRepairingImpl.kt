@@ -5,12 +5,14 @@ import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.data.RepairingRecipeDataImpl
+import com.wolfyscript.customcrafting.recipes.repair.*
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.wrappers.utils.unwrap
 import com.wolfyscript.scafall.wrappers.utils.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import net.minecraft.core.component.DataComponents
+import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.Mth.clamp
 import net.minecraft.world.inventory.AnvilMenu
@@ -24,7 +26,7 @@ import kotlin.random.Random
 class CustomRecipeRepairingImpl(
     override val priority: Int,
     override val conditions: RecipeConditions,
-    override val process: CustomRecipeRepairing.RepairProcess,
+    override val process: RepairProcess,
     override val base: Ingredient,
     override val addition: Ingredient?,
 ) : CustomRecipeRepairing {
@@ -47,8 +49,11 @@ class CustomRecipeRepairingImpl(
         return RepairingRecipeDataImpl(0, this, arrayOf(matchedBase, matchedAddition))
     }
 
-    class FixedResultImpl(override val result: RecipeResult, override val cost: Int?) :
-        CustomRecipeRepairing.RepairProcess.FixedResult {
+    class FixedResultImpl(
+        override val result: RecipeResult, override val cost: Int?,
+        override val rename: RenameOptions?,
+    ) :
+        RepairProcess.FixedResult {
 
         override fun compute(
             recipeData: RecipeData.RepairingRecipeData,
@@ -62,9 +67,11 @@ class CustomRecipeRepairingImpl(
     }
 
     class CustomDamageImpl(
-        override val additionalRepair: Int?,
-        override val combineDurabilityAsRatio: Boolean = false,
-    ) : CustomRecipeRepairing.RepairProcess.CustomDamageRepair {
+        override val rename: RenameOptions?,
+        override val damageCombine: DamageCombineOptions?,
+        override val itemRepair: ItemRepairOptions?,
+        override val enchanting: EnchantingOptions?,
+    ) : RepairProcess.CustomDamageRepair {
 
         override fun compute(
             recipeData: RecipeData.RepairingRecipeData,
@@ -88,95 +95,22 @@ class CustomRecipeRepairingImpl(
                     (additionStack?.getOrDefault(DataComponents.REPAIR_COST, 0) ?: 0)
 
             val result = baseStack.copy()
-            val resultEnchants = ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(result))
+            var resultEnchants = ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(result))
             var cost = 0
 
+            if (baseStack.isEmpty) {
+                menu.setData(0, 0)
+                return net.minecraft.world.item.ItemStack.EMPTY.wrap()
+            }
+
             if (additionStack != null) {
-                if (additionStack.isDamageableItem) {
-                    // Combine durability
-                    // Vanilla only allows to combine the durability of the same items.
-                    // This expands it to allow combining any item
-                    if (baseStack.isDamageableItem) {
-                        val baseDur = baseStack.maxDamage - baseStack.damageValue
-                        val additionDur = additionStack.maxDamage - additionStack.damageValue
-
-                        val damage = if (combineDurabilityAsRatio) {
-                            // take the percentages of durability and combine them, so ratios are kept
-                            val baseDurPerc = baseDur / baseStack.maxDamage
-                            val additionDurPerc = additionDur / additionStack.maxDamage
-                            val totalDurRepairPerc = baseDurPerc + additionDurPerc
-
-                            // apply the ratio and bonus based on the max-damage of the result
-                            val bonusAmount = result.maxDamage * 12 / 100
-                            val scalarDur = totalDurRepairPerc * result.maxDamage + bonusAmount
-
-                            result.maxDamage - scalarDur
-                        } else {
-                            // Simply combine durability
-                            val bonus = result.maxDamage * 12 / 100
-                            val combined = baseDur + additionDur + bonus
-
-                            result.maxDamage - combined
-                        }.coerceAtLeast(0)
-
-                        if (damage < result.damageValue) {
-                            result.damageValue = damage
-                        }
-
-                        // combine enchantments if possible
-                        val additionItems = EnchantmentHelper.getEnchantmentsForCrafting(additionStack)
-
-                        var appliesAtLeastOneEnchant = false
-                        var hasIncompatibleEnchants = false
-
-                        for (entry in additionItems.entrySet()) {
-                            val enchantmentHolder = entry.key
-                            val enchantment = enchantmentHolder.value()
-
-                            val compatible = if (player.hasInfiniteMaterials() || result.`is`(Items.ENCHANTED_BOOK)) {
-                                true
-                            } else {
-                                enchantment.canEnchant(result)
-                            }
-                            val conflicts = resultEnchants.keySet().count {
-                                !it.equals(enchantmentHolder) && !Enchantment.areCompatible(it, enchantmentHolder)
-                            }
-
-                            if (!compatible || conflicts > 0) {
-                                cost += conflicts
-                                hasIncompatibleEnchants = true
-                                continue
-                            }
-
-                            appliesAtLeastOneEnchant = true
-                            val resultLvl = resultEnchants.getLevel(enchantmentHolder)
-                            val additionLvl = entry.intValue
-                            val upgradedLvl = if (resultLvl == additionLvl) {
-                                additionLvl + 1
-                            } else {
-                                max(resultLvl, additionLvl)
-                            }.coerceAtMost(enchantment.maxLevel)
-
-                            resultEnchants.set(enchantmentHolder, upgradedLvl)
-
-                            // calculate enchantment cost
-                            var enchantCost = enchantment.anvilCost
-                            if (result.has(DataComponents.STORED_ENCHANTMENTS)) {
-                                enchantCost = max(1, enchantCost / 2)
-                            }
-                            cost += enchantCost * upgradedLvl
-                        }
-
-                        if (hasIncompatibleEnchants && !appliesAtLeastOneEnchant) {
-                            menu.setData(0, 0)
-                            return net.minecraft.world.item.ItemStack.EMPTY.wrap()
-                        }
-                    }
-                } else {
-                    // Repair stack with custom addition item
+                var tryCombineEnchantments = true
+                if (itemRepair != null && !additionStack.isDamageableItem && result.isDamageableItem) {
+                    tryCombineEnchantments = itemRepair.combineEnchantsIfAvailable
+                    // Repair base stack with custom addition item count!
                     // While the "repairable" data component defines items/tags that can be used to repair an item, stacks with tags are not possible.
                     // This allows for more complex or third-party stacks to be used for repair!
-                    var repairAmount = result.damageValue.coerceAtLeast(result.maxDamage)
+                    var repairAmount = result.damageValue.coerceAtMost(result.maxDamage / 4)
                     if (repairAmount <= 0) {
                         return net.minecraft.world.item.ItemStack.EMPTY.wrap()
                     }
@@ -186,29 +120,122 @@ class CustomRecipeRepairingImpl(
 
                     for (i in 0 until maxRepairCount) {
                         result.damageValue = result.damageValue - repairAmount
-                        repairAmount = result.damageValue.coerceAtMost(result.maxDamage)
+                        repairAmount = result.damageValue.coerceAtMost(result.maxDamage / 4)
 
                         if (repairAmount <= 0) {
                             recipeData.itemRepairCost = i + 1
+                            cost += (i + 1) * itemRepair.repairItemCost
                             break
                         }
                     }
+                } else if (damageCombine != null && additionStack.isDamageableItem && result.isDamageableItem) {
+                    // Combine durability
+                    // Vanilla only allows to combine the durability of the same items.
+                    // This expands it to allow combining any item
+                    val baseDur = baseStack.maxDamage - baseStack.damageValue
+                    val additionDur = additionStack.maxDamage - additionStack.damageValue
+
+                    val damage = if (damageCombine.combineDurabilityAsRatio) {
+                        // take the percentages of durability and combine them, so ratios are kept
+                        val baseDurPerc = baseDur / baseStack.maxDamage
+                        val additionDurPerc = additionDur / additionStack.maxDamage
+                        val totalDurRepairPerc = baseDurPerc + additionDurPerc
+
+                        // apply the ratio and bonus based on the max-damage of the result
+                        val bonusAmount = result.maxDamage * damageCombine.bonusPercentage / 100
+                        val scalarDur = totalDurRepairPerc * result.maxDamage + bonusAmount
+
+                        result.maxDamage - scalarDur
+                    } else {
+                        // Simply combine durability
+                        val bonus = result.maxDamage * damageCombine.bonusPercentage / 100
+                        val combined = baseDur + additionDur + bonus
+
+                        result.maxDamage - combined
+                    }.coerceAtLeast(0)
+
+                    if (damage < result.damageValue) {
+                        result.damageValue = damage
+                    }
                 }
 
+                if (enchanting != null && EnchantmentHelper.canStoreEnchantments(result) && tryCombineEnchantments) {
+                    // combine enchantments if possible/necessary
+                    val additionEnchants = EnchantmentHelper.getEnchantmentsForCrafting(additionStack)
+
+                    var appliesAtLeastOneEnchant = false
+                    var hasIncompatibleEnchants = false
+
+                    if (!enchanting.preserveBaseEnchants) {
+                        resultEnchants = ItemEnchantments.Mutable(ItemEnchantments.EMPTY)
+                    }
+
+                    for (entry in additionEnchants.entrySet()) {
+                        val enchantmentHolder = entry.key
+                        val enchantment = enchantmentHolder.value()
+
+                        val compatible =
+                            if (player.hasInfiniteMaterials() || result.`is`(Items.ENCHANTED_BOOK)) {
+                                true
+                            } else {
+                                enchantment.canEnchant(result)
+                            }
+                        val conflicts = resultEnchants.keySet().count {
+                            !it.equals(enchantmentHolder) && !Enchantment.areCompatible(it, enchantmentHolder)
+                        }
+
+                        if (!compatible || conflicts > 0) {
+                            cost += conflicts * enchanting.conflictPenaltyCost
+                            hasIncompatibleEnchants = true
+                            continue
+                        }
+
+                        appliesAtLeastOneEnchant = true
+                        val resultLvl = resultEnchants.getLevel(enchantmentHolder)
+                        val additionLvl = entry.intValue
+                        val upgradedLvl = if (enchanting.upgradeEnchants) {
+                            if (resultLvl == additionLvl) {
+                                additionLvl + 1
+                            } else {
+                                max(resultLvl, additionLvl)
+                            }.coerceAtMost(enchantment.maxLevel)
+                        } else {
+                            if (resultLvl == 0) additionLvl else resultLvl
+                        }
+
+                        resultEnchants.set(enchantmentHolder, upgradedLvl)
+
+                        // calculate enchantment cost
+                        var enchantCost = enchantment.anvilCost
+                        if (result.has(DataComponents.STORED_ENCHANTMENTS)) {
+                            enchantCost = max(1, enchantCost / 2)
+                        }
+                        cost += enchantCost * upgradedLvl
+                    }
+
+                    if (hasIncompatibleEnchants && !appliesAtLeastOneEnchant) {
+                        menu.setData(0, 0)
+                        return net.minecraft.world.item.ItemStack.EMPTY.wrap()
+                    }
+                }
             }
 
             // rename item
             val renameCost = if (!input.itemName.isNullOrBlank()) {
                 if (input.itemName!! != baseStack.hoverName.string) {
-                    result.set(
-                        DataComponents.CUSTOM_NAME,
+                    val name = if (rename?.formatted ?: false) {
                         input.itemName!!.deser().vanilla()
-                    ) // Use minimessage for styled name TODO: make optional
-                    1
+                    } else {
+                        Component.literal(input.itemName!!)
+                    }
+                    result.set(DataComponents.CUSTOM_NAME, name)
+
+                    rename?.cost ?: 1
                 } else 0
             } else if (baseStack.has(DataComponents.CUSTOM_NAME)) {
                 result.remove(DataComponents.CUSTOM_NAME)
-                1
+
+                rename?.cost ?: 1
             } else 0
             cost += renameCost
 
@@ -222,7 +249,8 @@ class CustomRecipeRepairingImpl(
                 additionStack?.getOrDefault(DataComponents.REPAIR_COST, 0) ?: 0
             )
 
-            if (renameCost != cost || renameCost == 0) { // only increase cost when repairing and/or enchanting
+            if (renameCost != cost || renameCost == 0 || rename?.increaseRepairCost == true) {
+                // only increase cost when repairing and/or enchanting, or specifically enabled
                 increasedRepairCost = AnvilMenu.calculateIncreasedRepairCost(increasedRepairCost)
             }
 
