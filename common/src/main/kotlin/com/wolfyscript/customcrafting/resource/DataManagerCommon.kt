@@ -9,6 +9,16 @@ import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.RecipeData
 import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
 import com.wolfyscript.customcrafting.recipes.repair.CombineProcess
+import com.wolfyscript.customcrafting.recipes.repair.CustomCombineProcessImpl
+import com.wolfyscript.customcrafting.recipes.repair.DamageCombineOptions
+import com.wolfyscript.customcrafting.recipes.repair.DamageCombineOptionsImpl
+import com.wolfyscript.customcrafting.recipes.repair.EnchantingOptions
+import com.wolfyscript.customcrafting.recipes.repair.EnchantingOptionsImpl
+import com.wolfyscript.customcrafting.recipes.repair.FixedResultImpl
+import com.wolfyscript.customcrafting.recipes.repair.ItemRepairOptions
+import com.wolfyscript.customcrafting.recipes.repair.ItemRepairOptionsImpl
+import com.wolfyscript.customcrafting.recipes.repair.RenameOptions
+import com.wolfyscript.customcrafting.recipes.repair.RenameOptionsImpl
 import com.wolfyscript.jackson.dataformat.hocon.HoconMapper
 import com.wolfyscript.scafall.config.jackson.registerScafallModule
 import java.io.File
@@ -90,12 +100,18 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
             addAbstractTypeMapping(CustomRecipeRepairing::class.java, CustomRecipeRepairingImpl::class.java)
             addAbstractTypeMapping(
                 CombineProcess.FixedResult::class.java,
-                CustomRecipeRepairingImpl.FixedResultImpl::class.java
+                FixedResultImpl::class.java
             )
             addAbstractTypeMapping(
                 CombineProcess.CustomCombineProcess::class.java,
-                CustomRecipeRepairingImpl.CustomDamageImpl::class.java
+                CustomCombineProcessImpl::class.java
             )
+            addAbstractTypeMapping(CombineProcess.CustomCombineProcess::class.java, CustomCombineProcessImpl::class.java)
+            addAbstractTypeMapping(CombineProcess.FixedResult::class.java, FixedResultImpl::class.java)
+            addAbstractTypeMapping(DamageCombineOptions::class.java, DamageCombineOptionsImpl::class.java)
+            addAbstractTypeMapping(RenameOptions::class.java, RenameOptionsImpl::class.java)
+            addAbstractTypeMapping(EnchantingOptions::class.java, EnchantingOptionsImpl::class.java)
+            addAbstractTypeMapping(ItemRepairOptions::class.java, ItemRepairOptionsImpl::class.java)
 
             // Smithing Recipes
             addAbstractTypeMapping(CustomRecipeSmithing::class.java, CustomRecipeSmithingImpl::class.java)
