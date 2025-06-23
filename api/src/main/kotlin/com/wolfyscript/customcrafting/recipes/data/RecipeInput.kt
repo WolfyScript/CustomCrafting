@@ -4,10 +4,13 @@ import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 /**
- * Contains the input a recipe requires.
+ * Contains the input a recipe requires to be evaluated.
  */
 interface RecipeInput {
 
+    /**
+     * The input for all the cooking recipes
+     */
     interface CookingRecipeInput : RecipeInput {
 
         val source: ItemStack
@@ -90,13 +93,19 @@ interface RecipeInput {
 
     interface RepairingRecipeInput : RecipeInput {
 
+        val itemName: String?
+
         val base: ItemStack
 
         val addition: ItemStack?
 
         companion object {
 
-            fun of(base: ItemStack, addition: ItemStack?) = CustomCraftingProvider.get().factories.recipeFactory.createRepairingRecipeInput(base, addition)
+            fun of(base: ItemStack, addition: ItemStack?, itemName: String?) = CustomCraftingProvider.get().factories.recipeFactory.createRepairingRecipeInput(
+                base,
+                addition,
+                itemName
+            )
 
         }
 

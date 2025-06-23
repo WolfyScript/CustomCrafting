@@ -1,9 +1,10 @@
 package com.wolfyscript.customcrafting.recipes.data
 
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 
-data class RecipeDataImpl<T: CustomRecipe<*,*>>(
+open class RecipeDataImpl<T: CustomRecipe<*,*>>(
     override val recipe: T,
     val ingredients: Array<IngredientData?>
 ) : RecipeData<T> {
@@ -33,3 +34,9 @@ data class RecipeDataImpl<T: CustomRecipe<*,*>>(
         return result1
     }
 }
+
+class RepairingRecipeDataImpl(
+    override var itemRepairCost: Int?,
+    recipe: CustomRecipeRepairing,
+    ingredients: Array<IngredientData?>
+) : RecipeDataImpl<CustomRecipeRepairing>(recipe, ingredients), RecipeData.RepairingRecipeData

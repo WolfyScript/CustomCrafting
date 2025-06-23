@@ -18,7 +18,8 @@ data class MixingRecipeInputImpl(override val input: Collection<ItemStack?>) : R
 
 data class RepairingRecipeInputImpl(
     override val base: ItemStack,
-    override val addition: ItemStack?
+    override val addition: ItemStack?,
+    override val itemName: String?
 ) : RecipeInput.RepairingRecipeInput
 
 data class SmithingRecipeInputImpl(

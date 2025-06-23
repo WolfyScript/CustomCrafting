@@ -1,10 +1,13 @@
 package com.wolfyscript.customcrafting.recipes.data
 
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 
 /**
  * Holds information about the selected recipe after evaluation.
+ *
+ * Some types (like [RepairingRecipeData]) may expand it with type-specific data.
  */
 interface RecipeData<T: CustomRecipe<*,*>> {
 
@@ -22,5 +25,11 @@ interface RecipeData<T: CustomRecipe<*,*>> {
      * Gets all the ingredients in order of appearance, skipping empty ingredients.
      */
     val nonNullIngredients: List<IngredientData>
+
+    interface RepairingRecipeData : RecipeData<CustomRecipeRepairing> {
+
+        var itemRepairCost: Int?
+
+    }
 
 }

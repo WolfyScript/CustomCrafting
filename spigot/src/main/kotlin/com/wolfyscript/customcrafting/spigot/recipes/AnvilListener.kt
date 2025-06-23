@@ -43,17 +43,17 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val addition = inventory.getItem(1)
 
         val context = EvaluationContextImpl(player.wrap(), inventory.location?.toPreciseGlobal())
-        val input = RecipeInput.RepairingRecipeInput.of(base.wrap(), addition?.wrap())
+        val input = RecipeInput.RepairingRecipeInput.of(base.wrap(), addition?.wrap(), event.view.renameText)
 
         val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.repairing.resolveOrThrow(), input, context)
-        if (data == null) {
+        if (data == null || data !is RecipeData.RepairingRecipeData) {
             // no custom recipe. Vanilla behaviour
             return
         }
         recipeCache.put(player.uniqueId, data)
         val process = data.recipe.process
 
-        val result = process.compute(data, context, Random(getRepairingSeed(player)))
+        val result = process.compute(data, input, context, Random(getRepairingSeed(player)))
         event.result = result.unwrap()
 
         if (process is CustomRecipeRepairing.RepairProcess.FixedResult) {
