@@ -77,9 +77,9 @@ class CustomCombineProcessImpl(
                     result.damageValue = result.damageValue - repairAmount
                     repairAmount = result.damageValue.coerceAtMost(result.maxDamage / 4)
 
-                    if (repairAmount <= 0) {
-                        recipeData.itemRepairCost = i + 1
+                    if (repairAmount <= 0 || i + 1 == maxRepairCount) {
                         cost += (i + 1) * itemRepair.cost
+                        recipeData.itemRepairCost = i + 1
                         break
                     }
                 }
