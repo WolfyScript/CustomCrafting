@@ -72,7 +72,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         if (inventory !is AnvilInventory || view !is AnvilView) {
             return
         }
-        val base = inventory.getItem(1)
+        val base = inventory.getItem(0)
         if (base == null || base.type == Material.AIR) {
             return // The base item cannot be emtpy!
         }
