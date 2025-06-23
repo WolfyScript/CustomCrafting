@@ -52,7 +52,6 @@ class CustomCombineProcessImpl(
         var resultEnchants = ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(result))
         var cost = 0
         menu.setData(0, 0)
-        val testCost = menu.cost
 
         if (baseStack.isEmpty) {
             menu.setData(0, 0)
