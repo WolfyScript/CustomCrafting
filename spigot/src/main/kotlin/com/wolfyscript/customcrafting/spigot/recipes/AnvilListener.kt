@@ -82,7 +82,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         }
         val player = event.whoClicked as Player
         val data = recipeCache.getIfPresent(player.uniqueId)
-        if (data == null) {
+        if (data == null || data !is RecipeData.RepairingRecipeData) {
             return
         }
         if (player.level < view.repairCost) {
@@ -152,7 +152,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
         data.bySlot(1)?.let {
             inventory.getItem(1)?.apply {
-                amount -= it.matchedItemStackRef.amount
+                amount -= it.matchedItemStackRef.amount * (data.itemRepairCost ?: 1)
             }
         }
 
