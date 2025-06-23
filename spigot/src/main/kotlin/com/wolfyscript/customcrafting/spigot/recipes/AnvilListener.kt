@@ -57,12 +57,12 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val result = process.compute(data, input, context, Random(getRepairingSeed(player)))
         event.result = result.unwrap()
 
-        if (process is CombineProcess.FixedResult) {
-            process.cost?.let {
-                event.view.repairCost = it
-            }
-        }
-
+        val correctCost = event.view.repairCost
+        // Bukkit decided to set the repair cost of the anvil menu to -1 after the event call.
+        // This bypasses it by setting it back to the proper repair cost, that we just set
+        Bukkit.getScheduler().runTaskLater(customCrafting.bootstrap.plugin, Runnable {
+            event.view.repairCost = correctCost
+        }, 2)
     }
 
     @EventHandler
