@@ -45,7 +45,8 @@ class ResourceLoaderImpl(val customCrafting: CustomCrafting, val settings: Resou
             "stick_to_torch_campfire",
             "stick_to_soul_torch_soul_campfire",
             "sus_stew_op",
-            "upgrade_netherite_sword"
+            "upgrade_netherite_sword",
+            "repair_with_amethyst"
         ).forEach {
             customCrafting.logger.info("  - recipe: $it")
             exportResource("$dir/$it.conf", File(directory, "default/$it.conf"))
