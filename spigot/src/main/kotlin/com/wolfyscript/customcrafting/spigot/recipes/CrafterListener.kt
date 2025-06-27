@@ -2,8 +2,11 @@ package com.wolfyscript.customcrafting.spigot.recipes
 
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
+import com.wolfyscript.customcrafting.recipes.RecipeReference
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.adventure.toAPI
@@ -42,10 +45,10 @@ class CrafterListener(val customCrafting: CustomCraftingSpigot) : Listener {
             state.persistentDataContainer.get(previousRecipeContainerKey, PersistentDataType.STRING)?.let {
                 Key.parse(it)
             }
-        val previousRecipe = previousRecipeKey?.let { customCrafting.recipeManager.getRecipe(it) }
+        val previousRecipe = previousRecipeKey?.let { customCrafting.recipeManager.index.get(it) as? RecipeReference<CustomRecipeCrafting>? }
 
-        val data = if (previousRecipe != null && previousRecipe is CustomRecipeCrafting) {
-            previousRecipe.evaluate(input, context)
+        val data = if (previousRecipe != null) {
+            previousRecipe.value?.evaluate(input, context)?.let { RecipeEvaluationResultImpl(previousRecipe, it) }
         } else {
             customCrafting.recipeManager.evaluateRecipesOfType(
                 RecipeTypes.crafting.resolveOrThrow(),
@@ -53,8 +56,9 @@ class CrafterListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 context
             )
         }
+        val recipe = data?.recipe?.value
 
-        if (data != null) {
+        if (recipe != null) {
             // Save the used recipe to not reiterate the next craft
             state.persistentDataContainer.set(
                 previousRecipeContainerKey,
@@ -63,7 +67,7 @@ class CrafterListener(val customCrafting: CustomCraftingSpigot) : Listener {
             )
 
             val inventory = state.snapshotInventory
-            data.recipe.shrink(input, data, context, 1) { index, new ->
+            recipe.shrink(input, data, context, 1) { index, new ->
                 inventory.setItem(index, new.unwrap())
             }
             // Now all calculations are done, so we can update the inventory

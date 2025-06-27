@@ -1,11 +1,8 @@
 package com.wolfyscript.customcrafting.spigot.recipes
 
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
+import com.wolfyscript.customcrafting.recipes.RecipeReference
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
 import org.bukkit.Bukkit
@@ -19,7 +16,7 @@ import org.bukkit.inventory.ShapelessRecipe
 
 const val DISPLAY_RECIPE_PREFIX = "cc_placeholder."
 
-fun registerDisplayRecipes(recipes: Collection<CustomRecipe<*,*>>) {
+fun registerDisplayRecipes(recipes: Collection<RecipeReference<*>>) {
     for (recipe in recipes) {
         val display = recipe.toDisplay()
         if (display == null) {
@@ -40,20 +37,15 @@ fun Key.toDisplayRecipeKey(): NamespacedKey {
     return NamespacedKey(this.namespace, "$DISPLAY_RECIPE_PREFIX${this.value}")
 }
 
-fun CustomRecipe<*,*>.toDisplay(): Recipe? {
-    when (this) {
-        is CustomRecipeCrafting -> {
-            return this.toDisplay()
-        }
+fun RecipeReference<*>.toDisplay(): Recipe? {
+    val recipe = value
+    when (recipe) {
+        is CustomRecipeCrafting -> recipe.toDisplay(key)
     }
     return null
 }
 
-fun CustomRecipeCrafting.toDisplay(): CraftingRecipe? {
-    val key = CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(this)
-    if (key == null) {
-        return null
-    }
+fun CustomRecipeCrafting.toDisplay(key: Key): CraftingRecipe? {
     val formula = this.formula
     when (formula) {
         is CraftingFormula.Shaped -> {

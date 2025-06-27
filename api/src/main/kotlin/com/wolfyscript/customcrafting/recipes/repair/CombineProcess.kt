@@ -3,9 +3,10 @@ package com.wolfyscript.customcrafting.recipes.repair
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
+import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.RecipeResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import kotlin.random.Random
@@ -26,7 +27,7 @@ sealed interface CombineProcess {
      * Preventing players from rerolling the result.
      */
     fun compute(
-        recipeData: RecipeData.RepairingRecipeData,
+        recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.RepairingRecipeData, CustomRecipeRepairing>,
         input: RecipeInput.RepairingRecipeInput,
         context: EvaluationContext,
         random: Random,

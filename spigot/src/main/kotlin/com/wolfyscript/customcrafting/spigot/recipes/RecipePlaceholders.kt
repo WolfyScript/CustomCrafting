@@ -22,7 +22,7 @@ import java.util.Optional
 
 const val PLACEHOLDER_RECIPE_PREFIX = "cc_placeholder."
 
-fun registerPlaceholderRecipes(recipes: Collection<CustomRecipe<*, *>>) {
+fun registerPlaceholderRecipes(recipes: Collection<RecipeReference<*>>) {
     for (recipe in recipes) {
         val placeholder = recipe.toPlaceholder()
         if (placeholder == null) {
@@ -47,21 +47,17 @@ fun Key.toMcPlaceholderRecipeKey(): ResourceKey<net.minecraft.world.item.craftin
     return ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(this.namespace, "$PLACEHOLDER_RECIPE_PREFIX${this.value}"))
 }
 
-fun CustomRecipe<*, *>.toPlaceholder(): Recipe? {
-    return when (this) {
-        is CustomRecipeCrafting -> toPlaceholder()
-        is CustomRecipeCooking -> toPlaceholder()
-        is CustomRecipeSmithing -> toPlaceholder()
+fun RecipeReference<*>.toPlaceholder(): Recipe? {
+    val recipe = value
+    return when (recipe) {
+        is CustomRecipeCrafting -> recipe.toPlaceholder(key)
+        is CustomRecipeCooking -> recipe.toPlaceholder(key)
+        is CustomRecipeSmithing -> recipe.toPlaceholder(key)
         else -> null
     }
 }
 
-fun CustomRecipeCooking.toPlaceholder(): Recipe? {
-    val key = CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(this)
-    if (key == null) {
-        return null
-    }
-
+fun CustomRecipeCooking.toPlaceholder(key: Key): Recipe? {
     val processing = this.processing
     val spigotResult = result.choices.all().first().create().unwrapSpigot()
     val sourceChoices = processing.source.toMaterialChoice()
@@ -100,11 +96,7 @@ private fun Ingredient.toMaterialChoice(): RecipeChoice.MaterialChoice {
     return RecipeChoice.MaterialChoice(choices.all().map { it.create().unwrapSpigot().type })
 }
 
-fun CustomRecipeCrafting.toPlaceholder(): CraftingRecipe? {
-    val key = CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(this)
-    if (key == null) {
-        return null
-    }
+fun CustomRecipeCrafting.toPlaceholder(key: Key): CraftingRecipe? {
     val formula = this.formula
     when (formula) {
         is CraftingFormula.Shaped -> {
@@ -142,12 +134,7 @@ fun Ingredient?.toMinecraft() : net.minecraft.world.item.crafting.Ingredient {
     return  net.minecraft.world.item.crafting.Ingredient.of(HolderSet.direct(choices.all().map { it.create().unwrap().itemHolder }))
 }
 
-fun CustomRecipeSmithing.toPlaceholder(): SmithingTransformRecipe? {
-    val key = CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(this)
-    if (key == null) {
-        return null
-    }
-
+fun CustomRecipeSmithing.toPlaceholder(key: Key): SmithingTransformRecipe? {
     // Use Minecraft internals for now. Spigot/Paper API is too broken/different that I cannot properly use it.
     // Makes me think... why use the spigot API for the other recipes at all?
     val stack: ItemStack = result.choices.all().first().create().unwrap()

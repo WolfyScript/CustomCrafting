@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
@@ -14,7 +14,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
  * The [formula] defines how the recipe is evaluated. (Shapeless or Shaped)
  *
  */
-interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, CustomRecipeCrafting> {
+interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeCrafting>
         get() = RecipeTypes.crafting.resolveOrThrow()
@@ -37,7 +37,7 @@ interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, C
      *
      * @param applyStacks A function that is called for each stack in the matrix that is shrunk.
      */
-    fun shrink(input: RecipeInput.CraftingRecipeInput, recipeData: RecipeData<CustomRecipeCrafting>, context: EvaluationContext, count: Int, applyStacks: (index: Int, new: ItemStack) -> Unit)
+    fun shrink(input: RecipeInput.CraftingRecipeInput, recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>, context: EvaluationContext, count: Int, applyStacks: (index: Int, new: ItemStack) -> Unit)
 
 }
 
@@ -51,7 +51,7 @@ interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, C
 @JsonPropertyOrder(value = ["type"])
 interface CraftingFormula {
 
-    fun evaluate(input: RecipeInput.CraftingRecipeInput, recipeCrafting: CustomRecipeCrafting): RecipeData<CustomRecipeCrafting>?
+    fun evaluate(input: RecipeInput.CraftingRecipeInput, recipeCrafting: CustomRecipeCrafting): RecipeEvaluationResult.Data?
 
     /**
      * A crafting formula with a list of ingredients that can be arranged in any order

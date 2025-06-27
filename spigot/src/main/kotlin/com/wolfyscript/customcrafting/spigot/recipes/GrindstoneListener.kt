@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.recipes.CustomRecipeGrinding
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
@@ -29,7 +29,7 @@ import kotlin.random.Random
 
 class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
 
-    private val recipeCache = Caffeine.newBuilder().build<UUID, RecipeData<CustomRecipeGrinding>>()
+    private val recipeCache = Caffeine.newBuilder().build<UUID, RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeGrinding>>()
 
     @EventHandler
     fun onCollectResult(event: InventoryClickEvent) {
@@ -44,6 +44,7 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         val action = event.action
 
         val data = recipeCache.getIfPresent(player.uniqueId) ?: return
+        val recipe = data.recipe.value ?: return
 
         event.isCancelled = true // Block vanilla behaviour of just removing the entire input
 
@@ -57,21 +58,21 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         val context =
             EvaluationContextImpl((event.view.player as Player).wrap(), event.inventory.location?.toPreciseGlobal())
 
-        if (data.recipe.xp > 0) {
+        if (recipe.xp > 0) {
             val orb: ExperienceOrb = player.location.world.spawnEntity(player.location, EntityType.EXPERIENCE_ORB) as ExperienceOrb
-            orb.experience = data.recipe.xp
+            orb.experience = recipe.xp
         }
 
-        data.recipe.result.runActions(context)
+        recipe.result.runActions(context)
 
         // TODO: Craft remains
-        data.bySlot(0)?.let {
+        data.data.bySlot(0)?.let {
             inventory.getItem(0)?.apply {
                 amount = amount - it.matchedItemStackRef.amount
             }
         }
 
-        data.bySlot(1)?.let {
+        data.data.bySlot(1)?.let {
             inventory.getItem(1)?.apply {
                 amount = amount - it.matchedItemStackRef.amount
             }
@@ -90,13 +91,10 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         val input =
             RecipeInput.GrindingRecipeInput.of(event.inventory.getItem(0)?.wrap(), event.inventory.getItem(1)?.wrap())
 
-        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.grinding.resolveOrThrow(), input, context)
-        if (data == null) {
-            // Not a custom recipe
-            return
-        }
+        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.grinding.resolveOrThrow(), input, context) ?: return // Not a custom recipe
+        val recipe = data.recipe.value ?: return
 
-        event.result = data.recipe.result.compute(data, context, Random(getGrindingSeed(event.view.player as Player))).unwrap()
+        event.result = recipe.result.compute(data, context, Random(getGrindingSeed(event.view.player as Player))).unwrap()
 
         recipeCache.put(event.view.player.uniqueId, data)
     }

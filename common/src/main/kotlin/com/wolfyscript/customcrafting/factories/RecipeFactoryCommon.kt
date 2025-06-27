@@ -1,5 +1,8 @@
 package com.wolfyscript.customcrafting.factories
 
+import com.wolfyscript.customcrafting.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.recipes.RecipeReference
+import com.wolfyscript.customcrafting.recipes.RecipeReferenceImpl
 import com.wolfyscript.customcrafting.recipes.data.CookingRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixDataImpl
@@ -10,9 +13,17 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.data.RepairingRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.SmithingRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.StonecuttingRecipeInputImpl
+import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 class RecipeFactoryCommon : RecipeFactory {
+
+    override fun <T : CustomRecipe<*, *>> createRecipeReference(
+        key: Key,
+        recipe: T,
+    ): RecipeReference<T> {
+        return RecipeReferenceImpl(key, recipe)
+    }
 
     override fun createMatrixData(ingredients: List<ItemStack?>): CraftingMatrixData {
         return CraftingMatrixDataImpl(ingredients)

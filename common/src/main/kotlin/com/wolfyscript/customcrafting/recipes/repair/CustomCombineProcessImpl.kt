@@ -1,7 +1,8 @@
 package com.wolfyscript.customcrafting.recipes.repair
 
+import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
@@ -28,7 +29,7 @@ class CustomCombineProcessImpl(
 ) : CombineProcess.CustomCombineProcess {
 
     override fun compute(
-        recipeData: RecipeData.RepairingRecipeData,
+        recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.RepairingRecipeData, CustomRecipeRepairing>,
         input: RecipeInput.RepairingRecipeInput,
         context: EvaluationContext,
         random: Random,
@@ -71,7 +72,7 @@ class CustomCombineProcessImpl(
                 }
 
                 // ItemStackRefs are allowed to be stacked items, so calculate how many can be used
-                val maxRepairCount = additionStack.count / (recipeData.bySlot(0)?.matchedItemStackRef?.amount ?: 1)
+                val maxRepairCount = additionStack.count / (recipeEvaluationResult.data.bySlot(0)?.matchedItemStackRef?.amount ?: 1)
 
                 for (i in 0 until maxRepairCount) {
                     result.damageValue = result.damageValue - repairAmount
@@ -79,7 +80,7 @@ class CustomCombineProcessImpl(
 
                     if (repairAmount <= 0 || i + 1 == maxRepairCount) {
                         cost += (i + 1) * itemRepair.cost
-                        recipeData.itemRepairCost = i + 1
+                        recipeEvaluationResult.data.itemRepairCost = i + 1
                         break
                     }
                 }

@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
 class CustomRecipeGrindingImpl(
@@ -15,7 +15,7 @@ class CustomRecipeGrindingImpl(
     override fun evaluate(
         input: RecipeInput.GrindingRecipeInput,
         context: EvaluationContext
-    ): RecipeData<CustomRecipeGrinding>? {
+    ): RecipeEvaluationResult.Data? {
         TODO("Not yet implemented")
     }
 

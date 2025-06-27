@@ -1,8 +1,9 @@
 package com.wolfyscript.customcrafting.recipes.repair
 
+import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.RecipeResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import kotlin.random.Random
@@ -15,13 +16,13 @@ class FixedResultImpl(
     CombineProcess.FixedResult {
 
     override fun compute(
-        recipeData: RecipeData.RepairingRecipeData,
+        recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.RepairingRecipeData, CustomRecipeRepairing>,
         input: RecipeInput.RepairingRecipeInput,
         context: EvaluationContext,
         random: Random,
     ): ItemStack {
 
-        val resultStack = result.compute(recipeData, context, random)
+        val resultStack = result.compute(recipeEvaluationResult, context, random)
 
         if (rename != null) {
             // TODO

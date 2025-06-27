@@ -1,9 +1,9 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
+import com.wolfyscript.customcrafting.recipes.data.DefaultDataImpl
 import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
-import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.utils.unwrap
@@ -25,7 +25,7 @@ class CustomRecipeSmithingImpl(
     override fun evaluate(
         input: RecipeInput.SmithingRecipeInput,
         context: EvaluationContext
-    ): RecipeData<CustomRecipeSmithing>? {
+    ): RecipeEvaluationResult.Data? {
         if (!conditions.areSatisfied(context)) {
             return null
         }
@@ -57,7 +57,7 @@ class CustomRecipeSmithingImpl(
             } ?: return null
         }
 
-        return RecipeDataImpl(this, arrayOf(matchedTemplate, matchedBase, matchedAddition))
+        return DefaultDataImpl(arrayOf(matchedTemplate, matchedBase, matchedAddition))
     }
 
     override fun toString(): String {

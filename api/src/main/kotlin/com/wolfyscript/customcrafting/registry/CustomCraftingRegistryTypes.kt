@@ -6,7 +6,6 @@ import com.wolfyscript.customcrafting.editor.conditions.ConditionStore
 import com.wolfyscript.customcrafting.editor.result.ResultActionStore
 import com.wolfyscript.customcrafting.editor.result.TransmuterStore
 import com.wolfyscript.customcrafting.recipes.conditions.Condition
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.RecipeType
 import com.wolfyscript.customcrafting.recipes.ResultAction
 import com.wolfyscript.customcrafting.recipes.ResultModifier
@@ -23,8 +22,6 @@ object CustomCraftingRegistryTypes {
     val root = Key.customCrafting("root")
 
     val recipeTypes = create<RecipeType<*>>("recipe_types")
-
-    val customRecipes = create<CustomRecipe<*,*>>("recipes")
 
     //
     // Type Registries

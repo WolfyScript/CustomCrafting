@@ -26,10 +26,6 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
             }
         }
 
-        createRegistry(CustomCraftingRegistryTypes.customRecipes) {
-            RegistrySimple<CustomRecipe<*, *>>(it)
-        }
-
         createRegistry(CustomCraftingRegistryTypes.recipeConditionTypes) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.resultTransmuters) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.resultActions) {

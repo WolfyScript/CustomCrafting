@@ -31,11 +31,11 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         val input = RecipeInput.CookingRecipeInput.of(source.wrap(), null)
         val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
 
-        if (data == null) {
+        if (data == null || data.recipe.value == null) {
             return
         }
 
-        event.totalCookTime = data.recipe.processing.processingTime
+        event.totalCookTime = data.recipe.value!!.processing.processingTime
     }
 
     /**
@@ -69,11 +69,9 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         val input = RecipeInput.CookingRecipeInput.of(stack.wrap(), null)
         val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
 
-        if (data == null) {
-            return // No recipe for item. Vanilla behaviour
-        }
+        val recipe = data?.recipe?.value ?: return // No recipe for item. Vanilla behaviour
 
-        val ingredientAmount = data.bySlot(0)?.matchedItemStackRef?.amount ?: 1
+        val ingredientAmount = data.data.bySlot(0)?.matchedItemStackRef?.amount ?: 1
 
         val toPlace = stack.clone().apply {
             amount = ingredientAmount
@@ -82,7 +80,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         stack.amount = stack.amount - ingredientAmount
 
         state.setItem(slot, toPlace)
-        state.setCookTimeTotal(slot, data.recipe.processing.processingTime)
+        state.setCookTimeTotal(slot, recipe.processing.processingTime)
         state.setCookTime(slot, 0)
 
         event.setUseItemInHand(Event.Result.DENY)
@@ -110,10 +108,11 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         if (data == null) {
             return
         }
+        val recipe = data.recipe.value ?: return
 
-        data.recipe.result.runActions(context)
+        recipe.result.runActions(context)
 
-        event.result = data.recipe.result.compute(
+        event.result = recipe.result.compute(
             data,
             context,
             // No need to store the seed. Cannot determine the result beforehand to cheese it.

@@ -1,16 +1,16 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 class ResultModifierImpl(override val transformations: List<ResultModifier.Transformation> = listOf()) : ResultModifier {
 
     override fun modify(
-        recipeData: RecipeData<*>,
+        recipeEvaluationResult: RecipeEvaluationResult<*, *>,
         result: ItemStack,
         context: EvaluationContext,
     ): ItemStack {
-        transformations.forEach { it.transform(recipeData, result, context) }
+        transformations.forEach { it.transform(recipeEvaluationResult, result, context) }
         return result
     }
 
@@ -24,11 +24,11 @@ class ResultModifierImpl(override val transformations: List<ResultModifier.Trans
     ) : ResultModifier.Transformation {
 
         override fun transform(
-            recipeData: RecipeData<*>,
+            recipeEvaluationResult: RecipeEvaluationResult<*, *>,
             result: ItemStack,
             context: EvaluationContext,
         ): ItemStack {
-            return transmuter.mutate(this, recipeData, result, context)
+            return transmuter.mutate(this, recipeEvaluationResult, result, context)
         }
 
         override fun toString(): String {

@@ -18,7 +18,7 @@ class CustomRecipeCraftingImpl(
     override fun evaluate(
         input: RecipeInput.CraftingRecipeInput,
         context: EvaluationContext,
-    ): RecipeData<CustomRecipeCrafting>? {
+    ): RecipeEvaluationResult.Data? {
         if (!conditions.areSatisfied(context)) {
             return null
         }
@@ -28,12 +28,12 @@ class CustomRecipeCraftingImpl(
 
     override fun shrink(
         input: RecipeInput.CraftingRecipeInput,
-        recipeData: RecipeData<CustomRecipeCrafting>,
+        recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>,
         context: EvaluationContext,
         count: Int,
         applyStacks: (Int, ItemStack) -> Unit,
     ) {
-        for (value in recipeData.nonNullIngredients) {
+        for (value in recipeEvaluationResult.data.nonNullIngredients) {
             val stack = input.matrixData.originalMatrix[value.invSlot]?.unwrap()?.apply {
                 shrink(value.matchedItemStackRef.amount * count)
             }?.wrap()
@@ -65,7 +65,7 @@ class ShapedCraftingFormulaImpl(
     override fun evaluate(
         input: RecipeInput.CraftingRecipeInput,
         recipeCrafting: CustomRecipeCrafting,
-    ): RecipeData<CustomRecipeCrafting>? {
+    ): RecipeEvaluationResult.Data? {
         for (variant in shape.variations) {
             val result = evaluateShape(input.matrixData, variant, recipeCrafting)
             if (result != null) {
@@ -79,7 +79,7 @@ class ShapedCraftingFormulaImpl(
         matrix: CraftingMatrixData,
         ingredientShape: Array<Int>,
         recipeCrafting: CustomRecipeCrafting,
-    ): RecipeData<CustomRecipeCrafting>? {
+    ): RecipeEvaluationResult.Data? {
         if (matrix.width != shape.width || matrix.height != shape.height) {
             return null
         }
@@ -109,7 +109,7 @@ class ShapedCraftingFormulaImpl(
                 matchedItemStackRef = matchedRef
             )
         }
-        return RecipeDataImpl(recipeCrafting, ingredientData)
+        return DefaultDataImpl(ingredientData)
     }
 
     override fun toString(): String {
@@ -232,7 +232,7 @@ class ShapelessCraftingFormulaImpl(
     override fun evaluate(
         input: RecipeInput.CraftingRecipeInput,
         recipeCrafting: CustomRecipeCrafting,
-    ): RecipeData<CustomRecipeCrafting>? {
+    ): RecipeEvaluationResult.Data? {
         if (input.matrixData.items.size != ingredients.size) {
             return null
         }
@@ -300,7 +300,7 @@ class ShapelessCraftingFormulaImpl(
 
         // Make sure all ingredients are on the path, that should be the case already, so simply check for size
         if (path.size == ingredients.size) {
-            return RecipeDataImpl(recipeCrafting, pickedIngredients)
+            return DefaultDataImpl(pickedIngredients)
         }
         return null
     }

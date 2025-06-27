@@ -1,8 +1,9 @@
 package com.wolfyscript.customcrafting.recipes
 
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
-interface CustomRecipeGrinding : CustomRecipe<RecipeInput.GrindingRecipeInput, CustomRecipeGrinding> {
+interface CustomRecipeGrinding : CustomRecipe<RecipeInput.GrindingRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeGrinding>
         get() = RecipeTypes.grinding.resolveOrThrow()

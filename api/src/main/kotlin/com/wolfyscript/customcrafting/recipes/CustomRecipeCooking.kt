@@ -3,10 +3,10 @@ package com.wolfyscript.customcrafting.recipes
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
-interface CustomRecipeCooking : CustomRecipe<RecipeInput.CookingRecipeInput, CustomRecipeCooking> {
+interface CustomRecipeCooking : CustomRecipe<RecipeInput.CookingRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeCooking>
         get() = RecipeTypes.cooking.resolveOrThrow()
@@ -39,7 +39,7 @@ interface CustomRecipeCooking : CustomRecipe<RecipeInput.CookingRecipeInput, Cus
         /**
          * Evaluates the specified recipe for these workstation settings.
          */
-        fun evaluate(input: RecipeInput.CookingRecipeInput, recipe: CustomRecipeCooking, context: EvaluationContext): RecipeData<CustomRecipeCooking>?
+        fun evaluate(input: RecipeInput.CookingRecipeInput, recipe: CustomRecipeCooking, context: EvaluationContext): RecipeEvaluationResult.Data?
 
         @JsonTypeName("blasting")
         interface Blasting : WorkstationProcessing

@@ -1,9 +1,9 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
+import com.wolfyscript.customcrafting.recipes.data.DefaultDataImpl
 import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
-import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.wrappers.utils.unwrap
@@ -23,7 +23,7 @@ class CustomRecipeCookingImpl(
     override fun evaluate(
         input: RecipeInput.CookingRecipeInput,
         context: EvaluationContext,
-    ): RecipeData<CustomRecipeCooking>? {
+    ): RecipeEvaluationResult.Data? {
         if (!conditions.areSatisfied(context)) {
             return null
         }
@@ -42,7 +42,7 @@ class CustomRecipeCookingImpl(
             input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
-        ): RecipeData<CustomRecipeCooking>? {
+        ): RecipeEvaluationResult.Data? {
             val (pos, level) = context.location?.unwrap() ?: return null
             val type = ScafallProvider.get().server.minecraftServer.getLevel(level)
                 ?.getBlockEntity(BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt())))?.let {
@@ -56,7 +56,7 @@ class CustomRecipeCookingImpl(
             if (result == null) {
                 return null
             }
-            return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
+            return DefaultDataImpl(arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
         override fun toString(): String {
@@ -73,7 +73,7 @@ class CustomRecipeCookingImpl(
             input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
-        ): RecipeData<CustomRecipeCooking>? {
+        ): RecipeEvaluationResult.Data? {
             val (pos, level) = context.location?.unwrap() ?: return null
             val type = ScafallProvider.get().server.minecraftServer.getLevel(level)
                         ?.getBlockEntity(BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt())))?.type
@@ -86,7 +86,7 @@ class CustomRecipeCookingImpl(
             if (result == null) {
                 return null
             }
-            return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
+            return DefaultDataImpl(arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
         override fun toString(): String {
@@ -103,7 +103,7 @@ class CustomRecipeCookingImpl(
             input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
-        ): RecipeData<CustomRecipeCooking>? {
+        ): RecipeEvaluationResult.Data? {
             val (pos, level) = context.location?.unwrap() ?: return null
             val type = ScafallProvider.get().server.minecraftServer.getLevel(level)
                         ?.getBlockEntity(BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt())))?.type
@@ -115,7 +115,7 @@ class CustomRecipeCookingImpl(
             if (result == null) {
                 return null
             }
-            return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
+            return DefaultDataImpl(arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
         override fun toString(): String {
@@ -135,7 +135,7 @@ class CustomRecipeCookingImpl(
             input: RecipeInput.CookingRecipeInput,
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
-        ): RecipeData<CustomRecipeCooking>? {
+        ): RecipeEvaluationResult.Data? {
             val (pos, levelKey) = context.location?.unwrap() ?: return null
             val level = ScafallProvider.get().server.minecraftServer.getLevel(levelKey) ?: return null
             val blockPos = BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt()))
@@ -152,7 +152,7 @@ class CustomRecipeCookingImpl(
                 return null
             }
             // TODO: Get proper slot in campfire. Perhaps through the context?
-            return RecipeDataImpl(recipe, arrayOf(IngredientDataImpl(0, 0, source, result)))
+            return DefaultDataImpl(arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
         override fun toString(): String {

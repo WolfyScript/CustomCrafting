@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import kotlin.random.Random
 
@@ -11,10 +11,10 @@ class RecipeResultImpl(
     override val bulkActions: List<ResultAction> = listOf(),
 ) : RecipeResult {
 
-    override fun compute(recipeData: RecipeData<*>, context: EvaluationContext, random: Random): ItemStack {
+    override fun compute(recipeEvaluationResult: RecipeEvaluationResult<*,*>, context: EvaluationContext, random: Random): ItemStack {
         val pickedChoice = choices.allFor(context).random(random) // TODO: custom weighting?
         val stack = pickedChoice.create()
-        modifier.modify(recipeData, stack, context)
+        modifier.modify(recipeEvaluationResult, stack, context)
         return stack
     }
 

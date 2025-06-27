@@ -17,7 +17,7 @@ abstract class CustomCraftingCommon : CustomCrafting {
     }
 
     // Then continue with the other setup
-    override val recipeManager: RecipeManager = RecipeManagerCommon(this)
+    override val recipeManager: RecipeManagerCommon = RecipeManagerCommon(this)
 
     abstract fun load()
 

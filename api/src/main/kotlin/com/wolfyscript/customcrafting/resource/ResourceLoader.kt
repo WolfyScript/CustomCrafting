@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.resource
 
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
+import com.wolfyscript.scafall.identifier.Key
 
 /**
  * Loads and Saves resources from/to specified destinations.
@@ -16,21 +17,15 @@ interface ResourceLoader {
     fun loadResources()
 
     /**
-     * Verifies that the loaded resources are configured correctly.
-     * For example, no invalid values, dependencies are available, etc.
-     */
-    fun verifyResources()
-
-    /**
      * Stores the recipe to the destinations.
      * To which destination the recipe is stored depends on the configuration.
      */
-    fun save(recipe: CustomRecipe<*,*>)
+    fun save(key: Key, recipe: CustomRecipe<*,*>)
 
     /**
      * Deletes the recipe from every destination.
      */
-    fun delete(recipe: CustomRecipe<*,*>)
+    fun delete(key: Key, recipe: CustomRecipe<*,*>)
 
     /**
      * Creates a backup and stores it to backup-destinations (if available)
@@ -54,18 +49,18 @@ interface ResourceLoader {
          *
          * @return A Result of whether the recipe was stored; or an exception when an error occurred.
          */
-        fun save(recipe: CustomRecipe<*,*>): Result<Boolean>
+        fun save(key: Key, recipe: CustomRecipe<*,*>): Result<Boolean>
 
         /**
          * Tries to delete the recipe from this destination.
          *
          * @return A Result of whether the recipe was deleted; or an exception when an error occurred.
          */
-        fun delete(recipe: CustomRecipe<*,*>): Result<Boolean>
+        fun delete(key: Key, recipe: CustomRecipe<*,*>): Result<Boolean>
 
         interface Filter {
 
-            fun accepts(recipe: CustomRecipe<*,*>) : Boolean
+            fun accepts(key: Key, recipe: CustomRecipe<*,*>) : Boolean
 
         }
 

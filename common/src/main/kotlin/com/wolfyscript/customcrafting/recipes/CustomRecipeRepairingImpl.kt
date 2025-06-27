@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.data.RepairingRecipeDataImpl
 import com.wolfyscript.customcrafting.recipes.repair.*
@@ -18,7 +18,7 @@ class CustomRecipeRepairingImpl(
     override fun evaluate(
         input: RecipeInput.RepairingRecipeInput,
         context: EvaluationContext,
-    ): RecipeData.RepairingRecipeData? {
+    ): RecipeEvaluationResult.RepairingRecipeData? {
         val matchedBase = base.match(input.base)?.let { baseMatch ->
             IngredientDataImpl(1, 1, base, baseMatch)
         } ?: return null
@@ -30,7 +30,7 @@ class CustomRecipeRepairingImpl(
             IngredientDataImpl(2, 2, addition, additionMatch)
         }
 
-        return RepairingRecipeDataImpl(0, this, arrayOf(matchedBase, matchedAddition))
+        return RepairingRecipeDataImpl(0, arrayOf(matchedBase, matchedAddition))
     }
 
     override fun toString(): String {

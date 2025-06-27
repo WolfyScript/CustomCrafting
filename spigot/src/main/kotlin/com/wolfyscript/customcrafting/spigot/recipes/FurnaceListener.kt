@@ -5,11 +5,9 @@ import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
-import com.wolfyscript.scafall.adventure.toAPI
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.*
 import com.wolfyscript.scafall.wrappers.world.ScafallBlockPos
@@ -48,8 +46,8 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
         val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
 
         val customRecipeData = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
-        if (customRecipeData != null) {
-            event.totalCookTime = customRecipeData.recipe.processing.processingTime
+        if (customRecipeData != null && customRecipeData.recipe.value != null) {
+            event.totalCookTime = customRecipeData.recipe.value!!.processing.processingTime
 
             recipeCache.put(
                 blockPos,
@@ -71,7 +69,8 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
         val blockPos = block.location.toBlockPos()
 
         recipeCache.getIfPresent(blockPos)?.let { cache ->
-            if (cache.recipeData != null) {
+            val recipe = cache.recipeEvaluationResult?.recipe?.value
+            if (recipe != null) {
                 val inventory = (block.state as Furnace).inventory
                 val source = inventory.smelting ?: return
                 val resultStack = inventory.result
@@ -79,14 +78,14 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
                 updateRecipeExperience(
                     block,
                     cache.bukkitRecipe,
-                    CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(cache.recipeData.recipe)!!
+                    cache.recipeEvaluationResult.recipe.key
                 )
 
-                val result = cache.recipeData.recipe.result
+                val result = recipe.result
 
                 val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
                 val pickedStack = result.compute(
-                    cache.recipeData,
+                    cache.recipeEvaluationResult,
                     context,
                     Random(getCookingSeed(block.state as Furnace))
                 ).unwrap()
@@ -110,7 +109,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
                     inventory.result = pickedStack
                 }
 
-                cache.recipeData.bySlot(0)?.let {
+                cache.recipeEvaluationResult.data.bySlot(0)?.let {
                     val matchedRef = it.matchedItemStackRef
                     source.apply {
                         amount = amount - matchedRef.amount
@@ -265,7 +264,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
 }
 
 data class CookingRecipeCache(
-    val recipeData: RecipeData<CustomRecipeCooking>?,
+    val recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCooking>?,
     val bukkitRecipe: NamespacedKey,
     val customBackingRecipe: Boolean,
 )

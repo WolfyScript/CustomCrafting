@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.SmithingUtils
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
@@ -31,7 +31,7 @@ import kotlin.random.Random
 
 class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
-    val recipeCache = Caffeine.newBuilder().build<UUID, RecipeData<CustomRecipeSmithing>>()
+    val recipeCache = Caffeine.newBuilder().build<UUID, RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeSmithing>>()
     val collectsResult = Caffeine.newBuilder().build<UUID, Boolean>()
 
     private fun getSmithingSeed(bukkitPlayer: Player): Long {
@@ -78,10 +78,13 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             ),
             context
         )
+
         if (data != null) {
+            val recipe = data.recipe.value ?: return
+
             recipeCache.put(event.view.player.uniqueId, data)
 
-            val endResult = data.recipe.result.compute(
+            val endResult = recipe.result.compute(
                 data,
                 context, Random(getSmithingSeed(event.view.player as Player))
             ).unwrap()
@@ -91,7 +94,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 return
             }
 
-            SmithingUtils.copyDataComponentsTo(baseStack.wrap(), endResult.wrap(), data.recipe.copyOptions!!)
+            SmithingUtils.copyDataComponentsTo(baseStack.wrap(), endResult.wrap(), recipe.copyOptions!!)
             return
         }
 
@@ -118,10 +121,8 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val player = event.whoClicked as Player
         val action = event.action
 
-        val data = recipeCache.getIfPresent(player.uniqueId)
-        if (data == null) {
-            return // Vanilla recipe
-        }
+        val data = recipeCache.getIfPresent(player.uniqueId) ?: return
+        val recipe = data.recipe.value ?: return
 
         val resultStack = inventory.result
         if (resultStack == null || resultStack.type ==  Material.AIR) {
@@ -151,22 +152,22 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
         val context = EvaluationContextImpl((event.whoClicked as Player).wrap(), inventory.location?.toPreciseGlobal())
 
-        data.recipe.result.runActions(context, 1)
+        recipe.result.runActions(context, 1)
 
         // TODO: craft remains
         // Use setContents so we batch slot updates and only cause one update, so PrepareSmithingEvent is just called once instead of three times.
         inventory.contents = arrayOf(
-            data.bySlot(0)?.let {
+            data.data.bySlot(0)?.let {
                 inventory.getItem(0)?.clone()?.apply {
                     amount -= it.matchedItemStackRef.amount
                 } ?: ItemStack(Material.AIR)
             },
-            data.bySlot(1)?.let {
+            data.data.bySlot(1)?.let {
                 inventory.getItem(1)?.clone()?.apply {
                     amount -= it.matchedItemStackRef.amount
                 } ?: ItemStack(Material.AIR)
             },
-            data.bySlot(2)?.let {
+            data.data.bySlot(2)?.let {
                 inventory.getItem(2)?.clone()?.apply {
                     amount -= it.matchedItemStackRef.amount
                 } ?: ItemStack(Material.AIR)

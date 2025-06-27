@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.repair.CombineProcess
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
@@ -29,7 +29,7 @@ import kotlin.random.Random
 
 class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
-    private val recipeCache = Caffeine.newBuilder().build<UUID, RecipeData<CustomRecipeRepairing>>()
+    private val recipeCache = Caffeine.newBuilder().build<UUID, RecipeEvaluationResult<RecipeEvaluationResult.RepairingRecipeData, CustomRecipeRepairing>>()
 
     @EventHandler
     fun onPrepare(event: PrepareAnvilEvent) {
@@ -45,13 +45,11 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val context = EvaluationContextImpl(player.wrap(), inventory.location?.toPreciseGlobal())
         val input = RecipeInput.RepairingRecipeInput.of(base.wrap(), addition?.wrap(), event.view.renameText)
 
-        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.repairing.resolveOrThrow(), input, context)
-        if (data == null || data !is RecipeData.RepairingRecipeData) {
-            // no custom recipe. Vanilla behaviour
-            return
-        }
+        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.repairing.resolveOrThrow(), input, context) ?: return
+        val recipe = data.recipe.value ?: return
+
         recipeCache.put(player.uniqueId, data)
-        val process = data.recipe.process
+        val process = recipe.process
 
         val result = process.compute(data, input, context, Random(getRepairingSeed(player)))
         event.result = result.unwrap()
@@ -80,10 +78,9 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
             return
         }
         val player = event.whoClicked as Player
-        val data = recipeCache.getIfPresent(player.uniqueId)
-        if (data == null || data !is RecipeData.RepairingRecipeData) {
-            return
-        }
+        val data = recipeCache.getIfPresent(player.uniqueId) ?: return
+        val recipe = data.recipe.value ?: return
+
         event.result = Event.Result.DENY // Deny the click event, we do our own calculations
         if (player.gameMode ==  GameMode.CREATIVE) {
             player.level += view.repairCost
@@ -122,7 +119,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
         val context = EvaluationContextImpl(player.wrap(), inventory.location?.toPreciseGlobal())
 
-        val process = data.recipe.process
+        val process = recipe.process
         if (process is CombineProcess.FixedResult) {
             process.result.runActions(context, 1)
         }
@@ -149,15 +146,15 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val additionStack = inventory.getItem(1)?.clone()
 
         // TODO: Craft remains!
-        data.bySlot(0)?.let {
+        data.data.bySlot(0)?.let {
             baseStack.apply {
                 amount -= it.matchedItemStackRef.amount
             }
         }
 
-        data.bySlot(1)?.let {
+        data.data.bySlot(1)?.let {
             additionStack?.apply {
-                amount -= it.matchedItemStackRef.amount * (data.itemRepairCost ?: 1)
+                amount -= it.matchedItemStackRef.amount * (data.data.itemRepairCost ?: 1)
             }
         }
 

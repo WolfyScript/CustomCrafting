@@ -1,11 +1,12 @@
 package com.wolfyscript.customcrafting.recipes
 
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
 /**
  * Recipe used to mix items in the Cauldron
  */
-interface CustomRecipeMixing : CustomRecipe<RecipeInput.MixingRecipeInput, CustomRecipeMixing> {
+interface CustomRecipeMixing : CustomRecipe<RecipeInput.MixingRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeMixing>
         get() = RecipeTypes.mixing.resolveOrThrow()

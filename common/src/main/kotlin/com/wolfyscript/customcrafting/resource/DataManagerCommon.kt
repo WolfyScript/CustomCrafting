@@ -6,8 +6,8 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
-import com.wolfyscript.customcrafting.recipes.data.RecipeDataImpl
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.repair.CombineProcess
 import com.wolfyscript.customcrafting.recipes.repair.CustomCombineProcessImpl
 import com.wolfyscript.customcrafting.recipes.repair.DamageCombineOptions
@@ -41,7 +41,7 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
             // Recipe Components
             addAbstractTypeMapping(Ingredient::class.java, IngredientImpl::class.java)
             addAbstractTypeMapping(RecipeResult::class.java, RecipeResultImpl::class.java)
-            addAbstractTypeMapping(RecipeData::class.java, RecipeDataImpl::class.java)
+            addAbstractTypeMapping(RecipeEvaluationResult::class.java, RecipeEvaluationResultImpl::class.java)
             addAbstractTypeMapping(RecipeConditions::class.java, RecipeConditionsImpl::class.java)
             addAbstractTypeMapping(ResultModifier::class.java, ResultModifierImpl::class.java)
             addAbstractTypeMapping(
@@ -133,7 +133,5 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
 
     override fun loadData() {
         resourceLoader.loadResources()
-
-        resourceLoader.verifyResources()
     }
 }

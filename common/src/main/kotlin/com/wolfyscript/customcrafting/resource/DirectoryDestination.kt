@@ -79,11 +79,8 @@ class DirectoryDestination(
         }
     }
 
-    override fun save(recipe: CustomRecipe<*, *>): Result<Boolean> {
+    override fun save(key: Key, recipe: CustomRecipe<*, *>): Result<Boolean> {
         assureDir()
-
-        val key = CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(recipe)
-            ?: return Result.failure(Exception("No key found for recipe $recipe!"))
 
         val destFile = File(directory, "${key.value}.conf")
 
@@ -101,9 +98,7 @@ class DirectoryDestination(
         return Result.failure(Exception("Could not create file $destFile to save recipe $key!"))
     }
 
-    override fun delete(recipe: CustomRecipe<*, *>): Result<Boolean> {
-        val key = CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().getKey(recipe)
-            ?: return Result.failure(Exception("No key found for recipe $recipe!"))
+    override fun delete(key: Key, recipe: CustomRecipe<*, *>): Result<Boolean> {
         val destFile = File(directory, "${key.value}.conf")
 
         return try {

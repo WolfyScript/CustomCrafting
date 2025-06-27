@@ -3,6 +3,7 @@ package com.wolfyscript.customcrafting.resource
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
+import com.wolfyscript.scafall.identifier.Key
 
 class SQLDestination(customCrafting: CustomCrafting, resourceLoaderImpl: ResourceLoaderImpl, settings: DestinationSettings.SQLDestinationSettings) :
     AbstractDestination<DestinationSettings.SQLDestinationSettings>(customCrafting, resourceLoaderImpl, settings) {
@@ -14,11 +15,11 @@ class SQLDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resourc
         TODO("Not yet implemented")
     }
 
-    override fun save(recipe: CustomRecipe<*,*>): Result<Boolean> {
+    override fun save(key: Key, recipe: CustomRecipe<*, *>): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override fun delete(recipe: CustomRecipe<*,*>): Result<Boolean> {
+    override fun delete(key: Key, recipe: CustomRecipe<*, *>): Result<Boolean> {
         TODO("Not yet implemented")
     }
 

@@ -1,13 +1,13 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.repair.CombineProcess
 
 /**
  * Recipe used to repair items in the Anvil
  */
-interface CustomRecipeRepairing : CustomRecipe<RecipeInput.RepairingRecipeInput, CustomRecipeRepairing> {
+interface CustomRecipeRepairing : CustomRecipe<RecipeInput.RepairingRecipeInput, RecipeEvaluationResult.RepairingRecipeData> {
 
     override val type: RecipeType<CustomRecipeRepairing>
         get() = RecipeTypes.repairing.resolveOrThrow()
@@ -31,6 +31,6 @@ interface CustomRecipeRepairing : CustomRecipe<RecipeInput.RepairingRecipeInput,
     override fun evaluate(
         input: RecipeInput.RepairingRecipeInput,
         context: EvaluationContext,
-    ): RecipeData.RepairingRecipeData?
+    ): RecipeEvaluationResult.RepairingRecipeData?
 
 }

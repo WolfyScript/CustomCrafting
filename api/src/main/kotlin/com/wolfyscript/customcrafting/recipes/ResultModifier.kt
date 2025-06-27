@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
@@ -16,7 +16,7 @@ interface ResultModifier {
 
     val transformations: List<Transformation>
 
-    fun modify(recipeData: RecipeData<*>, result: ItemStack, context: EvaluationContext): ItemStack
+    fun modify(recipeEvaluationResult: RecipeEvaluationResult<*, *>, result: ItemStack, context: EvaluationContext): ItemStack
 
     /**
      * Modifies the result using the data from the specified ingredients in the recipe.
@@ -33,7 +33,7 @@ interface ResultModifier {
          */
         val transmuter: Transmuter
 
-        fun transform(recipeData: RecipeData<*>, result: ItemStack, context: EvaluationContext): ItemStack
+        fun transform(recipeEvaluationResult: RecipeEvaluationResult<*, *>, result: ItemStack, context: EvaluationContext): ItemStack
 
         /**
          * Gets the data from the specified ingredients and modifies the result with it.
@@ -45,7 +45,7 @@ interface ResultModifier {
         @JsonPropertyOrder(value = ["type"])
         interface Transmuter {
 
-            fun mutate(transformation: Transformation, recipeData: RecipeData<*>, result: ItemStack, context: EvaluationContext): ItemStack
+            fun mutate(transformation: Transformation, recipeEvaluationResult: RecipeEvaluationResult<*, *>, result: ItemStack, context: EvaluationContext): ItemStack
 
         }
 

@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.spigot.recipes
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
-import com.wolfyscript.customcrafting.recipes.data.RecipeData
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
@@ -34,7 +34,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
      * Used to cache the state of the crafting grid for a player.
      * Entries are invalidated when the player disconnects, closes the inv, or crafts a recipe.
      */
-    val craftingDataCache = Caffeine.newBuilder().weakKeys().build<UUID, RecipeData<CustomRecipeCrafting>>()
+    val craftingDataCache = Caffeine.newBuilder().weakKeys().build<UUID, RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>>()
 
     /**
      * Used to cache the matrix state of either the crafting table or player inventory crafting grid.
@@ -68,6 +68,10 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             // Not a custom recipe
             return
         }
+        val recipe = craftingData.recipe.value
+        if (recipe == null) {
+            return // TODO: special handling. Recipe that was evaluated, has been removed in the meantime
+        }
 
         event.isCancelled = true
         val player = event.whoClicked as Player
@@ -83,7 +87,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             val input = RecipeInput.CraftingRecipeInput.of(matrixData)
 
             val matrix: Array<ItemStack?> = Array(inventory.matrix.size) { null }
-            craftingData.recipe.shrink(input, craftingData, context, count) { index, new ->
+            recipe.shrink(input, craftingData, context, count) { index, new ->
                 matrix[index] = new.unwrap()
             }
             // Now all calculations are done, so we can update the inventory
@@ -104,7 +108,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             val context: EvaluationContext = EvaluationContextImpl(player.wrap(), block.location.toPreciseGlobal())
             val resultStack = recipeManager.evaluateRecipesOfType(RecipeTypes.crafting.resolveOrThrow(), input, context)?.let {
                 craftingDataCache.put(player.uniqueId, it)
-                it.recipe.result.compute(it, context, Random(getCraftSeed(player)))
+                it.recipe.value?.result?.compute(it, context, Random(getCraftSeed(player)))
             }
 
             if (resultStack != null) {
@@ -164,12 +168,12 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
     fun collectResult(
         event: InventoryClickEvent,
         bukkitPlayer: Player,
-        craftingData: RecipeData<CustomRecipeCrafting>,
+        craftingData: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>,
         matrixData: CraftingMatrixData,
         context: EvaluationContext,
     ): Int {
         if (event.clickedInventory == null) return 0
-        val recipeResult = craftingData.recipe.result
+        val recipeResult = craftingData.recipe.value?.result ?: return 0
         return calculateClick(event, bukkitPlayer, craftingData, recipeResult, matrixData, context)
     }
 
@@ -189,15 +193,15 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         return seed
     }
 
-    fun possibleResultAmount(recipeData: RecipeData<CustomRecipeCrafting>, matrixData: CraftingMatrixData): Int =
-        recipeData.nonNullIngredients.withIndex().minOf { (index, value) ->
+    fun possibleResultAmount(recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>, matrixData: CraftingMatrixData): Int =
+        recipeEvaluationResult.data.nonNullIngredients.withIndex().minOf { (index, value) ->
             matrixData.items[index].amount / value.matchedItemStackRef.amount
         }
 
     private fun calculateClick(
         event: InventoryClickEvent,
         bukkitPlayer: Player,
-        craftingData: RecipeData<CustomRecipeCrafting>,
+        craftingData: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>,
         recipeResult: RecipeResult,
         matrixData: CraftingMatrixData,
         context: EvaluationContext,
@@ -235,7 +239,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
     private fun quickCraft(
         maxPossible: Int,
         bukkitPlayer: Player,
-        craftingData: RecipeData<CustomRecipeCrafting>,
+        craftingData: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>,
         recipeResult: RecipeResult,
         context: EvaluationContext,
         random: Random,
