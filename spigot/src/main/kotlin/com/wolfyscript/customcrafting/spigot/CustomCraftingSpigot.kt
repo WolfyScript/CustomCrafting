@@ -1,10 +1,9 @@
 package com.wolfyscript.customcrafting.spigot
 
+import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
-import com.wolfyscript.customcrafting.recipes.RecipeManagerCommon
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.resource.DataManager
 import com.wolfyscript.customcrafting.resource.DataManagerCommon
 import com.wolfyscript.customcrafting.spigot.recipes.AnvilListener
@@ -18,8 +17,14 @@ import com.wolfyscript.customcrafting.spigot.recipes.SmithingListener
 import com.wolfyscript.customcrafting.spigot.recipes.StonecutterListener
 import com.wolfyscript.customcrafting.spigot.recipes.registerDisplayRecipes
 import com.wolfyscript.customcrafting.spigot.recipes.registerPlaceholderRecipes
+import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.scafall.identifier.Key
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
+import org.bukkit.command.Command
+import org.bukkit.command.CommandMap
+import org.bukkit.command.CommandSender
+import org.bukkit.craftbukkit.CraftServer
 import org.slf4j.Logger
 
 class CustomCraftingSpigot(
@@ -35,13 +40,30 @@ class CustomCraftingSpigot(
         configurationManager.load()
         dataManager.loadData()
 
-        registerPlaceholderRecipes(CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().values())
-        registerDisplayRecipes(CustomCraftingRegistryTypes.customRecipes.resolveOrThrow().values())
-
-        (recipeManager as RecipeManagerCommon).indexRecipes()
+        registerPlaceholderRecipes(recipeManager.index.values())
+        registerDisplayRecipes(recipeManager.index.values())
     }
 
     override fun enabled() {
+
+        getCommandMap().apply {
+            register("reload_recipes", Key.CUSTOMCRAFTING_NAMESPACE, object : Command("reload_recipes") {
+
+                override fun execute(
+                    sender: CommandSender,
+                    commandLabel: String,
+                    args: Array<out String>,
+                ): Boolean {
+                    Bukkit.getScheduler().runTaskAsynchronously(bootstrap.plugin, Runnable {
+                        dataManager.resourceLoader.loadResources()
+                    })
+                    return true
+                }
+
+            })
+
+        }
+
         Bukkit.getPluginManager().apply {
             registerEvents(AnvilListener(this@CustomCraftingSpigot), bootstrap.plugin)
             registerEvents(CampfireListener(this@CustomCraftingSpigot), bootstrap.plugin)
@@ -58,6 +80,10 @@ class CustomCraftingSpigot(
     override fun unload() {
 
 
+    }
+
+    private fun getCommandMap(): CommandMap {
+        return (Bukkit.getServer() as CraftServer).commandMap
     }
 
 
