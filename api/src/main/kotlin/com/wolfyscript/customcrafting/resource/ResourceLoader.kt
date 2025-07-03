@@ -14,6 +14,8 @@ interface ResourceLoader {
 
     val destinations: List<Destination>
 
+    fun registerListener(listener: ResourceListener)
+
     /**
      * Loads resources from the specified destinations.
      */

@@ -40,6 +40,8 @@ class CustomCraftingSpigot(
         configurationManager.load()
         dataManager.loadData()
 
+        dataManager.resourceLoader.registerListener(recipeManager)
+
         registerPlaceholderRecipes(recipeManager.index.values())
         registerDisplayRecipes(recipeManager.index.values())
     }

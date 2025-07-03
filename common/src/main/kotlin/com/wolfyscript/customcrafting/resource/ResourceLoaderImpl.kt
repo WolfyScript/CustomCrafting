@@ -27,29 +27,17 @@ class ResourceLoaderImpl(
         }
     }
 
+    override fun registerListener(listener: ResourceListener) {
+        listeners.add(listener)
+    }
 
     override fun loadResources() {
         if (!directory.exists()) {
             directory.mkdirs()
         }
-        // TODO:
-        // 1. load recipes into separate storage
-        // 2. verify recipes
-        // 3. register new recipes
-        // 3. replace existing recipes
-        // 4. remove existing recipes that are no longer in storage
         for (listener in listeners) {
             listener.onInitialLoad(this)
         }
-
-    }
-
-    /**
-     * Verifies that the loaded resources are configured correctly.
-     * For example, no invalid values, dependencies are available, etc.
-     */
-    fun verifyResources() {
-
     }
 
     override fun save(key: Key, recipe: CustomRecipe<*, *>) {
