@@ -2,12 +2,15 @@ package com.wolfyscript.customcrafting.resource
 
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.scafall.identifier.Key
+import java.io.File
 
 /**
  * Loads and Saves resources from/to specified destinations.
  * The destinations can be local or remote.
  */
 interface ResourceLoader {
+
+    val directory: File
 
     val destinations: List<Destination>
 
@@ -42,7 +45,7 @@ interface ResourceLoader {
 
         val filter: Filter?
 
-        fun load()
+        fun load(accept: (recipe: LoadedRecipe) -> Unit)
 
         /**
          * Tries to save the recipe to this destination.

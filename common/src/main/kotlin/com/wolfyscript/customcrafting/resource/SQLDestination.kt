@@ -11,7 +11,7 @@ class SQLDestination(customCrafting: CustomCrafting, resourceLoaderImpl: Resourc
     override val filter: ResourceLoader.Destination.Filter? =
         settings.filter?.let { DestinationFilter(customCrafting, it) }
 
-    override fun load() {
+    override fun load(accept: (LoadedRecipe) -> Unit) {
         TODO("Not yet implemented")
     }
 
