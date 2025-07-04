@@ -66,8 +66,6 @@ class DirectoryDestination(
                     .reader(injectableValues)
                     .readValue(file.toFile(), CustomRecipe::class.java)
 
-                customCrafting.logger.info("  loaded recipe: $key")
-                customCrafting.logger.info(recipe.toString())
                 accept(ResourceLoaderImpl.LoadedRecipeImpl(key, recipe, listOf()))
             } catch (e: Exception) {
                 customCrafting.logger.error("  Error loading recipe: ", e)

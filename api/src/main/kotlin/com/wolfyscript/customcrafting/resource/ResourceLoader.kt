@@ -14,6 +14,9 @@ interface ResourceLoader {
 
     val destinations: List<Destination>
 
+    /**
+     * Registers a listener that can listen to the loading process to process custom resources, and reload resources when CustomCrafting reloads.
+     */
     fun registerListener(listener: ResourceListener)
 
     /**

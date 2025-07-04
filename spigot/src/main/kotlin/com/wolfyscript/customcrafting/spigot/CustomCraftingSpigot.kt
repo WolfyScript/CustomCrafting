@@ -38,9 +38,9 @@ class CustomCraftingSpigot(
 
     override fun load() {
         configurationManager.load()
-        dataManager.loadData()
 
         dataManager.resourceLoader.registerListener(recipeManager)
+        dataManager.loadData()
 
         registerPlaceholderRecipes(recipeManager.index.values())
         registerDisplayRecipes(recipeManager.index.values())
