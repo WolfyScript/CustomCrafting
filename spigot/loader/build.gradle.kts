@@ -105,7 +105,7 @@ minecraftServers {
     servers {
         register("spigot_1_21") {
             destFileName.set("customcrafting.jar")
-            version.set("1.21.5")
+            version.set("1.21.7")
             type.set("SPIGOT")
             extraEnv.put("BUILD_FROM_SOURCE", "true")
             imageVersion.set("java21-graalvm") // graalvm contains the jdk required to build from source
@@ -113,7 +113,7 @@ minecraftServers {
         }
         register("paper_1_21") {
             destFileName.set("customcrafting.jar")
-            version.set("1.21.5")
+            version.set("1.21.7")
             type.set("PAPER")
             imageVersion.set("java21")
             ports.set(setOf("5007:5007", "25570:25565"))

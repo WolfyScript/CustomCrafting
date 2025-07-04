@@ -28,7 +28,7 @@ adventure-platform-api = "4.1.0"
 adventure-minimessage = "4.10.0"
 
 # Minecraft
-minecraft = "1.21.5"
+minecraft = "1.21.7"
 authlib = "6.0.58"
 fastutil = "8.5.15"
 netty = "4.1.74.Final"
@@ -43,7 +43,7 @@ caffeine = "3.2.0"
 
 # Spigot/Paper/Folia
 wolfyutils = "4.19-SNAPSHOT"
-papermc = "1.21.5-R0.1-SNAPSHOT"
+papermc = "1.21.7-R0.1-SNAPSHOT"
 bstats-bukkit = "3.0.0"
 item-nbt-api = "2.11.3"
 mythic = "5.3.5"
