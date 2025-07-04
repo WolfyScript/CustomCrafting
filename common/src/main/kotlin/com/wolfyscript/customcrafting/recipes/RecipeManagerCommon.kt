@@ -37,7 +37,7 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
     override fun onInitialLoad(resourceLoader: ResourceLoader) {
         resourceLoader.destinations.forEach { dest ->
             dest.load {
-                customCrafting.logger.info("  loaded recipe: ${it.key}")
+                customCrafting.logger.info("  loaded recipe: ${it.key} -> ${it.recipe}")
                 awaitingDependenciesRecipes.put(it.key, it)
             }
         }

@@ -9,10 +9,10 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
-import com.wolfyscript.scafall.adventure.toAPI
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
-import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -68,7 +68,7 @@ class CrafterListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
             val inventory = state.snapshotInventory
             recipe.shrink(input, data, context, 1) { index, new ->
-                inventory.setItem(index, new.unwrap())
+                inventory.setItem(index, new.unwrapSpigot())
             }
             // Now all calculations are done, so we can update the inventory
             Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable {
@@ -88,7 +88,7 @@ class CrafterListener(val customCrafting: CustomCraftingSpigot) : Listener {
         }
 
         // Check for custom recipe that overrides the vanilla recipe
-        if (customCrafting.recipeManager.disabledRecipes.contains(bukkitRecipe.key.toAPI()) || customCrafting.recipeManager.getRecipe(bukkitRecipe.key.toAPI()) != null
+        if (customCrafting.recipeManager.disabledRecipes.contains(bukkitRecipe.key.toScafall()) || customCrafting.recipeManager.getRecipe(bukkitRecipe.key.toScafall()) != null
         ) {
             // Recipe is disabled or it is a custom recipe!
             event.isCancelled = true

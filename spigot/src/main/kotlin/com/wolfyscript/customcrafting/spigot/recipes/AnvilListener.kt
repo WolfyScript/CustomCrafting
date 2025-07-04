@@ -9,7 +9,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.repair.CombineProcess
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
-import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
 import org.bukkit.Bukkit
 import org.bukkit.Effect
@@ -52,7 +52,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val process = recipe.process
 
         val result = process.compute(data, input, context, Random(getRepairingSeed(player)))
-        event.result = result.unwrap()
+        event.result = result.unwrapSpigot()
 
         val correctCost = event.view.repairCost
         // Bukkit decided to set the repair cost of the anvil menu to -1 after the event call.

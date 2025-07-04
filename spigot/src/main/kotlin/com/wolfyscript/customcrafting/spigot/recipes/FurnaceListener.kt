@@ -88,7 +88,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
                     cache.recipeEvaluationResult,
                     context,
                     Random(getCookingSeed(block.state as Furnace))
-                ).unwrap()
+                ).unwrapSpigot()
 
                 //Need to set the result to air to bypass the vanilla result computation (See net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity#burn).
                 event.result = ItemStack(Material.AIR)
@@ -239,7 +239,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
             // Add custom recipe experience
             val usedRecipes = rootContainer.get(customRecipesUsedKey, PersistentDataType.TAG_CONTAINER)?.let {
                 it.keys.associateWith { key -> it.get(key, PersistentDataType.INTEGER) ?: 0 }
-                    .mapKeys { (key, _) -> key.wrap() }
+                    .mapKeys { (key, _) -> key.toScafall() }
             } ?: emptyMap()
 
             for ((key, count) in usedRecipes) {

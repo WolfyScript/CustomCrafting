@@ -9,7 +9,8 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
-import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
 import org.bukkit.Bukkit
 import org.bukkit.Keyed
@@ -60,7 +61,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         if (resultStack != null && resultStack.type != Material.AIR) {
             // Check for disabled vanilla recipes
             if (Bukkit.getRecipesFor(resultStack).any {
-                    customCrafting.recipeManager.disabledRecipes.contains((it as Keyed).key.wrap())
+                    customCrafting.recipeManager.disabledRecipes.contains((it as Keyed).key.toScafall())
                 }) {
                 event.result = null
             }
@@ -87,7 +88,7 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             val endResult = recipe.result.compute(
                 data,
                 context, Random(getSmithingSeed(event.view.player as Player))
-            ).unwrap()
+            ).unwrapSpigot()
 
             if (baseStack == null) {
                 event.result = null

@@ -9,7 +9,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
-import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.ExperienceOrb
@@ -94,7 +94,7 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.grinding.resolveOrThrow(), input, context) ?: return // Not a custom recipe
         val recipe = data.recipe.value ?: return
 
-        event.result = recipe.result.compute(data, context, Random(getGrindingSeed(event.view.player as Player))).unwrap()
+        event.result = recipe.result.compute(data, context, Random(getGrindingSeed(event.view.player as Player))).unwrapSpigot()
 
         recipeCache.put(event.view.player.uniqueId, data)
     }

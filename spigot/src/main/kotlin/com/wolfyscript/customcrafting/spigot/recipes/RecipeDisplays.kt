@@ -4,7 +4,7 @@ import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.RecipeReference
 import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import org.bukkit.Bukkit
 import org.bukkit.Keyed
 import org.bukkit.NamespacedKey
@@ -49,25 +49,25 @@ fun CustomRecipeCrafting.toDisplay(key: Key): CraftingRecipe? {
     val formula = this.formula
     when (formula) {
         is CraftingFormula.Shaped -> {
-            val recipe = ShapedRecipe(key.toPlaceholderRecipeKey(), result.choices.all().first().create().unwrap())
+            val recipe = ShapedRecipe(key.toPlaceholderRecipeKey(), result.choices.all().first().create().unwrapSpigot())
             recipe.shape(*formula.shape.rows.toTypedArray())
 
             for ((index, ingredientKey) in formula.shape.ingredientIndices.withIndex()) {
                 val ingredient = formula.ingredients[index]
                 recipe.setIngredient(
                     ingredientKey,
-                    RecipeChoice.ExactChoice(ingredient.choices.all().map { it.create().unwrap() })
+                    RecipeChoice.ExactChoice(ingredient.choices.all().map { it.create().unwrapSpigot() })
                 )
             }
             return recipe
         }
 
         is CraftingFormula.Shapeless -> {
-            val recipe = ShapelessRecipe(key.toPlaceholderRecipeKey(), result.choices.all().first().create().unwrap())
+            val recipe = ShapelessRecipe(key.toPlaceholderRecipeKey(), result.choices.all().first().create().unwrapSpigot())
             for (ingredient in formula.ingredients) {
                 recipe.addIngredient(
                     RecipeChoice.ExactChoice(
-                        ingredient.choices.all().map { it.create().unwrap() })
+                        ingredient.choices.all().map { it.create().unwrapSpigot() })
                 )
             }
 

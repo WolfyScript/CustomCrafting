@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
-import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
 import org.bukkit.Material
 import org.bukkit.block.Campfire
@@ -117,7 +117,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
             context,
             // No need to store the seed. Cannot determine the result beforehand to cheese it.
             Random(Random.nextLong())
-        ).unwrap()
+        ).unwrapSpigot()
     }
 
 }

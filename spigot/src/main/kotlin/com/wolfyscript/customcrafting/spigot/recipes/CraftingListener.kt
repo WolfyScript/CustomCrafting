@@ -7,7 +7,8 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
-import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrap
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
 import org.bukkit.Bukkit
 import org.bukkit.Keyed
@@ -88,7 +89,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
             val matrix: Array<ItemStack?> = Array(inventory.matrix.size) { null }
             recipe.shrink(input, craftingData, context, count) { index, new ->
-                matrix[index] = new.unwrap()
+                matrix[index] = new.unwrapSpigot()
             }
             // Now all calculations are done, so we can update the inventory
             inventory.matrix = matrix
@@ -112,7 +113,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             }
 
             if (resultStack != null) {
-                e.inventory.result = resultStack.unwrap()
+                e.inventory.result = resultStack.unwrapSpigot()
                 Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
             } else {
                 val recipe = e.recipe
@@ -128,7 +129,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                     return
                 }
 
-                val recipeKey = recipe.key.wrap()
+                val recipeKey = recipe.key.toScafall()
                 //Check for custom recipe that overrides the vanilla recipe
                 if (recipeManager.disabledRecipes.contains(recipeKey) || customCrafting.recipeManager.getRecipe(
                         recipeKey
@@ -213,7 +214,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             if (maxPossible <= 0) {
                 return 0
             }
-            val result = recipeResult.compute(craftingData, context, random).unwrap()
+            val result = recipeResult.compute(craftingData, context, random).unwrapSpigot()
             recipeResult.runActions(context, 1)
 
             val cursor = event.cursor
@@ -245,7 +246,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         random: Random,
     ): Int {
         for (i in 0..<maxPossible) {
-            val stack = recipeResult.compute(craftingData, context, random).unwrap()
+            val stack = recipeResult.compute(craftingData, context, random).unwrapSpigot()
             val originalCount = stack.amount // Need to copy it here, because the addItem method **may** change the count of stack
             val remains = bukkitPlayer.inventory.addItem(stack)
             if (remains.isNotEmpty()) {

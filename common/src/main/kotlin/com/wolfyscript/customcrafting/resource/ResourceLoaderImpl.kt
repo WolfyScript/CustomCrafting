@@ -38,6 +38,10 @@ class ResourceLoaderImpl(
         for (listener in listeners) {
             listener.onInitialLoad(this)
         }
+
+        for (listener in listeners) {
+            listener.onFinalize(this)
+        }
     }
 
     override fun save(key: Key, recipe: CustomRecipe<*, *>) {
