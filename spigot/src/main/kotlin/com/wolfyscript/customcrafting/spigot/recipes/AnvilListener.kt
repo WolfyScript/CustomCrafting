@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.spigot.recipes
 
+import com.destroystokyo.paper.event.block.AnvilDamagedEvent
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
@@ -8,6 +9,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.repair.CombineProcess
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
+import com.wolfyscript.scafall.platform.ifPaperCompatible
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
@@ -126,18 +128,30 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
         val location = inventory.location
         if (location != null && location.world != null) {
+            location.world.playEffect(location, Effect.ANVIL_USE, 0)
+
             // Mirror the vanilla behaviour of damaging the Anvil
             if (player.gameMode != GameMode.CREATIVE && Random.nextFloat() < 0.12) {
-                // TODO: In Paper we could call the AnvilDamageEvent here for better compatibility with other plugins that may use it
+
                 val block = location.block
                 block.type = when (block.type) {
-                    block.type -> Material.CHIPPED_ANVIL
-                    block.type -> Material.DAMAGED_ANVIL
+                    Material.ANVIL -> Material.CHIPPED_ANVIL
+                    Material.CHIPPED_ANVIL -> Material.DAMAGED_ANVIL
                     else -> Material.AIR
+                }
+
+                ifPaperCompatible {
+                    // In Paper we can call the AnvilDamageEvent for better compatibility with other plugins
+                    val event = AnvilDamagedEvent(view, block.blockData)
+                    Bukkit.getPluginManager().callEvent(event)
+                    block.type = event.damageState.material
+                }
+
+                if (block.type == Material.AIR) {
+                    location.world.playEffect(location, Effect.ANVIL_BREAK, 0)
                 }
             }
 
-            location.world.playEffect(location, Effect.ANVIL_USE, 0)
         }
 
         event.currentItem = null
