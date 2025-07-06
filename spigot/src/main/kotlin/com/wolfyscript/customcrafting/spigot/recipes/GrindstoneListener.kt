@@ -11,6 +11,7 @@ import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
+import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.ExperienceOrb
 import org.bukkit.entity.Player
@@ -25,6 +26,8 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.random.Random
 
 class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
@@ -97,6 +100,96 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         event.result = recipe.result.compute(data, context, Random(getGrindingSeed(event.view.player as Player))).unwrapSpigot()
 
         recipeCache.put(event.view.player.uniqueId, data)
+    }
+
+    @EventHandler
+    fun onClickIngredient(event: InventoryClickEvent) {
+        val topInventory = event.view.topInventory
+        if (topInventory !is GrindstoneInventory) {
+            return
+        }
+        if (event.slot == 2 || event.slotType == InventoryType.SlotType.RESULT) {
+            return // Ignore result slot
+        }
+        val player = event.whoClicked as Player
+        val action = event.action
+
+        val currentItem = event.currentItem
+        val cursor = event.cursor
+
+        if ((currentItem == null || currentItem.type == Material.AIR) && cursor.type == Material.AIR) {
+            return
+        }
+
+        if (event.clickedInventory == topInventory) {
+            // Place items into slot
+            if (event.slot == 2 || event.slotType == InventoryType.SlotType.RESULT) {
+                return // Do not place into result slot
+            }
+
+            if (cursor.type == Material.AIR || cursor.amount <= 0) {
+                return // do not care about picking up items. that should work by default.
+            }
+
+            if (event.isLeftClick) {
+                if (currentItem != null && currentItem.isSimilar(cursor)) {
+                    // placing cursor into slot
+                    val curAmount = currentItem.amount
+                    val possible = min(cursor.amount, currentItem.maxStackSize - curAmount)
+                    event.currentItem!!.amount += possible
+                    event.cursor.amount = min(0, cursor.amount - possible)
+                    event.isCancelled = true
+                    return
+                }
+
+                // Swap cursor and item in slot
+                val copyCurrent = event.currentItem?.clone()
+                event.currentItem = cursor.clone()
+                event.view.setCursor(copyCurrent)
+                event.isCancelled = true
+                return
+            }
+
+            if (event.isRightClick) {
+                if (currentItem == null || currentItem.type == Material.AIR || currentItem.amount <= 0) {
+                    // place one item from cursor into slot
+                    event.isCancelled = true
+                    event.currentItem = cursor.clone().apply {
+                        amount = 1
+                    }
+                    event.cursor.amount = max(0, cursor.amount - 1)
+                    return
+                }
+
+                if (currentItem.isSimilar(cursor)) {
+                    // add one item from cursor to item in slot
+                    val curAmount = currentItem.amount
+                    if (curAmount + 1 <= currentItem.maxStackSize) {
+                        event.currentItem!!.amount += 1
+                        event.cursor.amount = max(0, cursor.amount - 1)
+                    }
+                    event.isCancelled = true
+                    return
+                }
+
+                // swap cursor and item in slot
+                val copyCurrent = event.currentItem?.clone()
+                event.currentItem = cursor.clone()
+                event.view.setCursor(copyCurrent)
+                event.isCancelled = true
+            }
+
+            return
+        }
+
+        // Quick move items from bottom inv
+        if (event.isShiftClick) {
+            val remains = topInventory.addItem(currentItem!!)
+            event.currentItem = remains.get(0)
+            event.isCancelled = true
+            return
+        }
+
     }
 
     private fun getGrindingSeed(bukkitPlayer: Player): Long {
