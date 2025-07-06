@@ -2,20 +2,17 @@ package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.recipes.grinding.GrindingProcess
 
 interface CustomRecipeGrinding : CustomRecipe<RecipeInput.GrindingRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeGrinding>
         get() = RecipeTypes.grinding.resolveOrThrow()
 
-    /**
-     * A list of ingredients to be used in the Grindstone.
-     * Limited to 2 ingredients, the rest is ignored.
-     */
-    val ingredients: List<Ingredient>
+    val base: Ingredient
 
-    val result: RecipeResult
+    val addition: Ingredient?
 
-    val xp: Int
+    val process: GrindingProcess
 
 }
