@@ -14,10 +14,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.Mth
 import net.minecraft.world.inventory.AnvilMenu
-import net.minecraft.world.item.Items
-import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.EnchantmentHelper
-import net.minecraft.world.item.enchantment.ItemEnchantments
 import kotlin.math.max
 import kotlin.random.Random
 
@@ -49,8 +46,7 @@ class CustomCombineProcessImpl(
         val existingCost = baseStack.getOrDefault(DataComponents.REPAIR_COST, 0) +
                 (additionStack?.getOrDefault(DataComponents.REPAIR_COST, 0) ?: 0)
 
-        val result = baseStack.copy()
-        var resultEnchants = ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(result))
+        var result = baseStack.copy()
         var cost = 0
         menu.setData(0, 0)
 
@@ -85,94 +81,19 @@ class CustomCombineProcessImpl(
                     }
                 }
             } else if (damageCombine != null && additionStack.isDamageableItem && result.isDamageableItem) {
-                // Combine durability
-                // Vanilla only allows to combine the durability of the same items.
-                // This expands it to allow combining any item
-                val baseDur = baseStack.maxDamage - baseStack.damageValue
-                val additionDur = additionStack.maxDamage - additionStack.damageValue
-
-                val damage = if (damageCombine.combineDurabilityAsRatio) {
-                    // take the percentages of durability and combine them, so ratios are kept
-                    val baseDurPerc = baseDur / baseStack.maxDamage
-                    val additionDurPerc = additionDur / additionStack.maxDamage
-                    val totalDurRepairPerc = baseDurPerc + additionDurPerc
-
-                    // apply the ratio and bonus based on the max-damage of the result
-                    val bonusAmount = result.maxDamage * damageCombine.bonusPercentage / 100
-                    val scalarDur = totalDurRepairPerc * result.maxDamage + bonusAmount
-
-                    result.maxDamage - scalarDur
-                } else {
-                    // Simply combine durability
-                    val bonus = result.maxDamage * damageCombine.bonusPercentage / 100
-                    val combined = baseDur + additionDur + bonus
-
-                    result.maxDamage - combined
-                }.coerceAtLeast(0)
-
-                if (damage < result.damageValue) {
-                    result.damageValue = damage
-                }
+                result = damageCombine.combine(baseStack.wrap(), additionStack.wrap(), result.wrap()).unwrap()
             }
 
             if (enchanting != null && EnchantmentHelper.canStoreEnchantments(result) && tryCombineEnchantments) {
-                // combine enchantments if possible/necessary
-                val additionEnchants = EnchantmentHelper.getEnchantmentsForCrafting(additionStack)
+                val mergeResult = enchanting.merge(result.wrap(), player.wrap(), additionStack.wrap())
 
-                var appliesAtLeastOneEnchant = false
-                var hasIncompatibleEnchants = false
-
-                if (!enchanting.preserveBaseEnchants) {
-                    resultEnchants = ItemEnchantments.Mutable(ItemEnchantments.EMPTY)
-                }
-
-                for (entry in additionEnchants.entrySet()) {
-                    val enchantmentHolder = entry.key
-                    val enchantment = enchantmentHolder.value()
-
-                    val compatible =
-                        if (player.hasInfiniteMaterials() || result.`is`(Items.ENCHANTED_BOOK)) {
-                            true
-                        } else {
-                            enchantment.canEnchant(result)
-                        }
-                    val conflicts = resultEnchants.keySet().count {
-                        !it.equals(enchantmentHolder) && !Enchantment.areCompatible(it, enchantmentHolder)
-                    }
-
-                    if (!compatible || conflicts > 0) {
-                        cost += conflicts * enchanting.conflictPenaltyCost
-                        hasIncompatibleEnchants = true
-                        continue
-                    }
-
-                    appliesAtLeastOneEnchant = true
-                    val resultLvl = resultEnchants.getLevel(enchantmentHolder)
-                    val additionLvl = entry.intValue
-                    val upgradedLvl = if (enchanting.upgradeEnchants) {
-                        if (resultLvl == additionLvl) {
-                            additionLvl + 1
-                        } else {
-                            max(resultLvl, additionLvl)
-                        }.coerceAtMost(enchantment.maxLevel)
-                    } else {
-                        if (resultLvl == 0) additionLvl else resultLvl
-                    }
-
-                    resultEnchants.set(enchantmentHolder, upgradedLvl)
-
-                    // calculate enchantment cost
-                    var enchantCost = enchantment.anvilCost
-                    if (result.has(DataComponents.STORED_ENCHANTMENTS)) {
-                        enchantCost = max(1, enchantCost / 2)
-                    }
-                    cost += enchantCost * upgradedLvl
-                }
-
-                if (hasIncompatibleEnchants && !appliesAtLeastOneEnchant) {
+                if (mergeResult == null || mergeResult.failed) {
                     menu.setData(0, 0)
                     return net.minecraft.world.item.ItemStack.EMPTY.wrap()
                 }
+
+                cost += mergeResult.cost
+                result = mergeResult.result.unwrap()
             }
         }
 
@@ -214,8 +135,6 @@ class CustomCombineProcessImpl(
         }
 
         result.set(DataComponents.REPAIR_COST, increasedRepairCost)
-        EnchantmentHelper.setEnchantments(result, resultEnchants.toImmutable())
-
         return result.wrap()
     }
 
