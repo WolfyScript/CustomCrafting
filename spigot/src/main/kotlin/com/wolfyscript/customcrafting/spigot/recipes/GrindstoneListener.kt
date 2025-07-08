@@ -7,6 +7,7 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.recipes.grinding.GrindingProcess
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
@@ -17,6 +18,7 @@ import org.bukkit.entity.ExperienceOrb
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
@@ -26,13 +28,14 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
+import java.util.function.Consumer
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
 class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
 
-    private val recipeCache = Caffeine.newBuilder().build<UUID, RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeGrinding>>()
+    private val recipeCache = Caffeine.newBuilder().build<UUID, RecipeEvaluationResult<RecipeEvaluationResult.GrindingRecipeData, CustomRecipeGrinding>>()
 
     @EventHandler
     fun onCollectResult(event: InventoryClickEvent) {
@@ -61,12 +64,17 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         val context =
             EvaluationContextImpl((event.view.player as Player).wrap(), event.inventory.location?.toPreciseGlobal())
 
-        if (recipe.xp > 0) {
-            val orb: ExperienceOrb = player.location.world.spawnEntity(player.location, EntityType.EXPERIENCE_ORB) as ExperienceOrb
-            orb.experience = recipe.xp
+        val totalYield = max(0, data.data.yield - data.data.penalty)
+
+        if (totalYield > 0) {
+            player.location.world.spawnEntity(player.location, EntityType.EXPERIENCE_ORB, CreatureSpawnEvent.SpawnReason.CUSTOM, Consumer {
+                (it as ExperienceOrb).experience = totalYield
+            })
         }
 
-        recipe.result.runActions(context)
+        if (recipe.process is GrindingProcess.FixedResultGrindingProcess) {
+            (recipe.process as GrindingProcess.FixedResultGrindingProcess).result.runActions(context)
+        }
 
         // TODO: Craft remains
         data.data.bySlot(0)?.let {
@@ -97,7 +105,7 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.grinding.resolveOrThrow(), input, context) ?: return // Not a custom recipe
         val recipe = data.recipe.value ?: return
 
-        event.result = recipe.result.compute(data, context, Random(getGrindingSeed(event.view.player as Player))).unwrapSpigot()
+        event.result = recipe.process.compute(data, input, context, Random(getGrindingSeed(event.view.player as Player))).unwrapSpigot()
 
         recipeCache.put(event.view.player.uniqueId, data)
     }
