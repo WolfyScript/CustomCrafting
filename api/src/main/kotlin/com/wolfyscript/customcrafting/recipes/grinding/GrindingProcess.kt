@@ -3,15 +3,37 @@ package com.wolfyscript.customcrafting.recipes.grinding
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
+import com.wolfyscript.customcrafting.recipes.CustomRecipeGrinding
+import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.RecipeResult
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.repair.DamageCombineOptions
+import com.wolfyscript.customcrafting.recipes.repair.EnchantingOptions
+import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import kotlin.random.Random
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonPropertyOrder(value = ["type"])
 sealed interface GrindingProcess {
 
+    /**
+     * Computes the result based on the data and context.
+     *
+     * The [random] may be used to create consistent output based on the players stored seed.
+     * A new seed is picked whenever the player successfully collects the result from the inventory.
+     * Therefore, when the result contains multiple items, it always picks the same item given the same seed.
+     * Preventing players from rerolling the result.
+     */
+    fun compute(
+        recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.GrindingRecipeData, CustomRecipeGrinding>,
+        input: RecipeInput.GrindingRecipeInput,
+        context: EvaluationContext,
+        random: Random,
+    ): ItemStack
+
     @JsonTypeName("fixed_result")
-    interface FixedResultGrindingProcess {
+    interface FixedResultGrindingProcess : GrindingProcess {
 
         val result: RecipeResult
 
@@ -20,7 +42,7 @@ sealed interface GrindingProcess {
     }
 
     @JsonTypeName("default")
-    interface DefaultGrindingProcess {
+    interface DefaultGrindingProcess : GrindingProcess{
 
         /**
          * The extra amount of experience to drop.
@@ -40,7 +62,7 @@ sealed interface GrindingProcess {
          *
          * By default, all enchantments that were not removed are merged.
          */
-        val mergeEnchants: EnchantMergeOptions
+        val mergeEnchants: EnchantingOptions
 
         /**
          * Specifies how the durability of both ingredients (if there are two) is combined.

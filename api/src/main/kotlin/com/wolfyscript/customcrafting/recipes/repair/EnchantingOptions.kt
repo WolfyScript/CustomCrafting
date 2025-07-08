@@ -1,12 +1,17 @@
 package com.wolfyscript.customcrafting.recipes.repair
 
+import com.wolfyscript.scafall.wrappers.world.entity.Player
+import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+
 /**
- * Specifies how enchantments are combined or preserved.
+ * Specifies how enchantments from an additional item are merged onto a result item.
+ * The result item must be able to store enchantments.
+ *
  * This applies to almost all scenarios that involve enchantments in a way, like:
  * - no addition, only base ([preserveBaseEnchants] applies)
  * - addition is an enchanted book (all options apply)
  * - addition is a damageable item and contains enchantments (all options apply)
- * - addition is a non-damageable item and contains enchantments and [ItemRepairOptions.combineEnchants] is enabled (all options apply)
+ * - addition is a non-damageable item and contains enchantments (all options apply)
  *
  */
 interface EnchantingOptions {
@@ -26,10 +31,41 @@ interface EnchantingOptions {
     val conflictPenaltyCost: Int
 
     /**
+     * The penalty for each enchantment that was upgraded
+     *
+     * Default: 0
+     */
+    val upgradePenaltyCost: Int
+
+    /**
      * Whether enchantments should be upgraded when levels on base and addition are equal.
      *
      * Default: true
      */
     val upgradeEnchants: Boolean
+
+    fun merge(resultStack: ItemStack, player: Player, addition: ItemStack) : MergeResult?
+
+    /**
+     * The result produced by the [EnchantingOptions] procedure.
+     */
+    interface MergeResult {
+
+        /**
+         * The procedure fails if there are only conflicts without at least one enchantment being applied.
+         */
+        val failed: Boolean
+
+        /**
+         * The cost of merging the enchantments and upgrading them.
+         */
+        val cost: Int
+
+        /**
+         * The result with the applied merged enchantments.
+         */
+        val result: ItemStack
+
+    }
 
 }

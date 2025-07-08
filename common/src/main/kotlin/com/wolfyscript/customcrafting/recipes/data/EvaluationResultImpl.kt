@@ -1,9 +1,7 @@
 package com.wolfyscript.customcrafting.recipes.data
 
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.RecipeReference
-import com.wolfyscript.customcrafting.recipes.RecipeReferenceImpl
 
 class RecipeEvaluationResultImpl<D: RecipeEvaluationResult.Data, T: CustomRecipe<*,*>>(
     override val recipe: RecipeReference<T>,
@@ -42,3 +40,9 @@ class RepairingRecipeDataImpl(
     override var itemRepairCost: Int?,
     ingredients: Array<IngredientData?>
 ) : DefaultDataImpl(ingredients), RecipeEvaluationResult.RepairingRecipeData
+
+class GrindingRecipeDataImpl(
+    ingredients: Array<IngredientData?>,
+    override var penalty: Int = 0,
+    override var yield: Int = 0,
+) : DefaultDataImpl(ingredients), RecipeEvaluationResult.GrindingRecipeData

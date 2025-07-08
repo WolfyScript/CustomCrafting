@@ -67,13 +67,13 @@ interface RecipeInput {
 
     interface GrindingRecipeInput : RecipeInput {
 
-        val topInput: ItemStack?
+        val base: ItemStack?
 
-        val bottomInput: ItemStack?
+        val addition: ItemStack?
 
         companion object {
 
-            fun of(topInput: ItemStack?, bottomInput: ItemStack?) = CustomCraftingProvider.get().factories.recipeFactory.createGrindingRecipeInput(topInput, bottomInput)
+            fun of(base: ItemStack?, addition: ItemStack?) = CustomCraftingProvider.get().factories.recipeFactory.createGrindingRecipeInput(base, addition)
 
         }
 

@@ -1,5 +1,7 @@
 package com.wolfyscript.customcrafting.recipes.repair
 
+import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+
 /**
  * Settings for the scenario that both base and addition in an Anvil are damageable items.
  * Their durability (max damage - damage) is then combined.
@@ -21,5 +23,7 @@ interface DamageCombineOptions {
      * more max damage won't benefit the repair process.
      */
     val combineDurabilityAsRatio: Boolean
+
+    fun combine(baseStack: ItemStack, additionStack: ItemStack, resultStack: ItemStack) : ItemStack
 
 }

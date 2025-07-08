@@ -17,7 +17,7 @@ interface RecipeFactory {
 
     fun createCraftingRecipeInput(matrixData: CraftingMatrixData) : RecipeInput.CraftingRecipeInput
 
-    fun createGrindingRecipeInput(topInput: ItemStack?, bottomInput: ItemStack?) : RecipeInput.GrindingRecipeInput
+    fun createGrindingRecipeInput(base: ItemStack?, addition: ItemStack?) : RecipeInput.GrindingRecipeInput
 
     fun createMixingRecipeInput(input: Collection<ItemStack?>) : RecipeInput.MixingRecipeInput
 

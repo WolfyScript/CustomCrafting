@@ -41,4 +41,12 @@ interface RecipeEvaluationResult<D: RecipeEvaluationResult.Data, T: CustomRecipe
 
     }
 
+    interface GrindingRecipeData : Data {
+
+        var penalty: Int
+
+        var yield: Int
+
+    }
+
 }

@@ -10,8 +10,8 @@ data class CookingRecipeInputImpl(
 data class CraftingRecipeInputImpl(override val matrixData: CraftingMatrixData) : RecipeInput.CraftingRecipeInput
 
 data class GrindingRecipeInputImpl(
-    override val topInput: ItemStack?,
-    override val bottomInput: ItemStack?
+    override val base: ItemStack?,
+    override val addition: ItemStack?
 ) : RecipeInput.GrindingRecipeInput
 
 data class MixingRecipeInputImpl(override val input: Collection<ItemStack?>) : RecipeInput.MixingRecipeInput

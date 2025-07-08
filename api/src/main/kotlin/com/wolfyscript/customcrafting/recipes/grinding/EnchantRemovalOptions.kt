@@ -7,16 +7,16 @@ interface EnchantRemovalOptions {
     /**
      * How enchantments should be removed from the base ingredient (top slot)
      *
-     * If omitted, all enchantments are kept.
+     * By default, all enchantments, except curses are removed.
      */
-    val baseEnchants: IngredientEnchantRemovalOptions?
+    val baseEnchants: IngredientEnchantRemovalOptions
 
     /**
      * How enchantments should be removed from the addition ingredient (bottom slot)
      *
-     * If omitted, all enchantments are kept.
+     * By default, all enchantments, except curses are removed.
      */
-    val additionEnchants: IngredientEnchantRemovalOptions?
+    val additionEnchants: IngredientEnchantRemovalOptions
 
     interface IngredientEnchantRemovalOptions {
 
@@ -32,29 +32,21 @@ interface EnchantRemovalOptions {
         /**
          * Enchantments that should be removed or kept.
          *
-         * If omitted, all enchantments are kept.
+         * By default, empty so all the enchantments, except curses, are removed.
          */
-        val enchants: EnchantmentList?
+        val enchants: List<Key>
 
         /**
-         * A list of Enchantments marked either for removal or keeping
+         * Whether the [enchants] should be kept or removed from the ingredient.
+         *
+         * By default, they are kept
          */
-        interface EnchantmentList {
-
-            val enchantments: List<Key>
-
-            /**
-             * Removes the specified enchantments
-             */
-            interface RemoveEnchants : EnchantmentList
-
-            /**
-             * Keeps the specified enchantments
-             */
-            interface KeepEnchants : EnchantmentList
-
-        }
+        val type: SetInclusionExclusionType
 
     }
 
+}
+
+enum class SetInclusionExclusionType(val id: String) {
+    KEEP("keep"), REMOVE("remove")
 }

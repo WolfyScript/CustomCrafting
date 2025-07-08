@@ -38,10 +38,10 @@ class RecipeFactoryCommon : RecipeFactory {
     }
 
     override fun createGrindingRecipeInput(
-        topInput: ItemStack?,
-        bottomInput: ItemStack?,
+        base: ItemStack?,
+        addition: ItemStack?,
     ): RecipeInput.GrindingRecipeInput {
-        return GrindingRecipeInputImpl(topInput, bottomInput)
+        return GrindingRecipeInputImpl(base, addition)
     }
 
     override fun createMixingRecipeInput(input: Collection<ItemStack?>): RecipeInput.MixingRecipeInput {
