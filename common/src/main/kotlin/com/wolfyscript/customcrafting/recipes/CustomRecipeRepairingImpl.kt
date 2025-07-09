@@ -20,15 +20,15 @@ class CustomRecipeRepairingImpl(
         context: EvaluationContext,
     ): RecipeEvaluationResult.RepairingRecipeData? {
         val matchedBase = base.match(input.base)?.let { baseMatch ->
-            IngredientDataImpl(1, 1, base, baseMatch)
+            IngredientDataImpl(0, 0, base, baseMatch)
         } ?: return null
 
         if (addition == null && input.addition != null || addition != null && input.addition == null) {
             return null
         }
         val matchedAddition = addition?.match(input.addition!!)?.let { additionMatch ->
-            IngredientDataImpl(2, 2, addition, additionMatch)
-        }
+            IngredientDataImpl(1, 1, addition, additionMatch)
+        } ?: return null
 
         return RepairingRecipeDataImpl(0, arrayOf(matchedBase, matchedAddition))
     }
