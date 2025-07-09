@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.recipes.repair
+package com.wolfyscript.customcrafting.recipes.process
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -16,7 +16,7 @@ import kotlin.random.Random
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonPropertyOrder(value = ["type"])
-sealed interface CombineProcess {
+sealed interface ProcessRepairing {
 
     /**
      * Computes the result based on the data and context.
@@ -37,14 +37,14 @@ sealed interface CombineProcess {
      * Always uses the specified result and computes the resulting stack based on the data and context.
      */
     @JsonTypeName("fixed_result")
-    interface FixedResult : CombineProcess {
+    interface FixedResult : ProcessRepairing {
 
         /**
          * Defines how the result should be renamed.
          *
          * Optional: when omitted, the name is not applied
          */
-        val rename: RenameOptions?
+        val rename: ProcedureRename?
 
         val result: RecipeResult
 
@@ -56,35 +56,35 @@ sealed interface CombineProcess {
      * Tries to mirror the vanilla logic of the anvil as much as possible, while providing lots of customization options.
      */
     @JsonTypeName("custom")
-    interface CustomCombineProcess : CombineProcess {
+    interface CustomProcessRepairing : ProcessRepairing {
 
         /**
          * Defines how the result should be renamed.
          *
          * Optional: when omitted, the name is not applied
          */
-        val rename: RenameOptions?
+        val rename: ProcedureRename?
 
         /**
          * Defines how the base is repaired when both base and addition are damageable.
          *
          * Optional: when omitted, the base is not repaired.
          */
-        val damageCombine: DamageCombineOptions?
+        val damageCombine: ProcedureDamageCombine?
 
         /**
          * Defines how the base is repaired when the addition is a non-damageable item.
          *
          * Optional: when omitted, the base is not repaired.
          */
-        val itemRepair: ItemRepairOptions?
+        val itemRepair: ProcedureItemRepair?
 
         /**
          * Defines how the enchantments from the base and addition are combined.
          *
          * Optional: when omitted, the enchantments of the addition are ignored.
          */
-        val enchanting: EnchantingOptions?
+        val enchanting: ProcedureEnchanting?
 
     }
 

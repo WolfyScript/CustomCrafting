@@ -1,13 +1,14 @@
 package com.wolfyscript.customcrafting.recipes.repair
 
+import com.wolfyscript.customcrafting.recipes.process.ProcedureDamageCombine
 import com.wolfyscript.scafall.wrappers.utils.unwrap
 import com.wolfyscript.scafall.wrappers.utils.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
-class DamageCombineOptionsImpl(
+class ProcedureDamageCombineImpl(
     override val bonusPercentage: Int,
     override val combineDurabilityAsRatio: Boolean
-) : DamageCombineOptions {
+) : ProcedureDamageCombine {
 
     override fun combine(baseStack: ItemStack, additionStack: ItemStack, resultStack: ItemStack) : ItemStack {
         val base = baseStack.unwrap()

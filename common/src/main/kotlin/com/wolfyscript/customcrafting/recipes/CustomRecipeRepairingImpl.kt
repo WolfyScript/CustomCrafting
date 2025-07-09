@@ -5,12 +5,12 @@ import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.data.RepairingRecipeDataImpl
-import com.wolfyscript.customcrafting.recipes.repair.*
+import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
 
 class CustomRecipeRepairingImpl(
     override val priority: Int,
     override val conditions: RecipeConditions,
-    override val process: CombineProcess,
+    override val process: ProcessRepairing,
     override val base: Ingredient,
     override val addition: Ingredient?,
 ) : CustomRecipeRepairing {

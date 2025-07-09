@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.repair.CombineProcess
+import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
 
 /**
  * Recipe used to repair items in the Anvil
@@ -26,7 +26,7 @@ interface CustomRecipeRepairing : CustomRecipe<RecipeInput.RepairingRecipeInput,
      * The process to produce the result in the Anvil menu.
      * This is processed **after** the recipe has been evaluated.
      */
-    val process: CombineProcess
+    val process: ProcessRepairing
 
     override fun evaluate(
         input: RecipeInput.RepairingRecipeInput,

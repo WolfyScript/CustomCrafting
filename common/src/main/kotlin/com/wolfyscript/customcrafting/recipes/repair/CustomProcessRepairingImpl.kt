@@ -4,6 +4,11 @@ import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.recipes.process.ProcedureDamageCombine
+import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchanting
+import com.wolfyscript.customcrafting.recipes.process.ProcedureItemRepair
+import com.wolfyscript.customcrafting.recipes.process.ProcedureRename
+import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.wrappers.utils.unwrap
@@ -18,12 +23,12 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper
 import kotlin.math.max
 import kotlin.random.Random
 
-class CustomCombineProcessImpl(
-    override val rename: RenameOptions? = null,
-    override val damageCombine: DamageCombineOptions? = null,
-    override val itemRepair: ItemRepairOptions? = null,
-    override val enchanting: EnchantingOptions? = null,
-) : CombineProcess.CustomCombineProcess {
+class CustomProcessRepairingImpl(
+    override val rename: ProcedureRename? = null,
+    override val damageCombine: ProcedureDamageCombine? = null,
+    override val itemRepair: ProcedureItemRepair? = null,
+    override val enchanting: ProcedureEnchanting? = null,
+) : ProcessRepairing.CustomProcessRepairing {
 
     override fun compute(
         recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.RepairingRecipeData, CustomRecipeRepairing>,

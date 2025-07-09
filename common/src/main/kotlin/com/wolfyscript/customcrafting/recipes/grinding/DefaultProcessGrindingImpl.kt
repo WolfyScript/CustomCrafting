@@ -4,9 +4,11 @@ import com.wolfyscript.customcrafting.recipes.CustomRecipeGrinding
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.repair.DamageCombineOptionsImpl
-import com.wolfyscript.customcrafting.recipes.repair.EnchantingOptions
-import com.wolfyscript.customcrafting.recipes.repair.EnchantingOptionsImpl
+import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding
+import com.wolfyscript.customcrafting.recipes.process.ProcedureRepairCost
+import com.wolfyscript.customcrafting.recipes.repair.ProcedureDamageCombineImpl
+import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchanting
+import com.wolfyscript.customcrafting.recipes.repair.ProcedureEnchantingImpl
 import com.wolfyscript.scafall.wrappers.utils.unwrap
 import com.wolfyscript.scafall.wrappers.utils.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
@@ -18,13 +20,13 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import kotlin.random.Random
 
-class DefaultGrindingProcessImpl(
+class DefaultProcessGrindingImpl(
     override val extraXp: Int = 0,
-    override val removeEnchants: EnchantRemovalOptionsImpl = EnchantRemovalOptionsImpl(),
-    override val mergeEnchants: EnchantingOptions = EnchantingOptionsImpl(true, 0, 0, true),
-    override val damageCombine: DamageCombineOptionsImpl = DamageCombineOptionsImpl(5, false),
-    override val repairCost: RepairCostOptions? = null,
-) : GrindingProcess.DefaultGrindingProcess {
+    override val removeEnchants: ProcedureEnchantRemovalImpl = ProcedureEnchantRemovalImpl(),
+    override val mergeEnchants: ProcedureEnchanting = ProcedureEnchantingImpl(true, 0, 0, true),
+    override val damageCombine: ProcedureDamageCombineImpl = ProcedureDamageCombineImpl(5, false),
+    override val repairCost: ProcedureRepairCost? = null,
+) : ProcessGrinding.DefaultProcessGrinding {
 
     override fun compute(
         recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.GrindingRecipeData, CustomRecipeGrinding>,

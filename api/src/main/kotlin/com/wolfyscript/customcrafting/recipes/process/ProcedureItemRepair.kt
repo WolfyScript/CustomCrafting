@@ -1,11 +1,9 @@
-package com.wolfyscript.customcrafting.recipes.repair
+package com.wolfyscript.customcrafting.recipes.process
 
 /**
- * Settings for the scenario that the base is repaired with a non-damageable addition that isn't an enchanted book.
- *
- *
+ * Specifies how a base damageable item is repaired using non-damageable stackable addition items.
  */
-interface ItemRepairOptions {
+interface ProcedureItemRepair {
 
     /**
      * The cost when using repair items to repair an item. (e.g. diamond to repair a diamond sword)

@@ -1,24 +1,24 @@
-package com.wolfyscript.customcrafting.recipes.grinding
+package com.wolfyscript.customcrafting.recipes.process
 
 import com.wolfyscript.scafall.identifier.Key
 
-interface EnchantRemovalOptions {
+interface ProcedureEnchantRemoval {
 
     /**
      * How enchantments should be removed from the base ingredient (top slot)
      *
      * By default, all enchantments, except curses are removed.
      */
-    val baseEnchants: IngredientEnchantRemovalOptions
+    val baseEnchants: IngredientEnchantRemovalProcedure
 
     /**
      * How enchantments should be removed from the addition ingredient (bottom slot)
      *
      * By default, all enchantments, except curses are removed.
      */
-    val additionEnchants: IngredientEnchantRemovalOptions
+    val additionEnchants: IngredientEnchantRemovalProcedure
 
-    interface IngredientEnchantRemovalOptions {
+    interface IngredientEnchantRemovalProcedure {
 
         /**
          * Whether the curses should be removed or not.

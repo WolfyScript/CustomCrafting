@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.recipes.repair
+package com.wolfyscript.customcrafting.recipes.process
 
 import com.wolfyscript.scafall.wrappers.world.entity.Player
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
@@ -14,7 +14,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
  * - addition is a non-damageable item and contains enchantments (all options apply)
  *
  */
-interface EnchantingOptions {
+interface ProcedureEnchanting {
 
     /**
      * Whether to preserve enchantments from the base.
@@ -44,10 +44,10 @@ interface EnchantingOptions {
      */
     val upgradeEnchants: Boolean
 
-    fun merge(resultStack: ItemStack, player: Player, addition: ItemStack) : MergeResult?
+    fun merge(resultStack: ItemStack, player: Player?, addition: ItemStack) : MergeResult?
 
     /**
-     * The result produced by the [EnchantingOptions] procedure.
+     * The result produced by the [ProcedureEnchanting] procedure.
      */
     interface MergeResult {
 

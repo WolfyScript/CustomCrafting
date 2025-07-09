@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.grinding.GrindingProcess
+import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding
 
 interface CustomRecipeGrinding : CustomRecipe<RecipeInput.GrindingRecipeInput, RecipeEvaluationResult.GrindingRecipeData> {
 
@@ -13,6 +13,6 @@ interface CustomRecipeGrinding : CustomRecipe<RecipeInput.GrindingRecipeInput, R
 
     val addition: Ingredient?
 
-    val process: GrindingProcess
+    val process: ProcessGrinding
 
 }

@@ -1,9 +1,9 @@
-package com.wolfyscript.customcrafting.recipes.repair
+package com.wolfyscript.customcrafting.recipes.process
 
 /**
- * Specifies how the name from the Anvil menu is applied to the result.
+ * Specifies how the name from the Anvil menu is applied to a result item.
  */
-interface RenameOptions {
+interface ProcedureRename {
 
     /**
      * Whether to use the MiniMessage parser to apply a formatted name with decorations and style.

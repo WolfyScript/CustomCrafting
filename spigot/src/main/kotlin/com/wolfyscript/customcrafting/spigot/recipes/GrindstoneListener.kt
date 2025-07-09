@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.grinding.GrindingProcess
+import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding
 import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
@@ -72,8 +72,8 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
             })
         }
 
-        if (recipe.process is GrindingProcess.FixedResultGrindingProcess) {
-            (recipe.process as GrindingProcess.FixedResultGrindingProcess).result.runActions(context)
+        if (recipe.process is ProcessGrinding.FixedResultProcessGrinding) {
+            (recipe.process as ProcessGrinding.FixedResultProcessGrinding).result.runActions(context)
         }
 
         // TODO: Craft remains

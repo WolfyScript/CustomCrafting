@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.recipes.grinding
+package com.wolfyscript.customcrafting.recipes.process
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -8,14 +8,15 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.repair.DamageCombineOptions
-import com.wolfyscript.customcrafting.recipes.repair.EnchantingOptions
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import kotlin.random.Random
 
+/**
+ * The process in which [CustomRecipeGrinding] computes the result based on the defined procedures.
+ */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonPropertyOrder(value = ["type"])
-sealed interface GrindingProcess {
+sealed interface ProcessGrinding {
 
     /**
      * Computes the result based on the data and context.
@@ -33,7 +34,7 @@ sealed interface GrindingProcess {
     ): ItemStack
 
     @JsonTypeName("fixed_result")
-    interface FixedResultGrindingProcess : GrindingProcess {
+    interface FixedResultProcessGrinding : ProcessGrinding {
 
         val result: RecipeResult
 
@@ -42,7 +43,7 @@ sealed interface GrindingProcess {
     }
 
     @JsonTypeName("default")
-    interface DefaultGrindingProcess : GrindingProcess{
+    interface DefaultProcessGrinding : ProcessGrinding{
 
         /**
          * The extra amount of experience to drop.
@@ -55,28 +56,28 @@ sealed interface GrindingProcess {
          *
          * By default, all enchantments, except curses, are removed.
          */
-        val removeEnchants: EnchantRemovalOptions
+        val removeEnchants: ProcedureEnchantRemoval
 
         /**
          * Specifies how enchants, that are not removed, are merged together.
          *
          * By default, all enchantments that were not removed are merged.
          */
-        val mergeEnchants: EnchantingOptions
+        val mergeEnchants: ProcedureEnchanting
 
         /**
          * Specifies how the durability of both ingredients (if there are two) is combined.
          *
          * By default, it combines the durability of the base and addition ingredient and adds a 5% bonus of the base max damage.
          */
-        val damageCombine: DamageCombineOptions
+        val damageCombine: ProcedureDamageCombine
 
         /**
          * Specifies how the grindstone applies the repair cost to the result.
          *
          * If omitted, no repair cost will get applied.
          */
-        val repairCost: RepairCostOptions?
+        val repairCost: ProcedureRepairCost?
 
     }
 

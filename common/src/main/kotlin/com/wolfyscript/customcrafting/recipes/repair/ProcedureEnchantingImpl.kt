@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.recipes.repair
 
+import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchanting
 import com.wolfyscript.scafall.wrappers.utils.unwrap
 import com.wolfyscript.scafall.wrappers.utils.wrap
 import com.wolfyscript.scafall.wrappers.world.entity.Player
@@ -11,17 +12,16 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import kotlin.math.max
 
-class EnchantingOptionsImpl(
+class ProcedureEnchantingImpl(
     override val preserveBaseEnchants: Boolean = true,
     override val conflictPenaltyCost: Int = 1,
     override val upgradePenaltyCost: Int = 0,
     override val upgradeEnchants: Boolean = true,
-) : EnchantingOptions {
+) : ProcedureEnchanting {
 
-    override fun merge(resultStack: ItemStack, player: Player, addition: ItemStack) : MergeResultImpl? {
+    override fun merge(resultStack: ItemStack, player: Player?, addition: ItemStack) : MergeResultImpl? {
         val additionEnchants = addition.unwrap().enchantments
         val result = resultStack.unwrap()
-        val player = player.unwrap() ?: return null
         val resultEnchants = if (!preserveBaseEnchants) {
             ItemEnchantments.Mutable(ItemEnchantments.EMPTY)
         } else {
@@ -38,7 +38,7 @@ class EnchantingOptionsImpl(
             val enchantment = enchantmentHolder.value()
 
             val compatible =
-                (player.hasInfiniteMaterials() || result.`is`(Items.ENCHANTED_BOOK)) || enchantment.canEnchant(
+                (player?.unwrap()?.hasInfiniteMaterials() == true || result.`is`(Items.ENCHANTED_BOOK)) || enchantment.canEnchant(
                     result
                 )
             val conflicts = resultEnchants.keySet().count {
@@ -93,7 +93,7 @@ class EnchantingOptionsImpl(
         override val failed: Boolean,
         override val cost: Int,
         override val result: ItemStack
-    ) : EnchantingOptions.MergeResult {
+    ) : ProcedureEnchanting.MergeResult {
 
     }
 }

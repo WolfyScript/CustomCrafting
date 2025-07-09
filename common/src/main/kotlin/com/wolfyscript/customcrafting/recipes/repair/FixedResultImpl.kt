@@ -5,15 +5,17 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.recipes.process.ProcedureRename
+import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import kotlin.random.Random
 
 class FixedResultImpl(
     override val result: RecipeResult,
     override val cost: Int?,
-    override val rename: RenameOptions? = null,
+    override val rename: ProcedureRename? = null,
 ) :
-    CombineProcess.FixedResult {
+    ProcessRepairing.FixedResult {
 
     override fun compute(
         recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.RepairingRecipeData, CustomRecipeRepairing>,

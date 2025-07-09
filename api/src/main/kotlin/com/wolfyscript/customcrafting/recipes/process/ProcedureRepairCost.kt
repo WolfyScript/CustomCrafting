@@ -1,6 +1,9 @@
-package com.wolfyscript.customcrafting.recipes.grinding
+package com.wolfyscript.customcrafting.recipes.process
 
-interface RepairCostOptions {
+/**
+ * Specifies how the repair cost is applied to a result item.
+ */
+interface ProcedureRepairCost {
 
     /**
      * The amount of repair cost that gets added to the existing repair cost of the ingredients and put on the result.

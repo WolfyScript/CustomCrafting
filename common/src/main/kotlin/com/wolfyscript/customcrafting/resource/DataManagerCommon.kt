@@ -8,17 +8,17 @@ import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.recipes.repair.CombineProcess
-import com.wolfyscript.customcrafting.recipes.repair.CustomCombineProcessImpl
-import com.wolfyscript.customcrafting.recipes.repair.DamageCombineOptions
-import com.wolfyscript.customcrafting.recipes.repair.DamageCombineOptionsImpl
-import com.wolfyscript.customcrafting.recipes.repair.EnchantingOptions
-import com.wolfyscript.customcrafting.recipes.repair.EnchantingOptionsImpl
+import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
+import com.wolfyscript.customcrafting.recipes.repair.CustomProcessRepairingImpl
+import com.wolfyscript.customcrafting.recipes.process.ProcedureDamageCombine
+import com.wolfyscript.customcrafting.recipes.repair.ProcedureDamageCombineImpl
+import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchanting
+import com.wolfyscript.customcrafting.recipes.repair.ProcedureEnchantingImpl
 import com.wolfyscript.customcrafting.recipes.repair.FixedResultImpl
-import com.wolfyscript.customcrafting.recipes.repair.ItemRepairOptions
-import com.wolfyscript.customcrafting.recipes.repair.ItemRepairOptionsImpl
-import com.wolfyscript.customcrafting.recipes.repair.RenameOptions
-import com.wolfyscript.customcrafting.recipes.repair.RenameOptionsImpl
+import com.wolfyscript.customcrafting.recipes.process.ProcedureItemRepair
+import com.wolfyscript.customcrafting.recipes.repair.ProcedureItemRepairImpl
+import com.wolfyscript.customcrafting.recipes.process.ProcedureRename
+import com.wolfyscript.customcrafting.recipes.repair.ProcedureRenameImpl
 import com.wolfyscript.jackson.dataformat.hocon.HoconMapper
 import com.wolfyscript.scafall.config.jackson.registerScafallModule
 import java.io.File
@@ -99,19 +99,19 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
             // Repairing Recipes
             addAbstractTypeMapping(CustomRecipeRepairing::class.java, CustomRecipeRepairingImpl::class.java)
             addAbstractTypeMapping(
-                CombineProcess.FixedResult::class.java,
+                ProcessRepairing.FixedResult::class.java,
                 FixedResultImpl::class.java
             )
             addAbstractTypeMapping(
-                CombineProcess.CustomCombineProcess::class.java,
-                CustomCombineProcessImpl::class.java
+                ProcessRepairing.CustomProcessRepairing::class.java,
+                CustomProcessRepairingImpl::class.java
             )
-            addAbstractTypeMapping(CombineProcess.CustomCombineProcess::class.java, CustomCombineProcessImpl::class.java)
-            addAbstractTypeMapping(CombineProcess.FixedResult::class.java, FixedResultImpl::class.java)
-            addAbstractTypeMapping(DamageCombineOptions::class.java, DamageCombineOptionsImpl::class.java)
-            addAbstractTypeMapping(RenameOptions::class.java, RenameOptionsImpl::class.java)
-            addAbstractTypeMapping(EnchantingOptions::class.java, EnchantingOptionsImpl::class.java)
-            addAbstractTypeMapping(ItemRepairOptions::class.java, ItemRepairOptionsImpl::class.java)
+            addAbstractTypeMapping(ProcessRepairing.CustomProcessRepairing::class.java, CustomProcessRepairingImpl::class.java)
+            addAbstractTypeMapping(ProcessRepairing.FixedResult::class.java, FixedResultImpl::class.java)
+            addAbstractTypeMapping(ProcedureDamageCombine::class.java, ProcedureDamageCombineImpl::class.java)
+            addAbstractTypeMapping(ProcedureRename::class.java, ProcedureRenameImpl::class.java)
+            addAbstractTypeMapping(ProcedureEnchanting::class.java, ProcedureEnchantingImpl::class.java)
+            addAbstractTypeMapping(ProcedureItemRepair::class.java, ProcedureItemRepairImpl::class.java)
 
             // Smithing Recipes
             addAbstractTypeMapping(CustomRecipeSmithing::class.java, CustomRecipeSmithingImpl::class.java)

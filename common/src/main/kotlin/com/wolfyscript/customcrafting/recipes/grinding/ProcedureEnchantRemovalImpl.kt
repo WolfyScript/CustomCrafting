@@ -1,20 +1,22 @@
 package com.wolfyscript.customcrafting.recipes.grinding
 
+import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchantRemoval
+import com.wolfyscript.customcrafting.recipes.process.SetInclusionExclusionType
 import com.wolfyscript.scafall.identifier.Key
 import net.minecraft.tags.EnchantmentTags
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import kotlin.jvm.optionals.getOrNull
 
-class EnchantRemovalOptionsImpl(
-    override val baseEnchants: IngredientEnchantRemovalOptionsImpl = IngredientEnchantRemovalOptionsImpl(),
-    override val additionEnchants: IngredientEnchantRemovalOptionsImpl = IngredientEnchantRemovalOptionsImpl(),
-) : EnchantRemovalOptions
+class ProcedureEnchantRemovalImpl(
+    override val baseEnchants: IngredientEnchantRemovalProcedureImpl = IngredientEnchantRemovalProcedureImpl(),
+    override val additionEnchants: IngredientEnchantRemovalProcedureImpl = IngredientEnchantRemovalProcedureImpl(),
+) : ProcedureEnchantRemoval
 
-class IngredientEnchantRemovalOptionsImpl(
+class IngredientEnchantRemovalProcedureImpl(
     override val removeCurses: Boolean = false,
     override val enchants: List<Key> = emptyList(),
     override val type: SetInclusionExclusionType = SetInclusionExclusionType.KEEP,
-) : EnchantRemovalOptions.IngredientEnchantRemovalOptions {
+) : ProcedureEnchantRemoval.IngredientEnchantRemovalProcedure {
 
     fun removeFrom(itemEnchants: ItemEnchantments.Mutable) : Int {
         var xpYield = 0

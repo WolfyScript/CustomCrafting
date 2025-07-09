@@ -1,7 +1,9 @@
 package com.wolfyscript.customcrafting.recipes.repair
 
-class ItemRepairOptionsImpl(
+import com.wolfyscript.customcrafting.recipes.process.ProcedureItemRepair
+
+class ProcedureItemRepairImpl(
     override val cost: Int = 1,
     override val combineEnchants: Boolean = false
-) : ItemRepairOptions {
+) : ProcedureItemRepair {
 }

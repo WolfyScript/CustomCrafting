@@ -5,14 +5,14 @@ import com.wolfyscript.customcrafting.recipes.data.GrindingRecipeDataImpl
 import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.grinding.GrindingProcess
+import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding
 
 class CustomRecipeGrindingImpl(
     override val priority: Int,
     override val conditions: RecipeConditions,
     override val base: Ingredient,
     override val addition: Ingredient?,
-    override val process: GrindingProcess,
+    override val process: ProcessGrinding,
 ) : CustomRecipeGrinding {
 
     override fun evaluate(
