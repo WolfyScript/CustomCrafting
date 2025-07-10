@@ -5,6 +5,7 @@ import com.wolfyscript.customcrafting.recipes.data.DefaultDataImpl
 import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.scafall.identifier.toScafall
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.utils.unwrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
@@ -94,7 +95,7 @@ class SmithingUtils {
                 for (component in sourceStack.components) {
                     val typeKey = registry.getKey(component.type)
                     if (typeKey != null) {
-                        val key = Key.key(typeKey.namespace, typeKey.path)
+                        val key = typeKey.toScafall()
                         if (options.excludeComponents.contains(key)) {
                             continue
                         }
@@ -104,7 +105,7 @@ class SmithingUtils {
             } else if(options.preserveComponents.isNotEmpty()) {
                 // Include all the components listed in the list
                 for (key in options.preserveComponents) {
-                    registry.get(ResourceLocation.fromNamespaceAndPath(key.namespace, key.value)).ifPresent {
+                    registry.get(key.toMc()).ifPresent {
                         copyDataComponent(sourceStack, destStack, it.value())
                     }
                 }
