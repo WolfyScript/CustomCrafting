@@ -8,17 +8,12 @@ import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
-import com.wolfyscript.customcrafting.recipes.repair.CustomProcessRepairingImpl
-import com.wolfyscript.customcrafting.recipes.process.ProcedureDamageCombine
-import com.wolfyscript.customcrafting.recipes.repair.ProcedureDamageCombineImpl
-import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchanting
-import com.wolfyscript.customcrafting.recipes.repair.ProcedureEnchantingImpl
-import com.wolfyscript.customcrafting.recipes.repair.FixedResultImpl
-import com.wolfyscript.customcrafting.recipes.process.ProcedureItemRepair
-import com.wolfyscript.customcrafting.recipes.repair.ProcedureItemRepairImpl
-import com.wolfyscript.customcrafting.recipes.process.ProcedureRename
-import com.wolfyscript.customcrafting.recipes.repair.ProcedureRenameImpl
+import com.wolfyscript.customcrafting.recipes.grinding.DefaultProcessGrindingImpl
+import com.wolfyscript.customcrafting.recipes.grinding.IngredientEnchantRemovalProcedureImpl
+import com.wolfyscript.customcrafting.recipes.grinding.ProcedureEnchantRemovalImpl
+import com.wolfyscript.customcrafting.recipes.grinding.ProcedureRepairCostImpl
+import com.wolfyscript.customcrafting.recipes.process.*
+import com.wolfyscript.customcrafting.recipes.repair.*
 import com.wolfyscript.jackson.dataformat.hocon.HoconMapper
 import com.wolfyscript.scafall.config.jackson.registerScafallModule
 import java.io.File
@@ -49,6 +44,22 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
                 ResultModifierImpl.ResultModifierTransformationImpl::class.java
             )
             addAbstractTypeMapping(RecipeChoices::class.java, RecipeChoicesImpl::class.java)
+
+            // Recipe Processes and Procedures
+            addAbstractTypeMapping(ProcessRepairing::class.java, CustomProcessRepairingImpl::class.java)
+            addAbstractTypeMapping(ProcessGrinding.DefaultProcessGrinding::class.java, DefaultProcessGrindingImpl::class.java)
+
+            addAbstractTypeMapping(ProcedureEnchanting::class.java, ProcedureEnchantingImpl::class.java)
+            addAbstractTypeMapping(ProcedureItemRepair::class.java, ProcedureItemRepairImpl::class.java)
+            addAbstractTypeMapping(ProcedureDamageCombine::class.java, ProcedureDamageCombineImpl::class.java)
+            addAbstractTypeMapping(ProcedureRename::class.java, ProcedureRenameImpl::class.java)
+            addAbstractTypeMapping(ProcedureRepairCost::class.java, ProcedureRepairCostImpl::class.java)
+
+            addAbstractTypeMapping(ProcedureEnchantRemoval::class.java, ProcedureEnchantRemovalImpl::class.java)
+            addAbstractTypeMapping(
+                ProcedureEnchantRemoval.IngredientEnchantRemovalProcedure::class.java,
+                IngredientEnchantRemovalProcedureImpl::class.java
+            )
 
             // Register Crafting Recipe Type Implementations
             addAbstractTypeMapping(CustomRecipeCrafting::class.java, CustomRecipeCraftingImpl::class.java)
@@ -106,7 +117,10 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
                 ProcessRepairing.CustomProcessRepairing::class.java,
                 CustomProcessRepairingImpl::class.java
             )
-            addAbstractTypeMapping(ProcessRepairing.CustomProcessRepairing::class.java, CustomProcessRepairingImpl::class.java)
+            addAbstractTypeMapping(
+                ProcessRepairing.CustomProcessRepairing::class.java,
+                CustomProcessRepairingImpl::class.java
+            )
             addAbstractTypeMapping(ProcessRepairing.FixedResult::class.java, FixedResultImpl::class.java)
             addAbstractTypeMapping(ProcedureDamageCombine::class.java, ProcedureDamageCombineImpl::class.java)
             addAbstractTypeMapping(ProcedureRename::class.java, ProcedureRenameImpl::class.java)
