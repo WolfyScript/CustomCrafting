@@ -4,6 +4,8 @@ import com.wolfyscript.customcrafting.recipes.CustomRecipeGrinding
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.recipes.process.ProcedureDamageCombine
+import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchantRemoval
 import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding
 import com.wolfyscript.customcrafting.recipes.process.ProcedureRepairCost
 import com.wolfyscript.customcrafting.recipes.repair.ProcedureDamageCombineImpl
@@ -17,14 +19,13 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.inventory.AnvilMenu
 import net.minecraft.world.inventory.GrindstoneMenu
 import net.minecraft.world.item.enchantment.EnchantmentHelper
-import net.minecraft.world.item.enchantment.ItemEnchantments
 import kotlin.random.Random
 
 class DefaultProcessGrindingImpl(
     override val extraXp: Int = 0,
-    override val removeEnchants: ProcedureEnchantRemovalImpl = ProcedureEnchantRemovalImpl(),
+    override val removeEnchants: ProcedureEnchantRemoval = ProcedureEnchantRemovalImpl(),
     override val mergeEnchants: ProcedureEnchanting = ProcedureEnchantingImpl(true, 0, 0, true),
-    override val damageCombine: ProcedureDamageCombineImpl = ProcedureDamageCombineImpl(5, false),
+    override val damageCombine: ProcedureDamageCombine = ProcedureDamageCombineImpl(5, false),
     override val repairCost: ProcedureRepairCost? = null,
 ) : ProcessGrinding.DefaultProcessGrinding {
 
@@ -47,8 +48,8 @@ class DefaultProcessGrindingImpl(
             return net.minecraft.world.item.ItemStack.EMPTY.wrap()
         }
 
-        var baseStack = input.base?.unwrap()
-        var additionStack = input.addition?.unwrap()
+        var baseStack = input.base?.unwrap()?.copy()
+        var additionStack = input.addition?.unwrap()?.copy()
         if (baseStack == null && additionStack == null) {
             return net.minecraft.world.item.ItemStack.EMPTY.wrap()
         }
@@ -67,11 +68,9 @@ class DefaultProcessGrindingImpl(
         var penalty = 0
         var yield = 0
 
-        val baseEnchants = ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(baseStack))
-        yield += removeEnchants.baseEnchants.removeFrom(baseEnchants)
+        yield += removeEnchants.baseEnchants.removeFrom(baseStack.wrap())
         if (additionStack != null) {
-            val additionEnchants = ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(additionStack))
-            yield += removeEnchants.additionEnchants.removeFrom(additionEnchants)
+            yield += removeEnchants.additionEnchants.removeFrom(additionStack.wrap())
         }
 
         if (EnchantmentHelper.canStoreEnchantments(result) && additionStack != null) {

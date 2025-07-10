@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.recipes.process
 
 import com.wolfyscript.scafall.identifier.Key
+import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 interface ProcedureEnchantRemoval {
 
@@ -42,6 +43,8 @@ interface ProcedureEnchantRemoval {
          * By default, they are kept
          */
         val type: SetInclusionExclusionType
+
+        fun removeFrom(stack: ItemStack) : Int
 
     }
 

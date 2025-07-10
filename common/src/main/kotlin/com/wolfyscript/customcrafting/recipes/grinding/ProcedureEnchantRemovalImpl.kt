@@ -2,8 +2,12 @@ package com.wolfyscript.customcrafting.recipes.grinding
 
 import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchantRemoval
 import com.wolfyscript.customcrafting.recipes.process.SetInclusionExclusionType
+import com.wolfyscript.scafall.identifier.toScafall
 import com.wolfyscript.scafall.identifier.Key
+import com.wolfyscript.scafall.wrappers.utils.unwrap
+import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import net.minecraft.tags.EnchantmentTags
+import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import kotlin.jvm.optionals.getOrNull
 
@@ -18,12 +22,14 @@ class IngredientEnchantRemovalProcedureImpl(
     override val type: SetInclusionExclusionType = SetInclusionExclusionType.KEEP,
 ) : ProcedureEnchantRemoval.IngredientEnchantRemovalProcedure {
 
-    fun removeFrom(itemEnchants: ItemEnchantments.Mutable) : Int {
+    override fun removeFrom(stack: ItemStack): Int {
+        val mcStack = stack.unwrap()
+        val itemEnchants = ItemEnchantments.Mutable(mcStack.enchantments)
         var xpYield = 0
         if (type == SetInclusionExclusionType.KEEP) {
             itemEnchants.removeIf { holder ->
                 val key = holder.unwrapKey()
-                    .map { key -> key.location().let { Key.key(it.namespace, it.path) } }.getOrNull()
+                    .map { key -> key.location().toScafall() }.getOrNull()
                 if (enchants.contains(key)) {
                     return@removeIf false
                 }
@@ -36,7 +42,7 @@ class IngredientEnchantRemovalProcedureImpl(
         } else {
             itemEnchants.removeIf { holder ->
                 val key = holder.unwrapKey()
-                    .map { key -> key.location().let { Key.key(it.namespace, it.path) } }.getOrNull()
+                    .map { key -> key.location().toScafall() }.getOrNull()
                 if (enchants.contains(key) || (holder.`is`(EnchantmentTags.CURSE) && removeCurses)) {
                     xpYield += holder.value().minLevel
                     return@removeIf true
@@ -44,7 +50,7 @@ class IngredientEnchantRemovalProcedureImpl(
                 return@removeIf false
             }
         }
-
+        EnchantmentHelper.setEnchantments(mcStack, itemEnchants.toImmutable())
         return xpYield
     }
 
