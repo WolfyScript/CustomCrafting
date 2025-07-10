@@ -86,7 +86,8 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
             "stick_to_soul_torch_soul_campfire",
             "sus_stew_op",
             "upgrade_netherite_sword",
-            "repair_with_amethyst"
+            "repair_with_amethyst",
+            "disenchant_netherite_sword_custom",
         ).forEach {
             customCrafting.logger.info("  - recipe: $it")
             exportResource("$dir/$it.conf", File(resourceLoader.directory, "default/$it.conf"))

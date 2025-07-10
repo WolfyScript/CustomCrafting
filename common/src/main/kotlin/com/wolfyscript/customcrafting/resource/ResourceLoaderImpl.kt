@@ -36,6 +36,10 @@ class ResourceLoaderImpl(
             directory.mkdirs()
         }
         for (listener in listeners) {
+            listener.onPrepare(this)
+        }
+
+        for (listener in listeners) {
             listener.onInitialLoad(this)
         }
 
