@@ -93,17 +93,28 @@ interface CraftingFormula {
             val rotate: Boolean
         }
 
+        /**
+         * The shape of the [Shaped] formula.
+         *
+         * Pre-calculates the [variations] of the shape based on the [symmetry] upon initialization.
+         */
         interface Shape {
 
             val symmetry: ShapeSymmetry
 
+            /**
+             * The width of the final shape (i.e. trimmed shape if [trim] is true)
+             */
             val width: Int
 
+            /**
+             * The height of the final shape (i.e. trimmed shape if [trim] is true)
+             */
             val height: Int
 
             /**
              * Whether the shape should be trimmed to remove leading and trailing empty rows and columns.
-             * When disabled even a shape only occupying a 2x2 area will only work if placed exactly how defined by shape [rows].
+             * When disabled, even a shape only occupying a 2x2 area will only work if placed exactly how defined by shape [rows].
              */
             val trim: Boolean
 
