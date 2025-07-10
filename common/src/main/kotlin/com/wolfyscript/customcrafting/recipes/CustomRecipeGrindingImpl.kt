@@ -8,10 +8,10 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding
 
 class CustomRecipeGrindingImpl(
-    override val priority: Int,
-    override val conditions: RecipeConditions,
+    override val priority: Int = 0,
+    override val conditions: RecipeConditions = RecipeConditionsImpl(),
     override val base: Ingredient,
-    override val addition: Ingredient?,
+    override val addition: Ingredient? = null,
     override val process: ProcessGrinding,
 ) : CustomRecipeGrinding {
 
