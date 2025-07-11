@@ -13,12 +13,10 @@ import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
 import org.bukkit.Material
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.ExperienceOrb
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
@@ -46,19 +44,39 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         if (event.slotType != InventoryType.SlotType.RESULT) {
             return
         }
-        val player = event.whoClicked as Player
-        val action = event.action
-
-        val data = recipeCache.getIfPresent(player.uniqueId) ?: return
-        val recipe = data.recipe.value ?: return
-
-        event.isCancelled = true // Block vanilla behaviour of just removing the entire input
 
         val result = event.currentItem
         val cursor = event.cursor
 
+        val player = event.whoClicked as Player
+        val data = recipeCache.getIfPresent(player.uniqueId) ?: return
+        val recipe = data.recipe.value ?: return
+
+        event.isCancelled = true // Block vanilla behaviour of just removing the entire input
+        if (result == null) {
+            return
+        }
+
         if (event.isShiftClick) {
             // TODO: manual result collection
+            val notAdded = event.view.bottomInventory.addItem(result.clone()).get(0)
+            if (notAdded != null) {
+                val toReverse = result.amount - notAdded.amount
+                notAdded.amount = toReverse
+                event.view.bottomInventory.removeItem(notAdded)
+                return
+            }
+            event.currentItem = null
+        } else if (cursor.type == Material.AIR) {
+            event.view.setCursor(result.clone())
+            event.currentItem = null
+        } else if (!cursor.isSimilar(result)) {
+            val increasedAmount = cursor.amount + result.amount
+            if (increasedAmount > cursor.maxStackSize) {
+                return
+            }
+            cursor.amount = increasedAmount
+            event.currentItem = null
         }
 
         val context =
