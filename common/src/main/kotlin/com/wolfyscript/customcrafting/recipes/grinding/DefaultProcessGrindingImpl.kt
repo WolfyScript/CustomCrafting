@@ -19,6 +19,7 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.inventory.AnvilMenu
 import net.minecraft.world.inventory.GrindstoneMenu
 import net.minecraft.world.item.enchantment.EnchantmentHelper
+import kotlin.math.ceil
 import kotlin.random.Random
 
 class DefaultProcessGrindingImpl(
@@ -68,7 +69,7 @@ class DefaultProcessGrindingImpl(
         var penalty = 0
         var yield = 0
 
-        yield += removeEnchants.baseEnchants.removeFrom(baseStack.wrap())
+        yield += removeEnchants.baseEnchants.removeFrom(result.wrap())
         if (additionStack != null) {
             yield += removeEnchants.additionEnchants.removeFrom(additionStack.wrap())
         }
@@ -97,7 +98,14 @@ class DefaultProcessGrindingImpl(
         }
 
         recipeEvaluationResult.data.penalty = penalty
+        if (yield > 0) {
+            val reduced = ceil(yield / 2.0).toInt()
+            yield = reduced + Random.nextInt(reduced)
+        } else {
+            yield = 0
+        }
         recipeEvaluationResult.data.yield = yield + extraXp
+
         return result.wrap()
     }
 

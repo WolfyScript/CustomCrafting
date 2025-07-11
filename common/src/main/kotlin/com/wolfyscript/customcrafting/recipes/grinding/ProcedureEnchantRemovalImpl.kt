@@ -34,7 +34,7 @@ class IngredientEnchantRemovalProcedureImpl(
                     return@removeIf false
                 }
                 if (!holder.`is`(EnchantmentTags.CURSE) || removeCurses) {
-                    xpYield += holder.value().minLevel
+                    xpYield += holder.value().getMinCost(itemEnchants.getLevel(holder))
                     return@removeIf true
                 }
                 return@removeIf false
@@ -44,7 +44,7 @@ class IngredientEnchantRemovalProcedureImpl(
                 val key = holder.unwrapKey()
                     .map { key -> key.location().toScafall() }.getOrNull()
                 if (enchants.contains(key) || (holder.`is`(EnchantmentTags.CURSE) && removeCurses)) {
-                    xpYield += holder.value().minLevel
+                    xpYield += holder.value().getMinCost(itemEnchants.getLevel(holder))
                     return@removeIf true
                 }
                 return@removeIf false
