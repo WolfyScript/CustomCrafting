@@ -67,9 +67,9 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         val totalYield = max(0, data.data.yield - data.data.penalty)
 
         if (totalYield > 0) {
-            player.location.world.spawnEntity(player.location, EntityType.EXPERIENCE_ORB, CreatureSpawnEvent.SpawnReason.CUSTOM, Consumer {
-                (it as ExperienceOrb).experience = totalYield
-            })
+            player.location.world.spawn(player.location, ExperienceOrb::class.java).apply {
+                experience = totalYield
+            }
         }
 
         if (recipe.process is ProcessGrinding.FixedResultProcessGrinding) {
