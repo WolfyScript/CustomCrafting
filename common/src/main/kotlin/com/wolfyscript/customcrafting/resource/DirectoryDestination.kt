@@ -19,10 +19,10 @@ import kotlin.io.path.pathString
 
 class DirectoryDestination(
     customCrafting: CustomCrafting,
-    resourceLoaderImpl: ResourceLoaderImpl,
+    resourceLoaderImpl: ResourceLoader,
     settings: DestinationSettings.DirectoryDestinationSettings,
 ) :
-    AbstractDestination<DestinationSettings.DirectoryDestinationSettings>(customCrafting, resourceLoaderImpl, settings) {
+    AbstractDestination<DestinationSettings.DirectoryDestinationSettings>(customCrafting, resourceLoaderImpl as ResourceLoaderImpl, settings) {
 
     val path: String = settings.path ?: resourceLoaderImpl.directory.path
 
@@ -61,6 +61,7 @@ class DirectoryDestination(
             }
 
             val key = relative.toKey(Key.CUSTOMCRAFTING_NAMESPACE)
+            customCrafting.logger.info("Loading recipe: $key")
             try {
                 val recipe = customCrafting.dataManager.jacksonObjectMapper
                     .reader(injectableValues)

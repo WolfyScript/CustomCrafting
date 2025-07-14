@@ -1,5 +1,9 @@
 package com.wolfyscript.customcrafting.configuration.resources
 
+import com.wolfyscript.customcrafting.CustomCrafting
+import com.wolfyscript.customcrafting.resource.DirectoryDestination
+import com.wolfyscript.customcrafting.resource.ResourceLoader
+
 class DirectoryDestinationSettingsImpl(
     override val path: String?,
     override val filter: DestinationSettings.FilterSettings? = null,
@@ -11,23 +15,14 @@ class DirectoryDestinationSettingsImpl(
     override fun toString(): String {
         return "LocalDestinationSettingsImpl(path=$path, filter=$filter, overwriteExisting=$overwriteExisting, propagateSavedResources=$propagateSavedResources, backup=$backup)"
     }
-}
 
-class SQLDestinationSettingsImpl(
-    override val host: String,
-    override val port: Int,
-    override val schema: String,
-    override val username: String,
-    override val password: String,
-    override val filter: DestinationSettings.FilterSettings? = null,
-    override val overwriteExisting: Boolean,
-    override val propagateSavedResources: Boolean,
-    override val backup: DestinationSettings.BackupSettings? = null,
-) : DestinationSettings.SQLDestinationSettings {
-
-    override fun toString(): String {
-        return "SQLDestinationSettingsImpl(host='$host', port=$port, schema='$schema', username='$username', password='$password', filter=$filter, overwriteExisting=$overwriteExisting, propagateSavedResources=$propagateSavedResources, backup=$backup)"
+    override fun configureDestination(
+        customCrafting: CustomCrafting,
+        resourceLoader: ResourceLoader,
+    ): ResourceLoader.Destination {
+        return DirectoryDestination(customCrafting, resourceLoader, this)
     }
+
 }
 
 class BackupSettingsImpl(override val compress: Boolean = false) : DestinationSettings.BackupSettings

@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.resource
 
+import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
@@ -49,6 +50,8 @@ interface ResourceLoader {
     interface Destination {
 
         val filter: Filter?
+
+        val settings: DestinationSettings
 
         fun load(accept: (recipe: LoadedRecipe) -> Unit)
 

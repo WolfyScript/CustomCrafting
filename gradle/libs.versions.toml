@@ -82,6 +82,7 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.re
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposed" }
 
 # Configurations
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
@@ -142,7 +143,7 @@ spongepowered-api = { module = "org.spongepowered:spongeapi", version.ref = "spo
 
 [bundles]
 jetbrains = [ "kotlin-stdlib", "jetbrains-annotations" ]
-exposed = [ "exposed-core", "exposed-jdbc" ]
+exposed = [ "exposed-core", "exposed-jdbc", "exposed-json" ]
 database-drivers = [ "db-h2", "db-mariadb", "db-mysql", "db-oracle", "db-postgresql", "db-sqlite", "db-sqlserver" ]
 adventure = [ "adventure-api", "adventure-minimessage", "adventure-platform-api" ]
 jackson = [ "jackson-databind", "jackson-dataformat-hocon" ]

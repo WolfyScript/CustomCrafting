@@ -17,14 +17,9 @@ class ResourceLoaderImpl(
 
     val listeners: MutableList<ResourceListener> = mutableListOf()
 
-    override val destinations: List<AbstractDestination<*>> = settings.destinations.mapNotNull {
+    override val destinations: List<ResourceLoader.Destination> = settings.destinations.map {
         customCrafting.logger.info("Construct destination: $it")
-        return@mapNotNull when (it) {
-            // TODO: hmmm
-            is DestinationSettings.DirectoryDestinationSettings -> DirectoryDestination(customCrafting, this, it)
-            is DestinationSettings.SQLDestinationSettings -> SQLDestination(customCrafting, this, it)
-            else -> null
-        }
+        return@map it.configureDestination(customCrafting, this)
     }
 
     override fun registerListener(listener: ResourceListener) {

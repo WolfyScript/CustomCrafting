@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.wolfyscript.customcrafting.CustomCrafting
+import com.wolfyscript.customcrafting.resource.ResourceLoader
 
 /**
  * Settings for a destination to save resources to and load resources from.
@@ -42,6 +44,8 @@ interface DestinationSettings {
      */
     val backup: BackupSettings?
 
+    fun configureDestination(customCrafting: CustomCrafting, resourceLoader: ResourceLoader): ResourceLoader.Destination
+
     interface DirectoryDestinationSettings : DestinationSettings {
 
         /**
@@ -51,13 +55,116 @@ interface DestinationSettings {
 
     }
 
+    /**
+     * Defines a Destination for an SQL database.
+     */
     interface SQLDestinationSettings : DestinationSettings {
 
-        val host: String
-        val port: Int
-        val schema: String
-        val username: String
-        val password: String
+        val connection: DatabaseConnectionType
+
+        /**
+         * The type of database connection that is used.
+         * It supports the following SQL databases:
+         * - H2
+         * - MariaDB
+         * - MySQL
+         * - Oracle
+         * - PostgreSQL
+         * - SQL Server
+         * - SQLite
+         *
+         */
+        @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+        @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+        @JsonSubTypes(
+            JsonSubTypes.Type(value = DatabaseConnectionType.H2::class, name = "h2"),
+            JsonSubTypes.Type(value = DatabaseConnectionType.MariaDB::class, name = "mariadb"),
+            JsonSubTypes.Type(value = DatabaseConnectionType.MySQL::class, name = "mysql"),
+            JsonSubTypes.Type(value = DatabaseConnectionType.OracleDB::class, name = "oracle"),
+            JsonSubTypes.Type(value = DatabaseConnectionType.PostgreSQL::class, name = "postgresql"),
+            JsonSubTypes.Type(value = DatabaseConnectionType.MSSQLServer::class, name = "mssqlserver"),
+            JsonSubTypes.Type(value = DatabaseConnectionType.SQLite::class, name = "sqlite"),
+        )
+        @JsonPropertyOrder(value = ["type"])
+        interface DatabaseConnectionType {
+
+            val user: String
+
+            val password: String
+
+            val jdbcUrl: String
+
+            val driver: String
+
+            class H2(
+                path: String,
+                override val user: String = "",
+                override val password: String = "",
+            ) : DatabaseConnectionType {
+                override val jdbcUrl: String = "jdbc:h2:$path"
+                override val driver: String = "org.h2.Driver"
+            }
+
+            class MariaDB(
+                host: String,
+                database: String,
+                override val user: String,
+                override val password: String
+            ) : DatabaseConnectionType {
+                override val jdbcUrl: String = "jdbc:mariadb://$host/$database"
+                override val driver: String = "org.mariadb.jdbc.Driver"
+            }
+
+            class MySQL(
+                host: String,
+                database: String,
+                override val user: String,
+                override val password: String
+            ) : DatabaseConnectionType {
+                override val jdbcUrl: String = "jdbc:mysql://$host/$database"
+                override val driver: String = "com.mysql.cj.jdbc.Driver"
+            }
+
+            class OracleDB(
+                host: String,
+                database: String,
+                override val user: String,
+                override val password: String,
+            ) : DatabaseConnectionType {
+                override val jdbcUrl: String = "jdbc:oracle:thin:@$host/$database"
+                override val driver: String = "oracle.jdbc.OracleDriver"
+            }
+
+            class PostgreSQL(
+                host: String,
+                database: String,
+                override val user: String,
+                override val password: String
+            ) : DatabaseConnectionType {
+                override val jdbcUrl: String = "jdbc:postgresql://$host/$database"
+                override val driver: String = "org.postgresql.Driver"
+            }
+
+            class MSSQLServer(
+                host: String,
+                database: String,
+                override val user: String,
+                override val password: String
+            ) : DatabaseConnectionType {
+                override val jdbcUrl: String = "jdbc:sqlserver://$host;databaseName=$database"
+                override val driver: String = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+            }
+
+            class SQLite(
+                path: String,
+                override val user: String = "",
+                override val password: String = ""
+            ) : DatabaseConnectionType {
+                override val jdbcUrl: String = "jdbc:sqlite:$path"
+                override val driver: String = "org.sqlite.JDBC"
+            }
+
+        }
 
     }
 
