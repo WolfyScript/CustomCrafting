@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.wolfyscript.customcrafting.CustomCrafting
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.resource.ResourceLoader
+import kotlin.io.path.Path
 
 /**
  * Settings for a destination to save resources to and load resources from.
@@ -97,11 +99,19 @@ interface DestinationSettings {
             val driver: String
 
             class H2(
-                path: String,
+                val path: String,
                 override val user: String = "",
                 override val password: String = "",
             ) : DatabaseConnectionType {
-                override val jdbcUrl: String = "jdbc:h2:$path"
+                override val jdbcUrl: String
+                    get() {
+                        val finalPath = if (path.startsWith("/")) {
+                            path
+                        } else {
+                            Path(CustomCraftingProvider.get().dataManager.resourceLoader.directory.path, path)
+                        }
+                        return "jdbc:h2:$finalPath"
+                    }
                 override val driver: String = "org.h2.Driver"
             }
 
@@ -109,7 +119,7 @@ interface DestinationSettings {
                 host: String,
                 database: String,
                 override val user: String,
-                override val password: String
+                override val password: String,
             ) : DatabaseConnectionType {
                 override val jdbcUrl: String = "jdbc:mariadb://$host/$database"
                 override val driver: String = "org.mariadb.jdbc.Driver"
@@ -119,7 +129,7 @@ interface DestinationSettings {
                 host: String,
                 database: String,
                 override val user: String,
-                override val password: String
+                override val password: String,
             ) : DatabaseConnectionType {
                 override val jdbcUrl: String = "jdbc:mysql://$host/$database"
                 override val driver: String = "com.mysql.cj.jdbc.Driver"
@@ -139,7 +149,7 @@ interface DestinationSettings {
                 host: String,
                 database: String,
                 override val user: String,
-                override val password: String
+                override val password: String,
             ) : DatabaseConnectionType {
                 override val jdbcUrl: String = "jdbc:postgresql://$host/$database"
                 override val driver: String = "org.postgresql.Driver"
@@ -149,18 +159,26 @@ interface DestinationSettings {
                 host: String,
                 database: String,
                 override val user: String,
-                override val password: String
+                override val password: String,
             ) : DatabaseConnectionType {
                 override val jdbcUrl: String = "jdbc:sqlserver://$host;databaseName=$database"
                 override val driver: String = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
             }
 
             class SQLite(
-                path: String,
+                val path: String,
                 override val user: String = "",
-                override val password: String = ""
+                override val password: String = "",
             ) : DatabaseConnectionType {
-                override val jdbcUrl: String = "jdbc:sqlite:$path"
+                override val jdbcUrl: String
+                    get() {
+                        val finalPath = if (path.startsWith("/")) {
+                            path
+                        } else {
+                            Path(CustomCraftingProvider.get().dataManager.resourceLoader.directory.path, path)
+                        }
+                        return "jdbc:sqlite:$finalPath"
+                    }
                 override val driver: String = "org.sqlite.JDBC"
             }
 
