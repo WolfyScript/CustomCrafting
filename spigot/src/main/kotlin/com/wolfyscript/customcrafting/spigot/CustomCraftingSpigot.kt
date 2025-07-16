@@ -1,23 +1,13 @@
 package com.wolfyscript.customcrafting.spigot
 
-import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
 import com.wolfyscript.customcrafting.resource.DataManager
 import com.wolfyscript.customcrafting.resource.DataManagerCommon
-import com.wolfyscript.customcrafting.spigot.recipes.AnvilListener
-import com.wolfyscript.customcrafting.spigot.recipes.CampfireListener
-import com.wolfyscript.customcrafting.spigot.recipes.CauldronListener
-import com.wolfyscript.customcrafting.spigot.recipes.CrafterListener
-import com.wolfyscript.customcrafting.spigot.recipes.CraftingListener
-import com.wolfyscript.customcrafting.spigot.recipes.FurnaceListener
-import com.wolfyscript.customcrafting.spigot.recipes.GrindstoneListener
-import com.wolfyscript.customcrafting.spigot.recipes.SmithingListener
-import com.wolfyscript.customcrafting.spigot.recipes.StonecutterListener
-import com.wolfyscript.customcrafting.spigot.recipes.registerDisplayRecipes
-import com.wolfyscript.customcrafting.spigot.recipes.registerPlaceholderRecipes
+import com.wolfyscript.customcrafting.spigot.recipes.*
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -33,7 +23,8 @@ class CustomCraftingSpigot(
 ) :
     CustomCraftingCommon() {
 
-    override val configurationManager: ConfigurationManager = ConfigurationManagerImpl(this, bootstrap.plugin.dataFolder)
+    override val configurationManager: ConfigurationManager =
+        ConfigurationManagerImpl(this, bootstrap.plugin.dataFolder)
     override val dataManager: DataManager = DataManagerCommon(this, bootstrap.plugin.dataFolder)
 
     override fun load() {
@@ -47,24 +38,7 @@ class CustomCraftingSpigot(
     }
 
     override fun enabled() {
-
-        getCommandMap().apply {
-            register("reload_recipes", Key.CUSTOMCRAFTING_NAMESPACE, object : Command("reload_recipes") {
-
-                override fun execute(
-                    sender: CommandSender,
-                    commandLabel: String,
-                    args: Array<out String>,
-                ): Boolean {
-                    Bukkit.getScheduler().runTaskAsynchronously(bootstrap.plugin, Runnable {
-                        dataManager.resourceLoader.loadResources()
-                    })
-                    return true
-                }
-
-            })
-
-        }
+        commands.registerCommands(ScafallProvider.get().server.minecraftServer.commands.dispatcher)
 
         Bukkit.getPluginManager().apply {
             registerEvents(AnvilListener(this@CustomCraftingSpigot), bootstrap.plugin)
@@ -91,12 +65,12 @@ class CustomCraftingSpigot(
 
     companion object {
 
-        val playerCraftingSeedKey: NamespacedKey = NamespacedKey("customcrafting", "crafting_seed")
-        val playerSmithingSeedKey: NamespacedKey = NamespacedKey("customcrafting", "smithing_seed")
-        val playerGrindingSeedKey: NamespacedKey = NamespacedKey("customcrafting", "grinding_seed")
-        val playerRepairingSeedKey: NamespacedKey = NamespacedKey("customcrafting", "repairing_seed")
+        val playerCraftingSeedKey: NamespacedKey = NamespacedKey(Key.CUSTOMCRAFTING_NAMESPACE, "crafting_seed")
+        val playerSmithingSeedKey: NamespacedKey = NamespacedKey(Key.CUSTOMCRAFTING_NAMESPACE, "smithing_seed")
+        val playerGrindingSeedKey: NamespacedKey = NamespacedKey(Key.CUSTOMCRAFTING_NAMESPACE, "grinding_seed")
+        val playerRepairingSeedKey: NamespacedKey = NamespacedKey(Key.CUSTOMCRAFTING_NAMESPACE, "repairing_seed")
 
-        val cookingSeedKey: NamespacedKey = NamespacedKey("customcrafting", "cooking_seed")
+        val cookingSeedKey: NamespacedKey = NamespacedKey(Key.CUSTOMCRAFTING_NAMESPACE, "cooking_seed")
 
     }
 
