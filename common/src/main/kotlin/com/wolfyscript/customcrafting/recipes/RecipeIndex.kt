@@ -41,7 +41,7 @@ class RecipeIndex {
         if (recipeRef != null) {
             val recipe = recipeRef.value
             recipes.remove(recipe)
-            byType.remove(recipeRef.key, recipeRef)
+            byType.remove(recipeRef.type, recipeRef)
             byKey.remove(key)
         }
     }
