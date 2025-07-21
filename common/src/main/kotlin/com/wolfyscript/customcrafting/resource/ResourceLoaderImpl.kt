@@ -1,10 +1,9 @@
 package com.wolfyscript.customcrafting.resource
 
 import com.wolfyscript.customcrafting.CustomCraftingCommon
-import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
 import com.wolfyscript.customcrafting.configuration.resources.ResourceSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.scafall.dependency.Dependency
+import com.wolfyscript.scafall.compat.Dependency
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
 
@@ -79,7 +78,7 @@ class ResourceLoaderImpl(
     data class LoadedRecipeImpl(override val key: Key, override val recipe: CustomRecipe<*, *>, override val dependencies: List<Dependency>) : LoadedRecipe {
 
         override fun areDependenciesSatisfied(): Boolean {
-            return dependencies.all { it.isAvailable }
+            return dependencies.all { it.isInitialized }
         }
 
     }

@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.resource
 
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.scafall.dependency.Dependency
+import com.wolfyscript.scafall.compat.Dependency
 import com.wolfyscript.scafall.identifier.Key
 
 interface LoadedRecipe {
