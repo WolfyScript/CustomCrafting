@@ -65,6 +65,8 @@ dependencies {
     compileOnly(libs.oraxen)
     compileOnly(libs.wolfyutils.spigot)
     compileOnly(libs.nbtapi)
+    compileOnly(libs.bundles.exposed)
+    compileOnly(libs.bundles.database.drivers)
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
@@ -75,11 +77,11 @@ tasks {
         dependencies {
             include(project(":common"))
 
-            include(dependency(libs.typesafe.config))
-            include(dependency("${libs.jackson.kotlin.get().group}:.*"))
-            include(dependency(libs.jackson.dataformat.hocon))
-            include(dependency(libs.caffeine))
-            include(dependency(libs.bstats))
+            // Need to shade this for now, because when defined in plugin.yml it causes classloader issue for
+            // kotlin stdlib etc., because those are transitive dependencies and cause duplicate class definitions.
+            libs.bundles.exposed.get().forEach {
+               include(dependency(it))
+            }
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
 

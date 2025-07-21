@@ -20,8 +20,6 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     kotlin("jvm")
     `java-library`
@@ -30,6 +28,7 @@ plugins {
     alias(libs.plugins.artifactory)
     alias(libs.plugins.paperweight.userdev)
     alias(libs.plugins.devtools.docker.minecraft)
+    alias(libs.plugins.resource.factory.bukkit)
     id("build.settings.default")
 }
 
@@ -52,6 +51,30 @@ dependencies {
     implementation(libs.scafall.loader)
 
     paperweight.paperDevBundle(libs.versions.papermc.get())
+}
+
+bukkitPluginYaml {
+    name = "CustomCrafting"
+    version = project.version.toString()
+    main = "com.wolfyscript.customcrafting.spigot.loader.SpigotLoaderPlugin"
+    apiVersion = libs.versions.minecraft.get() // Only support the latest Minecraft version!
+    authors.add("WolfyScript")
+    depend.add("scafall")
+
+    libraries.apply {
+//        libs.bundles.exposed.get().forEach {
+//            add(it.toString())
+//        }
+        libs.bundles.database.drivers.get().forEach {
+            add(it.toString())
+        }
+
+        addAll(
+            libs.typesafe.config.get().toString(),
+            libs.caffeine.get().toString(),
+            libs.bstats.get().toString(),
+        )
+    }
 }
 
 tasks {
