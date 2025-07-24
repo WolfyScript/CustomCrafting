@@ -22,7 +22,7 @@ ms-sqlserver = "9.4.1.jre8"
 sqlite = "3.50.1.0"
 
 # cross-platform APIs
-scafall = "alpha0.0.1.0-SNAPSHOT"
+scafall = "alpha0.0.2.0-SNAPSHOT"
 adventure-api = "4.10.1"
 adventure-platform-api = "4.1.0"
 adventure-minimessage = "4.10.0"

@@ -9,6 +9,7 @@ import com.wolfyscript.customcrafting.resource.LoadedRecipe
 import com.wolfyscript.customcrafting.resource.ResourceLoader
 import com.wolfyscript.customcrafting.resource.ResourceLoaderImpl
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.scafall.compat.DependencyResolver
 import com.wolfyscript.scafall.identifier.Key
 import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.v1.core.and
@@ -52,9 +53,9 @@ class SQLDestination(customCrafting: CustomCrafting, resourceLoader: ResourceLoa
                 }
 
                 val recipeKey = Key.key(Key.CUSTOMCRAFTING_NAMESPACE, "$dir/$key")
-
-                val recipe = ResourceLoaderImpl.LoadedRecipeImpl(recipeKey, it[RecipesTable.config], listOf())
-                accept(recipe)
+                val recipe = it[RecipesTable.config]
+                val loadedRecipe = ResourceLoaderImpl.LoadedRecipeImpl(recipeKey, recipe, DependencyResolver.resolveDependenciesFor(recipe, recipe::class.java))
+                accept(loadedRecipe)
             }
         }
     }

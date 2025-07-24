@@ -9,6 +9,7 @@ import com.wolfyscript.customcrafting.resource.ResourceListener
 import com.wolfyscript.customcrafting.resource.ResourceLoader
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.customcrafting.util.exportResource
+import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.verification.VerificationResult
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
@@ -29,49 +30,84 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
     val awaitingDependenciesRecipes: MutableMap<Key, LoadedRecipe> = Object2ObjectOpenHashMap()
     val awaitingVerificationRecipes: MutableMap<Key, CustomRecipe<*, *>> = Object2ObjectOpenHashMap()
     val invalidRecipes: MutableList<VerificationResult<CustomRecipe<*, *>>> = mutableListOf()
+    val scafall = ScafallProvider.get()
 
+    val loadLock = Any()
+
+    init {
+        scafall.dependencyManager.onDependencyInitialized {
+            synchronized(loadLock) {
+                checkDependencies()
+                verifyRecipesAndLoad()
+            }
+        }
+    }
+
+    private fun checkDependencies() {
+        val iterator = awaitingDependenciesRecipes.iterator()
+        while (iterator.hasNext()) {
+            val recipe = iterator.next()
+            if (recipe.value.dependencies.all { scafall.dependencyManager.getDependency(it)?.isInitialized == true }) {
+                continue
+            }
+            awaitingVerificationRecipes.put(recipe.key, recipe.value.recipe)
+            iterator.remove()
+        }
+    }
+
+    private fun verifyRecipesAndLoad() {
+        for ((key, recipe) in awaitingVerificationRecipes) {
+            // TODO: Verification
+            customCrafting.recipeManager.updateRecipe(key, recipe)
+        }
+    }
+
+    /**
+     * Prepare everything before recipes are loaded.
+     */
     override fun onPrepare(resourceLoader: ResourceLoader) {
         exportDefaults(resourceLoader)
     }
 
+    /**
+     * How recipes should be loaded on startup
+     */
     override fun onInitialLoad(resourceLoader: ResourceLoader) {
-        resourceLoader.destinations.forEach { dest ->
-            dest.load {
-                customCrafting.logger.info("  loaded recipe: ${it.key} -> ${it.recipe}")
-                awaitingDependenciesRecipes.put(it.key, it)
+        synchronized(loadLock) {
+            resourceLoader.destinations.forEach { dest ->
+                dest.load {
+                    customCrafting.logger.info("  loaded recipe: ${it.key} -> ${it.recipe}")
+                    awaitingDependenciesRecipes.put(it.key, it)
+                }
             }
-        }
-
-        // Check for dependencies
-        val iterator = awaitingDependenciesRecipes.iterator()
-        while (iterator.hasNext()) {
-            val recipe = iterator.next()
-            if (recipe.value.areDependenciesSatisfied()) {
-                awaitingVerificationRecipes.put(recipe.key, recipe.value.recipe)
-                iterator.remove()
-            }
+            checkDependencies()
         }
     }
 
+    /**
+     * How recipes should be loaded when reloaded at runtime.
+     * This should run on a separate thread, async to the main thread.
+     */
     override fun onReload(resourceLoader: ResourceLoader) {
 
     }
 
+    /**
+     * Finalize the loaded recipes (for which the dependencies are already available).
+     * Verify them, add them to the manager, and remove any recipes that were previously loaded and no longer loaded. (important for reloads)
+     */
     override fun onFinalize(resourceLoader: ResourceLoader) {
-        val recipeManager = customCrafting.recipeManager
+        synchronized(loadLock) {
+            val previousLoaded = recipesLoadedByCC.toSet()
+            recipesLoadedByCC.clear()
 
-        val previousLoaded = recipeManager.recipesLoadedByCC.toSet()
-        recipeManager.recipesLoadedByCC.clear()
+            verifyRecipesAndLoad()
 
-        for ((key, recipe) in awaitingVerificationRecipes) {
-            // TODO: Verification
-            recipeManager.updateRecipe(key, recipe)
-        }
-
-        // Remove recipes that are no longer loaded
-        val removed = previousLoaded.subtract(recipeManager.recipesLoadedByCC)
-        for (recipeKey in removed) {
-            recipeManager.removeRecipe(recipeKey)
+            // Remove recipes that are no longer loaded
+            val removed = previousLoaded.subtract(recipesLoadedByCC)
+            for (recipeKey in removed) {
+                removeRecipe(recipeKey)
+            }
         }
     }
 

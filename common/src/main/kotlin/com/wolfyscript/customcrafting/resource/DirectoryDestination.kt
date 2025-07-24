@@ -6,6 +6,7 @@ import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.scafall.compat.DependencyResolver
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
 import java.io.IOException
@@ -67,7 +68,7 @@ class DirectoryDestination(
                     .reader(injectableValues)
                     .readValue(file.toFile(), CustomRecipe::class.java)
 
-                accept(ResourceLoaderImpl.LoadedRecipeImpl(key, recipe, listOf()))
+                accept(ResourceLoaderImpl.LoadedRecipeImpl(key, recipe, DependencyResolver.resolveDependenciesFor(recipe, recipe::class.java)))
             } catch (e: Exception) {
                 customCrafting.logger.error("  Error loading recipe: ", e)
             }
