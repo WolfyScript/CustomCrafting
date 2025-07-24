@@ -6,7 +6,7 @@ import com.wolfyscript.scafall.loader.module.StandaloneInternalBootstrap
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal
-abstract class CustomCraftingBoostrap(innerJarClassloader: InnerJarClassloader) :
+abstract class CustomCraftingBoostrap(innerJarClassloader: ClassLoader) :
     StandaloneInternalBootstrap<CustomCrafting>(CustomCraftingModule::class.java, innerJarClassloader) {
 
     companion object {
