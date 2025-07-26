@@ -1,5 +1,7 @@
 package com.wolfyscript.customcrafting.spigot
 
+import com.wolfyscript.customcrafting.CustomCrafting
+import com.wolfyscript.customcrafting.CustomCraftingBoostrap
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
@@ -11,23 +13,23 @@ import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
-import org.bukkit.command.Command
-import org.bukkit.command.CommandMap
-import org.bukkit.command.CommandSender
-import org.bukkit.craftbukkit.CraftServer
+import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.Logger
 
 class CustomCraftingSpigot(
-    val bootstrap: CustomCraftingSpigotBootstrap,
+    val classLoader: ClassLoader,
+    val plugin: JavaPlugin,
     override val logger: Logger,
 ) :
-    CustomCraftingCommon() {
+    CustomCraftingCommon(), CustomCraftingBoostrap.CustomCraftingModule {
+
+    override val bridge: CustomCrafting = this
 
     override val configurationManager: ConfigurationManager =
-        ConfigurationManagerImpl(this, bootstrap.plugin.dataFolder)
-    override val dataManager: DataManager = DataManagerCommon(this, bootstrap.plugin.dataFolder)
+        ConfigurationManagerImpl(this, plugin.dataFolder)
+    override val dataManager: DataManager = DataManagerCommon(this, plugin.dataFolder)
 
-    override fun load() {
+    override fun onLoad() {
         configurationManager.load()
 
         dataManager.resourceLoader.registerListener(recipeManager)
@@ -37,31 +39,25 @@ class CustomCraftingSpigot(
         registerDisplayRecipes(recipeManager.index.values())
     }
 
-    override fun enabled() {
+    override fun onEnable() {
         commands.registerCommands(ScafallProvider.get().server.minecraftServer.commands.dispatcher)
 
         Bukkit.getPluginManager().apply {
-            registerEvents(AnvilListener(this@CustomCraftingSpigot), bootstrap.plugin)
-            registerEvents(CampfireListener(this@CustomCraftingSpigot), bootstrap.plugin)
-            registerEvents(CauldronListener(this@CustomCraftingSpigot), bootstrap.plugin)
-            registerEvents(CrafterListener(this@CustomCraftingSpigot), bootstrap.plugin)
-            registerEvents(CraftingListener(this@CustomCraftingSpigot), bootstrap.plugin)
-            registerEvents(FurnaceListener(this@CustomCraftingSpigot), bootstrap.plugin)
-            registerEvents(GrindstoneListener(this@CustomCraftingSpigot), bootstrap.plugin)
-            registerEvents(SmithingListener(this@CustomCraftingSpigot), bootstrap.plugin)
-            registerEvents(StonecutterListener(this@CustomCraftingSpigot), bootstrap.plugin)
+            registerEvents(AnvilListener(this@CustomCraftingSpigot), plugin)
+            registerEvents(CampfireListener(this@CustomCraftingSpigot), plugin)
+            registerEvents(CauldronListener(this@CustomCraftingSpigot), plugin)
+            registerEvents(CrafterListener(this@CustomCraftingSpigot), plugin)
+            registerEvents(CraftingListener(this@CustomCraftingSpigot), plugin)
+            registerEvents(FurnaceListener(this@CustomCraftingSpigot), plugin)
+            registerEvents(GrindstoneListener(this@CustomCraftingSpigot), plugin)
+            registerEvents(SmithingListener(this@CustomCraftingSpigot), plugin)
+            registerEvents(StonecutterListener(this@CustomCraftingSpigot), plugin)
         }
     }
 
-    override fun unload() {
-
+    override fun onUnload() {
 
     }
-
-    private fun getCommandMap(): CommandMap {
-        return (Bukkit.getServer() as CraftServer).commandMap
-    }
-
 
     companion object {
 

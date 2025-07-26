@@ -14,6 +14,10 @@ dependencies {
     mappings(loom.officialMojangMappings())
 }
 
+java {
+    withSourcesJar()
+}
+
 tasks {
     // Disable remapping without having to disable the tasks
     // This will get shaded into other platforms that then use their specific remapper instead.

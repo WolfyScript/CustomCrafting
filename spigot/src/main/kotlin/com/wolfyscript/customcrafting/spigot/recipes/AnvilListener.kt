@@ -59,7 +59,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val correctCost = event.view.repairCost
         // Bukkit decided to set the repair cost of the anvil menu to -1 after the event call.
         // This bypasses it by setting it back to the proper repair cost, that we just set
-        Bukkit.getScheduler().runTaskLater(customCrafting.bootstrap.plugin, Runnable {
+        Bukkit.getScheduler().runTaskLater(customCrafting.plugin, Runnable {
             event.view.repairCost = correctCost
         }, 2)
     }
@@ -100,7 +100,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
             }
         }
         if (cursor.type == Material.AIR) {
-            Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable {
+            Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable {
                 event.view.setCursor(resultStack)
             })
         } else if (cursor.isSimilar(resultStack)) {
@@ -108,7 +108,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 // TODO: try and put item into inventory
                 return // does not fit on the cursor. cancel recipe processing.
             }
-            Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable {
+            Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable {
                 // since this is called next tick, the cursor might have changed, so use the latest
                 event.view.cursor.amount = event.view.cursor.amount + resultStack.amount
             })

@@ -114,7 +114,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
             if (resultStack != null) {
                 e.inventory.result = resultStack.unwrapSpigot()
-                Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
+                Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable { player.updateInventory() })
             } else {
                 val recipe = e.recipe
                 // No valid custom recipes found
@@ -125,7 +125,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 if (recipe.isPlaceholder() || recipe.isDisplay()) {
                     // TODO: Can't determine the vanilla recipe! We may need NMS for that in the future. For now simply override vanilla recipes.
                     e.inventory.result = ItemStack(Material.AIR)
-                    Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
+                    Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable { player.updateInventory() })
                     return
                 }
 
@@ -137,12 +137,12 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 ) {
                     //Recipe is disabled or it is a custom recipe!
                     e.inventory.result = ItemStack(Material.AIR)
-                    Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
+                    Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable { player.updateInventory() })
                     return
                 }
 
                 //At this point the vanilla recipe is valid and can be crafted
-                Bukkit.getScheduler().runTask(customCrafting.bootstrap.plugin, Runnable { player.updateInventory() })
+                Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable { player.updateInventory() })
             }
         } catch (ex: Exception) {
             customCrafting.logger.error("-------- [Error occurred while crafting Recipe!] --------")

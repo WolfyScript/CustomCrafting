@@ -28,6 +28,7 @@ plugins {
     alias(libs.plugins.artifactory)
     alias(libs.plugins.paperweight.userdev)
     alias(libs.plugins.devtools.docker.minecraft)
+    alias(libs.plugins.resource.factory.bukkit)
     id("build.settings.default")
 }
 
@@ -70,18 +71,23 @@ dependencies {
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
+
 tasks {
     shadowJar {
-        archiveFileName = "customcrafting-spigot-mojmap.jar"
+        archiveClassifier.set("")
+
+        finalizedBy(reobfJar)
 
         dependencies {
+            include(project(":api"))
             include(project(":common"))
 
             // Need to shade this for now, because when defined in plugin.yml it causes classloader issue for
             // kotlin stdlib etc., because those are transitive dependencies and cause duplicate class definitions.
-            libs.bundles.exposed.get().forEach {
-               include(dependency(it))
-            }
+//            libs.bundles.exposed.get().forEach {
+//               include(dependency(it))
+//            }
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
 
@@ -91,14 +97,16 @@ tasks {
         dependsOn(reobfJar)
     }
     reobfJar {
-        outputJar.set(layout.buildDirectory.file("libs/customcrafting-spigot-reobf.jar"))
+        mustRunAfter(shadowJar)
+        finalizedBy("spigot_1_21_copy")
     }
-    register<Copy>("createInnerJar") {
-        mustRunAfter(reobfJar)
-        dependsOn(reobfJar)
-        from(reobfJar)
-        into(layout.buildDirectory.file("inner"))
-        rename { "customcrafting-spigot.innerjar" }
+
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
+
+    withType<Javadoc> {
+        options.encoding = "UTF-8"
     }
 }
 
@@ -106,5 +114,66 @@ publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
         artifact(file("$rootDir/gradle.properties"))
+    }
+}
+
+artifacts {
+    archives(tasks.reobfJar)
+}
+
+bukkitPluginYaml {
+    name = "CustomCrafting"
+    version = project.version.toString()
+    main = "com.wolfyscript.customcrafting.spigot.loader.SpigotLoaderPlugin"
+    apiVersion = libs.versions.minecraft.get() // Only support the latest Minecraft version!
+    authors.add("WolfyScript")
+    depend.add("scafall")
+
+    libraries.apply {
+//        libs.bundles.exposed.get().forEach {
+//            add(it.toString())
+//        }
+        libs.bundles.database.drivers.get().forEach {
+            add(it.toString())
+        }
+
+        addAll(
+            libs.typesafe.config.get().toString(),
+            libs.caffeine.get().toString(),
+            libs.bstats.get().toString(),
+        )
+    }
+}
+
+val debugPort: String = "5006"
+
+minecraftDockerRun {
+    val customEnv = env.get().toMutableMap()
+    customEnv["MEMORY"] = "2G"
+    customEnv["JVM_OPTS"] = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${debugPort}"
+    env.set(customEnv)
+    arguments("--cpus", "2", "-it") // Constrain to only use 2 cpus, and allow for console interactivity with 'docker attach'
+}
+
+minecraftServers {
+    serversDir.set(file("${System.getProperty("user.home")}${File.separator}minecraft${File.separator}test_servers_v5"))
+    libName.set("${project.name}-${version}.jar")
+    val debugPortMapping = "${debugPort}:${debugPort}"
+    servers {
+        register("spigot_1_21") {
+            destFileName.set("customcrafting.jar")
+            version.set("1.21.7")
+            type.set("SPIGOT")
+            extraEnv.put("BUILD_FROM_SOURCE", "true")
+            imageVersion.set("java21-graalvm") // graalvm contains the jdk required to build from source
+            ports.set(setOf(debugPortMapping, "25569:25565"))
+        }
+        register("paper_1_21") {
+            destFileName.set("customcrafting.jar")
+            version.set("1.21.7")
+            type.set("PAPER")
+            imageVersion.set("java21")
+            ports.set(setOf("5007:5007", "25570:25565"))
+        }
     }
 }
