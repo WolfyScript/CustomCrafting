@@ -56,9 +56,10 @@ bstats = "3.0.0"
 sponge-gradle = "2.2.0"
 sponge-api = "15.0.0-SNAPSHOT"
 
-# Fabric
-fabric = "0.119.5+1.21.5"
-fabric-loader = "0.16.10"
+## Fabric Impl
+fabric = "0.128.2+1.21.7"
+fabric-loader = "0.16.14"
+fabric-kotlin="1.13.4+kotlin.2.2.0"
 
 # Forge
 forge = "55.0.1"
@@ -141,6 +142,11 @@ protocollib = { module = "com.comphenix.protocol:ProtocolLib", version.ref = "pr
 
 # Sponge
 spongepowered-api = { module = "org.spongepowered:spongeapi", version.ref = "sponge-api" }
+
+## Fabric
+fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric" }
+fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
+fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-kotlin" }
 
 [bundles]
 jetbrains = [ "kotlin-stdlib", "jetbrains-annotations" ]
