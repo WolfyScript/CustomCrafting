@@ -27,9 +27,9 @@ plugins {
     alias(libs.plugins.shadow)
     alias(libs.plugins.artifactory)
     alias(libs.plugins.paperweight.userdev)
-    alias(libs.plugins.devtools.docker.minecraft)
     alias(libs.plugins.resource.factory.bukkit)
     id("build.settings.default")
+    id("build.docker.run")
 }
 
 repositories {
@@ -97,16 +97,7 @@ tasks {
         dependsOn(reobfJar)
     }
     reobfJar {
-        mustRunAfter(shadowJar)
-        finalizedBy("spigot_1_21_copy")
-    }
-
-    withType<JavaCompile> {
-        options.encoding = "UTF-8"
-    }
-
-    withType<Javadoc> {
-        options.encoding = "UTF-8"
+        finalizedBy(jar)
     }
 }
 
@@ -145,35 +136,23 @@ bukkitPluginYaml {
     }
 }
 
-val debugPort: String = "5006"
-
-minecraftDockerRun {
-    val customEnv = env.get().toMutableMap()
-    customEnv["MEMORY"] = "2G"
-    customEnv["JVM_OPTS"] = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${debugPort}"
-    env.set(customEnv)
-    arguments("--cpus", "2", "-it") // Constrain to only use 2 cpus, and allow for console interactivity with 'docker attach'
-}
-
 minecraftServers {
-    serversDir.set(file("${System.getProperty("user.home")}${File.separator}minecraft${File.separator}test_servers_v5"))
     libName.set("${project.name}-${version}.jar")
-    val debugPortMapping = "${debugPort}:${debugPort}"
     servers {
-        register("spigot_1_21") {
+        register("spigot") {
             destFileName.set("customcrafting.jar")
-            version.set("1.21.7")
+            version.set(libs.versions.minecraft.get())
             type.set("SPIGOT")
             extraEnv.put("BUILD_FROM_SOURCE", "true")
             imageVersion.set("java21-graalvm") // graalvm contains the jdk required to build from source
-            ports.set(setOf(debugPortMapping, "25569:25565"))
+            ports.add("25569:25565")
         }
-        register("paper_1_21") {
+        register("paper") {
             destFileName.set("customcrafting.jar")
-            version.set("1.21.7")
+            version.set(libs.versions.minecraft.get())
             type.set("PAPER")
             imageVersion.set("java21")
-            ports.set(setOf("5007:5007", "25570:25565"))
+            ports.add("25570:25565")
         }
     }
 }

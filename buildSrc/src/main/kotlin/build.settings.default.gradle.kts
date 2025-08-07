@@ -1,5 +1,3 @@
-import gradle.kotlin.dsl.accessors._edc4b8ef8cd23e8d2527d135f3d03813.test
-
 plugins {
     `java-library`
     `maven-publish`

@@ -37,7 +37,7 @@ pluginManagement {
             name = "Fabric"
             url = uri("https://maven.fabricmc.net")
             content {
-                includeGroup("net.fabricmc")
+                includeGroupAndSubgroups("net.fabricmc")
                 includeGroup("fabric-loom")
             }
         }
@@ -65,6 +65,7 @@ plugins {
 
 sequenceOf(
     "spigot",
+    "fabric",
 ).forEach {
     include(":${it}")
     project(":${it}").projectDir = file(it.replace(":", "/"))

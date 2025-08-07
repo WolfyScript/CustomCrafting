@@ -69,9 +69,9 @@ neoforge_version = "21.5.4-beta"
 neoforge_loader_version_range = "[4,)"
 
 # Gradle plugins
-fabric-loom = "1.10-SNAPSHOT"
+fabric-loom = "1.11-SNAPSHOT"
 shadow = "9.0.0-beta15"
-dev-tools = "a2.0.1.0"
+dev-tools = "a2.1.0.1"
 artifactory = "5+"
 paperweight-userdev = "2.0.0-beta.18"
 minotaur = "2.+"
