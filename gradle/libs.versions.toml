@@ -37,6 +37,7 @@ netty = "4.1.74.Final"
 guice = "7.0.0"
 junit-jupiter = "5.8.2"
 caffeine = "3.2.0"
+slf4j-api = "2.0.16"
 
 # Spigot/Paper/Folia
 wolfyutils = "4.19-SNAPSHOT"
@@ -118,6 +119,7 @@ netty-all = { module = "io.netty:netty-all", version.ref = "netty" }
 # Utils & Misc
 inject-guice = { module = "com.google.inject:guice", version.ref = "guice" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine"}
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
 
 # Testing
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
