@@ -28,4 +28,11 @@ tasks {
     remapSourcesJar {
         targetNamespace = "named"
     }
+    assemble {
+        dependsOn(remapJar)
+    }
+}
+
+artifacts {
+    archives(tasks.remapJar)
 }

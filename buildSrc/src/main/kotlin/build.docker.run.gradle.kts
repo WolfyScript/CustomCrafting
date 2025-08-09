@@ -1,7 +1,3 @@
-import com.wolfyscript.devtools.docker.run.DockerRunExtension
-import org.gradle.api.Project
-import org.gradle.kotlin.dsl.the
-
 plugins {
     id("com.wolfyscript.devtools.docker.run")
     id("com.wolfyscript.devtools.docker.minecraft_servers")
@@ -23,6 +19,8 @@ minecraftDockerRun {
         mapOf(
             // Limit each container memory
             "MEMORY" to "2G",
+            "EULA" to "true",
+//            "DEBUG" to "true",
             // Allows to attach the IntelliJ Debugger
             "JVM_OPTS" to "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${debugPort}",
             "FORCE_REDOWNLOAD" to "false"
