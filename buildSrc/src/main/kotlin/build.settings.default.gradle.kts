@@ -53,9 +53,6 @@ dependencies {
     implementation(libs.bundles.jetbrains)
 
     compileOnly(libs.inject.guice)
-    compileOnly(libs.org.reflections)
-    compileOnlyApi(libs.commons.lang3)
-    compileOnly(libs.guava)
 
     compileOnly(libs.bundles.minecraft.deps)
     compileOnlyApi(libs.bundles.jackson)
