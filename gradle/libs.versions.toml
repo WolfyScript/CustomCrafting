@@ -28,7 +28,7 @@ adventure-platform-api = "4.1.0"
 adventure-minimessage = "4.10.0"
 
 # Minecraft
-minecraft = "1.21.7"
+minecraft = "1.21.8"
 authlib = "6.0.58"
 fastutil = "8.5.15"
 netty = "4.1.74.Final"
@@ -43,7 +43,7 @@ caffeine = "3.2.0"
 
 # Spigot/Paper/Folia
 wolfyutils = "4.19-SNAPSHOT"
-papermc = "1.21.7-R0.1-SNAPSHOT"
+papermc = "1.21.8-R0.1-SNAPSHOT"
 bstats-bukkit = "3.0.0"
 item-nbt-api = "2.11.3"
 mythic = "5.3.5"
@@ -57,8 +57,8 @@ sponge-gradle = "2.2.0"
 sponge-api = "15.0.0-SNAPSHOT"
 
 ## Fabric Impl
-fabric = "0.128.2+1.21.7"
-fabric-loader = "0.16.14"
+fabric-api = "0.131.0+1.21.8"
+fabric-loader = "0.17.1"
 fabric-kotlin="1.13.4+kotlin.2.2.0"
 
 # Forge
@@ -144,7 +144,7 @@ protocollib = { module = "com.comphenix.protocol:ProtocolLib", version.ref = "pr
 spongepowered-api = { module = "org.spongepowered:spongeapi", version.ref = "sponge-api" }
 
 ## Fabric
-fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric" }
+fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
 fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-kotlin" }
 
