@@ -1,64 +1,98 @@
 package com.wolfyscript.customcrafting.recipes.data
 
+import com.wolfyscript.scafall.wrappers.utils.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import net.minecraft.world.item.crafting.CraftingInput
 import kotlin.math.sqrt
 
-class CraftingMatrixDataImpl(
-    private val ingredients: List<ItemStack?>
-) : CraftingMatrixData {
+fun List<ItemStack?>.toCraftingMatrixData(): CraftingMatrixData {
+    val gridSize: Int = this.gridSize()
 
-    override val originalMatrix: Array<ItemStack?> = ingredients.toTypedArray()
+    // Find the leading and trailing empty rows
+    var lastRow = gridSize - 1
+    var firstRow = 0
 
-    override val gridSize: Int = when(ingredients.size) {
+    while (firstRow < gridSize && (0 until gridSize).all { this[firstRow * gridSize + it] == null }) {
+        firstRow++
+    }
+    while (lastRow > firstRow && (0 until gridSize).all { this[lastRow * gridSize + it] == null }) {
+        lastRow--
+    }
+
+    // Find the leading and trailing empty columns
+    var lastCol = gridSize - 1
+    var firstCol = 0
+    while (firstCol < gridSize && (firstRow until lastRow + 1).all { this[it * gridSize + firstCol] == null }) {
+        firstCol++
+    }
+    while (lastCol > firstCol && (firstRow until lastRow + 1).all { this[it * gridSize + lastCol] == null }) {
+        lastCol--
+    }
+
+    // Trim the leading and trailing empty rows and columns
+    val width = (lastCol + 1) - firstCol
+    val height = (lastRow + 1) - firstRow
+
+    return CraftingMatrixDataImpl(
+        this,
+        gridSize,
+        matrix = Array(width * height) {
+            // Copy the values from the original array by offsetting the row and column back to the original
+            this[(it / width) * gridSize + firstRow * gridSize + (it % width) + firstCol]
+        },
+        width,
+        height,
+        rowOffset = firstRow,
+        columnOffset = firstCol
+    )
+}
+
+private fun List<ItemStack?>.gridSize(): Int {
+    return when (size) {
         4 -> 2
         9 -> 3
         0 -> throw IllegalArgumentException("Cannot create a CraftingMatrixData with no ingredients")
         else -> {
-            if (ingredients.size % 2 != 0) throw IllegalArgumentException("Cannot create a CraftingMatrixData with an odd number of ingredients")
-            sqrt(ingredients.size.toDouble()).toInt()
+            if (size % 2 != 0) throw IllegalArgumentException("Cannot create a CraftingMatrixData with an odd number of ingredients")
+            sqrt(size.toDouble()).toInt()
         }
     }
+}
 
-    override val items: Array<ItemStack> by lazy { ingredients.filterNotNull().toTypedArray() }
-    override val itemIndices: List<Int> by lazy { ingredients.mapIndexedNotNull { i, stack -> if (stack != null && !stack.isEmpty) i else null } }
+class CraftingMatrixDataImpl(
+    override val originalMatrix: List<ItemStack?>,
+    override val gridSize: Int,
+    override val matrix: Array<ItemStack?>,
+    override val width: Int,
+    override val height: Int,
+    override val rowOffset: Int,
+    override val columnOffset: Int,
+) : CraftingMatrixData {
 
-    override val matrix: Array<ItemStack?>
-    override val width: Int
-    override val height: Int
-    override val rowOffset: Int
-    override val columnOffset: Int
+    override val items: List<ItemStack> by lazy { originalMatrix.filterNotNull() }
+    override val itemIndices: List<Int> by lazy { originalMatrix.mapIndexedNotNull { i, stack -> if (stack != null && !stack.isEmpty) i else null } }
 
-    init {
-        // Find the leading and trailing empty rows
-        var lastRow = gridSize - 1
-        var firstRow = 0
+    companion object {
 
-        while (firstRow < gridSize && (0 until gridSize).all { originalMatrix[firstRow * gridSize + it] == null }) {
-            firstRow++
+        fun of(input: CraftingInput.Positioned, originalItems: List<ItemStack?>) : CraftingMatrixData {
+            // Since Vanilla does the same as CustomCrafting would, use the vanilla data.
+            // No need to recalculate the trimmed matrix, just add the original ingredient list.
+            val craftingInput = input.input
+            val columnOffset = input.left
+            val rowOffset = input.top
+            val items = craftingInput.items()
+
+            return CraftingMatrixDataImpl(
+                originalItems,
+                originalItems.gridSize(),
+                matrix = Array(craftingInput.size()) { items[it].wrap() },
+                craftingInput.width(),
+                craftingInput.height(),
+                rowOffset,
+                columnOffset
+            )
         }
-        while (lastRow > firstRow && (0 until gridSize).all { originalMatrix[lastRow * gridSize + it] == null }) {
-            lastRow--
-        }
 
-        // Find the leading and trailing empty columns
-        var lastCol = gridSize - 1
-        var firstCol = 0
-        while (firstCol < gridSize && (firstRow until lastRow + 1).all { originalMatrix[it * gridSize + firstCol] == null }) {
-            firstCol++
-        }
-        while (lastCol > firstCol && (firstRow until lastRow + 1).all { originalMatrix[it * gridSize + lastCol] == null }) {
-            lastCol--
-        }
-
-        // Trim the leading and trailing empty rows and columns
-        width = (lastCol + 1) - firstCol
-        height = (lastRow + 1) - firstRow
-        rowOffset = firstRow
-        columnOffset = firstCol
-        matrix = Array(width * height) {
-            // Copy the values from the original array by offsetting the row and column back to the original
-            originalMatrix[(it / width) * gridSize + firstRow * gridSize + (it % width) + firstCol]
-        }
     }
 
 }

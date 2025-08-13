@@ -28,14 +28,17 @@ class ResourceLoaderImpl(
         if (!directory.exists()) {
             directory.mkdirs()
         }
+        customCrafting.logger.info("Preparing resources in $directory... ($listeners)")
         for (listener in listeners) {
             listener.onPrepare(this)
         }
 
+        customCrafting.logger.info("Loading resources from $directory... ($listeners)")
         for (listener in listeners) {
             listener.onInitialLoad(this)
         }
 
+        customCrafting.logger.info("Finalize resources from $directory... ($listeners)")
         for (listener in listeners) {
             listener.onFinalize(this)
         }

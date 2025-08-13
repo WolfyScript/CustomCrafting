@@ -9,6 +9,10 @@ import org.slf4j.Logger
 
 interface CustomCrafting {
 
+    companion object {
+        const val PATH_TO_INTERNAL_BOOTSTRAP: String = "com.wolfyscript.customcrafting.InternalBootstrap"
+    }
+
     val recipeManager: RecipeManager
 
     val dataManager: DataManager

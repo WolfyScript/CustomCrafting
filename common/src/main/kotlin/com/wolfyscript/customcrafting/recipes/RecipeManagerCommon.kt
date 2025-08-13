@@ -45,17 +45,20 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
 
     private fun checkDependencies() {
         val iterator = awaitingDependenciesRecipes.iterator()
+        customCrafting.logger.info("Checking dependencies for ${awaitingDependenciesRecipes.size} recipes")
         while (iterator.hasNext()) {
             val recipe = iterator.next()
+            customCrafting.logger.info("  - ${recipe.key}: ${recipe.value.dependencies.joinToString(",")}")
             if (recipe.value.dependencies.all { scafall.dependencyManager.getDependency(it)?.isInitialized == true }) {
+                awaitingVerificationRecipes[recipe.key] = recipe.value.recipe
+                iterator.remove()
                 continue
             }
-            awaitingVerificationRecipes.put(recipe.key, recipe.value.recipe)
-            iterator.remove()
         }
     }
 
     private fun verifyRecipesAndLoad() {
+        customCrafting.logger.info("Verifying ${awaitingVerificationRecipes.size} recipes")
         for ((key, recipe) in awaitingVerificationRecipes) {
             // TODO: Verification
             customCrafting.recipeManager.updateRecipe(key, recipe)
@@ -77,7 +80,7 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
             resourceLoader.destinations.forEach { dest ->
                 dest.load {
                     customCrafting.logger.info("  loaded recipe: ${it.key} -> ${it.recipe}")
-                    awaitingDependenciesRecipes.put(it.key, it)
+                    awaitingDependenciesRecipes[it.key] = it
                 }
             }
             checkDependencies()
@@ -105,8 +108,13 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
 
             // Remove recipes that are no longer loaded
             val removed = previousLoaded.subtract(recipesLoadedByCC)
-            for (recipeKey in removed) {
-                removeRecipe(recipeKey)
+            if (removed.isNotEmpty()) {
+                customCrafting.logger.info("Removing ${removed.size} recipes that are no longer loaded")
+
+                for (recipeKey in removed) {
+                    customCrafting.logger.info("  - $recipeKey")
+                    removeRecipe(recipeKey)
+                }
             }
         }
     }

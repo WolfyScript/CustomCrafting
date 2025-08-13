@@ -21,12 +21,12 @@ interface CraftingMatrixData {
      * The full original square matrix.
      * The two usual sizes are 2x2 and 3x3.
      */
-    val originalMatrix: Array<ItemStack?>
+    val originalMatrix: List<ItemStack?>
 
     /**
      * All the items in the crafting grid in order of appearance without empty slots.
      */
-    val items: Array<ItemStack>
+    val items: List<ItemStack>
 
     /**
      * The indices of the items in the matrix in order of appearance without empty slots.

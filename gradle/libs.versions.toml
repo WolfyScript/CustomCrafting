@@ -50,6 +50,9 @@ oraxen = "1.170.0"
 protocollib = "5.3.0"
 bstats = "3.0.0"
 
+# modded
+parchment = "2025.07.20"
+
 # Sponge
 sponge-gradle = "2.2.0"
 sponge-api = "15.0.0-SNAPSHOT"

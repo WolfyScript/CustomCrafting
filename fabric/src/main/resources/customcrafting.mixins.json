@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "com.wolfyscript.customcrafting.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CraftingInputCustomInputDataMixin",
+    "CraftingMenuEvalContextMixin",
+    "RecipeManagerCustomRecipeMixin"
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

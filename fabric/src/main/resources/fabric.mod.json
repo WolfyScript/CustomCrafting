@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "customcrafting",
+  "version": "${version}",
+  "name": "customcrafting",
+  "description": "",
+  "authors": [
+    "WolfyScript"
+  ],
+  "contact": {
+    "sources": "https://github.com/WolfyScript/scafall"
+  },
+  "license": "CC0-1.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "value": "com.wolfyscript.customcrafting.fabric.CustomCraftingFabricMod",
+        "adapter": "kotlin"
+      }
+    ]
+  },
+  "mixins": [
+    "customcrafting.mixins.json"
+  ],
+  "depends": {
+    "scafall": "alpha0.0.2.0-SNAPSHOT",
+    "fabricloader": ">=0.16.14",
+    "minecraft": "~1.21.7",
+    "java": ">=21",
+    "fabric-api": "*",
+    "fabric-language-kotlin": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

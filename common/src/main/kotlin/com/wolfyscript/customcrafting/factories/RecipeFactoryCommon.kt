@@ -13,6 +13,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.data.RepairingRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.SmithingRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.StonecuttingRecipeInputImpl
+import com.wolfyscript.customcrafting.recipes.data.toCraftingMatrixData
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
@@ -26,7 +27,7 @@ class RecipeFactoryCommon : RecipeFactory {
     }
 
     override fun createMatrixData(ingredients: List<ItemStack?>): CraftingMatrixData {
-        return CraftingMatrixDataImpl(ingredients)
+        return ingredients.toCraftingMatrixData()
     }
 
     override fun createCookingRecipeInput(source: ItemStack, fuel: ItemStack?): RecipeInput.CookingRecipeInput {

@@ -101,7 +101,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
     fun onPreCraft(e: PrepareItemCraftEvent) {
         val player = e.view.player as Player
         try {
-            val matrix = CraftingMatrixData.Companion.of(e.inventory.matrix.map { it?.wrap() }.toList())
+            val matrix = CraftingMatrixData.of(e.inventory.matrix.map { it?.wrap() }.toList())
             val input = RecipeInput.CraftingRecipeInput.of(matrix)
             matrixDataCache.put(player.uniqueId, matrix)
 
@@ -184,7 +184,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
             PersistentDataType.LONG
         )
         if (seed == null) {
-            seed = Random.Default.nextLong()
+            seed = Random.nextLong()
             bukkitPlayer.persistentDataContainer.set(
                 CustomCraftingSpigot.playerCraftingSeedKey,
                 PersistentDataType.LONG,
