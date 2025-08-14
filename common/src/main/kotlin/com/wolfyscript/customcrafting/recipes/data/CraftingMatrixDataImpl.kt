@@ -95,4 +95,8 @@ class CraftingMatrixDataImpl(
 
     }
 
+    override fun toString(): String {
+        return "$originalMatrix (size: $gridSize)[${matrix.contentToString()}, ($width x $height) (r: $rowOffset, c: $columnOffset)] (items=$items, indices=$itemIndices)"
+    }
+
 }

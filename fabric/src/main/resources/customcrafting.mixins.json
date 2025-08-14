@@ -5,8 +5,11 @@
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
     "CampfireBlockEntityMixin",
+    "CrafterMenuMixin",
+    "CrafterMixin",
     "CraftingInputCustomInputDataMixin",
     "CraftingMenuEvalContextMixin",
+    "RecipeCacheMixin",
     "RecipeManagerCustomRecipeMixin",
     "SingleRecipeInputMixin"
   ],
