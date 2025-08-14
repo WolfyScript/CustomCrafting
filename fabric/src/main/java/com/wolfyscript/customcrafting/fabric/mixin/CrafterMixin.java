@@ -26,7 +26,6 @@ public class CrafterMixin {
         method = "dispenseFrom"
     )
     private void enterEvalContext(BlockState state, ServerLevel level, BlockPos pos, CallbackInfo ci) {
-        CustomCraftingProvider.Companion.get().getLogger().info("Entering eval context for Crafter at {} in {}", pos, this.getClass());
         var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
         var dimensionType = Key.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
         var wrappedPosition = wrapper.wrapVec3(pos.getCenter(), dimensionType);
@@ -35,7 +34,6 @@ public class CrafterMixin {
 
     @Inject(at = @At("RETURN"), method = "dispenseFrom")
     private void exitEvalContext(BlockState state, ServerLevel level, BlockPos pos, CallbackInfo ci) {
-        CustomCraftingProvider.Companion.get().getLogger().info("Exit eval context for Crafter at {} in {}", pos, this.getClass());
         EvaluationContextState.INSTANCE.exit();
     }
 
