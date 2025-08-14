@@ -3,9 +3,12 @@
   "package": "com.wolfyscript.customcrafting.fabric.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractFurnaceBlockEntityMixin",
+    "CampfireBlockEntityMixin",
     "CraftingInputCustomInputDataMixin",
     "CraftingMenuEvalContextMixin",
-    "RecipeManagerCustomRecipeMixin"
+    "RecipeManagerCustomRecipeMixin",
+    "SingleRecipeInputMixin"
   ],
   "server": [
   ],

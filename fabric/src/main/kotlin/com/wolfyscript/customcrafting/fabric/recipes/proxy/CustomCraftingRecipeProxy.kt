@@ -89,14 +89,3 @@ class CustomRecipeShapelessProxy(val customRecipe: RecipeReference<CustomRecipeC
     }
 
 }
-
-fun RecipeReference<CustomRecipeCrafting>.toVanilla(): CraftingRecipe? {
-    val recipe = this.value ?: return null
-    val formula = recipe.formula
-
-    return when (formula) {
-        is CraftingFormula.Shaped -> CustomRecipeShapedProxy(this)
-        is CraftingFormula.Shapeless -> CustomRecipeShapelessProxy(this)
-        else -> null
-    }
-}

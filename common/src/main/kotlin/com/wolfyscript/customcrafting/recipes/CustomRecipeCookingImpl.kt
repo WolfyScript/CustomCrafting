@@ -52,10 +52,7 @@ class CustomRecipeCookingImpl(
                 return null
             }
 
-            val result = source.match(input.source)
-            if (result == null) {
-                return null
-            }
+            val result = source.match(input.source) ?: return null
             return DefaultDataImpl(arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
@@ -81,11 +78,7 @@ class CustomRecipeCookingImpl(
                 return null
             }
 
-
-            val result = source.match(input.source)
-            if (result == null) {
-                return null
-            }
+            val result = source.match(input.source) ?: return null
             return DefaultDataImpl(arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
@@ -111,10 +104,7 @@ class CustomRecipeCookingImpl(
                 return null
             }
 
-            val result = source.match(input.source)
-            if (result == null) {
-                return null
-            }
+            val result = source.match(input.source) ?: return null
             return DefaultDataImpl(arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
 
@@ -138,7 +128,7 @@ class CustomRecipeCookingImpl(
         ): RecipeEvaluationResult.Data? {
             val (pos, levelKey) = context.location?.unwrap() ?: return null
             val level = ScafallProvider.get().server.minecraftServer.getLevel(levelKey) ?: return null
-            val blockPos = BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt()))
+            val blockPos = BlockPos.containing(pos)
             val blockState = level.getBlockState(blockPos) ?: return null
 
             val soul = blockState.block == Blocks.SOUL_CAMPFIRE
@@ -147,10 +137,7 @@ class CustomRecipeCookingImpl(
                 return null
             }
 
-            val result = source.match(input.source)
-            if (result == null) {
-                return null
-            }
+            val result = source.match(input.source) ?: return null
             // TODO: Get proper slot in campfire. Perhaps through the context?
             return DefaultDataImpl(arrayOf(IngredientDataImpl(0, 0, source, result)))
         }
