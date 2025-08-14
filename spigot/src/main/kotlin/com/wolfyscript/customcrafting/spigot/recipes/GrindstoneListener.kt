@@ -97,18 +97,18 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         // TODO: Craft remains
         data.data.bySlot(0)?.let {
             inventory.getItem(0)?.apply {
-                amount = amount - it.matchedItemStackRef.amount
+                amount -= it.matchedItemStackRef.amount
             }
         }
 
         data.data.bySlot(1)?.let {
             inventory.getItem(1)?.apply {
-                amount = amount - it.matchedItemStackRef.amount
+                amount -= it.matchedItemStackRef.amount
             }
         }
 
         recipeCache.invalidate(player.uniqueId)
-        player.persistentDataContainer.set(CustomCraftingSpigot.playerGrindingSeedKey, PersistentDataType.LONG, Random.Default.nextLong())
+        player.persistentDataContainer.set(CustomCraftingSpigot.playerGrindingSeedKey, PersistentDataType.LONG, Random.nextLong())
     }
 
     @EventHandler
