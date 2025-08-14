@@ -34,10 +34,10 @@ private fun RecipeReference<CustomRecipeCrafting>.matches(recipeInput: CraftingI
     return true
 }
 
-private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: CraftingInput, provider: HolderLookup.Provider): ItemStack? {
-    val recipe = value ?: return null
-    if (recipeInput !is CraftingCustomInputDataExt) return null
-    val resultInfo = recipeInput.resultInfo ?: return null
+private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: CraftingInput, provider: HolderLookup.Provider): ItemStack {
+    val recipe = value ?: return ItemStack.EMPTY
+    if (recipeInput !is CraftingCustomInputDataExt) return ItemStack.EMPTY
+    val resultInfo = recipeInput.resultInfo ?: return ItemStack.EMPTY
     val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
 
     val stack = recipe.result.compute(resultInfo, context, Random)
@@ -61,7 +61,7 @@ class CustomRecipeShapedProxy(val customRecipe: RecipeReference<CustomRecipeCraf
     override fun assemble(
         recipeInput: CraftingInput,
         provider: HolderLookup.Provider,
-    ): ItemStack? {
+    ): ItemStack {
         return customRecipe.assemble(recipeInput, provider)
     }
 
@@ -84,7 +84,7 @@ class CustomRecipeShapelessProxy(val customRecipe: RecipeReference<CustomRecipeC
     override fun assemble(
         recipeInput: CraftingInput,
         provider: HolderLookup.Provider,
-    ): ItemStack? {
+    ): ItemStack {
         return customRecipe.assemble(recipeInput, provider)
     }
 
