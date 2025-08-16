@@ -8,6 +8,7 @@ import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding;
 import com.wolfyscript.scafall.ScafallProvider;
 import com.wolfyscript.scafall.identifier.Key;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -26,15 +27,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "net.minecraft.world.inventory.GrindstoneMenu$4")
 public class GrindstoneResultSlotsMixin implements GrindstoneResultSlotsExt {
 
-    @Shadow
-    @Final
-    GrindstoneMenu this$0;
+//    TODO: getting "InvalidMixinException @Shadow field this$0 was not located in the target class ... Using refmap fabric-refmap.json"
+//    @Final
+//    @Shadow(remap = false) // remap does not bypass issue // aliases for synthetic fields could work, but use bypass via init for now.
+//    GrindstoneMenu this$0;
+
     @Shadow
     @Final
     ContainerLevelAccess val$access;
     @Unique
+    private GrindstoneMenu grindstoneMenu;
+    @Unique
     @Nullable
     private RecipeEvaluationResult<RecipeEvaluationResult.GrindingRecipeData, CustomRecipeGrinding> resultInfo;
+
+    /**
+     * Bypass for error thrown by @Shadow field this$0
+     */
+    @Inject(at = @At("TAIL"), method = "<init>")
+    private void initGrindstoneMenu(GrindstoneMenu this$0, Container container, int slot, int x, int y, ContainerLevelAccess par6, CallbackInfo ci) {
+        grindstoneMenu = this$0;
+    }
 
     @Inject(at = @At("HEAD"), method = "onTake", cancellable = true)
     private void takeCustomRecipeOutput(Player player, ItemStack stack, CallbackInfo ci) {
@@ -66,12 +79,12 @@ public class GrindstoneResultSlotsMixin implements GrindstoneResultSlotsExt {
 
         var base = data.bySlot(0);
         if (base != null) {
-            this$0.getSlot(0).getItem().shrink(base.getMatchedItemStackRef().getAmount());
+            grindstoneMenu.getSlot(0).getItem().shrink(base.getMatchedItemStackRef().getAmount());
         }
 
         var addition = data.bySlot(1);
         if (addition != null) {
-            this$0.getSlot(1).getItem().shrink(addition.getMatchedItemStackRef().getAmount());
+            grindstoneMenu.getSlot(1).getItem().shrink(addition.getMatchedItemStackRef().getAmount());
         }
 
         resultInfo = null;
