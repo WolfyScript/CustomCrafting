@@ -36,8 +36,6 @@ fun RecipeReference<CustomRecipeCooking>.assemble(
     return recipe.result.compute(resultInfo, context, Random).unwrap()
 }
 
-
-
 class CustomSmeltingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCooking>) : SmeltingRecipe(
     "",
     CookingBookCategory.MISC,

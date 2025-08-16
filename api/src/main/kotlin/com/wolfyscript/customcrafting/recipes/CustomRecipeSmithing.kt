@@ -17,7 +17,7 @@ interface CustomRecipeSmithing : CustomRecipe<RecipeInput.SmithingRecipeInput, R
     /**
      * The base item to upgrade with the [addition]
      */
-    val base: Ingredient?
+    val base: Ingredient
 
     /**
      * The addition with which to upgrade the [base]

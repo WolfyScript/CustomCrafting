@@ -16,7 +16,10 @@
     "GrindstoneResultSlotsMixin",
     "RecipeCacheMixin",
     "RecipeManagerCustomRecipeMixin",
-    "SingleRecipeInputMixin"
+    "RecipeSerializerMixin",
+    "SingleRecipeInputMixin",
+    "SmithingMenuMixin",
+    "SmithingRecipeInputMixin"
   ],
   "server": [
   ],

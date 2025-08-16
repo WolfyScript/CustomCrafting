@@ -7,10 +7,12 @@ import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomCampfireRecipeP
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomRecipeShapedProxy
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomRecipeShapelessProxy
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomSmeltingRecipeProxy
+import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomSmithingRecipeProxy
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomSmokingRecipeProxy
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.recipes.RecipeReference
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
@@ -60,6 +62,10 @@ object RecipeRegistrationUtils {
                     is CustomRecipeCooking.WorkstationProcessing.Blasting -> CustomBlastingRecipeProxy(this)
                     is CustomRecipeCooking.WorkstationProcessing.Campfire -> CustomCampfireRecipeProxy(this)
                 }
+            }
+            is CustomRecipeSmithing -> {
+                this as RecipeReference<CustomRecipeSmithing>
+                CustomSmithingRecipeProxy(this)
             }
             else -> null
         }
