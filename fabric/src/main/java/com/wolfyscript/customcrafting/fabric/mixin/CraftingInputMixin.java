@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(CraftingInput.class)
-public class CraftingInputCustomInputDataMixin implements CraftingCustomInputDataExt {
+public class CraftingInputMixin implements CraftingCustomInputDataExt {
 
     @Unique
     @Nullable

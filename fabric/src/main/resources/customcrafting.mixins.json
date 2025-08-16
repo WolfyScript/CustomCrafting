@@ -8,7 +8,7 @@
     "CampfireBlockEntityMixin",
     "CrafterMenuMixin",
     "CrafterMixin",
-    "CraftingInputCustomInputDataMixin",
+    "CraftingInputMixin",
     "CraftingMenuEvalContextMixin",
     "GrindstoneMenuMixin",
     "GrindstoneRepairSlot0Mixin",
