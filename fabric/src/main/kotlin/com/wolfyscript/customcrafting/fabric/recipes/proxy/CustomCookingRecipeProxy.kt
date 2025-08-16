@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.fabric.recipes.proxy
 
 import com.wolfyscript.customcrafting.fabric.inject.CookingCustomInputExt
+import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeReference
@@ -44,7 +45,7 @@ class CustomSmeltingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCo
     customRecipe.value!!.result.choices.stacks.first().create().unwrap(),
     customRecipe.value!!.xp,
     customRecipe.value!!.processing.processingTime,
-) {
+), ProxyRecipe {
 
     override fun matches(singleRecipeInput: SingleRecipeInput, level: Level): Boolean {
         return customRecipe.matches(singleRecipeInput, level)
@@ -64,7 +65,7 @@ class CustomBlastingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCo
     customRecipe.value!!.result.choices.stacks.first().create().unwrap(),
     customRecipe.value!!.xp,
     customRecipe.value!!.processing.processingTime,
-) {
+), ProxyRecipe {
 
     override fun matches(singleRecipeInput: SingleRecipeInput, level: Level): Boolean {
         return customRecipe.matches(singleRecipeInput, level)
@@ -83,7 +84,7 @@ class CustomSmokingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCoo
     customRecipe.value!!.result.choices.stacks.first().create().unwrap(),
     customRecipe.value!!.xp,
     customRecipe.value!!.processing.processingTime,
-) {
+), ProxyRecipe {
 
     override fun matches(singleRecipeInput: SingleRecipeInput, level: Level): Boolean {
         return customRecipe.matches(singleRecipeInput, level)
@@ -102,7 +103,7 @@ class CustomCampfireRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCo
     customRecipe.value!!.result.choices.stacks.first().create().unwrap(),
     customRecipe.value!!.xp,
     customRecipe.value!!.processing.processingTime,
-) {
+), ProxyRecipe {
 
     override fun matches(singleRecipeInput: SingleRecipeInput, level: Level): Boolean {
         return customRecipe.matches(singleRecipeInput, level)

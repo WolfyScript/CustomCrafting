@@ -3,6 +3,7 @@ package com.wolfyscript.customcrafting.fabric.recipes.proxy
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.fabric.inject.SmithingCustomInputExt
 import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
@@ -29,7 +30,7 @@ import net.minecraft.world.level.Level
 import java.util.*
 import kotlin.random.Random
 
-class CustomSmithingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeSmithing>) : SmithingRecipe {
+class CustomSmithingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeSmithing>) : SmithingRecipe, ProxyRecipe {
 
     init {
         if (customRecipe.value == null) throw IllegalArgumentException("Cannot create a SmithingRecipeProxy for a null recipe")
