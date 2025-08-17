@@ -7,6 +7,7 @@ import com.wolfyscript.customcrafting.recipes.RecipeTypes;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
 import com.wolfyscript.scafall.ScafallProvider;
 import com.wolfyscript.scafall.identifier.Key;
+import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
 import kotlin.random.Random;
 import kotlin.random.RandomKt;
 import net.minecraft.world.Container;
@@ -62,12 +63,11 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
     private void computeCustomRecipeResult(CallbackInfo ci) {
         var customcrafting = CustomCraftingProvider.Companion.get();
 
-        var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
         var level = player.level();
         var key = Key.Companion.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
-        var context = new EvaluationContextImpl(wrapper.wrapMcPlayer(player), wrapper.wrapVec3(player.position(), key));
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), key));
 
-        var input = RecipeInput.GrindingRecipeInput.Companion.of(wrapper.wrapMcStack(repairSlots.getItem(0)), wrapper.wrapMcStack(repairSlots.getItem(1)));
+        var input = RecipeInput.GrindingRecipeInput.Companion.of(MinecraftWrapperKt.wrap(repairSlots.getItem(0)), MinecraftWrapperKt.wrap(repairSlots.getItem(1)));
 
         var data = customcrafting.getRecipeManager().evaluateRecipesOfType(RecipeTypes.INSTANCE.getGrinding().resolveOrThrow(), input, context);
         if (data == null || data.getRecipe().getValue() == null) {
@@ -77,7 +77,7 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
 
         var result = data.getRecipe().getValue().getProcess().compute(data, input, context, RandomKt.Random(seed));
         ((GrindstoneResultSlotsExt) resultSlots).setResultInfo(data);
-        resultSlots.setItem(0, wrapper.unwrapToMcStack(result));
+        resultSlots.setItem(0, MinecraftWrapperKt.unwrap(result));
         broadcastChanges();
     }
 

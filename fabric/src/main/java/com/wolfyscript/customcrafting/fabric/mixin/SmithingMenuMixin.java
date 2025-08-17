@@ -7,6 +7,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
 import com.wolfyscript.scafall.ScafallProvider;
 import com.wolfyscript.scafall.identifier.Key;
+import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
@@ -38,8 +39,11 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         method = "createResult"
     )
     private void addCustomInput(CallbackInfo ci, @Local SmithingRecipeInput smithingRecipeInput) {
-        var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
-        RecipeInput.SmithingRecipeInput customInput = RecipeInput.SmithingRecipeInput.Companion.of(wrapper.wrapMcStack(getItems().get(0)), wrapper.wrapMcStack(getItems().get(1)), wrapper.wrapMcStack(getItems().get(2)));
+        RecipeInput.SmithingRecipeInput customInput = RecipeInput.SmithingRecipeInput.Companion.of(
+            MinecraftWrapperKt.wrap(getItems().get(0)),
+            MinecraftWrapperKt.wrap(getItems().get(1)),
+            MinecraftWrapperKt.wrap(getItems().get(2))
+        );
         ((RecipeInputSmithingCustomExt)(Object) smithingRecipeInput).setCustomInput(customInput);
     }
 
@@ -48,9 +52,8 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         method = "createResult"
     )
     private void enterEvalContext(CallbackInfo ci) {
-        var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
         var levelKey = Key.Companion.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
-        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(wrapper.wrapMcPlayer(player), wrapper.wrapVec3(player.position(), levelKey)));
+        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), levelKey)));
     }
 
     @Inject(

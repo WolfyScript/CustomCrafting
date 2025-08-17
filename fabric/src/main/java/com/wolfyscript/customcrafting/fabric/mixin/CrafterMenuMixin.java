@@ -2,8 +2,8 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
-import com.wolfyscript.scafall.ScafallProvider;
 import com.wolfyscript.scafall.identifier.Key;
+import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CrafterMenu;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -29,10 +29,9 @@ public class CrafterMenuMixin {
     private void enterEvalContext(CallbackInfo ci) {
         if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
             var level = serverPlayer.level();
-            var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
             var dimensionType = Key.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
-            var wrappedPosition = wrapper.wrapVec3(serverPlayer.position(), dimensionType);
-            EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(wrapper.wrapMcPlayer(serverPlayer), wrappedPosition));
+            var wrappedPosition = MinecraftWrapperKt.wrap(serverPlayer.position(), dimensionType);
+            EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(MinecraftWrapperKt.wrap(serverPlayer), wrappedPosition));
         }
     }
 

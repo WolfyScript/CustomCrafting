@@ -4,8 +4,8 @@ import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCookingCustomExt;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
-import com.wolfyscript.scafall.ScafallProvider;
 import com.wolfyscript.scafall.identifier.Key;
+import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -22,9 +22,8 @@ public class AbstractFurnaceBlockEntityMixin {
 
     @Inject(at = @At(value = "HEAD"), method = "serverTick")
     private static void enterEvalContext(ServerLevel level, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity furnace, CallbackInfo ci) {
-        var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
         var dimensionType = Key.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
-        var wrappedPosition = wrapper.wrapVec3(pos.getCenter(), dimensionType);
+        var wrappedPosition = MinecraftWrapperKt.wrap(pos.getCenter(), dimensionType);
         EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(null, wrappedPosition));
     }
 
@@ -35,9 +34,8 @@ public class AbstractFurnaceBlockEntityMixin {
 
     @ModifyVariable(method = "serverTick", at = @At(value = "STORE"), ordinal = 0)
     private static SingleRecipeInput injectCustomDataIntoSingleRecipeInput(SingleRecipeInput singleRecipeInput, ServerLevel level, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity furnace) {
-        var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
-        var source = wrapper.wrapMcStack(furnace.getItem(0));
-        var fuel = wrapper.wrapMcStack(furnace.getItem(1));
+        var source = MinecraftWrapperKt.wrap(furnace.getItem(0));
+        var fuel = MinecraftWrapperKt.wrap(furnace.getItem(1));
         ((RecipeInputCookingCustomExt)(Object) singleRecipeInput).setCustomInput(RecipeInput.CookingRecipeInput.Companion.of(source, fuel));
         return singleRecipeInput;
     }

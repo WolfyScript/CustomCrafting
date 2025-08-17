@@ -5,8 +5,8 @@ import com.wolfyscript.customcrafting.recipes.CustomRecipeGrinding;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding;
-import com.wolfyscript.scafall.ScafallProvider;
 import com.wolfyscript.scafall.identifier.Key;
+import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -58,10 +58,9 @@ public class GrindstoneResultSlotsMixin implements GrindstoneResultSlotsExt {
 
         var recipe = resultInfo.getRecipe().getValue();
         var data = resultInfo.getData();
-        var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
         var lvl = player.level();
         var key = Key.Companion.key(lvl.dimension().location().getNamespace(), lvl.dimension().location().getPath());
-        var context = new EvaluationContextImpl(wrapper.wrapMcPlayer(player), wrapper.wrapVec3(player.position(), key));
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), key));
 
         var totalYield = data.getYield() - data.getPenalty();
         if (totalYield > 0) {
@@ -77,6 +76,7 @@ public class GrindstoneResultSlotsMixin implements GrindstoneResultSlotsExt {
             fixedResultProcess.getResult().runActions(context, 1);
         }
 
+        // TODO: Craft remains
         var base = data.bySlot(0);
         if (base != null) {
             grindstoneMenu.getSlot(0).getItem().shrink(base.getMatchedItemStackRef().getAmount());

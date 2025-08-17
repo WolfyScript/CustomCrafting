@@ -6,8 +6,8 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.RecipeTypes;
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
-import com.wolfyscript.scafall.ScafallProvider;
 import com.wolfyscript.scafall.identifier.Key;
+import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
 import kotlin.random.Random;
 import kotlin.random.RandomKt;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,11 +56,10 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
     private void customRecipeLogic(CallbackInfo ci) {
         resultInfo = null;
         var customcrafting = CustomCraftingProvider.Companion.get();
-        var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
         var level = player.level();
         var key = Key.Companion.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
-        var context = new EvaluationContextImpl(wrapper.wrapMcPlayer(player), wrapper.wrapVec3(player.position(), key));
-        var input = RecipeInput.RepairingRecipeInput.Companion.of(wrapper.wrapMcStack(getSlot(0).getItem()), wrapper.wrapMcStack(getSlot(1).getItem()), itemName);
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), key));
+        var input = RecipeInput.RepairingRecipeInput.Companion.of(MinecraftWrapperKt.wrap(getSlot(0).getItem()), MinecraftWrapperKt.wrap(getSlot(1).getItem()), itemName);
 
         var data = customcrafting.getRecipeManager().evaluateRecipesOfType(RecipeTypes.INSTANCE.getRepairing().resolveOrThrow(), input, context);
         if (data == null || data.getRecipe().getValue() == null) {
@@ -72,7 +71,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
         var recipe = data.getRecipe().getValue();
         var result = recipe.getProcess().compute(data, input, context, RandomKt.Random(seed));
 
-        getSlot(getResultSlot()).set(wrapper.unwrapToMcStack(result));
+        getSlot(getResultSlot()).set(MinecraftWrapperKt.unwrap(result));
     }
 
     @Inject(at = @At("HEAD"), method = "onTake", cancellable = true)
