@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
-import com.wolfyscript.customcrafting.fabric.inject.CookingCustomInputExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCookingCustomExt;
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(SingleRecipeInput.class)
-public class SingleRecipeInputMixin implements CookingCustomInputExt {
+public class SingleRecipeInputMixin implements RecipeInputCookingCustomExt {
 
     @Unique
     @Nullable

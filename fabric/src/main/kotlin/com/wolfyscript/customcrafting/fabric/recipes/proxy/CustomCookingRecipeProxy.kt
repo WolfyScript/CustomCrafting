@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.recipes.proxy
 
-import com.wolfyscript.customcrafting.fabric.inject.CookingCustomInputExt
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCookingCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
@@ -16,7 +16,7 @@ import kotlin.random.Random
 
 fun RecipeReference<CustomRecipeCooking>.matches(input: SingleRecipeInput, level: Level): Boolean {
     val recipe = value ?: return false
-    if (input !is CookingCustomInputExt) return false
+    if (input !is RecipeInputCookingCustomExt) return false
     val data = input.customInput ?: return false
     val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
 
@@ -30,7 +30,7 @@ fun RecipeReference<CustomRecipeCooking>.assemble(
     provider: HolderLookup.Provider,
 ): ItemStack? {
     val recipe = value ?: return null
-    if (input !is CookingCustomInputExt) return null
+    if (input !is RecipeInputCookingCustomExt) return null
     val resultInfo = input.resultInfo ?: return null
     val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
 

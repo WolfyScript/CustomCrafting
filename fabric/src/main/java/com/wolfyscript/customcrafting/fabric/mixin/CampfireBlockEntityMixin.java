@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
-import com.wolfyscript.customcrafting.fabric.inject.CookingCustomInputExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCookingCustomExt;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
 import com.wolfyscript.scafall.ScafallProvider;
@@ -80,7 +80,7 @@ public class CampfireBlockEntityMixin extends BlockEntity {
     private Optional<RecipeHolder<CampfireCookingRecipe>> injectCustomDataIntoSingleRecipeInputRedirect(RecipeManager instance, RecipeType<CampfireCookingRecipe> recipeType, RecipeInput input, Level level, ServerLevel serverLevel, LivingEntity livingEntity, ItemStack itemStack) {
         var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
         var source = wrapper.wrapMcStack(itemStack);
-        ((CookingCustomInputExt) input).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.CookingRecipeInput.Companion.of(source, null));
+        ((RecipeInputCookingCustomExt) input).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.CookingRecipeInput.Companion.of(source, null));
 
         return instance.getRecipeFor(recipeType, (SingleRecipeInput) input, level);
     }
@@ -93,7 +93,7 @@ public class CampfireBlockEntityMixin extends BlockEntity {
     ) {
         var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
         var source = wrapper.wrapMcStack(singleRecipeInput.item());
-        ((CookingCustomInputExt) (Object) singleRecipeInput).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.CookingRecipeInput.Companion.of(source, null));
+        ((RecipeInputCookingCustomExt) (Object) singleRecipeInput).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.CookingRecipeInput.Companion.of(source, null));
         return singleRecipeInput;
     }
 

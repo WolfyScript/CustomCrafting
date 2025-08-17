@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
-import com.wolfyscript.customcrafting.fabric.inject.CookingCustomInputExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCookingCustomExt;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
@@ -38,7 +38,7 @@ public class AbstractFurnaceBlockEntityMixin {
         var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
         var source = wrapper.wrapMcStack(furnace.getItem(0));
         var fuel = wrapper.wrapMcStack(furnace.getItem(1));
-        ((CookingCustomInputExt)(Object) singleRecipeInput).setCustomInput(RecipeInput.CookingRecipeInput.Companion.of(source, fuel));
+        ((RecipeInputCookingCustomExt)(Object) singleRecipeInput).setCustomInput(RecipeInput.CookingRecipeInput.Companion.of(source, fuel));
         return singleRecipeInput;
     }
 

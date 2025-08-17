@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
-import com.wolfyscript.customcrafting.fabric.inject.SmithingCustomInputExt
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSmithingCustomExt
 import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeReference
@@ -64,7 +64,7 @@ class CustomSmithingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeSm
 
     override fun matches(smithingRecipeInput: SmithingRecipeInput, level: Level): Boolean {
         val recipe = customRecipe.value ?: return false
-        if (smithingRecipeInput !is SmithingCustomInputExt) return false
+        if (smithingRecipeInput !is RecipeInputSmithingCustomExt) return false
         val customInput = smithingRecipeInput.customInput ?: return false
         val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
 
@@ -78,7 +78,7 @@ class CustomSmithingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeSm
         registries: HolderLookup.Provider,
     ): ItemStack {
         val recipe = customRecipe.value ?: return ItemStack.EMPTY
-        if (input !is SmithingCustomInputExt) return ItemStack.EMPTY
+        if (input !is RecipeInputSmithingCustomExt) return ItemStack.EMPTY
         val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
         val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
 

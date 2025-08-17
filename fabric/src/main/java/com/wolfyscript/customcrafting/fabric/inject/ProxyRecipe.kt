@@ -4,5 +4,4 @@ package com.wolfyscript.customcrafting.fabric.inject
  * A proxy recipe delegates the logic of a vanilla recipe to the logic of the CustomCrafting recipe.
  * They allow CC to integrate with the vanilla recipe system and provide better compatibility.
  */
-interface ProxyRecipe {
-}
+interface ProxyRecipe

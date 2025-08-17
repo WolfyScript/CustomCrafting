@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.wolfyscript.customcrafting.fabric.inject.CraftingCustomInputDataExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting;
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
 import net.minecraft.server.level.ServerLevel;
@@ -37,8 +37,8 @@ public class RecipeCacheMixin {
         )
     )
     private void applyPreviousResultOnGet(ServerLevel level, CraftingInput craftingInput, CallbackInfoReturnable<Optional<RecipeHolder<CraftingRecipe>>> cir, @Local int i) {
-        if (craftingInput instanceof CraftingCustomInputDataExt) {
-            ((CraftingCustomInputDataExt) craftingInput).setResultInfo(previousResults[i]);
+        if (craftingInput instanceof RecipeInputCraftingCustomExt) {
+            ((RecipeInputCraftingCustomExt) craftingInput).setResultInfo(previousResults[i]);
         }
     }
 
@@ -55,8 +55,8 @@ public class RecipeCacheMixin {
     private void insertResult(CraftingInput input, RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci) {
         // Always need to insert something and shift the previous results to keep it aligned with the vanilla entry indices.
         System.arraycopy(previousResults, 0, previousResults, 1, previousResults.length - 1);
-        if (input instanceof CraftingCustomInputDataExt) {
-            previousResults[0] = ((CraftingCustomInputDataExt) input).getResultInfo();
+        if (input instanceof RecipeInputCraftingCustomExt) {
+            previousResults[0] = ((RecipeInputCraftingCustomExt) input).getResultInfo();
         } else {
             previousResults[0] = null;
         }

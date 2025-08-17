@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.recipes.proxy
 
-import com.wolfyscript.customcrafting.fabric.inject.CraftingCustomInputDataExt
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
@@ -25,7 +25,7 @@ fun CraftingFormula.Shaped.toShapedRecipePattern(): ShapedRecipePattern {
 
 private fun RecipeReference<CustomRecipeCrafting>.matches(recipeInput: CraftingInput, level: Level): Boolean {
     val recipe = value ?: return false
-    if (recipeInput !is CraftingCustomInputDataExt) return false
+    if (recipeInput !is RecipeInputCraftingCustomExt) return false
     val data = recipeInput.customInput ?: return false
     val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
 
@@ -36,7 +36,7 @@ private fun RecipeReference<CustomRecipeCrafting>.matches(recipeInput: CraftingI
 
 private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: CraftingInput, provider: HolderLookup.Provider): ItemStack {
     val recipe = value ?: return ItemStack.EMPTY
-    if (recipeInput !is CraftingCustomInputDataExt) return ItemStack.EMPTY
+    if (recipeInput !is RecipeInputCraftingCustomExt) return ItemStack.EMPTY
     val resultInfo = recipeInput.resultInfo ?: return ItemStack.EMPTY
     val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
 

@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.wolfyscript.customcrafting.fabric.inject.SmithingCustomInputExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSmithingCustomExt;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
@@ -40,7 +40,7 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
     private void addCustomInput(CallbackInfo ci, @Local SmithingRecipeInput smithingRecipeInput) {
         var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
         RecipeInput.SmithingRecipeInput customInput = RecipeInput.SmithingRecipeInput.Companion.of(wrapper.wrapMcStack(getItems().get(0)), wrapper.wrapMcStack(getItems().get(1)), wrapper.wrapMcStack(getItems().get(2)));
-        ((SmithingCustomInputExt)(Object) smithingRecipeInput).setCustomInput(customInput);
+        ((RecipeInputSmithingCustomExt)(Object) smithingRecipeInput).setCustomInput(customInput);
     }
 
     @Inject(

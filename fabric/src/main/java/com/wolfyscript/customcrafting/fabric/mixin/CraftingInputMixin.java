@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
-import com.wolfyscript.customcrafting.fabric.inject.CraftingCustomInputDataExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting;
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixDataImpl;
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(CraftingInput.class)
-public class CraftingInputMixin implements CraftingCustomInputDataExt {
+public class CraftingInputMixin implements RecipeInputCraftingCustomExt {
 
     @Unique
     @Nullable
@@ -57,7 +57,7 @@ public class CraftingInputMixin implements CraftingCustomInputDataExt {
                 .map((stack) -> ScafallProvider.Companion.get().getMinecraftWrapper().wrapMcStack(stack))
                 .toList()
         );
-        ((CraftingCustomInputDataExt) input).setCustomInput(RecipeInput.CraftingRecipeInput.Companion.of(matrixData));
+        ((RecipeInputCraftingCustomExt) input).setCustomInput(RecipeInput.CraftingRecipeInput.Companion.of(matrixData));
     }
 
 }
