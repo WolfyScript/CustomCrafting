@@ -36,14 +36,8 @@ class DefaultProcessGrindingImpl(
         context: EvaluationContext,
         random: Random,
     ): ItemStack {
-        val recipe = recipeEvaluationResult.recipe.value
-        if (recipe == null) {
-            return net.minecraft.world.item.ItemStack.EMPTY.wrap()
-        }
-        val player = context.player?.unwrap() as? ServerPlayer
-        if (player == null) {
-            return net.minecraft.world.item.ItemStack.EMPTY.wrap()
-        }
+        val recipe = recipeEvaluationResult.recipe.value ?: return net.minecraft.world.item.ItemStack.EMPTY.wrap()
+        val player = context.player?.unwrap() as? ServerPlayer ?: return net.minecraft.world.item.ItemStack.EMPTY.wrap()
         val menu = player.containerMenu
         if (menu !is GrindstoneMenu) {
             return net.minecraft.world.item.ItemStack.EMPTY.wrap()

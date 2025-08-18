@@ -50,13 +50,13 @@ public class CrafterMixin {
         cancellable = true
     )
     private void shrinkMatrix(BlockState state, ServerLevel level, BlockPos pos, CallbackInfo ci, @Local CrafterBlockEntity blockEntity, @Local CraftingInput craftingInput) {
+        var context = EvaluationContextState.INSTANCE.getCurrent();
+        if (context == null) return;
         if (!(craftingInput instanceof RecipeInputCraftingCustomExt customInputExt)) return;
         var resultInfo = customInputExt.getResultInfo();
         if (resultInfo == null) return;
         var customInput = customInputExt.getCustomInput();
         if (customInput == null) return;
-        var context = EvaluationContextState.INSTANCE.getCurrent();
-        if (context == null) return;
         var recipe = resultInfo.getRecipe().getValue();
         if (recipe == null) return; // Recipe was removed in the meantime
 
