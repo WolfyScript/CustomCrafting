@@ -33,6 +33,9 @@ sealed interface ProcessGrinding {
         random: Random,
     ): ItemStack
 
+    /**
+     * A process that always returns the specified [result] and [xp].
+     */
     @JsonTypeName("fixed_result")
     interface FixedResultProcessGrinding : ProcessGrinding {
 

@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 
+/**
+ * An action that is performed when a [RecipeResult] is collected.
+ */
 @JsonTypeIdResolver(RegistryKeyTypeIdResolver::class)
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.CUSTOM,

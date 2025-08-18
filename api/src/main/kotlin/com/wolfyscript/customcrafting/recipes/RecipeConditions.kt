@@ -8,6 +8,9 @@ import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.ValueReference
 import com.wolfyscript.scafall.registry.referenced
 
+/**
+ * A list of all the default [RecipeConditions][Condition] that exist in the Registry across all platforms.
+ */
 object RecipeConditions {
 
     private inline fun <reified T: Class<out Condition>> create(key: String) : ValueReference<Class<out Condition>, T> {

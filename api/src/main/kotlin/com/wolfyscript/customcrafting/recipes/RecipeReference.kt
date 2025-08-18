@@ -6,8 +6,10 @@ import com.wolfyscript.scafall.identifier.Key
 /**
  * References a recipe in the RecipeIndex.
  *
- * Recipes may be removed from the RecipeIndex at random, so care should be taken when accessing the [value].
+ * Recipes may be removed/updated at random, so care should be taken when accessing the [value].
  * If this reference refers to a recipe that was removed, then [value] will be null!
+ *
+ * **The [value] must not be cached to avoid memory leaks!**
  *
  * It should always be checked if the recipe is available before accessing it (even if you registered a recipe yourself, other plugins may remove it).
  */

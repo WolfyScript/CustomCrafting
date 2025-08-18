@@ -7,6 +7,9 @@ import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.ValueReference
 import com.wolfyscript.scafall.registry.referenced
 
+/**
+ * List of all the default [Transmuters][ResultModifier.Transformation.Transmuter] that exist in the Registry across all platforms.
+ */
 object ResultTransmuters {
 
     private inline fun <reified T: Class<out ResultModifier.Transformation.Transmuter>> create(key: String) : ValueReference<Class<out ResultModifier.Transformation.Transmuter>, T> {

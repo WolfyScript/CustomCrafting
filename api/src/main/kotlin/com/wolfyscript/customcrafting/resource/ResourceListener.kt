@@ -1,5 +1,9 @@
 package com.wolfyscript.customcrafting.resource
 
+/**
+ * Listens to the events of a [ResourceLoader].
+ *
+ */
 interface ResourceListener {
 
     /**

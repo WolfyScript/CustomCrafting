@@ -15,7 +15,8 @@ interface CustomRecipeSmithing : CustomRecipe<RecipeInput.SmithingRecipeInput, R
     val template: Ingredient?
 
     /**
-     * The base item to upgrade with the [addition]
+     * The base item to upgrade with the [addition].
+     * A base ingredient is required and cannot be empty!
      */
     val base: Ingredient
 

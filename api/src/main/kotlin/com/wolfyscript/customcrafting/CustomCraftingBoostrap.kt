@@ -1,6 +1,5 @@
 package com.wolfyscript.customcrafting
 
-import com.wolfyscript.scafall.loader.InnerJarClassloader
 import com.wolfyscript.scafall.loader.module.Module
 import com.wolfyscript.scafall.loader.module.StandaloneInternalBootstrap
 import org.jetbrains.annotations.ApiStatus

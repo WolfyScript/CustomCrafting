@@ -34,6 +34,7 @@ class RecipeChoicesImpl(
         return combinedChoices
     }
 
+    @Deprecated("Unsure if this is actually needed. Use all() instead for now.")
     override fun allFor(context: EvaluationContext): List<ItemStackRef> {
         return all() // TODO: Filter items, like permission etc. // Do we actually need this?
     }
