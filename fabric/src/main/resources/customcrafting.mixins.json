@@ -18,6 +18,7 @@
     "RecipeManagerCustomRecipeMixin",
     "RecipeSerializerMixin",
     "ResultContainerMixin",
+    "ResultSlotMixin",
     "SingleRecipeInputMixin",
     "SmithingMenuMixin",
     "SmithingRecipeInputMixin"
