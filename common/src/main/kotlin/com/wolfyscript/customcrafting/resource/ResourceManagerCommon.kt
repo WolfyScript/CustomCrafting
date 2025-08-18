@@ -18,7 +18,7 @@ import com.wolfyscript.jackson.dataformat.hocon.HoconMapper
 import com.wolfyscript.scafall.config.jackson.registerScafallModule
 import java.io.File
 
-class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory: File) : DataManager {
+class ResourceManagerCommon(val customCrafting: CustomCraftingCommon, val directory: File) : ResourceManager {
 
     override val resourceLoader: ResourceLoader = ResourceLoaderImpl(
         customCrafting,
@@ -145,7 +145,7 @@ class DataManagerCommon(val customCrafting: CustomCraftingCommon, val directory:
         jacksonObjectMapper.registerScafallModule()
     }
 
-    override fun loadData() {
+    override fun loadResources() {
         resourceLoader.loadResources()
     }
 }

@@ -64,7 +64,7 @@ class DirectoryDestination(
             val key = relative.toKey(Key.CUSTOMCRAFTING_NAMESPACE)
             customCrafting.logger.info("Loading recipe: $key")
             try {
-                val recipe = customCrafting.dataManager.jacksonObjectMapper
+                val recipe = customCrafting.resourceManager.jacksonObjectMapper
                     .reader(injectableValues)
                     .readValue(file.toFile(), CustomRecipe::class.java)
 
@@ -84,7 +84,7 @@ class DirectoryDestination(
         if (destFile.getParentFile().exists() || destFile.getParentFile().mkdirs()) {
             try {
                 if (destFile.isFile() || destFile.createNewFile()) {
-                    customCrafting.dataManager.jacksonObjectMapper.writer(DefaultPrettyPrinter())
+                    customCrafting.resourceManager.jacksonObjectMapper.writer(DefaultPrettyPrinter())
                         .writeValue(destFile, recipe)
                     return Result.success(true)
                 }

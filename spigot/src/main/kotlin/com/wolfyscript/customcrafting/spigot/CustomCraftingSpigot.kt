@@ -5,8 +5,8 @@ import com.wolfyscript.customcrafting.CustomCraftingBoostrap
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
-import com.wolfyscript.customcrafting.resource.DataManager
-import com.wolfyscript.customcrafting.resource.DataManagerCommon
+import com.wolfyscript.customcrafting.resource.ResourceManager
+import com.wolfyscript.customcrafting.resource.ResourceManagerCommon
 import com.wolfyscript.customcrafting.spigot.recipes.*
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
@@ -27,13 +27,13 @@ class CustomCraftingSpigot(
 
     override val configurationManager: ConfigurationManager =
         ConfigurationManagerImpl(this, plugin.dataFolder)
-    override val dataManager: DataManager = DataManagerCommon(this, plugin.dataFolder)
+    override val resourceManager: ResourceManager = ResourceManagerCommon(this, plugin.dataFolder)
 
     override fun onLoad() {
         configurationManager.load()
 
-        dataManager.resourceLoader.registerListener(recipeManager)
-        dataManager.loadData()
+        resourceManager.resourceLoader.registerListener(recipeManager)
+        resourceManager.loadResources()
 
         registerPlaceholderRecipes(recipeManager.index.values())
         registerDisplayRecipes(recipeManager.index.values())

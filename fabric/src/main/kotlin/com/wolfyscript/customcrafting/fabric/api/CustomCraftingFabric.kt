@@ -7,8 +7,8 @@ import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
 import com.wolfyscript.customcrafting.fabric.CustomCraftingFabricMod
 import com.wolfyscript.customcrafting.fabric.inject.RecipeManagerCustomRecipesExt
-import com.wolfyscript.customcrafting.resource.DataManager
-import com.wolfyscript.customcrafting.resource.DataManagerCommon
+import com.wolfyscript.customcrafting.resource.ResourceManager
+import com.wolfyscript.customcrafting.resource.ResourceManagerCommon
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.Scafall
 import com.wolfyscript.scafall.ScafallProvider
@@ -29,12 +29,12 @@ class CustomCraftingFabric(
     override val bridge: CustomCrafting = this
 
     override val configurationManager: ConfigurationManager
-    override val dataManager: DataManager
+    override val resourceManager: ResourceManager
     init {
         val configRoot = FabricLoader.getInstance().configDir.toFile()
         val ccDir = File(configRoot, Key.CUSTOMCRAFTING_NAMESPACE)
         configurationManager = ConfigurationManagerImpl(this, ccDir)
-        dataManager = DataManagerCommon(this, ccDir)
+        resourceManager = ResourceManagerCommon(this, ccDir)
     }
 
     override fun onInit() {
@@ -45,8 +45,8 @@ class CustomCraftingFabric(
         logger.info("Loading ${CUSTOMCRAFTING_NAMESPACE}...")
         configurationManager.load()
 
-        dataManager.resourceLoader.registerListener(recipeManager)
-        dataManager.loadData()
+        resourceManager.resourceLoader.registerListener(recipeManager)
+        resourceManager.loadResources()
 
         (mcServer.recipeManager as RecipeManagerCustomRecipesExt).registerProxyRecipes()
     }

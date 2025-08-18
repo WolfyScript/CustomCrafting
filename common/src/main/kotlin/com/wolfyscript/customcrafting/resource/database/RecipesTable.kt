@@ -14,8 +14,8 @@ object RecipesTable : Table("recipes") {
     val name = varchar("name", 255)
     val config = json(
         "config",
-        { CustomCraftingProvider.get().dataManager.jacksonObjectMapper.writeValueAsString(it) },
-        { CustomCraftingProvider.get().dataManager.jacksonObjectMapper.readValue<CustomRecipe<*,*>>(it) })
+        { CustomCraftingProvider.get().resourceManager.jacksonObjectMapper.writeValueAsString(it) },
+        { CustomCraftingProvider.get().resourceManager.jacksonObjectMapper.readValue<CustomRecipe<*,*>>(it) })
 
     override val primaryKey = PrimaryKey(dir, name)
 
