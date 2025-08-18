@@ -9,7 +9,7 @@
     "CrafterMenuMixin",
     "CrafterMixin",
     "CraftingInputMixin",
-    "CraftingMenuEvalContextMixin",
+    "CraftingMenuMixin",
     "GrindstoneMenuMixin",
     "GrindstoneRepairSlot0Mixin",
     "GrindstoneRepairSlot1Mixin",
@@ -17,6 +17,7 @@
     "RecipeCacheMixin",
     "RecipeManagerCustomRecipeMixin",
     "RecipeSerializerMixin",
+    "ResultContainerMixin",
     "SingleRecipeInputMixin",
     "SmithingMenuMixin",
     "SmithingRecipeInputMixin"
