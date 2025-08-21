@@ -9,10 +9,12 @@ import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomRecipeShapeless
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomSmeltingRecipeProxy
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomSmithingRecipeProxy
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomSmokingRecipeProxy
+import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomStonecutterRecipeProxy
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
+import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting
 import com.wolfyscript.customcrafting.recipes.RecipeReference
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
@@ -66,6 +68,10 @@ object RecipeRegistrationUtils {
             is CustomRecipeSmithing -> {
                 this as RecipeReference<CustomRecipeSmithing>
                 CustomSmithingRecipeProxy(this)
+            }
+            is CustomRecipeStonecutting -> {
+                this as RecipeReference<CustomRecipeStonecutting>
+                CustomStonecutterRecipeProxy(this)
             }
             else -> null
         }
