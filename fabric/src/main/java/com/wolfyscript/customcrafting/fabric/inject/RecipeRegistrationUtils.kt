@@ -16,8 +16,10 @@ import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting
 import com.wolfyscript.customcrafting.recipes.RecipeReference
+import com.wolfyscript.scafall.wrappers.utils.unwrap
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.crafting.RecipeHolder
 
 object RecipeRegistrationUtils {
@@ -29,9 +31,9 @@ object RecipeRegistrationUtils {
         customCrafting.recipeManager.index.values().forEach {
             customCrafting.logger.info("  -> ${it.key}")
             val proxyRecipe = it.toVanillaProxyRecipe()
-            if (proxyRecipe != null) {
-                customCrafting.logger.info("  proxy: ${proxyRecipe.id().location()}")
-                list.add(proxyRecipe)
+            proxyRecipe.forEach { recipe ->
+                customCrafting.logger.info("  proxy: ${recipe.id().location()}")
+                list.add(recipe)
             }
         }
         return list
@@ -43,8 +45,8 @@ object RecipeRegistrationUtils {
         return mutableRecipes
     }
 
-    fun RecipeReference<*>.toVanillaProxyRecipe(): RecipeHolder<*>? {
-        val recipe = this.value ?: return null
+    fun RecipeReference<*>.toVanillaProxyRecipe(): List<RecipeHolder<*>> {
+        val recipe = this.value ?: return emptyList()
         val proxy = when (recipe) {
             is CustomRecipeCrafting -> {
                 this as RecipeReference<CustomRecipeCrafting>
@@ -71,15 +73,24 @@ object RecipeRegistrationUtils {
             }
             is CustomRecipeStonecutting -> {
                 this as RecipeReference<CustomRecipeStonecutting>
+                recipe as CustomRecipeStonecutting
+
+                if (recipe.flattenResult) {
+                    return recipe.result.choices.all().mapIndexed { index, result ->
+                        val key = ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(key.namespace, "${key.value}_$index"))
+                        RecipeHolder(key, CustomStonecutterRecipeProxy(this, result.create().unwrap()))
+                    }.toList()
+                }
+
                 CustomStonecutterRecipeProxy(this)
             }
             else -> null
         }
         if (proxy != null) {
             val key = ResourceKey.create(Registries.RECIPE, this.key.toMc())
-            return RecipeHolder(key, proxy)
+            return listOf(RecipeHolder(key, proxy))
         }
-        return null
+        return emptyList()
     }
 
 }

@@ -10,7 +10,8 @@ class CustomRecipeStonecuttingImpl(
     override val priority: Int,
     override val conditions: RecipeConditions,
     override val source: Ingredient,
-    override val result: RecipeResult
+    override val result: RecipeResult,
+    override val flattenResult: Boolean
 ) : CustomRecipeStonecutting {
 
     override fun evaluate(

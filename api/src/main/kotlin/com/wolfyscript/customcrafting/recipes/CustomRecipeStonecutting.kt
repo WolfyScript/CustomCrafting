@@ -12,4 +12,12 @@ interface CustomRecipeStonecutting : CustomRecipe<RecipeInput.SingleSlotRecipeIn
 
     val result: RecipeResult
 
+    /**
+     * Creates a proxy recipe (vanilla recipe) for each result item.
+     * (basically separating it into multiple stonecutter buttons)
+     *
+     * Actions and other Result settings apply to all of those recipes.
+     */
+    val flattenResult: Boolean
+
 }

@@ -9,6 +9,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState
 import com.wolfyscript.customcrafting.util.toMc
 import com.wolfyscript.customcrafting.util.toMcDisplay
+import com.wolfyscript.scafall.wrappers.utils.snapshot
 import com.wolfyscript.scafall.wrappers.utils.unwrap
 import net.minecraft.core.HolderLookup
 import net.minecraft.world.item.ItemStack
@@ -44,11 +45,28 @@ fun RecipeReference<CustomRecipeStonecutting>.assemble(
     return recipe.result.compute(resultInfo, context, Random).unwrap()
 }
 
-class CustomStonecutterRecipeProxy(val recipe: RecipeReference<CustomRecipeStonecutting>) : StonecutterRecipe(
-    "",
-    recipe.value!!.source.toMc(),
-    recipe.value!!.result.choices.stacks.first().create().unwrap(),
-), ProxyRecipe {
+class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {
+
+    val recipe: RecipeReference<CustomRecipeStonecutting>
+    val split: Boolean
+
+    constructor(recipe: RecipeReference<CustomRecipeStonecutting>) : super(
+        "",
+        recipe.value!!.source.toMc(),
+        recipe.value!!.result.choices.stacks.first().create().unwrap()
+    ) {
+        this.recipe = recipe
+        split = false
+    }
+
+    internal constructor(recipe: RecipeReference<CustomRecipeStonecutting>, result: ItemStack) : super(
+        "",
+        recipe.value!!.source.toMc(),
+        result
+    ) {
+        this.recipe = recipe
+        split = true
+    }
 
     override fun display(): List<RecipeDisplay> {
         return listOf(
@@ -61,6 +79,9 @@ class CustomStonecutterRecipeProxy(val recipe: RecipeReference<CustomRecipeStone
     }
 
     override fun resultDisplay(): SlotDisplay {
+        if (split) {
+            return super.resultDisplay()
+        }
         return recipe.value?.result?.toMcDisplay() ?: SlotDisplay.Empty.INSTANCE
     }
 
@@ -68,8 +89,17 @@ class CustomStonecutterRecipeProxy(val recipe: RecipeReference<CustomRecipeStone
         return recipe.matches(singleRecipeInput, level)
     }
 
-    override fun assemble(singleRecipeInput: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack {
-        return recipe.assemble(singleRecipeInput, provider)
+    override fun assemble(input: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack {
+        if (split) {
+            val recipeVal = recipe.value ?: return ItemStack.EMPTY
+            input as RecipeInputSingleSlotCustomExt
+            val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
+            val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
+            val stack = result().snapshot().createStack()
+            recipeVal.result.modifier.modify(resultInfo, stack, context)
+            return stack.unwrap()
+        }
+        return recipe.assemble(input, provider)
     }
 
 }
