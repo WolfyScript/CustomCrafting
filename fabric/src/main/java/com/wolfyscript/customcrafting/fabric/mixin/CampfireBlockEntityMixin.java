@@ -1,9 +1,8 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCookingCustomExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
-import com.wolfyscript.scafall.ScafallProvider;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
 import net.minecraft.core.BlockPos;
@@ -77,7 +76,7 @@ public class CampfireBlockEntityMixin extends BlockEntity {
 
     @Redirect(method = "placeFood", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/RecipeManager;getRecipeFor(Lnet/minecraft/world/item/crafting/RecipeType;Lnet/minecraft/world/item/crafting/RecipeInput;Lnet/minecraft/world/level/Level;)Ljava/util/Optional;"))
     private Optional<RecipeHolder<CampfireCookingRecipe>> injectCustomDataIntoSingleRecipeInputRedirect(RecipeManager instance, RecipeType<CampfireCookingRecipe> recipeType, RecipeInput input, Level level, ServerLevel serverLevel, LivingEntity livingEntity, ItemStack itemStack) {
-        ((RecipeInputCookingCustomExt) input).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.CookingRecipeInput.Companion.of(MinecraftWrapperKt.wrap(itemStack), null));
+        ((RecipeInputSingleSlotCustomExt) input).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.SingleSlotRecipeInput.Companion.of(MinecraftWrapperKt.wrap(itemStack)));
 
         return instance.getRecipeFor(recipeType, (SingleRecipeInput) input, level);
     }
@@ -89,7 +88,7 @@ public class CampfireBlockEntityMixin extends BlockEntity {
         ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check
     ) {
         var source = MinecraftWrapperKt.wrap(singleRecipeInput.item());
-        ((RecipeInputCookingCustomExt) (Object) singleRecipeInput).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.CookingRecipeInput.Companion.of(source, null));
+        ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.SingleSlotRecipeInput.Companion.of(source));
         return singleRecipeInput;
     }
 

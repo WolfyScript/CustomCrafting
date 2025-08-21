@@ -3,16 +3,14 @@ package com.wolfyscript.customcrafting.factories
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.RecipeReference
 import com.wolfyscript.customcrafting.recipes.RecipeReferenceImpl
-import com.wolfyscript.customcrafting.recipes.data.CookingRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
-import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixDataImpl
 import com.wolfyscript.customcrafting.recipes.data.CraftingRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.GrindingRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.MixingRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.data.RepairingRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.SmithingRecipeInputImpl
-import com.wolfyscript.customcrafting.recipes.data.StonecuttingRecipeInputImpl
+import com.wolfyscript.customcrafting.recipes.data.SingleSlotRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.toCraftingMatrixData
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
@@ -28,10 +26,6 @@ class RecipeFactoryCommon : RecipeFactory {
 
     override fun createMatrixData(ingredients: List<ItemStack?>): CraftingMatrixData {
         return ingredients.toCraftingMatrixData()
-    }
-
-    override fun createCookingRecipeInput(source: ItemStack, fuel: ItemStack?): RecipeInput.CookingRecipeInput {
-        return CookingRecipeInputImpl(source, fuel)
     }
 
     override fun createCraftingRecipeInput(matrixData: CraftingMatrixData): RecipeInput.CraftingRecipeInput {
@@ -65,7 +59,7 @@ class RecipeFactoryCommon : RecipeFactory {
         return SmithingRecipeInputImpl(template, base, addition)
     }
 
-    override fun createStonecuttingRecipeInput(source: ItemStack): RecipeInput.StonecuttingRecipeInput {
-        return StonecuttingRecipeInputImpl(source)
+    override fun createSingleSlotRecipeInput(source: ItemStack): RecipeInput.SingleSlotRecipeInput {
+        return SingleSlotRecipeInputImpl(source)
     }
 }

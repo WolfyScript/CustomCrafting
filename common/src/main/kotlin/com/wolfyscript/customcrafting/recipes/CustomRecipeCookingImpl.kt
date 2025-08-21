@@ -21,7 +21,7 @@ class CustomRecipeCookingImpl(
 ) : CustomRecipeCooking {
 
     override fun evaluate(
-        input: RecipeInput.CookingRecipeInput,
+        input: RecipeInput.SingleSlotRecipeInput,
         context: EvaluationContext,
     ): RecipeEvaluationResult.Data? {
         if (!conditions.areSatisfied(context)) {
@@ -39,7 +39,7 @@ class CustomRecipeCookingImpl(
     ) : CustomRecipeCooking.WorkstationProcessing.Smelting {
 
         override fun evaluate(
-            input: RecipeInput.CookingRecipeInput,
+            input: RecipeInput.SingleSlotRecipeInput,
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeEvaluationResult.Data? {
@@ -67,7 +67,7 @@ class CustomRecipeCookingImpl(
     ) : CustomRecipeCooking.WorkstationProcessing.Blasting {
 
         override fun evaluate(
-            input: RecipeInput.CookingRecipeInput,
+            input: RecipeInput.SingleSlotRecipeInput,
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeEvaluationResult.Data? {
@@ -93,7 +93,7 @@ class CustomRecipeCookingImpl(
     ) : CustomRecipeCooking.WorkstationProcessing.Smoking {
 
         override fun evaluate(
-            input: RecipeInput.CookingRecipeInput,
+            input: RecipeInput.SingleSlotRecipeInput,
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeEvaluationResult.Data? {
@@ -122,7 +122,7 @@ class CustomRecipeCookingImpl(
     ) : CustomRecipeCooking.WorkstationProcessing.Campfire {
 
         override fun evaluate(
-            input: RecipeInput.CookingRecipeInput,
+            input: RecipeInput.SingleSlotRecipeInput,
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeEvaluationResult.Data? {

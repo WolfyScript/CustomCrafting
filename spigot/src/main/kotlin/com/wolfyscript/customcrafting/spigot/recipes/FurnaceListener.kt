@@ -42,7 +42,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
 
         val customBackingRecipe = bukkitRecipe.isPlaceholder() || bukkitRecipe.isDisplay()
 
-        val input = RecipeInput.CookingRecipeInput.of(source.wrap(), null)
+        val input = RecipeInput.SingleSlotRecipeInput.of(source.wrap())
         val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
 
         val customRecipeData = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)

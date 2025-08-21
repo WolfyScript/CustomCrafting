@@ -8,23 +8,6 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
  */
 interface RecipeInput {
 
-    /**
-     * The input for all the cooking recipes
-     */
-    interface CookingRecipeInput : RecipeInput {
-
-        val source: ItemStack
-
-        val fuel: ItemStack?
-
-        companion object {
-
-            fun of(source: ItemStack, fuel: ItemStack?) = CustomCraftingProvider.get().factories.recipeFactory.createCookingRecipeInput(source, fuel)
-
-        }
-
-    }
-
     interface CraftingRecipeInput : RecipeInput {
 
         val matrixData: CraftingMatrixData
@@ -79,13 +62,13 @@ interface RecipeInput {
 
     }
 
-    interface StonecuttingRecipeInput : RecipeInput {
+    interface SingleSlotRecipeInput : RecipeInput {
 
         val source: ItemStack
 
         companion object {
 
-            fun of(source: ItemStack) = CustomCraftingProvider.get().factories.recipeFactory.createStonecuttingRecipeInput(source)
+            fun of(source: ItemStack) = CustomCraftingProvider.get().factories.recipeFactory.createSingleSlotRecipeInput(source)
 
         }
 

@@ -28,7 +28,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         val source = event.source
 
         val context = EvaluationContextImpl(null, event.block.location.toPreciseGlobal())
-        val input = RecipeInput.CookingRecipeInput.of(source.wrap(), null)
+        val input = RecipeInput.SingleSlotRecipeInput.of(source.wrap())
         val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
 
         if (data == null || data.recipe.value == null) {
@@ -66,7 +66,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         } ?: return // Cannot place item. No empty slot!
 
         val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
-        val input = RecipeInput.CookingRecipeInput.of(stack.wrap(), null)
+        val input = RecipeInput.SingleSlotRecipeInput.of(stack.wrap())
         val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
 
         val recipe = data?.recipe?.value ?: return // No recipe for item. Vanilla behaviour
@@ -103,7 +103,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
 
         val source = event.source
         val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
-        val input = RecipeInput.CookingRecipeInput.of(source.wrap(), null)
+        val input = RecipeInput.SingleSlotRecipeInput.of(source.wrap())
         val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
         if (data == null) {
             return

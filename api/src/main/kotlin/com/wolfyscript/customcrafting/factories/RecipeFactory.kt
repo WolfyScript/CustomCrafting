@@ -13,8 +13,6 @@ interface RecipeFactory {
 
     fun createMatrixData(ingredients: List<ItemStack?>) : CraftingMatrixData
 
-    fun createCookingRecipeInput(source: ItemStack, fuel: ItemStack?) : RecipeInput.CookingRecipeInput
-
     fun createCraftingRecipeInput(matrixData: CraftingMatrixData) : RecipeInput.CraftingRecipeInput
 
     fun createGrindingRecipeInput(base: ItemStack?, addition: ItemStack?) : RecipeInput.GrindingRecipeInput
@@ -25,6 +23,6 @@ interface RecipeFactory {
 
     fun createSmithingRecipeInput(template: ItemStack?, base: ItemStack?, addition: ItemStack?) : RecipeInput.SmithingRecipeInput
 
-    fun createStonecuttingRecipeInput(source: ItemStack) : RecipeInput.StonecuttingRecipeInput
+    fun createSingleSlotRecipeInput(source: ItemStack) : RecipeInput.SingleSlotRecipeInput
 
 }

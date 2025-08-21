@@ -14,7 +14,7 @@ class CustomRecipeStonecuttingImpl(
 ) : CustomRecipeStonecutting {
 
     override fun evaluate(
-        input: RecipeInput.StonecuttingRecipeInput,
+        input: RecipeInput.SingleSlotRecipeInput,
         context: EvaluationContext
     ): RecipeEvaluationResult.Data? {
         if (!conditions.areSatisfied(context)) {

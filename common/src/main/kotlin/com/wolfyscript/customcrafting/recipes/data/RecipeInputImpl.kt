@@ -2,11 +2,6 @@ package com.wolfyscript.customcrafting.recipes.data
 
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
-data class CookingRecipeInputImpl(
-    override val source: ItemStack,
-    override val fuel: ItemStack?
-) : RecipeInput.CookingRecipeInput
-
 data class CraftingRecipeInputImpl(override val matrixData: CraftingMatrixData) : RecipeInput.CraftingRecipeInput
 
 data class GrindingRecipeInputImpl(
@@ -28,5 +23,5 @@ data class SmithingRecipeInputImpl(
     override val addition: ItemStack?
 ) : RecipeInput.SmithingRecipeInput
 
-data class StonecuttingRecipeInputImpl(override val source: ItemStack) : RecipeInput.StonecuttingRecipeInput
+data class SingleSlotRecipeInputImpl(override val source: ItemStack) : RecipeInput.SingleSlotRecipeInput
 

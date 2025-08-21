@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCookingCustomExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
+import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
@@ -58,7 +59,7 @@ public abstract class AbstractFurnaceBlockEntityMixin {
     private static SingleRecipeInput injectCustomDataIntoSingleRecipeInput(SingleRecipeInput singleRecipeInput, ServerLevel level, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity furnace) {
         var source = MinecraftWrapperKt.wrap(furnace.getItem(0));
         var fuel = MinecraftWrapperKt.wrap(furnace.getItem(1));
-        ((RecipeInputCookingCustomExt) (Object) singleRecipeInput).setCustomInput(RecipeInput.CookingRecipeInput.Companion.of(source, fuel));
+        ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).setCustomInput(RecipeInput.SingleSlotRecipeInput.Companion.of(source));
         return singleRecipeInput;
     }
 
@@ -77,7 +78,7 @@ public abstract class AbstractFurnaceBlockEntityMixin {
         int maxStackSize,
         ServerLevel level, BlockPos blockPos, BlockState blockState, AbstractFurnaceBlockEntity entity
     ) {
-        var resultInfo = ((RecipeInputCookingCustomExt) (Object) singleRecipeInput).getResultInfo();
+        var resultInfo = ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).getResultInfo();
         if (resultInfo == null || resultInfo.getRecipe().getValue() != null) {
             // Not a custom recipe, use vanilla logic
             if (recipe != null && canBurn(registryAccess, recipe, singleRecipeInput, items, maxStackSize)) {
@@ -90,7 +91,10 @@ public abstract class AbstractFurnaceBlockEntityMixin {
         var context = new EvaluationContextImpl(null, MinecraftWrapperKt.wrap(blockPos.getCenter(), key));
 
         var customRecipe = resultInfo.getRecipe().getValue();
-        var resultStack = MinecraftWrapperKt.unwrap(customRecipe.getResult().compute(resultInfo, context, Random.Default));
+        if (!(customRecipe instanceof CustomRecipeCooking cookingRecipe)) {
+            return false;
+        }
+        var resultStack = MinecraftWrapperKt.unwrap(cookingRecipe.getResult().compute(resultInfo, context, Random.Default));
         if (resultStack.isEmpty()) {
             return false;
         }
@@ -106,7 +110,7 @@ public abstract class AbstractFurnaceBlockEntityMixin {
             existingResultStack.grow(resultStack.getCount());
         }
 
-        var newStack = customRecipe.getProcessing().getSource().shrink(MinecraftWrapperKt.wrap(items.get(0)), 1);
+        var newStack = cookingRecipe.getProcessing().getSource().shrink(MinecraftWrapperKt.wrap(items.get(0)), 1);
         items.set(0, MinecraftWrapperKt.unwrap(newStack));
         return true;
     }
