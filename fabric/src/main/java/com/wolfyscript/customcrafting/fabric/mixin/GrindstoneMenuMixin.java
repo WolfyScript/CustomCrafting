@@ -76,7 +76,7 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
         ci.cancel();
 
         var result = data.getRecipe().getValue().getProcess().compute(data, input, context, RandomKt.Random(seed));
-        ((GrindstoneResultSlotsExt) resultSlots).setResultInfo(data);
+        ((GrindstoneResultSlotsExt) getSlot(2)).setResultInfo(data);
         resultSlots.setItem(0, MinecraftWrapperKt.unwrap(result));
         broadcastChanges();
     }

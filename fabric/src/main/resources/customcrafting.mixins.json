@@ -22,7 +22,9 @@
     "SingleRecipeInputMixin",
     "SmithingMenuMixin",
     "SmithingRecipeInputMixin",
-    "StonecutterMenuMixin"
+    "StonecutterMenuAccessor",
+    "StonecutterMenuMixin",
+    "StonecutterResultSlotMixin"
   ],
   "server": [
   ],
