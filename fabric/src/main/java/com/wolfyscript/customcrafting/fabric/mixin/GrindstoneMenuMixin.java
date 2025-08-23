@@ -2,14 +2,14 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider;
 import com.wolfyscript.customcrafting.fabric.inject.GrindstoneResultSlotsExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipesState;
+import com.wolfyscript.customcrafting.fabric.inject.RecipesStateKt;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.RecipeTypes;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
-import com.wolfyscript.scafall.ScafallProvider;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
-import kotlin.random.Random;
-import kotlin.random.RandomKt;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -38,15 +38,9 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
     private Container resultSlots;
     @Unique
     private Player player;
-    private long seed = Random.Default.nextLong(); // TODO: Store these seeds on the player
 
     protected GrindstoneMenuMixin(@Nullable MenuType<?> menuType, int containerId) {
         super(menuType, containerId);
-    }
-
-    @Unique
-    private void resetSeed() {
-        seed = Random.Default.nextLong();
     }
 
     @Inject(at = @At("TAIL"), method = "<init>(ILnet/minecraft/world/entity/player/Inventory;)V")
@@ -75,7 +69,12 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
         }
         ci.cancel();
 
-        var result = data.getRecipe().getValue().getProcess().compute(data, input, context, RandomKt.Random(seed));
+        var result = data.getRecipe().getValue().getProcess().compute(
+            data,
+            input,
+            context,
+            RecipesStateKt.getRecipeRandom((ServerPlayer) player, RecipesState.Companion.getGrinding())
+        );
         ((GrindstoneResultSlotsExt) getSlot(2)).setResultInfo(data);
         resultSlots.setItem(0, MinecraftWrapperKt.unwrap(result));
         broadcastChanges();

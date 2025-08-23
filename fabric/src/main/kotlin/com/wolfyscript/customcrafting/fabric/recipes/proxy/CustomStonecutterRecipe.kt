@@ -2,6 +2,8 @@ package com.wolfyscript.customcrafting.fabric.recipes.proxy
 
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt
+import com.wolfyscript.customcrafting.fabric.inject.RecipesState
+import com.wolfyscript.customcrafting.fabric.inject.getRecipeRandom
 import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeReference
@@ -12,6 +14,7 @@ import com.wolfyscript.customcrafting.util.toMcDisplay
 import com.wolfyscript.scafall.wrappers.utils.snapshot
 import com.wolfyscript.scafall.wrappers.utils.unwrap
 import net.minecraft.core.HolderLookup
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.crafting.SingleRecipeInput
@@ -41,8 +44,9 @@ fun RecipeReference<CustomRecipeStonecutting>.assemble(
     input as RecipeInputSingleSlotCustomExt
     val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
     val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
+    val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeRandom(RecipesState.stonecutting) ?: return ItemStack.EMPTY
 
-    return recipe.result.compute(resultInfo, context, Random).unwrap()
+    return recipe.result.compute(resultInfo, context, random).unwrap()
 }
 
 class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {

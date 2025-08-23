@@ -1,7 +1,9 @@
 package com.wolfyscript.customcrafting.fabric.recipes.proxy
 
+import com.wolfyscript.customcrafting.fabric.inject.RecipesState
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
+import com.wolfyscript.customcrafting.fabric.inject.getRecipeRandom
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
@@ -11,11 +13,11 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState
 import com.wolfyscript.scafall.wrappers.utils.unwrap
 import net.minecraft.core.HolderLookup
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.*
 import net.minecraft.world.level.Level
 import kotlin.collections.mapValues
-import kotlin.random.Random
 
 fun CraftingFormula.Shaped.toShapedRecipePattern(): ShapedRecipePattern {
     this as ShapedCraftingFormulaImpl
@@ -38,9 +40,10 @@ private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: Crafting
     val recipe = value ?: return ItemStack.EMPTY
     if (recipeInput !is RecipeInputCraftingCustomExt) return ItemStack.EMPTY
     val resultInfo = recipeInput.resultInfo ?: return ItemStack.EMPTY
-    val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
+    val context = EvaluationContextState.current ?: return ItemStack.EMPTY
+    val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeRandom(RecipesState.crafting) ?: return ItemStack.EMPTY
 
-    val stack = recipe.result.compute(resultInfo, context, Random)
+    val stack = recipe.result.compute(resultInfo, context, random)
     return stack.unwrap()
 }
 

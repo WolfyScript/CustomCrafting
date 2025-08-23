@@ -1,6 +1,5 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
-import com.wolfyscript.customcrafting.fabric.inject.CCRecipeSerializerExt;
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomSmithingRecipeProxy;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -12,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RecipeSerializer.class)
-interface RecipeSerializerMixin extends CCRecipeSerializerExt {
+interface RecipeSerializerMixin {
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void registerProxyRecipes(CallbackInfo ci) {

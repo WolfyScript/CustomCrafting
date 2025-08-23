@@ -3,6 +3,10 @@ package com.wolfyscript.customcrafting.fabric.inject;
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Allows adding result info to a ResultContainer.
+ * Care needs to be taken when setting and getting the result info, as the result info type is not specified.
+ */
 public interface CCResultContainerExt {
 
     @Nullable RecipeEvaluationResult<?,?> getResultInfo();

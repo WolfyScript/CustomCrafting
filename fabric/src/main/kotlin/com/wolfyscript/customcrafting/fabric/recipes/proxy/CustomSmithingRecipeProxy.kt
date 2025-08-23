@@ -5,6 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSmithingCustomExt
+import com.wolfyscript.customcrafting.fabric.inject.RecipesState
+import com.wolfyscript.customcrafting.fabric.inject.getRecipeRandom
 import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeReference
@@ -20,6 +22,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.crafting.*
@@ -28,7 +31,6 @@ import net.minecraft.world.item.crafting.display.SlotDisplay
 import net.minecraft.world.item.crafting.display.SmithingRecipeDisplay
 import net.minecraft.world.level.Level
 import java.util.*
-import kotlin.random.Random
 
 class CustomSmithingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeSmithing>) : SmithingRecipe, ProxyRecipe {
 
@@ -80,10 +82,11 @@ class CustomSmithingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeSm
         val recipe = customRecipe.value ?: return ItemStack.EMPTY
         if (input !is RecipeInputSmithingCustomExt) return ItemStack.EMPTY
         val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
-        val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
-
-        val stack = recipe.result.compute(resultInfo, context, Random)
         val baseStack = input.customInput?.base ?: return ItemStack.EMPTY
+        val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
+        val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeRandom(RecipesState.smithing) ?: return ItemStack.EMPTY
+
+        val stack = recipe.result.compute(resultInfo, context, random)
         SmithingUtils.copyDataComponentsTo(baseStack, stack, recipe.copyOptions!!)
         return stack.unwrap()
     }

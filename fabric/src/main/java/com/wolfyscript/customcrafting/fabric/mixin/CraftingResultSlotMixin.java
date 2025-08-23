@@ -3,13 +3,15 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipesState;
+import com.wolfyscript.customcrafting.fabric.inject.RecipesStateKt;
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
-import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
 import kotlin.Unit;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -25,13 +27,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ResultSlot.class)
-public abstract class ResultSlotMixin extends Slot {
+public abstract class CraftingResultSlotMixin extends Slot {
 
     @Shadow
     @Final
     private CraftingContainer craftSlots;
 
-    private ResultSlotMixin(Container container, int slot, int x, int y) {
+    private CraftingResultSlotMixin(Container container, int slot, int x, int y) {
         super(container, slot, x, y);
     }
 
@@ -54,6 +56,8 @@ public abstract class ResultSlotMixin extends Slot {
         var key = Key.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
         var wrappedPosition = MinecraftWrapperKt.wrap(player.position(), key);
         var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), wrappedPosition);
+
+        RecipesStateKt.resetRecipeSeed((ServerPlayer) player, RecipesState.Companion.getCrafting());
 
         craftingRecipe.shrink(customInput, (RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>) resultInfo, context, 1, (slot, stack1) -> {
             craftSlots.setItem(slot, MinecraftWrapperKt.unwrap(stack1));

@@ -1,18 +1,19 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipesState;
+import com.wolfyscript.customcrafting.fabric.inject.RecipesStateKt;
 import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.item.ItemStack;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,9 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "net.minecraft.world.inventory.StonecutterMenu$2")
 public class StonecutterResultSlotMixin {
 
-    @Shadow
-    @Final
-    private ContainerLevelAccess val$access;
     @Unique
     private StonecutterMenu stonecutterMenu;
 
@@ -49,6 +47,7 @@ public class StonecutterResultSlotMixin {
         var level = player.level();
         var dimensionType = Key.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
         var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), dimensionType));
+        RecipesStateKt.resetRecipeSeed((ServerPlayer) player, RecipesState.Companion.getStonecutting());
         ((CustomRecipeStonecutting) resultInfo.getRecipe().getValue()).getResult().runActions(context, 1);
     }
 

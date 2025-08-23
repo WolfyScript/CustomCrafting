@@ -1,6 +1,8 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider;
+import com.wolfyscript.customcrafting.fabric.inject.RecipesState;
+import com.wolfyscript.customcrafting.fabric.inject.RecipesStateKt;
 import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.RecipeTypes;
@@ -40,16 +42,9 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
     @Unique
     @Nullable
     private RecipeEvaluationResult<RecipeEvaluationResult.RepairingRecipeData, CustomRecipeRepairing> resultInfo = null;
-    @Unique
-    private long seed = Random.Default.nextLong();
 
     private AnvilMenuMixin(@Nullable MenuType<?> menuType, int containerId, Inventory inventory, ContainerLevelAccess access, ItemCombinerMenuSlotDefinition slotDefinition) {
         super(menuType, containerId, inventory, access, slotDefinition);
-    }
-
-    @Unique
-    private void resetSeed() {
-        seed = Random.Default.nextLong();
     }
 
     @Inject(at = @At("HEAD"), method = "createResult", cancellable = true)
@@ -69,7 +64,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
 
         resultInfo = data;
         var recipe = data.getRecipe().getValue();
-        var result = recipe.getProcess().compute(data, input, context, RandomKt.Random(seed));
+        var result = recipe.getProcess().compute(data, input, context, RecipesStateKt.getRecipeRandom((ServerPlayer) player, RecipesState.Companion.getRepairing()));
 
         getSlot(getResultSlot()).set(MinecraftWrapperKt.unwrap(result));
     }
@@ -106,7 +101,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
 
         resultInfo = null;
         cost.set(0);
-        resetSeed();
+        RecipesStateKt.resetRecipeSeed((ServerPlayer) player, RecipesState.Companion.getRepairing());
 
         // Copying the rest like text filtering and anvil damage logic from vanilla
         if (player instanceof ServerPlayer serverPlayer
