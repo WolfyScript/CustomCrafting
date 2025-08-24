@@ -1,19 +1,19 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
-import com.wolfyscript.customcrafting.fabric.inject.RecipesState;
-import com.wolfyscript.customcrafting.fabric.inject.CraftingStatePlayerExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeResultCacheExt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateCache;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(ServerPlayer.class)
-public class ServerPlayerMixin implements CraftingStatePlayerExt {
+public class ServerPlayerMixin implements RecipeResultCacheExt {
 
     @Unique
-    private final RecipesState recipesState = new RecipesState();
+    private final RecipeResultStateCache cache = new RecipeResultStateCache();
 
-    public RecipesState getCraftingState() {
-        return recipesState;
+    public RecipeResultStateCache customcrafting$getRecipeResultStateCache() {
+        return cache;
     }
 
 }

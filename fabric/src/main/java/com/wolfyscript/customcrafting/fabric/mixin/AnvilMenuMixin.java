@@ -1,17 +1,14 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider;
-import com.wolfyscript.customcrafting.fabric.inject.RecipesState;
-import com.wolfyscript.customcrafting.fabric.inject.RecipesStateKt;
-import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing;
-import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
-import com.wolfyscript.customcrafting.recipes.RecipeTypes;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
+import com.wolfyscript.customcrafting.recipes.*;
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
+import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
 import kotlin.random.Random;
-import kotlin.random.RandomKt;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.StringUtil;
@@ -64,10 +61,26 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
 
         resultInfo = data;
         var recipe = data.getRecipe().getValue();
-        var result = recipe.getProcess().compute(data, input, context, RecipesStateKt.getRecipeRandom((ServerPlayer) player, RecipesState.Companion.getRepairing()));
+        var result = recipe.getProcess().compute(data, input, context, getResultRandom(player, resultInfo.getRecipe()));
 
         getSlot(getResultSlot()).set(MinecraftWrapperKt.unwrap(result));
     }
+
+    @Unique
+    private Random getResultRandom(Player player, RecipeReference<CustomRecipeRepairing> recipe) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            var key = recipe.getKey();
+            if (recipe.getValue() == null) return Random.Default;
+            var process = recipe.getValue().getProcess();
+            if (process instanceof ProcessRepairing.FixedResult fixedResultProcess) {
+                return RecipeResultStateKt.getRecipeResultCachedRandom(serverPlayer, key, fixedResultProcess.getResult().getAlwaysKeepPrevious());
+            }
+            return RecipeResultStateKt.getRecipeResultCachedRandom(serverPlayer, key, false);
+        }
+        return Random.Default;
+
+    }
+
 
     @Inject(at = @At("HEAD"), method = "onTake", cancellable = true)
     private void onTakeCustomRecipeOutput(Player player, ItemStack stack, CallbackInfo ci) {
@@ -101,7 +114,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
 
         resultInfo = null;
         cost.set(0);
-        RecipesStateKt.resetRecipeSeed((ServerPlayer) player, RecipesState.Companion.getRepairing());
+        RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
 
         // Copying the rest like text filtering and anvil damage logic from vanilla
         if (player instanceof ServerPlayer serverPlayer

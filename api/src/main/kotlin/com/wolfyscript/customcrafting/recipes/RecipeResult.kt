@@ -11,6 +11,8 @@ interface RecipeResult {
 
     val choices: RecipeChoices
 
+    val alwaysKeepPrevious: Boolean
+
     /**
      * The modifier applied to the result of the recipe.
      */

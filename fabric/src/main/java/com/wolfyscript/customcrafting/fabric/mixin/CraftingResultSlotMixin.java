@@ -3,8 +3,7 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
-import com.wolfyscript.customcrafting.fabric.inject.RecipesState;
-import com.wolfyscript.customcrafting.fabric.inject.RecipesStateKt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
@@ -57,7 +56,7 @@ public abstract class CraftingResultSlotMixin extends Slot {
         var wrappedPosition = MinecraftWrapperKt.wrap(player.position(), key);
         var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), wrappedPosition);
 
-        RecipesStateKt.resetRecipeSeed((ServerPlayer) player, RecipesState.Companion.getCrafting());
+        RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
 
         craftingRecipe.shrink(customInput, (RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>) resultInfo, context, 1, (slot, stack1) -> {
             craftSlots.setItem(slot, MinecraftWrapperKt.unwrap(stack1));

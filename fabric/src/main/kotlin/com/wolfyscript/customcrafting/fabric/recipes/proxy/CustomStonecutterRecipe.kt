@@ -2,8 +2,7 @@ package com.wolfyscript.customcrafting.fabric.recipes.proxy
 
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt
-import com.wolfyscript.customcrafting.fabric.inject.RecipesState
-import com.wolfyscript.customcrafting.fabric.inject.getRecipeRandom
+import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
 import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeReference
@@ -23,7 +22,6 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay
 import net.minecraft.world.item.crafting.display.SlotDisplay
 import net.minecraft.world.item.crafting.display.StonecutterRecipeDisplay
 import net.minecraft.world.level.Level
-import kotlin.random.Random
 
 fun RecipeReference<CustomRecipeStonecutting>.matches(input: SingleRecipeInput, level: Level): Boolean {
     val recipe = value ?: return false
@@ -44,7 +42,7 @@ fun RecipeReference<CustomRecipeStonecutting>.assemble(
     input as RecipeInputSingleSlotCustomExt
     val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
     val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
-    val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeRandom(RecipesState.stonecutting) ?: return ItemStack.EMPTY
+    val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeResultCachedRandom(key, recipe.result.alwaysKeepPrevious) ?: return ItemStack.EMPTY
 
     return recipe.result.compute(resultInfo, context, random).unwrap()
 }

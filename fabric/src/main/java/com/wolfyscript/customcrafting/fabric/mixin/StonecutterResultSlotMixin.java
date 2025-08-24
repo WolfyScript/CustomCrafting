@@ -1,8 +1,7 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
-import com.wolfyscript.customcrafting.fabric.inject.RecipesState;
-import com.wolfyscript.customcrafting.fabric.inject.RecipesStateKt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
 import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.scafall.identifier.Key;
@@ -47,7 +46,7 @@ public class StonecutterResultSlotMixin {
         var level = player.level();
         var dimensionType = Key.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
         var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), dimensionType));
-        RecipesStateKt.resetRecipeSeed((ServerPlayer) player, RecipesState.Companion.getStonecutting());
+        RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
         ((CustomRecipeStonecutting) resultInfo.getRecipe().getValue()).getResult().runActions(context, 1);
     }
 

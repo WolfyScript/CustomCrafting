@@ -1,9 +1,8 @@
 package com.wolfyscript.customcrafting.fabric.recipes.proxy
 
-import com.wolfyscript.customcrafting.fabric.inject.RecipesState
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
-import com.wolfyscript.customcrafting.fabric.inject.getRecipeRandom
+import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
@@ -41,7 +40,7 @@ private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: Crafting
     if (recipeInput !is RecipeInputCraftingCustomExt) return ItemStack.EMPTY
     val resultInfo = recipeInput.resultInfo ?: return ItemStack.EMPTY
     val context = EvaluationContextState.current ?: return ItemStack.EMPTY
-    val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeRandom(RecipesState.crafting) ?: return ItemStack.EMPTY
+    val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeResultCachedRandom(key, recipe.result.alwaysKeepPrevious) ?: return ItemStack.EMPTY
 
     val stack = recipe.result.compute(resultInfo, context, random)
     return stack.unwrap()

@@ -5,8 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSmithingCustomExt
-import com.wolfyscript.customcrafting.fabric.inject.RecipesState
-import com.wolfyscript.customcrafting.fabric.inject.getRecipeRandom
+import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
 import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeReference
@@ -84,7 +83,7 @@ class CustomSmithingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeSm
         val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
         val baseStack = input.customInput?.base ?: return ItemStack.EMPTY
         val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
-        val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeRandom(RecipesState.smithing) ?: return ItemStack.EMPTY
+        val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeResultCachedRandom(customRecipe.key, recipe.result.alwaysKeepPrevious) ?: return ItemStack.EMPTY
 
         val stack = recipe.result.compute(resultInfo, context, random)
         SmithingUtils.copyDataComponentsTo(baseStack, stack, recipe.copyOptions!!)

@@ -2,13 +2,16 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider;
 import com.wolfyscript.customcrafting.fabric.inject.GrindstoneResultSlotsExt;
-import com.wolfyscript.customcrafting.fabric.inject.RecipesState;
-import com.wolfyscript.customcrafting.fabric.inject.RecipesStateKt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
+import com.wolfyscript.customcrafting.recipes.CustomRecipeGrinding;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
+import com.wolfyscript.customcrafting.recipes.RecipeReference;
 import com.wolfyscript.customcrafting.recipes.RecipeTypes;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
+import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
+import kotlin.random.Random;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -73,11 +76,26 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
             data,
             input,
             context,
-            RecipesStateKt.getRecipeRandom((ServerPlayer) player, RecipesState.Companion.getGrinding())
+            getResultRandom(player, data.getRecipe())
         );
         ((GrindstoneResultSlotsExt) getSlot(2)).setResultInfo(data);
         resultSlots.setItem(0, MinecraftWrapperKt.unwrap(result));
         broadcastChanges();
+    }
+
+    @Unique
+    private Random getResultRandom(Player player, RecipeReference<CustomRecipeGrinding> recipe) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            var key = recipe.getKey();
+            if (recipe.getValue() == null) return Random.Default;
+            var process = recipe.getValue().getProcess();
+            if (process instanceof ProcessGrinding.FixedResultProcessGrinding fixedResultProcess) {
+                return RecipeResultStateKt.getRecipeResultCachedRandom(serverPlayer, key, fixedResultProcess.getResult().getAlwaysKeepPrevious());
+            }
+            return RecipeResultStateKt.getRecipeResultCachedRandom(serverPlayer, key, false);
+        }
+        return Random.Default;
+
     }
 
 }
