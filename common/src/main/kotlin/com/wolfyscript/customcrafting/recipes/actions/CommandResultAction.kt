@@ -2,7 +2,6 @@ package com.wolfyscript.customcrafting.recipes.actions
 
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.ResultAction
-import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.wrappers.utils.unwrap
 import net.minecraft.commands.CommandSource
 import net.minecraft.commands.CommandSourceStack
@@ -31,16 +30,10 @@ class CommandResultAction(
 
     override fun run(context: EvaluationContext, bulk: Boolean) {
         val player = context.player?.unwrap()
-        val location = context.location?.unwrap()
-        val (pos, level) = if (location != null) {
-            val position = location.first
-            val level = ScafallProvider.get().server.minecraftServer.getLevel(location.second)
-            position to level
-        } else if (player != null) {
-            player.position().to(player.level())
-        } else {
-            return // Requires a level to execute commands either player or location should be specified!
-        }
+        val blockEntity = context.blockEntity?.unwrap()
+        val pos = player?.position() ?: context.blockPos?.unwrap()?.center ?: return
+        val level = player?.level() ?: blockEntity?.level ?: return
+
         if (level !is ServerLevel) {
             return // Why are we not on a server?
         }
