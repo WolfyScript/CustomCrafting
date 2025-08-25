@@ -1,12 +1,18 @@
 package com.wolfyscript.customcrafting.recipes
 
+import com.wolfyscript.scafall.wrappers.ScafallBlockEntity
+import com.wolfyscript.scafall.wrappers.ScafallPlayer
+import com.wolfyscript.scafall.wrappers.world.ScafallBlockPos
 import com.wolfyscript.scafall.wrappers.world.ScafallGlobalPrecisePos
-import com.wolfyscript.scafall.wrappers.world.entity.Player
 
 interface EvaluationContext {
 
-    val player: Player?
+    val player: ScafallPlayer?
 
     val location: ScafallGlobalPrecisePos?
+
+    val blockPos: ScafallBlockPos?
+
+    val blockEntity: ScafallBlockEntity?
 
 }
