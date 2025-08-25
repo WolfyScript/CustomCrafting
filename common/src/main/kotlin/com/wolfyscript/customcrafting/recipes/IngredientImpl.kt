@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.scafall.items.ItemStackRef
+import com.wolfyscript.scafall.wrappers.utils.unwrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 class IngredientImpl(
@@ -28,7 +29,8 @@ class IngredientImpl(
         stack: ItemStack,
         amount: Int,
     ): ItemStack {
-        TODO("Not yet implemented")
+        stack.unwrap().shrink(amount)
+        return stack
     }
 
     override fun toString(): String {
