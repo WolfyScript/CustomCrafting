@@ -111,9 +111,9 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
             getSlot(1).getItem().shrink(count);
         }
 
+        RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
         resultInfo = null;
         cost.set(0);
-        RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
 
         // Copying the rest like text filtering and anvil damage logic from vanilla
         if (player instanceof ServerPlayer serverPlayer
