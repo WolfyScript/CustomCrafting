@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.*
 import net.minecraft.world.level.Level
 import kotlin.collections.mapValues
+import kotlin.random.Random
 
 fun CraftingFormula.Shaped.toShapedRecipePattern(): ShapedRecipePattern {
     this as ShapedCraftingFormulaImpl
@@ -40,7 +41,7 @@ private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: Crafting
     if (recipeInput !is RecipeInputCraftingCustomExt) return ItemStack.EMPTY
     val resultInfo = recipeInput.resultInfo ?: return ItemStack.EMPTY
     val context = EvaluationContextState.current ?: return ItemStack.EMPTY
-    val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeResultCachedRandom(key, recipe.result.alwaysKeepPrevious) ?: return ItemStack.EMPTY
+    val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeResultCachedRandom(key, recipe.result.alwaysKeepPrevious) ?: Random
 
     val stack = recipe.result.compute(resultInfo, context, random)
     return stack.unwrap()
