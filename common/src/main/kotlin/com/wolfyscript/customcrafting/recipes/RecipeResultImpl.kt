@@ -9,10 +9,11 @@ class RecipeResultImpl(
     override val modifier: ResultModifier,
     override val actions: List<ResultAction> = listOf(),
     override val bulkActions: List<ResultAction> = listOf(),
+    override val alwaysKeepPrevious: Boolean,
 ) : RecipeResult {
 
     override fun compute(recipeEvaluationResult: RecipeEvaluationResult<*,*>, context: EvaluationContext, random: Random): ItemStack {
-        val pickedChoice = choices.allFor(context).random(random) // TODO: custom weighting?
+        val pickedChoice = choices.all().random(random) // TODO: custom weighting?
         val stack = pickedChoice.create()
         modifier.modify(recipeEvaluationResult, stack, context)
         return stack

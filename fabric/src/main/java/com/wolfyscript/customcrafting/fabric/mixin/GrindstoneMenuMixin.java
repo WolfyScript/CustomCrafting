@@ -61,8 +61,7 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
         var customcrafting = CustomCraftingProvider.Companion.get();
 
         var level = player.level();
-        var key = Key.Companion.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), key));
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().location())));
 
         var input = RecipeInput.GrindingRecipeInput.Companion.of(MinecraftWrapperKt.wrap(repairSlots.getItem(0)), MinecraftWrapperKt.wrap(repairSlots.getItem(1)));
 

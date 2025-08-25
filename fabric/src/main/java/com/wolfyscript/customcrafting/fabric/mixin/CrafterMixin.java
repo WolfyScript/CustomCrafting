@@ -30,8 +30,7 @@ public class CrafterMixin {
         method = "dispenseFrom"
     )
     private void enterEvalContext(BlockState state, ServerLevel level, BlockPos pos, CallbackInfo ci) {
-        var dimensionType = Key.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
-        var wrappedPosition = MinecraftWrapperKt.wrap(pos.getCenter(), dimensionType);
+        var wrappedPosition = MinecraftWrapperKt.wrap(pos.getCenter(), Key.fromMc(level.dimension().location()));
         EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(null, wrappedPosition));
     }
 

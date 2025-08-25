@@ -70,8 +70,7 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         method = "createResult"
     )
     private void enterEvalContext(CallbackInfo ci) {
-        var levelKey = Key.Companion.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
-        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), levelKey)));
+        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().location()))));
     }
 
     @Inject(

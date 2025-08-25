@@ -44,8 +44,7 @@ public class StonecutterResultSlotMixin {
             return;
         }
         var level = player.level();
-        var dimensionType = Key.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), dimensionType));
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().location())));
         RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
         ((CustomRecipeStonecutting) resultInfo.getRecipe().getValue()).getResult().runActions(context, 1);
     }
