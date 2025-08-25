@@ -1,9 +1,10 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
+import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
-import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -41,9 +42,7 @@ public class CampfireBlockEntityMixin extends BlockEntity {
 
     @Inject(at = @At("HEAD"), method = "placeFood")
     private void enterEvalContextOnPlace(ServerLevel level, LivingEntity entity, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        var dimensionType = Key.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
-        var wrappedPosition = MinecraftWrapperKt.wrap(worldPosition.getCenter(), dimensionType);
-        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(null, wrappedPosition));
+        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(null, null, MinecraftWrapperKt.wrap(worldPosition), MinecraftWrapperKt.wrap(this)));
     }
 
     @Inject(at = @At("RETURN"), method = "placeFood")
@@ -53,9 +52,7 @@ public class CampfireBlockEntityMixin extends BlockEntity {
 
     @Inject(at = @At("HEAD"), method = "cookTick")
     private static void enterEvalContextOnCookTick(ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check, CallbackInfo ci) {
-        var dimensionType = Key.key(level.dimension().location().getNamespace(), level.dimension().location().getPath());
-        var wrappedPosition = MinecraftWrapperKt.wrap(pos.getCenter(), dimensionType);
-        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(null, wrappedPosition));
+        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(null, null, MinecraftWrapperKt.wrap(pos), MinecraftWrapperKt.wrap(campfire)));
     }
 
     @Inject(at = @At("RETURN"), method = "cookTick")
@@ -90,6 +87,20 @@ public class CampfireBlockEntityMixin extends BlockEntity {
         var source = MinecraftWrapperKt.wrap(singleRecipeInput.item());
         ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.SingleSlotRecipeInput.Companion.of(source));
         return singleRecipeInput;
+    }
+
+    @Inject(method = "cookTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Containers;dropItemStack(Lnet/minecraft/world/level/Level;DDDLnet/minecraft/world/item/ItemStack;)V"))
+    private static void runActions(ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check, CallbackInfo ci, @Local SingleRecipeInput singleRecipeInput) {
+        var context = new EvaluationContextImpl(null, null, MinecraftWrapperKt.wrap(pos), MinecraftWrapperKt.wrap(campfire));
+
+        var resultInfo = ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).getResultInfo();
+        if (resultInfo == null || resultInfo.getRecipe().getValue() == null) {
+            return;
+        }
+        var customRecipe = resultInfo.getRecipe().getValue();
+        if (customRecipe instanceof CustomRecipeCooking cookingRecipe) {
+            cookingRecipe.getResult().runActions(context, 1);
+        }
     }
 
 }
