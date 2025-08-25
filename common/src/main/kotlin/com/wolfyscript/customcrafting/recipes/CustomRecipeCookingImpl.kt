@@ -43,12 +43,7 @@ class CustomRecipeCookingImpl(
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeEvaluationResult.Data? {
-            val (pos, level) = context.location?.unwrap() ?: return null
-            val type = ScafallProvider.get().server.minecraftServer.getLevel(level)
-                ?.getBlockEntity(BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt())))?.let {
-                    it.type
-                }
-            if (type == null || type != BlockEntityType.FURNACE) {
+            if (context.blockEntity?.unwrap()?.type != BlockEntityType.FURNACE) {
                 return null
             }
 
@@ -71,10 +66,7 @@ class CustomRecipeCookingImpl(
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeEvaluationResult.Data? {
-            val (pos, level) = context.location?.unwrap() ?: return null
-            val type = ScafallProvider.get().server.minecraftServer.getLevel(level)
-                        ?.getBlockEntity(BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt())))?.type
-            if (type == null || type != BlockEntityType.BLAST_FURNACE) {
+            if (context.blockEntity?.unwrap()?.type != BlockEntityType.BLAST_FURNACE) {
                 return null
             }
 
@@ -97,10 +89,7 @@ class CustomRecipeCookingImpl(
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeEvaluationResult.Data? {
-            val (pos, level) = context.location?.unwrap() ?: return null
-            val type = ScafallProvider.get().server.minecraftServer.getLevel(level)
-                        ?.getBlockEntity(BlockPos(Vec3i(pos.x.toInt(), pos.y.toInt(), pos.z.toInt())))?.type
-            if (type == null || type != BlockEntityType.SMOKER) {
+            if (context.blockEntity?.unwrap()?.type != BlockEntityType.SMOKER) {
                 return null
             }
 
@@ -126,10 +115,7 @@ class CustomRecipeCookingImpl(
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeEvaluationResult.Data? {
-            val (pos, levelKey) = context.location?.unwrap() ?: return null
-            val level = ScafallProvider.get().server.minecraftServer.getLevel(levelKey) ?: return null
-            val blockPos = BlockPos.containing(pos)
-            val blockState = level.getBlockState(blockPos) ?: return null
+            val blockState = context.blockEntity?.unwrap()?.blockState ?: return null
 
             val soul = blockState.block == Blocks.SOUL_CAMPFIRE
             val normal = blockState.block == Blocks.CAMPFIRE
