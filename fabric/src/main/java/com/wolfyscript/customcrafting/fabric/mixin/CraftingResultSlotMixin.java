@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.wolfyscript.customcrafting.CustomCraftingProvider;
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;

@@ -13,6 +13,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
  *
  */
 interface ResultModifier {
+    // TODO: Think about using something like this for ingredients as well.
 
     val transformations: List<Transformation>
 

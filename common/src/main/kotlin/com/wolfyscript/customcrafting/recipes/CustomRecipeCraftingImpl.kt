@@ -34,9 +34,10 @@ class CustomRecipeCraftingImpl(
         applyStacks: (Int, ItemStack) -> Unit,
     ) {
         for (value in recipeEvaluationResult.data.nonNullIngredients) {
-            val stack = input.matrixData.originalMatrix[value.invSlot]?.unwrap()?.apply {
-                shrink(value.matchedItemStackRef.amount * count)
-            }?.wrap()
+            var stack = input.matrixData.originalMatrix[value.invSlot]
+            if (stack != null) {
+                stack = value.selectedIngredient.shrink(context, value.matchedItemStackRef, stack, count)
+            }
             if (stack != null) {
                 applyStacks(value.invSlot, stack)
             }
@@ -270,10 +271,7 @@ class ShapelessCraftingFormulaImpl(
                 if (checkedEdges[edgeFrom].and(edgeTo) == edgeTo || path.contains(ingredientIndex + 1)) {
                     continue
                 }
-                val matchedRef = ingredient.match(input.matrixData.items[invItemIndex])
-                if (matchedRef == null) {
-                    continue
-                }
+                val matchedRef = ingredient.match(input.matrixData.items[invItemIndex]) ?: continue
                 // Found matching ingredient
                 pickedIngredients[ingredientIndex] = IngredientDataImpl(
                     invSlot = input.matrixData.itemIndices[invItemIndex] + input.matrixData.rowOffset * input.matrixData.gridSize + input.matrixData.columnOffset,

@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.util
 
 import com.wolfyscript.customcrafting.recipes.Ingredient
+import com.wolfyscript.customcrafting.recipes.IngredientMatcher
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.utils.unwrap
@@ -25,7 +26,7 @@ fun Ingredient?.toMcDisplay() : SlotDisplay {
         return SlotDisplay.Empty.INSTANCE
     }
     val stacks = choices.all()
-    return SlotDisplay.Composite(stacks.map { it.toMcDisplay(!matchTags) })
+    return SlotDisplay.Composite(stacks.map { it.toMcDisplay(matching is IngredientMatcher.Exact) })
 }
 
 fun ItemStackRef.toMcDisplay(itemOnly: Boolean = false) : SlotDisplay {

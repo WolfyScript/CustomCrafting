@@ -34,6 +34,26 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
             }
         }
 
+        createRegistry(CustomCraftingRegistryTypes.ingredientConsumers) {
+            RegistrySimple<Class<out IngredientConsumer>>(it).apply {
+                register(IngredientConsumers.consume.key.key, IngredientConsumerConsumeImpl::class.java)
+                register(IngredientConsumers.replace.key.key, IngredientConsumerReplaceImpl::class.java)
+                register(IngredientConsumers.keep.key.key, IngredientConsumerKeepImpl::class.java)
+            }
+        }
+        createRegistry(CustomCraftingRegistryTypes.ingredientMatchers) {
+            RegistrySimple<Class<out IngredientMatcher>>(it).apply {
+                register(IngredientMatchers.exact.key.key, IngredientMatcherExactImpl::class.java)
+                register(IngredientMatchers.item.key.key, IngredientMatcherItemImpl::class.java)
+            }
+        }
+        createRegistry(CustomCraftingRegistryTypes.ingredientRemainders) {
+            RegistrySimple<Class<out IngredientRemainder>>(it).apply {
+                register(IngredientRemainders.custom.key.key, IngredientRemainderCustomImpl::class.java)
+                register(IngredientRemainders.default.key.key, IngredientRemainderDefaultImpl::class.java)
+            }
+        }
+
         createRegistry(CustomCraftingRegistryTypes.recipeTypeSpecificStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.conditionStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.resultTransmuterStores) { RegistrySimple(it) }
@@ -46,6 +66,18 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
         RegistryKeyTypeIdResolver.registerTypeRegistry(
             ResultAction::class.java,
             get(CustomCraftingRegistryTypes.resultActions.key).getOrThrow()
+        )
+        RegistryKeyTypeIdResolver.registerTypeRegistry(
+            IngredientConsumer::class.java,
+            get(CustomCraftingRegistryTypes.ingredientConsumers.key).getOrThrow()
+        )
+        RegistryKeyTypeIdResolver.registerTypeRegistry(
+            IngredientMatcher::class.java,
+            get(CustomCraftingRegistryTypes.ingredientMatchers.key).getOrThrow()
+        )
+        RegistryKeyTypeIdResolver.registerTypeRegistry(
+            IngredientRemainder::class.java,
+            get(CustomCraftingRegistryTypes.ingredientRemainders.key).getOrThrow()
         )
 
     }

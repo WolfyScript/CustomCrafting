@@ -5,6 +5,9 @@ import com.wolfyscript.customcrafting.editor.RecipeStore
 import com.wolfyscript.customcrafting.editor.conditions.ConditionStore
 import com.wolfyscript.customcrafting.editor.result.ResultActionStore
 import com.wolfyscript.customcrafting.editor.result.TransmuterStore
+import com.wolfyscript.customcrafting.recipes.IngredientConsumer
+import com.wolfyscript.customcrafting.recipes.IngredientMatcher
+import com.wolfyscript.customcrafting.recipes.IngredientRemainder
 import com.wolfyscript.customcrafting.recipes.conditions.Condition
 import com.wolfyscript.customcrafting.recipes.RecipeType
 import com.wolfyscript.customcrafting.recipes.ResultAction
@@ -33,6 +36,12 @@ object CustomCraftingRegistryTypes {
     val resultTransmuters = create<Class<out ResultModifier.Transformation.Transmuter>>("types/recipe/result/transmuters")
 
     val resultActions = create<Class<out ResultAction>>("types/recipe/result/actions")
+
+    val ingredientConsumers = create<Class<out IngredientConsumer>>("types/recipe/ingredient/consumers")
+
+    val ingredientMatchers = create<Class<out IngredientMatcher>>("types/recipe/ingredient/matchers")
+
+    val ingredientRemainders = create<Class<out IngredientRemainder>>("types/recipe/ingredient/remainders")
 
     //
     // Editor Store Registries

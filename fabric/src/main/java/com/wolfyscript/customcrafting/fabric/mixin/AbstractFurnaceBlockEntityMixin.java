@@ -119,7 +119,7 @@ public abstract class AbstractFurnaceBlockEntityMixin implements RecipeResultCac
         ((RecipeResultCacheExt) entity).customcrafting$getRecipeResultStateCache().reset(resultInfo.getRecipe().getKey());
         cookingRecipe.getResult().runActions(context, 1);
 
-        var newStack = cookingRecipe.getProcessing().getSource().shrink(MinecraftWrapperKt.wrap(items.get(0)), 1);
+        var newStack = cookingRecipe.getProcessing().getSource().shrink(context, resultInfo.getData().bySlot(0).getMatchedItemStackRef(), MinecraftWrapperKt.wrap(items.get(0)), 1);
         items.set(0, MinecraftWrapperKt.unwrap(newStack));
         return true;
     }

@@ -7,19 +7,27 @@ interface Ingredient {
 
     val choices: RecipeChoices
 
-    val replaceWithRemains: Boolean
+    /**
+     * Specifies how the ingredient is matched against the item stacks in the inventory slots.
+     *
+     * Default: Checks if all components match.
+     */
+    val matching: IngredientMatcher
 
-    val matchTags: Boolean
+    /**
+     * Specifies how the ingredient is consumed from the inventory slots.
+     *
+     * Default: [IngredientConsumer.Consume]
+     */
+    val consumption: IngredientConsumer
 
     /**
      * Matches this ingredient against the given stack.
      *
      * @return The matching [ItemStackRef] from the ingredient choices; or null if none match
      */
-    fun match(stack: ItemStack, exact: Boolean): ItemStackRef?
+    fun match(stack: ItemStack): ItemStackRef?
 
-    fun match(stack: ItemStack): ItemStackRef? = match(stack, matchTags)
-
-    fun shrink(stack: ItemStack, amount: Int): ItemStack
+    fun shrink(context: EvaluationContext, ref: ItemStackRef, stack: ItemStack, amount: Int): ItemStack
 
 }

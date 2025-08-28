@@ -77,7 +77,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
             amount = ingredientAmount
         }
 
-        stack.amount = stack.amount - ingredientAmount
+        stack.amount -= ingredientAmount
 
         state.setItem(slot, toPlace)
         state.setCookTimeTotal(slot, recipe.processing.processingTime)
@@ -104,10 +104,9 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         val source = event.source
         val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
         val input = RecipeInput.SingleSlotRecipeInput.of(source.wrap())
-        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
-        if (data == null) {
-            return
-        }
+        val data =
+            customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
+                ?: return
         val recipe = data.recipe.value ?: return
 
         recipe.result.runActions(context)
