@@ -53,13 +53,17 @@ interface IngredientConsumer {
 
     }
 
-    interface Modify : IngredientConsumer {
-        // TODO: modify ingredient see ResultModifier
-    }
-
     /**
-     * Keeps the source item as is without consuming or modifying it.
+     * Keeps the source item as is without consuming it.
      */
-    interface Keep : IngredientConsumer
+    interface Keep : IngredientConsumer {
+
+        /**
+         * Modify the source item.
+         * Optional; if not declared, no modification is done.
+         */
+        val modifier: RecipeItemModifier
+
+    }
 
 }

@@ -11,7 +11,7 @@ import com.wolfyscript.customcrafting.recipes.IngredientRemainder
 import com.wolfyscript.customcrafting.recipes.conditions.Condition
 import com.wolfyscript.customcrafting.recipes.RecipeType
 import com.wolfyscript.customcrafting.recipes.ResultAction
-import com.wolfyscript.customcrafting.recipes.ResultModifier
+import com.wolfyscript.customcrafting.recipes.RecipeItemModifier
 import com.wolfyscript.customcrafting.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.RegistryKey
@@ -33,7 +33,7 @@ object CustomCraftingRegistryTypes {
     //
     val recipeConditionTypes = create<Class<out Condition>>("types/recipes/conditions")
 
-    val resultTransmuters = create<Class<out ResultModifier.Transformation.Transmuter>>("types/recipe/result/transmuters")
+    val recipeItemTransmuters = create<Class<out RecipeItemModifier.Transformation.Transmuter>>("types/recipe/item/transmuters")
 
     val resultActions = create<Class<out ResultAction>>("types/recipe/result/actions")
 
@@ -52,7 +52,7 @@ object CustomCraftingRegistryTypes {
 
     val conditionStores = create<Class<out ConditionStore<*>>>("editor/types/recipe/conditions")
 
-    val resultTransmuterStores = create<Class<out TransmuterStore<*>>>("editor/types/recipe/result/transmuters")
+    val recipeItemTransmuterStores = create<Class<out TransmuterStore<*>>>("editor/types/recipe/item/transmuters")
 
     val resultActionStores = create<Class<out ResultActionStore<*>>>("editor/types/recipe/result/actions")
 

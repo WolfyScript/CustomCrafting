@@ -16,7 +16,7 @@ interface RecipeResult {
     /**
      * The modifier applied to the result of the recipe.
      */
-    val modifier: ResultModifier
+    val modifier: RecipeItemModifier
 
     /**
      * The actions, to perform after the recipe is completed.

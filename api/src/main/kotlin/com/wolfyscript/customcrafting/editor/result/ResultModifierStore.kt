@@ -1,9 +1,9 @@
 package com.wolfyscript.customcrafting.editor.result
 
-import com.wolfyscript.customcrafting.recipes.ResultModifier
+import com.wolfyscript.customcrafting.recipes.RecipeItemModifier
 
 interface ResultModifierStore {
 
-    val transformations: List<ResultModifier.Transformation>
+    val transformations: List<RecipeItemModifier.Transformation>
 
 }

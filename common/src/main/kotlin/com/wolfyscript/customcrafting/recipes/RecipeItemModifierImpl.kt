@@ -3,15 +3,15 @@ package com.wolfyscript.customcrafting.recipes
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
-class ResultModifierImpl(override val transformations: List<ResultModifier.Transformation> = listOf()) : ResultModifier {
+class RecipeItemModifierImpl(override val transformations: List<RecipeItemModifier.Transformation> = emptyList()) : RecipeItemModifier {
 
     override fun modify(
-        recipeEvaluationResult: RecipeEvaluationResult<*, *>,
-        result: ItemStack,
+        target: ItemStack,
+        evalResult: RecipeEvaluationResult<*, *>,
         context: EvaluationContext,
     ): ItemStack {
-        transformations.forEach { it.transform(recipeEvaluationResult, result, context) }
-        return result
+        transformations.forEach { it.transform(target, evalResult, context) }
+        return target
     }
 
     override fun toString(): String {
@@ -20,15 +20,15 @@ class ResultModifierImpl(override val transformations: List<ResultModifier.Trans
 
     class ResultModifierTransformationImpl(
         override val ingredients: Array<Int>,
-        override val transmuter: ResultModifier.Transformation.Transmuter
-    ) : ResultModifier.Transformation {
+        override val transmuter: RecipeItemModifier.Transformation.Transmuter
+    ) : RecipeItemModifier.Transformation {
 
         override fun transform(
-            recipeEvaluationResult: RecipeEvaluationResult<*, *>,
-            result: ItemStack,
+            target: ItemStack,
+            evalResult: RecipeEvaluationResult<*, *>,
             context: EvaluationContext,
         ): ItemStack {
-            return transmuter.mutate(this, recipeEvaluationResult, result, context)
+            return transmuter.mutate(target, this, evalResult, context)
         }
 
         override fun toString(): String {

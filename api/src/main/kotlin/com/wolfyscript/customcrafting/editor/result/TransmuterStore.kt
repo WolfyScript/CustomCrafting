@@ -1,8 +1,8 @@
 package com.wolfyscript.customcrafting.editor.result
 
-import com.wolfyscript.customcrafting.recipes.ResultModifier
+import com.wolfyscript.customcrafting.recipes.RecipeItemModifier
 
-interface TransmuterStore<T: ResultModifier.Transformation.Transmuter> {
+interface TransmuterStore<T: RecipeItemModifier.Transformation.Transmuter> {
 
     fun complete(): Result<T>
 

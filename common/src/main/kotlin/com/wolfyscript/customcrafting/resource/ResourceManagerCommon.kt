@@ -38,10 +38,10 @@ class ResourceManagerCommon(val customCrafting: CustomCraftingCommon, val direct
             addAbstractTypeMapping(RecipeResult::class.java, RecipeResultImpl::class.java)
             addAbstractTypeMapping(RecipeEvaluationResult::class.java, RecipeEvaluationResultImpl::class.java)
             addAbstractTypeMapping(RecipeConditions::class.java, RecipeConditionsImpl::class.java)
-            addAbstractTypeMapping(ResultModifier::class.java, ResultModifierImpl::class.java)
+            addAbstractTypeMapping(RecipeItemModifier::class.java, RecipeItemModifierImpl::class.java)
             addAbstractTypeMapping(
-                ResultModifier.Transformation::class.java,
-                ResultModifierImpl.ResultModifierTransformationImpl::class.java
+                RecipeItemModifier.Transformation::class.java,
+                RecipeItemModifierImpl.ResultModifierTransformationImpl::class.java
             )
             addAbstractTypeMapping(RecipeChoices::class.java, RecipeChoicesImpl::class.java)
 

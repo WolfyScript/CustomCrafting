@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.editor.result
 
-import com.wolfyscript.customcrafting.recipes.ResultModifier
+import com.wolfyscript.customcrafting.recipes.RecipeItemModifier
 
 interface TransformationStore {
 
@@ -8,5 +8,5 @@ interface TransformationStore {
 
     val ingredients: MutableList<Int>
 
-    fun complete(): Result<List<ResultModifier.Transformation>>
+    fun complete(): Result<List<RecipeItemModifier.Transformation>>
 }

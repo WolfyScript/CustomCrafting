@@ -98,7 +98,7 @@ class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {
             val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
             val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
             val stack = result().snapshot().createStack()
-            recipeVal.result.modifier.modify(resultInfo, stack, context)
+            recipeVal.result.modifier.modify(stack, resultInfo, context)
             return stack.unwrap()
         }
         return recipe.assemble(input, provider)

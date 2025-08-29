@@ -27,7 +27,7 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
         }
 
         createRegistry(CustomCraftingRegistryTypes.recipeConditionTypes) { RegistrySimple(it) }
-        createRegistry(CustomCraftingRegistryTypes.resultTransmuters) { RegistrySimple(it) }
+        createRegistry(CustomCraftingRegistryTypes.recipeItemTransmuters) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.resultActions) {
             RegistrySimple<Class<out ResultAction>>(it).apply {
                 register(ResultActions.command.key.key, CommandResultAction::class.java)
@@ -56,7 +56,7 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
 
         createRegistry(CustomCraftingRegistryTypes.recipeTypeSpecificStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.conditionStores) { RegistrySimple(it) }
-        createRegistry(CustomCraftingRegistryTypes.resultTransmuterStores) { RegistrySimple(it) }
+        createRegistry(CustomCraftingRegistryTypes.recipeItemTransmuterStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.resultActionStores) { RegistrySimple(it) }
 
         registerJacksonTypes()

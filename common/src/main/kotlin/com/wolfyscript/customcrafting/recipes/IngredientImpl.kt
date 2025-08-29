@@ -158,7 +158,7 @@ class IngredientConsumerReplaceImpl(override val replacement: ItemStackRef) : In
 
 }
 
-class IngredientConsumerKeepImpl : IngredientConsumer.Keep {
+class IngredientConsumerKeepImpl(override val modifier: RecipeItemModifier = RecipeItemModifierImpl()) : IngredientConsumer.Keep {
 
     override fun consume(
         target: ItemStack,

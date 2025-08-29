@@ -6,7 +6,7 @@ import kotlin.random.Random
 
 class RecipeResultImpl(
     override val choices: RecipeChoices,
-    override val modifier: ResultModifier,
+    override val modifier: RecipeItemModifier,
     override val actions: List<ResultAction> = listOf(),
     override val bulkActions: List<ResultAction> = listOf(),
     override val alwaysKeepPrevious: Boolean,
@@ -15,7 +15,7 @@ class RecipeResultImpl(
     override fun compute(recipeEvaluationResult: RecipeEvaluationResult<*,*>, context: EvaluationContext, random: Random): ItemStack {
         val pickedChoice = choices.all().random(random) // TODO: custom weighting?
         val stack = pickedChoice.create()
-        modifier.modify(recipeEvaluationResult, stack, context)
+        modifier.modify(stack, recipeEvaluationResult, context)
         return stack
     }
 
