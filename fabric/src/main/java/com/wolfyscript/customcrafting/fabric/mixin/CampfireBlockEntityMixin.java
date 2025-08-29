@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -30,11 +31,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Optional;
 
 @Mixin(CampfireBlockEntity.class)
-public class CampfireBlockEntityMixin extends BlockEntity {
+public abstract class CampfireBlockEntityMixin extends BlockEntity {
+
+    @Unique
+    private static final int INPUT_SLOT = 0;
 
     @Shadow
     @Final
     private NonNullList<ItemStack> items;
+
+    @Shadow
+    public abstract NonNullList<ItemStack> getItems();
 
     private CampfireBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -90,7 +97,7 @@ public class CampfireBlockEntityMixin extends BlockEntity {
     }
 
     @Inject(method = "cookTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Containers;dropItemStack(Lnet/minecraft/world/level/Level;DDDLnet/minecraft/world/item/ItemStack;)V"))
-    private static void runActions(ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check, CallbackInfo ci, @Local SingleRecipeInput singleRecipeInput) {
+    private static void customCookTick(ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check, CallbackInfo ci, @Local SingleRecipeInput singleRecipeInput, @Local int index) {
         var context = new EvaluationContextImpl(null, null, MinecraftWrapperKt.wrap(pos), MinecraftWrapperKt.wrap(campfire));
 
         var resultInfo = ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).getResultInfo();
@@ -100,7 +107,24 @@ public class CampfireBlockEntityMixin extends BlockEntity {
         var customRecipe = resultInfo.getRecipe().getValue();
         if (customRecipe instanceof CustomRecipeCooking cookingRecipe) {
             cookingRecipe.getResult().runActions(context, 1);
+
+            var input = resultInfo.getData().bySlot(INPUT_SLOT);
+            if (input != null) {
+                var stack = MinecraftWrapperKt.wrap(campfire.getItems().get(index));
+                stack = cookingRecipe.getProcessing().getSource().shrink(stack, 1, input.getMatchedItemStackRef(), context, resultInfo);
+                campfire.getItems().set(index, MinecraftWrapperKt.unwrap(stack));
+            }
         }
+    }
+
+    @Redirect(method = "cookTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/NonNullList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
+    private static <E> E preventInputReset(NonNullList<E> instance, int index, E value, @Local SingleRecipeInput singleRecipeInput) {
+        var resultInfo = ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).getResultInfo();
+        if (resultInfo == null || resultInfo.getRecipe().getValue() == null) {
+            return instance.set(index, value);
+        }
+        // nop when it is a custom recipe
+        return value;
     }
 
 }
