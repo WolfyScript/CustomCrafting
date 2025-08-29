@@ -30,6 +30,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AnvilMenu.class)
 abstract class AnvilMenuMixin extends ItemCombinerMenu {
 
+    @Unique
+    private static final int BASE_SLOT = 0;
+    @Unique
+    private static final int ADDITION_SLOT = 1;
+    @Unique
+    private static final int RESET_COST = 0;
+
     @Shadow
     @javax.annotation.Nullable
     private String itemName;
@@ -95,25 +102,38 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
             player.giveExperienceLevels(-cost.get());
         }
 
+        var playerLevel = player.level();
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().location())));
         var data = resultInfo.getData();
 
-        // TODO: Craft remains!
-        var base = data.bySlot(0);
+        var base = data.bySlot(BASE_SLOT);
         if (base != null) {
-            getSlot(0).getItem().shrink(base.getMatchedItemStackRef().getAmount());
+            base.getSelectedIngredient().shrink(
+                MinecraftWrapperKt.wrap(getSlot(BASE_SLOT).getItem()),
+                1,
+                base.getMatchedItemStackRef(),
+                context,
+                resultInfo
+            );
         }
-        var addition = data.bySlot(1);
+        var addition = data.bySlot(ADDITION_SLOT);
         if (addition != null) {
-            var count = addition.getMatchedItemStackRef().getAmount();
+            var count = 1;
             if (data.getItemRepairCost() != null) {
-                count *= data.getItemRepairCost();
+                count += data.getItemRepairCost();
             }
-            getSlot(1).getItem().shrink(count);
+            addition.getSelectedIngredient().shrink(
+                MinecraftWrapperKt.wrap(getSlot(ADDITION_SLOT).getItem()),
+                count,
+                addition.getMatchedItemStackRef(),
+                context,
+                resultInfo
+            );
         }
 
         RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
         resultInfo = null;
-        cost.set(0);
+        cost.set(RESET_COST);
 
         // Copying the rest like text filtering and anvil damage logic from vanilla
         if (player instanceof ServerPlayer serverPlayer
