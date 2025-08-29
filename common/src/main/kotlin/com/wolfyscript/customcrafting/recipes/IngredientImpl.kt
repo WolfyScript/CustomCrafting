@@ -7,6 +7,7 @@ import com.wolfyscript.scafall.wrappers.utils.unwrap
 import com.wolfyscript.scafall.wrappers.utils.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackLike
+import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.item.ItemEntity
@@ -98,10 +99,10 @@ class IngredientConsumerConsumeImpl(override val remains: IngredientRemainder) :
         context: EvaluationContext,
         evalResult: RecipeEvaluationResult<*, *>,
     ): ItemStack {
+        val remainingItems = remains.calculate(target.snapshot(), count, ref, context, evalResult)
         val mcStack = target.unwrap()
         mcStack.shrink(count * ref.amount)
 
-        val remainingItems = remains.calculate(target, count, ref, context, evalResult)
         if (remainingItems.isEmpty()) {
             return mcStack.wrap()
         }
@@ -180,7 +181,7 @@ class IngredientRemainderCustomImpl(
 ) : IngredientRemainder.Custom {
 
     override fun calculate(
-        target: ItemStack,
+        target: ItemStackSnapshot,
         count: Int,
         ref: ItemStackRef,
         context: EvaluationContext,
@@ -206,7 +207,7 @@ class IngredientRemainderDefaultImpl(
 ) : IngredientRemainder.Default {
 
     override fun calculate(
-        target: ItemStack,
+        target: ItemStackSnapshot,
         count: Int,
         ref: ItemStackRef,
         context: EvaluationContext,

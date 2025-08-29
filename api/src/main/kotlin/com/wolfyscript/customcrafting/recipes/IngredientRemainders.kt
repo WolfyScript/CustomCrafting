@@ -7,6 +7,9 @@ import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.ValueReference
 import com.wolfyscript.scafall.registry.referenced
 
+/**
+ * List of all the default [IngredientRemainders][IngredientRemainder] that exist in the Registry across all platforms.
+ */
 object IngredientRemainders {
 
     val default = create<Class<IngredientRemainder>>("default")

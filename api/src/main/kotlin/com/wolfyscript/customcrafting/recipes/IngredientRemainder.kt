@@ -8,7 +8,13 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
 
+/**
+ * Defines how the remainders of an ingredient are calculated.
+ *
+ * This is part of a [Registry][com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes.ingredientRemainders], so third-parties can add their own custom remainder calculators.
+ */
 @JsonTypeIdResolver(RegistryKeyTypeIdResolver::class)
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.CUSTOM,
@@ -19,18 +25,49 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 @JsonPropertyOrder(value = ["type"])
 interface IngredientRemainder {
 
-    fun calculate(target: ItemStack, count: Int, ref: ItemStackRef, context: EvaluationContext, evalResult: RecipeEvaluationResult<*, *>): List<ItemStack>
+    /**
+     * Calculates the remainders of the given ingredient based on the given count and context.
+     *
+     * @param target the target item stack to calculate the remainder for (pre-consumption).
+     * @param count how many instances of the ingredients are to be consumed (Spigot/Paper CC may bulk consume the recipe. On Fabric recipes are consumed one-by-one)
+     * @param ref the reference associated with the target (pre-consumption).
+     * @param context the evaluation context (e.g. player, tile entity, etc.).
+     * @param evalResult the result of the recipe evaluation (ingredient info like which ingredient is present in each slot).
+     *
+     * @return the list of remaining item stacks.
+     */
+    fun calculate(target: ItemStackSnapshot, count: Int, ref: ItemStackRef, context: EvaluationContext, evalResult: RecipeEvaluationResult<*, *>): List<ItemStack>
 
+    /**
+     * Uses the vanilla remainders or modded/plugin remainders, if available and not ignored.
+     */
     interface Default : IngredientRemainder {
 
+        /**
+         * Specifies which remainders should be ignored.
+         *
+         * Optional: when omitted, all remainders are used if available.
+         */
         val ignore: RemainsIgnoreOptions
 
     }
 
+    /**
+     * Uses a custom remainder and replaces the existing remainders, if not ignored.
+     */
     interface Custom : IngredientRemainder {
 
+        /**
+         * Specifies which remainders should be ignored.
+         * The custom remainder will replace those that are **not** ignored.
+         *
+         * Optional: when omitted, all remainders are replaced.
+         */
         val ignore: RemainsIgnoreOptions
 
+        /**
+         * The custom remainder to use.
+         */
         val remainder: ItemStackRef
 
     }
