@@ -3,6 +3,8 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSmithingCustomExt;
+import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
+import com.wolfyscript.customcrafting.recipes.EvaluationContext;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
@@ -95,23 +97,33 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         if (resultInfo == null || resultInfo.getRecipe().getValue() == null) return;
         ci.cancel(); // Return before vanilla logic
 
-        var data = resultInfo.getData();
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().location())));
+        shrinkCustomIngredient(0, context, resultInfo);
+        shrinkCustomIngredient(1, context, resultInfo);
+        shrinkCustomIngredient(2, context, resultInfo);
 
-        // TODO: Craft remains
-        shrinkCustomIngredient(0, data);
-        shrinkCustomIngredient(1, data);
-        shrinkCustomIngredient(2, data);
+        var recipe = resultInfo.getRecipe().getValue();
+        if (recipe instanceof CustomRecipeSmithing customRecipe) {
+            customRecipe.getResult().runActions(context, 1);
+        }
 
         this.access.execute((level, blockPos) -> level.levelEvent(1044, blockPos, 0));
     }
 
     @Unique
-    private void shrinkCustomIngredient(int index, RecipeEvaluationResult.Data data) {
+    private void shrinkCustomIngredient(int index, EvaluationContext context, RecipeEvaluationResult<?,?> resultInfo) {
+        var data = resultInfo.getData();
         var ingredientData = data.bySlot(index);
         if (ingredientData != null) {
             var existing = inputSlots.getItem(index);
             if (!existing.isEmpty()) {
-                existing.shrink(ingredientData.getMatchedItemStackRef().getAmount());
+                existing = MinecraftWrapperKt.unwrap(ingredientData.getSelectedIngredient().shrink(
+                    MinecraftWrapperKt.wrap(existing),
+                    1,
+                    ingredientData.getMatchedItemStackRef(),
+                    context,
+                    resultInfo
+                ));
                 inputSlots.setItem(index, existing);
             }
         }
