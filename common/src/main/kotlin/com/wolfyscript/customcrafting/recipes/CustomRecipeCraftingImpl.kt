@@ -36,7 +36,7 @@ class CustomRecipeCraftingImpl(
         for (value in recipeEvaluationResult.data.nonNullIngredients) {
             var stack = input.matrixData.originalMatrix[value.invSlot]
             if (stack != null) {
-                stack = value.selectedIngredient.shrink(context, value.matchedItemStackRef, stack, count)
+                stack = value.selectedIngredient.shrink(stack, count, value.matchedItemStackRef, context, recipeEvaluationResult)
             }
             if (stack != null) {
                 applyStacks(value.invSlot, stack)

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
@@ -26,7 +27,7 @@ interface IngredientConsumer {
      *
      * @return the updated/new [ItemStack] after consumption.
      */
-    fun consume(context: EvaluationContext, ref: ItemStackRef, count: Int, source: ItemStack): ItemStack
+    fun consume(target: ItemStack, count: Int, ref: ItemStackRef, context: EvaluationContext, evalResult: RecipeEvaluationResult<*, *>): ItemStack
 
     /**
      * Consumes the amount from the source item and returns its remains.

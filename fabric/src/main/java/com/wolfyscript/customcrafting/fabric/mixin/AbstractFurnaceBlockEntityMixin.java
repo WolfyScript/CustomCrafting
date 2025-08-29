@@ -99,7 +99,8 @@ public abstract class AbstractFurnaceBlockEntityMixin implements RecipeResultCac
         if (!(customRecipe instanceof CustomRecipeCooking cookingRecipe)) {
             return false;
         }
-        var random = ((RecipeResultCacheExt) entity).customcrafting$getRecipeResultStateCache().get(resultInfo.getRecipe().getKey(), cookingRecipe.getResult().getAlwaysKeepPrevious()).getRandom();
+        var random = ((RecipeResultCacheExt) entity).customcrafting$getRecipeResultStateCache()
+            .get(resultInfo.getRecipe().getKey(), cookingRecipe.getResult().getAlwaysKeepPrevious()).getRandom();
         var resultStack = MinecraftWrapperKt.unwrap(cookingRecipe.getResult().compute(resultInfo, context, random));
         if (resultStack.isEmpty()) {
             return false;
@@ -119,8 +120,18 @@ public abstract class AbstractFurnaceBlockEntityMixin implements RecipeResultCac
         ((RecipeResultCacheExt) entity).customcrafting$getRecipeResultStateCache().reset(resultInfo.getRecipe().getKey());
         cookingRecipe.getResult().runActions(context, 1);
 
-        var newStack = cookingRecipe.getProcessing().getSource().shrink(context, resultInfo.getData().bySlot(0).getMatchedItemStackRef(), MinecraftWrapperKt.wrap(items.get(0)), 1);
-        items.set(0, MinecraftWrapperKt.unwrap(newStack));
+        var sourceSlotData = resultInfo.getData().bySlot(0);
+        if (sourceSlotData != null) {
+            var newStack = cookingRecipe.getProcessing().getSource().shrink(
+                MinecraftWrapperKt.wrap(items.get(0)),
+                1,
+                sourceSlotData.getMatchedItemStackRef(),
+                context,
+                resultInfo
+            );
+            items.set(0, MinecraftWrapperKt.unwrap(newStack));
+        }
+
         return true;
     }
 

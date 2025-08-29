@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.utils.unwrap
@@ -26,8 +26,14 @@ class IngredientImpl(
         return matching.match(this, stack)
     }
 
-    override fun shrink(context: EvaluationContext, ref: ItemStackRef, stack: ItemStack, amount: Int): ItemStack {
-        return consumption.consume(context, ref, amount, stack)
+    override fun shrink(
+        target: ItemStack,
+        count: Int,
+        ref: ItemStackRef,
+        context: EvaluationContext,
+        evalResult: RecipeEvaluationResult<*, *>,
+    ): ItemStack {
+        return consumption.consume(target, count, ref, context, evalResult)
     }
 
     override fun toString(): String {
@@ -86,15 +92,16 @@ class IngredientMatcherItemImpl(
 class IngredientConsumerConsumeImpl(override val remains: IngredientRemainder) : IngredientConsumer.Consume {
 
     override fun consume(
-        context: EvaluationContext,
-        ref: ItemStackRef,
+        target: ItemStack,
         count: Int,
-        source: ItemStack,
+        ref: ItemStackRef,
+        context: EvaluationContext,
+        evalResult: RecipeEvaluationResult<*, *>,
     ): ItemStack {
-        val mcStack = source.unwrap()
+        val mcStack = target.unwrap()
         mcStack.shrink(count * ref.amount)
 
-        val remainingItems = remains.calculate(ref, count, source)
+        val remainingItems = remains.calculate(target, count, ref, context, evalResult)
         if (remainingItems.isEmpty()) {
             return mcStack.wrap()
         }
@@ -140,10 +147,11 @@ class IngredientConsumerConsumeImpl(override val remains: IngredientRemainder) :
 class IngredientConsumerReplaceImpl(override val replacement: ItemStackRef) : IngredientConsumer.Replace {
 
     override fun consume(
-        context: EvaluationContext,
-        ref: ItemStackRef,
+        target: ItemStack,
         count: Int,
-        source: ItemStack,
+        ref: ItemStackRef,
+        context: EvaluationContext,
+        evalResult: RecipeEvaluationResult<*, *>
     ): ItemStack {
         return replacement.create()
     }
@@ -153,12 +161,13 @@ class IngredientConsumerReplaceImpl(override val replacement: ItemStackRef) : In
 class IngredientConsumerKeepImpl : IngredientConsumer.Keep {
 
     override fun consume(
-        context: EvaluationContext,
-        ref: ItemStackRef,
+        target: ItemStack,
         count: Int,
-        source: ItemStack,
+        ref: ItemStackRef,
+        context: EvaluationContext,
+        evalResult: RecipeEvaluationResult<*, *>
     ): ItemStack {
-        return source
+        return target
     }
 
 }
@@ -171,11 +180,13 @@ class IngredientRemainderCustomImpl(
 ) : IngredientRemainder.Custom {
 
     override fun calculate(
-        ref: ItemStackRef,
+        target: ItemStack,
         count: Int,
-        source: ItemStack,
+        ref: ItemStackRef,
+        context: EvaluationContext,
+        evalResult: RecipeEvaluationResult<*, *>
     ): List<ItemStack> {
-        val mcSource = source.unwrap()
+        val mcSource = target.unwrap()
         val customRemainder = remainder.create()
 
         if (!ignore.vanilla && !mcSource.item.craftingRemainder.isEmpty) {
@@ -195,15 +206,17 @@ class IngredientRemainderDefaultImpl(
 ) : IngredientRemainder.Default {
 
     override fun calculate(
-        ref: ItemStackRef,
+        target: ItemStack,
         count: Int,
-        source: ItemStack,
+        ref: ItemStackRef,
+        context: EvaluationContext,
+        evalResult: RecipeEvaluationResult<*, *>
     ): List<ItemStack> {
 
         val remains = mutableListOf<ItemStack>()
 
         if (!ignore.vanilla) {
-            val mcStack = source.unwrap()
+            val mcStack = target.unwrap()
             remains.add(mcStack.item.craftingRemainder.wrap())
         }
 
