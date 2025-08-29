@@ -75,15 +75,26 @@ public class GrindstoneResultSlotsMixin implements GrindstoneResultSlotsExt {
             fixedResultProcess.getResult().runActions(context, 1);
         }
 
-        // TODO: Craft remains
         var base = data.bySlot(0);
         if (base != null) {
-            grindstoneMenu.getSlot(0).getItem().shrink(base.getMatchedItemStackRef().getAmount());
+            base.getSelectedIngredient().shrink(
+                MinecraftWrapperKt.wrap(grindstoneMenu.getSlot(0).getItem()),
+                1,
+                base.getMatchedItemStackRef(),
+                context,
+                resultInfo
+            );
         }
 
         var addition = data.bySlot(1);
         if (addition != null) {
-            grindstoneMenu.getSlot(1).getItem().shrink(addition.getMatchedItemStackRef().getAmount());
+            addition.getSelectedIngredient().shrink(
+                MinecraftWrapperKt.wrap(grindstoneMenu.getSlot(1).getItem()),
+                1,
+                addition.getMatchedItemStackRef(),
+                context,
+                resultInfo
+            );
         }
 
         resultInfo = null;
