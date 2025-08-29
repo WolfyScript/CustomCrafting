@@ -7,6 +7,9 @@ import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.ValueReference
 import com.wolfyscript.scafall.registry.referenced
 
+/**
+ * List of all the default [IngredientConsumers][IngredientConsumer] that exist in the Registry across all platforms.
+ */
 object IngredientConsumers {
 
     val consume = create<Class<IngredientConsumer>>("consume")

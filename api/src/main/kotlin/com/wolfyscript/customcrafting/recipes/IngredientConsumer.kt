@@ -11,6 +11,8 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 /**
  * Defines how an ingredient is consumed.
+ *
+ * This component is part of a [Registry][com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes.ingredientConsumers], so third-parties can add their own custom consumers.
  */
 @JsonTypeIdResolver(RegistryKeyTypeIdResolver::class)
 @JsonTypeInfo(
@@ -24,6 +26,12 @@ interface IngredientConsumer {
 
     /**
      * Consumes the source item based on the matched reference and count.
+     *
+     * @param target the target item stack to consume.
+     * @param count how many instances of the ingredients are to be consumed (Spigot/Paper CC may bulk consume the recipe. On Fabric recipes are consumed one-by-one)
+     * @param ref the reference associated with the target.
+     * @param context the evaluation context (e.g. player, tile entity, etc.).
+     * @param evalResult the result of the recipe evaluation (ingredient info like which ingredient is present in each slot).
      *
      * @return the updated/new [ItemStack] after consumption.
      */

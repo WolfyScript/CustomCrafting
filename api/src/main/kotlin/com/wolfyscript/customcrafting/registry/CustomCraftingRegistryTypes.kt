@@ -24,6 +24,9 @@ object CustomCraftingRegistryTypes {
 
     val root = Key.customCrafting("root")
 
+    /**
+     * [RecipeTypes][com.wolfyscript.customcrafting.recipes.RecipeTypes]
+     */
     val recipeTypes = create<RecipeType<*>>("recipe_types")
 
     //
@@ -31,16 +34,34 @@ object CustomCraftingRegistryTypes {
     // ---------------
     // Used to store all the available types of content. Allows for easy deserialization of custom types.
     //
+    /**
+     * [RecipeConditions][com.wolfyscript.customcrafting.recipes.RecipeConditions]
+     */
     val recipeConditionTypes = create<Class<out Condition>>("types/recipes/conditions")
 
+    /**
+     * [RecipeItemTransmuters][com.wolfyscript.customcrafting.recipes.RecipeItemTransmuters]
+     */
     val recipeItemTransmuters = create<Class<out RecipeItemModifier.Transformation.Transmuter>>("types/recipe/item/transmuters")
 
+    /**
+     * [ResultActions][com.wolfyscript.customcrafting.recipes.ResultActions]
+     */
     val resultActions = create<Class<out ResultAction>>("types/recipe/result/actions")
 
+    /**
+     * [IngredientConsumers][com.wolfyscript.customcrafting.recipes.IngredientConsumers]
+     */
     val ingredientConsumers = create<Class<out IngredientConsumer>>("types/recipe/ingredient/consumers")
 
+    /**
+     * [IngredientMatchers][com.wolfyscript.customcrafting.recipes.IngredientMatchers]
+     */
     val ingredientMatchers = create<Class<out IngredientMatcher>>("types/recipe/ingredient/matchers")
 
+    /**
+     * [IngredientRemainders][com.wolfyscript.customcrafting.recipes.IngredientRemainders]
+     */
     val ingredientRemainders = create<Class<out IngredientRemainder>>("types/recipe/ingredient/remainders")
 
     //

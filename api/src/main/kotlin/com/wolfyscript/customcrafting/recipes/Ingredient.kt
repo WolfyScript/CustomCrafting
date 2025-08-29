@@ -6,6 +6,9 @@ import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 
 interface Ingredient {
 
+    /**
+     * The items that can be used to fulfill this ingredient.
+     */
     val choices: RecipeChoices
 
     /**
@@ -29,5 +32,16 @@ interface Ingredient {
      */
     fun match(stack: ItemStack): ItemStackRef?
 
+    /**
+     * Consumes the ingredient from the given target stack.
+     *
+     * @param target the target stack to consume.
+     * @param count how many instances of the ingredients are to be consumed (Spigot/Paper CC may bulk consume the recipe. On Fabric recipes are consumed one-by-one)
+     * @param ref the reference associated with the target.
+     * @param context the evaluation context (e.g. player, tile entity, etc.).
+     * @param evalResult the result of the recipe evaluation (ingredient info like which ingredient is present in each slot).
+     *
+     * @return the updated/new [ItemStack] after consumption.
+     */
     fun shrink(target: ItemStack, count: Int, ref: ItemStackRef, context: EvaluationContext, evalResult: RecipeEvaluationResult<*, *>): ItemStack
 }
