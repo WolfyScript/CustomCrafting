@@ -2,17 +2,16 @@ package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.*
-import com.wolfyscript.scafall.wrappers.utils.unwrap
-import com.wolfyscript.scafall.wrappers.utils.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import net.minecraft.util.ArrayListDeque
 import org.apache.commons.lang3.ArrayUtils
 
 class CustomRecipeCraftingImpl(
-    override val priority: Int,
-    override val conditions: RecipeConditions,
+    override val priority: Int = 0,
+    override val conditions: RecipeConditions = RecipeConditionsImpl(),
     override val formula: CraftingFormula,
     override val result: RecipeResult,
+    override val group: String = "",
 ) : CustomRecipeCrafting {
 
     override fun evaluate(

@@ -13,6 +13,7 @@ class CustomRecipeGrindingImpl(
     override val base: Ingredient,
     override val addition: Ingredient? = null,
     override val process: ProcessGrinding,
+    override val group: String = "",
 ) : CustomRecipeGrinding {
 
     override fun evaluate(

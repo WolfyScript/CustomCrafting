@@ -7,11 +7,12 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
 class CustomRecipeStonecuttingImpl(
-    override val priority: Int,
-    override val conditions: RecipeConditions,
+    override val priority: Int = 0,
+    override val conditions: RecipeConditions = RecipeConditionsImpl(),
     override val source: Ingredient,
     override val result: RecipeResult,
-    override val flattenResult: Boolean
+    override val flattenResult: Boolean,
+    override val group: String = ""
 ) : CustomRecipeStonecutting {
 
     override fun evaluate(

@@ -11,13 +11,14 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
 
 class CustomRecipeSmithingImpl(
-    override val priority: Int,
-    override val conditions: RecipeConditions,
+    override val priority: Int = 0,
+    override val conditions: RecipeConditions = RecipeConditionsImpl(),
     override val template: Ingredient?,
     override val base: Ingredient,
     override val addition: Ingredient?,
     override val copyOptions: CustomRecipeSmithing.CopyOptions?,
     override val result: RecipeResult,
+    override val group: String = "",
 ) : CustomRecipeSmithing {
 
     override fun evaluate(

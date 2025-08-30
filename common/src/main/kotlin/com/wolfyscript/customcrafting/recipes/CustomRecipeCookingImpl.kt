@@ -5,19 +5,17 @@ import com.wolfyscript.customcrafting.recipes.data.DefaultDataImpl
 import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.wrappers.utils.unwrap
-import net.minecraft.core.BlockPos
-import net.minecraft.core.Vec3i
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntityType
 
 class CustomRecipeCookingImpl(
     override val processing: CustomRecipeCooking.WorkstationProcessing,
     override val result: RecipeResult,
-    override val priority: Int,
-    override val conditions: RecipeConditions,
+    override val priority: Int = 0,
+    override val conditions: RecipeConditions = RecipeConditionsImpl(),
     override val xp: Float,
+    override val group: String = "",
 ) : CustomRecipeCooking {
 
     override fun evaluate(

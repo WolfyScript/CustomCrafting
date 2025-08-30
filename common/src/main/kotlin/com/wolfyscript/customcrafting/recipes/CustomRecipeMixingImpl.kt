@@ -5,14 +5,15 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 
 class CustomRecipeMixingImpl(
-    override val priority: Int,
-    override val conditions: RecipeConditions,
+    override val priority: Int = 0,
+    override val conditions: RecipeConditions = RecipeConditionsImpl(),
     override val processingTime: Int,
     override val xp: Int,
     override val results: List<RecipeResult>,
     override val ingredients: List<Ingredient>,
     override val fluidRequirement: CustomRecipeMixing.FluidRequirement?,
-    override val campfireRequirement: CustomRecipeMixing.CampfireRequirement?
+    override val campfireRequirement: CustomRecipeMixing.CampfireRequirement?,
+    override val group: String = ""
 ) : CustomRecipeMixing {
 
     override fun evaluate(

@@ -13,6 +13,7 @@ class CustomRecipeRepairingImpl(
     override val process: ProcessRepairing,
     override val base: Ingredient,
     override val addition: Ingredient?,
+    override val group: String = "",
 ) : CustomRecipeRepairing {
 
     override fun evaluate(

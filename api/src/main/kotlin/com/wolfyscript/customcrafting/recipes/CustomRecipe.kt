@@ -30,6 +30,8 @@ interface CustomRecipe<I: RecipeInput, D: RecipeEvaluationResult.Data> {
      */
     val conditions: RecipeConditions
 
+    val group: String
+
     /**
      * Evaluates the recipe using its input and the context and returns data that contains information about the evaluated recipe, like ingredients and their matched [com.wolfyscript.scafall.items.ItemStackRef]
      *
