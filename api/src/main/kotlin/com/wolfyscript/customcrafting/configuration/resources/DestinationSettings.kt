@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.resource.Destination
 import com.wolfyscript.customcrafting.resource.ResourceLoader
 import kotlin.io.path.Path
 
@@ -46,7 +47,7 @@ interface DestinationSettings {
      */
     val backup: BackupSettings?
 
-    fun configureDestination(customCrafting: CustomCrafting, resourceLoader: ResourceLoader): ResourceLoader.Destination
+    fun configureDestination(customCrafting: CustomCrafting, resourceLoader: ResourceLoader): Destination
 
     interface DirectoryDestinationSettings : DestinationSettings {
 

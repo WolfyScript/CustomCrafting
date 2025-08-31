@@ -39,7 +39,7 @@ class DirectoryDestination(
         }
     }
 
-    override val filter: ResourceLoader.Destination.Filter? =
+    override val filter: Destination.Filter? =
         settings.filter?.let { DestinationFilter(customCrafting, it) }
 
     private fun assureDir() {
@@ -137,7 +137,7 @@ class DirectoryDestination(
             // #205: Required to work with Windows file separators (And possibly other separators).
             pathString = pathString.replace(File.separatorChar, '/');
         }
-        return Key.key(namespace, pathString.substring(0, pathString.lastIndexOf('.')))
+        return Key.key(namespace, pathString.take(pathString.lastIndexOf('.')))
     }
 
 }

@@ -15,8 +15,8 @@ class ResourceLoaderImpl(
 
     val listeners: MutableList<ResourceListener> = mutableListOf()
 
-    override val destinations: List<ResourceLoader.Destination> = settings.destinations.map {
-        customCrafting.logger.info("Construct destination: $it")
+    override val destinations: List<Destination> = settings.destinations.map {
+        customCrafting.logger.info("[Resources] Construct destination: $it")
         return@map it.configureDestination(customCrafting, this)
     }
 
@@ -28,17 +28,18 @@ class ResourceLoaderImpl(
         if (!directory.exists()) {
             directory.mkdirs()
         }
-        customCrafting.logger.info("Preparing resources in $directory... ($listeners)")
+        customCrafting.logger.info("[Resources] $directory: Initiate resource loading with listeners: $listeners")
+        customCrafting.logger.info("[Resources] $directory: Preparing resources...")
         for (listener in listeners) {
             listener.onPrepare(this)
         }
 
-        customCrafting.logger.info("Loading resources from $directory... ($listeners)")
+        customCrafting.logger.info("[Resources] $directory: Loading resources...")
         for (listener in listeners) {
             listener.onInitialLoad(this)
         }
 
-        customCrafting.logger.info("Finalize resources from $directory... ($listeners)")
+        customCrafting.logger.info("[Resources] $directory: Finalize resources...")
         for (listener in listeners) {
             listener.onFinalize(this)
         }

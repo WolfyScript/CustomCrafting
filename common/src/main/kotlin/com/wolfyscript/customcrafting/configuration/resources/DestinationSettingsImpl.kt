@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.configuration.resources
 
 import com.wolfyscript.customcrafting.CustomCrafting
+import com.wolfyscript.customcrafting.resource.Destination
 import com.wolfyscript.customcrafting.resource.DirectoryDestination
 import com.wolfyscript.customcrafting.resource.ResourceLoader
 
@@ -19,7 +20,7 @@ class DirectoryDestinationSettingsImpl(
     override fun configureDestination(
         customCrafting: CustomCrafting,
         resourceLoader: ResourceLoader,
-    ): ResourceLoader.Destination {
+    ): Destination {
         return DirectoryDestination(customCrafting, resourceLoader, this)
     }
 

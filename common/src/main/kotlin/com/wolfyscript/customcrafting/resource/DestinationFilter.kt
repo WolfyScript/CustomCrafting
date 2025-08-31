@@ -8,7 +8,7 @@ import com.wolfyscript.scafall.identifier.Key
 class DestinationFilter(
     val customCrafting: CustomCrafting,
     val settings: DestinationSettings.FilterSettings,
-) : ResourceLoader.Destination.Filter {
+) : Destination.Filter {
 
     private val includesFilters = settings.includes?.let { IncludesFilter(it) }
     private val excludesFilters = settings.excludes?.let { IncludesFilter(it) }
