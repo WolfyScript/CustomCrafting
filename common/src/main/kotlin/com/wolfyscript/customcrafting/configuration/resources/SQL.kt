@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.configuration.resources
 
 import com.wolfyscript.customcrafting.CustomCrafting
+import com.wolfyscript.customcrafting.resource.Destination
 import com.wolfyscript.customcrafting.resource.ResourceLoader
 import com.wolfyscript.customcrafting.resource.database.SQLDestination
 
@@ -19,7 +20,7 @@ class SQLDestinationSettingsImpl(
     override fun configureDestination(
         customCrafting: CustomCrafting,
         resourceLoader: ResourceLoader,
-    ): ResourceLoader.Destination {
+    ): Destination {
         return SQLDestination(customCrafting, resourceLoader, this)
     }
 }

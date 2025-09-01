@@ -8,8 +8,8 @@ import com.wolfyscript.customcrafting.recipes.data.RepairingRecipeDataImpl
 import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
 
 class CustomRecipeRepairingImpl(
-    override val priority: Int,
-    override val conditions: RecipeConditions,
+    override val priority: Int = 0,
+    override val conditions: RecipeConditions = RecipeConditionsImpl(),
     override val process: ProcessRepairing,
     override val base: Ingredient,
     override val addition: Ingredient?,

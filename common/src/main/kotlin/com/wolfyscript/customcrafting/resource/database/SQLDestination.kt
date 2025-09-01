@@ -4,6 +4,7 @@ import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.resource.AbstractDestination
+import com.wolfyscript.customcrafting.resource.Destination
 import com.wolfyscript.customcrafting.resource.DestinationFilter
 import com.wolfyscript.customcrafting.resource.LoadedRecipe
 import com.wolfyscript.customcrafting.resource.ResourceLoader
@@ -23,7 +24,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 class SQLDestination(customCrafting: CustomCrafting, resourceLoader: ResourceLoader, settings: DestinationSettings.SQLDestinationSettings) :
     AbstractDestination<DestinationSettings.SQLDestinationSettings>(customCrafting, resourceLoader as ResourceLoaderImpl, settings) {
 
-    override val filter: ResourceLoader.Destination.Filter? =
+    override val filter: Destination.Filter? =
         settings.filter?.let { DestinationFilter(customCrafting, it) }
 
     private fun getOrCreateDBConnection(): Database {
@@ -46,7 +47,7 @@ class SQLDestination(customCrafting: CustomCrafting, resourceLoader: ResourceLoa
                 var dir = it[RecipesTable.dir]
                 var key = it[RecipesTable.name]
                 if (dir.endsWith('/')) {
-                    dir = dir.substring(0, dir.length - 1)
+                    dir = dir.dropLast(1)
                 }
                 if (key.startsWith('/')) {
                     key = key.substring(1)
