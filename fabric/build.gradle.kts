@@ -18,7 +18,6 @@ loom {
     }
 }
 
-
 dependencies {
     api(shadow(project(":api"))!!)
     api(shadow(project(":common"))!!)
@@ -66,6 +65,8 @@ tasks {
         dependsOn(shadowJar)
         finalizedBy("fabric_copy")
         inputFile.set(shadowJar.get().archiveFile)
+        archiveBaseName.set(project.rootProject.name)
+        archiveClassifier.set("fabric-${libs.versions.minecraft.get()}")
     }
 }
 

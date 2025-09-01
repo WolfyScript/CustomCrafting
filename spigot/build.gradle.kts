@@ -71,11 +71,13 @@ dependencies {
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
+fun archiveName() = "${project.rootProject.name}-${project.version}-spigot-${libs.versions.minecraft.get()}"
+
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
 
 tasks {
     shadowJar {
-        archiveClassifier.set("")
+        archiveFileName.set("${archiveName()}-mojmap.jar")
 
         finalizedBy(reobfJar)
 
@@ -98,6 +100,7 @@ tasks {
     }
     reobfJar {
         finalizedBy(jar)
+        outputJar.set(layout.buildDirectory.file("libs/${archiveName()}.jar"))
     }
 }
 
@@ -137,7 +140,7 @@ bukkitPluginYaml {
 }
 
 minecraftServers {
-    libName.set("${project.name}-${version}.jar")
+    libName.set("${archiveName()}.jar")
     servers {
         register("spigot") {
             destFileName.set("customcrafting.jar")
