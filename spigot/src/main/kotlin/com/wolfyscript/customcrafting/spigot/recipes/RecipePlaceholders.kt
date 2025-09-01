@@ -128,7 +128,7 @@ fun Ingredient?.toMinecraft() : net.minecraft.world.item.crafting.Ingredient {
     if (this == null) {
         return net.minecraft.world.item.crafting.Ingredient.of(*emptyArray<ItemLike>())
     }
-    if (matchTags) {
+    if (matching is IngredientMatcher.Exact) {
         return net.minecraft.world.item.crafting.Ingredient.ofStacks(choices.all().map { it.create().unwrap() })
     }
     return  net.minecraft.world.item.crafting.Ingredient.of(HolderSet.direct(choices.all().map { it.create().unwrap().itemHolder }))
