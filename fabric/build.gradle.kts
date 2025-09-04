@@ -71,7 +71,7 @@ tasks {
 }
 
 minecraftServers {
-    libName.set("${project.name}-${version}.jar")
+    libName.set("${project.rootProject.name}-${version}-fabric-${libs.versions.minecraft.get()}.jar")
     servers {
         register("fabric") {
             destPath.set("mods")
