@@ -47,27 +47,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":api"))
-    implementation(project(":common"))
-    implementation(kotlin("reflect"))
-    implementation(libs.scafall.loader)
-    shadow(libs.bundles.jackson)
-    implementation(libs.jackson.kotlin)
-    api(libs.protocollib)
-    api(libs.bstats)
-    api(libs.scafall.spigot.api)
-    implementation(libs.caffeine)
-    compileOnly(libs.mythic.dist)
-    compileOnly(libs.papermc.paper)
-    compileOnly(libs.mojang.authlib)
-    compileOnly(libs.jetbrains.annotations)
-    compileOnly(libs.netty.all)
-    compileOnly(libs.placeholderapi)
-    compileOnly(libs.oraxen)
-    compileOnly(libs.wolfyutils.spigot)
-    compileOnly(libs.nbtapi)
-    compileOnly(libs.bundles.exposed)
-    compileOnly(libs.bundles.database.drivers)
+    implementation(project(":spigotlike"))
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
@@ -82,14 +62,7 @@ tasks {
         finalizedBy(reobfJar)
 
         dependencies {
-            include(project(":api"))
-            include(project(":common"))
-
-            // Need to shade this for now, because when defined in plugin.yml it causes classloader issue for
-            // kotlin stdlib etc., because those are transitive dependencies and cause duplicate class definitions.
-//            libs.bundles.exposed.get().forEach {
-//               include(dependency(it))
-//            }
+            include(project(":spigotlike"))
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
 
@@ -118,7 +91,7 @@ artifacts {
 bukkitPluginYaml {
     name = "CustomCrafting"
     version = project.version.toString()
-    main = "com.wolfyscript.customcrafting.spigot.loader.SpigotLoaderPlugin"
+    main = "com.wolfyscript.customcrafting.spigot.SpigotLoaderPlugin"
     apiVersion = libs.versions.minecraft.get() // Only support the latest Minecraft version!
     authors.add("WolfyScript")
     depend.add("scafall")
@@ -149,13 +122,6 @@ minecraftServers {
             extraEnv.put("BUILD_FROM_SOURCE", "true")
             imageVersion.set("java21-graalvm") // graalvm contains the jdk required to build from source
             ports.add("25569:25565")
-        }
-        register("paper") {
-            destFileName.set("customcrafting.jar")
-            version.set(libs.versions.minecraft.get())
-            type.set("PAPER")
-            imageVersion.set("java21")
-            ports.add("25570:25565")
         }
     }
 }

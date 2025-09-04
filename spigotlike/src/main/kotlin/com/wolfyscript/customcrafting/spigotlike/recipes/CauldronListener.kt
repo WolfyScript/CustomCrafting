@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.spigot.recipes
+package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.mechanics.CauldronSettings

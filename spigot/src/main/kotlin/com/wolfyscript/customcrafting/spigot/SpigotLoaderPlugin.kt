@@ -1,9 +1,7 @@
-package com.wolfyscript.customcrafting.spigot.loader
+package com.wolfyscript.customcrafting.spigot
 
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingBoostrap
-import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
-import com.wolfyscript.scafall.loader.InnerJarClassloader
 import com.wolfyscript.scafall.loader.ScafallLoader
 import com.wolfyscript.scafall.loader.module.Module
 import org.bukkit.plugin.java.JavaPlugin
@@ -17,10 +15,10 @@ class SpigotLoaderPlugin : JavaPlugin() {
         val boostrap = ScafallLoader.loadObject(
             CustomCraftingBoostrap::class.java,
             classLoader,
-            CustomCraftingBoostrap.Companion.PATH_TO_INTERNAL_BOOTSTRAP
+            CustomCraftingBoostrap.PATH_TO_INTERNAL_BOOTSTRAP
         )
         module = boostrap.loadModule {
-            CustomCraftingSpigot(classLoader, this, LoggerFactory.getLogger(logger.name))
+            CustomCraftingSpigot(this, LoggerFactory.getLogger(logger.name))
         }
     }
 

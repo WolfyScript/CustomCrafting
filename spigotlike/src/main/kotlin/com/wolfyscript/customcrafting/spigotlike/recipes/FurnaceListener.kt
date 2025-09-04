@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.spigot.recipes
+package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.CustomCrafting
@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
+import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.*
 import com.wolfyscript.scafall.wrappers.world.ScafallBlockPos
@@ -22,6 +22,7 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent
 import org.bukkit.event.inventory.FurnaceStartSmeltEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import kotlin.collections.iterator
 import kotlin.math.floor
 import kotlin.random.Random
 
@@ -123,9 +124,9 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
                 // Successfully smelted result, pick a new seed to pick the next random result
                 (block.state as Furnace).apply {
                     persistentDataContainer.set(
-                        CustomCraftingSpigot.cookingSeedKey,
+                        RecipeSeeds.cookingSeedKey,
                         PersistentDataType.LONG,
-                        Random.Default.nextLong()
+                        Random.nextLong()
                     )
                 }.update()
                 recipeCache.invalidate(blockPos)
@@ -140,13 +141,13 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
 
     private fun getCookingSeed(state: Furnace): Long {
         var seed = state.persistentDataContainer.get(
-            CustomCraftingSpigot.cookingSeedKey,
+            RecipeSeeds.cookingSeedKey,
             PersistentDataType.LONG
         )
         if (seed == null) {
-            seed = Random.Default.nextLong()
+            seed = Random.nextLong()
             state.persistentDataContainer.set(
-                CustomCraftingSpigot.cookingSeedKey,
+                RecipeSeeds.cookingSeedKey,
                 PersistentDataType.LONG,
                 seed
             )

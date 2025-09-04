@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.spigot.recipes
+package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.CustomCrafting
@@ -8,7 +8,7 @@ import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding
-import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
+import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
@@ -25,8 +25,7 @@ import org.bukkit.event.inventory.PrepareGrindstoneEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.persistence.PersistentDataType
-import java.util.*
-import java.util.function.Consumer
+import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
@@ -108,7 +107,7 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         }
 
         recipeCache.invalidate(player.uniqueId)
-        player.persistentDataContainer.set(CustomCraftingSpigot.playerGrindingSeedKey, PersistentDataType.LONG, Random.nextLong())
+        player.persistentDataContainer.set(RecipeSeeds.playerGrindingSeedKey, PersistentDataType.LONG, Random.Default.nextLong())
     }
 
     @EventHandler
@@ -123,7 +122,9 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.grinding.resolveOrThrow(), input, context) ?: return // Not a custom recipe
         val recipe = data.recipe.value ?: return
 
-        event.result = recipe.process.compute(data, input, context, Random(getGrindingSeed(event.view.player as Player))).unwrapSpigot()
+        event.result = recipe.process.compute(data, input, context,
+            Random(getGrindingSeed(event.view.player as Player))
+        ).unwrapSpigot()
 
         recipeCache.put(event.view.player.uniqueId, data)
     }
@@ -220,13 +221,13 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
 
     private fun getGrindingSeed(bukkitPlayer: Player): Long {
         var seed = bukkitPlayer.persistentDataContainer.get(
-            CustomCraftingSpigot.playerGrindingSeedKey,
+            RecipeSeeds.playerGrindingSeedKey,
             PersistentDataType.LONG
         )
         if (seed == null) {
             seed = Random.Default.nextLong()
             bukkitPlayer.persistentDataContainer.set(
-                CustomCraftingSpigot.playerGrindingSeedKey,
+                RecipeSeeds.playerGrindingSeedKey,
                 PersistentDataType.LONG,
                 seed
             )

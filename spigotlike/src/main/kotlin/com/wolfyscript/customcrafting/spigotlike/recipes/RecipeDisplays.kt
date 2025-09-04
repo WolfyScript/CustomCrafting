@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.spigot.recipes
+package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
@@ -14,14 +14,11 @@ import org.bukkit.inventory.RecipeChoice
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.ShapelessRecipe
 
-const val DISPLAY_RECIPE_PREFIX = "cc_placeholder."
+const val DISPLAY_RECIPE_PREFIX = "cc_display."
 
 fun registerDisplayRecipes(recipes: Collection<RecipeReference<*>>) {
     for (recipe in recipes) {
-        val display = recipe.toDisplay()
-        if (display == null) {
-            continue
-        }
+        val display = recipe.toDisplay() ?: continue
         if (Bukkit.getRecipe((display as Keyed).key) != null) {
             Bukkit.removeRecipe((display as Keyed).key)
         }
@@ -38,16 +35,14 @@ fun Key.toDisplayRecipeKey(): NamespacedKey {
 }
 
 fun RecipeReference<*>.toDisplay(): Recipe? {
-    val recipe = value
-    when (recipe) {
+    when (val recipe = value) {
         is CustomRecipeCrafting -> recipe.toDisplay(key)
     }
     return null
 }
 
 fun CustomRecipeCrafting.toDisplay(key: Key): CraftingRecipe? {
-    val formula = this.formula
-    when (formula) {
+    when (val formula = this.formula) {
         is CraftingFormula.Shaped -> {
             val recipe = ShapedRecipe(key.toPlaceholderRecipeKey(), result.choices.all().first().create().unwrapSpigot())
             recipe.shape(*formula.shape.rows.toTypedArray())

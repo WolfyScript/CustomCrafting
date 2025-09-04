@@ -1,11 +1,16 @@
-package com.wolfyscript.customcrafting.spigot.recipes
+package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.wolfyscript.customcrafting.recipes.*
+import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.recipes.EvaluationContext
+import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
+import com.wolfyscript.customcrafting.recipes.RecipeResult
+import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
+import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
@@ -24,10 +29,11 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.CraftingInventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import java.util.*
+import org.bukkit.plugin.Plugin
+import java.util.UUID
 import kotlin.random.Random
 
-class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
+class CraftingListener(val plugin: Plugin, val customCrafting: CustomCraftingCommon) : Listener {
 
     val recipeManager = customCrafting.recipeManager
 
@@ -60,19 +66,11 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         }
 
         val matrixData = matrixDataCache.getIfPresent(event.whoClicked.uniqueId)
-        if (matrixData == null) {
-            // The result was picked up before CustomCrafting calculated the matrix data.
-            return
-        }
+            ?: return // The result was picked up before CustomCrafting calculated the matrix data.
         val craftingData = craftingDataCache.getIfPresent(event.whoClicked.uniqueId)
-        if (craftingData == null) {
-            // Not a custom recipe
-            return
-        }
+            ?: return // Not a custom recipe
         val recipe = craftingData.recipe.value
-        if (recipe == null) {
-            return // TODO: special handling. Recipe that was evaluated, has been removed in the meantime
-        }
+            ?: return // TODO: special handling. Recipe that was evaluated, has been removed in the meantime
 
         event.isCancelled = true
         val player = event.whoClicked as Player
@@ -114,7 +112,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
             if (resultStack != null) {
                 e.inventory.result = resultStack.unwrapSpigot()
-                Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable { player.updateInventory() })
+                Bukkit.getScheduler().runTask(plugin, Runnable { player.updateInventory() })
             } else {
                 val recipe = e.recipe
                 // No valid custom recipes found
@@ -125,7 +123,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 if (recipe.isPlaceholder() || recipe.isDisplay()) {
                     // TODO: Can't determine the vanilla recipe! We may need NMS for that in the future. For now simply override vanilla recipes.
                     e.inventory.result = ItemStack(Material.AIR)
-                    Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable { player.updateInventory() })
+                    Bukkit.getScheduler().runTask(plugin, Runnable { player.updateInventory() })
                     return
                 }
 
@@ -137,12 +135,12 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 ) {
                     //Recipe is disabled or it is a custom recipe!
                     e.inventory.result = ItemStack(Material.AIR)
-                    Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable { player.updateInventory() })
+                    Bukkit.getScheduler().runTask(plugin, Runnable { player.updateInventory() })
                     return
                 }
 
                 //At this point the vanilla recipe is valid and can be crafted
-                Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable { player.updateInventory() })
+                Bukkit.getScheduler().runTask(plugin, Runnable { player.updateInventory() })
             }
         } catch (ex: Exception) {
             customCrafting.logger.error("-------- [Error occurred while crafting Recipe!] --------")
@@ -180,13 +178,13 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
     fun getCraftSeed(bukkitPlayer: Player): Long {
         var seed = bukkitPlayer.persistentDataContainer.get(
-            CustomCraftingSpigot.playerCraftingSeedKey,
+            RecipeSeeds.playerCraftingSeedKey,
             PersistentDataType.LONG
         )
         if (seed == null) {
-            seed = Random.nextLong()
+            seed = Random.Default.nextLong()
             bukkitPlayer.persistentDataContainer.set(
-                CustomCraftingSpigot.playerCraftingSeedKey,
+                RecipeSeeds.playerCraftingSeedKey,
                 PersistentDataType.LONG,
                 seed
             )
@@ -222,7 +220,7 @@ class CraftingListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 if (cursor.type == Material.AIR) {
                     event.setCursor(result)
                 } else {
-                    cursor.amount = cursor.amount + result.amount
+                    cursor.amount += result.amount
                 }
                 return 1
             }

@@ -1,14 +1,13 @@
-package com.wolfyscript.customcrafting.spigot.recipes
+package com.wolfyscript.customcrafting.spigotlike.recipes
 
+import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeReference
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
@@ -23,8 +22,9 @@ import org.bukkit.event.block.CrafterCraftEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.CrafterInventory
 import org.bukkit.persistence.PersistentDataType
+import org.bukkit.plugin.Plugin
 
-class CrafterListener(val customCrafting: CustomCraftingSpigot) : Listener {
+class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingCommon) : Listener {
 
     private val previousRecipeContainerKey = NamespacedKey("customcrafting", "previous_custom_recipe")
 
@@ -38,12 +38,12 @@ class CrafterListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val inventory = state.inventory as CrafterInventory
 
         val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
-        val matrix = CraftingMatrixData.of(inventory.contents.map { it?.wrap() })
+        val matrix = CraftingMatrixData.Companion.of(inventory.contents.map { it?.wrap() })
         val input = RecipeInput.CraftingRecipeInput.of(matrix)
 
         val previousRecipeKey =
             state.persistentDataContainer.get(previousRecipeContainerKey, PersistentDataType.STRING)?.let {
-                Key.parse(it)
+                Key.Companion.parse(it)
             }
         val previousRecipe = previousRecipeKey?.let { customCrafting.recipeManager.index.get(it) as? RecipeReference<CustomRecipeCrafting>? }
 
@@ -71,7 +71,7 @@ class CrafterListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 inventory.setItem(index, new.unwrapSpigot())
             }
             // Now all calculations are done, so we can update the inventory
-            Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable {
+            Bukkit.getScheduler().runTask(plugin, Runnable {
                 state.update(true)
             })
             return

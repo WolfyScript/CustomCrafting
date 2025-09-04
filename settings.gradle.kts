@@ -64,6 +64,7 @@ plugins {
 }
 
 sequenceOf(
+    "spigotlike",
     "spigot",
     "fabric",
 ).forEach {

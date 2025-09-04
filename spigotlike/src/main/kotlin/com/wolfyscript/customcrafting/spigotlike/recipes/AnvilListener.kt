@@ -1,14 +1,15 @@
-package com.wolfyscript.customcrafting.spigot.recipes
+package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.destroystokyo.paper.event.block.AnvilDamagedEvent
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
-import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
+import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.scafall.platform.ifPaperCompatible
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
@@ -26,10 +27,11 @@ import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.inventory.AnvilInventory
 import org.bukkit.inventory.view.AnvilView
 import org.bukkit.persistence.PersistentDataType
+import org.bukkit.plugin.Plugin
 import java.util.UUID
 import kotlin.random.Random
 
-class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
+class AnvilListener(val plugin: Plugin, val customCrafting: CustomCraftingCommon) : Listener {
 
     private val recipeCache = Caffeine.newBuilder().build<UUID, RecipeEvaluationResult<RecipeEvaluationResult.RepairingRecipeData, CustomRecipeRepairing>>()
 
@@ -59,7 +61,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         val correctCost = event.view.repairCost
         // Bukkit decided to set the repair cost of the anvil menu to -1 after the event call.
         // This bypasses it by setting it back to the proper repair cost, that we just set
-        Bukkit.getScheduler().runTaskLater(customCrafting.plugin, Runnable {
+        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
             event.view.repairCost = correctCost
         }, 2)
     }
@@ -100,7 +102,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
             }
         }
         if (cursor.type == Material.AIR) {
-            Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable {
+            Bukkit.getScheduler().runTask(plugin, Runnable {
                 event.view.setCursor(resultStack)
             })
         } else if (cursor.isSimilar(resultStack)) {
@@ -108,16 +110,16 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
                 // TODO: try and put item into inventory
                 return // does not fit on the cursor. cancel recipe processing.
             }
-            Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable {
+            Bukkit.getScheduler().runTask(plugin, Runnable {
                 // since this is called next tick, the cursor might have changed, so use the latest
-                event.view.cursor.amount = event.view.cursor.amount + resultStack.amount
+                event.view.cursor.amount += resultStack.amount
             })
         }
 
         // At this point, the result was successfully picked up and all requirements are satisfied.
         // Continue to process level, actions, ingredients, etc.
 
-        player.level = player.level - view.repairCost
+        player.level -= view.repairCost
 
         val context = EvaluationContextImpl(player.wrap(), inventory.location?.toPreciseGlobal())
 
@@ -131,7 +133,7 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
             location.world.playEffect(location, Effect.ANVIL_USE, 0)
 
             // Mirror the vanilla behaviour of damaging the Anvil
-            if (player.gameMode != GameMode.CREATIVE && Random.nextFloat() < 0.12) {
+            if (player.gameMode != GameMode.CREATIVE && Random.Default.nextFloat() < 0.12) {
 
                 val block = location.block
                 block.type = when (block.type) {
@@ -178,20 +180,20 @@ class AnvilListener(val customCrafting: CustomCraftingSpigot) : Listener {
         // By this point, the recipe was processed, levels and ingredients consumed,
         // Now clear the cache
         recipeCache.invalidate(player.uniqueId)
-        player.persistentDataContainer.set(CustomCraftingSpigot.playerRepairingSeedKey, PersistentDataType.LONG, Random.Default.nextLong())
+        player.persistentDataContainer.set(RecipeSeeds.playerRepairingSeedKey, PersistentDataType.LONG, Random.Default.nextLong())
         // and reset the cost, as vanilla would do normally
         view.repairCost = -1
     }
 
     fun getRepairingSeed(bukkitPlayer: Player): Long {
         var seed = bukkitPlayer.persistentDataContainer.get(
-            CustomCraftingSpigot.playerRepairingSeedKey,
+            RecipeSeeds.playerRepairingSeedKey,
             PersistentDataType.LONG
         )
         if (seed == null) {
             seed = Random.Default.nextLong()
             bukkitPlayer.persistentDataContainer.set(
-                CustomCraftingSpigot.playerRepairingSeedKey,
+                RecipeSeeds.playerRepairingSeedKey,
                 PersistentDataType.LONG,
                 seed
             )

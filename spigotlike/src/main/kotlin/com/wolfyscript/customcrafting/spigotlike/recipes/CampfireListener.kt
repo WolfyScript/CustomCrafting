@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.spigot.recipes
+package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
@@ -115,7 +115,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
             data,
             context,
             // No need to store the seed. Cannot determine the result beforehand to cheese it.
-            Random(Random.nextLong())
+            Random(Random.Default.nextLong())
         ).unwrapSpigot()
     }
 

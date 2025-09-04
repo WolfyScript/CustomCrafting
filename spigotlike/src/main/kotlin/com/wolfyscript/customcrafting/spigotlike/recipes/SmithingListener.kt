@@ -1,13 +1,14 @@
-package com.wolfyscript.customcrafting.spigot.recipes
+package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.SmithingUtils
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.spigot.CustomCraftingSpigot
+import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
@@ -27,23 +28,25 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.SmithingInventory
 import org.bukkit.persistence.PersistentDataType
-import java.util.*
+import org.bukkit.plugin.Plugin
+import java.util.UUID
 import kotlin.random.Random
 
-class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
+class SmithingListener(val plugin: Plugin, val customCrafting: CustomCraftingCommon) : Listener {
 
-    val recipeCache = Caffeine.newBuilder().build<UUID, RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeSmithing>>()
+    val recipeCache =
+        Caffeine.newBuilder().build<UUID, RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeSmithing>>()
     val collectsResult = Caffeine.newBuilder().build<UUID, Boolean>()
 
     private fun getSmithingSeed(bukkitPlayer: Player): Long {
         var seed = bukkitPlayer.persistentDataContainer.get(
-            CustomCraftingSpigot.playerSmithingSeedKey,
+            RecipeSeeds.playerSmithingSeedKey,
             PersistentDataType.LONG
         )
         if (seed == null) {
             seed = Random.Default.nextLong()
             bukkitPlayer.persistentDataContainer.set(
-                CustomCraftingSpigot.playerSmithingSeedKey,
+                RecipeSeeds.playerSmithingSeedKey,
                 PersistentDataType.LONG,
                 seed
             )
@@ -120,13 +123,11 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         }
 
         val player = event.whoClicked as Player
-        val action = event.action
-
         val data = recipeCache.getIfPresent(player.uniqueId) ?: return
         val recipe = data.recipe.value ?: return
 
         val resultStack = inventory.result
-        if (resultStack == null || resultStack.type ==  Material.AIR) {
+        if (resultStack == null || resultStack.type == Material.AIR) {
             return
         }
 
@@ -139,14 +140,14 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
         }
         // A quick implementation to collect the result. Things like moving the item to the hotbar won't work!
         if (event.cursor.type == Material.AIR) {
-            Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable {
+            Bukkit.getScheduler().runTask(plugin, Runnable {
                 event.view.setCursor(resultStack)
             })
         } else if (event.cursor.isSimilar(resultStack)) {
             if (event.cursor.amount + resultStack.amount > event.cursor.maxStackSize) {
                 return // does not fit on cursor. cancel recipe
             }
-            Bukkit.getScheduler().runTask(customCrafting.plugin, Runnable {
+            Bukkit.getScheduler().runTask(plugin, Runnable {
                 event.view.cursor.amount = event.cursor.amount + resultStack.amount
             })
         }
@@ -155,31 +156,41 @@ class SmithingListener(val customCrafting: CustomCraftingSpigot) : Listener {
 
         recipe.result.runActions(context, 1)
 
-        // TODO: craft remains
         // Use setContents so we batch slot updates and only cause one update, so PrepareSmithingEvent is just called once instead of three times.
         inventory.contents = arrayOf(
-            data.data.bySlot(0)?.let {
-                inventory.getItem(0)?.clone()?.apply {
-                    amount -= it.matchedItemStackRef.amount
-                } ?: ItemStack(Material.AIR)
-            },
-            data.data.bySlot(1)?.let {
-                inventory.getItem(1)?.clone()?.apply {
-                    amount -= it.matchedItemStackRef.amount
-                } ?: ItemStack(Material.AIR)
-            },
-            data.data.bySlot(2)?.let {
-                inventory.getItem(2)?.clone()?.apply {
-                    amount -= it.matchedItemStackRef.amount
-                } ?: ItemStack(Material.AIR)
-            }
+            shrinkIngredient(inventory, 0, context, data),
+            shrinkIngredient(inventory, 1, context, data),
+            shrinkIngredient(inventory, 2, context, data)
         )
 
         player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1f, 1f)
 
         // Reset seed for next result generation
-        player.persistentDataContainer.set(CustomCraftingSpigot.playerSmithingSeedKey, PersistentDataType.LONG, Random.Default.nextLong())
+        player.persistentDataContainer.set(
+            RecipeSeeds.playerSmithingSeedKey,
+            PersistentDataType.LONG,
+            Random.Default.nextLong()
+        )
         recipeCache.invalidate(player.uniqueId)
+    }
+
+    private fun shrinkIngredient(
+        inventory: SmithingInventory,
+        index: Int,
+        context: EvaluationContextImpl,
+        data: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeSmithing>,
+    ): ItemStack {
+        return data.data.bySlot(index)?.let { ingredientData ->
+            inventory.getItem(index)?.let {
+                ingredientData.selectedIngredient.shrink(
+                    it.wrap(),
+                    1,
+                    ingredientData.matchedItemStackRef,
+                    context,
+                    data
+                )
+            }?.unwrapSpigot()
+        } ?: ItemStack(Material.AIR)
     }
 
     @EventHandler

@@ -1,9 +1,9 @@
-package com.wolfyscript.customcrafting.spigot.recipes
+package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.wolfyscript.customcrafting.recipes.*
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.wrappers.utils.unwrap
 import net.minecraft.core.HolderSet
@@ -39,6 +39,14 @@ fun Recipe.isPlaceholder(): Boolean {
     return (this as Keyed).key.key.startsWith(PLACEHOLDER_RECIPE_PREFIX)
 }
 
+fun Recipe.originalRecipeKey(): Key {
+    return if (this.isPlaceholder()) {
+        (this as Keyed).key.toScafall()
+    } else {
+        Key.key((this as Keyed).key.namespace, (this as Keyed).key.key.removePrefix(PLACEHOLDER_RECIPE_PREFIX))
+    }
+}
+
 fun Key.toPlaceholderRecipeKey(): NamespacedKey {
     return NamespacedKey(this.namespace, "$PLACEHOLDER_RECIPE_PREFIX${this.value}")
 }
@@ -48,11 +56,11 @@ fun Key.toMcPlaceholderRecipeKey(): ResourceKey<net.minecraft.world.item.craftin
 }
 
 fun RecipeReference<*>.toPlaceholder(): Recipe? {
-    val recipe = value
-    return when (recipe) {
+    return when (val recipe = value) {
         is CustomRecipeCrafting -> recipe.toPlaceholder(key)
         is CustomRecipeCooking -> recipe.toPlaceholder(key)
         is CustomRecipeSmithing -> recipe.toPlaceholder(key)
+        is CustomRecipeStonecutting -> recipe.toPlaceholder(key)
         else -> null
     }
 }
@@ -97,8 +105,7 @@ private fun Ingredient.toMaterialChoice(): RecipeChoice.MaterialChoice {
 }
 
 fun CustomRecipeCrafting.toPlaceholder(key: Key): CraftingRecipe? {
-    val formula = this.formula
-    when (formula) {
+    when (val formula = this.formula) {
         is CraftingFormula.Shaped -> {
             val recipe = ShapedRecipe(key.toPlaceholderRecipeKey(), result.choices.all().first().create().unwrapSpigot())
             recipe.shape(*formula.shape.rows.toTypedArray())
@@ -148,5 +155,16 @@ fun CustomRecipeSmithing.toPlaceholder(key: Key): SmithingTransformRecipe? {
     ScafallProvider.get().server.minecraftServer.recipeManager.addRecipe(RecipeHolder(key.toMcPlaceholderRecipeKey(), recipe))
 
     return null
+}
+
+fun CustomRecipeStonecutting.toPlaceholder(key: Key) : StonecuttingRecipe {
+    // Only use material choice so it matches any source variation. The exact custom match follows when a recipe is selected in the menu!
+//    val source = if (recipe.source.matching is IngredientMatcher.Exact) {
+//        RecipeChoice.ExactChoice(recipe.source.choices.all().map { it.create().unwrapSpigot() })
+//    } else {
+    val source = RecipeChoice.MaterialChoice(source.choices.all().map { it.create().unwrapSpigot().type })
+//    }
+
+    return StonecuttingRecipe(key.toPlaceholderRecipeKey(), result.choices.all().first().create().unwrapSpigot(), source)
 }
 
