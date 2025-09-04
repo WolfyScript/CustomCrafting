@@ -5,12 +5,12 @@ import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
+import com.wolfyscript.customcrafting.spigotlike.collectResultAndRunActions
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
@@ -173,7 +173,7 @@ class CraftingListener(val plugin: Plugin, val customCrafting: CustomCraftingCom
     ): Int {
         if (event.clickedInventory == null) return 0
         val recipeResult = craftingData.recipe.value?.result ?: return 0
-        return calculateClick(event, bukkitPlayer, craftingData, recipeResult, matrixData, context)
+        return collectResultAndRunActions(event, bukkitPlayer.inventory, craftingData, recipeResult, matrixData.items, context, Random(getCraftSeed(bukkitPlayer)))
     }
 
     fun getCraftSeed(bukkitPlayer: Player): Long {
@@ -182,7 +182,7 @@ class CraftingListener(val plugin: Plugin, val customCrafting: CustomCraftingCom
             PersistentDataType.LONG
         )
         if (seed == null) {
-            seed = Random.Default.nextLong()
+            seed = Random.nextLong()
             bukkitPlayer.persistentDataContainer.set(
                 RecipeSeeds.playerCraftingSeedKey,
                 PersistentDataType.LONG,
@@ -190,71 +190,6 @@ class CraftingListener(val plugin: Plugin, val customCrafting: CustomCraftingCom
             )
         }
         return seed
-    }
-
-    fun possibleResultAmount(recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>, matrixData: CraftingMatrixData): Int =
-        recipeEvaluationResult.data.nonNullIngredients.withIndex().minOf { (index, value) ->
-            matrixData.items[index].amount / value.matchedItemStackRef.amount
-        }
-
-    private fun calculateClick(
-        event: InventoryClickEvent,
-        bukkitPlayer: Player,
-        craftingData: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>,
-        recipeResult: RecipeResult,
-        matrixData: CraftingMatrixData,
-        context: EvaluationContext,
-    ): Int {
-        val random = Random(getCraftSeed(bukkitPlayer))
-        var maxPossible = possibleResultAmount(craftingData, matrixData)
-
-        if (!event.isShiftClick) {
-            if (maxPossible <= 0) {
-                return 0
-            }
-            val result = recipeResult.compute(craftingData, context, random).unwrapSpigot()
-            recipeResult.runActions(context, 1)
-
-            val cursor = event.cursor
-            if (cursor.type == Material.AIR || (result.isSimilar(cursor) && cursor.amount + result.amount <= cursor.maxStackSize)) {
-                if (cursor.type == Material.AIR) {
-                    event.setCursor(result)
-                } else {
-                    cursor.amount += result.amount
-                }
-                return 1
-            }
-            return 0
-        }
-
-        if (event.isShiftClick) {
-            maxPossible = quickCraft(maxPossible, bukkitPlayer, craftingData, recipeResult, context, random)
-            recipeResult.runActions(context, maxPossible)
-            return maxPossible
-        }
-        return 0
-    }
-
-    private fun quickCraft(
-        maxPossible: Int,
-        bukkitPlayer: Player,
-        craftingData: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>,
-        recipeResult: RecipeResult,
-        context: EvaluationContext,
-        random: Random,
-    ): Int {
-        for (i in 0..<maxPossible) {
-            val stack = recipeResult.compute(craftingData, context, random).unwrapSpigot()
-            val originalCount = stack.amount // Need to copy it here, because the addItem method **may** change the count of stack
-            val remains = bukkitPlayer.inventory.addItem(stack)
-            if (remains.isNotEmpty()) {
-                // revert the last added stack again, by removing the count
-                val toRemove = originalCount - remains[0]!!.amount
-                bukkitPlayer.inventory.last { stack.isSimilar(it) }?.amount -= toRemove
-                return i
-            }
-        }
-        return maxPossible
     }
 
 }
