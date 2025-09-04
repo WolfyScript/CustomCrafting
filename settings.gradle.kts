@@ -66,6 +66,7 @@ plugins {
 sequenceOf(
     "spigotlike",
     "spigot",
+    "paper",
     "fabric",
 ).forEach {
     include(":${it}")
