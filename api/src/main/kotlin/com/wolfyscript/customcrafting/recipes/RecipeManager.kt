@@ -21,6 +21,8 @@ interface RecipeManager {
 
     fun enableRecipe(key: Key)
 
+    fun isRecipeDisabled(key: Key): Boolean
+
     val disabledRecipes: Set<Key>
 
     fun getRecipe(key: Key): CustomRecipe<*,*>?

@@ -88,7 +88,7 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingComm
         }
 
         // Check for custom recipe that overrides the vanilla recipe
-        if (customCrafting.recipeManager.disabledRecipes.contains(bukkitRecipe.key.toScafall()) || customCrafting.recipeManager.getRecipe(bukkitRecipe.key.toScafall()) != null
+        if (customCrafting.recipeManager.isRecipeDisabled(bukkitRecipe.key.toScafall()) || customCrafting.recipeManager.getRecipe(bukkitRecipe.key.toScafall()) != null
         ) {
             // Recipe is disabled or it is a custom recipe!
             event.isCancelled = true

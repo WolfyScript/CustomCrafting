@@ -64,7 +64,7 @@ class SmithingListener(val plugin: Plugin, val customCrafting: CustomCraftingCom
         if (resultStack != null && resultStack.type != Material.AIR) {
             // Check for disabled vanilla recipes
             if (Bukkit.getRecipesFor(resultStack).any {
-                    customCrafting.recipeManager.disabledRecipes.contains((it as Keyed).key.toScafall())
+                    customCrafting.recipeManager.isRecipeDisabled((it as Keyed).key.toScafall())
                 }) {
                 event.result = null
             }

@@ -4,7 +4,6 @@ import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.resource.LoadedRecipe
 import com.wolfyscript.customcrafting.resource.ResourceListener
 import com.wolfyscript.customcrafting.resource.ResourceLoader
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
@@ -15,6 +14,7 @@ import com.wolfyscript.scafall.verification.VerificationResult
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.io.File
+import java.util.*
 
 class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeManager, ResourceListener {
 
@@ -25,9 +25,12 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
      */
     val recipesLoadedByCC: MutableSet<Key> = ObjectOpenHashSet()
 
-    override val disabledRecipes: MutableSet<Key> = ObjectOpenHashSet()
+    override val disabledRecipes: Set<Key>
+        get() {
+            return Collections.unmodifiableSet(backingDisabledRecipes)
+        }
+    val backingDisabledRecipes: MutableSet<Key> = ObjectOpenHashSet()
 
-    val awaitingDependenciesRecipes: MutableMap<Key, LoadedRecipe> = Object2ObjectOpenHashMap()
     val awaitingVerificationRecipes: MutableMap<Key, CustomRecipe<*, *>> = Object2ObjectOpenHashMap()
     val invalidRecipes: MutableList<VerificationResult<CustomRecipe<*, *>>> = mutableListOf()
     val scafall = ScafallProvider.get()
@@ -37,31 +40,8 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
     init {
         scafall.dependencyManager.onDependencyInitialized {
             synchronized(loadLock) {
-                checkDependencies()
                 verifyRecipesAndLoad()
             }
-        }
-    }
-
-    private fun checkDependencies() {
-        val iterator = awaitingDependenciesRecipes.iterator()
-        customCrafting.logger.info("Checking dependencies for ${awaitingDependenciesRecipes.size} recipes")
-        while (iterator.hasNext()) {
-            val recipe = iterator.next()
-            customCrafting.logger.info("  - ${recipe.key}: ${recipe.value.dependencies.joinToString(",")}")
-            if (recipe.value.dependencies.all { scafall.dependencyManager.getDependency(it)?.isInitialized == true }) {
-                awaitingVerificationRecipes[recipe.key] = recipe.value.recipe
-                iterator.remove()
-                continue
-            }
-        }
-    }
-
-    private fun verifyRecipesAndLoad() {
-        customCrafting.logger.info("Verifying ${awaitingVerificationRecipes.size} recipes")
-        for ((key, recipe) in awaitingVerificationRecipes) {
-            // TODO: Verification
-            customCrafting.recipeManager.updateRecipe(key, recipe)
         }
     }
 
@@ -72,6 +52,26 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
         exportDefaults(resourceLoader)
     }
 
+    private fun exportDefaults(resourceLoader: ResourceLoader) {
+        customCrafting.logger.info("Exporting default recipes to $resourceLoader")
+        val dir = "com/wolfyscript/customcrafting/recipes/default"
+        listOf(
+            "enchanted_golden_apple",
+            "rotten_flesh_to_leather_smelting",
+            "rotten_flesh_to_leather_smoking",
+            "stick_to_torch_campfire",
+            "stick_to_soul_torch_soul_campfire",
+            "sus_stew_op",
+            "upgrade_netherite_sword",
+            "repair_with_amethyst",
+            "disenchant_netherite_sword_custom",
+            "leaves_selection_stonecutter"
+        ).forEach {
+            customCrafting.logger.info("  - recipe: $it")
+            exportResource("$dir/$it.conf", File(resourceLoader.directory, "default/$it.conf"))
+        }
+    }
+
     /**
      * How recipes should be loaded on startup
      */
@@ -80,10 +80,9 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
             resourceLoader.destinations.forEach { dest ->
                 dest.load {
                     customCrafting.logger.info("  loaded recipe: ${it.key} -> ${it.recipe}")
-                    awaitingDependenciesRecipes[it.key] = it
+                    awaitingVerificationRecipes[it.key] = it.recipe
                 }
             }
-            checkDependencies()
         }
     }
 
@@ -119,26 +118,13 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
         }
     }
 
-    private fun exportDefaults(resourceLoader: ResourceLoader) {
-        customCrafting.logger.info("Exporting default recipes to ${resourceLoader}")
-        val dir = "com/wolfyscript/customcrafting/recipes/default"
-        listOf(
-            "enchanted_golden_apple",
-            "rotten_flesh_to_leather_smelting",
-            "rotten_flesh_to_leather_smoking",
-            "stick_to_torch_campfire",
-            "stick_to_soul_torch_soul_campfire",
-            "sus_stew_op",
-            "upgrade_netherite_sword",
-            "repair_with_amethyst",
-            "disenchant_netherite_sword_custom",
-            "leaves_selection_stonecutter"
-        ).forEach {
-            customCrafting.logger.info("  - recipe: $it")
-            exportResource("$dir/$it.conf", File(resourceLoader.directory, "default/$it.conf"))
+    private fun verifyRecipesAndLoad() {
+        customCrafting.logger.info("Verifying ${awaitingVerificationRecipes.size} recipes")
+        for ((key, recipe) in awaitingVerificationRecipes) {
+            // TODO: Verification
+            customCrafting.recipeManager.updateRecipe(key, recipe)
         }
     }
-
 
     override fun <I : RecipeInput, D : RecipeEvaluationResult.Data, T : CustomRecipe<I, D>> evaluateRecipesOfType(
         type: RecipeType<T>,
@@ -156,12 +142,16 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
     override fun disableRecipe(recipe: Key) {
         val ref = index.get(recipe)
         if (ref != null) {
-            disabledRecipes.add(recipe)
+            backingDisabledRecipes.add(recipe)
         }
     }
 
     override fun enableRecipe(key: Key) {
-        disabledRecipes.remove(key)
+        backingDisabledRecipes.remove(key)
+    }
+
+    override fun isRecipeDisabled(key: Key): Boolean {
+        return backingDisabledRecipes.contains(key)
     }
 
     fun registerRecipe(key: Key, recipe: CustomRecipe<*, *>) {

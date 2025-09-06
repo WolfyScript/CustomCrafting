@@ -129,7 +129,7 @@ class CraftingListener(val plugin: Plugin, val customCrafting: CustomCraftingCom
 
                 val recipeKey = recipe.key.toScafall()
                 //Check for custom recipe that overrides the vanilla recipe
-                if (recipeManager.disabledRecipes.contains(recipeKey) || customCrafting.recipeManager.getRecipe(
+                if (recipeManager.isRecipeDisabled(recipeKey) || customCrafting.recipeManager.getRecipe(
                         recipeKey
                     ) != null
                 ) {

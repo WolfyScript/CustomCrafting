@@ -82,7 +82,6 @@ object RecipesCommand {
         val thirdPartyRecipeCount = totalRecipeCount - ccRecipesCount
         val disabledRecipeCount = recipeManager.disabledRecipes.size
         val failedCount = recipeManager.invalidRecipes.size
-        val missingDepsCount = recipeManager.awaitingDependenciesRecipes.size
 
         val message = """
             <green>Loaded Recipes: <b>$totalRecipeCount</b>
@@ -90,7 +89,6 @@ object RecipesCommand {
               3rd-Parties: $thirdPartyRecipeCount
             </green>    
             <red>Failed to load: <b>$failedCount</b></red>
-            <gold>Missing Dependencies: <b>$missingDepsCount</b></gold>
             
             <gray>Disabled Recipes: <b>$disabledRecipeCount</b></gray>
             """.trimIndent()

@@ -3,7 +3,6 @@ package com.wolfyscript.customcrafting
 import com.wolfyscript.customcrafting.core.commands.CCCommands
 import com.wolfyscript.customcrafting.factories.Factories
 import com.wolfyscript.customcrafting.factories.FactoriesCommon
-import com.wolfyscript.customcrafting.recipes.RecipeManager
 import com.wolfyscript.customcrafting.recipes.RecipeManagerCommon
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistriesCommon
 
