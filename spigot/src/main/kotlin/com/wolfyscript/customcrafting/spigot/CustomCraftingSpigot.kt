@@ -31,13 +31,16 @@ class CustomCraftingSpigot(
         configurationManager.load()
 
         resourceManager.resourceLoader.registerListener(recipeManager)
-        resourceManager.loadResources()
 
-        registerPlaceholderRecipes(recipeManager.index.values())
-        registerDisplayRecipes(recipeManager.index.values())
     }
 
     override fun onEnable() {
+        ScafallProvider.get().dependencyManager.onAllDependenciesInitialized {
+            resourceManager.loadResources()
+            registerPlaceholderRecipes(recipeManager.index.values())
+            registerDisplayRecipes(recipeManager.index.values())
+        }
+
         commands.registerCommands(ScafallProvider.get().server.minecraftServer.commands.dispatcher)
 
         Bukkit.getPluginManager().registerCommonRecipeListeners(plugin, this)

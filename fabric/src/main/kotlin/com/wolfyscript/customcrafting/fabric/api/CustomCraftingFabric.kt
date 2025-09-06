@@ -46,7 +46,9 @@ class CustomCraftingFabric(
         configurationManager.load()
 
         resourceManager.resourceLoader.registerListener(recipeManager)
-        resourceManager.loadResources()
+        scafall.dependencyManager.onAllDependenciesInitialized {
+            resourceManager.loadResources()
+        }
 
         (mcServer.recipeManager as RecipeManagerCustomRecipesExt).registerProxyRecipes()
     }
