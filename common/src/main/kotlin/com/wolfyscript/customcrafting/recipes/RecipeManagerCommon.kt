@@ -65,7 +65,13 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
             "upgrade_netherite_sword",
             "repair_with_amethyst",
             "disenchant_netherite_sword_custom",
-            "leaves_selection_stonecutter"
+            "leaves_selection_stonecutter",
+            "debug_stick",
+            "iron_ore_to_raw",
+            "stonecut_oak_planks",
+            "burned_beef_campfire",
+            "op_item_crafting",
+            "revive_pufferfish"
         ).forEach {
             customCrafting.logger.info("  - recipe: $it")
             exportResource("$dir/$it.conf", File(resourceLoader.directory, "default/$it.conf"))
