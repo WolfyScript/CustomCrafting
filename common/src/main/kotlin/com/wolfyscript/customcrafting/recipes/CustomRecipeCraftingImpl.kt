@@ -99,11 +99,7 @@ class ShapedCraftingFormulaImpl(
             }
             val ingredient = ingredients[indexInRecipe]
             val matchedRef = ingredient.match(stack) ?: return null
-            val invOffset = if (!shape.trim || matrix.columnOffset == 0 || matrix.rowOffset == 0) {
-                0
-            } else {
-                matrix.rowOffset + matrix.columnOffset * matrix.gridSize + ((i / shape.width) * (matrix.gridSize - matrix.width))
-            }
+            val invOffset = matrix.rowOffset * matrix.gridSize + matrix.columnOffset + ((i / shape.width) * (matrix.gridSize - matrix.width))
             ingredientData[i] = IngredientDataImpl(
                 invSlot = i + invOffset,
                 recipeIndex = indexInRecipe,
