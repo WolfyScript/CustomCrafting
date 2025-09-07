@@ -44,6 +44,7 @@ class ResourceManagerCommon(val customCrafting: CustomCraftingCommon, val direct
                 RecipeItemModifierImpl.ResultModifierTransformationImpl::class.java
             )
             addAbstractTypeMapping(RecipeChoices::class.java, RecipeChoicesImpl::class.java)
+            addAbstractTypeMapping(RemainsIgnoreOptions::class.java, RemainsIgnoreOptionsImpl::class.java)
 
             // Recipe Processes and Procedures
             addAbstractTypeMapping(ProcessRepairing::class.java, CustomProcessRepairingImpl::class.java)
