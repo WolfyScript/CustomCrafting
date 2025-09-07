@@ -86,7 +86,7 @@ class ShapedCraftingFormulaImpl(
         val ingredientData: Array<IngredientData?> = Array(matrix.width * shape.height) { null }
         for ((i, stack) in matrix.matrix.withIndex()) {
             val indexInRecipe = ingredientShape[i]
-            if (stack == null) {
+            if (stack?.isEmpty ?: true) {
                 if (indexInRecipe >= 0) {
                     return null
                 }
