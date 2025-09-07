@@ -70,7 +70,7 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
             "iron_ore_to_raw",
             "stonecut_oak_planks",
             "burned_beef_campfire",
-            "op_item_crafting",
+            "golden_apple_random_crafting",
             "revive_pufferfish"
         ).forEach {
             customCrafting.logger.info("  - recipe: $it")
