@@ -3,6 +3,8 @@ package com.wolfyscript.customcrafting.recipes.data
 import com.wolfyscript.scafall.wrappers.utils.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import net.minecraft.world.item.crafting.CraftingInput
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 fun List<ItemStack?>.toCraftingMatrixData(): CraftingMatrixData {
@@ -11,22 +13,23 @@ fun List<ItemStack?>.toCraftingMatrixData(): CraftingMatrixData {
     // Find the leading and trailing empty rows
     var lastRow = gridSize - 1
     var firstRow = 0
-
-    while (firstRow < gridSize && (0 until gridSize).all { this[firstRow * gridSize + it] == null }) {
-        firstRow++
-    }
-    while (lastRow > firstRow && (0 until gridSize).all { this[lastRow * gridSize + it] == null }) {
-        lastRow--
-    }
-
-    // Find the leading and trailing empty columns
     var lastCol = gridSize - 1
     var firstCol = 0
-    while (firstCol < gridSize && (firstRow until lastRow + 1).all { this[it * gridSize + firstCol] == null }) {
-        firstCol++
-    }
-    while (lastCol > firstCol && (firstRow until lastRow + 1).all { this[it * gridSize + lastCol] == null }) {
-        lastCol--
+    var index = 0
+    for (row in 0 until gridSize) {
+        var emptyRow = true
+        for (column in 0 until gridSize) {
+            if (this[index] != null) {
+                emptyRow = false
+                lastCol = max(lastCol, column)
+                firstCol = min(firstCol, column)
+            }
+            index++
+        }
+        if (emptyRow) {
+            firstRow = min(firstRow, row)
+            lastRow = max(lastRow, row)
+        }
     }
 
     // Trim the leading and trailing empty rows and columns

@@ -5,6 +5,8 @@ import com.wolfyscript.customcrafting.recipes.data.*
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import net.minecraft.util.ArrayListDeque
 import org.apache.commons.lang3.ArrayUtils
+import kotlin.math.max
+import kotlin.math.min
 
 class CustomRecipeCraftingImpl(
     override val priority: Int = 0,
@@ -132,51 +134,45 @@ class ShapedCraftingFormulaImpl(
         init {
             var original: Array<Int> = Array(height * width) { -1 }
             var index = 0
-            for (row in rows) {
-                for (column in row) {
-                    original[index] = if (column.isWhitespace()) {
-                        -1
+            var minRow = Int.MAX_VALUE
+            var maxRow = 0
+            var minColumn = Int.MAX_VALUE
+            var maxColumn = 0
+            for ((r, row) in rows.withIndex()) {
+                var emptyRow = true
+                for ((c, column) in row.withIndex()) {
+                    if (column.isWhitespace()) {
+                        original[index] = -1
                     } else {
+                        emptyRow = false
+                        minRow = min(minRow, c)
+                        maxRow = max(maxRow, c)
+
                         var i = ingredientIndices.indexOf(column)
                         if (i < 0) {
                             ingredientIndices.add(column)
                             i = ingredientIndices.size - 1
                         }
-                        i
+                        original[index] = i
                     }
                     index++
+                }
+
+                if (emptyRow) {
+                    minColumn = min(minColumn, r)
+                    maxColumn = max(maxColumn, r)
                 }
             }
 
             if (trim) {
-                // Find the leading and trailing empty rows
-                var rMax = height
-                var rMin = 0
-                while ((0 until width).all { original[rMin * width + it] >= 0 }) {
-                    rMin++
-                }
-                while ((0 until width).all { original[rMax * width + it] >= 0 }) {
-                    rMax--
-                }
-
-                // Find the leading and trailing empty columns
-                var cMax = width
-                var cMin = 0
-                while ((rMin until rMax).all { original[it * width + cMin] >= 0 }) {
-                    cMin++
-                }
-                while ((rMin until rMax).all { original[it * width + cMax] >= 0 }) {
-                    cMax--
-                }
-
                 // Trim the leading and trailing empty rows and columns
-                width = cMax - cMin
-                height = rMax - rMin
+                width = maxColumn - minColumn
+                height = maxRow - minRow
                 var trimmed = Array(width * height) {
                     // Copy the values from the original array by offsetting the row and column back to the original
                     // <Row in trimmed shape> + rMin = <Row in original shape>
                     // <Column in trimmed shape> + cMin = <Column in original shape>
-                    original[(it / width) + rMin + (it % width) + cMin]
+                    original[(it / width) + minRow + (it % width) + minColumn]
                 }
                 original = trimmed
             }
@@ -195,8 +191,8 @@ class ShapedCraftingFormulaImpl(
                 var last = height - 1
                 while (first < last) {
                     ArrayUtils.swap(mirroredVertically, first * width, last * width, width)
-                    first++;
-                    last--;
+                    first++
+                    last--
                 }
                 variations.add(mirroredVertically)
             }
