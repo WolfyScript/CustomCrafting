@@ -173,7 +173,7 @@ class CraftingListener(val plugin: Plugin, val customCrafting: CustomCraftingCom
     ): Int {
         if (event.clickedInventory == null) return 0
         val recipeResult = craftingData.recipe.value?.result ?: return 0
-        return collectResultAndRunActions(event, bukkitPlayer.inventory, craftingData, recipeResult, matrixData.items, context, Random(getCraftSeed(bukkitPlayer)))
+        return collectResultAndRunActions(event, bukkitPlayer.inventory, craftingData, recipeResult, matrixData.flatItems, context, Random(getCraftSeed(bukkitPlayer)))
     }
 
     fun getCraftSeed(bukkitPlayer: Player): Long {

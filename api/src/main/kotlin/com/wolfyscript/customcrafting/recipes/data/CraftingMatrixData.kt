@@ -17,22 +17,18 @@ interface CraftingMatrixData {
      */
     val matrix: Array<ItemStack?>
 
-    /**
-     * The full original square matrix.
-     * The two usual sizes are 2x2 and 3x3.
-     */
-    val originalMatrix: List<ItemStack?>
+    val itemIndices: List<Int>
 
     /**
      * All the items in the crafting grid in order of appearance without empty slots.
      */
-    val items: List<ItemStack>
+    val flatItems: List<ItemStack>
 
     /**
-     * The indices of the items in the matrix in order of appearance without empty slots.
-     * These indices can be associated with [items].
+     * The indices of the items in the matrix. in order of appearance without empty slots.
+     * These indices can be associated with [flatItems].
      */
-    val itemIndices: List<Int>
+    val flatItemIndices: List<Int>
 
     /**
      * The size of the crafting grid.
@@ -59,6 +55,10 @@ interface CraftingMatrixData {
      * The amount of columns this trimmed matrix is offset within the original matrix.
      */
     val columnOffset: Int
+
+    val recipeOffset: Int
+
+    val rowSkip: Int
 
     companion object {
 

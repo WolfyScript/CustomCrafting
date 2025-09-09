@@ -37,7 +37,6 @@ fun List<ItemStack?>.toCraftingMatrixData(): CraftingMatrixData {
     val height = (lastRow + 1) - firstRow
 
     return CraftingMatrixDataImpl(
-        this,
         gridSize,
         matrix = Array(width * height) {
             // Copy the values from the original array by offsetting the row and column back to the original
@@ -63,7 +62,6 @@ private fun List<ItemStack?>.gridSize(): Int {
 }
 
 class CraftingMatrixDataImpl(
-    override val originalMatrix: List<ItemStack?>,
     override val gridSize: Int,
     override val matrix: Array<ItemStack?>,
     override val width: Int,
@@ -72,12 +70,36 @@ class CraftingMatrixDataImpl(
     override val columnOffset: Int,
 ) : CraftingMatrixData {
 
-    override val items: List<ItemStack> by lazy { originalMatrix.filterNotNull() }
-    override val itemIndices: List<Int> by lazy { originalMatrix.mapIndexedNotNull { i, stack -> if (stack != null && !stack.isEmpty) i else null } }
+    override val flatItems: List<ItemStack> = matrix.filterNotNull()
+
+    override val recipeOffset = rowOffset * gridSize + columnOffset
+    override val rowSkip = gridSize - width
+
+    override val itemIndices: List<Int>
+    override val flatItemIndices: List<Int>
+    init {
+        val indices = mutableListOf<Int>()
+        val flatIndices = mutableListOf<Int>()
+        var index = 0
+        for (row in 0 until height) {
+            for (col in 0 until width) {
+                if (matrix[index] != null) {
+                    val ogIndex = index + recipeOffset + row * rowSkip
+                    indices.add(ogIndex)
+                    flatIndices.add(ogIndex)
+                } else {
+                    indices.add(-1)
+                }
+                index++
+            }
+        }
+        itemIndices = indices
+        flatItemIndices = flatIndices
+    }
 
     companion object {
 
-        fun of(input: CraftingInput.Positioned, originalItems: List<ItemStack?>) : CraftingMatrixData {
+        fun of(input: CraftingInput.Positioned, originalItems: List<ItemStack?>): CraftingMatrixData {
             // Since Vanilla does the same as CustomCrafting would, use the vanilla data.
             // No need to recalculate the trimmed matrix, just add the original ingredient list.
             val craftingInput = input.input
@@ -86,7 +108,6 @@ class CraftingMatrixDataImpl(
             val items = craftingInput.items()
 
             return CraftingMatrixDataImpl(
-                originalItems,
                 originalItems.gridSize(),
                 matrix = Array(craftingInput.size()) { items[it].wrap() },
                 craftingInput.width(),
@@ -99,7 +120,7 @@ class CraftingMatrixDataImpl(
     }
 
     override fun toString(): String {
-        return "$originalMatrix (size: $gridSize)[${matrix.contentToString()}, ($width x $height) (r: $rowOffset, c: $columnOffset)] (items=$items, indices=$itemIndices)"
+        return "$matrix (size: $gridSize)[($width x $height) (r: $rowOffset, c: $columnOffset)] (items=$flatItems, indices=$flatItemIndices)"
     }
 
 }

@@ -35,13 +35,15 @@ class CustomRecipeCraftingImpl(
         applyStacks: (Int, ItemStack) -> Unit,
     ) {
         for (value in recipeEvaluationResult.data.nonNullIngredients) {
-            var stack = input.matrixData.originalMatrix[value.invSlot]
-            if (stack != null) {
-                stack = value.selectedIngredient.shrink(stack, count, value.matchedItemStackRef, context, recipeEvaluationResult)
-            }
-            if (stack != null) {
-                applyStacks(value.invSlot, stack)
-            }
+            var stack = input.matrixData.matrix[value.recipeIndex] ?: continue
+            stack = value.selectedIngredient.shrink(
+                stack,
+                count,
+                value.matchedItemStackRef,
+                context,
+                recipeEvaluationResult
+            )
+            applyStacks(value.invSlot, stack)
         }
     }
 
@@ -87,24 +89,23 @@ class ShapedCraftingFormulaImpl(
         }
         val ingredientData: Array<IngredientData?> = Array(matrix.width * shape.height) { null }
         for ((i, stack) in matrix.matrix.withIndex()) {
-            val indexInRecipe = ingredientShape[i]
+            val ingrdRecipeIndex = ingredientShape[i]
             if (stack?.isEmpty ?: true) {
-                if (indexInRecipe >= 0) {
+                if (ingrdRecipeIndex >= 0) {
                     return null
                 }
                 continue
             }
-            if (indexInRecipe < 0) {
+            if (ingrdRecipeIndex < 0) {
                 return null
             }
-            val ingredient = ingredients[indexInRecipe]
+            val ingredient = ingredients[ingrdRecipeIndex]
             val matchedRef = ingredient.match(stack) ?: return null
-            val invOffset = matrix.rowOffset * matrix.gridSize + matrix.columnOffset + ((i / shape.width) * (matrix.gridSize - matrix.width))
             ingredientData[i] = IngredientDataImpl(
-                invSlot = i + invOffset,
-                recipeIndex = indexInRecipe,
-                selectedIngredient = ingredient,
-                matchedItemStackRef = matchedRef
+                matrix.itemIndices[i],
+                ingrdRecipeIndex,
+                ingredient,
+                matchedRef
             )
         }
         return DefaultDataImpl(ingredientData)
@@ -225,7 +226,7 @@ class ShapelessCraftingFormulaImpl(
         input: RecipeInput.CraftingRecipeInput,
         recipeCrafting: CustomRecipeCrafting,
     ): RecipeEvaluationResult.Data? {
-        if (input.matrixData.items.size != ingredients.size) {
+        if (input.matrixData.flatItems.size != ingredients.size) {
             return null
         }
         val pickedIngredients = Array<IngredientData?>(ingredients.size) { null }
@@ -252,27 +253,27 @@ class ShapelessCraftingFormulaImpl(
          */
         val checkedEdges: Array<Int> = Array(ingredients.size + 1) { 0 }
 
-        var invItemIndex = 0
-        while (invItemIndex < input.matrixData.items.size) {
+        var index = 0
+        while (index < input.matrixData.flatItems.size) {
             val edgeFrom = path.peek() ?: 0 // If path is empty we are at the root
 
             // Try to match the ingredient at the current index
-            for ((ingredientIndex, ingredient) in ingredients.withIndex()) {
-                val edgeTo = 1 shl ingredientIndex
-                if (checkedEdges[edgeFrom].and(edgeTo) == edgeTo || path.contains(ingredientIndex + 1)) {
+            for ((ingrdRecipeIndex, ingredient) in ingredients.withIndex()) {
+                val edgeTo = 1 shl ingrdRecipeIndex
+                if (checkedEdges[edgeFrom].and(edgeTo) == edgeTo || path.contains(ingrdRecipeIndex + 1)) {
                     continue
                 }
-                val matchedRef = ingredient.match(input.matrixData.items[invItemIndex]) ?: continue
+                val matchedRef = ingredient.match(input.matrixData.flatItems[index]) ?: continue
                 // Found matching ingredient
-                pickedIngredients[ingredientIndex] = IngredientDataImpl(
-                    invSlot = input.matrixData.itemIndices[invItemIndex] + input.matrixData.rowOffset * input.matrixData.gridSize + input.matrixData.columnOffset,
-                    recipeIndex = ingredientIndex,
-                    selectedIngredient = ingredient,
-                    matchedItemStackRef = matchedRef
+                pickedIngredients[ingrdRecipeIndex] = IngredientDataImpl(
+                    invSlot = input.matrixData.flatItemIndices[index],
+                    ingrdRecipeIndex,
+                    ingredient,
+                    matchedRef
                 )
-                invItemIndex++
+                index++
                 checkedEdges[edgeFrom] = checkedEdges[edgeFrom].or(edgeTo)
-                path.push(ingredientIndex + 1)
+                path.push(ingrdRecipeIndex + 1)
                 break
             }
             // If it either fails on the first item or backtracks back to the root node, then there are no ingredients left to match.
@@ -283,7 +284,7 @@ class ShapelessCraftingFormulaImpl(
                 // No matching node found. Backtrack
                 path.pop()
                 pickedIngredients[edgeFrom - 1] = null
-                invItemIndex--
+                index--
             }
         }
 
