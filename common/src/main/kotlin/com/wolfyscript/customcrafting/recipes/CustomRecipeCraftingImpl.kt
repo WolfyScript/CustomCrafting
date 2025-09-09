@@ -103,7 +103,7 @@ class ShapedCraftingFormulaImpl(
             val matchedRef = ingredient.match(stack) ?: return null
             ingredientData[i] = IngredientDataImpl(
                 matrix.itemIndices[i],
-                ingrdRecipeIndex,
+                i,
                 ingredient,
                 matchedRef
             )
