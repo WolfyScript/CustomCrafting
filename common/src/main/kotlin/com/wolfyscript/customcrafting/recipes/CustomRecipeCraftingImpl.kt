@@ -131,9 +131,9 @@ class ShapedCraftingFormulaImpl(
         init {
             var original: Array<Int> = Array(height * width) { -1 }
             var index = 0
-            var minRow = Int.MAX_VALUE
+            var minRow = height - 1
             var maxRow = 0
-            var minColumn = Int.MAX_VALUE
+            var minColumn = width - 1
             var maxColumn = 0
             for ((r, row) in rows.withIndex()) {
                 var emptyRow = true
@@ -142,8 +142,8 @@ class ShapedCraftingFormulaImpl(
                         original[index] = -1
                     } else {
                         emptyRow = false
-                        minRow = min(minRow, c)
-                        maxRow = max(maxRow, c)
+                        minColumn = min(minColumn, c)
+                        maxColumn = max(maxColumn, c)
 
                         var i = ingredientIndices.indexOf(column)
                         if (i < 0) {
@@ -155,13 +155,13 @@ class ShapedCraftingFormulaImpl(
                     index++
                 }
 
-                if (emptyRow) {
-                    minColumn = min(minColumn, r)
-                    maxColumn = max(maxColumn, r)
+                if (!emptyRow) {
+                    minRow = min(minRow, r)
+                    maxRow = max(maxRow, r)
                 }
             }
 
-            if (trim) {
+            if (trim && (maxRow < width - 1 || maxColumn < height - 1 || minRow > 0 || minColumn > 0)) {
                 // Trim the leading and trailing empty rows and columns
                 width = maxColumn - minColumn
                 height = maxRow - minRow
@@ -200,7 +200,7 @@ class ShapedCraftingFormulaImpl(
         }
 
         override fun toString(): String {
-            return "($rows, ${if (trim) "trimmed, " else ""}$symmetry, ${width}x${height}, ${ingredientIndices}: $variations)"
+            return "($rows, ${if (trim) "trimmed, " else ""}$symmetry, ${width}x${height}, ${ingredientIndices}: ${variations.joinToString { it.contentToString()}})"
         }
 
     }

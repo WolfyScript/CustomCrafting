@@ -21,8 +21,8 @@ fun List<ItemStack?>.toCraftingMatrixData(): CraftingMatrixData {
         for (column in 0 until gridSize) {
             if (this[index] != null) {
                 emptyRow = false
-                lastCol = max(lastCol, column)
-                firstCol = min(firstCol, column)
+                lastCol = min(lastCol, column)
+                firstCol = max(firstCol, column)
             }
             index++
         }
@@ -120,7 +120,7 @@ class CraftingMatrixDataImpl(
     }
 
     override fun toString(): String {
-        return "$matrix (size: $gridSize)[($width x $height) (r: $rowOffset, c: $columnOffset)] (items=$flatItems, indices=$flatItemIndices)"
+        return "${matrix.contentToString()} (size: $gridSize)[($width x $height) (r: $rowOffset, c: $columnOffset)] ($itemIndices) (flatItems=$flatItems, flatItemIndices=$flatItemIndices)"
     }
 
 }

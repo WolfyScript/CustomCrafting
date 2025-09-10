@@ -54,6 +54,10 @@ class IngredientMatcherExactImpl() : IngredientMatcher.Exact {
         }
     }
 
+    override fun toString(): String {
+        return "exact"
+    }
+
 }
 
 class IngredientMatcherItemImpl(
@@ -86,6 +90,10 @@ class IngredientMatcherItemImpl(
             }
             return@firstOrNull true
         }
+    }
+
+    override fun toString(): String {
+        return "(mustContain=$mustContain, mustNotContain=$mustNotContain)"
     }
 
 }
@@ -143,6 +151,10 @@ class IngredientConsumerConsumeImpl(override val remains: IngredientRemainder) :
         return finalStack
     }
 
+    override fun toString(): String {
+        return "(remains=$remains)"
+    }
+
 }
 
 class IngredientConsumerReplaceImpl(override val replacement: ItemStackRef) : IngredientConsumer.Replace {
@@ -156,6 +168,11 @@ class IngredientConsumerReplaceImpl(override val replacement: ItemStackRef) : In
     ): ItemStack {
         return replacement.create()
     }
+
+    override fun toString(): String {
+        return "($replacement)"
+    }
+
 
 }
 
@@ -171,9 +188,18 @@ class IngredientConsumerKeepImpl(override val modifier: RecipeItemModifier = Rec
         return target
     }
 
+    override fun toString(): String {
+        return "(modifier=$modifier)"
+    }
+
 }
 
-data class RemainsIgnoreOptionsImpl(override val vanilla: Boolean, override val others: Boolean) : RemainsIgnoreOptions
+data class RemainsIgnoreOptionsImpl(override val vanilla: Boolean, override val others: Boolean) : RemainsIgnoreOptions {
+
+    override fun toString(): String {
+        return "(vanilla=$vanilla, others=$others)"
+    }
+}
 
 class IngredientRemainderCustomImpl(
     override val ignore: RemainsIgnoreOptions = RemainsIgnoreOptionsImpl(vanilla = false, others = false),
@@ -198,6 +224,10 @@ class IngredientRemainderCustomImpl(
         }
 
         return listOf(customRemainder)
+    }
+
+    override fun toString(): String {
+        return "(ignore=$ignore, remainder=$remainder)"
     }
 
 }
@@ -226,6 +256,10 @@ class IngredientRemainderDefaultImpl(
         }
 
         return remains
+    }
+
+    override fun toString(): String {
+        return "(ignore=$ignore)"
     }
 
 }
