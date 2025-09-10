@@ -120,7 +120,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
         if (addition != null) {
             var count = 1;
             if (data.getItemRepairCost() != null) {
-                count += data.getItemRepairCost();
+                count = data.getItemRepairCost();
             }
             addition.getSelectedIngredient().shrink(
                 MinecraftWrapperKt.wrap(getSlot(ADDITION_SLOT).getItem()),
