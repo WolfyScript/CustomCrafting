@@ -163,8 +163,8 @@ class ShapedCraftingFormulaImpl(
 
             if (trim && (maxRow < width - 1 || maxColumn < height - 1 || minRow > 0 || minColumn > 0)) {
                 // Trim the leading and trailing empty rows and columns
-                width = maxColumn - minColumn
-                height = maxRow - minRow
+                width = maxColumn - minColumn + 1
+                height = maxRow - minRow + 1
                 var trimmed = Array(width * height) {
                     // Copy the values from the original array by offsetting the row and column back to the original
                     // <Row in trimmed shape> + rMin = <Row in original shape>
