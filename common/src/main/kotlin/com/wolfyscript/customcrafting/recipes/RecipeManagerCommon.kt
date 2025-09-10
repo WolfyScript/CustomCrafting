@@ -71,7 +71,8 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
             "stonecut_oak_planks",
             "burned_beef_campfire",
             "golden_apple_random_crafting",
-            "revive_pufferfish"
+            "revive_pufferfish",
+            "disenchant_netherite_chestplate"
         ).forEach {
             customCrafting.logger.info("  - recipe: $it")
             exportResource("$dir/$it.conf", File(resourceLoader.directory, "default/$it.conf"))
