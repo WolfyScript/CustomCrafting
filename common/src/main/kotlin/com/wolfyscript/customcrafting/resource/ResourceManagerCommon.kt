@@ -20,10 +20,19 @@ import java.io.File
 
 class ResourceManagerCommon(val customCrafting: CustomCraftingCommon, val directory: File) : ResourceManager {
 
+    companion object {
+        const val RESOURCES_PATH = "resources"
+    }
+
     override val resourceLoader: ResourceLoader = ResourceLoaderImpl(
         customCrafting,
         customCrafting.configurationManager.resourceSettings,
-        File(directory, "resources")
+        File(directory, RESOURCES_PATH)
+    )
+    override val backupManager: BackupManager = BackupManagerImpl(
+        customCrafting,
+        this,
+        customCrafting.configurationManager.resourceSettings.backup
     )
 
     override val jacksonObjectMapper: ObjectMapper = HoconMapper()

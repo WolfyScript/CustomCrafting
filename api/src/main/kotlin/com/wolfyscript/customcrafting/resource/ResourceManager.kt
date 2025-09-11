@@ -13,6 +13,8 @@ interface ResourceManager {
      */
     val resourceLoader: ResourceLoader
 
+    val backupManager: BackupManager
+
     /**
      * The Jackson object mapper used to deserialize JSON files.
      */

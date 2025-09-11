@@ -8,25 +8,17 @@ import com.wolfyscript.customcrafting.configuration.cli.CLISettings
 import com.wolfyscript.customcrafting.configuration.editor.EditorSettings
 import com.wolfyscript.customcrafting.configuration.gui.GUISettings
 import com.wolfyscript.customcrafting.configuration.mechanics.GameMechanicSettings
-import com.wolfyscript.customcrafting.configuration.resources.BackupSettingsImpl
-import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
-import com.wolfyscript.customcrafting.configuration.resources.FilterEntryImpl
-import com.wolfyscript.customcrafting.configuration.resources.FilterSettingsImpl
-import com.wolfyscript.customcrafting.configuration.resources.DirectoryDestinationSettingsImpl
-import com.wolfyscript.customcrafting.configuration.resources.ResourceSettings
-import com.wolfyscript.customcrafting.configuration.resources.ResourceSettingsImpl
-import com.wolfyscript.customcrafting.configuration.resources.SQLDestinationSettingsImpl
+import com.wolfyscript.customcrafting.configuration.resources.*
 import com.wolfyscript.customcrafting.util.exportResource
 import com.wolfyscript.jackson.dataformat.hocon.HoconMapper
 import java.io.File
-import kotlin.jvm.java
 
 class ConfigurationManagerImpl(val customCrafting: CustomCrafting, val rootDir: File) : ConfigurationManager {
 
     private val configDir = File(rootDir, "config")
     private val configMapper = HoconMapper()
 
-    override var resourceSettings: ResourceSettings = ResourceSettingsImpl(emptyList())
+    override var resourceSettings: ResourceSettings = ResourceSettingsImpl(emptyList(), BackupSettingsImpl(emptyList()))
     override val gameMechanicSettings: GameMechanicSettings
         get() = TODO("Not yet implemented")
     override val guiSettings: GUISettings
@@ -44,14 +36,38 @@ class ConfigurationManagerImpl(val customCrafting: CustomCrafting, val rootDir: 
 
     init {
         val mappingModule = SimpleModule().apply {
+            addAbstractTypeMapping(
+                ResourceSettings::class.java,
+                ResourceSettingsImpl::class.java
+            )
 
-            // Resource Settings
-            addAbstractTypeMapping(ResourceSettings::class.java, ResourceSettingsImpl::class.java)
-            addAbstractTypeMapping(DestinationSettings.SQLDestinationSettings::class.java, SQLDestinationSettingsImpl::class.java)
-            addAbstractTypeMapping(DestinationSettings.DirectoryDestinationSettings::class.java, DirectoryDestinationSettingsImpl::class.java)
-            addAbstractTypeMapping(DestinationSettings.BackupSettings::class.java, BackupSettingsImpl::class.java)
-            addAbstractTypeMapping(DestinationSettings.FilterSettings::class.java, FilterSettingsImpl::class.java)
-            addAbstractTypeMapping(DestinationSettings.FilterSettings.FilterEntry::class.java, FilterEntryImpl::class.java)
+            // Source Settings
+            addAbstractTypeMapping(
+                SourceSettings.SQLSourceSettings::class.java,
+                SQLSourceSettingsImpl::class.java
+            )
+            addAbstractTypeMapping(
+                SourceSettings.DirectorySourceSettings::class.java,
+                DirectorySourceSettingsImpl::class.java
+            )
+            addAbstractTypeMapping(
+                SourceSettings.FilterSettings::class.java,
+                FilterSettingsImpl::class.java
+            )
+            addAbstractTypeMapping(
+                SourceSettings.FilterSettings.FilterEntry::class.java,
+                FilterEntryImpl::class.java
+            )
+
+            // Backup Settings
+            addAbstractTypeMapping(
+                BackupSettings::class.java,
+                BackupSettingsImpl::class.java
+            )
+            addAbstractTypeMapping(
+                BackupSettings.DirectoryBackupDestinationSettings::class.java,
+                DirectoryBackupDestinationSettingsImpl::class.java
+            )
 
         }
         configMapper.registerModule(mappingModule)
@@ -73,7 +89,10 @@ class ConfigurationManagerImpl(val customCrafting: CustomCrafting, val rootDir: 
 
     fun saveDefaults() {
         if (!resourcesSettingsFile.exists()) {
-            exportResource("com/wolfyscript/customcrafting/configuration/default/resources/resources.conf", resourcesSettingsFile)
+            exportResource(
+                "com/wolfyscript/customcrafting/configuration/default/resources/resources.conf",
+                resourcesSettingsFile
+            )
         }
     }
 

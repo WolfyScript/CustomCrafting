@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.resource
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.InjectableValues
 import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
+import com.wolfyscript.customcrafting.configuration.resources.SourceSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.compat.DependencyResolver
@@ -18,12 +18,11 @@ import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.pathString
 
-class DirectoryDestination(
-    customCrafting: CustomCrafting,
+class DirectorySource(
+    val customCrafting: CustomCrafting,
     resourceLoaderImpl: ResourceLoader,
-    settings: DestinationSettings.DirectoryDestinationSettings,
-) :
-    AbstractDestination<DestinationSettings.DirectoryDestinationSettings>(customCrafting, resourceLoaderImpl as ResourceLoaderImpl, settings) {
+    override val settings: SourceSettings.DirectorySourceSettings,
+) : Source {
 
     val path: String = settings.path ?: resourceLoaderImpl.directory.path
 
@@ -39,7 +38,7 @@ class DirectoryDestination(
         }
     }
 
-    override val filter: Destination.Filter? =
+    override val filter: Source.Filter? =
         settings.filter?.let { DestinationFilter(customCrafting, it) }
 
     private fun assureDir() {
@@ -50,11 +49,6 @@ class DirectoryDestination(
 
     override fun load(accept: (recipe: LoadedRecipe) -> Unit) {
         assureDir()
-
-        if (settings.backup != null) {
-            return
-        }
-
         readFiles(directory) { relative: Path, file: Path, attrs: BasicFileAttributes ->
             val injectableValues = InjectableValues.Std().apply {
                 addValue("customCrafting", customCrafting)
@@ -68,7 +62,7 @@ class DirectoryDestination(
                     .reader(injectableValues)
                     .readValue(file.toFile(), CustomRecipe::class.java)
 
-                accept(ResourceLoaderImpl.LoadedRecipeImpl(key, recipe, DependencyResolver.resolveDependenciesFor(recipe, recipe::class.java)))
+                accept(ResourceLoaderImpl.LoadedRecipeImpl(key, recipe))
             } catch (e: Exception) {
                 customCrafting.logger.error("  Error loading recipe: ", e)
             }
@@ -135,7 +129,7 @@ class DirectoryDestination(
         var pathString = this.toString()
         if (!File.separator.equals("/")) {
             // #205: Required to work with Windows file separators (And possibly other separators).
-            pathString = pathString.replace(File.separatorChar, '/');
+            pathString = pathString.replace(File.separatorChar, '/')
         }
         return Key.key(namespace, pathString.take(pathString.lastIndexOf('.')))
     }

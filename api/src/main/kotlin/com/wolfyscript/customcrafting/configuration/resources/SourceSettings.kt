@@ -6,21 +6,21 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.resource.Destination
+import com.wolfyscript.customcrafting.resource.Source
 import com.wolfyscript.customcrafting.resource.ResourceLoader
 import kotlin.io.path.Path
 
 /**
- * Settings for a destination to save resources to and load resources from.
+ * Settings for a source that provides and stores resources.
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonSubTypes(
-    JsonSubTypes.Type(value = DestinationSettings.SQLDestinationSettings::class, name = "sql"),
-    JsonSubTypes.Type(value = DestinationSettings.DirectoryDestinationSettings::class, name = "directory")
+    JsonSubTypes.Type(value = SourceSettings.SQLSourceSettings::class, name = "sql"),
+    JsonSubTypes.Type(value = SourceSettings.DirectorySourceSettings::class, name = "directory")
 )
 @JsonPropertyOrder(value = ["type"])
-interface DestinationSettings {
+interface SourceSettings {
 
     /**
      * Optional filter to specify which resources to save to this destination.
@@ -38,18 +38,9 @@ interface DestinationSettings {
      */
     val propagateSavedResources: Boolean
 
-    /**
-     * Optional setting to use this destination as a backup destination.
-     * Backups are done before updates and resource upgrades.
-     *
-     * **Backup destinations are not used to load resources!**
-     * **They are only used to save resources! Filter settings still apply!**
-     */
-    val backup: BackupSettings?
+    fun configureFor(customCrafting: CustomCrafting, resourceLoader: ResourceLoader): Source
 
-    fun configureDestination(customCrafting: CustomCrafting, resourceLoader: ResourceLoader): Destination
-
-    interface DirectoryDestinationSettings : DestinationSettings {
+    interface DirectorySourceSettings : SourceSettings {
 
         /**
          * An optional path to the resource directory.
@@ -61,7 +52,7 @@ interface DestinationSettings {
     /**
      * Defines a Destination for an SQL database.
      */
-    interface SQLDestinationSettings : DestinationSettings {
+    interface SQLSourceSettings : SourceSettings {
 
         val connection: DatabaseConnectionType
 
@@ -224,13 +215,6 @@ interface DestinationSettings {
             val regex: List<String>
 
         }
-
-    }
-
-    interface BackupSettings {
-
-        // TODO
-        val compress: Boolean
 
     }
 

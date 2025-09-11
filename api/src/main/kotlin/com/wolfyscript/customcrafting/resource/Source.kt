@@ -1,19 +1,19 @@
 package com.wolfyscript.customcrafting.resource
 
-import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
+import com.wolfyscript.customcrafting.configuration.resources.SourceSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.scafall.identifier.Key
 
 /**
  * The destination to load or save resources from/to.
  *
- * See [DestinationSettings][com.wolfyscript.customcrafting.configuration.resources.DestinationSettings] for configuration.
+ * See [DestinationSettings][com.wolfyscript.customcrafting.configuration.resources.SourceSettings] for configuration.
  */
-interface Destination {
+interface Source {
 
     val filter: Filter?
 
-    val settings: DestinationSettings
+    val settings: SourceSettings
 
     fun load(accept: (recipe: LoadedRecipe) -> Unit)
 

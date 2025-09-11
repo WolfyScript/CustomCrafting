@@ -15,9 +15,9 @@ class ResourceLoaderImpl(
 
     val listeners: MutableList<ResourceListener> = mutableListOf()
 
-    override val destinations: List<Destination> = settings.destinations.map {
-        customCrafting.logger.info("[Resources] Construct destination: $it")
-        return@map it.configureDestination(customCrafting, this)
+    override val sources: List<Source> = settings.sources.map {
+        customCrafting.logger.info("[Resources] Construct sources: $it")
+        return@map it.configureFor(customCrafting, this)
     }
 
     override fun registerListener(listener: ResourceListener) {
@@ -46,7 +46,7 @@ class ResourceLoaderImpl(
     }
 
     override fun save(key: Key, recipe: CustomRecipe<*, *>) {
-        for (destination in destinations) {
+        for (destination in sources) {
             if (!(destination.filter?.accepts(key, recipe) ?: true)) {
                 continue
             }
@@ -60,11 +60,8 @@ class ResourceLoaderImpl(
     }
 
     override fun delete(key: Key, recipe: CustomRecipe<*, *>) {
-        for (destination in destinations) {
+        for (destination in sources) {
             if (!(destination.filter?.accepts(key, recipe) ?: true)) {
-                continue
-            }
-            if (destination.settings.backup != null) {
                 continue
             }
             val result = destination.delete(key, recipe)
@@ -74,10 +71,6 @@ class ResourceLoaderImpl(
         }
     }
 
-    override fun createBackup() {
-
-    }
-
-    data class LoadedRecipeImpl(override val key: Key, override val recipe: CustomRecipe<*, *>, override val dependencies: Set<Key>) : LoadedRecipe
+    data class LoadedRecipeImpl(override val key: Key, override val recipe: CustomRecipe<*, *>) : LoadedRecipe
 
 }

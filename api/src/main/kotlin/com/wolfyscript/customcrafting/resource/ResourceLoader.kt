@@ -12,7 +12,7 @@ interface ResourceLoader {
 
     val directory: File
 
-    val destinations: List<Destination>
+    val sources: List<Source>
 
     /**
      * Registers a listener that can listen to the loading process to process custom resources, and reload resources when CustomCrafting reloads.
@@ -34,10 +34,5 @@ interface ResourceLoader {
      * Deletes the recipe from every destination.
      */
     fun delete(key: Key, recipe: CustomRecipe<*,*>)
-
-    /**
-     * Creates a backup and stores it to backup-destinations (if available)
-     */
-    fun createBackup()
 
 }

@@ -1,14 +1,14 @@
 package com.wolfyscript.customcrafting.resource
 
 import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.configuration.resources.DestinationSettings
+import com.wolfyscript.customcrafting.configuration.resources.SourceSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.scafall.identifier.Key
 
 class DestinationFilter(
     val customCrafting: CustomCrafting,
-    val settings: DestinationSettings.FilterSettings,
-) : Destination.Filter {
+    val settings: SourceSettings.FilterSettings,
+) : Source.Filter {
 
     private val includesFilters = settings.includes?.let { IncludesFilter(it) }
     private val excludesFilters = settings.excludes?.let { IncludesFilter(it) }
@@ -23,7 +23,7 @@ class DestinationFilter(
         return true
     }
 
-    class IncludesFilter(val settings: DestinationSettings.FilterSettings.FilterEntry) {
+    class IncludesFilter(val settings: SourceSettings.FilterSettings.FilterEntry) {
 
         private val compiledRegex = settings.regex.map { it.toRegex() }
 
