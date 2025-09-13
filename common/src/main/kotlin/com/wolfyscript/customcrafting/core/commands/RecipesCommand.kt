@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.adventure.deser
@@ -19,25 +20,25 @@ object RecipesCommand {
 
     const val ROOT_NAME = "recipes"
 
-    fun register(customCrafting: CustomCraftingCommon, dispatcher: CommandDispatcher<CommandSourceStack>) {
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         sequenceOf(ROOT_NAME, "cc:$ROOT_NAME", "${Key.CUSTOMCRAFTING_NAMESPACE}:$ROOT_NAME").forEach { alias ->
             dispatcher.register(
                 Commands.literal(alias).requires { it.hasPermission(ADMIN_LVL) }.apply {
-                    then(Commands.literal("reload").executes { reload(customCrafting) })
+                    then(Commands.literal("reload").executes { reload(CustomCraftingProvider.get()) })
                     then(Commands.literal("status").executes { ctx ->
-                        printStatus(ctx, customCrafting)
+                        printStatus(ctx, CustomCraftingProvider.get() as CustomCraftingCommon)
                         return@executes SUCCESS_RESULT
                     })
                     then(
                         Commands.literal("disable")
                             .then(Commands.argument("recipe", ResourceLocationArgument.id()).executes { ctx ->
                                 val recipeKey = ResourceLocationArgument.getId(ctx, "recipe").toScafall()
-                                customCrafting.recipeManager.disableRecipe(recipeKey)
+                                CustomCraftingProvider.get().recipeManager.disableRecipe(recipeKey)
 
                                 ctx.source.sendSuccess({ Component.literal("Disabled Recipe $recipeKey") }, false)
                                 return@executes SUCCESS_RESULT
                             }.suggests { ctx, builder ->
-                                customCrafting.recipeManager.recipesLoadedByCC
+                                (CustomCraftingProvider.get() as CustomCraftingCommon).recipeManager.recipesLoadedByCC
                                     .map { it.toString() }
                                     .filter { it.startsWith(builder.remaining) }
                                     .forEach { builder.suggest(it) }
@@ -49,12 +50,12 @@ object RecipesCommand {
                         Commands.literal("enable")
                             .then(Commands.argument("recipe", ResourceLocationArgument.id()).executes { ctx ->
                                 val recipeKey = ResourceLocationArgument.getId(ctx, "recipe").toScafall()
-                                customCrafting.recipeManager.enableRecipe(recipeKey)
+                                CustomCraftingProvider.get().recipeManager.enableRecipe(recipeKey)
 
                                 ctx.source.sendSuccess({ Component.literal("Enabled Recipe $recipeKey") }, false)
                                 return@executes SUCCESS_RESULT
                             }.suggests { ctx, builder ->
-                                customCrafting.recipeManager.disabledRecipes
+                                CustomCraftingProvider.get().recipeManager.disabledRecipes
                                     .map { it.toString() }
                                     .filter { it.startsWith(builder.remaining) }
                                     .forEach { builder.suggest(it) }

@@ -11,11 +11,11 @@ const val GAME_MASTER_LVL = 2
 const val MODERATOR_LVL = 1
 const val ALL_LVL = 0
 
-class CCCommands(val customCrafting: CustomCraftingCommon) {
+object CCCommands {
 
     fun registerCommands(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        MainCommand.register(customCrafting, dispatcher)
-        RecipesCommand.register(customCrafting, dispatcher)
+        MainCommand.register(dispatcher)
+        RecipesCommand.register(dispatcher)
     }
 
 }

@@ -5,6 +5,7 @@ import com.wolfyscript.customcrafting.CustomCraftingBoostrap
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
+import com.wolfyscript.customcrafting.core.commands.CCCommands
 import com.wolfyscript.customcrafting.paper.recipes.StonecutterListener
 import com.wolfyscript.customcrafting.resource.ResourceManager
 import com.wolfyscript.customcrafting.resource.ResourceManagerCommon
@@ -35,7 +36,7 @@ class CustomCraftingPaper(val plugin: Plugin, override val logger: Logger) : Cus
     }
 
     override fun onEnable() {
-        commands.registerCommands(ScafallProvider.get().server.minecraftServer.commands.dispatcher)
+        CCCommands.registerCommands(ScafallProvider.get().server.minecraftServer.commands.dispatcher)
 
         Bukkit.getPluginManager().apply {
             registerCommonRecipeListeners(plugin, this@CustomCraftingPaper)

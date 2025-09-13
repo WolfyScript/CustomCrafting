@@ -5,6 +5,7 @@ import com.wolfyscript.customcrafting.CustomCraftingBoostrap
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
+import com.wolfyscript.customcrafting.core.commands.CCCommands
 import com.wolfyscript.customcrafting.resource.ResourceManager
 import com.wolfyscript.customcrafting.resource.ResourceManagerCommon
 import com.wolfyscript.customcrafting.spigotlike.recipes.registerCommonRecipeListeners
@@ -41,7 +42,7 @@ class CustomCraftingSpigot(
             registerDisplayRecipes(recipeManager.index.values())
         }
 
-        commands.registerCommands(ScafallProvider.get().server.minecraftServer.commands.dispatcher)
+        CCCommands.registerCommands(ScafallProvider.get().server.minecraftServer.commands.dispatcher)
 
         Bukkit.getPluginManager().registerCommonRecipeListeners(plugin, this)
     }

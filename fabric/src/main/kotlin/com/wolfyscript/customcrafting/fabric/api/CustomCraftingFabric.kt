@@ -25,7 +25,6 @@ class CustomCraftingFabric(
     override val logger: Logger,
 ) : CustomCraftingCommon(), CustomCraftingBoostrap.CustomCraftingModule {
 
-    val scafall: Scafall = ScafallProvider.get()
     override val bridge: CustomCrafting = this
 
     override val configurationManager: ConfigurationManager
@@ -42,6 +41,7 @@ class CustomCraftingFabric(
     }
 
     override fun onLoad() {
+        val scafall: Scafall = ScafallProvider.get()
         logger.info("Loading ${CUSTOMCRAFTING_NAMESPACE}...")
         configurationManager.load()
 
