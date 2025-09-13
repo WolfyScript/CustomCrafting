@@ -26,7 +26,7 @@ class DirectoryBackupDestination(
         val date = LocalDateTime.now()
         val backupName = dateFormat.format(date)
 
-        if (!directory.mkdirs()) {
+        if (!directory.exists() && !directory.mkdirs()) {
             return Result.failure(Exception("Failed to create backup directory $directory"))
         }
 
@@ -52,7 +52,7 @@ class DirectoryBackupDestination(
             return Result.success(zipBackupFile)
         } else {
             val backupDirectory = File(directory, backupName)
-            if (!backupDirectory.mkdirs()) {
+            if (!backupDirectory.exists() && !backupDirectory.mkdirs()) {
                 return Result.failure(Exception("Failed to create backup directory $backupDirectory"))
             }
 
