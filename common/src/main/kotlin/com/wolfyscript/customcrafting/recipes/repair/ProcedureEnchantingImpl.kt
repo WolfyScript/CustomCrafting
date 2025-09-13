@@ -2,8 +2,8 @@ package com.wolfyscript.customcrafting.recipes.repair
 
 import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchanting
 import com.wolfyscript.scafall.wrappers.ScafallPlayer
-import com.wolfyscript.scafall.wrappers.utils.unwrap
-import com.wolfyscript.scafall.wrappers.utils.wrap
+import com.wolfyscript.scafall.wrappers.unwrap
+import com.wolfyscript.scafall.wrappers.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.Items

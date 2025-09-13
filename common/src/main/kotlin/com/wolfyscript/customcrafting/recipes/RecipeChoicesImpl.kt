@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
-import com.wolfyscript.scafall.wrappers.utils.wrap
+import com.wolfyscript.scafall.wrappers.wrap
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.ItemStack

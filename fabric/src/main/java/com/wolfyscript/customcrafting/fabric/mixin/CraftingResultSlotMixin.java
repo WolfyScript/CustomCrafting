@@ -9,7 +9,7 @@ import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.scafall.identifier.Key;
-import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
+import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
 import kotlin.Unit;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;

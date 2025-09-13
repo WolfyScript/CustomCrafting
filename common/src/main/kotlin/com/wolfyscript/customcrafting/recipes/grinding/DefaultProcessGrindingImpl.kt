@@ -11,8 +11,8 @@ import com.wolfyscript.customcrafting.recipes.process.ProcedureRepairCost
 import com.wolfyscript.customcrafting.recipes.repair.ProcedureDamageCombineImpl
 import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchanting
 import com.wolfyscript.customcrafting.recipes.repair.ProcedureEnchantingImpl
-import com.wolfyscript.scafall.wrappers.utils.unwrap
-import com.wolfyscript.scafall.wrappers.utils.wrap
+import com.wolfyscript.scafall.wrappers.unwrap
+import com.wolfyscript.scafall.wrappers.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import net.minecraft.core.component.DataComponents
 import net.minecraft.server.level.ServerPlayer

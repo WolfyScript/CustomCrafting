@@ -4,7 +4,7 @@ import com.wolfyscript.customcrafting.recipes.Ingredient
 import com.wolfyscript.customcrafting.recipes.IngredientMatcher
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.scafall.items.ItemStackRef
-import com.wolfyscript.scafall.wrappers.utils.unwrap
+import com.wolfyscript.scafall.wrappers.unwrap
 import net.minecraft.core.HolderSet
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.item.crafting.display.SlotDisplay

@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomE
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
-import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
+import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;

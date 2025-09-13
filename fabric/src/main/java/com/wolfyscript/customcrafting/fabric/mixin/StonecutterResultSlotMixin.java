@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
 import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting;
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
 import com.wolfyscript.scafall.identifier.Key;
-import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
+import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;

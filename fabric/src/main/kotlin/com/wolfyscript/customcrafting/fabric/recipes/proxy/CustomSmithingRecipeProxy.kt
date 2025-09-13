@@ -15,7 +15,7 @@ import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState
 import com.wolfyscript.customcrafting.util.toMc
 import com.wolfyscript.customcrafting.util.toMcDisplay
 import com.wolfyscript.scafall.identifier.toScafall
-import com.wolfyscript.scafall.wrappers.utils.unwrap
+import com.wolfyscript.scafall.wrappers.unwrap
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.RegistryFriendlyByteBuf

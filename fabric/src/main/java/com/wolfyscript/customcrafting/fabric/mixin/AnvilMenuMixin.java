@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
 import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing;
 import com.wolfyscript.scafall.identifier.Key;
-import com.wolfyscript.scafall.wrappers.utils.MinecraftWrapperKt;
+import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
 import kotlin.random.Random;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;

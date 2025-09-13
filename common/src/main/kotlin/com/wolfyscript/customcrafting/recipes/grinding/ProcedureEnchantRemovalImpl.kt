@@ -4,7 +4,7 @@ import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchantRemoval
 import com.wolfyscript.customcrafting.recipes.process.SetInclusionExclusionType
 import com.wolfyscript.scafall.identifier.toScafall
 import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.wrappers.utils.unwrap
+import com.wolfyscript.scafall.wrappers.unwrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import net.minecraft.tags.EnchantmentTags
 import net.minecraft.world.item.enchantment.EnchantmentHelper

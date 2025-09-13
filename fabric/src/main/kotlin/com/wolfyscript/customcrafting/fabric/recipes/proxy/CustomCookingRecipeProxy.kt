@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeReference
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState
-import com.wolfyscript.scafall.wrappers.utils.unwrap
+import com.wolfyscript.scafall.wrappers.unwrap
 import net.minecraft.core.HolderLookup
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.*

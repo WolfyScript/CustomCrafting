@@ -36,7 +36,7 @@ interface IngredientMatcher {
      *
      * @return the first matching [ItemStackRef], or null if no stack matches.
      */
-    fun match(ingredient: Ingredient, source: ItemStackLike<*,*>): ItemStackRef?
+    fun match(ingredient: Ingredient, source: ItemStackLike): ItemStackRef?
 
     /**
      * Checks if the item type and the components match.

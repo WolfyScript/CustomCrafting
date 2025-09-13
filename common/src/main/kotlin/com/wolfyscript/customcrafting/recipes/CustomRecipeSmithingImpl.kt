@@ -4,7 +4,7 @@ import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.*
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.identifier.toScafall
-import com.wolfyscript.scafall.wrappers.utils.unwrap
+import com.wolfyscript.scafall.wrappers.unwrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries

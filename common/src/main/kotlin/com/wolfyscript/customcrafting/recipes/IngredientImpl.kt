@@ -3,8 +3,8 @@ package com.wolfyscript.customcrafting.recipes
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
-import com.wolfyscript.scafall.wrappers.utils.unwrap
-import com.wolfyscript.scafall.wrappers.utils.wrap
+import com.wolfyscript.scafall.wrappers.unwrap
+import com.wolfyscript.scafall.wrappers.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ItemStack
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackLike
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
@@ -47,7 +47,7 @@ class IngredientMatcherExactImpl() : IngredientMatcher.Exact {
 
     override fun match(
         ingredient: Ingredient,
-        source: ItemStackLike<*, *>,
+        source: ItemStackLike,
     ): ItemStackRef? {
         return ingredient.choices.all().firstOrNull { choice ->
             choice.matches(source, true)
@@ -67,7 +67,7 @@ class IngredientMatcherItemImpl(
 
     override fun match(
         ingredient: Ingredient,
-        source: ItemStackLike<*, *>,
+        source: ItemStackLike,
     ): ItemStackRef? {
         return ingredient.choices.all().firstOrNull { choice ->
             if (!choice.matches(source, false)) {
