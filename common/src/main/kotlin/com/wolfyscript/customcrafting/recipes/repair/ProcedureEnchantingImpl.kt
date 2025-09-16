@@ -4,7 +4,7 @@ import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchanting
 import com.wolfyscript.scafall.wrappers.ScafallPlayer
 import com.wolfyscript.scafall.wrappers.unwrap
 import com.wolfyscript.scafall.wrappers.wrap
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.enchantment.Enchantment
@@ -19,7 +19,7 @@ class ProcedureEnchantingImpl(
     override val upgradeEnchants: Boolean = true,
 ) : ProcedureEnchanting {
 
-    override fun merge(resultStack: ItemStack, player: ScafallPlayer?, addition: ItemStack) : MergeResultImpl? {
+    override fun merge(resultStack: ScafallItemStack, player: ScafallPlayer?, addition: ScafallItemStack) : MergeResultImpl? {
         val additionEnchants = addition.unwrap().enchantments
         val result = resultStack.unwrap()
         val resultEnchants = if (!preserveBaseEnchants) {
@@ -92,7 +92,7 @@ class ProcedureEnchantingImpl(
     class MergeResultImpl(
         override val failed: Boolean,
         override val cost: Int,
-        override val result: ItemStack
+        override val result: ScafallItemStack
     ) : ProcedureEnchanting.MergeResult {
 
     }

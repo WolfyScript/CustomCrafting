@@ -13,7 +13,7 @@ import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchanting
 import com.wolfyscript.customcrafting.recipes.repair.ProcedureEnchantingImpl
 import com.wolfyscript.scafall.wrappers.unwrap
 import com.wolfyscript.scafall.wrappers.wrap
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.core.component.DataComponents
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.inventory.AnvilMenu
@@ -35,7 +35,7 @@ class DefaultProcessGrindingImpl(
         input: RecipeInput.GrindingRecipeInput,
         context: EvaluationContext,
         random: Random,
-    ): ItemStack {
+    ): ScafallItemStack {
         val recipe = recipeEvaluationResult.recipe.value ?: return net.minecraft.world.item.ItemStack.EMPTY.wrap()
         val player = context.player?.unwrap() as? ServerPlayer ?: return net.minecraft.world.item.ItemStack.EMPTY.wrap()
         val menu = player.containerMenu

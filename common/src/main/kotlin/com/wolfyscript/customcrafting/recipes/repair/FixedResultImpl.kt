@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.process.ProcedureRename
 import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import kotlin.random.Random
 
 class FixedResultImpl(
@@ -22,7 +22,7 @@ class FixedResultImpl(
         input: RecipeInput.RepairingRecipeInput,
         context: EvaluationContext,
         random: Random,
-    ): ItemStack {
+    ): ScafallItemStack {
 
         val resultStack = result.compute(recipeEvaluationResult, context, random)
 

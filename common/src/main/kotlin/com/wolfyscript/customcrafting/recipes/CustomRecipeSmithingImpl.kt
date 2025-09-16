@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.recipes.data.*
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.identifier.toScafall
 import com.wolfyscript.scafall.wrappers.unwrap
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
@@ -43,7 +43,7 @@ class CustomRecipeSmithingImpl(
         return DefaultDataImpl(arrayOf(matchedTemplate, matchedBase, matchedAddition))
     }
 
-    private fun validIngredient(ingredient: Ingredient?, inputStack: ItemStack?): Boolean {
+    private fun validIngredient(ingredient: Ingredient?, inputStack: ScafallItemStack?): Boolean {
         val emptyStack = inputStack == null || inputStack.isEmpty
         if (ingredient == null) {
             return emptyStack
@@ -51,7 +51,7 @@ class CustomRecipeSmithingImpl(
         return !emptyStack
     }
 
-    private fun evaluateIngredient(ingredient: Ingredient?, inputStack: ItemStack?): IngredientData? {
+    private fun evaluateIngredient(ingredient: Ingredient?, inputStack: ScafallItemStack?): IngredientData? {
         if (ingredient == null || inputStack == null || inputStack.isEmpty) {
             return null
         }
@@ -80,7 +80,7 @@ class SmithingUtils {
 
     companion object {
 
-        fun copyDataComponentsTo(source: ItemStack, dest: ItemStack, options: CustomRecipeSmithing.CopyOptions?) {
+        fun copyDataComponentsTo(source: ScafallItemStack, dest: ScafallItemStack, options: CustomRecipeSmithing.CopyOptions?) {
             val sourceStack = source.unwrap()
             val destStack = dest.unwrap()
 
@@ -112,7 +112,7 @@ class SmithingUtils {
             }
         }
 
-        fun copyDataComponentsTo(source: ItemStack, dest: ItemStack, components: List<Key>) {
+        fun copyDataComponentsTo(source: ScafallItemStack, dest: ScafallItemStack, components: List<Key>) {
             val sourceStack = source.unwrap()
             val destStack = dest.unwrap()
 

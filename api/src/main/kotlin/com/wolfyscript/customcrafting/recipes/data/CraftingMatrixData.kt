@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.recipes.data
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 /**
  * Holds information about the crafting grid matrix and the shape within.
@@ -15,14 +15,14 @@ interface CraftingMatrixData {
      * The trimmed matrix, without outer empty rows and columns.
      * That means that this matrix **may be smaller** than the original matrix and **may not be square**.
      */
-    val matrix: Array<ItemStack?>
+    val matrix: Array<ScafallItemStack?>
 
     val itemIndices: List<Int>
 
     /**
      * All the items in the crafting grid in order of appearance without empty slots.
      */
-    val flatItems: List<ItemStack>
+    val flatItems: List<ScafallItemStack>
 
     /**
      * The indices of the items in the matrix. in order of appearance without empty slots.
@@ -62,7 +62,7 @@ interface CraftingMatrixData {
 
     companion object {
 
-        fun of(ingredients: List<ItemStack?>): CraftingMatrixData = CustomCraftingProvider.get().factories.recipeFactory.createMatrixData(ingredients)
+        fun of(ingredients: List<ScafallItemStack?>): CraftingMatrixData = CustomCraftingProvider.get().factories.recipeFactory.createMatrixData(ingredients)
 
     }
 }

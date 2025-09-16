@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import kotlin.random.Random
 
 class RecipeResultImpl(
@@ -12,7 +12,7 @@ class RecipeResultImpl(
     override val alwaysKeepPrevious: Boolean,
 ) : RecipeResult {
 
-    override fun compute(recipeEvaluationResult: RecipeEvaluationResult<*,*>, context: EvaluationContext, random: Random): ItemStack {
+    override fun compute(recipeEvaluationResult: RecipeEvaluationResult<*,*>, context: EvaluationContext, random: Random): ScafallItemStack {
         val pickedChoice = choices.all().random(random) // TODO: custom weighting?
         val stack = pickedChoice.create()
         modifier.modify(stack, recipeEvaluationResult, context)

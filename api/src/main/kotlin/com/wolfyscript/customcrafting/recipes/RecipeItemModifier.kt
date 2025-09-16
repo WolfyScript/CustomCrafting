@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 /**
  * Modifies a target item with transformations using information about the recipe ingredients.
@@ -27,7 +27,7 @@ interface RecipeItemModifier {
      *
      * @return the modified target item.
      */
-    fun modify(target: ItemStack, evalResult: RecipeEvaluationResult<*, *>, context: EvaluationContext): ItemStack
+    fun modify(target: ScafallItemStack, evalResult: RecipeEvaluationResult<*, *>, context: EvaluationContext): ScafallItemStack
 
     /**
      * Modifies the result using the data from the specified ingredients in the recipe.
@@ -47,7 +47,7 @@ interface RecipeItemModifier {
         /**
          * Transforms the target item using the specified ingredients and transmuter.
          */
-        fun transform(target: ItemStack, evalResult: RecipeEvaluationResult<*, *>, context: EvaluationContext): ItemStack
+        fun transform(target: ScafallItemStack, evalResult: RecipeEvaluationResult<*, *>, context: EvaluationContext): ScafallItemStack
 
         /**
          * Gets the data from the specified ingredients and modifies the target item with it.
@@ -64,7 +64,7 @@ interface RecipeItemModifier {
             /**
              * Mutates the given target item using the specified transformation data.
              */
-            fun mutate(target: ItemStack, transformation: Transformation, evalResult: RecipeEvaluationResult<*, *>, context: EvaluationContext): ItemStack
+            fun mutate(target: ScafallItemStack, transformation: Transformation, evalResult: RecipeEvaluationResult<*, *>, context: EvaluationContext): ScafallItemStack
 
         }
 

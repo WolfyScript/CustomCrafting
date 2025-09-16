@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 /**
  * A custom recipe for the player inventory crafting grid, crafting table, and auto-crafter.
@@ -37,7 +37,7 @@ interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, R
      *
      * @param applyStacks A function that is called for each stack in the matrix that is shrunk.
      */
-    fun shrink(input: RecipeInput.CraftingRecipeInput, recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>, context: EvaluationContext, count: Int, applyStacks: (index: Int, new: ItemStack) -> Unit)
+    fun shrink(input: RecipeInput.CraftingRecipeInput, recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>, context: EvaluationContext, count: Int, applyStacks: (index: Int, new: ScafallItemStack) -> Unit)
 
 }
 

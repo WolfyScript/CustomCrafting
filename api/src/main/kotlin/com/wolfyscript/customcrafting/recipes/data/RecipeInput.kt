@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.recipes.data
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 /**
  * Contains the input a recipe requires to be evaluated.
@@ -22,15 +22,15 @@ interface RecipeInput {
 
     interface SmithingRecipeInput : RecipeInput {
 
-        val template: ItemStack?
+        val template: ScafallItemStack?
 
-        val base: ItemStack?
+        val base: ScafallItemStack?
 
-        val addition: ItemStack?
+        val addition: ScafallItemStack?
 
         companion object {
 
-            fun of(template: ItemStack?, base: ItemStack?, addition: ItemStack?) = CustomCraftingProvider.get().factories.recipeFactory.createSmithingRecipeInput(template, base, addition)
+            fun of(template: ScafallItemStack?, base: ScafallItemStack?, addition: ScafallItemStack?) = CustomCraftingProvider.get().factories.recipeFactory.createSmithingRecipeInput(template, base, addition)
 
         }
 
@@ -38,11 +38,11 @@ interface RecipeInput {
 
     interface MixingRecipeInput : RecipeInput {
 
-        val input: Collection<ItemStack?>
+        val input: Collection<ScafallItemStack?>
 
         companion object {
 
-            fun of(input: Collection<ItemStack?>) = CustomCraftingProvider.get().factories.recipeFactory.createMixingRecipeInput(input)
+            fun of(input: Collection<ScafallItemStack?>) = CustomCraftingProvider.get().factories.recipeFactory.createMixingRecipeInput(input)
 
         }
 
@@ -50,13 +50,13 @@ interface RecipeInput {
 
     interface GrindingRecipeInput : RecipeInput {
 
-        val base: ItemStack?
+        val base: ScafallItemStack?
 
-        val addition: ItemStack?
+        val addition: ScafallItemStack?
 
         companion object {
 
-            fun of(base: ItemStack?, addition: ItemStack?) = CustomCraftingProvider.get().factories.recipeFactory.createGrindingRecipeInput(base, addition)
+            fun of(base: ScafallItemStack?, addition: ScafallItemStack?) = CustomCraftingProvider.get().factories.recipeFactory.createGrindingRecipeInput(base, addition)
 
         }
 
@@ -64,11 +64,11 @@ interface RecipeInput {
 
     interface SingleSlotRecipeInput : RecipeInput {
 
-        val source: ItemStack
+        val source: ScafallItemStack
 
         companion object {
 
-            fun of(source: ItemStack) = CustomCraftingProvider.get().factories.recipeFactory.createSingleSlotRecipeInput(source)
+            fun of(source: ScafallItemStack) = CustomCraftingProvider.get().factories.recipeFactory.createSingleSlotRecipeInput(source)
 
         }
 
@@ -78,13 +78,13 @@ interface RecipeInput {
 
         val itemName: String?
 
-        val base: ItemStack
+        val base: ScafallItemStack
 
-        val addition: ItemStack?
+        val addition: ScafallItemStack?
 
         companion object {
 
-            fun of(base: ItemStack, addition: ItemStack?, itemName: String?) = CustomCraftingProvider.get().factories.recipeFactory.createRepairingRecipeInput(
+            fun of(base: ScafallItemStack, addition: ScafallItemStack?, itemName: String?) = CustomCraftingProvider.get().factories.recipeFactory.createRepairingRecipeInput(
                 base,
                 addition,
                 itemName

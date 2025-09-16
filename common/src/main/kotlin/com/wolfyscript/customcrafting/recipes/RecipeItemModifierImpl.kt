@@ -1,15 +1,15 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 class RecipeItemModifierImpl(override val transformations: List<RecipeItemModifier.Transformation> = emptyList()) : RecipeItemModifier {
 
     override fun modify(
-        target: ItemStack,
+        target: ScafallItemStack,
         evalResult: RecipeEvaluationResult<*, *>,
         context: EvaluationContext,
-    ): ItemStack {
+    ): ScafallItemStack {
         transformations.forEach { it.transform(target, evalResult, context) }
         return target
     }
@@ -24,10 +24,10 @@ class RecipeItemModifierImpl(override val transformations: List<RecipeItemModifi
     ) : RecipeItemModifier.Transformation {
 
         override fun transform(
-            target: ItemStack,
+            target: ScafallItemStack,
             evalResult: RecipeEvaluationResult<*, *>,
             context: EvaluationContext,
-        ): ItemStack {
+        ): ScafallItemStack {
             return transmuter.mutate(target, this, evalResult, context)
         }
 

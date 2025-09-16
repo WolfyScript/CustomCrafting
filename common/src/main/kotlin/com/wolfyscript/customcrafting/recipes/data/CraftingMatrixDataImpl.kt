@@ -1,13 +1,13 @@
 package com.wolfyscript.customcrafting.recipes.data
 
 import com.wolfyscript.scafall.wrappers.wrap
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.world.item.crafting.CraftingInput
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
 
-fun List<ItemStack?>.toCraftingMatrixData(): CraftingMatrixData {
+fun List<ScafallItemStack?>.toCraftingMatrixData(): CraftingMatrixData {
     val gridSize: Int = this.gridSize()
 
     // Find the leading and trailing empty rows
@@ -49,7 +49,7 @@ fun List<ItemStack?>.toCraftingMatrixData(): CraftingMatrixData {
     )
 }
 
-private fun List<ItemStack?>.gridSize(): Int {
+private fun List<ScafallItemStack?>.gridSize(): Int {
     return when (size) {
         4 -> 2
         9 -> 3
@@ -63,14 +63,14 @@ private fun List<ItemStack?>.gridSize(): Int {
 
 class CraftingMatrixDataImpl(
     override val gridSize: Int,
-    override val matrix: Array<ItemStack?>,
+    override val matrix: Array<ScafallItemStack?>,
     override val width: Int,
     override val height: Int,
     override val rowOffset: Int,
     override val columnOffset: Int,
 ) : CraftingMatrixData {
 
-    override val flatItems: List<ItemStack> = matrix.filterNotNull()
+    override val flatItems: List<ScafallItemStack> = matrix.filterNotNull()
 
     override val recipeOffset = rowOffset * gridSize + columnOffset
     override val rowSkip = gridSize - width
@@ -99,7 +99,7 @@ class CraftingMatrixDataImpl(
 
     companion object {
 
-        fun of(input: CraftingInput.Positioned, originalItems: List<ItemStack?>): CraftingMatrixData {
+        fun of(input: CraftingInput.Positioned, originalItems: List<ScafallItemStack?>): CraftingMatrixData {
             // Since Vanilla does the same as CustomCrafting would, use the vanilla data.
             // No need to recalculate the trimmed matrix, just add the original ingredient list.
             val craftingInput = input.input

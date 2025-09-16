@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.items.ItemStackRef
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 /**
  * Defines how an ingredient is consumed.
@@ -33,9 +33,9 @@ interface IngredientConsumer {
      * @param context the evaluation context (e.g. player, tile entity, etc.).
      * @param evalResult the result of the recipe evaluation (ingredient info like which ingredient is present in each slot).
      *
-     * @return the updated/new [ItemStack] after consumption.
+     * @return the updated/new [ScafallItemStack] after consumption.
      */
-    fun consume(target: ItemStack, count: Int, ref: ItemStackRef, context: EvaluationContext, evalResult: RecipeEvaluationResult<*, *>): ItemStack
+    fun consume(target: ScafallItemStack, count: Int, ref: ItemStackRef, context: EvaluationContext, evalResult: RecipeEvaluationResult<*, *>): ScafallItemStack
 
     /**
      * Consumes the amount from the source item and returns its remains.

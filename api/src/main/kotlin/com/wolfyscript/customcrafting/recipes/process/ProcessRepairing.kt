@@ -8,7 +8,7 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import kotlin.random.Random
 
 /**
@@ -31,7 +31,7 @@ sealed interface ProcessRepairing {
         input: RecipeInput.RepairingRecipeInput,
         context: EvaluationContext,
         random: Random,
-    ): ItemStack
+    ): ScafallItemStack
 
     /**
      * Always uses the specified result and computes the resulting stack based on the data and context.

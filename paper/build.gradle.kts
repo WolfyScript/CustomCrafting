@@ -24,7 +24,11 @@ tasks {
         dependencies {
             include(project(":spigotlike"))
         }
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "mojang"
+        }
         relocate("org.bstats", "com.wolfyscript.customcrafting.bukkit.metrics")
+//        relocate("com.fasterxml.jackson", "com.wolfyscript.scafall.lib.jackson")
     }
     assemble {
         dependsOn(shadowJar)
@@ -60,7 +64,7 @@ bukkitPluginYaml {
 }
 
 minecraftServers {
-    libName.set("${archiveName()}.jar")
+    libName.set("${archiveName()}-mojmap.jar")
     servers {
         register("paper") {
             destFileName.set("customcrafting.jar")

@@ -8,7 +8,7 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import kotlin.random.Random
 
 /**
@@ -31,7 +31,7 @@ sealed interface ProcessGrinding {
         input: RecipeInput.GrindingRecipeInput,
         context: EvaluationContext,
         random: Random,
-    ): ItemStack
+    ): ScafallItemStack
 
     /**
      * A process that always returns the specified [result] and [xp].

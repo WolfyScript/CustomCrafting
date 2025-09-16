@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.recipes.process.SetInclusionExclusionType
 import com.wolfyscript.scafall.identifier.toScafall
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.unwrap
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.tags.EnchantmentTags
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.item.enchantment.ItemEnchantments
@@ -22,7 +22,7 @@ class IngredientEnchantRemovalProcedureImpl(
     override val type: SetInclusionExclusionType = SetInclusionExclusionType.KEEP,
 ) : ProcedureEnchantRemoval.IngredientEnchantRemovalProcedure {
 
-    override fun removeFrom(stack: ItemStack): Int {
+    override fun removeFrom(stack: ScafallItemStack): Int {
         val mcStack = stack.unwrap()
         val itemEnchants = ItemEnchantments.Mutable(mcStack.enchantments)
         var xpYield = 0

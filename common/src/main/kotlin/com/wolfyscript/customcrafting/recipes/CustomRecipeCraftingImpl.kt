@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.*
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.util.ArrayListDeque
 import org.apache.commons.lang3.ArrayUtils
 import kotlin.math.max
@@ -32,7 +32,7 @@ class CustomRecipeCraftingImpl(
         recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>,
         context: EvaluationContext,
         count: Int,
-        applyStacks: (Int, ItemStack) -> Unit,
+        applyStacks: (Int, ScafallItemStack) -> Unit,
     ) {
         for (value in recipeEvaluationResult.data.nonNullIngredients) {
             var stack = input.matrixData.matrix[value.recipeIndex] ?: continue

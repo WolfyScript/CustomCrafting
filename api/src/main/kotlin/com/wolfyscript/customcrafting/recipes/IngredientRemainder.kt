@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.items.ItemStackRef
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
 
 /**
@@ -36,7 +36,7 @@ interface IngredientRemainder {
      *
      * @return the list of remaining item stacks.
      */
-    fun calculate(target: ItemStackSnapshot, count: Int, ref: ItemStackRef, context: EvaluationContext, evalResult: RecipeEvaluationResult<*, *>): List<ItemStack>
+    fun calculate(target: ItemStackSnapshot, count: Int, ref: ItemStackRef, context: EvaluationContext, evalResult: RecipeEvaluationResult<*, *>): List<ScafallItemStack>
 
     /**
      * Uses the vanilla remainders or modded/plugin remainders, if available and not ignored.

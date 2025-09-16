@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import kotlin.random.Random
 
 /**
@@ -49,7 +49,7 @@ interface RecipeResult {
      * Therefore, when the result contains multiple items, it always picks the same item given the same seed.
      * Preventing players from rerolling the result.
      */
-    fun compute(recipeEvaluationResult: RecipeEvaluationResult<*,*>, context: EvaluationContext, random: Random): ItemStack
+    fun compute(recipeEvaluationResult: RecipeEvaluationResult<*,*>, context: EvaluationContext, random: Random): ScafallItemStack
 
     /**
      * Runs the specified actions in the given [EvaluationContext].

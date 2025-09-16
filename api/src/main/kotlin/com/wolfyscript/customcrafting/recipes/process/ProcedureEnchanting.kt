@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.recipes.process
 
 import com.wolfyscript.scafall.wrappers.ScafallPlayer
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 /**
  * Specifies how enchantments from an additional item are merged onto a result item.
@@ -44,7 +44,7 @@ interface ProcedureEnchanting {
      */
     val upgradeEnchants: Boolean
 
-    fun merge(resultStack: ItemStack, player: ScafallPlayer?, addition: ItemStack) : MergeResult?
+    fun merge(resultStack: ScafallItemStack, player: ScafallPlayer?, addition: ScafallItemStack) : MergeResult?
 
     /**
      * The result produced by the [ProcedureEnchanting] procedure.
@@ -64,7 +64,7 @@ interface ProcedureEnchanting {
         /**
          * The result with the applied merged enchantments.
          */
-        val result: ItemStack
+        val result: ScafallItemStack
 
     }
 

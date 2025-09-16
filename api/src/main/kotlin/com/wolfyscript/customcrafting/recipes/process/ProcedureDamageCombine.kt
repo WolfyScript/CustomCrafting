@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.recipes.process
 
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 /**
  * Controls how the durability of two items is combined and applied to the resulting stack.
@@ -29,6 +29,6 @@ interface ProcedureDamageCombine {
      * Combines the durability (max damage - damage) of the base and addition items and applies it to the result.
      * Both base and addition need to be damageable items, so their durability can be combined.
      */
-    fun combine(baseStack: ItemStack, additionStack: ItemStack, resultStack: ItemStack) : ItemStack
+    fun combine(baseStack: ScafallItemStack, additionStack: ScafallItemStack, resultStack: ScafallItemStack) : ScafallItemStack
 
 }

@@ -13,7 +13,7 @@ import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.wrappers.unwrap
 import com.wolfyscript.scafall.wrappers.wrap
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
@@ -35,7 +35,7 @@ class CustomProcessRepairingImpl(
         input: RecipeInput.RepairingRecipeInput,
         context: EvaluationContext,
         random: Random,
-    ): ItemStack {
+    ): ScafallItemStack {
         val player = context.player?.unwrap() as? ServerPlayer
         if (player == null) {
             return net.minecraft.world.item.ItemStack.EMPTY.wrap() // Repair recipes require a player!

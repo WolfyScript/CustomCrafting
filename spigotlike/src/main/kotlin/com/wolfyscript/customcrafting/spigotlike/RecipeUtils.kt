@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.Inventory
 import kotlin.random.Random
 
-fun possibleResultAmount(recipeEvaluationResult: RecipeEvaluationResult<*, *>, sourceStacks: List<com.wolfyscript.scafall.wrappers.world.items.ItemStack>): Int =
+fun possibleResultAmount(recipeEvaluationResult: RecipeEvaluationResult<*, *>, sourceStacks: List<com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack>): Int =
     recipeEvaluationResult.data.nonNullIngredients.withIndex().minOf { (index, value) ->
         sourceStacks[index].amount / value.matchedItemStackRef.amount
     }
@@ -19,7 +19,7 @@ fun collectResultAndRunActions(
     targetInv: Inventory,
     craftingData: RecipeEvaluationResult<*, *>,
     recipeResult: RecipeResult,
-    sourceStacks: List<com.wolfyscript.scafall.wrappers.world.items.ItemStack>,
+    sourceStacks: List<com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack>,
     context: EvaluationContext,
     random: Random,
 ): Int {

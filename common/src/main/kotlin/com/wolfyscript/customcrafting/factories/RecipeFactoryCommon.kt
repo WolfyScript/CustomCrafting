@@ -13,7 +13,7 @@ import com.wolfyscript.customcrafting.recipes.data.SmithingRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.SingleSlotRecipeInputImpl
 import com.wolfyscript.customcrafting.recipes.data.toCraftingMatrixData
 import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.wrappers.world.items.ItemStack
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 class RecipeFactoryCommon : RecipeFactory {
 
@@ -24,7 +24,7 @@ class RecipeFactoryCommon : RecipeFactory {
         return RecipeReferenceImpl(key, recipe)
     }
 
-    override fun createMatrixData(ingredients: List<ItemStack?>): CraftingMatrixData {
+    override fun createMatrixData(ingredients: List<ScafallItemStack?>): CraftingMatrixData {
         return ingredients.toCraftingMatrixData()
     }
 
@@ -33,33 +33,33 @@ class RecipeFactoryCommon : RecipeFactory {
     }
 
     override fun createGrindingRecipeInput(
-        base: ItemStack?,
-        addition: ItemStack?,
+        base: ScafallItemStack?,
+        addition: ScafallItemStack?,
     ): RecipeInput.GrindingRecipeInput {
         return GrindingRecipeInputImpl(base, addition)
     }
 
-    override fun createMixingRecipeInput(input: Collection<ItemStack?>): RecipeInput.MixingRecipeInput {
+    override fun createMixingRecipeInput(input: Collection<ScafallItemStack?>): RecipeInput.MixingRecipeInput {
         return MixingRecipeInputImpl(input)
     }
 
     override fun createRepairingRecipeInput(
-        base: ItemStack,
-        addition: ItemStack?,
+        base: ScafallItemStack,
+        addition: ScafallItemStack?,
         itemName: String?,
     ): RecipeInput.RepairingRecipeInput {
         return RepairingRecipeInputImpl(base, addition, itemName)
     }
 
     override fun createSmithingRecipeInput(
-        template: ItemStack?,
-        base: ItemStack?,
-        addition: ItemStack?,
+        template: ScafallItemStack?,
+        base: ScafallItemStack?,
+        addition: ScafallItemStack?,
     ): RecipeInput.SmithingRecipeInput {
         return SmithingRecipeInputImpl(template, base, addition)
     }
 
-    override fun createSingleSlotRecipeInput(source: ItemStack): RecipeInput.SingleSlotRecipeInput {
+    override fun createSingleSlotRecipeInput(source: ScafallItemStack): RecipeInput.SingleSlotRecipeInput {
         return SingleSlotRecipeInputImpl(source)
     }
 }
