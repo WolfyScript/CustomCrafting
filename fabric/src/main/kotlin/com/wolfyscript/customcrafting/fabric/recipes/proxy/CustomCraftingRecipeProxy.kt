@@ -47,7 +47,7 @@ private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: Crafting
     return stack.unwrap()
 }
 
-class CustomRecipeShapedProxy(val customRecipe: RecipeReference<CustomRecipeCrafting>) : ShapedRecipe(
+class CustomRecipeShapedProxy(override val customRecipe: RecipeReference<CustomRecipeCrafting>) : ShapedRecipe(
     "", // TODO
     CraftingBookCategory.MISC, // TODO
     (customRecipe.value!!.formula as CraftingFormula.Shaped).toShapedRecipePattern(),
@@ -70,7 +70,7 @@ class CustomRecipeShapedProxy(val customRecipe: RecipeReference<CustomRecipeCraf
 
 }
 
-class CustomRecipeShapelessProxy(val customRecipe: RecipeReference<CustomRecipeCrafting>) : ShapelessRecipe(
+class CustomRecipeShapelessProxy(override val customRecipe: RecipeReference<CustomRecipeCrafting>) : ShapelessRecipe(
     "", // TODO
     CraftingBookCategory.MISC, // TODO
     (customRecipe.value!!).result.choices.stacks.first().create().unwrap(),

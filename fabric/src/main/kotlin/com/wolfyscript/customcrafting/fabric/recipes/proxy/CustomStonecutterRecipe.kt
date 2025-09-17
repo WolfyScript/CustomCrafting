@@ -49,7 +49,7 @@ fun RecipeReference<CustomRecipeStonecutting>.assemble(
 
 class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {
 
-    val recipe: RecipeReference<CustomRecipeStonecutting>
+    override val customRecipe: RecipeReference<CustomRecipeStonecutting>
     val split: Boolean
 
     constructor(recipe: RecipeReference<CustomRecipeStonecutting>) : super(
@@ -57,7 +57,7 @@ class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {
         recipe.value!!.source.toMc(),
         recipe.value!!.result.choices.stacks.first().create().unwrap()
     ) {
-        this.recipe = recipe
+        this.customRecipe = recipe
         split = false
     }
 
@@ -66,14 +66,14 @@ class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {
         recipe.value!!.source.toMc(),
         result
     ) {
-        this.recipe = recipe
+        this.customRecipe = recipe
         split = true
     }
 
     override fun display(): List<RecipeDisplay> {
         return listOf(
             StonecutterRecipeDisplay(
-                recipe.value?.source.toMcDisplay(),
+                customRecipe.value?.source.toMcDisplay(),
                 this.resultDisplay(),
                 SlotDisplay.ItemSlotDisplay(Items.STONECUTTER)
             )
@@ -84,16 +84,16 @@ class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {
         if (split) {
             return super.resultDisplay()
         }
-        return recipe.value?.result?.toMcDisplay() ?: SlotDisplay.Empty.INSTANCE
+        return customRecipe.value?.result?.toMcDisplay() ?: SlotDisplay.Empty.INSTANCE
     }
 
     override fun matches(singleRecipeInput: SingleRecipeInput, level: Level): Boolean {
-        return recipe.matches(singleRecipeInput, level)
+        return customRecipe.matches(singleRecipeInput, level)
     }
 
     override fun assemble(input: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack {
         if (split) {
-            val recipeVal = recipe.value ?: return ItemStack.EMPTY
+            val recipeVal = customRecipe.value ?: return ItemStack.EMPTY
             input as RecipeInputSingleSlotCustomExt
             val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
             val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
@@ -101,7 +101,7 @@ class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {
             recipeVal.result.modifier.modify(stack, resultInfo, context)
             return stack.unwrap()
         }
-        return recipe.assemble(input, provider)
+        return customRecipe.assemble(input, provider)
     }
 
 }

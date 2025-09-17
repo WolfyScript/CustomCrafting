@@ -31,7 +31,7 @@ import net.minecraft.world.item.crafting.display.SmithingRecipeDisplay
 import net.minecraft.world.level.Level
 import java.util.*
 
-class CustomSmithingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeSmithing>) : SmithingRecipe, ProxyRecipe {
+class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<CustomRecipeSmithing>) : SmithingRecipe, ProxyRecipe {
 
     init {
         if (customRecipe.value == null) throw IllegalArgumentException("Cannot create a SmithingRecipeProxy for a null recipe")

@@ -37,7 +37,7 @@ fun RecipeReference<CustomRecipeCooking>.assemble(
     return recipe.result.compute(resultInfo, context, Random).unwrap()
 }
 
-class CustomSmeltingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCooking>) : SmeltingRecipe(
+class CustomSmeltingRecipeProxy(override val customRecipe: RecipeReference<CustomRecipeCooking>) : SmeltingRecipe(
     "",
     CookingBookCategory.MISC,
     Ingredient.of(*customRecipe.value!!.processing.source.choices.stacks.map { stack -> stack.create().unwrap().item }
@@ -57,7 +57,7 @@ class CustomSmeltingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCo
 
 }
 
-class CustomBlastingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCooking>) : BlastingRecipe(
+class CustomBlastingRecipeProxy(override val customRecipe: RecipeReference<CustomRecipeCooking>) : BlastingRecipe(
     "",
     CookingBookCategory.MISC,
     Ingredient.of(*customRecipe.value!!.processing.source.choices.stacks.map { stack -> stack.create().unwrap().item }
@@ -76,7 +76,7 @@ class CustomBlastingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCo
     }
 }
 
-class CustomSmokingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCooking>) : SmokingRecipe(
+class CustomSmokingRecipeProxy(override val customRecipe: RecipeReference<CustomRecipeCooking>) : SmokingRecipe(
     "",
     CookingBookCategory.MISC,
     Ingredient.of(*customRecipe.value!!.processing.source.choices.stacks.map { stack -> stack.create().unwrap().item }
@@ -95,7 +95,7 @@ class CustomSmokingRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCoo
     }
 }
 
-class CustomCampfireRecipeProxy(val customRecipe: RecipeReference<CustomRecipeCooking>) : CampfireCookingRecipe(
+class CustomCampfireRecipeProxy(override val customRecipe: RecipeReference<CustomRecipeCooking>) : CampfireCookingRecipe(
     "",
     CookingBookCategory.MISC,
     Ingredient.of(*customRecipe.value!!.processing.source.choices.stacks.map { stack -> stack.create().unwrap().item }
