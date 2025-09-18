@@ -7,16 +7,26 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.resource.ResourceListener
 import com.wolfyscript.customcrafting.resource.ResourceLoader
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
-import com.wolfyscript.customcrafting.util.exportResource
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.verification.VerificationResult
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.io.File
+import java.net.URI
+import java.nio.file.FileSystem
+import java.nio.file.FileSystemNotFoundException
+import java.nio.file.FileSystems
+import java.nio.file.Path
 import java.util.*
+import kotlin.collections.emptyMap
+import kotlin.io.path.copyTo
+import kotlin.io.path.pathString
+import kotlin.io.path.walk
 
 class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeManager, ResourceListener {
+
+    private val loggerPrefix = "[Recipe Manager] "
 
     val index: RecipeIndex = RecipeIndex()
 
@@ -53,29 +63,34 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
     }
 
     private fun exportDefaults(resourceLoader: ResourceLoader) {
-        customCrafting.logger.info("Exporting default recipes to $resourceLoader")
+        customCrafting.logger.info("${loggerPrefix}Exporting default recipes...")
         val dir = "com/wolfyscript/customcrafting/recipes/default"
-        listOf(
-            "enchanted_golden_apple",
-            "rotten_flesh_to_leather_smelting",
-            "rotten_flesh_to_leather_smoking",
-            "stick_to_torch_campfire",
-            "stick_to_soul_torch_soul_campfire",
-            "sus_stew_op",
-            "upgrade_netherite_sword",
-            "repair_with_amethyst",
-            "disenchant_netherite_sword_custom",
-            "leaves_selection_stonecutter",
-            "debug_stick",
-            "iron_ore_to_raw",
-            "stonecut_oak_planks",
-            "burned_beef_campfire",
-            "golden_apple_random_crafting",
-            "revive_pufferfish",
-            "disenchant_netherite_chestplate"
-        ).forEach {
-            customCrafting.logger.info("  - recipe: $it")
-            exportResource("$dir/$it.conf", File(resourceLoader.directory, "default/$it.conf"))
+        val resource = javaClass.classLoader.getResource(dir)?.toURI()
+        if (resource == null) {
+            customCrafting.logger.error("${loggerPrefix}Could not find default recipes!")
+            return
+        }
+        val target = File(resourceLoader.directory, "default")
+        target.mkdirs()
+        copyToFromFileSystem(resource, dir, target.toPath())
+        customCrafting.logger.info("${loggerPrefix}Default recipes exported to $target")
+    }
+
+    private fun FileSystem.copyTo(dir: String, target: Path) {
+        getPath(dir).walk().forEach {
+            it.copyTo(target.resolve(it.fileName.pathString), true)
+        }
+    }
+
+    private fun copyToFromFileSystem(uri: URI, fromDir: String, target: Path) {
+        try {
+            val fs = FileSystems.getFileSystem(uri)
+            // The file system is already open so we shouldn't close it as it may cause issues (e.g. on Fabric)
+            fs.copyTo(fromDir, target)
+        } catch (_: FileSystemNotFoundException) {
+            FileSystems.newFileSystem(uri, emptyMap<String, Any>(), javaClass.classLoader).use { fs ->
+                fs.copyTo(fromDir, target) // In this case we control the life-time of the file system, so close it after copying.
+            }
         }
     }
 
@@ -86,7 +101,7 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
         synchronized(loadLock) {
             resourceLoader.sources.forEach { dest ->
                 dest.load {
-                    customCrafting.logger.info("  loaded recipe: ${it.key} -> ${it.recipe}")
+                    customCrafting.logger.info("${loggerPrefix}loaded: ${it.key} -> ${it.recipe}")
                     awaitingVerificationRecipes[it.key] = it.recipe
                 }
             }
@@ -115,10 +130,10 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
             // Remove recipes that are no longer loaded
             val removed = previousLoaded.subtract(recipesLoadedByCC)
             if (removed.isNotEmpty()) {
-                customCrafting.logger.info("Removing ${removed.size} recipes that are no longer loaded")
+                customCrafting.logger.info("${loggerPrefix}Removing ${removed.size} recipes that are no longer loaded")
 
                 for (recipeKey in removed) {
-                    customCrafting.logger.info("  - $recipeKey")
+                    customCrafting.logger.info("$loggerPrefix  - $recipeKey")
                     removeRecipe(recipeKey)
                 }
             }
@@ -126,7 +141,7 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
     }
 
     private fun verifyRecipesAndLoad() {
-        customCrafting.logger.info("Verifying ${awaitingVerificationRecipes.size} recipes")
+        customCrafting.logger.info("${loggerPrefix}Verifying ${awaitingVerificationRecipes.size} recipes")
         for ((key, recipe) in awaitingVerificationRecipes) {
             // TODO: Verification
             customCrafting.recipeManager.updateRecipe(key, recipe)
