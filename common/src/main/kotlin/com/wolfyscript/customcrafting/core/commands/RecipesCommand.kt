@@ -78,7 +78,7 @@ object RecipesCommand {
     private fun printStatus(ctx: CommandContext<CommandSourceStack>, customCrafting: CustomCraftingCommon) {
         val recipeManager = customCrafting.recipeManager
 
-        val totalRecipeCount = recipeManager.index.values().count()
+        val totalRecipeCount = recipeManager.recipes().count()
         val ccRecipesCount = recipeManager.recipesLoadedByCC.size
         val thirdPartyRecipeCount = totalRecipeCount - ccRecipesCount
         val disabledRecipeCount = recipeManager.disabledRecipes.size

@@ -1,60 +1,107 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.google.common.collect.Multimap
-import com.google.common.collect.Multimaps
+import com.google.common.collect.ImmutableList
+import com.google.common.collect.ImmutableListMultimap
+import com.google.common.collect.ImmutableMap
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.resource.LoadedRecipe
 import com.wolfyscript.scafall.identifier.Key
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.util.*
 
-class RecipeIndex {
+/**
+ * The internal index of all the custom recipes.
+ * Recipes are indexed by their [Key] and [RecipeType].
+ *
+ * This index is immutable, and should be updated using [registerOrUpdateAll] and [removeBatch].
+ * That way, the index is thread-safe and prevents concurrent modification issues.
+ *
+ * [RecipeReferences][RecipeReference] are used to prevent caching of the recipe objects directly and causing memory leaks, because the objects may be removed/updated at any time.
+ */
+internal class RecipeIndex {
 
-    private val recipes: MutableSet<CustomRecipe<*, *>> = ObjectOpenHashSet()
+    companion object {
+        private val recipeValueComparator: Comparator<RecipeReference<*>> = Comparator.comparing { it.value?.priority ?: 0 }
+    }
 
+    private val recipes: List<CustomRecipe<*, *>>
     // reference those recipes, but do not hold on to those object references directly
-    internal val byKey: MutableMap<Key, RecipeReference<*>> = Object2ObjectOpenHashMap()
-    internal val byType: Multimap<RecipeType<*>, RecipeReference<*>> =
-        Multimaps.newSetMultimap(Object2ObjectOpenHashMap()) { ObjectOpenHashSet() }
+    internal val byKey: Map<Key, RecipeReference<*>>
+    internal val byType: ImmutableListMultimap<RecipeType<*>, RecipeReference<*>>
+
+    constructor(recipes: Collection<LoadedRecipe>) {
+        val recipesBuilder = ImmutableList.builder<CustomRecipe<*, *>>()
+        val byKeyBuilder = ImmutableMap.builder<Key, RecipeReference<*>>()
+        val byTypeBuilder = ImmutableListMultimap.Builder<RecipeType<*>, RecipeReference<*>>()
+        byTypeBuilder.orderValuesBy(recipeValueComparator)
+
+        recipes.forEach {
+            recipesBuilder.add(it.recipe)
+            val ref = RecipeReferenceImpl(it.key, it.recipe)
+            byTypeBuilder.put(it.recipe.type, ref)
+            byKeyBuilder.put(it.key, ref)
+        }
+
+        this.byType = byTypeBuilder.build()
+        this.byKey = byKeyBuilder.build()
+        this.recipes = recipesBuilder.build()
+    }
+
+    constructor(recipes: List<CustomRecipe<*, *>>, byKey: Map<Key, RecipeReference<*>>, byType: ImmutableListMultimap<RecipeType<*>, RecipeReference<*>>) {
+        this.recipes = recipes
+        this.byKey = byKey
+        this.byType = byType
+    }
 
     fun values(): Collection<RecipeReference<*>> {
         return Collections.unmodifiableCollection(byKey.values)
-    }
-
-    fun <T : CustomRecipe<*, *>> register(key: Key, recipe: T): RecipeReference<T> = synchronized(this) {
-        if (byKey.containsKey(key)) {
-            return byKey[key]!! as RecipeReference<T>
-        }
-        val ref = RecipeReferenceImpl(key, recipe)
-        byKey[key] = ref
-        byType.put(recipe.type, ref)
-        return ref
     }
 
     fun get(key: Key): RecipeReference<*>? = synchronized(this) {
         return byKey[key]
     }
 
-    fun remove(key: Key) = synchronized(this) {
-        val recipeRef = byKey[key]
-        if (recipeRef != null) {
-            val recipe = recipeRef.value
-            recipes.remove(recipe)
-            byType.remove(recipeRef.type, recipeRef)
-            byKey.remove(key)
+    fun registerOrUpdateAll(recipes: Collection<LoadedRecipe>) : RecipeIndex {
+        val updatedRecipes = ArrayList<CustomRecipe<*,*>>(recipes.size + this.recipes.size)
+        val byKeyBuilder = ImmutableMap.builder<Key, RecipeReference<*>>()
+        val byTypeBuilder = ImmutableListMultimap.Builder<RecipeType<*>, RecipeReference<*>>()
+        byTypeBuilder.orderValuesBy(recipeValueComparator)
+
+        updatedRecipes.addAll(this.recipes)
+        val updatedByKey = byKey.toMutableMap()
+        for (recipe in recipes) {
+            val existing = updatedByKey.remove(recipe.key)
+            updatedRecipes.remove(existing?.value)
+            updatedRecipes.add(recipe.recipe)
+
+            val ref = RecipeReferenceImpl(recipe.key, recipe.recipe)
+            byTypeBuilder.put(recipe.recipe.type, ref)
+            byKeyBuilder.put(recipe.key, ref)
         }
+
+        return RecipeIndex(updatedRecipes, byKeyBuilder.build(), byTypeBuilder.build())
     }
 
-    inline fun <reified T : CustomRecipe<*, *>> getRecipeTyped(key: Key, type: RecipeType<T>): T? = synchronized(this) {
-        val recipe = get(key) ?: return null
-        if (recipe.type != type) {
-            return null
+    fun removeBatch(vararg keys: Key) : RecipeIndex {
+        val updatedByKey = byKey.toMutableMap()
+        for (key in keys) {
+            updatedByKey.remove(key)
         }
-        return type.recipeClass.cast(recipe)
+        val recipesBuilder = ImmutableList.builder<CustomRecipe<*, *>>()
+        val byTypeBuilder = ImmutableListMultimap.Builder<RecipeType<*>, RecipeReference<*>>()
+        byTypeBuilder.orderValuesBy(recipeValueComparator)
+        updatedByKey.keys.forEach { key ->
+            val ref = byKey[key]
+            ref?.value?.let { recipe ->
+                recipesBuilder.add(recipe)
+                val ref = RecipeReferenceImpl(key, recipe)
+                byTypeBuilder.put(recipe.type, ref)
+            }
+        }
+        return RecipeIndex(recipesBuilder.build(), updatedByKey.toMap(), byTypeBuilder.build())
     }
 
-    fun <I : RecipeInput, D : RecipeEvaluationResult.Data, T : CustomRecipe<I, D>> byType(type: RecipeType<T>): Collection<RecipeReference<T>> = synchronized(this) {
+    fun <I : RecipeInput, D : RecipeEvaluationResult.Data, T : CustomRecipe<I, D>> byType(type: RecipeType<T>): Collection<RecipeReference<T>> {
         return byType.get(type) as Collection<RecipeReference<T>>
     }
 

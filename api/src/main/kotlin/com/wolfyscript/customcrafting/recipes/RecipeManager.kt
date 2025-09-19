@@ -2,6 +2,7 @@ package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.resource.LoadedRecipe
 import com.wolfyscript.scafall.identifier.Key
 
 /**
@@ -15,6 +16,10 @@ import com.wolfyscript.scafall.identifier.Key
  */
 interface RecipeManager {
 
+    companion object {
+        const val LOG_PREFIX = "[Recipe Manager] "
+    }
+
     fun <I: RecipeInput, D: RecipeEvaluationResult.Data, T: CustomRecipe<I,D>> evaluateRecipesOfType(type: RecipeType<T>, input: I, context: EvaluationContext): RecipeEvaluationResult<D,T>?
 
     fun disableRecipe(recipe: Key)
@@ -25,10 +30,38 @@ interface RecipeManager {
 
     val disabledRecipes: Set<Key>
 
-    fun getRecipe(key: Key): CustomRecipe<*,*>?
+    /**
+     * Gets a [RecipeReference] to the recipe with the given [key].
+     *
+     * While the reference can be cached, the recipe value of the reference should not be cached separately!
+     */
+    fun getRecipe(key: Key): RecipeReference<*>?
 
-    fun removeRecipe(key: Key)
+    /**
+     * Registers new recipes or updates existing recipes in the [RecipeManager] and re-indexes them by type and key.
+     */
+    fun registerOrUpdateRecipes(recipes: Collection<LoadedRecipe>)
 
-    fun updateRecipe(key: Key, recipe: CustomRecipe<*,*>)
+    /**
+     * Removes the recipes from the [RecipeManager] and re-indexes the recipes by type and key.
+     */
+    fun removeRecipes(vararg recipes: Key)
 
+    /**
+     * Gets all the recipe references in the [RecipeManager].
+     */
+    fun recipes(): Collection<RecipeReference<*>>
+
+}
+
+inline fun <reified T : CustomRecipe<*, *>> RecipeManager.getRecipeTyped(key: Key, type: RecipeType<T>): RecipeReference<T>? {
+    val ref = getRecipe(key) ?: return null
+    if (ref.type != type) {
+        return null
+    }
+    return try {
+        ref as? RecipeReference<T>
+    } catch (_: ClassCastException) {
+        null
+    }
 }

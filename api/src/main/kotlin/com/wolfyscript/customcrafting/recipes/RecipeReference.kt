@@ -13,7 +13,7 @@ import com.wolfyscript.scafall.identifier.Key
  *
  * It should always be checked if the recipe is available before accessing it (even if you registered a recipe yourself, other plugins may remove it).
  */
-interface RecipeReference<T: CustomRecipe<*,*>> {
+interface RecipeReference<out T: CustomRecipe<*,*>> {
 
     /**
      * The key of the recipe in the RecipeIndex

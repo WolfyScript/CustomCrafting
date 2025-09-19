@@ -1,16 +1,16 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.recipes.RecipeManager.Companion.LOG_PREFIX
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.resource.LoadedRecipe
 import com.wolfyscript.customcrafting.resource.ResourceListener
 import com.wolfyscript.customcrafting.resource.ResourceLoader
-import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.verification.VerificationResult
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import java.io.File
 import java.net.URI
@@ -19,16 +19,13 @@ import java.nio.file.FileSystemNotFoundException
 import java.nio.file.FileSystems
 import java.nio.file.Path
 import java.util.*
-import kotlin.collections.emptyMap
 import kotlin.io.path.copyTo
 import kotlin.io.path.pathString
 import kotlin.io.path.walk
 
 class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeManager, ResourceListener {
 
-    private val loggerPrefix = "[Recipe Manager] "
-
-    val index: RecipeIndex = RecipeIndex()
+    private var index: RecipeIndex = RecipeIndex(emptyList())
 
     /**
      * Recipes can be loaded by other plugins. We keep track of which recipes CC registers, to not unload third-party recipes, for example, on a reload.
@@ -41,7 +38,7 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
         }
     val backingDisabledRecipes: MutableSet<Key> = ObjectOpenHashSet()
 
-    val awaitingVerificationRecipes: MutableMap<Key, CustomRecipe<*, *>> = Object2ObjectOpenHashMap()
+    val awaitingVerificationRecipes: MutableList<LoadedRecipe> = mutableListOf()
     val invalidRecipes: MutableList<VerificationResult<CustomRecipe<*, *>>> = mutableListOf()
     val scafall = ScafallProvider.get()
 
@@ -49,9 +46,7 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
 
     init {
         scafall.dependencyManager.onDependencyInitialized {
-            synchronized(loadLock) {
-                verifyRecipesAndLoad()
-            }
+            verifyRecipesAndLoad()
         }
     }
 
@@ -63,17 +58,17 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
     }
 
     private fun exportDefaults(resourceLoader: ResourceLoader) {
-        customCrafting.logger.info("${loggerPrefix}Exporting default recipes...")
+        customCrafting.logger.info("${LOG_PREFIX}Exporting default recipes...")
         val dir = "com/wolfyscript/customcrafting/recipes/default"
         val resource = javaClass.classLoader.getResource(dir)?.toURI()
         if (resource == null) {
-            customCrafting.logger.error("${loggerPrefix}Could not find default recipes!")
+            customCrafting.logger.error("${LOG_PREFIX}Could not find default recipes!")
             return
         }
         val target = File(resourceLoader.directory, "default")
         target.mkdirs()
         copyToFromFileSystem(resource, dir, target.toPath())
-        customCrafting.logger.info("${loggerPrefix}Default recipes exported to $target")
+        customCrafting.logger.info("${LOG_PREFIX}Default recipes exported to $target")
     }
 
     private fun FileSystem.copyTo(dir: String, target: Path) {
@@ -89,7 +84,10 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
             fs.copyTo(fromDir, target)
         } catch (_: FileSystemNotFoundException) {
             FileSystems.newFileSystem(uri, emptyMap<String, Any>(), javaClass.classLoader).use { fs ->
-                fs.copyTo(fromDir, target) // In this case we control the life-time of the file system, so close it after copying.
+                fs.copyTo(
+                    fromDir,
+                    target
+                ) // In this case we control the life-time of the file system, so close it after copying.
             }
         }
     }
@@ -101,8 +99,8 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
         synchronized(loadLock) {
             resourceLoader.sources.forEach { dest ->
                 dest.load {
-                    customCrafting.logger.info("${loggerPrefix}loaded: ${it.key} -> ${it.recipe}")
-                    awaitingVerificationRecipes[it.key] = it.recipe
+                    customCrafting.logger.info("${LOG_PREFIX}loaded: ${it.key} -> ${it.recipe}")
+                    awaitingVerificationRecipes.add(it)
                 }
             }
         }
@@ -121,31 +119,26 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
      * Verify them, add them to the manager, and remove any recipes that were previously loaded and no longer loaded. (important for reloads)
      */
     override fun onFinalize(resourceLoader: ResourceLoader) {
-        synchronized(loadLock) {
-            val previousLoaded = recipesLoadedByCC.toSet()
-            recipesLoadedByCC.clear()
+        val previousLoaded = recipesLoadedByCC.toSet()
+        recipesLoadedByCC.clear()
 
-            verifyRecipesAndLoad()
+        verifyRecipesAndLoad()
 
-            // Remove recipes that are no longer loaded
-            val removed = previousLoaded.subtract(recipesLoadedByCC)
-            if (removed.isNotEmpty()) {
-                customCrafting.logger.info("${loggerPrefix}Removing ${removed.size} recipes that are no longer loaded")
-
-                for (recipeKey in removed) {
-                    customCrafting.logger.info("$loggerPrefix  - $recipeKey")
-                    removeRecipe(recipeKey)
-                }
-            }
+        // Remove recipes that are no longer loaded
+        val removed = previousLoaded.subtract(recipesLoadedByCC)
+        if (removed.isNotEmpty()) {
+            customCrafting.logger.info("${LOG_PREFIX}Removing ${removed.size} recipes that are no longer loaded")
+            removeRecipes(*removed.toTypedArray())
         }
     }
 
     private fun verifyRecipesAndLoad() {
-        customCrafting.logger.info("${loggerPrefix}Verifying ${awaitingVerificationRecipes.size} recipes")
-        for ((key, recipe) in awaitingVerificationRecipes) {
-            // TODO: Verification
-            customCrafting.recipeManager.updateRecipe(key, recipe)
+        customCrafting.logger.info("${LOG_PREFIX}Verifying ${awaitingVerificationRecipes.size} recipes")
+        for (loadedRecipe in awaitingVerificationRecipes) {
+            // TODO: verify recipe
+            recipesLoadedByCC.add(loadedRecipe.key)
         }
+        customCrafting.recipeManager.registerOrUpdateRecipes(awaitingVerificationRecipes)
     }
 
     override fun <I : RecipeInput, D : RecipeEvaluationResult.Data, T : CustomRecipe<I, D>> evaluateRecipesOfType(
@@ -176,29 +169,20 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
         return backingDisabledRecipes.contains(key)
     }
 
-    fun registerRecipe(key: Key, recipe: CustomRecipe<*, *>) {
-        if (key.namespace == Key.CUSTOMCRAFTING_NAMESPACE) {
-            recipesLoadedByCC.add(key)
-        }
-        index.register(key, recipe)
+    override fun getRecipe(key: Key): RecipeReference<*>? {
+        return index.get(key)
     }
 
-    override fun getRecipe(key: Key): CustomRecipe<*, *>? {
-        return index.get(key)?.value
+    override fun registerOrUpdateRecipes(recipes: Collection<LoadedRecipe>) {
+        index = index.registerOrUpdateAll(recipes)
     }
 
-    override fun removeRecipe(key: Key) {
-        index.remove(key)
+    override fun removeRecipes(vararg recipes: Key) {
+        index = index.removeBatch(*recipes)
     }
 
-    override fun updateRecipe(
-        key: Key,
-        recipe: CustomRecipe<*, *>,
-    ) {
-        if (index.byKey.containsKey(key)) {
-            removeRecipe(key)
-        }
-        registerRecipe(key, recipe)
+    override fun recipes(): Collection<RecipeReference<*>> {
+        return index.values()
     }
 
 }

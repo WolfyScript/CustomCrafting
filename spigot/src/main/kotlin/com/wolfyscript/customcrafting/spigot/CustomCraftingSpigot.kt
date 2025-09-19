@@ -38,8 +38,8 @@ class CustomCraftingSpigot(
     override fun onEnable() {
         ScafallProvider.get().dependencyManager.onAllDependenciesInitialized {
             resourceManager.loadResources()
-            registerPlaceholderRecipes(recipeManager.index.values())
-            registerDisplayRecipes(recipeManager.index.values())
+            registerPlaceholderRecipes(recipeManager.recipes())
+            registerDisplayRecipes(recipeManager.recipes())
         }
 
         CCCommands.registerCommands(ScafallProvider.get().server.minecraftServer.commands.dispatcher)

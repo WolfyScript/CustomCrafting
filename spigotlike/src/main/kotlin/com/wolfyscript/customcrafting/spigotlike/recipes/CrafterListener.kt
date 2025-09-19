@@ -1,13 +1,12 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.wolfyscript.customcrafting.CustomCraftingCommon
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.recipes.RecipeReference
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.recipes.getRecipeTyped
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
@@ -43,9 +42,14 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingComm
 
         val previousRecipeKey =
             state.persistentDataContainer.get(previousRecipeContainerKey, PersistentDataType.STRING)?.let {
-                Key.Companion.parse(it)
+                Key.parse(it)
             }
-        val previousRecipe = previousRecipeKey?.let { customCrafting.recipeManager.index.get(it) as? RecipeReference<CustomRecipeCrafting>? }
+        val previousRecipe = previousRecipeKey?.let {
+            customCrafting.recipeManager.getRecipeTyped(
+                it,
+                RecipeTypes.crafting.resolveOrThrow()
+            )
+        }
 
         val data = if (previousRecipe != null) {
             previousRecipe.value?.evaluate(input, context)?.let { RecipeEvaluationResultImpl(previousRecipe, it) }
@@ -88,8 +92,8 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingComm
         }
 
         // Check for custom recipe that overrides the vanilla recipe
-        if (customCrafting.recipeManager.isRecipeDisabled(bukkitRecipe.key.toScafall()) || customCrafting.recipeManager.getRecipe(bukkitRecipe.key.toScafall()) != null
-        ) {
+        if (customCrafting.recipeManager.isRecipeDisabled(bukkitRecipe.key.toScafall()) ||
+            customCrafting.recipeManager.getRecipe(bukkitRecipe.key.toScafall()) != null) {
             // Recipe is disabled or it is a custom recipe!
             event.isCancelled = true
             return

@@ -5,9 +5,11 @@ import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeReferenceImpl
+import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.recipes.getRecipeTyped
 import com.wolfyscript.customcrafting.spigotlike.collectResultAndRunActions
 import com.wolfyscript.customcrafting.spigotlike.recipes.isPlaceholder
 import com.wolfyscript.customcrafting.spigotlike.recipes.originalRecipeKey
@@ -41,10 +43,7 @@ class StonecutterListener(val customCrafting: CustomCrafting) : Listener {
             return
         }
         val key = bukkitRecipe.originalRecipeKey()
-        val recipe = customCrafting.recipeManager.getRecipe(key) ?: return
-        if (recipe !is CustomRecipeStonecutting) {
-            return
-        }
+        val recipe = customCrafting.recipeManager.getRecipeTyped(key, RecipeTypes.stonecutting.resolveOrThrow())?.value ?: return
         event.isCancelled = true
         val source = event.stonecutterInventory.getItem(INPUT_SLOT) ?: ItemStack(Material.AIR)
         val context = EvaluationContextImpl(event.player.wrap(), event.player.location.toPreciseGlobal())

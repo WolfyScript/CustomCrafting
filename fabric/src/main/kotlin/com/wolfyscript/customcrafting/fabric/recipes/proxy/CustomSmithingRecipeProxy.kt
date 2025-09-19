@@ -9,8 +9,10 @@ import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
 import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeReference
+import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.SmithingUtils
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.recipes.getRecipeTyped
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState
 import com.wolfyscript.customcrafting.util.toMc
 import com.wolfyscript.customcrafting.util.toMcDisplay
@@ -126,10 +128,8 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
 
             private fun recipeFromLocation(recipeId: ResourceLocation): CustomSmithingRecipeProxy? {
                 val key = recipeId.toScafall()
-                val recipe = CustomCraftingProvider.get().recipeManager.getRecipe(key)
-                if (recipe !is CustomRecipeSmithing) return null
-                val ref = RecipeReference.of(key, recipe)
-                return CustomSmithingRecipeProxy(ref)
+                val recipe = CustomCraftingProvider.get().recipeManager.getRecipeTyped(key, RecipeTypes.smithing.resolveOrThrow()) ?: return null
+                return CustomSmithingRecipeProxy(recipe)
             }
         }
 

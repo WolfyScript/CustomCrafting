@@ -31,8 +31,8 @@ class CustomCraftingPaper(val plugin: Plugin, override val logger: Logger) : Cus
         resourceManager.resourceLoader.registerListener(recipeManager)
         resourceManager.loadResources()
 
-        registerPlaceholderRecipes(recipeManager.index.values())
-        registerDisplayRecipes(recipeManager.index.values())
+        registerPlaceholderRecipes(recipeManager.recipes())
+        registerDisplayRecipes(recipeManager.recipes())
     }
 
     override fun onEnable() {
