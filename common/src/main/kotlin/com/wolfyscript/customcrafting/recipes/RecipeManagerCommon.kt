@@ -144,6 +144,9 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
     ): RecipeEvaluationResult<D, T>? {
         val recipes: Collection<RecipeReference<T>> = index.byType(type)
         for (recipe in recipes) {
+            if (isRecipeDisabled(recipe.key)) {
+                continue
+            }
             val data = recipe.value?.evaluate(input, context) ?: continue
             return RecipeEvaluationResultImpl(recipe, data)
         }
