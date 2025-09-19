@@ -42,8 +42,6 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
     val invalidRecipes: MutableList<VerificationResult<CustomRecipe<*, *>>> = mutableListOf()
     val scafall = ScafallProvider.get()
 
-    val loadLock = Any()
-
     init {
         scafall.dependencyManager.onDependencyInitialized {
             verifyRecipesAndLoad()
@@ -96,12 +94,10 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
      * How recipes should be loaded on startup
      */
     override fun onInitialLoad(resourceLoader: ResourceLoader) {
-        synchronized(loadLock) {
-            resourceLoader.sources.forEach { dest ->
-                dest.load {
-                    customCrafting.logger.info("${LOG_PREFIX}loaded: ${it.key} -> ${it.recipe}")
-                    awaitingVerificationRecipes.add(it)
-                }
+        resourceLoader.sources.forEach { dest ->
+            dest.load {
+                customCrafting.logger.info("${LOG_PREFIX}loaded: ${it.key} -> ${it.recipe}")
+                awaitingVerificationRecipes.add(it)
             }
         }
     }
