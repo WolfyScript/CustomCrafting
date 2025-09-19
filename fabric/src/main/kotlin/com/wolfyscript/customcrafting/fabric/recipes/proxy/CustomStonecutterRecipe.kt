@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.recipes.proxy
 
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
@@ -24,6 +25,7 @@ import net.minecraft.world.item.crafting.display.StonecutterRecipeDisplay
 import net.minecraft.world.level.Level
 
 fun RecipeReference<CustomRecipeStonecutting>.matches(input: SingleRecipeInput, level: Level): Boolean {
+    if (CustomCraftingProvider.get().recipeManager.isRecipeDisabled(key)) { return false }
     val recipe = value ?: return false
     input as RecipeInputSingleSlotCustomExt
     val data = input.customInput ?: return false
@@ -38,6 +40,7 @@ fun RecipeReference<CustomRecipeStonecutting>.assemble(
     input: SingleRecipeInput,
     provider: HolderLookup.Provider,
 ): ItemStack {
+    if (CustomCraftingProvider.get().recipeManager.isRecipeDisabled(key)) { return ItemStack.EMPTY }
     val recipe = value ?: return ItemStack.EMPTY
     input as RecipeInputSingleSlotCustomExt
     val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
