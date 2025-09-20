@@ -15,7 +15,7 @@ dependencies {
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
-fun archiveName() = "${project.rootProject.name}-${project.version}-spigot-${libs.versions.minecraft.get()}"
+fun archiveName() = "${project.rootProject.name}-${project.version}-paper-${libs.versions.minecraft.get()}"
 
 tasks {
     shadowJar {
