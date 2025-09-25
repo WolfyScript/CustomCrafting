@@ -24,7 +24,7 @@
     "customcrafting.mixins.json"
   ],
   "depends": {
-    "scafall": "alpha0.2.0.0",
+    "scafall": "alpha0.3.0.0",
     "fabricloader": ">=0.16.14",
     "minecraft": "~1.21.7",
     "java": ">=21",
