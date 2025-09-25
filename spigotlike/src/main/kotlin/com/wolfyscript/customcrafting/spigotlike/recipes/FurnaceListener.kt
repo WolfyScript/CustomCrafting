@@ -15,6 +15,7 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.Furnace
+import org.bukkit.block.TileState
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockExpEvent
@@ -22,7 +23,6 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent
 import org.bukkit.event.inventory.FurnaceStartSmeltEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import kotlin.collections.iterator
 import kotlin.math.floor
 import kotlin.random.Random
 
@@ -44,9 +44,15 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
         val customBackingRecipe = bukkitRecipe.isPlaceholder() || bukkitRecipe.isDisplay()
 
         val input = RecipeInput.SingleSlotRecipeInput.of(source.wrap())
-        val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
+        val context = EvaluationContextImpl(
+            null,
+            block.location.toPreciseGlobal(),
+            block.location.toBlockPos(),
+            (block.state as TileState).wrap()
+        )
 
-        val customRecipeData = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
+        val customRecipeData =
+            customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
         if (customRecipeData != null && customRecipeData.recipe.value != null) {
             event.totalCookTime = customRecipeData.recipe.value!!.processing.processingTime
 
@@ -84,7 +90,12 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
 
                 val result = recipe.result
 
-                val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
+                val context = EvaluationContextImpl(
+                    null,
+                    block.location.toPreciseGlobal(),
+                    block.location.toBlockPos(),
+                    (block.state as TileState).wrap()
+                )
                 val pickedStack = result.compute(
                     cache.recipeEvaluationResult,
                     context,
@@ -256,8 +267,16 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
             event.expToDrop = expToDrop
 
             // Then clear the recipe usages
-            rootContainer.set(customRecipesUsedKey, PersistentDataType.TAG_CONTAINER, rootContainer.adapterContext.newPersistentDataContainer())
-            rootContainer.set(backingRecipesUsedKey, PersistentDataType.TAG_CONTAINER, rootContainer.adapterContext.newPersistentDataContainer())
+            rootContainer.set(
+                customRecipesUsedKey,
+                PersistentDataType.TAG_CONTAINER,
+                rootContainer.adapterContext.newPersistentDataContainer()
+            )
+            rootContainer.set(
+                backingRecipesUsedKey,
+                PersistentDataType.TAG_CONTAINER,
+                rootContainer.adapterContext.newPersistentDataContainer()
+            )
             state.update()
         }
     }
