@@ -12,4 +12,8 @@ object CustomCraftingProperties {
 
     val release: String = properties.getProperty("release") ?: "unknown"
 
+    val sentryDsn: String = properties.getProperty("sentry.dsn") ?: ""
+
+    val sentryEnabled: Boolean = properties.getProperty("sentry.enabled").toBoolean()
+
 }

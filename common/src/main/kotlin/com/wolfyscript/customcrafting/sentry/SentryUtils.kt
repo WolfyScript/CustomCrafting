@@ -35,13 +35,14 @@ fun initSentry() {
     }
 
     Sentry.init {
-        it.dsn = "https://bfce6b20a3464f89a5255b24564315c1@errors.wolfyscript.com/1"
+        it.isEnabled = CustomCraftingProperties.sentryEnabled
+        it.dsn = CustomCraftingProperties.sentryDsn
         it.release = CustomCraftingProperties.release
         it.isSendDefaultPii = false // don't send personal identifiable information (ip, computer name, etc.)
         it.tracesSampleRate = null // make sure tracing is always disabled. we don't care about performance monitoring.
         it.addInAppInclude("com.wolfyscript")
         it.isEnableUncaughtExceptionHandler = true
-        it.isDebug = true
+        it.isDebug = false
         it.setLogger(SystemOutLogger())
 
         it.beforeSend = SentryOptions.BeforeSendCallback({ event, hint ->
