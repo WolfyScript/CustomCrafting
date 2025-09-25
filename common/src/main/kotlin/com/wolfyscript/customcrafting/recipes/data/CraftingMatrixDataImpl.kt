@@ -11,42 +11,46 @@ fun List<ScafallItemStack?>.toCraftingMatrixData(): CraftingMatrixData {
     val gridSize: Int = this.gridSize()
 
     // Find the leading and trailing empty rows
-    var lastRow = gridSize - 1
-    var firstRow = 0
-    var lastCol = gridSize - 1
-    var firstCol = 0
+    var minRow = gridSize - 1
+    var maxRow = 0
+    var minColumn = gridSize - 1
+    var maxColumn = 0
     var index = 0
     for (row in 0 until gridSize) {
         var emptyRow = true
         for (column in 0 until gridSize) {
             if (this[index] != null) {
                 emptyRow = false
-                lastCol = min(lastCol, column)
-                firstCol = max(firstCol, column)
+                minColumn = min(minColumn, column)
+                maxColumn = max(maxColumn, column)
             }
             index++
         }
-        if (emptyRow) {
-            firstRow = min(firstRow, row)
-            lastRow = max(lastRow, row)
+        if (!emptyRow) {
+            minRow = min(minRow, row)
+            maxRow = max(maxRow, row)
         }
     }
 
-    // Trim the leading and trailing empty rows and columns
-    val width = (lastCol + 1) - firstCol
-    val height = (lastRow + 1) - firstRow
+    if (maxRow < gridSize - 1 || maxColumn < gridSize - 1 || minRow > 0 || minColumn > 0) {
+        // Trim the leading and trailing empty rows and columns
+        val width = maxColumn - minColumn + 1
+        val height = maxRow - minRow + 1
 
-    return CraftingMatrixDataImpl(
-        gridSize,
-        matrix = Array(width * height) {
-            // Copy the values from the original array by offsetting the row and column back to the original
-            this[(it / width) * gridSize + firstRow * gridSize + (it % width) + firstCol]
-        },
-        width,
-        height,
-        rowOffset = firstRow,
-        columnOffset = firstCol
-    )
+        return CraftingMatrixDataImpl(
+            gridSize,
+            matrix = Array(width * height) {
+                // Copy the values from the original array by offsetting the row and column back to the original
+                this[(it / width) + minRow + (it % width) + maxColumn]
+            },
+            width,
+            height,
+            rowOffset = minRow,
+            columnOffset = maxColumn
+        )
+    }
+    return CraftingMatrixDataImpl(gridSize(), this.toTypedArray(), gridSize, gridSize, 0, 0)
+
 }
 
 private fun List<ScafallItemStack?>.gridSize(): Int {
