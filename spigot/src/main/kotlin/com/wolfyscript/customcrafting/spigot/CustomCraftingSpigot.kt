@@ -12,6 +12,7 @@ import com.wolfyscript.customcrafting.spigotlike.recipes.registerCommonRecipeLis
 import com.wolfyscript.customcrafting.spigotlike.recipes.registerDisplayRecipes
 import com.wolfyscript.customcrafting.spigotlike.recipes.registerPlaceholderRecipes
 import com.wolfyscript.scafall.ScafallProvider
+import io.sentry.Sentry
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.Logger
@@ -29,10 +30,12 @@ class CustomCraftingSpigot(
     override val resourceManager: ResourceManager = ResourceManagerCommon(this, plugin.dataFolder)
 
     override fun onLoad() {
+        Sentry.configureScope { scope ->
+            scope.setContexts("bukkit.plugins", Bukkit.getPluginManager().plugins.associate { plugin -> plugin.name to plugin.description.version })
+        }
+
         configurationManager.load()
-
         resourceManager.resourceLoader.registerListener(recipeManager)
-
     }
 
     override fun onEnable() {

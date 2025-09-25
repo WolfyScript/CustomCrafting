@@ -21,6 +21,9 @@ postgresql = "42.7.7"
 ms-sqlserver = "9.4.1.jre8"
 sqlite = "3.50.1.0"
 
+# error tracking
+sentry = "8.22.0"
+
 # cross-platform APIs
 scafall = "alpha0.2.0.0-SNAPSHOT"
 adventure-api = "4.10.1"
@@ -123,6 +126,8 @@ netty-all = { module = "io.netty:netty-all", version.ref = "netty" }
 inject-guice = { module = "com.google.inject:guice", version.ref = "guice" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine"}
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
+sentry-log4j2 = { module = "io.sentry:sentry-log4j2", version.ref = "sentry" }
+sentry = { module = "io.sentry:sentry", version.ref = "sentry" }
 
 # Testing
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
@@ -155,6 +160,7 @@ adventure = [ "adventure-api", "adventure-minimessage", "adventure-platform-api"
 jackson = [ "jackson-databind", "jackson-dataformat-hocon" ]
 minecraft-deps = [ "mojang-authlib", "fastutil", "netty-all" ]
 testing = [ "junit-jupiter" ]
+sentry = [ "sentry", "sentry-log4j2"]
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

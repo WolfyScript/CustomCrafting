@@ -4,18 +4,29 @@ import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingBoostrap
 import com.wolfyscript.customcrafting.core.commands.CCCommands
 import com.wolfyscript.customcrafting.fabric.api.CustomCraftingFabric
+import com.wolfyscript.customcrafting.sentry.initSentry
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.loader.ScafallLoader.loadObject
 import com.wolfyscript.scafall.loader.module.Module
+import io.sentry.Sentry
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.loader.api.FabricLoader
 import org.slf4j.LoggerFactory
 
 class CustomCraftingFabricMod : ModInitializer {
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private var serverModule: Module<CustomCrafting>? = null
+
+    init {
+        initSentry()
+
+        Sentry.configureScope {
+            it.setTag("minecraft.version", FabricLoader.getInstance().rawGameVersion)
+        }
+    }
 
     override fun onInitialize() {
         val boostrap = loadObject(

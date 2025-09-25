@@ -55,6 +55,8 @@ dependencies {
     compileOnly(libs.inject.guice)
     compileOnly(libs.slf4j.api)
 
+    implementation(libs.bundles.sentry)
+
     compileOnly(libs.bundles.minecraft.deps)
     compileOnlyApi(libs.bundles.jackson)
     compileOnlyApi(libs.bundles.adventure)

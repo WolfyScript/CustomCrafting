@@ -13,6 +13,7 @@ import com.wolfyscript.customcrafting.spigotlike.recipes.registerCommonRecipeLis
 import com.wolfyscript.customcrafting.spigotlike.recipes.registerDisplayRecipes
 import com.wolfyscript.customcrafting.spigotlike.recipes.registerPlaceholderRecipes
 import com.wolfyscript.scafall.ScafallProvider
+import io.sentry.Sentry
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.slf4j.Logger
@@ -26,6 +27,10 @@ class CustomCraftingPaper(val plugin: Plugin, override val logger: Logger) : Cus
     override val bridge: CustomCrafting = this
 
     override fun onLoad() {
+        Sentry.configureScope { scope ->
+            scope.setContexts("bukkit.plugins", Bukkit.getPluginManager().plugins.associate { plugin -> plugin.name to plugin.description.version })
+        }
+
         configurationManager.load()
 
         resourceManager.resourceLoader.registerListener(recipeManager)

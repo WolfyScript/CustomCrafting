@@ -34,6 +34,11 @@ tasks {
     assemble {
         dependsOn(remapJar)
     }
+    processResources {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        include("**/*.properties")
+        expand("customcrafting_release" to project.version)
+    }
 }
 
 artifacts {

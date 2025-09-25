@@ -49,16 +49,23 @@ tasks {
 
         dependencies {
             include(project(":spigotlike"))
+            libs.bundles.sentry.get().forEach {
+                include(dependency(it))
+            }
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
 
+        minimize()
+//        minimize {
+//            include(dependency(libs.sentry))
+//        }
+
         relocate("org.bstats", "com.wolfyscript.customcrafting.bukkit.metrics")
-    }
-    assemble {
-        dependsOn(reobfJar)
+        relocate("io.sentry", "com.wolfyscript.customcrafting.sentry")
     }
     reobfJar {
-        finalizedBy(jar)
+        dependsOn(shadowJar)
+        finalizedBy("spigot_copy")
         outputJar.set(layout.buildDirectory.file("libs/${archiveName()}.jar"))
     }
 }

@@ -2,8 +2,11 @@ package com.wolfyscript.customcrafting.paper
 
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingBoostrap
+import com.wolfyscript.customcrafting.sentry.initSentry
 import com.wolfyscript.scafall.loader.ScafallLoader
 import com.wolfyscript.scafall.loader.module.Module
+import io.sentry.Sentry
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 class PaperLoaderPlugin : JavaPlugin() {
@@ -11,6 +14,12 @@ class PaperLoaderPlugin : JavaPlugin() {
     private val module: Module<CustomCrafting>
 
     init {
+        initSentry()
+
+        Sentry.configureScope { scope ->
+            scope.setTag("bukkit.version", Bukkit.getVersion())
+        }
+
         val boostrap = ScafallLoader.loadObject(
             CustomCraftingBoostrap::class.java,
             classLoader,

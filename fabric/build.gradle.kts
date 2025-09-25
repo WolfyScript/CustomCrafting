@@ -55,8 +55,12 @@ tasks {
         dependencies {
             include(project(":api"))
             include(project(":common"))
+            libs.bundles.sentry.get().forEach {
+                include(dependency(it))
+            }
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
+        relocate("io.sentry", "com.wolfyscript.customcrafting.sentry")
     }
     java {
 //        withSourcesJar()
