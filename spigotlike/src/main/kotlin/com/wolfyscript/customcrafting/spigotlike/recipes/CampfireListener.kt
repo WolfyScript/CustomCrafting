@@ -4,6 +4,7 @@ import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.toBlockPos
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
@@ -65,7 +66,12 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
             state.getItem(campfireSlot)?.let { it.type == Material.AIR } ?: true
         } ?: return // Cannot place item. No empty slot!
 
-        val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
+        val context = EvaluationContextImpl(
+            event.player.wrap(),
+            block.location.toPreciseGlobal(),
+            block.location.toBlockPos(),
+            state.wrap()
+        )
         val input = RecipeInput.SingleSlotRecipeInput.of(stack.wrap())
         val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
 
@@ -102,7 +108,12 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         }
 
         val source = event.source
-        val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
+        val context = EvaluationContextImpl(
+            null,
+            block.location.toPreciseGlobal(),
+            block.location.toBlockPos(),
+            state.wrap()
+        )
         val input = RecipeInput.SingleSlotRecipeInput.of(source.wrap())
         val data =
             customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)

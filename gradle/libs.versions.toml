@@ -25,7 +25,7 @@ sqlite = "3.50.1.0"
 sentry = "8.22.0"
 
 # cross-platform APIs
-scafall = "alpha0.2.0.0-SNAPSHOT"
+scafall = "alpha0.3.0.0-SNAPSHOT"
 adventure-api = "4.10.1"
 adventure-platform-api = "4.1.0"
 adventure-minimessage = "4.10.0"
