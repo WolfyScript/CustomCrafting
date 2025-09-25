@@ -2,6 +2,7 @@ package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.exceptions.CraftingRecipeException
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
@@ -143,9 +144,11 @@ class CraftingListener(val plugin: Plugin, val customCrafting: CustomCraftingCom
                 Bukkit.getScheduler().runTask(plugin, Runnable { player.updateInventory() })
             }
         } catch (ex: Exception) {
-            customCrafting.logger.error("-------- [Error occurred while crafting Recipe!] --------")
-            ex.printStackTrace()
-            customCrafting.logger.error("-------- [Error occurred while crafting Recipe!] --------")
+            val craftingException = CraftingRecipeException(
+                "Failed to find matching crafting recipe",
+                ex
+            )
+            customCrafting.logger.error("[CustomCrafting] Error while crafting", craftingException)
             craftingDataCache.invalidate(player.uniqueId)
             matrixDataCache.invalidate(player.uniqueId)
             e.inventory.result = ItemStack(Material.AIR)
