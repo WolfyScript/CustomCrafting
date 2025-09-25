@@ -8,6 +8,7 @@ import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.getRecipeTyped
 import com.wolfyscript.scafall.identifier.Key
+import com.wolfyscript.scafall.spigot.api.wrappers.utils.toBlockPos
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
@@ -34,15 +35,19 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingComm
         if (state !is Crafter) {
             return
         }
-        val inventory = state.inventory as CrafterInventory
+        val inventory = state.inventory
 
-        val context = EvaluationContextImpl(null, block.location.toPreciseGlobal())
-        val matrix = CraftingMatrixData.Companion.of(inventory.contents.map { it?.wrap() })
+        val context = EvaluationContextImpl(null, block.location.toPreciseGlobal(), block.location.toBlockPos(), state.wrap())
+        val matrix = CraftingMatrixData.of(inventory.contents.map { it?.wrap() })
         val input = RecipeInput.CraftingRecipeInput.of(matrix)
 
         val previousRecipeKey =
             state.persistentDataContainer.get(previousRecipeContainerKey, PersistentDataType.STRING)?.let {
-                Key.parse(it)
+                try {
+                    Key.parse(it)
+                } catch (_: Exception) {
+                    null
+                }
             }
         val previousRecipe = previousRecipeKey?.let {
             customCrafting.recipeManager.getRecipeTyped(
@@ -67,7 +72,7 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingComm
             state.persistentDataContainer.set(
                 previousRecipeContainerKey,
                 PersistentDataType.STRING,
-                previousRecipeKey.toString()
+                data.recipe.key.toString()
             )
 
             val inventory = state.snapshotInventory
