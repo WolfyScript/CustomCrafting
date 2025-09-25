@@ -23,6 +23,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.CrafterInventory
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.Plugin
+import kotlin.random.Random
 
 class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingCommon) : Listener {
 
@@ -79,6 +80,10 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingComm
             recipe.shrink(input, data, context, 1) { index, new ->
                 inventory.setItem(index, new.unwrapSpigot())
             }
+            recipe.result.runActions(context)
+            val resultStack = recipe.result.compute(data, context, Random)
+            event.result = resultStack.unwrapSpigot()
+
             // Now all calculations are done, so we can update the inventory
             Bukkit.getScheduler().runTask(plugin, Runnable {
                 state.update(true)
