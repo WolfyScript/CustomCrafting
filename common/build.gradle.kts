@@ -35,9 +35,9 @@ tasks {
         dependsOn(remapJar)
     }
     processResources {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
         include("**/*.properties")
         expand("customcrafting_release" to project.version)
+        doNotTrackState("not updated when properties change") // always run the task to stay up-to-date
     }
 }
 
