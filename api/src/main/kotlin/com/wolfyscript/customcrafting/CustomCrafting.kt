@@ -2,25 +2,28 @@ package com.wolfyscript.customcrafting
 
 import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.factories.Factories
-import com.wolfyscript.customcrafting.recipes.RecipeManager
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistries
-import com.wolfyscript.customcrafting.resource.ResourceManager
+import com.wolfyscript.customcrafting.server.CustomCraftingServer
+import com.wolfyscript.scafall.loader.module.Client
+import com.wolfyscript.scafall.loader.module.Module
 import org.slf4j.Logger
 
-interface CustomCrafting {
-
-    companion object {
-        const val PATH_TO_INTERNAL_BOOTSTRAP: String = "com.wolfyscript.customcrafting.InternalBootstrap"
-    }
-
-    val recipeManager: RecipeManager
-
-    val resourceManager: ResourceManager
+/**
+ * The main entry point of the CustomCrafting API.
+ * This API is available as soon as the mod/plugin has been instantiated, across both server and client.
+ *
+ * * [server] The part of the API only available on the Server (Integrated or Dedicated)
+ * * [client] The part of the API only available on the Client
+ */
+interface CustomCrafting : Module<CustomCraftingServer, Client> {
 
     val registries: CustomCraftingRegistries
 
     val configurationManager: ConfigurationManager
 
+    /**
+     * The factories to instantiate objects with platform specific implementations.
+     */
     val factories: Factories
 
     val logger: Logger

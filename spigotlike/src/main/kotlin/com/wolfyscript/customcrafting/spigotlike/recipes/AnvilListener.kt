@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.destroystokyo.paper.event.block.AnvilDamagedEvent
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
@@ -31,7 +31,7 @@ import org.bukkit.plugin.Plugin
 import java.util.UUID
 import kotlin.random.Random
 
-class AnvilListener(val plugin: Plugin, val customCrafting: CustomCraftingCommon) : Listener {
+class AnvilListener(val plugin: Plugin, val customCrafting: CustomCrafting) : Listener {
 
     private val recipeCache = Caffeine.newBuilder().build<UUID, RecipeEvaluationResult<RecipeEvaluationResult.RepairingRecipeData, CustomRecipeRepairing>>()
 
@@ -49,7 +49,7 @@ class AnvilListener(val plugin: Plugin, val customCrafting: CustomCraftingCommon
         val context = EvaluationContextImpl(player.wrap(), inventory.location?.toPreciseGlobal())
         val input = RecipeInput.RepairingRecipeInput.of(base.wrap(), addition?.wrap(), event.view.renameText)
 
-        val data = customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.repairing.resolveOrThrow(), input, context) ?: return
+        val data = customCrafting.server!!.recipeManager.evaluateRecipesOfType(RecipeTypes.repairing.resolveOrThrow(), input, context) ?: return
         val recipe = data.recipe.value ?: return
 
         recipeCache.put(player.uniqueId, data)

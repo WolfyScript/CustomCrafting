@@ -100,7 +100,7 @@ interface SourceSettings {
                         val finalPath = if (path.startsWith("/")) {
                             path
                         } else {
-                            Path(CustomCraftingProvider.get().resourceManager.resourceLoader.directory.path, path)
+                            Path(CustomCraftingProvider.get().server!!.resourceManager.resourceLoader.directory.path, path)
                         }
                         return "jdbc:h2:$finalPath"
                     }
@@ -167,7 +167,7 @@ interface SourceSettings {
                         val finalPath = if (path.startsWith("/")) {
                             path
                         } else {
-                            Path(CustomCraftingProvider.get().resourceManager.resourceLoader.directory.path, path)
+                            Path(CustomCraftingProvider.get().server!!.resourceManager.resourceLoader.directory.path, path)
                         }
                         return "jdbc:sqlite:$finalPath"
                     }

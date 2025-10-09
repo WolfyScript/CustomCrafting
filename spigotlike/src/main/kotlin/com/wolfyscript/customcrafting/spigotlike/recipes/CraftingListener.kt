@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.exceptions.CraftingRecipeException
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
@@ -34,9 +34,9 @@ import org.bukkit.plugin.Plugin
 import java.util.UUID
 import kotlin.random.Random
 
-class CraftingListener(val plugin: Plugin, val customCrafting: CustomCraftingCommon) : Listener {
+class CraftingListener(val plugin: Plugin, val customCrafting: CustomCrafting) : Listener {
 
-    val recipeManager = customCrafting.recipeManager
+    val recipeManager = customCrafting.server!!.recipeManager
 
     /**
      * Used to cache the state of the crafting grid for a player.
@@ -130,7 +130,7 @@ class CraftingListener(val plugin: Plugin, val customCrafting: CustomCraftingCom
 
                 val recipeKey = recipe.key.toScafall()
                 //Check for custom recipe that overrides the vanilla recipe
-                if (recipeManager.isRecipeDisabled(recipeKey) || customCrafting.recipeManager.getRecipe(
+                if (recipeManager.isRecipeDisabled(recipeKey) || recipeManager.getRecipe(
                         recipeKey
                     ) != null
                 ) {

@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
@@ -32,7 +32,7 @@ import org.bukkit.plugin.Plugin
 import java.util.UUID
 import kotlin.random.Random
 
-class SmithingListener(val plugin: Plugin, val customCrafting: CustomCraftingCommon) : Listener {
+class SmithingListener(val plugin: Plugin, val customCrafting: CustomCrafting) : Listener {
 
     val recipeCache =
         Caffeine.newBuilder().build<UUID, RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeSmithing>>()
@@ -64,7 +64,7 @@ class SmithingListener(val plugin: Plugin, val customCrafting: CustomCraftingCom
         if (resultStack != null && resultStack.type != Material.AIR) {
             // Check for disabled vanilla recipes
             if (Bukkit.getRecipesFor(resultStack).any {
-                    customCrafting.recipeManager.isRecipeDisabled((it as Keyed).key.toScafall())
+                    customCrafting.server!!.recipeManager.isRecipeDisabled((it as Keyed).key.toScafall())
                 }) {
                 event.result = null
             }
@@ -75,7 +75,7 @@ class SmithingListener(val plugin: Plugin, val customCrafting: CustomCraftingCom
         val baseStack = inventory.getItem(1)
         val additionStack = inventory.getItem(2)
 
-        val data = customCrafting.recipeManager.evaluateRecipesOfType(
+        val data = customCrafting.server!!.recipeManager.evaluateRecipesOfType(
             RecipeTypes.smithing.resolveOrThrow(),
             RecipeInput.SmithingRecipeInput.of(
                 templateStack?.wrap(), baseStack?.wrap(), additionStack?.wrap()

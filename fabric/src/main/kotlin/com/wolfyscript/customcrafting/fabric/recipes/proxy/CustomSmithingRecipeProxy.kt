@@ -66,7 +66,7 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
     }
 
     override fun matches(smithingRecipeInput: SmithingRecipeInput, level: Level): Boolean {
-        if (CustomCraftingProvider.get().recipeManager.isRecipeDisabled(customRecipe.key)) { return false }
+        if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(customRecipe.key)) { return false }
         val recipe = customRecipe.value ?: return false
         if (smithingRecipeInput !is RecipeInputSmithingCustomExt) return false
         val customInput = smithingRecipeInput.customInput ?: return false
@@ -81,7 +81,7 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
         input: SmithingRecipeInput,
         registries: HolderLookup.Provider,
     ): ItemStack {
-        if (CustomCraftingProvider.get().recipeManager.isRecipeDisabled(customRecipe.key)) { return ItemStack.EMPTY }
+        if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(customRecipe.key)) { return ItemStack.EMPTY }
         val recipe = customRecipe.value ?: return ItemStack.EMPTY
         if (input !is RecipeInputSmithingCustomExt) return ItemStack.EMPTY
         val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
@@ -130,7 +130,7 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
 
             private fun recipeFromLocation(recipeId: ResourceLocation): CustomSmithingRecipeProxy? {
                 val key = recipeId.toScafall()
-                val recipe = CustomCraftingProvider.get().recipeManager.getRecipeTyped(key, RecipeTypes.smithing.resolveOrThrow()) ?: return null
+                val recipe = CustomCraftingProvider.get().server!!.recipeManager.getRecipeTyped(key, RecipeTypes.smithing.resolveOrThrow()) ?: return null
                 return CustomSmithingRecipeProxy(recipe)
             }
         }

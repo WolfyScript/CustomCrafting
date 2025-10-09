@@ -152,7 +152,7 @@ fun CustomRecipeSmithing.toPlaceholder(key: Key): SmithingTransformRecipe? {
         Optional.ofNullable(addition?.toMinecraft()),
         TransmuteResult(stack.itemHolder, stack.count, stack.componentsPatch)
     )
-    ScafallProvider.get().server.minecraftServer.recipeManager.addRecipe(RecipeHolder(key.toMcPlaceholderRecipeKey(), recipe))
+    ScafallProvider.get().server?.minecraftServer?.recipeManager?.addRecipe(RecipeHolder(key.toMcPlaceholderRecipeKey(), recipe))
 
     return null
 }

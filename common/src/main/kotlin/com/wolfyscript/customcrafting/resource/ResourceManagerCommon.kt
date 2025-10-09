@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.resource
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
@@ -18,7 +18,7 @@ import com.wolfyscript.jackson.dataformat.hocon.HoconMapper
 import com.wolfyscript.scafall.config.jackson.registerScafallModule
 import java.io.File
 
-class ResourceManagerCommon(val customCrafting: CustomCraftingCommon, val directory: File) : ResourceManager {
+class ResourceManagerCommon(val customCrafting: CustomCrafting, val directory: File) : ResourceManager {
 
     companion object {
         const val RESOURCES_PATH = "resources"

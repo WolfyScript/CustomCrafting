@@ -27,7 +27,7 @@ fun CraftingFormula.Shaped.toShapedRecipePattern(): ShapedRecipePattern {
 }
 
 private fun RecipeReference<CustomRecipeCrafting>.matches(recipeInput: CraftingInput, level: Level): Boolean {
-    if (CustomCraftingProvider.get().recipeManager.isRecipeDisabled(key)) { return false }
+    if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(key)) { return false }
     val recipe = value ?: return false
     if (recipeInput !is RecipeInputCraftingCustomExt) { return false }
     val data = recipeInput.customInput ?: return false
@@ -39,7 +39,7 @@ private fun RecipeReference<CustomRecipeCrafting>.matches(recipeInput: CraftingI
 }
 
 private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: CraftingInput, provider: HolderLookup.Provider): ItemStack {
-    if (CustomCraftingProvider.get().recipeManager.isRecipeDisabled(key)) { return ItemStack.EMPTY }
+    if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(key)) { return ItemStack.EMPTY }
     val recipe = value ?: return ItemStack.EMPTY
     if (recipeInput !is RecipeInputCraftingCustomExt) { return ItemStack.EMPTY }
     val resultInfo = recipeInput.resultInfo ?: return ItemStack.EMPTY

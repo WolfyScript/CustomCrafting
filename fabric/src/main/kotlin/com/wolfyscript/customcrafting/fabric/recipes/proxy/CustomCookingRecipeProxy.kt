@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level
 import kotlin.random.Random
 
 fun RecipeReference<CustomRecipeCooking>.matches(input: SingleRecipeInput, level: Level): Boolean {
-    if (CustomCraftingProvider.get().recipeManager.isRecipeDisabled(key)) { return false }
+    if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(key)) { return false }
     val recipe = value ?: return false
     if (input !is RecipeInputSingleSlotCustomExt) return false
     val data = input.customInput ?: return false
@@ -31,7 +31,7 @@ fun RecipeReference<CustomRecipeCooking>.assemble(
     input: SingleRecipeInput,
     provider: HolderLookup.Provider,
 ): ItemStack? {
-    if (CustomCraftingProvider.get().recipeManager.isRecipeDisabled(key)) { return ItemStack.EMPTY }
+    if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(key)) { return ItemStack.EMPTY }
     val recipe = value ?: return null
     if (input !is RecipeInputSingleSlotCustomExt) return null
     val resultInfo = input.resultInfo ?: return null

@@ -52,7 +52,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
         )
 
         val customRecipeData =
-            customCrafting.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
+            customCrafting.server!!.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
         if (customRecipeData != null && customRecipeData.recipe.value != null) {
             event.totalCookTime = customRecipeData.recipe.value!!.processing.processingTime
 
@@ -255,7 +255,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
             } ?: emptyMap()
 
             for ((key, count) in usedRecipes) {
-                customCrafting.recipeManager.getRecipe(key)?.let { recipe ->
+                customCrafting.server!!.recipeManager.getRecipe(key)?.let { recipe ->
                     if (recipe !is CustomRecipeCooking) {
                         return@let
                     }

@@ -6,7 +6,6 @@ import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.resources.SourceSettings
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
-import com.wolfyscript.scafall.compat.DependencyResolver
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
 import java.io.IOException
@@ -58,7 +57,7 @@ class DirectorySource(
             val key = relative.toKey(Key.CUSTOMCRAFTING_NAMESPACE)
             customCrafting.logger.info("Loading recipe: $key")
             try {
-                val recipe = customCrafting.resourceManager.jacksonObjectMapper
+                val recipe = customCrafting.server!!.resourceManager.jacksonObjectMapper
                     .reader(injectableValues)
                     .readValue(file.toFile(), CustomRecipe::class.java)
 
@@ -78,7 +77,7 @@ class DirectorySource(
         if (destFile.getParentFile().exists() || destFile.getParentFile().mkdirs()) {
             try {
                 if (destFile.isFile() || destFile.createNewFile()) {
-                    customCrafting.resourceManager.jacksonObjectMapper.writer(DefaultPrettyPrinter())
+                    customCrafting.server!!.resourceManager.jacksonObjectMapper.writer(DefaultPrettyPrinter())
                         .writeValue(destFile, recipe)
                     return Result.success(true)
                 }

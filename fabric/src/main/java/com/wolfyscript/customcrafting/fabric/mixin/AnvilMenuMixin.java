@@ -59,7 +59,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
         var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().location())));
         var input = RecipeInput.RepairingRecipeInput.Companion.of(MinecraftWrapperKt.wrap(getSlot(0).getItem()), MinecraftWrapperKt.wrap(getSlot(1).getItem()), itemName);
 
-        var data = customcrafting.getRecipeManager().evaluateRecipesOfType(RecipeTypes.INSTANCE.getRepairing().resolveOrThrow(), input, context);
+        var data = customcrafting.getServer().getRecipeManager().evaluateRecipesOfType(RecipeTypes.INSTANCE.getRepairing().resolveOrThrow(), input, context);
         if (data == null || data.getRecipe().getValue() == null) {
             return;
         }

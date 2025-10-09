@@ -25,8 +25,9 @@ fun initSentry() {
         null
     )
     if (sentryAppender != null) {
+        // have to add the Log4J Appender to the existing logger to watch for uncaught exceptions.
+        // it's a bit tricky (and officially unsupported), but it's the only way and *shouldn't* conflict with anything
         sentryAppender.start()
-
         val logCtx = LoggerContext.getContext(false)
         val logConfig = logCtx.configuration
         logConfig.addAppender(sentryAppender)
@@ -40,8 +41,10 @@ fun initSentry() {
         it.release = CustomCraftingProperties.release
         it.isSendDefaultPii = false // don't send personal identifiable information (ip, computer name, etc.)
         it.tracesSampleRate = null // make sure tracing is always disabled. we don't care about performance monitoring.
-        it.addInAppInclude("com.wolfyscript")
+        it.addInAppInclude("com.wolfyscript") // we are capturing errors related to any project of mine, just to make sure none are lost.
         it.isEnableUncaughtExceptionHandler = true
+
+        // just some debug stuff, should be disabled in production!
         it.isDebug = false
         it.setLogger(SystemOutLogger())
 

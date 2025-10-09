@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
-import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
@@ -25,7 +25,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.Plugin
 import kotlin.random.Random
 
-class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingCommon) : Listener {
+class CrafterListener(val plugin: Plugin, val customCrafting: CustomCrafting) : Listener {
 
     private val previousRecipeContainerKey = NamespacedKey("customcrafting", "previous_custom_recipe")
 
@@ -51,7 +51,7 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingComm
                 }
             }
         val previousRecipe = previousRecipeKey?.let {
-            customCrafting.recipeManager.getRecipeTyped(
+            customCrafting.server!!.recipeManager.getRecipeTyped(
                 it,
                 RecipeTypes.crafting.resolveOrThrow()
             )
@@ -60,7 +60,7 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingComm
         val data = if (previousRecipe != null) {
             previousRecipe.value?.evaluate(input, context)?.let { RecipeEvaluationResultImpl(previousRecipe, it) }
         } else {
-            customCrafting.recipeManager.evaluateRecipesOfType(
+            customCrafting.server!!.recipeManager.evaluateRecipesOfType(
                 RecipeTypes.crafting.resolveOrThrow(),
                 input,
                 context
@@ -102,8 +102,8 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCraftingComm
         }
 
         // Check for custom recipe that overrides the vanilla recipe
-        if (customCrafting.recipeManager.isRecipeDisabled(bukkitRecipe.key.toScafall()) ||
-            customCrafting.recipeManager.getRecipe(bukkitRecipe.key.toScafall()) != null) {
+        if (customCrafting.server!!.recipeManager.isRecipeDisabled(bukkitRecipe.key.toScafall()) ||
+            customCrafting.server!!.recipeManager.getRecipe(bukkitRecipe.key.toScafall()) != null) {
             // Recipe is disabled or it is a custom recipe!
             event.isCancelled = true
             return

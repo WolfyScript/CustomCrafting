@@ -1,10 +1,10 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
-import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.CustomCrafting
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.PluginManager
 
-fun PluginManager.registerCommonRecipeListeners(plugin: Plugin, customCrafting: CustomCraftingCommon) {
+fun PluginManager.registerCommonRecipeListeners(plugin: Plugin, customCrafting: CustomCrafting) {
     registerEvents(AnvilListener(plugin, customCrafting), plugin)
     registerEvents(CampfireListener(customCrafting), plugin)
     registerEvents(CauldronListener(customCrafting), plugin)

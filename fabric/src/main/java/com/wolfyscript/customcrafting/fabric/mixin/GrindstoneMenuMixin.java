@@ -65,7 +65,7 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
 
         var input = RecipeInput.GrindingRecipeInput.Companion.of(MinecraftWrapperKt.wrap(repairSlots.getItem(0)), MinecraftWrapperKt.wrap(repairSlots.getItem(1)));
 
-        var data = customcrafting.getRecipeManager().evaluateRecipesOfType(RecipeTypes.INSTANCE.getGrinding().resolveOrThrow(), input, context);
+        var data = customcrafting.getServer().getRecipeManager().evaluateRecipesOfType(RecipeTypes.INSTANCE.getGrinding().resolveOrThrow(), input, context);
         if (data == null || data.getRecipe().getValue() == null) {
             return;
         }

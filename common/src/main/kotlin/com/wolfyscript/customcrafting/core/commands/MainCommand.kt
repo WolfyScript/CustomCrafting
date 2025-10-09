@@ -1,7 +1,6 @@
 package com.wolfyscript.customcrafting.core.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
@@ -24,7 +23,7 @@ object MainCommand {
                 .then(Commands.literal("backup").executes { ctx ->
                     val customCrafting = CustomCraftingProvider.get()
                     customCrafting.logger.info("Create backup")
-                    customCrafting.resourceManager.backupManager.createBackup()
+                    customCrafting.server!!.resourceManager.backupManager.createBackup()
 
                     ctx.source.sendSuccess({ Component.literal("Creating backup...") }, false)
 

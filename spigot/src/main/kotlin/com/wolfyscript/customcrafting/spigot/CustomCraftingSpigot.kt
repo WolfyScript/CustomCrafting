@@ -1,57 +1,31 @@
 package com.wolfyscript.customcrafting.spigot
 
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.CustomCraftingBoostrap
 import com.wolfyscript.customcrafting.CustomCraftingCommon
-import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
-import com.wolfyscript.customcrafting.core.commands.CCCommands
-import com.wolfyscript.customcrafting.resource.ResourceManager
-import com.wolfyscript.customcrafting.resource.ResourceManagerCommon
-import com.wolfyscript.customcrafting.spigotlike.recipes.registerCommonRecipeListeners
-import com.wolfyscript.customcrafting.spigotlike.recipes.registerDisplayRecipes
-import com.wolfyscript.customcrafting.spigotlike.recipes.registerPlaceholderRecipes
-import com.wolfyscript.scafall.ScafallProvider
+import com.wolfyscript.customcrafting.server.CustomCraftingServer
+import com.wolfyscript.customcrafting.spigotlike.CustomCraftingServerSpigotLike
 import io.sentry.Sentry
 import org.bukkit.Bukkit
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.Server
+import org.bukkit.plugin.Plugin
 import org.slf4j.Logger
 
-class CustomCraftingSpigot(
-    val plugin: JavaPlugin,
-    override val logger: Logger,
-) :
-    CustomCraftingCommon(), CustomCraftingBoostrap.CustomCraftingModule {
+class CustomCraftingSpigot(val plugin: Plugin, override val logger: Logger) : CustomCraftingCommon() {
 
-    override val bridge: CustomCrafting = this
+    override val configurationManager = ConfigurationManagerImpl(this, plugin.dataFolder)
 
-    override val configurationManager: ConfigurationManager =
-        ConfigurationManagerImpl(this, plugin.dataFolder)
-    override val resourceManager: ResourceManager = ResourceManagerCommon(this, plugin.dataFolder)
-
-    override fun onLoad() {
+    override fun onInit() {
         Sentry.configureScope { scope ->
-            scope.setContexts("bukkit.plugins", Bukkit.getPluginManager().plugins.associate { plugin -> plugin.name to plugin.description.version })
+            scope.setContexts(
+                "bukkit.plugins",
+                Bukkit.getPluginManager().plugins.associate { plugin -> plugin.name to plugin.description.version })
         }
 
         configurationManager.load()
-        resourceManager.resourceLoader.registerListener(recipeManager)
     }
 
-    override fun onEnable() {
-        ScafallProvider.get().dependencyManager.onAllDependenciesInitialized {
-            resourceManager.loadResources()
-            registerPlaceholderRecipes(recipeManager.recipes())
-            registerDisplayRecipes(recipeManager.recipes())
-        }
-
-        CCCommands.registerCommands(ScafallProvider.get().server.minecraftServer.commands.dispatcher)
-
-        Bukkit.getPluginManager().registerCommonRecipeListeners(plugin, this)
-    }
-
-    override fun onUnload() {
-
+    fun initServer(bukkitServer: Server) {
+        server = CustomCraftingServerSpigot(CustomCraftingServerSpigotLike(this, plugin))
     }
 
 }

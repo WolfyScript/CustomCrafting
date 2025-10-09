@@ -43,7 +43,7 @@ class StonecutterListener(val customCrafting: CustomCrafting) : Listener {
             return
         }
         val key = bukkitRecipe.originalRecipeKey()
-        val recipe = customCrafting.recipeManager.getRecipeTyped(key, RecipeTypes.stonecutting.resolveOrThrow())?.value ?: return
+        val recipe = customCrafting.server!!.recipeManager.getRecipeTyped(key, RecipeTypes.stonecutting.resolveOrThrow())?.value ?: return
         event.isCancelled = true
         val source = event.stonecutterInventory.getItem(INPUT_SLOT) ?: ItemStack(Material.AIR)
         val context = EvaluationContextImpl(event.player.wrap(), event.player.location.toPreciseGlobal())

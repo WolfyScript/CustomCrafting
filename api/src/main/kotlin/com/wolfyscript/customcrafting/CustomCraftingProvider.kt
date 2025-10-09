@@ -1,7 +1,5 @@
 package com.wolfyscript.customcrafting
 
-import com.wolfyscript.scafall.Scafall
-import com.wolfyscript.scafall.ScafallProvider
 import org.jetbrains.annotations.ApiStatus
 
 class CustomCraftingProvider {

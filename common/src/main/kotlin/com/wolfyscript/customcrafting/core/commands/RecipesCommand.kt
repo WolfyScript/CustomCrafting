@@ -3,8 +3,8 @@ package com.wolfyscript.customcrafting.core.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.recipes.RecipeManagerCommon
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.adventure.deser
@@ -26,19 +26,19 @@ object RecipesCommand {
                 Commands.literal(alias).requires { it.hasPermission(ADMIN_LVL) }.apply {
                     then(Commands.literal("reload").executes { reload(CustomCraftingProvider.get()) })
                     then(Commands.literal("status").executes { ctx ->
-                        printStatus(ctx, CustomCraftingProvider.get() as CustomCraftingCommon)
+                        printStatus(ctx, CustomCraftingProvider.get())
                         return@executes SUCCESS_RESULT
                     })
                     then(
                         Commands.literal("disable")
                             .then(Commands.argument("recipe", ResourceLocationArgument.id()).executes { ctx ->
                                 val recipeKey = ResourceLocationArgument.getId(ctx, "recipe").toScafall()
-                                CustomCraftingProvider.get().recipeManager.disableRecipe(recipeKey)
+                                CustomCraftingProvider.get().server!!.recipeManager.disableRecipe(recipeKey)
 
                                 ctx.source.sendSuccess({ Component.literal("Disabled Recipe $recipeKey") }, false)
                                 return@executes SUCCESS_RESULT
                             }.suggests { ctx, builder ->
-                                (CustomCraftingProvider.get() as CustomCraftingCommon).recipeManager.recipesLoadedByCC
+                                (CustomCraftingProvider.get().server!!.recipeManager as RecipeManagerCommon).recipesLoadedByCC
                                     .map { it.toString() }
                                     .filter { it.startsWith(builder.remaining) }
                                     .forEach { builder.suggest(it) }
@@ -50,12 +50,12 @@ object RecipesCommand {
                         Commands.literal("enable")
                             .then(Commands.argument("recipe", ResourceLocationArgument.id()).executes { ctx ->
                                 val recipeKey = ResourceLocationArgument.getId(ctx, "recipe").toScafall()
-                                CustomCraftingProvider.get().recipeManager.enableRecipe(recipeKey)
+                                CustomCraftingProvider.get().server!!.recipeManager.enableRecipe(recipeKey)
 
                                 ctx.source.sendSuccess({ Component.literal("Enabled Recipe $recipeKey") }, false)
                                 return@executes SUCCESS_RESULT
                             }.suggests { ctx, builder ->
-                                CustomCraftingProvider.get().recipeManager.disabledRecipes
+                                CustomCraftingProvider.get().server!!.recipeManager.disabledRecipes
                                     .map { it.toString() }
                                     .filter { it.startsWith(builder.remaining) }
                                     .forEach { builder.suggest(it) }
@@ -70,13 +70,13 @@ object RecipesCommand {
 
     private fun reload(customCrafting: CustomCrafting): Int {
         ScafallProvider.get().scheduler.asyncTask(ScafallProvider.get().modInfo) {
-            customCrafting.resourceManager.resourceLoader.loadResources()
+            customCrafting.server!!.resourceManager.resourceLoader.loadResources()
         }
         return SUCCESS_RESULT
     }
 
-    private fun printStatus(ctx: CommandContext<CommandSourceStack>, customCrafting: CustomCraftingCommon) {
-        val recipeManager = customCrafting.recipeManager
+    private fun printStatus(ctx: CommandContext<CommandSourceStack>, customCrafting: CustomCrafting) {
+        val recipeManager = customCrafting.server!!.recipeManager as RecipeManagerCommon
 
         val totalRecipeCount = recipeManager.recipes().count()
         val ccRecipesCount = recipeManager.recipesLoadedByCC.size

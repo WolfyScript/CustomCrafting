@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.wolfyscript.customcrafting.CustomCraftingCommon
+import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.recipes.RecipeManager.Companion.LOG_PREFIX
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
@@ -23,7 +23,7 @@ import kotlin.io.path.copyTo
 import kotlin.io.path.pathString
 import kotlin.io.path.walk
 
-class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeManager, ResourceListener {
+class RecipeManagerCommon(val customCrafting: CustomCrafting) : RecipeManager, ResourceListener {
 
     private var index: RecipeIndex = RecipeIndex(emptyList())
 
@@ -134,7 +134,7 @@ class RecipeManagerCommon(val customCrafting: CustomCraftingCommon) : RecipeMana
             // TODO: verify recipe
             recipesLoadedByCC.add(loadedRecipe.key)
         }
-        customCrafting.recipeManager.registerOrUpdateRecipes(awaitingVerificationRecipes)
+        customCrafting.server?.recipeManager?.registerOrUpdateRecipes(awaitingVerificationRecipes)
     }
 
     override fun <I : RecipeInput, D : RecipeEvaluationResult.Data, T : CustomRecipe<I, D>> evaluateRecipesOfType(
