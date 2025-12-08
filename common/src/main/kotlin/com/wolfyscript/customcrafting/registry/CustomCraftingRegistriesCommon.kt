@@ -2,6 +2,12 @@ package com.wolfyscript.customcrafting.registry
 
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.actions.CommandResultAction
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumers
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatchers
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainder
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainders
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.Registry

@@ -4,7 +4,7 @@ import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 
 /**
- * A list of ItemStacks and/or Tags that an [Ingredient] accepts or a [RecipeResult] can choose from.
+ * A list of ItemStacks and/or Tags that an [com.wolfyscript.customcrafting.recipes.ingredient.Ingredient] accepts or a [RecipeResult] can choose from.
  */
 interface RecipeChoices {
 

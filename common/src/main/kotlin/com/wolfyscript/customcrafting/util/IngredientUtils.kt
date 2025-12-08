@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.util
 
-import com.wolfyscript.customcrafting.recipes.Ingredient
-import com.wolfyscript.customcrafting.recipes.IngredientMatcher
+import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.unwrap

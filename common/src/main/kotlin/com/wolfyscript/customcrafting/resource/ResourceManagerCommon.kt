@@ -12,6 +12,7 @@ import com.wolfyscript.customcrafting.recipes.grinding.DefaultProcessGrindingImp
 import com.wolfyscript.customcrafting.recipes.grinding.IngredientEnchantRemovalProcedureImpl
 import com.wolfyscript.customcrafting.recipes.grinding.ProcedureEnchantRemovalImpl
 import com.wolfyscript.customcrafting.recipes.grinding.ProcedureRepairCostImpl
+import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import com.wolfyscript.customcrafting.recipes.process.*
 import com.wolfyscript.customcrafting.recipes.repair.*
 import com.wolfyscript.jackson.dataformat.hocon.HoconMapper

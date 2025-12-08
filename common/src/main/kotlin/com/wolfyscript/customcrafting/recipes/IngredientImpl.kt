@@ -1,6 +1,10 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainder
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.unwrap

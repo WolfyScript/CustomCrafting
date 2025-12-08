@@ -5,9 +5,9 @@ import com.wolfyscript.customcrafting.editor.RecipeStore
 import com.wolfyscript.customcrafting.editor.conditions.ConditionStore
 import com.wolfyscript.customcrafting.editor.result.ResultActionStore
 import com.wolfyscript.customcrafting.editor.result.TransmuterStore
-import com.wolfyscript.customcrafting.recipes.IngredientConsumer
-import com.wolfyscript.customcrafting.recipes.IngredientMatcher
-import com.wolfyscript.customcrafting.recipes.IngredientRemainder
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainder
 import com.wolfyscript.customcrafting.recipes.conditions.Condition
 import com.wolfyscript.customcrafting.recipes.RecipeType
 import com.wolfyscript.customcrafting.recipes.ResultAction
@@ -50,17 +50,17 @@ object CustomCraftingRegistryTypes {
     val resultActions = create<Class<out ResultAction>>("types/recipe/result/actions")
 
     /**
-     * [IngredientConsumers][com.wolfyscript.customcrafting.recipes.IngredientConsumers]
+     * [IngredientConsumers][com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumers]
      */
     val ingredientConsumers = create<Class<out IngredientConsumer>>("types/recipe/ingredient/consumers")
 
     /**
-     * [IngredientMatchers][com.wolfyscript.customcrafting.recipes.IngredientMatchers]
+     * [IngredientMatchers][com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatchers]
      */
     val ingredientMatchers = create<Class<out IngredientMatcher>>("types/recipe/ingredient/matchers")
 
     /**
-     * [IngredientRemainders][com.wolfyscript.customcrafting.recipes.IngredientRemainders]
+     * [IngredientRemainders][com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainders]
      */
     val ingredientRemainders = create<Class<out IngredientRemainder>>("types/recipe/ingredient/remainders")
 

@@ -2,6 +2,7 @@ package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.*
+import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.util.ArrayListDeque
 import org.apache.commons.lang3.ArrayUtils

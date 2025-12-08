@@ -1,9 +1,11 @@
-package com.wolfyscript.customcrafting.recipes
+package com.wolfyscript.customcrafting.recipes.ingredient
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
+import com.wolfyscript.customcrafting.recipes.EvaluationContext
+import com.wolfyscript.customcrafting.recipes.RecipeItemModifier
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.items.ItemStackRef

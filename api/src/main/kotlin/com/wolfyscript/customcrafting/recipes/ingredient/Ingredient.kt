@@ -1,5 +1,7 @@
-package com.wolfyscript.customcrafting.recipes
+package com.wolfyscript.customcrafting.recipes.ingredient
 
+import com.wolfyscript.customcrafting.recipes.EvaluationContext
+import com.wolfyscript.customcrafting.recipes.RecipeChoices
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
@@ -28,7 +30,7 @@ interface Ingredient {
     /**
      * Matches this ingredient against the given stack.
      *
-     * @return The matching [ItemStackRef] from the ingredient choices; or null if none match
+     * @return The matching [com.wolfyscript.scafall.items.ItemStackRef] from the ingredient choices; or null if none match
      */
     fun match(stack: ScafallItemStack): ItemStackRef?
 

@@ -5,6 +5,7 @@ import com.wolfyscript.customcrafting.recipes.data.GrindingRecipeDataImpl
 import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding
 
 class CustomRecipeGrindingImpl(

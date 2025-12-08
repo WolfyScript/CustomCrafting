@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.recipes
+package com.wolfyscript.customcrafting.recipes.ingredient
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes

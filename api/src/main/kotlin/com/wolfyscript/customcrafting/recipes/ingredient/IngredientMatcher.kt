@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.recipes
+package com.wolfyscript.customcrafting.recipes.ingredient
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
