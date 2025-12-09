@@ -1,7 +1,6 @@
 package com.wolfyscript.customcrafting.resource
 
 import com.wolfyscript.customcrafting.configuration.resources.SourceSettings
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.scafall.identifier.Key
 
 /**
@@ -15,26 +14,27 @@ interface Source {
 
     val settings: SourceSettings
 
-    fun load(accept: (recipe: LoadedRecipe) -> Unit)
+    fun <T: Any> load(type: DataType<T>, accept: (value: LoadedObject<T>) -> Unit)
 
     /**
-     * Tries to save the recipe to this destination.
+     * Tries to save the value to this destination.
      *
-     * @return A Result of whether the recipe was stored; or an exception when an error occurred.
+     * @return A Result of whether the value was stored; or an exception when an error occurred.
      */
-    fun save(key: Key, recipe: CustomRecipe<*, *>): Result<Boolean>
+    fun <T: Any> save(type: DataType<T>, key: Key, value: T): Result<Boolean>
 
     /**
-     * Tries to delete the recipe from this destination.
+     * Tries to delete the value from this destination.
      *
-     * @return A Result of whether the recipe was deleted; or an exception when an error occurred.
+     * @return A Result of whether the value was deleted; or an exception when an error occurred.
      */
-    fun delete(key: Key, recipe: CustomRecipe<*, *>): Result<Boolean>
+    fun delete(type: DataType<Any>, key: Key): Result<Boolean>
 
     interface Filter {
 
-        fun accepts(key: Key, recipe: CustomRecipe<*, *>) : Boolean
+        fun accepts(key: Key) : Boolean
 
     }
 
 }
+

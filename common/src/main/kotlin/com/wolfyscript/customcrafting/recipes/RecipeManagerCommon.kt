@@ -5,7 +5,8 @@ import com.wolfyscript.customcrafting.recipes.RecipeManager.Companion.LOG_PREFIX
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.resource.LoadedRecipe
+import com.wolfyscript.customcrafting.resource.DataType
+import com.wolfyscript.customcrafting.resource.LoadedObject
 import com.wolfyscript.customcrafting.resource.ResourceListener
 import com.wolfyscript.customcrafting.resource.ResourceLoader
 import com.wolfyscript.scafall.ScafallProvider
@@ -38,7 +39,7 @@ class RecipeManagerCommon(val customCrafting: CustomCrafting) : RecipeManager, R
         }
     val backingDisabledRecipes: MutableSet<Key> = ObjectOpenHashSet()
 
-    val awaitingVerificationRecipes: MutableList<LoadedRecipe> = mutableListOf()
+    val awaitingVerificationRecipes: MutableList<LoadedObject<CustomRecipe<*,*>>> = mutableListOf()
     val invalidRecipes: MutableList<VerificationResult<CustomRecipe<*, *>>> = mutableListOf()
     val scafall = ScafallProvider.get()
 
@@ -95,8 +96,8 @@ class RecipeManagerCommon(val customCrafting: CustomCrafting) : RecipeManager, R
      */
     override fun onInitialLoad(resourceLoader: ResourceLoader) {
         resourceLoader.sources.forEach { dest ->
-            dest.load {
-                customCrafting.logger.info("${LOG_PREFIX}loaded: ${it.key} -> ${it.recipe}")
+            dest.load(DataType.Recipes) {
+                customCrafting.logger.info("${LOG_PREFIX}loaded: ${it.key} -> ${it.value}")
                 awaitingVerificationRecipes.add(it)
             }
         }
@@ -172,7 +173,7 @@ class RecipeManagerCommon(val customCrafting: CustomCrafting) : RecipeManager, R
         return index.get(key)
     }
 
-    override fun registerOrUpdateRecipes(recipes: Collection<LoadedRecipe>) {
+    override fun registerOrUpdateRecipes(recipes: Collection<LoadedObject<CustomRecipe<*,*>>>) {
         index = index.registerOrUpdateAll(recipes)
     }
 

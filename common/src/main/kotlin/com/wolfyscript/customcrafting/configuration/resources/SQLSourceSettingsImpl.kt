@@ -20,6 +20,6 @@ class SQLSourceSettingsImpl(
         customCrafting: CustomCrafting,
         resourceLoader: ResourceLoader,
     ): Source {
-        return SQLSource(customCrafting, resourceLoader, this)
+        return SQLSource(customCrafting, this)
     }
 }

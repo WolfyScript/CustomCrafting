@@ -1,6 +1,5 @@
 package com.wolfyscript.customcrafting.resource
 
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
 
@@ -28,11 +27,11 @@ interface ResourceLoader {
      * Stores the recipe to the destinations.
      * To which destination the recipe is stored depends on the configuration.
      */
-    fun save(key: Key, recipe: CustomRecipe<*,*>)
+    fun <T: Any> save(type: DataType<T>, key: Key, value: T)
 
     /**
      * Deletes the recipe from every destination.
      */
-    fun delete(key: Key, recipe: CustomRecipe<*,*>)
+    fun delete(type: DataType<Any>, key: Key)
 
 }

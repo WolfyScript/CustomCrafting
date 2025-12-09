@@ -2,7 +2,6 @@ package com.wolfyscript.customcrafting.resource
 
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.resources.SourceSettings
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.scafall.identifier.Key
 
 class DestinationFilter(
@@ -13,7 +12,7 @@ class DestinationFilter(
     private val includesFilters = settings.includes?.let { IncludesFilter(it) }
     private val excludesFilters = settings.excludes?.let { IncludesFilter(it) }
 
-    override fun accepts(key: Key, recipe: CustomRecipe<*, *>): Boolean {
+    override fun accepts(key: Key): Boolean {
         if (includesFilters != null && !includesFilters.matches(key)) {
             return false
         }

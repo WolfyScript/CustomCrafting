@@ -2,7 +2,6 @@ package com.wolfyscript.customcrafting.resource
 
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.resources.ResourceSettings
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
 
@@ -45,12 +44,12 @@ class ResourceLoaderImpl(
         }
     }
 
-    override fun save(key: Key, recipe: CustomRecipe<*, *>) {
+    override fun <T : Any> save(type: DataType<T>, key: Key, value: T) {
         for (destination in sources) {
-            if (!(destination.filter?.accepts(key, recipe) ?: true)) {
+            if (!(destination.filter?.accepts(key) ?: true)) {
                 continue
             }
-            val result = destination.save(key, recipe)
+            val result = destination.save(type, key, value)
             if (result.isSuccess && result.getOrNull() == true) {
                 if (!destination.settings.propagateSavedResources) {
                     break
@@ -59,18 +58,18 @@ class ResourceLoaderImpl(
         }
     }
 
-    override fun delete(key: Key, recipe: CustomRecipe<*, *>) {
+    override fun delete(type: DataType<Any>, key: Key) {
         for (destination in sources) {
-            if (!(destination.filter?.accepts(key, recipe) ?: true)) {
+            if (!(destination.filter?.accepts(key) ?: true)) {
                 continue
             }
-            val result = destination.delete(key, recipe)
+            val result = destination.delete(type, key)
             if (result.isSuccess && result.getOrNull() == true) {
                 // TODO: Propagate deletion?
             }
         }
     }
 
-    data class LoadedRecipeImpl(override val key: Key, override val recipe: CustomRecipe<*, *>) : LoadedRecipe
+    data class LoadedObjectImpl<T>(override val key: Key, override val value: T) : LoadedObject<T>
 
 }

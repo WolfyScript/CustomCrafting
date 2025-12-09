@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.recipes
 
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.resource.LoadedRecipe
+import com.wolfyscript.customcrafting.resource.LoadedObject
 import com.wolfyscript.customcrafting.resource.ResourceListener
 import com.wolfyscript.scafall.identifier.Key
 
@@ -41,7 +41,7 @@ interface RecipeManager : ResourceListener {
     /**
      * Registers new recipes or updates existing recipes in the [RecipeManager] and re-indexes them by type and key.
      */
-    fun registerOrUpdateRecipes(recipes: Collection<LoadedRecipe>)
+    fun registerOrUpdateRecipes(recipes: Collection<LoadedObject<CustomRecipe<*,*>>>)
 
     /**
      * Removes the recipes from the [RecipeManager] and re-indexes the recipes by type and key.

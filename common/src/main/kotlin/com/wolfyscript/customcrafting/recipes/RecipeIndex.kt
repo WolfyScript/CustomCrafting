@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableListMultimap
 import com.google.common.collect.ImmutableMap
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.resource.LoadedRecipe
+import com.wolfyscript.customcrafting.resource.LoadedObject
 import com.wolfyscript.scafall.identifier.Key
 import java.util.*
 
@@ -29,16 +29,16 @@ internal class RecipeIndex {
     internal val byKey: Map<Key, RecipeReference<*>>
     internal val byType: ImmutableListMultimap<RecipeType<*>, RecipeReference<*>>
 
-    constructor(recipes: Collection<LoadedRecipe>) {
+    constructor(recipes: Collection<LoadedObject<CustomRecipe<*,*>>>) {
         val recipesBuilder = ImmutableList.builder<CustomRecipe<*, *>>()
         val byKeyBuilder = ImmutableMap.builder<Key, RecipeReference<*>>()
         val byTypeBuilder = ImmutableListMultimap.Builder<RecipeType<*>, RecipeReference<*>>()
         byTypeBuilder.orderValuesBy(recipeValueComparator)
 
         recipes.forEach {
-            recipesBuilder.add(it.recipe)
-            val ref = RecipeReferenceImpl(it.key, it.recipe)
-            byTypeBuilder.put(it.recipe.type, ref)
+            recipesBuilder.add(it.value)
+            val ref = RecipeReferenceImpl(it.key, it.value)
+            byTypeBuilder.put(it.value.type, ref)
             byKeyBuilder.put(it.key, ref)
         }
 
@@ -61,7 +61,7 @@ internal class RecipeIndex {
         return byKey[key]
     }
 
-    fun registerOrUpdateAll(recipes: Collection<LoadedRecipe>) : RecipeIndex {
+    fun registerOrUpdateAll(recipes: Collection<LoadedObject<CustomRecipe<*,*>>>) : RecipeIndex {
         val updatedRecipes = ArrayList<CustomRecipe<*,*>>(recipes.size + this.recipes.size)
         val byKeyBuilder = ImmutableMap.builder<Key, RecipeReference<*>>()
         val byTypeBuilder = ImmutableListMultimap.Builder<RecipeType<*>, RecipeReference<*>>()
@@ -72,10 +72,10 @@ internal class RecipeIndex {
         for (recipe in recipes) {
             val existing = updatedByKey.remove(recipe.key)
             updatedRecipes.remove(existing?.value)
-            updatedRecipes.add(recipe.recipe)
+            updatedRecipes.add(recipe.value)
 
-            val ref = RecipeReferenceImpl(recipe.key, recipe.recipe)
-            byTypeBuilder.put(recipe.recipe.type, ref)
+            val ref = RecipeReferenceImpl(recipe.key, recipe.value)
+            byTypeBuilder.put(recipe.value.type, ref)
             byKeyBuilder.put(recipe.key, ref)
         }
 

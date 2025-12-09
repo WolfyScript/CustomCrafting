@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.InjectableValues
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.configuration.resources.SourceSettings
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
@@ -46,7 +45,10 @@ class DirectorySource(
         }
     }
 
-    override fun load(accept: (recipe: LoadedRecipe) -> Unit) {
+    override fun <T : Any> load(
+        type: DataType<T>,
+        accept: (value: LoadedObject<T>) -> Unit,
+    ) {
         assureDir()
         readFiles(directory) { relative: Path, file: Path, attrs: BasicFileAttributes ->
             val injectableValues = InjectableValues.Std().apply {
@@ -57,28 +59,27 @@ class DirectorySource(
             val key = relative.toKey(Key.CUSTOMCRAFTING_NAMESPACE)
             customCrafting.logger.info("Loading recipe: $key")
             try {
-                val recipe = customCrafting.server!!.resourceManager.jacksonObjectMapper
+                val value = customCrafting.server!!.resourceManager.jacksonObjectMapper
                     .reader(injectableValues)
-                    .readValue(file.toFile(), CustomRecipe::class.java)
+                    .readValue(file.toFile(), type.classType)
 
-                accept(ResourceLoaderImpl.LoadedRecipeImpl(key, recipe))
+                accept(ResourceLoaderImpl.LoadedObjectImpl(key, value))
             } catch (e: Exception) {
-                customCrafting.logger.error("  Error loading recipe: ", e)
+                customCrafting.logger.error("  Error loading $key from ${type.id}: ", e)
             }
             return@readFiles FileVisitResult.CONTINUE
         }
     }
 
-    override fun save(key: Key, recipe: CustomRecipe<*, *>): Result<Boolean> {
+    override fun <T : Any> save(type: DataType<T>, key: Key, value: T): Result<Boolean> {
         assureDir()
-
-        val destFile = File(directory, "${key.value}.conf")
+        val destFile = File(directory, "${type.id}/${key.value}.conf")
 
         if (destFile.getParentFile().exists() || destFile.getParentFile().mkdirs()) {
             try {
                 if (destFile.isFile() || destFile.createNewFile()) {
                     customCrafting.server!!.resourceManager.jacksonObjectMapper.writer(DefaultPrettyPrinter())
-                        .writeValue(destFile, recipe)
+                        .writeValue(destFile, value)
                     return Result.success(true)
                 }
             } catch (e: IOException) {
@@ -88,8 +89,8 @@ class DirectorySource(
         return Result.failure(Exception("Could not create file $destFile to save recipe $key!"))
     }
 
-    override fun delete(key: Key, recipe: CustomRecipe<*, *>): Result<Boolean> {
-        val destFile = File(directory, "${key.value}.conf")
+    override fun delete(type: DataType<Any>, key: Key): Result<Boolean> {
+        val destFile = File(directory, "${type.id}/${key.value}.conf")
 
         return try {
             Result.success(destFile.delete())
