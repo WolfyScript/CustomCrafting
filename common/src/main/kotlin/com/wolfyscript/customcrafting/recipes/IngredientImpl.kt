@@ -1,5 +1,15 @@
 package com.wolfyscript.customcrafting.recipes
 
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier
+import com.fasterxml.jackson.databind.deser.ResolvableDeserializer
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import com.fasterxml.jackson.databind.jsontype.TypeDeserializer
+import com.fasterxml.jackson.databind.ser.BeanSerializerModifier
+import com.fasterxml.jackson.databind.ser.std.StdSerializer
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
@@ -8,14 +18,15 @@ import com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainder
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.unwrap
-import com.wolfyscript.scafall.wrappers.wrap
-import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackLike
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
+import com.wolfyscript.scafall.wrappers.wrap
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.Items
+import java.io.IOException
 import kotlin.random.Random
 
 class IngredientImpl(
@@ -168,7 +179,7 @@ class IngredientConsumerReplaceImpl(override val replacement: ItemStackRef) : In
         count: Int,
         ref: ItemStackRef,
         context: EvaluationContext,
-        evalResult: RecipeEvaluationResult<*, *>
+        evalResult: RecipeEvaluationResult<*, *>,
     ): ScafallItemStack {
         return replacement.create()
     }
@@ -177,17 +188,17 @@ class IngredientConsumerReplaceImpl(override val replacement: ItemStackRef) : In
         return "($replacement)"
     }
 
-
 }
 
-class IngredientConsumerKeepImpl(override val modifier: RecipeItemModifier = RecipeItemModifierImpl()) : IngredientConsumer.Keep {
+class IngredientConsumerKeepImpl(override val modifier: RecipeItemModifier = RecipeItemModifierImpl()) :
+    IngredientConsumer.Keep {
 
     override fun consume(
         target: ScafallItemStack,
         count: Int,
         ref: ItemStackRef,
         context: EvaluationContext,
-        evalResult: RecipeEvaluationResult<*, *>
+        evalResult: RecipeEvaluationResult<*, *>,
     ): ScafallItemStack {
         return target
     }
@@ -198,7 +209,8 @@ class IngredientConsumerKeepImpl(override val modifier: RecipeItemModifier = Rec
 
 }
 
-data class RemainsIgnoreOptionsImpl(override val vanilla: Boolean, override val others: Boolean) : RemainsIgnoreOptions {
+data class RemainsIgnoreOptionsImpl(override val vanilla: Boolean, override val others: Boolean) :
+    RemainsIgnoreOptions {
 
     override fun toString(): String {
         return "(vanilla=$vanilla, others=$others)"
@@ -215,7 +227,7 @@ class IngredientRemainderCustomImpl(
         count: Int,
         ref: ItemStackRef,
         context: EvaluationContext,
-        evalResult: RecipeEvaluationResult<*, *>
+        evalResult: RecipeEvaluationResult<*, *>,
     ): List<ScafallItemStack> {
         val mcSource = target.unwrap()
         val customRemainder = remainder.create()
@@ -245,7 +257,7 @@ class IngredientRemainderDefaultImpl(
         count: Int,
         ref: ItemStackRef,
         context: EvaluationContext,
-        evalResult: RecipeEvaluationResult<*, *>
+        evalResult: RecipeEvaluationResult<*, *>,
     ): List<ScafallItemStack> {
 
         val remains = mutableListOf<ScafallItemStack>()
@@ -266,4 +278,92 @@ class IngredientRemainderDefaultImpl(
         return "(ignore=$ignore)"
     }
 
+}
+
+class IngredientSerializerModifier : BeanSerializerModifier() {
+    override fun modifySerializer(
+        config: SerializationConfig,
+        beanDesc: BeanDescription,
+        serializer: JsonSerializer<*>,
+    ): JsonSerializer<*> {
+        if (beanDesc.beanClass.isAssignableFrom(Ingredient::class.java)) {
+            return Serializer(serializer as JsonSerializer<Ingredient>)
+        }
+        return serializer
+    }
+
+    private class Serializer(
+        private val defaultSerializer: JsonSerializer<Ingredient>,
+    ) :
+        StdSerializer<Ingredient>(defaultSerializer.handledType()) {
+
+        @Throws(IOException::class)
+        override fun serialize(targetObject: Ingredient, generator: JsonGenerator, provider: SerializerProvider) {
+            try {
+                val key = CustomCraftingProvider.get().server?.ingredientManager?.getKey(targetObject)
+                if (key != null) {
+                    generator.writeObject(key)
+                    return
+                }
+            } catch (e: NoSuchFieldException) {
+                e.printStackTrace()
+            } catch (e: IllegalAccessException) {
+                e.printStackTrace()
+            }
+            defaultSerializer.serialize(targetObject, generator, provider)
+        }
+    }
+}
+
+class IngredientDeserializerModifier() : BeanDeserializerModifier() {
+    override fun modifyDeserializer(
+        config: DeserializationConfig,
+        beanDesc: BeanDescription,
+        deserializer: JsonDeserializer<*>,
+    ): JsonDeserializer<*> {
+        if (beanDesc.beanClass == Ingredient::class.java) {
+            return Deserializer(deserializer as JsonDeserializer<Ingredient>)
+        }
+        return deserializer
+    }
+
+    private class Deserializer(
+        private val defaultDeserializer: JsonDeserializer<Ingredient>,
+    ) :
+        StdDeserializer<Ingredient>(defaultDeserializer.handledType()), ResolvableDeserializer {
+
+        @Throws(IOException::class)
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Ingredient? {
+            if (p.isExpectedStartObjectToken) {
+                return defaultDeserializer.deserialize(p, ctxt)
+            }
+            return getKeyedObject(p)
+        }
+
+        @Throws(JsonMappingException::class)
+        override fun resolve(ctxt: DeserializationContext) {
+            if (defaultDeserializer is ResolvableDeserializer) {
+                defaultDeserializer.resolve(ctxt)
+            }
+        }
+
+        @Throws(IOException::class)
+        override fun deserializeWithType(
+            p: JsonParser,
+            ctxt: DeserializationContext,
+            typeDeserializer: TypeDeserializer,
+        ): Any? {
+            if (p.isExpectedStartObjectToken) {
+                return defaultDeserializer.deserializeWithType(p, ctxt, typeDeserializer)
+            }
+            return getKeyedObject(p)
+        }
+
+        @Throws(IOException::class)
+        fun getKeyedObject(p: JsonParser): Ingredient? {
+            val value = p.readValueAs(String::class.java)
+            val key = Key.parse(value)
+            return CustomCraftingProvider.get().server?.ingredientManager?.getIngredient(key)
+        }
+    }
 }

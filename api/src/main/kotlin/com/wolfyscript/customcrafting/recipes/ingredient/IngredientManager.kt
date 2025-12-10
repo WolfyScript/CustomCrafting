@@ -8,8 +8,14 @@ import com.wolfyscript.scafall.identifier.Key
  */
 interface IngredientManager : ResourceListener {
 
+    companion object {
+        const val LOG_PREFIX = "[Ingredient Manager] "
+    }
+
     fun registerIngredient(key: Key, ingredient: Ingredient)
 
     fun getIngredient(key: Key): Ingredient?
+
+    fun getKey(ingredient: Ingredient): Key?
 
 }

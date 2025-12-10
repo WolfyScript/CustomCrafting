@@ -152,6 +152,11 @@ class ResourceManagerCommon(val customCrafting: CustomCrafting, val directory: F
 
         }
         jacksonObjectMapper.registerModule(implementationTypeModule)
+        jacksonObjectMapper.registerModule(SimpleModule("IngredientModifier").apply {
+            setSerializerModifier(IngredientSerializerModifier())
+            setDeserializerModifier(IngredientDeserializerModifier())
+        })
+
         jacksonObjectMapper.registerKotlinModule()
         jacksonObjectMapper.registerScafallModule()
     }

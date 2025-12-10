@@ -2,8 +2,10 @@ package com.wolfyscript.customcrafting.spigotlike
 
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.core.commands.CCCommands
+import com.wolfyscript.customcrafting.recipes.IngredientManagerCommon
 import com.wolfyscript.customcrafting.recipes.RecipeManager
 import com.wolfyscript.customcrafting.recipes.RecipeManagerCommon
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientManager
 import com.wolfyscript.customcrafting.resource.ResourceManager
 import com.wolfyscript.customcrafting.resource.ResourceManagerCommon
 import com.wolfyscript.customcrafting.server.CustomCraftingServer
@@ -17,6 +19,7 @@ import org.bukkit.plugin.Plugin
 class CustomCraftingServerSpigotLike(val customCrafting: CustomCrafting, val plugin: Plugin) : CustomCraftingServer {
 
     override val resourceManager: ResourceManager = ResourceManagerCommon(customCrafting, plugin.dataFolder)
+    override val ingredientManager: IngredientManager = IngredientManagerCommon(customCrafting)
     override val recipeManager: RecipeManager = RecipeManagerCommon(customCrafting)
 
     init {
