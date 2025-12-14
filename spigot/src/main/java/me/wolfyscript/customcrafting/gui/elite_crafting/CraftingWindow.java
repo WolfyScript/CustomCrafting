@@ -37,10 +37,12 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.CallbackButtonRender;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -108,6 +110,10 @@ abstract class CraftingWindow extends CCWindow {
                             return true;
                         }
                         CacheEliteCraftingTable cacheEliteCraftingTable = cache.getEliteWorkbench();
+                        if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.DOUBLE_CLICK)) {
+                            clickEvent.setCancelled(true);
+                            return true;
+                        }
                         if (cacheEliteCraftingTable.getContents() != null) {
                             return InteractionUtils.applyItemFromInteractionEvent(slot, event, CRAFTING_SLOTS_MAP.get(cacheEliteCraftingTable.getCurrentGridSize()), itemStack -> cacheEliteCraftingTable.getContents()[recipeSlot] = itemStack);
                         }
