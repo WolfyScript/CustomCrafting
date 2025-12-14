@@ -24,14 +24,19 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.customitem.RecipeBookSettings;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerListener implements Listener {
@@ -57,6 +62,16 @@ public class PlayerListener implements Listener {
             customCrafting.getUpdateChecker().run(player);
         }
     }
+    
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        returnEliteWorkbenchItems(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onKick(PlayerKickEvent event) {
+        returnEliteWorkbenchItems(event.getPlayer());
+    }
 
     @EventHandler
     public void onClick(PlayerInteractEvent event) {
@@ -70,5 +85,22 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+    }
+    private void returnEliteWorkbenchItems(org.bukkit.entity.Player player) {
+        var guiHandler = customCrafting.getApi().getInventoryAPI(CCCache.class).getGuiHandler(player);
+        var cacheEliteCraftingTable = guiHandler.getCustomCache().getEliteWorkbench();
+        if (cacheEliteCraftingTable.getContents() == null) return;
+
+        for (ItemStack itemStack : cacheEliteCraftingTable.getContents()) {
+            if (!ItemUtils.isAirOrNull(itemStack)) {
+                var remaining = player.getInventory().addItem(itemStack).values();
+                remaining.forEach(stack -> player.getWorld().dropItem(player.getLocation(), stack));
+            }
+        }
+        cacheEliteCraftingTable.setCustomItem(null);
+        cacheEliteCraftingTable.setSettings(null);
+        cacheEliteCraftingTable.setResult(new ItemStack(Material.AIR));
+        cacheEliteCraftingTable.setContents(null);
+        cacheEliteCraftingTable.setCurrentGridSize((byte) 0);
     }
 }
