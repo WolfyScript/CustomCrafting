@@ -5,6 +5,7 @@ import com.wolfyscript.customcrafting.editor.RecipeStore
 import com.wolfyscript.customcrafting.editor.result.ResultStore
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 
 interface RecipeCraftingStore : RecipeStore.RecipeTypeSpecificStore<CustomRecipeCrafting> {
 
@@ -18,11 +19,31 @@ interface RecipeCraftingStore : RecipeStore.RecipeTypeSpecificStore<CustomRecipe
 
             val ingredients: MutableList<IngredientStore>
 
+            /**
+             * Adds an ingredient to the end of the [ingredients]
+             */
+            fun addIngredient(ingredient: Ingredient)
+
+            /**
+             * Removes an ingredient from the [ingredients] at the specified index
+             */
+            fun removeIngredient(index: Int)
+
         }
 
         interface Shaped : CraftingFormulaStore {
 
             val ingredients: MutableList<IngredientStore>
+
+            /**
+             * Assigns an ingredient to the specified index in the recipe
+             */
+            fun assignIngredient(index: Int, ingredient: Ingredient)
+
+            /**
+             * Clears/Unassigns the ingredient at the specified index
+             */
+            fun clearIngredient(index: Int)
 
             var shape: ShapeStore
 

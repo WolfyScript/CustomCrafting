@@ -60,7 +60,7 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
             }
         }
 
-        createRegistry(CustomCraftingRegistryTypes.recipeTypeSpecificStores) { RegistrySimple(it) }
+        createRegistry(CustomCraftingRegistryTypes.recipeTypeSpecificStoreFactories) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.conditionStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.recipeItemTransmuterStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.resultActionStores) { RegistrySimple(it) }

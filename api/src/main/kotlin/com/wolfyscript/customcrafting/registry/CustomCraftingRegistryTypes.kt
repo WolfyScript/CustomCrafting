@@ -69,13 +69,14 @@ object CustomCraftingRegistryTypes {
     // -----------------------
     // Used to store the types of content used in the editor. Usually associated with a type of the above type registries.
     //
-    val recipeTypeSpecificStores = create<Class<out RecipeStore.RecipeTypeSpecificStore<*>>>("editor/types/recipe/types")
 
-    val conditionStores = create<Class<out ConditionStore<*>>>("editor/types/recipe/conditions")
+    val recipeTypeSpecificStoreFactories = create<RecipeStore.RecipeTypeSpecificStore.Factory<*>>("editor/recipe/factories")
 
-    val recipeItemTransmuterStores = create<Class<out TransmuterStore<*>>>("editor/types/recipe/item/transmuters")
+    val conditionStores = create<Class<out ConditionStore<*>>>("editor/recipe/conditions")
 
-    val resultActionStores = create<Class<out ResultActionStore<*>>>("editor/types/recipe/result/actions")
+    val recipeItemTransmuterStores = create<Class<out TransmuterStore<*>>>("editor/recipe/item/transmuters")
+
+    val resultActionStores = create<Class<out ResultActionStore<*>>>("editor/recipe/result/actions")
 
     private fun <T> create(registryKey: String): RegistryReference<T> {
         return RegistryKey.of<T>(root, Key.customCrafting(registryKey)).reference { CustomCraftingProvider.get().registries }

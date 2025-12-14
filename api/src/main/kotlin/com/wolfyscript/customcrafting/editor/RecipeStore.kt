@@ -32,7 +32,34 @@ interface RecipeStore<T: CustomRecipe<*,*>> {
      */
     interface RecipeTypeSpecificStore<T: CustomRecipe<*,*>> {
 
-        fun complete() : Result<T>
+        /**
+         * Completes the type specific properties
+         *
+         * @return the new [T] instance or an error otherwise
+         */
+        fun complete(common: RecipeStore<T>) : Result<T>
+
+        /**
+         * Used to construct [RecipeTypeSpecificStore]s instances,
+         * either new instances or by loading existing [CustomRecipe]s properties into a [RecipeTypeSpecificStore].
+         */
+        interface Factory<T: CustomRecipe<*,*>> {
+
+            val recipeType: RecipeType<T>
+
+            /**
+             * Loads the recipe into a store to be edited.
+             *
+             * Care needs to be taken, so that objects are completely cloned, so no references to the original properties exist!
+             */
+            fun edit(recipe: T): RecipeTypeSpecificStore<T>
+
+            /**
+             * Creates a new instance of a [RecipeTypeSpecificStore] for not yet existing recipe.
+             */
+            fun create(): RecipeTypeSpecificStore<T>
+
+        }
 
     }
 
