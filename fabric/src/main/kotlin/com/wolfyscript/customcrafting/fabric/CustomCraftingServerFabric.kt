@@ -2,7 +2,9 @@ package com.wolfyscript.customcrafting.fabric
 
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.fabric.inject.RecipeManagerCustomRecipesExt
+import com.wolfyscript.customcrafting.recipes.IngredientManagerCommon
 import com.wolfyscript.customcrafting.recipes.RecipeManagerCommon
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientManager
 import com.wolfyscript.customcrafting.resource.ResourceManager
 import com.wolfyscript.customcrafting.resource.ResourceManagerCommon
 import com.wolfyscript.customcrafting.server.CustomCraftingServer
@@ -20,6 +22,7 @@ class CustomCraftingServerFabric(customCrafting: CustomCrafting, val minecraftSe
         customCrafting,
         File(FabricLoader.getInstance().configDir.toFile(), Key.CUSTOMCRAFTING_NAMESPACE)
     )
+    override val ingredientManager: IngredientManager = IngredientManagerCommon(customCrafting)
     override val recipeManager: RecipeManagerCommon = RecipeManagerCommon(customCrafting)
 
     init {
