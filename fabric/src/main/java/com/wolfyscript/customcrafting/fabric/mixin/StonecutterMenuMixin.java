@@ -70,7 +70,7 @@ public class StonecutterMenuMixin {
         var recipe = recipeHolder.value();
         if (recipe instanceof ProxyRecipe) {
             ci.cancel();
-            EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().location()))));
+            EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()))));
             var stack = container.getItem(0);
             var input = new SingleRecipeInput(stack);
             ((RecipeInputSingleSlotCustomExt) (Object) input).setCustomInput(

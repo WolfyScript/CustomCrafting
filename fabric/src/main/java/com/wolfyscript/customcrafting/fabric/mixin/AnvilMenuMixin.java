@@ -38,7 +38,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
     private static final int RESET_COST = 0;
 
     @Shadow
-    @javax.annotation.Nullable
+    @Nullable
     private String itemName;
     @Shadow
     @Final
@@ -56,7 +56,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
         resultInfo = null;
         var customcrafting = CustomCraftingProvider.Companion.get();
         var level = player.level();
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().location())));
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().identifier())));
         var input = RecipeInput.RepairingRecipeInput.Companion.of(MinecraftWrapperKt.wrap(getSlot(0).getItem()), MinecraftWrapperKt.wrap(getSlot(1).getItem()), itemName);
 
         var data = customcrafting.getServer().getRecipeManager().evaluateRecipesOfType(RecipeTypes.INSTANCE.getRepairing().resolveOrThrow(), input, context);
@@ -103,7 +103,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
         }
 
         var playerLevel = player.level();
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().location())));
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().identifier())));
         var data = resultInfo.getData();
 
         var base = data.bySlot(BASE_SLOT);

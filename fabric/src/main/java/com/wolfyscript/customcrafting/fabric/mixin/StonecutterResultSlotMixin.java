@@ -44,7 +44,7 @@ public abstract class StonecutterResultSlotMixin extends Slot {
         }
 
         var playerLevel = player.level();
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().location())));
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().identifier())));
         RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
 
         var recipe = resultInfo.getRecipe().getValue();

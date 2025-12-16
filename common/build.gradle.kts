@@ -11,10 +11,7 @@ dependencies {
     compileOnly(libs.jackson.kotlin)
 
     minecraft(libs.minecraft)
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
-    })
+    mappings(loom.officialMojangMappings())
 }
 
 tasks {

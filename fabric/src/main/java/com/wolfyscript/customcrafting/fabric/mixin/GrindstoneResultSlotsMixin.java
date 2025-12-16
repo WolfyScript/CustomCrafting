@@ -59,7 +59,7 @@ public class GrindstoneResultSlotsMixin implements GrindstoneResultSlotsExt {
         var recipe = resultInfo.getRecipe().getValue();
         var data = resultInfo.getData();
         var lvl = player.level();
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(lvl.dimension().location())));
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(lvl.dimension().identifier())));
 
         var totalYield = data.getYield() - data.getPenalty();
         if (totalYield > 0) {

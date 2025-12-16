@@ -29,7 +29,7 @@ public class CrafterMenuMixin {
     private void enterEvalContext(CallbackInfo ci) {
         if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
             var level = serverPlayer.level();
-            var wrappedPosition = MinecraftWrapperKt.wrap(serverPlayer.position(), Key.fromMc(level.dimension().location()));
+            var wrappedPosition = MinecraftWrapperKt.wrap(serverPlayer.position(), Key.fromMc(level.dimension().identifier()));
             EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(MinecraftWrapperKt.wrap(serverPlayer), wrappedPosition));
         }
     }

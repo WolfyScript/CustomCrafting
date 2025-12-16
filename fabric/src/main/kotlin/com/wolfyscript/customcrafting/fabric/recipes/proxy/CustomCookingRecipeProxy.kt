@@ -54,8 +54,8 @@ class CustomSmeltingRecipeProxy(override val customRecipe: RecipeReference<Custo
         return customRecipe.matches(singleRecipeInput, level)
     }
 
-    override fun assemble(singleRecipeInput: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack? {
-        return customRecipe.assemble(singleRecipeInput, provider)
+    override fun assemble(singleRecipeInput: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack {
+        return customRecipe.assemble(singleRecipeInput, provider) ?: ItemStack.EMPTY
     }
 
 }
@@ -74,8 +74,8 @@ class CustomBlastingRecipeProxy(override val customRecipe: RecipeReference<Custo
         return customRecipe.matches(singleRecipeInput, level)
     }
 
-    override fun assemble(singleRecipeInput: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack? {
-        return customRecipe.assemble(singleRecipeInput, provider)
+    override fun assemble(singleRecipeInput: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack {
+        return customRecipe.assemble(singleRecipeInput, provider) ?: ItemStack.EMPTY
     }
 }
 
@@ -93,8 +93,8 @@ class CustomSmokingRecipeProxy(override val customRecipe: RecipeReference<Custom
         return customRecipe.matches(singleRecipeInput, level)
     }
 
-    override fun assemble(singleRecipeInput: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack? {
-        return customRecipe.assemble(singleRecipeInput, provider)
+    override fun assemble(singleRecipeInput: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack {
+        return customRecipe.assemble(singleRecipeInput, provider) ?: ItemStack.EMPTY
     }
 }
 
@@ -112,8 +112,8 @@ class CustomCampfireRecipeProxy(override val customRecipe: RecipeReference<Custo
         return customRecipe.matches(singleRecipeInput, level)
     }
 
-    override fun assemble(singleRecipeInput: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack? {
-        return customRecipe.assemble(singleRecipeInput, provider)
+    override fun assemble(singleRecipeInput: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack {
+        return customRecipe.assemble(singleRecipeInput, provider) ?: ItemStack.EMPTY
     }
 
 }

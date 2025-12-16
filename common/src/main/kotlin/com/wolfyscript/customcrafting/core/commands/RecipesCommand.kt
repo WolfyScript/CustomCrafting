@@ -13,8 +13,9 @@ import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.identifier.toScafall
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
-import net.minecraft.commands.arguments.ResourceLocationArgument
+import net.minecraft.commands.arguments.IdentifierArgument
 import net.minecraft.network.chat.Component
+import net.minecraft.server.permissions.Permissions
 
 object RecipesCommand {
 
@@ -23,7 +24,7 @@ object RecipesCommand {
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         sequenceOf(ROOT_NAME, "cc:$ROOT_NAME", "${Key.CUSTOMCRAFTING_NAMESPACE}:$ROOT_NAME").forEach { alias ->
             dispatcher.register(
-                Commands.literal(alias).requires { it.hasPermission(ADMIN_LVL) }.apply {
+                Commands.literal(alias).requires { it.permissions().hasPermission(Permissions.COMMANDS_ADMIN) }.apply {
                     then(Commands.literal("reload").executes { reload(CustomCraftingProvider.get()) })
                     then(Commands.literal("status").executes { ctx ->
                         printStatus(ctx, CustomCraftingProvider.get())
@@ -31,8 +32,8 @@ object RecipesCommand {
                     })
                     then(
                         Commands.literal("disable")
-                            .then(Commands.argument("recipe", ResourceLocationArgument.id()).executes { ctx ->
-                                val recipeKey = ResourceLocationArgument.getId(ctx, "recipe").toScafall()
+                            .then(Commands.argument("recipe", IdentifierArgument.id()).executes { ctx ->
+                                val recipeKey = IdentifierArgument.getId(ctx, "recipe").toScafall()
                                 CustomCraftingProvider.get().server!!.recipeManager.disableRecipe(recipeKey)
 
                                 ctx.source.sendSuccess({ Component.literal("Disabled Recipe $recipeKey") }, false)
@@ -48,8 +49,8 @@ object RecipesCommand {
                     )
                     then(
                         Commands.literal("enable")
-                            .then(Commands.argument("recipe", ResourceLocationArgument.id()).executes { ctx ->
-                                val recipeKey = ResourceLocationArgument.getId(ctx, "recipe").toScafall()
+                            .then(Commands.argument("recipe", IdentifierArgument.id()).executes { ctx ->
+                                val recipeKey = IdentifierArgument.getId(ctx, "recipe").toScafall()
                                 CustomCraftingProvider.get().server!!.recipeManager.enableRecipe(recipeKey)
 
                                 ctx.source.sendSuccess({ Component.literal("Enabled Recipe $recipeKey") }, false)

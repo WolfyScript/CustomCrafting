@@ -54,7 +54,7 @@ public class RecipeMapMixin {
                     otherPriority = recipe.getPriority();
                 }
             }
-            CustomCraftingProvider.Companion.get().getLogger().debug("Sort {} ({}) <> {} ({})", that.id().location(), thatPriority, other.id().location(), otherPriority);
+            CustomCraftingProvider.Companion.get().getLogger().debug("Sort {} ({}) <> {} ({})", that.id().identifier(), thatPriority, other.id().identifier(), otherPriority);
             return -1 * Integer.compare(thatPriority, otherPriority);
         });
     }

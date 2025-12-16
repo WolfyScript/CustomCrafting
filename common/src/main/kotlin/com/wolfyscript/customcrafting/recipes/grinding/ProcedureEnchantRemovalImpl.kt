@@ -29,7 +29,7 @@ class IngredientEnchantRemovalProcedureImpl(
         if (type == SetInclusionExclusionType.KEEP) {
             itemEnchants.removeIf { holder ->
                 val key = holder.unwrapKey()
-                    .map { key -> key.location().toScafall() }.getOrNull()
+                    .map { key -> key.identifier().toScafall() }.getOrNull()
                 if (enchants.contains(key)) {
                     return@removeIf false
                 }
@@ -42,7 +42,7 @@ class IngredientEnchantRemovalProcedureImpl(
         } else {
             itemEnchants.removeIf { holder ->
                 val key = holder.unwrapKey()
-                    .map { key -> key.location().toScafall() }.getOrNull()
+                    .map { key -> key.identifier().toScafall() }.getOrNull()
                 if (enchants.contains(key) || (holder.`is`(EnchantmentTags.CURSE) && removeCurses)) {
                     xpYield += holder.value().getMinCost(itemEnchants.getLevel(holder))
                     return@removeIf true

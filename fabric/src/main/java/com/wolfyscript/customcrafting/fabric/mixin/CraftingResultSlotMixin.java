@@ -53,7 +53,7 @@ public abstract class CraftingResultSlotMixin extends Slot {
         ci.cancel(); // Return before vanilla logic
 
         var level = player.level();
-        var wrappedPosition = MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().location()));
+        var wrappedPosition = MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()));
         var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), wrappedPosition);
 
         RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());

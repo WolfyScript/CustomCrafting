@@ -29,11 +29,8 @@ dependencies {
     compileOnly(libs.jackson.kotlin)
 
     minecraft(libs.minecraft)
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
-    })
-
+    mappings(loom.officialMojangMappings()) // TODO: Remove next MC release
+    // TODO: Change next MC release
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.api)
 }
@@ -65,6 +62,7 @@ tasks {
     java {
 //        withSourcesJar()
     }
+    // TODO: Remove next MC release
     remapJar {
         dependsOn(shadowJar)
         finalizedBy("fabric_copy")

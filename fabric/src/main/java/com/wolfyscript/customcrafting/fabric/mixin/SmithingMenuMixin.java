@@ -72,7 +72,7 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         method = "createResult"
     )
     private void enterEvalContext(CallbackInfo ci) {
-        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().location()))));
+        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()))));
     }
 
     @Inject(
@@ -97,7 +97,7 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         if (resultInfo == null || resultInfo.getRecipe().getValue() == null) return;
         ci.cancel(); // Return before vanilla logic
 
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().location())));
+        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().identifier())));
         shrinkCustomIngredient(0, context, resultInfo);
         shrinkCustomIngredient(1, context, resultInfo);
         shrinkCustomIngredient(2, context, resultInfo);

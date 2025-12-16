@@ -7,6 +7,9 @@ import net.minecraft.commands.CommandSource
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.permissions.LevelBasedPermissionSet
+import net.minecraft.server.permissions.PermissionSet
+import net.minecraft.server.permissions.Permissions
 import net.minecraft.world.phys.Vec2
 
 class CommandResultAction(
@@ -44,7 +47,7 @@ class CommandResultAction(
             pos,
             Vec2(0.0f, 0.0f),
             level,
-            2,
+            LevelBasedPermissionSet.GAMEMASTER,
             defaultName,
             defaultCompName,
             server,

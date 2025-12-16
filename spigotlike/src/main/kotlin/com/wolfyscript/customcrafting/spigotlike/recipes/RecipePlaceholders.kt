@@ -10,8 +10,8 @@ import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.wrappers.unwrap
 import net.minecraft.core.HolderSet
 import net.minecraft.core.registries.Registries
+import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeHolder
 import net.minecraft.world.item.crafting.TransmuteResult
@@ -54,7 +54,7 @@ fun Key.toPlaceholderRecipeKey(): NamespacedKey {
 }
 
 fun Key.toMcPlaceholderRecipeKey(): ResourceKey<net.minecraft.world.item.crafting.Recipe<*>> {
-    return ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(this.namespace, "$PLACEHOLDER_RECIPE_PREFIX${this.value}"))
+    return ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(this.namespace, "$PLACEHOLDER_RECIPE_PREFIX${this.value}"))
 }
 
 fun RecipeReference<*>.toPlaceholder(): Recipe? {

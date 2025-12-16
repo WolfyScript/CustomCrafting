@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomSmithingRecipeProxy;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +17,7 @@ interface RecipeSerializerMixin {
     private static void registerProxyRecipes(CallbackInfo ci) {
         Registry.register(
             BuiltInRegistries.RECIPE_SERIALIZER,
-            ResourceLocation.fromNamespaceAndPath("customcrafting", "smithing"),
+            Identifier.fromNamespaceAndPath("customcrafting", "smithing"),
             new CustomSmithingRecipeProxy.Serializer()
         );
     }

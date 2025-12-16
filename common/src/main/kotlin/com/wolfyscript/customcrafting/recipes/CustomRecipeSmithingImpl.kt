@@ -9,7 +9,7 @@ import com.wolfyscript.scafall.wrappers.unwrap
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 class CustomRecipeSmithingImpl(
     override val priority: Int = 0,
@@ -119,14 +119,14 @@ class SmithingUtils {
 
             for (key in components) {
                 BuiltInRegistries.DATA_COMPONENT_TYPE.get(
-                    ResourceLocation.fromNamespaceAndPath(key.namespace, key.value)
+                    Identifier.fromNamespaceAndPath(key.namespace, key.value)
                 ).ifPresent {
                     copyDataComponent(sourceStack, destStack, it.value())
                 }
             }
         }
 
-        private fun <T> copyDataComponent(
+        private fun <T: Any> copyDataComponent(
             source: net.minecraft.world.item.ItemStack,
             dest: net.minecraft.world.item.ItemStack,
             type: DataComponentType<T>,

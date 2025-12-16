@@ -156,9 +156,9 @@ class IngredientConsumerConsumeImpl(override val remains: IngredientRemainder) :
                     val pos = blockEntity.blockPos.center
                     val itemEntity = ItemEntity(level, pos.x, pos.y, pos.z, it.unwrap())
                     itemEntity.setPickUpDelay(40)
-                    val f: Float = Random.nextFloat() * 0.5f
-                    val g: Float = Random.nextFloat() * (Math.PI.toFloat() * 2f)
-                    itemEntity.setDeltaMovement((-Mth.sin(g) * f).toDouble(), 0.2, (Mth.cos(g) * f).toDouble())
+                    val f: Double = Random.nextFloat() * 0.5
+                    val g: Double = Random.nextFloat() * Math.PI * 2.0
+                    itemEntity.setDeltaMovement((-Mth.sin(g) * f), 0.2, Mth.cos(g) * f)
                     level.addFreshEntity(itemEntity)
                 }
             }

@@ -26,7 +26,7 @@ public class CraftingMenuMixin {
 
     @Inject(method = "slotChangedCraftingGrid", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/RecipeManager;getRecipeFor(Lnet/minecraft/world/item/crafting/RecipeType;Lnet/minecraft/world/item/crafting/RecipeInput;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/crafting/RecipeHolder;)Ljava/util/Optional;"))
     private static void enterEvalState(AbstractContainerMenu menu, ServerLevel level, Player player, CraftingContainer craftSlots, ResultContainer resultSlots, RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci) {
-        var wrappedPosition = MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().location()));
+        var wrappedPosition = MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()));
         EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), wrappedPosition));
     }
 
