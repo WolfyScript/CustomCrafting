@@ -2,6 +2,8 @@ plugins {
     `java-library`
     `maven-publish`
     kotlin("jvm")
+    id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 repositories {
@@ -18,6 +20,9 @@ repositories {
     maven(url = "https://libraries.minecraft.net/")
     maven(url = "https://jitpack.io")
     maven(url = "https://repo.maven.apache.org/maven2/")
+    google()
+    maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
+
     mavenLocal()
 }
 
@@ -50,6 +55,7 @@ val Project.libs
 
 dependencies {
     api(libs.scafall.api)
+    api(libs.viewportl)
     implementation(libs.bundles.jetbrains)
 
     compileOnly(libs.inject.guice)

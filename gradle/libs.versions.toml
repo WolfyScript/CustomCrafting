@@ -30,6 +30,10 @@ adventure-api = "4.10.1"
 adventure-platform-api = "4.1.0"
 adventure-minimessage = "4.10.0"
 
+# viewportl / UI
+viewportl = "alpha0.1.0.0-SNAPSHOT"
+compose = "1.9.0"
+
 # Minecraft
 minecraft = "1.21.11"
 authlib = "6.0.58"
@@ -110,7 +114,10 @@ db-sqlite = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
 # cross-platform APIs
 scafall-api = { module = "com.wolfyscript.scafall:api", version.ref = "scafall" }
 scafall-loader = { module = "com.wolfyscript.scafall.loader:loader-api", version.ref = "scafall" }
-scafall-sponge-impl = { module = "com.wolfyscript.scafall.sponge:sponge", version.ref = "scafall" }
+
+# viewportl / UI
+viewportl = { module = "com.wolfyscript.viewportl:viewportl-api", version.ref = "viewportl" }
+
 ## Adventure
 adventure-api = { module = "net.kyori:adventure-api", version.ref = "adventure-api" }
 adventure-platform-api = { module = "net.kyori:adventure-platform-api", version.ref = "adventure-platform-api" }
@@ -172,3 +179,7 @@ fabric-loom = { id = "net.fabricmc.fabric-loom-remap", version.ref = "fabric-loo
 paperweight-userdev = { id = "io.papermc.paperweight.userdev", version.ref = "paperweight-userdev" }
 modrinth-minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
 resource-factory-bukkit = { id = "xyz.jpenilla.resource-factory-bukkit-convention", version.ref= "resource-factory"}
+
+# UI / Compose
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }

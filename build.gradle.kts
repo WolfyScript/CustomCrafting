@@ -40,6 +40,8 @@ repositories {
     maven(url = "https://repo.maven.apache.org/maven2/")
     maven(url = "https://mvn.lumine.io/repository/maven-public/")
     maven(url = "https://repo.oraxen.com/releases")
+    google()
+    maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {

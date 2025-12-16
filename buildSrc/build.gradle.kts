@@ -8,22 +8,25 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven("https://artifacts.wolfyscript.com/artifactory/gradle-dev")
+    maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {
     compileOnly(files(libs::class.java.protectionDomain.codeSource.location))
 
-    implementation(libs.plugins.devtools.docker.run.text())
-    implementation(libs.plugins.devtools.docker.minecraft.text())
-    implementation(libs.plugins.paperweight.userdev.text())
+    implementation(libs.plugins.devtools.docker.run.depNotation())
+    implementation(libs.plugins.devtools.docker.minecraft.depNotation())
+    implementation(libs.plugins.paperweight.userdev.depNotation())
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
+    implementation(libs.plugins.compose.compiler.depNotation())
+    implementation(libs.plugins.jetbrains.compose.depNotation())
 }
 
 kotlin {
     jvmToolchain(21)
 }
 
-fun Provider<PluginDependency>.text(): String {
+fun Provider<PluginDependency>.depNotation(): String {
     val t = get()
     val id = t.pluginId
     val version = t.version
