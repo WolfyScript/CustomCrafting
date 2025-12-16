@@ -1,9 +1,6 @@
-package com.wolfyscript.customcrafting.configuration.editor
+package com.wolfyscript.customcrafting.editor
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.EditorSession
-import com.wolfyscript.customcrafting.editor.RecipeStore
-import com.wolfyscript.customcrafting.editor.SessionState
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.RecipeType
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes

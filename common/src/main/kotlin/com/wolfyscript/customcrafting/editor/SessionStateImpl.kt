@@ -1,8 +1,6 @@
-package com.wolfyscript.customcrafting.configuration.editor
+package com.wolfyscript.customcrafting.editor
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.RecipeStore
-import com.wolfyscript.customcrafting.editor.SessionState
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.resource.DataType
 import com.wolfyscript.scafall.identifier.Key
@@ -11,7 +9,6 @@ private fun saveRecipe(key: Key, recipe: CustomRecipe<*,*>) {
     val resourceLoader = CustomCraftingProvider.get().server?.resourceManager?.resourceLoader ?: return
     resourceLoader.save(DataType.Recipes, key, recipe)
 }
-
 
 class EditRecipeSessionState(key: Key, recipeState: RecipeStore<*>) : SessionState.EditState {
 
