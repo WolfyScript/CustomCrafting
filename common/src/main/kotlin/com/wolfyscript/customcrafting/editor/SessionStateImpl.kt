@@ -10,11 +10,10 @@ private fun saveRecipe(key: Key, recipe: CustomRecipe<*,*>) {
     resourceLoader.save(DataType.Recipes, key, recipe)
 }
 
-class EditRecipeSessionState(key: Key, recipeState: RecipeStore<*>) : SessionState.EditState {
+class EditRecipeSessionState(key: Key, override val recipeState: RecipeState<*>) : SessionState.EditState {
 
     override var currentKey: Key = key
         private set
-    override val recipeStore: RecipeStore<*> = recipeState
 
     override fun saveAs(key: Key) {
         currentKey = key
@@ -22,7 +21,7 @@ class EditRecipeSessionState(key: Key, recipeState: RecipeStore<*>) : SessionSta
     }
 
     override fun save() {
-        val result = recipeStore.complete()
+        val result = recipeState.complete()
         if (result.isFailure) {
             return
         }
@@ -38,10 +37,10 @@ class EditRecipeSessionState(key: Key, recipeState: RecipeStore<*>) : SessionSta
 
 }
 
-class CreateRecipeSessionState(override val recipeStore: RecipeStore<*>) : SessionState.CreateState {
+class CreateRecipeSessionState(override val recipeState: RecipeState<*>) : SessionState.CreateState {
 
     override fun save(key: Key) {
-        val result = recipeStore.complete()
+        val result = recipeState.complete()
         if (result.isFailure) {
             return
         }

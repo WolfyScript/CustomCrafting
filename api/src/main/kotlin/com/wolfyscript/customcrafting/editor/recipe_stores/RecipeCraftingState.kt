@@ -1,21 +1,24 @@
 package com.wolfyscript.customcrafting.editor.recipe_stores
 
 import com.wolfyscript.customcrafting.editor.IngredientStore
-import com.wolfyscript.customcrafting.editor.RecipeStore
-import com.wolfyscript.customcrafting.editor.result.ResultStore
+import com.wolfyscript.customcrafting.editor.RecipeState
+import com.wolfyscript.customcrafting.editor.result.ResultState
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 
-interface RecipeCraftingStore : RecipeStore.RecipeTypeSpecificStore<CustomRecipeCrafting> {
+interface RecipeCraftingState : RecipeState.RecipeTypeSpecificState<CustomRecipeCrafting> {
 
-    val result: ResultStore
+    val result: ResultState
 
-    val formula: CraftingFormulaStore
+    val formula: CraftingFormulaState<*>
 
-    interface CraftingFormulaStore {
+    interface CraftingFormulaState<T: CraftingFormula> {
 
-        interface Shapeless : CraftingFormulaStore {
+        fun complete(): Result<T>
+
+        interface Shapeless : CraftingFormulaState<CraftingFormula.Shapeless> {
 
             val ingredients: MutableList<IngredientStore>
 
@@ -31,7 +34,7 @@ interface RecipeCraftingStore : RecipeStore.RecipeTypeSpecificStore<CustomRecipe
 
         }
 
-        interface Shaped : CraftingFormulaStore {
+        interface Shaped : CraftingFormulaState<CraftingFormula.Shaped> {
 
             val ingredients: MutableList<IngredientStore>
 
@@ -45,13 +48,15 @@ interface RecipeCraftingStore : RecipeStore.RecipeTypeSpecificStore<CustomRecipe
              */
             fun clearIngredient(index: Int)
 
-            var shape: ShapeStore
+            var shape: ShapeState
 
-            interface ShapeStore {
+            interface ShapeState {
 
                 var symmetry: CraftingFormula.Shaped.ShapeSymmetry
 
                 var trim: Boolean
+
+                fun complete(): Result<CraftingFormula.Shaped.Shape>
 
             }
 

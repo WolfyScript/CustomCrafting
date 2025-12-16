@@ -21,6 +21,8 @@ interface RecipeEditor {
      */
     fun createSession(uuid: UUID): Result<EditorSession>
 
+    fun getOrCreateSession(uuid: UUID): Result<EditorSession>
+
     fun deleteSession(uuid: UUID)
 
 }

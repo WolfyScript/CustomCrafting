@@ -1,0 +1,19 @@
+package com.wolfyscript.customcrafting.editor.result
+
+import com.wolfyscript.customcrafting.recipes.RecipeResult
+import com.wolfyscript.scafall.identifier.Key
+import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
+
+interface ResultState {
+
+    val stacks: MutableList<ScafallItemStack>
+
+    val tags: MutableList<Key>
+
+    val actions: List<ResultActionState<*>>
+
+    val modifier: ResultModifierState
+
+    fun complete(): Result<RecipeResult>
+
+}

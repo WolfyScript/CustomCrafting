@@ -8,7 +8,6 @@ import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatchers
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainder
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainders
-import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.config.jackson.registerTypeRegistry
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.Registry
@@ -61,7 +60,7 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
             }
         }
 
-        createRegistry(CustomCraftingRegistryTypes.recipeTypeSpecificStoreFactories) { RegistrySimple(it) }
+        createRegistry(CustomCraftingRegistryTypes.recipeTypeSpecificStateFactories) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.conditionStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.recipeItemTransmuterStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.resultActionStores) { RegistrySimple(it) }

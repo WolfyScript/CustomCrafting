@@ -4,7 +4,7 @@ import com.wolfyscript.scafall.identifier.Key
 
 interface SessionState {
 
-    val recipeStore: RecipeStore<*>
+    val recipeState: RecipeState<*>
 
     fun cancel()
 

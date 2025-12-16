@@ -4,6 +4,8 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.editor.cli.recipeEditorCLIEntry
+import com.wolfyscript.customcrafting.editor.ui.recipeEditorUIEntry
 import com.wolfyscript.customcrafting.recipes.RecipeManagerCommon
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
@@ -64,6 +66,8 @@ object RecipesCommand {
                                 return@suggests builder.buildFuture()
                             })
                     )
+                    recipeEditorCLIEntry(dispatcher)
+                    recipeEditorUIEntry(dispatcher)
                 }
             )
         }

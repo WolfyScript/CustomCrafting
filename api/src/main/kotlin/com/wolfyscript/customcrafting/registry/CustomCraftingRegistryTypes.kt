@@ -1,9 +1,9 @@
 package com.wolfyscript.customcrafting.registry
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.RecipeStore
+import com.wolfyscript.customcrafting.editor.RecipeState
 import com.wolfyscript.customcrafting.editor.conditions.ConditionStore
-import com.wolfyscript.customcrafting.editor.result.ResultActionStore
+import com.wolfyscript.customcrafting.editor.result.ResultActionState
 import com.wolfyscript.customcrafting.editor.result.TransmuterStore
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
@@ -70,13 +70,13 @@ object CustomCraftingRegistryTypes {
     // Used to store the types of content used in the editor. Usually associated with a type of the above type registries.
     //
 
-    val recipeTypeSpecificStoreFactories = create<RecipeStore.RecipeTypeSpecificStore.Factory<*>>("editor/recipe/factories")
+    val recipeTypeSpecificStateFactories = create<RecipeState.RecipeTypeSpecificState.Factory<*>>("editor/recipe/factories")
 
     val conditionStores = create<Class<out ConditionStore<*>>>("editor/recipe/conditions")
 
     val recipeItemTransmuterStores = create<Class<out TransmuterStore<*>>>("editor/recipe/item/transmuters")
 
-    val resultActionStores = create<Class<out ResultActionStore<*>>>("editor/recipe/result/actions")
+    val resultActionStores = create<Class<out ResultActionState<*>>>("editor/recipe/result/actions")
 
     private fun <T> create(registryKey: String): RegistryReference<T> {
         return RegistryKey.of<T>(root, Key.customCrafting(registryKey)).reference { CustomCraftingProvider.get().registries }

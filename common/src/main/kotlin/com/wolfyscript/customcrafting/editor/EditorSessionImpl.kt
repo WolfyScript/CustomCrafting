@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.editor
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.editor.recipes.RecipeStateImpl
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.RecipeType
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
@@ -24,27 +25,31 @@ class EditorSessionImpl(
     }
 
     override fun create(recipeType: RecipeType<*>): Result<SessionState> {
+        if (state != null) {
+            return Result.failure(IllegalStateException("Already editing a recipe of type ${state!!.recipeState.recipeType}. Cancel and try again."))
+        }
+
         val store = createTyped(recipeType)
             ?: return Result.failure(IllegalArgumentException("Failed to create editor store: missing type factory for recipe type $recipeType"))
         state = CreateRecipeSessionState(store)
         return Result.success(state!!)
     }
 
-    private fun <T: CustomRecipe<*,*>> createTyped(recipeType: RecipeType<T>): RecipeStore<T>? {
-        val storeTypes = CustomCraftingRegistryTypes.recipeTypeSpecificStoreFactories.resolveOrThrow()
+    private fun <T: CustomRecipe<*,*>> createTyped(recipeType: RecipeType<T>): RecipeState<T>? {
+        val storeTypes = CustomCraftingRegistryTypes.recipeTypeSpecificStateFactories.resolveOrThrow()
         return storeTypes.values().firstOrNull { it.recipeType == recipeType }?.let {
-            it as RecipeStore.RecipeTypeSpecificStore.Factory<T>
-            RecipeStoreImpl(recipeType, it.create())
+            it as RecipeState.RecipeTypeSpecificState.Factory<T>
+            RecipeStateImpl(recipeType, it.create())
         }
     }
 
-    private fun <T : CustomRecipe<*, *>> edit(recipe: T): RecipeStore<T>? {
-        val storeTypes = CustomCraftingRegistryTypes.recipeTypeSpecificStoreFactories.resolveOrThrow()
+    private fun <T : CustomRecipe<*, *>> edit(recipe: T): RecipeState<T>? {
+        val storeTypes = CustomCraftingRegistryTypes.recipeTypeSpecificStateFactories.resolveOrThrow()
         val store = storeTypes.values().firstOrNull { it.recipeType == recipe.type }?.let {
-            it as RecipeStore.RecipeTypeSpecificStore.Factory<T>
+            it as RecipeState.RecipeTypeSpecificState.Factory<T>
             it.edit(recipe)
         } ?: return null
-        return RecipeStoreImpl(recipe.type as RecipeType<T>, store)
+        return RecipeStateImpl(recipe.type as RecipeType<T>, store)
     }
 
     override fun cancel() {

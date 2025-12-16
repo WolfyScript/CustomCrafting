@@ -10,11 +10,11 @@ import com.wolfyscript.customcrafting.recipes.RecipeType
  * These settings are completed by the user in a GUI or otherwise and once complete used to construct a [CustomRecipe].
  * Before the recipe is constructed, the values are validated to make sure they create a valid recipe.
  */
-interface RecipeStore<T: CustomRecipe<*,*>> {
+interface RecipeState<T: CustomRecipe<*,*>> {
 
     val recipeType: RecipeType<T>
 
-    val recipeTypeSpecificStore: RecipeTypeSpecificStore<T>
+    val recipeTypeSpecificState: RecipeTypeSpecificState<T>
 
     var priority: Int
 
@@ -30,18 +30,18 @@ interface RecipeStore<T: CustomRecipe<*,*>> {
     /**
      * Stores the settings for a specific type of recipe.
      */
-    interface RecipeTypeSpecificStore<T: CustomRecipe<*,*>> {
+    interface RecipeTypeSpecificState<T: CustomRecipe<*,*>> {
 
         /**
          * Completes the type specific properties
          *
          * @return the new [T] instance or an error otherwise
          */
-        fun complete(common: RecipeStore<T>) : Result<T>
+        fun complete(common: RecipeState<T>) : Result<T>
 
         /**
-         * Used to construct [RecipeTypeSpecificStore]s instances,
-         * either new instances or by loading existing [CustomRecipe]s properties into a [RecipeTypeSpecificStore].
+         * Used to construct [RecipeTypeSpecificState]s instances,
+         * either new instances or by loading existing [CustomRecipe]s properties into a [RecipeTypeSpecificState].
          */
         interface Factory<T: CustomRecipe<*,*>> {
 
@@ -52,12 +52,12 @@ interface RecipeStore<T: CustomRecipe<*,*>> {
              *
              * Care needs to be taken, so that objects are completely cloned, so no references to the original properties exist!
              */
-            fun edit(recipe: T): RecipeTypeSpecificStore<T>
+            fun edit(recipe: T): RecipeTypeSpecificState<T>
 
             /**
-             * Creates a new instance of a [RecipeTypeSpecificStore] for not yet existing recipe.
+             * Creates a new instance of a [RecipeTypeSpecificState] for not yet existing recipe.
              */
-            fun create(): RecipeTypeSpecificStore<T>
+            fun create(): RecipeTypeSpecificState<T>
 
         }
 
