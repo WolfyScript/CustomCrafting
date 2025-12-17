@@ -8,8 +8,25 @@ import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCraftingImpl
 import com.wolfyscript.customcrafting.recipes.RecipeConditionsImpl
+import com.wolfyscript.customcrafting.recipes.RecipeType
+import com.wolfyscript.customcrafting.recipes.RecipeTypes
 import com.wolfyscript.customcrafting.recipes.ShapedCraftingFormulaImpl
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
+
+class RecipeCraftingStateFactory() : RecipeState.RecipeTypeSpecificState.Factory<CustomRecipeCrafting> {
+
+    override val recipeType: RecipeType<CustomRecipeCrafting> by lazy { RecipeTypes.crafting.resolveOrThrow() }
+
+    override fun edit(recipe: CustomRecipeCrafting): RecipeState.RecipeTypeSpecificState<CustomRecipeCrafting> {
+        return RecipeCraftingStateImpl() // TODO: load recipe into state
+    }
+
+    override fun create(): RecipeState.RecipeTypeSpecificState<CustomRecipeCrafting> {
+        return RecipeCraftingStateImpl()
+    }
+
+}
+
 
 class RecipeCraftingStateImpl : RecipeCraftingState {
 

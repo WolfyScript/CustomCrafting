@@ -4,11 +4,15 @@ import androidx.compose.runtime.Composable
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.wolfyscript.customcrafting.core.commands.SUCCESS_RESULT
+import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.util.customCrafting
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.viewportl.gui.compose.layout.slots
 import com.wolfyscript.viewportl.gui.compose.viewProperties
+import com.wolfyscript.viewportl.gui.elements.Button
+import com.wolfyscript.viewportl.gui.elements.Icon
+import com.wolfyscript.viewportl.gui.elements.Row
 import com.wolfyscript.viewportl.viewportl
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
@@ -33,6 +37,8 @@ internal fun LiteralArgumentBuilder<CommandSourceStack>.recipeEditorUIEntry(disp
     )
 }
 
+internal val recipeTypeSpecificStates by lazy { CustomCraftingRegistryTypes.recipeTypeSpecificStateFactories.resolveOrThrow() }
+
 @Composable
 internal fun RecipeEditor() {
     viewProperties(Key.customCrafting("recipe_editor")) {
@@ -40,7 +46,14 @@ internal fun RecipeEditor() {
         title("<b>Recipe Editor")
     }
 
+    Row {
+        for (factory in recipeTypeSpecificStates) {
+            Button(onClick = {
 
-
+            }) {
+                Icon(stack = factory.recipeType.icon)
+            }
+        }
+    }
 
 }

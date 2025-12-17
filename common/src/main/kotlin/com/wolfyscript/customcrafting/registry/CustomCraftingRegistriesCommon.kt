@@ -1,5 +1,8 @@
 package com.wolfyscript.customcrafting.registry
 
+import com.wolfyscript.customcrafting.editor.RecipeState
+import com.wolfyscript.customcrafting.editor.RecipeTypeSpecificStateFactories
+import com.wolfyscript.customcrafting.editor.recipes.RecipeCraftingStateFactory
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.actions.CommandResultAction
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
@@ -63,7 +66,11 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
             }
         }
 
-        createRegistry(CustomCraftingRegistryTypes.recipeTypeSpecificStateFactories) { RegistrySimple(it) }
+        createRegistry(CustomCraftingRegistryTypes.recipeTypeSpecificStateFactories) {
+            RegistrySimple<RecipeState.RecipeTypeSpecificState.Factory<*>>(it).apply {
+                register(RecipeTypeSpecificStateFactories.crafting.key.key, RecipeCraftingStateFactory())
+            }
+        }
         createRegistry(CustomCraftingRegistryTypes.conditionStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.recipeItemTransmuterStores) { RegistrySimple(it) }
         createRegistry(CustomCraftingRegistryTypes.resultActionStores) { RegistrySimple(it) }
