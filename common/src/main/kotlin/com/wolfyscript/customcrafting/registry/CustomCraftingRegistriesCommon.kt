@@ -14,6 +14,9 @@ import com.wolfyscript.scafall.registry.Registry
 import com.wolfyscript.scafall.registry.RegistryKey
 import com.wolfyscript.scafall.registry.RegistryReference
 import com.wolfyscript.scafall.registry.RegistrySimple
+import com.wolfyscript.scafall.wrappers.snapshot
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 
 class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
 
@@ -22,13 +25,13 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
     fun initRegistries() {
         createRegistry(CustomCraftingRegistryTypes.recipeTypes) {
             RegistrySimple<RecipeType<*>>(it).apply {
-                register(RecipeTypes.crafting.key.key, RecipeTypeImpl(CustomRecipeCrafting::class.java))
-                register(RecipeTypes.cooking.key.key, RecipeTypeImpl(CustomRecipeCooking::class.java))
-                register(RecipeTypes.mixing.key.key, RecipeTypeImpl(CustomRecipeMixing::class.java))
-                register(RecipeTypes.repairing.key.key, RecipeTypeImpl(CustomRecipeRepairing::class.java))
-                register(RecipeTypes.smithing.key.key, RecipeTypeImpl(CustomRecipeSmithing::class.java))
-                register(RecipeTypes.stonecutting.key.key, RecipeTypeImpl(CustomRecipeStonecutting::class.java))
-                register(RecipeTypes.grinding.key.key, RecipeTypeImpl(CustomRecipeGrinding::class.java))
+                register(RecipeTypes.crafting.key.key, RecipeTypeImpl(CustomRecipeCrafting::class.java, ItemStack(Items.CRAFTING_TABLE).snapshot()))
+                register(RecipeTypes.cooking.key.key, RecipeTypeImpl(CustomRecipeCooking::class.java, ItemStack(Items.FURNACE).snapshot()))
+                register(RecipeTypes.mixing.key.key, RecipeTypeImpl(CustomRecipeMixing::class.java, ItemStack(Items.CAULDRON).snapshot()))
+                register(RecipeTypes.repairing.key.key, RecipeTypeImpl(CustomRecipeRepairing::class.java, ItemStack(Items.ANVIL).snapshot()))
+                register(RecipeTypes.smithing.key.key, RecipeTypeImpl(CustomRecipeSmithing::class.java, ItemStack(Items.SMITHING_TABLE).snapshot()))
+                register(RecipeTypes.stonecutting.key.key, RecipeTypeImpl(CustomRecipeStonecutting::class.java, ItemStack(Items.STONECUTTER).snapshot()))
+                register(RecipeTypes.grinding.key.key, RecipeTypeImpl(CustomRecipeGrinding::class.java, ItemStack(Items.GRINDSTONE).snapshot()))
             }
         }
 
