@@ -1,16 +1,10 @@
 package com.wolfyscript.customcrafting.editor.recipes
 
-import com.wolfyscript.customcrafting.editor.IngredientStore
+import com.wolfyscript.customcrafting.editor.IngredientState
 import com.wolfyscript.customcrafting.editor.RecipeState
 import com.wolfyscript.customcrafting.editor.recipe_stores.RecipeCraftingState
 import com.wolfyscript.customcrafting.editor.result.ResultState
-import com.wolfyscript.customcrafting.recipes.CraftingFormula
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCraftingImpl
-import com.wolfyscript.customcrafting.recipes.RecipeConditionsImpl
-import com.wolfyscript.customcrafting.recipes.RecipeType
-import com.wolfyscript.customcrafting.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.recipes.ShapedCraftingFormulaImpl
+import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 
 class RecipeCraftingStateFactory() : RecipeState.RecipeTypeSpecificState.Factory<CustomRecipeCrafting> {
@@ -27,62 +21,96 @@ class RecipeCraftingStateFactory() : RecipeState.RecipeTypeSpecificState.Factory
 
 }
 
-
 class RecipeCraftingStateImpl : RecipeCraftingState {
 
     override val result: ResultState = ResultStateImpl()
-    override var formula: RecipeCraftingState.CraftingFormulaState<*> = ShapedCraftingFormula()
+    override var formula: RecipeCraftingState.CraftingFormulaState<*> = ShapedCraftingFormulaState()
         private set
 
-    override fun complete(common: RecipeState<CustomRecipeCrafting>): Result<CustomRecipeCrafting> {
-        val completedFormula = formula.complete()
-        if (completedFormula.isFailure) {
-            return Result.failure(IllegalStateException("Failed to create crafting recipe formula: ${completedFormula.exceptionOrNull()?.message ?: "Unknown error" }"))
+    override fun setFormulaType(type: Class<out CraftingFormula>) {
+        val previousFormula = formula
+        formula = when (type) {
+            CraftingFormula.Shaped::class.java -> ShapedCraftingFormulaState()
+            CraftingFormula.Shapeless::class.java -> ShapelessCraftingFormulaState()
+            else -> ShapedCraftingFormulaState()
         }
-        val completedResult = result.complete()
-        if (completedResult.isFailure) {
-            return Result.failure(IllegalStateException("Failed to create crafting recipe result: ${completedResult.exceptionOrNull()?.message ?: "Unknown error"}"))
+        // TODO: copy properties like ingredients to not reset them
+    }
+
+    override fun complete(common: RecipeState<CustomRecipeCrafting>): Result<CustomRecipeCrafting> {
+        val completedFormula = formula.complete().getOrElse {
+            return Result.failure(IllegalStateException("Failed to create crafting recipe: Invalid formula", it))
+        }
+        val completedResult = result.complete().getOrElse {
+            return Result.failure(IllegalStateException("Failed to create crafting recipe: Invalid result", it))
         }
 
         val recipe = CustomRecipeCraftingImpl(
             priority = common.priority,
             conditions = common.condition?.complete()?.getOrNull() ?: RecipeConditionsImpl(),
-            formula = completedFormula.getOrThrow(),
-            result = completedResult.getOrThrow()
+            formula = completedFormula,
+            result = completedResult
         )
         return Result.success(recipe)
     }
 
 }
 
-class ShapelessCraftingFormula : RecipeCraftingState.CraftingFormulaState.Shapeless {
+class ShapelessCraftingFormulaState : RecipeCraftingState.CraftingFormulaState.Shapeless {
 
-    override val ingredients: MutableList<IngredientStore> = mutableListOf()
+    override val ingredients: MutableList<IngredientState> = mutableListOf()
 
     override fun addIngredient(ingredient: Ingredient) {
-        TODO("Not yet implemented")
+        ingredients.add(IngredientStateImpl.loadFrom(ingredient))
     }
 
     override fun removeIngredient(index: Int) {
-        TODO("Not yet implemented")
+        ingredients.removeAt(index)
     }
 
     override fun complete(): Result<CraftingFormula.Shapeless> {
-        TODO("Not yet implemented")
+        if (ingredients.isEmpty()) {
+            return Result.failure(IllegalStateException("Failed to create shapeless formula: Must have at least 1 ingredient"))
+        }
+
+        val completedIngredients = mutableListOf<Ingredient>()
+        for ((index, ingredientState) in ingredients.withIndex()) {
+            val ingredient = ingredientState.complete().getOrElse {
+                return Result.failure(
+                    IllegalStateException(
+                        "Failed to create shapeless formula: invalid ingredient at index $index",
+                        it
+                    )
+                )
+            }
+            completedIngredients.add(ingredient)
+        }
+
+        return Result.success(ShapelessCraftingFormulaImpl(completedIngredients))
     }
 
 }
 
-class ShapedCraftingFormula : RecipeCraftingState.CraftingFormulaState.Shaped {
+class ShapedCraftingFormulaState : RecipeCraftingState.CraftingFormulaState.Shaped {
 
-    override val ingredients: MutableList<IngredientStore> = mutableListOf()
+    override val ingredients: MutableList<IngredientState?> = arrayOfNulls<IngredientState?>(9).toMutableList()
+    override var shape: RecipeCraftingState.CraftingFormulaState.Shaped.ShapeState = ShapeState()
+    private val ingredientToId = mutableMapOf<IngredientState, Char>()
 
     override fun assignIngredient(
         index: Int,
         ingredient: Ingredient,
     ) {
         if (index > 0 && index < ingredients.size) {
-//                ingredients[index] = ingredient
+            val state = IngredientStateImpl.loadFrom(ingredient)
+            ingredients[index] = state
+
+            ingredientToId.clear()
+            for ((index, ingredientState) in ingredients.distinct().withIndex()) {
+                if (ingredientState != null) {
+                    ingredientToId[ingredientState] = index.digitToChar()
+                }
+            }
         }
     }
 
@@ -92,25 +120,51 @@ class ShapedCraftingFormula : RecipeCraftingState.CraftingFormulaState.Shaped {
         }
     }
 
-    override var shape: RecipeCraftingState.CraftingFormulaState.Shaped.ShapeState = CraftingFormulaShapeState()
-
     override fun complete(): Result<CraftingFormula.Shaped> {
-        TODO("Not yet implemented")
+        val mappedIngredients = buildMap {
+            for ((ingredient, key) in ingredientToId.entries) {
+                this[key] = ingredient.complete().getOrElse {
+                    return Result.failure(
+                        IllegalStateException(
+                            "Failed to create shaped formula: invalid ingredient $key",
+                            it
+                        )
+                    )
+                }
+            }
+        }
+        val completedShape = shape.complete().getOrElse {
+            return Result.failure(
+                IllegalStateException(
+                    "Failed to create shaped formula: failed to complete shape",
+                    it
+                )
+            )
+        }
+
+        val shaped = ShapedCraftingFormulaImpl(mappedIngredients, completedShape)
+        return Result.success(shaped)
+    }
+
+    inner class ShapeState() : RecipeCraftingState.CraftingFormulaState.Shaped.ShapeState {
+
+        override var symmetry: CraftingFormula.Shaped.ShapeSymmetry = ShapedCraftingFormulaImpl.ShapeSymmetryImpl(
+            horizontal = false,
+            vertical = false,
+            rotate = false
+        )
+
+        override var trim: Boolean = true
+
+        override fun complete(): Result<CraftingFormula.Shaped.Shape> {
+            val rows: MutableList<String> = mutableListOf("", "", "")
+            for ((index, ingredientState) in ingredients.withIndex()) {
+                val char: Char = ingredientToId[ingredientState] ?: ' '
+                rows[index / 3] += char
+            }
+            return Result.success(ShapedCraftingFormulaImpl.ShapeImpl(rows, symmetry, trim))
+        }
     }
 
 }
 
-class CraftingFormulaShapeState() : RecipeCraftingState.CraftingFormulaState.Shaped.ShapeState {
-
-    override var symmetry: CraftingFormula.Shaped.ShapeSymmetry = ShapedCraftingFormulaImpl.ShapeSymmetryImpl(
-        horizontal = false,
-        vertical = false,
-        rotate = false
-    )
-
-    override var trim: Boolean = true
-
-    override fun complete(): Result<CraftingFormula.Shaped.Shape> {
-        TODO("Not yet implemented")
-    }
-}

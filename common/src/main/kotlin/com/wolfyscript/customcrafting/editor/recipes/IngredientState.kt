@@ -1,16 +1,28 @@
 package com.wolfyscript.customcrafting.editor.recipes
 
-import com.wolfyscript.customcrafting.editor.IngredientStore
+import com.wolfyscript.customcrafting.editor.IngredientState
 import com.wolfyscript.customcrafting.recipes.IngredientImpl
 import com.wolfyscript.customcrafting.recipes.RecipeChoicesImpl
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
-import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
-class IngredientStateImpl : IngredientStore {
+class IngredientStateImpl: IngredientState {
 
-    override val stacks: MutableList<ScafallItemStack> = mutableListOf()
+    companion object {
+
+        fun loadFrom(ingredient: Ingredient) : IngredientStateImpl {
+            val state = IngredientStateImpl()
+            // TODO: properly clone values!
+            state.stacks.addAll(ingredient.choices.stacks)
+            state.tags.addAll(ingredient.choices.tags)
+
+            return state
+        }
+
+    }
+
+    override val stacks: MutableList<ItemStackRef> = mutableListOf()
     override val tags: MutableList<Key> = mutableListOf()
     override var replaceWithRemains: Boolean = true
 
@@ -20,7 +32,7 @@ class IngredientStateImpl : IngredientStore {
         }
         val stackRefs = mutableListOf<ItemStackRef>()
         for (stack in stacks) {
-            stackRefs.add(ItemStackRef.parse(stack) ?: ItemStackRef.create(stack))
+            stackRefs.add(stack)
         }
 
         return Result.success(

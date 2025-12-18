@@ -1,11 +1,10 @@
 package com.wolfyscript.customcrafting.editor.recipe_stores
 
-import com.wolfyscript.customcrafting.editor.IngredientStore
+import com.wolfyscript.customcrafting.editor.IngredientState
 import com.wolfyscript.customcrafting.editor.RecipeState
 import com.wolfyscript.customcrafting.editor.result.ResultState
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 
 interface RecipeCraftingState : RecipeState.RecipeTypeSpecificState<CustomRecipeCrafting> {
@@ -14,13 +13,15 @@ interface RecipeCraftingState : RecipeState.RecipeTypeSpecificState<CustomRecipe
 
     val formula: CraftingFormulaState<*>
 
+    fun setFormulaType(type: Class<out CraftingFormula>)
+
     interface CraftingFormulaState<T: CraftingFormula> {
 
         fun complete(): Result<T>
 
         interface Shapeless : CraftingFormulaState<CraftingFormula.Shapeless> {
 
-            val ingredients: MutableList<IngredientStore>
+            val ingredients: MutableList<IngredientState>
 
             /**
              * Adds an ingredient to the end of the [ingredients]
@@ -36,7 +37,7 @@ interface RecipeCraftingState : RecipeState.RecipeTypeSpecificState<CustomRecipe
 
         interface Shaped : CraftingFormulaState<CraftingFormula.Shaped> {
 
-            val ingredients: MutableList<IngredientStore>
+            val ingredients: MutableList<IngredientState?>
 
             /**
              * Assigns an ingredient to the specified index in the recipe
@@ -64,4 +65,8 @@ interface RecipeCraftingState : RecipeState.RecipeTypeSpecificState<CustomRecipe
 
     }
 
+}
+
+inline fun <reified T: CraftingFormula> RecipeCraftingState.setFormulaType() {
+    setFormulaType(T::class.java)
 }

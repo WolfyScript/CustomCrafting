@@ -2,11 +2,11 @@ package com.wolfyscript.customcrafting.editor
 
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
+import com.wolfyscript.scafall.items.ItemStackRef
 
-interface IngredientStore {
+interface IngredientState {
 
-    val stacks: MutableList<ScafallItemStack>
+    val stacks: MutableList<ItemStackRef>
 
     val tags: MutableList<Key>
 
