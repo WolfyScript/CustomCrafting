@@ -1,23 +1,28 @@
 package com.wolfyscript.customcrafting.editor.ui
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.wolfyscript.customcrafting.core.commands.SUCCESS_RESULT
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
+import com.wolfyscript.customcrafting.editor.ui.home.EditorHome
+import com.wolfyscript.customcrafting.editor.ui.home.EditorHomeStore
+import com.wolfyscript.customcrafting.editor.ui.recipe_editor.RecipeEditor
 import com.wolfyscript.customcrafting.util.customCrafting
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
+import com.wolfyscript.viewportl.gui.compose.layout.Alignment.CenterVertically
+import com.wolfyscript.viewportl.gui.compose.layout.Arrangement
 import com.wolfyscript.viewportl.gui.compose.layout.slots
+import com.wolfyscript.viewportl.gui.compose.modifier.Modifier
+import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxWidth
+import com.wolfyscript.viewportl.gui.compose.modifier.height
 import com.wolfyscript.viewportl.gui.compose.viewProperties
-import com.wolfyscript.viewportl.gui.elements.Button
-import com.wolfyscript.viewportl.gui.elements.Icon
-import com.wolfyscript.viewportl.gui.elements.Row
+import com.wolfyscript.viewportl.gui.elements.*
+import com.wolfyscript.viewportl.gui.model.store
 import com.wolfyscript.viewportl.viewportl
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
-
-private val recipeEditorUI = Key.customCrafting("recipe_editor_ui")
 
 internal fun LiteralArgumentBuilder<CommandSourceStack>.recipeEditorUIEntry(dispatcher: CommandDispatcher<CommandSourceStack>) {
     then(
@@ -28,7 +33,7 @@ internal fun LiteralArgumentBuilder<CommandSourceStack>.recipeEditorUIEntry(disp
                 ScafallProvider.get().scheduler.asyncTask(ScafallProvider.get().modInfo) {
                     viewportl.guiManager.getViewRuntime(executor.uuid).let { playerRuntime ->
                         playerRuntime.joinViewer(executor.uuid)
-                        playerRuntime.setNewView(recipeEditorUI) { RecipeEditor() }
+                        playerRuntime.setContent { RecipeEditorRoot() }
                         playerRuntime.openView()
                     }
                 }
@@ -37,23 +42,24 @@ internal fun LiteralArgumentBuilder<CommandSourceStack>.recipeEditorUIEntry(disp
     )
 }
 
-internal val recipeTypeSpecificStates by lazy { CustomCraftingRegistryTypes.recipeTypeSpecificStateFactories.resolveOrThrow() }
-
 @Composable
-internal fun RecipeEditor() {
+internal fun RecipeEditorRoot() {
     viewProperties(Key.customCrafting("recipe_editor")) {
         size(9.slots, 4.slots)
         title("<b>Recipe Editor")
     }
 
-    Row {
-        for (factory in recipeTypeSpecificStates) {
-            Button(onClick = {
+    val backstack = remember { mutableStateListOf<NavKey>(Paths.Home) }
 
-            }) {
-                Icon(stack = factory.recipeType.icon)
-            }
+    NavHost(backstack, onBack = {}) {
+        composable<Paths.Home> {
+            EditorHome(backstack)
         }
+
+        composable<Paths.RecipeEditor> {
+            RecipeEditor(it.recipeType)
+        }
+
     }
 
 }

@@ -58,6 +58,37 @@ class IngredientImpl(
 
 }
 
+// TODO: incase the other system of looking up the key doesn't work, lets use this
+private class IngredientRef(val key: Key) : Ingredient {
+
+    val ingredient: Ingredient by lazy {
+        CustomCraftingProvider.get().server?.ingredientManager?.getIngredient(key)
+            ?: error("Could not find required ingredient: $key")
+    }
+
+    override val choices: RecipeChoices
+        get() = ingredient.choices
+    override val matching: IngredientMatcher
+        get() = ingredient.matching
+    override val consumption: IngredientConsumer
+        get() = ingredient.consumption
+
+    override fun match(stack: ScafallItemStack): ItemStackRef? {
+        return ingredient.match(stack)
+    }
+
+    override fun shrink(
+        target: ScafallItemStack,
+        count: Int,
+        ref: ItemStackRef,
+        context: EvaluationContext,
+        evalResult: RecipeEvaluationResult<*, *>,
+    ): ScafallItemStack {
+        return ingredient.shrink(target, count, ref, context, evalResult)
+    }
+
+}
+
 class IngredientMatcherExactImpl() : IngredientMatcher.Exact {
 
     override fun match(
