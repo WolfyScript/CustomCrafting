@@ -1,19 +1,36 @@
-package com.wolfyscript.customcrafting.editor.recipe_stores
+package com.wolfyscript.customcrafting.editor.model.recipes
 
-import com.wolfyscript.customcrafting.editor.IngredientState
-import com.wolfyscript.customcrafting.editor.RecipeState
-import com.wolfyscript.customcrafting.editor.result.ResultState
+import com.wolfyscript.customcrafting.editor.model.recipes.RecipeState
+import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultState
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 
 interface RecipeCraftingState : RecipeState.RecipeTypeSpecificState<CustomRecipeCrafting> {
 
+    val ingredientCollection: IngredientCollection
+
     val result: ResultState
 
     val formula: CraftingFormulaState<*>
 
     fun setFormulaType(type: Class<out CraftingFormula>)
+
+    /**
+     * Collects the ingredients to be used to construct the formula and prevent duplicate ingredients.
+     * Use is entirely optional as ingredients can be added to the formula directly.
+     */
+    interface IngredientCollection {
+
+        val ingredients: List<IngredientState>
+
+        fun addNew()
+
+        fun add(ingredient: IngredientState)
+
+        fun remove(index: Int)
+
+    }
 
     interface CraftingFormulaState<T: CraftingFormula> {
 
@@ -27,6 +44,8 @@ interface RecipeCraftingState : RecipeState.RecipeTypeSpecificState<CustomRecipe
              * Adds an ingredient to the end of the [ingredients]
              */
             fun addIngredient(ingredient: Ingredient)
+
+            fun addIngredient(ingredient: IngredientState)
 
             /**
              * Removes an ingredient from the [ingredients] at the specified index

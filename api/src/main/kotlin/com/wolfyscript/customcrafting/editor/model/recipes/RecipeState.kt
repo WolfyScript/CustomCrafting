@@ -1,16 +1,16 @@
-package com.wolfyscript.customcrafting.editor
+package com.wolfyscript.customcrafting.editor.model.recipes
 
-import com.wolfyscript.customcrafting.editor.conditions.RecipeConditionsStore
+import com.wolfyscript.customcrafting.editor.model.recipes.conditions.RecipeConditionsStore
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.RecipeType
 
 /**
  * Stores the settings for a recipe in the editor.
  *
- * These settings are completed by the user in a GUI or otherwise and once complete used to construct a [CustomRecipe].
+ * These settings are completed by the user in a GUI or otherwise and once complete used to construct a [com.wolfyscript.customcrafting.recipes.CustomRecipe].
  * Before the recipe is constructed, the values are validated to make sure they create a valid recipe.
  */
-interface RecipeState<T: CustomRecipe<*,*>> {
+interface RecipeState<T: CustomRecipe<*, *>> {
 
     val recipeType: RecipeType<T>
 
@@ -30,7 +30,7 @@ interface RecipeState<T: CustomRecipe<*,*>> {
     /**
      * Stores the settings for a specific type of recipe.
      */
-    interface RecipeTypeSpecificState<T: CustomRecipe<*,*>> {
+    interface RecipeTypeSpecificState<T: CustomRecipe<*, *>> {
 
         /**
          * Completes the type specific properties
@@ -43,7 +43,7 @@ interface RecipeState<T: CustomRecipe<*,*>> {
          * Used to construct [RecipeTypeSpecificState]s instances,
          * either new instances or by loading existing [CustomRecipe]s properties into a [RecipeTypeSpecificState].
          */
-        interface Factory<T: CustomRecipe<*,*>> {
+        interface Factory<T: CustomRecipe<*, *>> {
 
             val recipeType: RecipeType<T>
 

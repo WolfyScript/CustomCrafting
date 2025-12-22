@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.editor.result
+package com.wolfyscript.customcrafting.editor.model.recipes.result
 
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.scafall.identifier.Key

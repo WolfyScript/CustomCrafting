@@ -1,18 +1,18 @@
-package com.wolfyscript.customcrafting.editor.recipes
+package com.wolfyscript.customcrafting.editor.model.recipes
 
-import com.wolfyscript.customcrafting.editor.IngredientState
+import com.wolfyscript.customcrafting.editor.model.recipes.IngredientState
 import com.wolfyscript.customcrafting.recipes.IngredientImpl
 import com.wolfyscript.customcrafting.recipes.RecipeChoicesImpl
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 
-class IngredientStateImpl: IngredientState {
+class CustomIngredientStateImpl : IngredientState.CustomIngredientState {
 
     companion object {
 
-        fun loadFrom(ingredient: Ingredient) : IngredientStateImpl {
-            val state = IngredientStateImpl()
+        fun loadFrom(ingredient: Ingredient) : CustomIngredientStateImpl {
+            val state = CustomIngredientStateImpl()
             // TODO: properly clone values!
             state.stacks.addAll(ingredient.choices.stacks)
             state.tags.addAll(ingredient.choices.tags)
@@ -43,6 +43,14 @@ class IngredientStateImpl: IngredientState {
                 )
             )
         )
+    }
+
+}
+
+class SavedIngredientStateImpl(override val key: Key) : IngredientState.SavedIngredientState {
+
+    override fun complete(): Result<Ingredient> {
+        TODO("Not yet implemented")
     }
 
 }

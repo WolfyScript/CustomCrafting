@@ -1,11 +1,10 @@
-package com.wolfyscript.customcrafting.editor.recipes
+package com.wolfyscript.customcrafting.editor.model.recipes
 
-import com.wolfyscript.customcrafting.editor.IngredientState
-import com.wolfyscript.customcrafting.editor.RecipeState
-import com.wolfyscript.customcrafting.editor.recipe_stores.RecipeCraftingState
-import com.wolfyscript.customcrafting.editor.result.ResultState
+import com.wolfyscript.customcrafting.editor.model.recipes.RecipeState
+import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultState
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
+import kotlin.collections.get
 
 class RecipeCraftingStateFactory() : RecipeState.RecipeTypeSpecificState.Factory<CustomRecipeCrafting> {
 
@@ -21,8 +20,29 @@ class RecipeCraftingStateFactory() : RecipeState.RecipeTypeSpecificState.Factory
 
 }
 
+class IngredientCollectionStateImpl : RecipeCraftingState.IngredientCollection {
+
+    override val ingredients: MutableList<IngredientState> = mutableListOf()
+
+    override fun addNew() {
+        add(CustomIngredientStateImpl())
+    }
+
+    override fun add(ingredient: IngredientState) {
+        if (ingredients.size < 9) {
+            ingredients.add(ingredient)
+        }
+    }
+
+    override fun remove(index: Int) {
+        ingredients.removeAt(index)
+    }
+
+}
+
 class RecipeCraftingStateImpl : RecipeCraftingState {
 
+    override val ingredientCollection: RecipeCraftingState.IngredientCollection = IngredientCollectionStateImpl()
     override val result: ResultState = ResultStateImpl()
     override var formula: RecipeCraftingState.CraftingFormulaState<*> = ShapedCraftingFormulaState()
         private set
@@ -61,7 +81,15 @@ class ShapelessCraftingFormulaState : RecipeCraftingState.CraftingFormulaState.S
     override val ingredients: MutableList<IngredientState> = mutableListOf()
 
     override fun addIngredient(ingredient: Ingredient) {
-        ingredients.add(IngredientStateImpl.loadFrom(ingredient))
+        if (ingredients.size < 9) {
+            ingredients.add(CustomIngredientStateImpl.loadFrom(ingredient))
+        }
+    }
+
+    override fun addIngredient(ingredient: IngredientState) {
+        if (ingredients.size < 9) {
+            ingredients.add(ingredient)
+        }
     }
 
     override fun removeIngredient(index: Int) {
@@ -102,7 +130,7 @@ class ShapedCraftingFormulaState : RecipeCraftingState.CraftingFormulaState.Shap
         ingredient: Ingredient,
     ) {
         if (index > 0 && index < ingredients.size) {
-            val state = IngredientStateImpl.loadFrom(ingredient)
+            val state = CustomIngredientStateImpl.loadFrom(ingredient)
             ingredients[index] = state
 
             ingredientToId.clear()

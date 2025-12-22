@@ -1,7 +1,11 @@
 package com.wolfyscript.customcrafting.editor
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.recipes.RecipeStateImpl
+import com.wolfyscript.customcrafting.editor.model.CreateRecipeSessionState
+import com.wolfyscript.customcrafting.editor.model.EditRecipeSessionState
+import com.wolfyscript.customcrafting.editor.model.SessionState
+import com.wolfyscript.customcrafting.editor.model.recipes.RecipeState
+import com.wolfyscript.customcrafting.editor.model.recipes.RecipeStateImpl
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.RecipeType
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes

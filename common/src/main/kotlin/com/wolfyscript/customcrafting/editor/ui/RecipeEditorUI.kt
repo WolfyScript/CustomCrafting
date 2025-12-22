@@ -4,7 +4,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.core.commands.SUCCESS_RESULT
+import com.wolfyscript.customcrafting.editor.recipeEditor
 import com.wolfyscript.customcrafting.editor.ui.home.EditorHome
 import com.wolfyscript.customcrafting.editor.ui.home.EditorHomeStore
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.RecipeEditor
@@ -31,6 +33,7 @@ internal fun LiteralArgumentBuilder<CommandSourceStack>.recipeEditorUIEntry(disp
                 val viewportl = ScafallProvider.get().viewportl
                 val executor = ctx.source.player ?: return@executes 0
                 ScafallProvider.get().scheduler.asyncTask(ScafallProvider.get().modInfo) {
+                    CustomCraftingProvider.get().server?.recipeEditor?.getOrCreateSession(executor.uuid)
                     viewportl.guiManager.getViewRuntime(executor.uuid).let { playerRuntime ->
                         playerRuntime.joinViewer(executor.uuid)
                         playerRuntime.setContent { RecipeEditorRoot() }
@@ -57,7 +60,7 @@ internal fun RecipeEditorRoot() {
         }
 
         composable<Paths.RecipeEditor> {
-            RecipeEditor(it.recipeType)
+            RecipeEditor(it.recipeType, backstack)
         }
 
     }

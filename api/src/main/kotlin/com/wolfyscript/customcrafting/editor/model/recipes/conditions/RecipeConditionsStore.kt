@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.editor.conditions
+package com.wolfyscript.customcrafting.editor.model.recipes.conditions
 
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 

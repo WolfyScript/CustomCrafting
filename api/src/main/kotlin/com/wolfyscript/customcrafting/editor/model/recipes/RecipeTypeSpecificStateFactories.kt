@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.editor
+package com.wolfyscript.customcrafting.editor.model.recipes
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
@@ -22,8 +22,8 @@ object RecipeTypeSpecificStateFactories {
     private inline fun <reified T : CustomRecipe<*, *>> create(key: String): ValueReference<RecipeState.RecipeTypeSpecificState.Factory<*>, RecipeState.RecipeTypeSpecificState.Factory<T>> {
         return CustomCraftingRegistryTypes.recipeTypeSpecificStateFactories.key
             .referenced<RecipeState.RecipeTypeSpecificState.Factory<*>, RecipeState.RecipeTypeSpecificState.Factory<T>>(
-                Key.Companion.customCrafting(key)
-            ).reference { CustomCraftingProvider.Companion.get().registries }
+                Key.customCrafting(key)
+            ).reference { CustomCraftingProvider.get().registries }
     }
 
 }
