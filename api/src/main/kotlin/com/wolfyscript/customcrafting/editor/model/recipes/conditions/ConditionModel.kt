@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.recipes.conditions.Condition
 /**
  * Stores the settings for a condition in the editor.
  */
-interface ConditionStore<T: Condition> {
+interface ConditionModel<T: Condition> {
 
     /**
      * Completes the condition and validates it.

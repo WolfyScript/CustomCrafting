@@ -19,9 +19,9 @@ object RecipeTypeSpecificStateFactories {
     val stonecutting = create<CustomRecipeCrafting>("stonecutting")
     val grinding = create<CustomRecipeCrafting>("grinding")
 
-    private inline fun <reified T : CustomRecipe<*, *>> create(key: String): ValueReference<RecipeState.RecipeTypeSpecificState.Factory<*>, RecipeState.RecipeTypeSpecificState.Factory<T>> {
-        return CustomCraftingRegistryTypes.recipeTypeSpecificStateFactories.key
-            .referenced<RecipeState.RecipeTypeSpecificState.Factory<*>, RecipeState.RecipeTypeSpecificState.Factory<T>>(
+    private inline fun <reified T : CustomRecipe<*, *>> create(key: String): ValueReference<RecipeModel.RecipeTypeSpecificModel.Factory<*>, RecipeModel.RecipeTypeSpecificModel.Factory<T>> {
+        return CustomCraftingRegistryTypes.recipeTypeSpecificModelFactories.key
+            .referenced<RecipeModel.RecipeTypeSpecificModel.Factory<*>, RecipeModel.RecipeTypeSpecificModel.Factory<T>>(
                 Key.customCrafting(key)
             ).reference { CustomCraftingProvider.get().registries }
     }

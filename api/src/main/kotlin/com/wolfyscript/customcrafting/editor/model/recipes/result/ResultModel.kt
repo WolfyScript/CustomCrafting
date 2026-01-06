@@ -4,7 +4,7 @@ import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
-interface ResultState {
+interface ResultModel {
 
     val stacks: MutableList<ScafallItemStack>
 

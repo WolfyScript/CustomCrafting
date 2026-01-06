@@ -26,7 +26,7 @@ fun RecipeEditor(recipeType: RecipeType<*>, topBackStack: SnapshotStateList<NavK
     }
 }
 
-class RecipeStore : Store {
+class RecipeStore : Store() {
 
 
 

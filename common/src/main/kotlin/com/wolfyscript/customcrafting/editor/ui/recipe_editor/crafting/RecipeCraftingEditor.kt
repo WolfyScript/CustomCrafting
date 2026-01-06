@@ -24,7 +24,7 @@ import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 
-class CraftingRecipeStore : Store {
+class CraftingRecipeStore : Store() {
 
 
 
@@ -51,7 +51,7 @@ fun RecipeCraftingEditor(existingRecipeKey: Key? = null, topBackStack: SnapshotS
     ) {
         Box(Modifier.height(5.slots).fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
             // Main Content
-            NavHost(craftingBackStack, onBack = {}) {
+            NavigationRoot(craftingBackStack) {
                 composable<CraftingPaths.Advanced.AddIngredients> { AddIngredientsPage() }
                 composable<CraftingPaths.Advanced.Formula> { FormulaPageAdvanced() }
                 composable<CraftingPaths.Advanced.Result> { ResultPage() }

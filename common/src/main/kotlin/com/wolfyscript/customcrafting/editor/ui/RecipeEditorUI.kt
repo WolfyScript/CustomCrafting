@@ -54,7 +54,7 @@ internal fun RecipeEditorRoot() {
 
     val backstack = remember { mutableStateListOf<NavKey>(Paths.Home) }
 
-    NavHost(backstack, onBack = {}) {
+    NavigationRoot(backstack) {
         composable<Paths.Home> {
             EditorHome(backstack)
         }

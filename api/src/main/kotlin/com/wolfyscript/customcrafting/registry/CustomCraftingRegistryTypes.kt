@@ -1,8 +1,8 @@
 package com.wolfyscript.customcrafting.registry
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeState
-import com.wolfyscript.customcrafting.editor.model.recipes.conditions.ConditionStore
+import com.wolfyscript.customcrafting.editor.model.recipes.RecipeModel
+import com.wolfyscript.customcrafting.editor.model.recipes.conditions.ConditionModel
 import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultActionState
 import com.wolfyscript.customcrafting.editor.model.recipes.result.TransmuterStore
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
@@ -70,9 +70,9 @@ object CustomCraftingRegistryTypes {
     // Used to store the types of content used in the editor. Usually associated with a type of the above type registries.
     //
 
-    val recipeTypeSpecificStateFactories = create<RecipeState.RecipeTypeSpecificState.Factory<*>>("editor/recipe/factories")
+    val recipeTypeSpecificModelFactories = create<RecipeModel.RecipeTypeSpecificModel.Factory<*>>("editor/recipe/factories")
 
-    val conditionStores = create<Class<out ConditionStore<*>>>("editor/recipe/conditions")
+    val conditionStores = create<Class<out ConditionModel<*>>>("editor/recipe/conditions")
 
     val recipeItemTransmuterStores = create<Class<out TransmuterStore<*>>>("editor/recipe/item/transmuters")
 

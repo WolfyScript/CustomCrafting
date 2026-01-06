@@ -1,8 +1,7 @@
 package com.wolfyscript.customcrafting.editor.model
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeState
-import com.wolfyscript.customcrafting.editor.model.SessionState
+import com.wolfyscript.customcrafting.editor.model.recipes.RecipeModel
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.resource.DataType
 import com.wolfyscript.scafall.identifier.Key
@@ -12,7 +11,7 @@ private fun saveRecipe(key: Key, recipe: CustomRecipe<*,*>) {
     resourceLoader.save(DataType.Recipes, key, recipe)
 }
 
-class EditRecipeSessionState(key: Key, override val recipeState: RecipeState<*>) : SessionState.EditState {
+class EditRecipeSessionModel(key: Key, override val recipeModel: RecipeModel<*>) : SessionModel.EditModel {
 
     override var currentKey: Key = key
         private set
@@ -23,7 +22,7 @@ class EditRecipeSessionState(key: Key, override val recipeState: RecipeState<*>)
     }
 
     override fun save() {
-        val result = recipeState.complete()
+        val result = recipeModel.complete()
         if (result.isFailure) {
             return
         }
@@ -39,10 +38,10 @@ class EditRecipeSessionState(key: Key, override val recipeState: RecipeState<*>)
 
 }
 
-class CreateRecipeSessionState(override val recipeState: RecipeState<*>) : SessionState.CreateState {
+class CreateRecipeSessionModel(override val recipeModel: RecipeModel<*>) : SessionModel.CreateModel {
 
     override fun save(key: Key) {
-        val result = recipeState.complete()
+        val result = recipeModel.complete()
         if (result.isFailure) {
             return
         }

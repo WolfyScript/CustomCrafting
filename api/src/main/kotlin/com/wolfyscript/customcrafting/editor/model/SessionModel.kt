@@ -1,18 +1,18 @@
 package com.wolfyscript.customcrafting.editor.model
 
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeState
+import com.wolfyscript.customcrafting.editor.model.recipes.RecipeModel
 import com.wolfyscript.scafall.identifier.Key
 
-interface SessionState {
+interface SessionModel {
 
-    val recipeState: RecipeState<*>
+    val recipeModel: RecipeModel<*>
 
     fun cancel()
 
     /**
      * The Recipe Editor editing an existing recipes
      */
-    interface EditState : SessionState {
+    interface EditModel : SessionModel {
 
         /**
          * The key of the existing recipe
@@ -35,7 +35,7 @@ interface SessionState {
     /**
      * The Recipe Editor creating a new recipe
      */
-    interface CreateState : SessionState {
+    interface CreateModel : SessionModel {
 
         /**
          * Saves a new recipe under the specified key

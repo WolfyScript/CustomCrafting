@@ -3,24 +3,27 @@ package com.wolfyscript.customcrafting.editor.model.recipes
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
+import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
 
-interface IngredientState {
+interface IngredientModel {
 
     fun complete(): Result<Ingredient>
 
-    interface CustomIngredientState : IngredientState {
+    interface CustomIngredientModel : IngredientModel {
 
         val stacks: MutableList<ItemStackRef>
 
         val tags: MutableList<Key>
 
-        var replaceWithRemains: Boolean
+        val replaceWithRemains: Boolean
 
     }
 
-    interface SavedIngredientState : IngredientState {
+    interface SavedIngredientModel : IngredientModel {
 
         val key: Key
+
+        val icon: ItemStackSnapshot
 
     }
 

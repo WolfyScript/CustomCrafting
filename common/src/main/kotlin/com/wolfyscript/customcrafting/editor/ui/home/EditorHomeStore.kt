@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.UUID
 
-class EditorHomeStore(val viewer: UUID) : Store {
+class EditorHomeStore(val viewer: UUID) : Store() {
 
-    internal val recipeTypeSpecificStates = CustomCraftingRegistryTypes.recipeTypeSpecificStateFactories.resolveOrThrow()
+    internal val recipeTypeSpecificStates = CustomCraftingRegistryTypes.recipeTypeSpecificModelFactories.resolveOrThrow()
 
     private val homeStateFlow = MutableStateFlow(HomeState(recipeTypeSpecificStates.map { it.recipeType }))
     val homeState: StateFlow<HomeState> = homeStateFlow.asStateFlow()

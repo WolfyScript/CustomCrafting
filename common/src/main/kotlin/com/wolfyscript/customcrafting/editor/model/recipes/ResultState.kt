@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.editor.model.recipes
 
 import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultActionState
 import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultModifierState
-import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultState
+import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultModel
 import com.wolfyscript.customcrafting.recipes.RecipeChoicesImpl
 import com.wolfyscript.customcrafting.recipes.RecipeItemModifier
 import com.wolfyscript.customcrafting.recipes.RecipeItemModifierImpl
@@ -12,7 +12,7 @@ import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
-class ResultStateImpl : ResultState {
+class ResultModelImpl : ResultModel {
 
     override val stacks: MutableList<ScafallItemStack> = mutableListOf()
     override val tags: MutableList<Key> = mutableListOf()

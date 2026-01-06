@@ -1,18 +1,17 @@
 package com.wolfyscript.customcrafting.editor.model.recipes
 
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeState
-import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultState
+import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultModel
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 
-interface RecipeCraftingState : RecipeState.RecipeTypeSpecificState<CustomRecipeCrafting> {
+interface RecipeCraftingModel : RecipeModel.RecipeTypeSpecificModel<CustomRecipeCrafting> {
 
-    val ingredientCollection: IngredientCollection
+    val ingredientCollection: IngredientCollectionModel
 
-    val result: ResultState
+    val result: ResultModel
 
-    val formula: CraftingFormulaState<*>
+    val formula: CraftingFormulaModel<*>
 
     fun setFormulaType(type: Class<out CraftingFormula>)
 
@@ -20,32 +19,32 @@ interface RecipeCraftingState : RecipeState.RecipeTypeSpecificState<CustomRecipe
      * Collects the ingredients to be used to construct the formula and prevent duplicate ingredients.
      * Use is entirely optional as ingredients can be added to the formula directly.
      */
-    interface IngredientCollection {
+    interface IngredientCollectionModel {
 
-        val ingredients: List<IngredientState>
+        val ingredients: List<IngredientModel>
 
         fun addNew()
 
-        fun add(ingredient: IngredientState)
+        fun add(ingredient: IngredientModel)
 
         fun remove(index: Int)
 
     }
 
-    interface CraftingFormulaState<T: CraftingFormula> {
+    interface CraftingFormulaModel<T: CraftingFormula> {
 
         fun complete(): Result<T>
 
-        interface Shapeless : CraftingFormulaState<CraftingFormula.Shapeless> {
+        interface Shapeless : CraftingFormulaModel<CraftingFormula.Shapeless> {
 
-            val ingredients: MutableList<IngredientState>
+            val ingredients: MutableList<IngredientModel>
 
             /**
              * Adds an ingredient to the end of the [ingredients]
              */
             fun addIngredient(ingredient: Ingredient)
 
-            fun addIngredient(ingredient: IngredientState)
+            fun addIngredient(ingredient: IngredientModel)
 
             /**
              * Removes an ingredient from the [ingredients] at the specified index
@@ -54,9 +53,9 @@ interface RecipeCraftingState : RecipeState.RecipeTypeSpecificState<CustomRecipe
 
         }
 
-        interface Shaped : CraftingFormulaState<CraftingFormula.Shaped> {
+        interface Shaped : CraftingFormulaModel<CraftingFormula.Shaped> {
 
-            val ingredients: MutableList<IngredientState?>
+            val ingredients: MutableList<IngredientModel?>
 
             /**
              * Assigns an ingredient to the specified index in the recipe
@@ -86,6 +85,6 @@ interface RecipeCraftingState : RecipeState.RecipeTypeSpecificState<CustomRecipe
 
 }
 
-inline fun <reified T: CraftingFormula> RecipeCraftingState.setFormulaType() {
+inline fun <reified T: CraftingFormula> RecipeCraftingModel.setFormulaType() {
     setFormulaType(T::class.java)
 }
