@@ -1,11 +1,9 @@
 package com.wolfyscript.customcrafting.editor.ui.recipe_editor.crafting
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.util.customCrafting
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
@@ -25,7 +23,6 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 
 class CraftingRecipeStore : Store() {
-
 
 
 }
@@ -64,37 +61,72 @@ fun RecipeCraftingEditor(existingRecipeKey: Key? = null, topBackStack: SnapshotS
             Button(onClick = {
                 topBackStack.removeLast()
             }) {
-                Icon(stack = ItemStack(Items.BARRIER).apply { set(DataComponents.ITEM_NAME, "<red><b>Back".deser().vanilla()) }.snapshot())
+                Icon(stack = ItemStack(Items.BARRIER).apply {
+                    set(
+                        DataComponents.ITEM_NAME,
+                        "<red><b>Back".deser().vanilla()
+                    )
+                }.snapshot())
             }
             Row {
                 // Bottom Nav
                 BottomNavButton(
-                    ItemStack(Items.BOOKSHELF).snapshot(),
+                    ItemStack(Items.BOOKSHELF).apply {
+                        set(
+                            DataComponents.ITEM_NAME,
+                            "<purple><b>Ingredients".deser().vanilla()
+                        )
+                    }.snapshot(),
                     CraftingPaths.Advanced.AddIngredients,
                     craftingBackStack
                 )
                 BottomNavButton(
-                    ItemStack(Items.BREWING_STAND).snapshot(),
+                    ItemStack(Items.BREWING_STAND).apply {
+                        set(
+                            DataComponents.ITEM_NAME,
+                            "<purple><b>Formula".deser().vanilla()
+                        )
+                    }.snapshot(),
                     CraftingPaths.Advanced.Formula,
                     craftingBackStack
                 )
                 BottomNavButton(
-                    ItemStack(Items.ITEM_FRAME).snapshot(),
+                    ItemStack(Items.ITEM_FRAME).apply {
+                        set(
+                            DataComponents.ITEM_NAME,
+                            "<purple><b>Result".deser().vanilla()
+                        )
+                    }.snapshot(),
                     CraftingPaths.Advanced.Result,
                     craftingBackStack
                 )
                 BottomNavButton(
-                    ItemStack(Items.COMMAND_BLOCK).snapshot(),
+                    ItemStack(Items.COMMAND_BLOCK).apply {
+                        set(
+                            DataComponents.ITEM_NAME,
+                            "<purple><b>Conditions".deser().vanilla()
+                        )
+                    }.snapshot(),
                     CraftingPaths.Advanced.Conditions,
                     craftingBackStack
                 )
                 BottomNavButton(
-                    ItemStack(Items.PAPER).snapshot(),
+                    ItemStack(Items.PAPER).apply {
+                        set(
+                            DataComponents.ITEM_NAME,
+                            "<purple><b>Common Settings".deser().vanilla()
+                        )
+                    }.snapshot(),
                     CraftingPaths.Advanced.ExtraProperties,
                     craftingBackStack
                 )
                 BottomNavButton(
-                    ItemStack(Items.WRITABLE_BOOK).snapshot(),
+                    ItemStack(Items.WRITABLE_BOOK).apply {
+                        set(
+                            DataComponents.ITEM_NAME,
+                            "<purple><b>Save".deser().vanilla()
+                        )
+                    }.snapshot(),
                     CraftingPaths.Advanced.Saving,
                     craftingBackStack
                 )

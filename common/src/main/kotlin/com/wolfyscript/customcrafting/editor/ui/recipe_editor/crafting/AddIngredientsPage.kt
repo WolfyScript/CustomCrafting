@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.model.recipes.IngredientModel
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeCraftingModel
-import com.wolfyscript.customcrafting.editor.recipeEditor
+import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.crafting.AddIngredientStore.State
-import com.wolfyscript.customcrafting.editor.ui.recipe_editor.crafting.AddIngredientStore.UIIngredientPreview
+import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.UIIngredientPreview
+import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.toPreview
+import com.wolfyscript.customcrafting.editor.ui.withCraftingState
 import com.wolfyscript.customcrafting.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
@@ -31,30 +31,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import org.jetbrains.exposed.v1.core.Column
 import java.util.*
 
-private fun RecipeCraftingModel.uiState(): State {
-    return State(ingredientCollection, ingredientCollection.uiState())
+private fun RecipeCraftingModel.toUIState(): State {
+    return State(ingredientCollection, ingredientCollection.toUIState())
 }
 
-private fun RecipeCraftingModel.IngredientCollectionModel.uiState(): List<UIIngredientPreview> {
-    return ingredients.mapNotNull { ingredientModel ->
-        when (ingredientModel) {
-            is IngredientModel.CustomIngredientModel -> UIIngredientPreview.Custom(
-                ingredientModel,
-                ingredientModel.stacks.firstOrNull()?.create()?.snapshot() ?: ItemStack.EMPTY.snapshot(),
-                ingredientModel.replaceWithRemains
-            )
-
-            is IngredientModel.SavedIngredientModel -> UIIngredientPreview.Saved(
-                ingredientModel,
-                ingredientModel.key
-            )
-
-            else -> null
-        }
-    }
+private fun RecipeCraftingModel.IngredientCollectionModel.toUIState(): List<UIIngredientPreview> {
+    return ingredients.mapNotNull { it.toPreview() }
 }
 
 private class AddIngredientStore(val viewer: UUID) : Store() {
@@ -64,60 +48,34 @@ private class AddIngredientStore(val viewer: UUID) : Store() {
         val previews: List<UIIngredientPreview>,
     )
 
-    interface UIIngredientPreview {
-
-        val origin: IngredientModel
-
-        data class Custom(
-            override val origin: IngredientModel.CustomIngredientModel,
-            val icon: ItemStackSnapshot,
-            val replaceWithRemains: Boolean,
-        ) : UIIngredientPreview
-
-        data class Saved(
-            override val origin: IngredientModel.SavedIngredientModel,
-            val key: Key,
-        ) : UIIngredientPreview
-
-    }
-
-    val ingredientCollection: StateFlow<State> = MutableStateFlow(forCraftingState { it.uiState() })
-
-    private fun <T> forCraftingState(fn: (RecipeCraftingModel) -> T): T {
-        val session = CustomCraftingProvider.get().server?.recipeEditor?.getSession(viewer)
-        if (session != null) {
-            val state = session.state?.recipeModel?.recipeTypeSpecificModel as? RecipeCraftingModel
-                ?: error("Expected RecipeCraftingState, but was ${session.state?.recipeModel?.recipeTypeSpecificModel}")
-            return fn(state)
-        }
-        error("Failed to fetch data from session: Session not available")
-    }
+    val ingredientCollection: StateFlow<State> = MutableStateFlow(withCraftingState(viewer) { it.toUIState() })
 
     fun addIngredient() {
-        forCraftingState { state ->
+        withCraftingState(viewer) { state ->
             state.ingredientCollection.addNew()
         }
         updateIngredients()
     }
 
     fun addIngredient(ingredientModel: IngredientModel) {
-        forCraftingState { state ->
+        withCraftingState(viewer) { state ->
             state.ingredientCollection.add(ingredientModel)
         }
         updateIngredients()
     }
 
     fun removeIngredient(index: Int) {
-        forCraftingState { state ->
+        withCraftingState(viewer) { state ->
             state.ingredientCollection.remove(index)
         }
         updateIngredients()
     }
 
+    @Deprecated("Temporary! updating should be moved to the yet to be implemented domain repository")
     fun updateIngredients() {
         storeCoroutineScope.launch {
             (ingredientCollection as MutableStateFlow).update {
-                forCraftingState { it.uiState() }
+                withCraftingState(viewer) { it.toUIState() }
             }
         }
     }

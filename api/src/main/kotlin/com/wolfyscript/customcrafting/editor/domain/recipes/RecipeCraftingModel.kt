@@ -1,6 +1,6 @@
-package com.wolfyscript.customcrafting.editor.model.recipes
+package com.wolfyscript.customcrafting.editor.domain.recipes
 
-import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModel
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
@@ -67,9 +67,9 @@ interface RecipeCraftingModel : RecipeModel.RecipeTypeSpecificModel<CustomRecipe
              */
             fun clearIngredient(index: Int)
 
-            var shape: ShapeState
+            var shape: ShapeModel
 
-            interface ShapeState {
+            interface ShapeModel {
 
                 var symmetry: CraftingFormula.Shaped.ShapeSymmetry
 

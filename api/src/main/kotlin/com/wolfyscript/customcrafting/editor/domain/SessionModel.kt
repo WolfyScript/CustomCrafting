@@ -1,11 +1,11 @@
-package com.wolfyscript.customcrafting.editor.model
+package com.wolfyscript.customcrafting.editor.domain
 
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
 import com.wolfyscript.scafall.identifier.Key
 
 interface SessionModel {
 
-    val recipeModel: RecipeModel<*>
+    val recipeModel: com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel<*>
 
     fun cancel()
 

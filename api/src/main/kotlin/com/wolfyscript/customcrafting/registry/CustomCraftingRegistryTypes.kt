@@ -1,10 +1,10 @@
 package com.wolfyscript.customcrafting.registry
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeModel
-import com.wolfyscript.customcrafting.editor.model.recipes.conditions.ConditionModel
-import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultActionState
-import com.wolfyscript.customcrafting.editor.model.recipes.result.TransmuterStore
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.conditions.ConditionModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultActionState
+import com.wolfyscript.customcrafting.editor.domain.recipes.result.TransmuterStore
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainder

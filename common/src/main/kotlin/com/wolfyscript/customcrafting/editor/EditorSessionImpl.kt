@@ -1,11 +1,11 @@
 package com.wolfyscript.customcrafting.editor
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.model.CreateRecipeSessionModel
-import com.wolfyscript.customcrafting.editor.model.EditRecipeSessionModel
-import com.wolfyscript.customcrafting.editor.model.SessionModel
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeModel
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeModelImpl
+import com.wolfyscript.customcrafting.editor.domain.SessionModel
+import com.wolfyscript.customcrafting.editor.domain.CreateRecipeSessionModel
+import com.wolfyscript.customcrafting.editor.domain.EditRecipeSessionModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
+import com.wolfyscript.customcrafting.editor.domain.RecipeModelImpl
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.RecipeType
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes

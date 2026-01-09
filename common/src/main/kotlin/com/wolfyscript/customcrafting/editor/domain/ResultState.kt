@@ -1,8 +1,8 @@
-package com.wolfyscript.customcrafting.editor.model.recipes
+package com.wolfyscript.customcrafting.editor.domain
 
-import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultActionState
-import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultModifierState
-import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultActionState
+import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModifierState
 import com.wolfyscript.customcrafting.recipes.RecipeChoicesImpl
 import com.wolfyscript.customcrafting.recipes.RecipeItemModifier
 import com.wolfyscript.customcrafting.recipes.RecipeItemModifierImpl

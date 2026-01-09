@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.editor.model.recipes.result
+package com.wolfyscript.customcrafting.editor.domain.recipes.result
 
 import com.wolfyscript.customcrafting.recipes.ResultAction
 

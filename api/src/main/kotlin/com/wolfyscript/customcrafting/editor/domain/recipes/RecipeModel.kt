@@ -1,6 +1,6 @@
-package com.wolfyscript.customcrafting.editor.model.recipes
+package com.wolfyscript.customcrafting.editor.domain.recipes
 
-import com.wolfyscript.customcrafting.editor.model.recipes.conditions.RecipeConditionsModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.conditions.RecipeConditionsModel
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.RecipeType
 

@@ -1,7 +1,7 @@
-package com.wolfyscript.customcrafting.editor.model
+package com.wolfyscript.customcrafting.editor.domain
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.resource.DataType
 import com.wolfyscript.scafall.identifier.Key

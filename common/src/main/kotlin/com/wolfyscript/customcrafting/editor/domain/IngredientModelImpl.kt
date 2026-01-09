@@ -1,6 +1,7 @@
-package com.wolfyscript.customcrafting.editor.model.recipes
+package com.wolfyscript.customcrafting.editor.domain
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
 import com.wolfyscript.customcrafting.recipes.IngredientImpl
 import com.wolfyscript.customcrafting.recipes.RecipeChoicesImpl
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient

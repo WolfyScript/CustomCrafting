@@ -1,8 +1,8 @@
 package com.wolfyscript.customcrafting.registry
 
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeModel
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeTypeSpecificStateFactories
-import com.wolfyscript.customcrafting.editor.model.recipes.RecipeCraftingStateFactory
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeTypeSpecificStateFactories
+import com.wolfyscript.customcrafting.editor.domain.RecipeCraftingStateFactory
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.actions.CommandResultAction
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer

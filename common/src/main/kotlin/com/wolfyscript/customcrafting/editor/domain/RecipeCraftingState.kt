@@ -1,8 +1,12 @@
-package com.wolfyscript.customcrafting.editor.model.recipes
+package com.wolfyscript.customcrafting.editor.domain
 
-import com.wolfyscript.customcrafting.editor.model.recipes.result.ResultModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModel
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
+import kotlin.collections.get
 
 class RecipeCraftingStateFactory() : RecipeModel.RecipeTypeSpecificModel.Factory<CustomRecipeCrafting> {
 
@@ -18,7 +22,7 @@ class RecipeCraftingStateFactory() : RecipeModel.RecipeTypeSpecificModel.Factory
 
 }
 
-class IngredientCollectionModelStateImpl(
+data class IngredientCollectionModelStateImpl(
     override val ingredients: MutableList<IngredientModel> = mutableListOf(),
 ) : RecipeCraftingModel.IngredientCollectionModel {
 
@@ -38,7 +42,7 @@ class IngredientCollectionModelStateImpl(
 
 }
 
-class RecipeCraftingModelImpl(
+data class RecipeCraftingModelImpl(
     override val result: ResultModel = ResultModelImpl(),
     override var formula: RecipeCraftingModel.CraftingFormulaModel<*> = ShapedCraftingFormulaModel(),
     override val ingredientCollection: RecipeCraftingModel.IngredientCollectionModel = IngredientCollectionModelStateImpl(),
@@ -73,9 +77,9 @@ class RecipeCraftingModelImpl(
 
 }
 
-class ShapelessCraftingFormulaModel : RecipeCraftingModel.CraftingFormulaModel.Shapeless {
-
+data class ShapelessCraftingFormulaModel(
     override val ingredients: MutableList<IngredientModel> = mutableListOf()
+) : RecipeCraftingModel.CraftingFormulaModel.Shapeless {
 
     override fun addIngredient(ingredient: Ingredient) {
         if (ingredients.size < 9) {
@@ -116,11 +120,11 @@ class ShapelessCraftingFormulaModel : RecipeCraftingModel.CraftingFormulaModel.S
 
 }
 
-class ShapedCraftingFormulaModel(
+data class ShapedCraftingFormulaModel(
     // TODO: Make immutable
     override val ingredients: MutableList<IngredientModel?> = arrayOfNulls<IngredientModel?>(9).toMutableList(),
     private val ingredientToId: MutableMap<IngredientModel, Char> = mutableMapOf(),
-    override var shape: RecipeCraftingModel.CraftingFormulaModel.Shaped.ShapeState = ShapeState(ingredients, ingredientToId),
+    override var shape: RecipeCraftingModel.CraftingFormulaModel.Shaped.ShapeModel = ShapeModel(ingredients, ingredientToId),
 ) : RecipeCraftingModel.CraftingFormulaModel.Shaped {
 
     override fun assignIngredient(
@@ -172,7 +176,7 @@ class ShapedCraftingFormulaModel(
         return Result.success(shaped)
     }
 
-    class ShapeState(
+    class ShapeModel(
         val ingredients: List<IngredientModel?>,
         private val ingredientToId: Map<IngredientModel, Char>,
         override var symmetry: CraftingFormula.Shaped.ShapeSymmetry = ShapedCraftingFormulaImpl.ShapeSymmetryImpl(
@@ -181,7 +185,7 @@ class ShapedCraftingFormulaModel(
             rotate = false
         ),
         override var trim: Boolean = true,
-    ) : RecipeCraftingModel.CraftingFormulaModel.Shaped.ShapeState {
+    ) : RecipeCraftingModel.CraftingFormulaModel.Shaped.ShapeModel {
 
         override fun complete(): Result<CraftingFormula.Shaped.Shape> {
             val rows: MutableList<String> = mutableListOf("", "", "")
