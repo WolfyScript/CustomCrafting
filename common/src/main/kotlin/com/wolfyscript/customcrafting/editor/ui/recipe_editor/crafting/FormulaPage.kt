@@ -3,12 +3,17 @@ package com.wolfyscript.customcrafting.editor.ui.recipe_editor.crafting
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
+import com.wolfyscript.customcrafting.editor.domain.usecase.RecipeCraftingUseCases
+import com.wolfyscript.customcrafting.editor.recipeEditor
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.UIIngredientPreview
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.toPreview
 import com.wolfyscript.customcrafting.editor.ui.withCraftingModel
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.scafall.adventure.deser
+import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.snapshot
 import com.wolfyscript.viewportl.gui.compose.layout.Alignment
@@ -28,6 +33,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import java.util.UUID
@@ -51,11 +57,13 @@ private fun RecipeCraftingModel.CraftingFormulaModel<*>.toUIState(): FormulaStor
     }
 }
 
-private class FormulaStore(val viewer: UUID) : Store() {
+private class FormulaStore(
+    val viewer: UUID,
+    val getFormula: RecipeCraftingUseCases.Formula.Get,
+    val setFormulaType: RecipeCraftingUseCases.Formula.SetType
+) : Store() {
 
-    val formulaState: StateFlow<FormulaState> = MutableStateFlow(withCraftingModel(viewer) {
-        it.formula.toUIState()
-    })
+    val formulaState: StateFlow<FormulaState> = MutableStateFlow(getFormula.get().toUIState())
 
     interface FormulaState {
 
@@ -77,11 +85,20 @@ private class FormulaStore(val viewer: UUID) : Store() {
 
     }
 
+    fun toggleFormulaType() {
+        if (formulaState.value is FormulaState.Shapeless) {
+            setFormulaType.set(CraftingFormula.Shaped::class.java)
+        } else {
+            setFormulaType.set(CraftingFormula.Shapeless::class.java)
+        }
+        updateFormulaState()
+    }
+
     @Deprecated("Temporary! updating should be moved to the yet to be implemented domain repository")
     fun updateFormulaState() {
         storeCoroutineScope.launch {
             (formulaState as MutableStateFlow).update {
-                withCraftingModel(viewer) { it.formula.toUIState() }
+                getFormula.get().toUIState()
             }
         }
     }
@@ -104,7 +121,14 @@ fun FormulaPageAdvanced() {
     // - Shapeless:
     //   - add/remove ingredients
 
-    val store = store<FormulaStore>(Key.customCrafting("crafting/formula_advanced")) { FormulaStore(it) }
+    val store = store<FormulaStore>(Key.customCrafting("crafting/formula_advanced")) {
+        val session = CustomCraftingProvider.get().server!!.recipeEditor.getOrCreateSession(it).getOrThrow()
+        FormulaStore(
+            it,
+            RecipeCraftingUseCases.Formula.Get(session),
+            RecipeCraftingUseCases.Formula.SetType(session)
+        )
+    }
 
     val formulaState by store.formulaState.collectAsState()
 
@@ -115,11 +139,13 @@ fun FormulaPageAdvanced() {
             repeat(3) { row ->
                 Row(Modifier.width(3.slots)) {
                     repeat(3) { column ->
+                        val index = row * 3 + column
                         Button(onClick = {
-                            val index = row * 3 + column
                             // TODO: Select ingredient from the collection
                         }) {
-                            Icon(stack = ItemStack(Items.BARRIER).snapshot())
+                            Icon(stack = ItemStack(Items.BARRIER).apply {
+                                set(DataComponents.ITEM_NAME, "Slot $index".deser().vanilla())
+                            }.snapshot())
                         }
                     }
                 }
@@ -129,9 +155,11 @@ fun FormulaPageAdvanced() {
         Row(Modifier.width(3.slots)) {
             // Formula type selection & type specific settings
             Button(onClick = {
-                // TODO: Toggle formula type
+                store.toggleFormulaType()
             }) {
-                Icon(stack = ItemStack(Items.CRAFTER).snapshot())
+                Icon(stack = ItemStack(Items.CRAFTER).apply {
+                    set(DataComponents.ITEM_NAME, (if (formulaState is FormulaStore.FormulaState.Shapeless) "Shapeless" else "Shaped").deser().vanilla())
+                }.snapshot())
             }
 
             when (val state = formulaState) {

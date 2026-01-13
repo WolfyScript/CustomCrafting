@@ -4,6 +4,7 @@ import com.wolfyscript.customcrafting.editor.EditorSession
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
 import com.wolfyscript.customcrafting.editor.ui.withCraftingModel
+import com.wolfyscript.customcrafting.recipes.CraftingFormula
 
 interface RecipeCraftingUseCases {
 
@@ -53,6 +54,26 @@ interface RecipeCraftingUseCases {
             fun remove(index: Int) = withCraftingModel(session) { model ->
                 model.ingredientCollection.remove(index)
             }
+        }
+
+    }
+
+    interface Formula {
+
+        class Get(val session: EditorSession) {
+
+            fun get(): RecipeCraftingModel.CraftingFormulaModel<*> = withCraftingModel(session) {
+                it.formula
+            }
+
+        }
+
+        class SetType(val session: EditorSession) {
+
+            fun set(type: Class<out CraftingFormula>) = withCraftingModel(session) {
+                it.setFormulaType(type)
+            }
+
         }
 
     }
