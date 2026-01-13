@@ -1,6 +1,8 @@
 package com.wolfyscript.customcrafting.editor.ui.recipe_editor.state
 
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
+import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.toPreview
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.snapshot
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
@@ -40,4 +42,8 @@ fun IngredientModel.toPreview(): UIIngredientPreview? {
 
         else -> null
     }
+}
+
+fun RecipeCraftingModel.IngredientCollectionModel.toUIState(): List<UIIngredientPreview> {
+    return ingredients.mapNotNull { it.toPreview() }
 }

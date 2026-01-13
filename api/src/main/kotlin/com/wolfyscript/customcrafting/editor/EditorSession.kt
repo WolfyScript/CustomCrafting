@@ -12,7 +12,7 @@ interface EditorSession {
 
     val user: UUID
 
-    val state: SessionModel?
+    val model: SessionModel?
 
     /**
      * Starts editing an existing recipe.

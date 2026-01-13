@@ -4,12 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.editor.domain.model.CustomIngredientModelImpl
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
-import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
-import com.wolfyscript.customcrafting.editor.ui.recipe_editor.crafting.AddIngredientStore.State
+import com.wolfyscript.customcrafting.editor.domain.usecase.IngredientUseCases
+import com.wolfyscript.customcrafting.editor.domain.usecase.RecipeCraftingUseCases
+import com.wolfyscript.customcrafting.editor.recipeEditor
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.UIIngredientPreview
-import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.toPreview
-import com.wolfyscript.customcrafting.editor.ui.withCraftingState
+import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.toUIState
 import com.wolfyscript.customcrafting.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
@@ -23,6 +25,7 @@ import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxHeight
 import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxWidth
 import com.wolfyscript.viewportl.gui.compose.modifier.height
 import com.wolfyscript.viewportl.gui.elements.*
+import com.wolfyscript.viewportl.gui.model.LocalView
 import com.wolfyscript.viewportl.gui.model.Store
 import com.wolfyscript.viewportl.gui.model.store
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,49 +36,54 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import java.util.*
 
-private fun RecipeCraftingModel.toUIState(): State {
-    return State(ingredientCollection, ingredientCollection.toUIState())
-}
-
-private fun RecipeCraftingModel.IngredientCollectionModel.toUIState(): List<UIIngredientPreview> {
-    return ingredients.mapNotNull { it.toPreview() }
-}
-
-private class AddIngredientStore(val viewer: UUID) : Store() {
+class AddIngredientStore(
+    val viewer: UUID,
+    val getIngredientsUseCase: RecipeCraftingUseCases.IngredientCollection.GetUseCase,
+    val addIngredientUseCase: RecipeCraftingUseCases.IngredientCollection.AddIngredientUseCase,
+    val removeIngredientUseCase: RecipeCraftingUseCases.IngredientCollection.RemoveIngredientUseCase,
+    val setStackChoiceUseCase: IngredientUseCases.SetStackChoiceUseCase,
+    val removeStackChoiceUseCase: IngredientUseCases.RemoveStackChoiceUseCase,
+    val addStackChoiceUseCase: IngredientUseCases.AddStackChoiceUseCase,
+) : Store() {
 
     data class State(
-        val origin: RecipeCraftingModel.IngredientCollectionModel,
         val previews: List<UIIngredientPreview>,
     )
 
-    val ingredientCollection: StateFlow<State> = MutableStateFlow(withCraftingState(viewer) { it.toUIState() })
+    val ingredientCollection: StateFlow<State> = MutableStateFlow(State(getIngredientsUseCase.getCollection().toUIState()))
 
     fun addIngredient() {
-        withCraftingState(viewer) { state ->
-            state.ingredientCollection.addNew()
-        }
+        addIngredientUseCase.add(CustomIngredientModelImpl())
         updateIngredients()
     }
 
     fun addIngredient(ingredientModel: IngredientModel) {
-        withCraftingState(viewer) { state ->
-            state.ingredientCollection.add(ingredientModel)
-        }
+        addIngredientUseCase.add(ingredientModel)
         updateIngredients()
     }
 
     fun removeIngredient(index: Int) {
-        withCraftingState(viewer) { state ->
-            state.ingredientCollection.remove(index)
-        }
+        removeIngredientUseCase.remove(index)
         updateIngredients()
+    }
+
+    fun addFirstStackChoice(ingredientIndex: Int, stack: ItemStackRef) {
+        addStackChoiceUseCase.add(ingredientIndex, stack)
+    }
+
+    fun removeFirstStackChoiceFor(ingredientIndex: Int) {
+        removeStackChoiceUseCase.remove(ingredientIndex, 0)
+    }
+
+    fun setFirstStackChoiceFor(ingredientIndex: Int, stack: ItemStackRef) {
+        setStackChoiceUseCase.set(ingredientIndex, 0, stack)
     }
 
     @Deprecated("Temporary! updating should be moved to the yet to be implemented domain repository")
     fun updateIngredients() {
         storeCoroutineScope.launch {
             (ingredientCollection as MutableStateFlow).update {
-                withCraftingState(viewer) { it.toUIState() }
+                State(getIngredientsUseCase.getCollection().toUIState())
             }
         }
     }
@@ -85,7 +93,20 @@ private class AddIngredientStore(val viewer: UUID) : Store() {
 @Composable
 fun AddIngredientsPage() {
     val store = store(key = Key.customCrafting("ingredient_collection")) {
-        AddIngredientStore(it)
+        val session = CustomCraftingProvider.get().server!!.recipeEditor.getOrCreateSession(it).getOrThrow()
+        val getIngredientCollectionUseCase = RecipeCraftingUseCases.IngredientCollection.GetUseCase(session)
+        val getIngredientUseCase = IngredientUseCases.GetIngredientUseCase(getIngredientCollectionUseCase)
+        val setIngredientUseCase = RecipeCraftingUseCases.IngredientCollection.SetIngredientUseCase(session, getIngredientCollectionUseCase)
+
+        AddIngredientStore(
+            it,
+            getIngredientCollectionUseCase,
+            RecipeCraftingUseCases.IngredientCollection.AddIngredientUseCase(session, getIngredientCollectionUseCase),
+            RecipeCraftingUseCases.IngredientCollection.RemoveIngredientUseCase(session),
+            IngredientUseCases.SetStackChoiceUseCase(getIngredientUseCase, setIngredientUseCase),
+            IngredientUseCases.RemoveStackChoiceUseCase(getIngredientUseCase, setIngredientUseCase),
+            IngredientUseCases.AddStackChoiceUseCase(getIngredientUseCase, setIngredientUseCase),
+        )
     }
     val collection by store.ingredientCollection.collectAsState()
 
@@ -107,15 +128,9 @@ fun AddIngredientsPage() {
                         is UIIngredientPreview.Custom -> {
                             CustomIngredientSelector(
                                 ingredient,
-                                onAdd = {
-                                    ingredient.origin.stacks.add(it)
-                                },
-                                onRemove = {
-                                    ingredient.origin.stacks.removeAt(0)
-                                },
-                                onReplace = {
-                                    ingredient.origin.stacks[0] = it
-                                },
+                                onAdd = { store.addFirstStackChoice(index, it) },
+                                onRemove = { store.removeFirstStackChoiceFor(index) },
+                                onReplace = { store.setFirstStackChoiceFor(index, it) },
                                 onModify = {
                                     store.updateIngredients() // Refresh entire list TODO: look for a better solution
                                 })

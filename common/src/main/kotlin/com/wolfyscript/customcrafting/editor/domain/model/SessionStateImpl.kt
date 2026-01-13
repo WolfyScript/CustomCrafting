@@ -1,6 +1,7 @@
-package com.wolfyscript.customcrafting.editor.domain
+package com.wolfyscript.customcrafting.editor.domain.model
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.editor.domain.SessionModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.resource.DataType

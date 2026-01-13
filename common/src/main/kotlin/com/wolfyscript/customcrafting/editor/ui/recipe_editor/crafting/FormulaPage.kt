@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.UIIngredientPreview
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.toPreview
-import com.wolfyscript.customcrafting.editor.ui.withCraftingState
+import com.wolfyscript.customcrafting.editor.ui.withCraftingModel
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
@@ -15,7 +15,6 @@ import com.wolfyscript.viewportl.gui.compose.layout.Alignment
 import com.wolfyscript.viewportl.gui.compose.layout.Arrangement
 import com.wolfyscript.viewportl.gui.compose.layout.slots
 import com.wolfyscript.viewportl.gui.compose.modifier.Modifier
-import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxSize
 import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxWidth
 import com.wolfyscript.viewportl.gui.compose.modifier.height
 import com.wolfyscript.viewportl.gui.compose.modifier.width
@@ -27,7 +26,6 @@ import com.wolfyscript.viewportl.gui.model.Store
 import com.wolfyscript.viewportl.gui.model.store
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.minecraft.world.item.ItemStack
@@ -55,7 +53,7 @@ private fun RecipeCraftingModel.CraftingFormulaModel<*>.toUIState(): FormulaStor
 
 private class FormulaStore(val viewer: UUID) : Store() {
 
-    val formulaState: StateFlow<FormulaState> = MutableStateFlow(withCraftingState(viewer) {
+    val formulaState: StateFlow<FormulaState> = MutableStateFlow(withCraftingModel(viewer) {
         it.formula.toUIState()
     })
 
@@ -83,7 +81,7 @@ private class FormulaStore(val viewer: UUID) : Store() {
     fun updateFormulaState() {
         storeCoroutineScope.launch {
             (formulaState as MutableStateFlow).update {
-                withCraftingState(viewer) { it.formula.toUIState() }
+                withCraftingModel(viewer) { it.formula.toUIState() }
             }
         }
     }
@@ -94,7 +92,7 @@ private class FormulaStore(val viewer: UUID) : Store() {
  * An advanced view to create the formula of crafting recipes.
  *
  * It provides a grid of selection buttons (instead of slot inputs).
- * These allow to pick ingredients added in the previous [CraftingPaths.Advanced.AddIngredients] tab.
+ * These allow to pick ingredients added in the previous [CraftingPath.Advanced.AddIngredients] tab.
  */
 @Composable
 fun FormulaPageAdvanced() {

@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.editor.domain
+package com.wolfyscript.customcrafting.editor.domain.model
 
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
@@ -8,7 +8,7 @@ import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import kotlin.collections.get
 
-class RecipeCraftingStateFactory() : RecipeModel.RecipeTypeSpecificModel.Factory<CustomRecipeCrafting> {
+class RecipeCraftingModelFactory() : RecipeModel.RecipeTypeSpecificModel.Factory<CustomRecipeCrafting> {
 
     override val recipeType: RecipeType<CustomRecipeCrafting> by lazy { RecipeTypes.crafting.resolveOrThrow() }
 
@@ -22,7 +22,7 @@ class RecipeCraftingStateFactory() : RecipeModel.RecipeTypeSpecificModel.Factory
 
 }
 
-data class IngredientCollectionModelStateImpl(
+data class IngredientCollectionModelImpl(
     override val ingredients: MutableList<IngredientModel> = mutableListOf(),
 ) : RecipeCraftingModel.IngredientCollectionModel {
 
@@ -36,6 +36,13 @@ data class IngredientCollectionModelStateImpl(
         }
     }
 
+    override fun set(
+        index: Int,
+        ingredient: IngredientModel,
+    ) {
+        ingredients[index] = ingredient
+    }
+
     override fun remove(index: Int) {
         ingredients.removeAt(index)
     }
@@ -45,7 +52,7 @@ data class IngredientCollectionModelStateImpl(
 data class RecipeCraftingModelImpl(
     override val result: ResultModel = ResultModelImpl(),
     override var formula: RecipeCraftingModel.CraftingFormulaModel<*> = ShapedCraftingFormulaModel(),
-    override val ingredientCollection: RecipeCraftingModel.IngredientCollectionModel = IngredientCollectionModelStateImpl(),
+    override val ingredientCollection: RecipeCraftingModel.IngredientCollectionModel = IngredientCollectionModelImpl(),
 ) : RecipeCraftingModel {
 
     override fun setFormulaType(type: Class<out CraftingFormula>) {

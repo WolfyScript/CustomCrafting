@@ -39,7 +39,7 @@ fun RecipeCraftingEditor(existingRecipeKey: Key? = null, topBackStack: SnapshotS
         CraftingRecipeStore()
     }
 
-    val craftingBackStack = remember { mutableStateListOf<NavKey>(CraftingPaths.Advanced.AddIngredients) }
+    val craftingBackStack = remember { mutableStateListOf<NavKey>(CraftingPath.Advanced.AddIngredients) }
 
     Column(
         Modifier.fillMaxSize(),
@@ -49,12 +49,12 @@ fun RecipeCraftingEditor(existingRecipeKey: Key? = null, topBackStack: SnapshotS
         Box(Modifier.height(5.slots).fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
             // Main Content
             NavigationRoot(craftingBackStack) {
-                composable<CraftingPaths.Advanced.AddIngredients> { AddIngredientsPage() }
-                composable<CraftingPaths.Advanced.Formula> { FormulaPageAdvanced() }
-                composable<CraftingPaths.Advanced.Result> { ResultPage() }
-                composable<CraftingPaths.Advanced.Conditions> { ConditionsPage() }
-                composable<CraftingPaths.Advanced.ExtraProperties> { ExtraPropertiesPage() }
-                composable<CraftingPaths.Advanced.Saving> { SavingPage() }
+                composable<CraftingPath.Advanced.AddIngredients> { AddIngredientsPage() }
+                composable<CraftingPath.Advanced.Formula> { FormulaPageAdvanced() }
+                composable<CraftingPath.Advanced.Result> { ResultPage() }
+                composable<CraftingPath.Advanced.Conditions> { ConditionsPage() }
+                composable<CraftingPath.Advanced.ExtraProperties> { ExtraPropertiesPage() }
+                composable<CraftingPath.Advanced.Saving> { SavingPage() }
             }
         }
         Row(Modifier.requireHeight(1.slots).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -74,60 +74,60 @@ fun RecipeCraftingEditor(existingRecipeKey: Key? = null, topBackStack: SnapshotS
                     ItemStack(Items.BOOKSHELF).apply {
                         set(
                             DataComponents.ITEM_NAME,
-                            "<purple><b>Ingredients".deser().vanilla()
+                            "<light_purple><b>Ingredients".deser().vanilla()
                         )
                     }.snapshot(),
-                    CraftingPaths.Advanced.AddIngredients,
+                    CraftingPath.Advanced.AddIngredients,
                     craftingBackStack
                 )
                 BottomNavButton(
                     ItemStack(Items.BREWING_STAND).apply {
                         set(
                             DataComponents.ITEM_NAME,
-                            "<purple><b>Formula".deser().vanilla()
+                            "<light_purple><b>Formula".deser().vanilla()
                         )
                     }.snapshot(),
-                    CraftingPaths.Advanced.Formula,
+                    CraftingPath.Advanced.Formula,
                     craftingBackStack
                 )
                 BottomNavButton(
                     ItemStack(Items.ITEM_FRAME).apply {
                         set(
                             DataComponents.ITEM_NAME,
-                            "<purple><b>Result".deser().vanilla()
+                            "<light_purple><b>Result".deser().vanilla()
                         )
                     }.snapshot(),
-                    CraftingPaths.Advanced.Result,
+                    CraftingPath.Advanced.Result,
                     craftingBackStack
                 )
                 BottomNavButton(
                     ItemStack(Items.COMMAND_BLOCK).apply {
                         set(
                             DataComponents.ITEM_NAME,
-                            "<purple><b>Conditions".deser().vanilla()
+                            "<light_purple><b>Conditions".deser().vanilla()
                         )
                     }.snapshot(),
-                    CraftingPaths.Advanced.Conditions,
+                    CraftingPath.Advanced.Conditions,
                     craftingBackStack
                 )
                 BottomNavButton(
                     ItemStack(Items.PAPER).apply {
                         set(
                             DataComponents.ITEM_NAME,
-                            "<purple><b>Common Settings".deser().vanilla()
+                            "<light_purple><b>Common Settings".deser().vanilla()
                         )
                     }.snapshot(),
-                    CraftingPaths.Advanced.ExtraProperties,
+                    CraftingPath.Advanced.ExtraProperties,
                     craftingBackStack
                 )
                 BottomNavButton(
                     ItemStack(Items.WRITABLE_BOOK).apply {
                         set(
                             DataComponents.ITEM_NAME,
-                            "<purple><b>Save".deser().vanilla()
+                            "<light_purple><b>Save".deser().vanilla()
                         )
                     }.snapshot(),
-                    CraftingPaths.Advanced.Saving,
+                    CraftingPath.Advanced.Saving,
                     craftingBackStack
                 )
             }

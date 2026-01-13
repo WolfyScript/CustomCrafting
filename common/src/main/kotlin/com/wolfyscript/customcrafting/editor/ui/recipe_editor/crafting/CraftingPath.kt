@@ -5,14 +5,16 @@ import com.wolfyscript.viewportl.gui.elements.NavKey
 /**
  * Navigation Paths in the Crafting Recipe Editor
  */
-interface CraftingPaths : NavKey {
+interface CraftingPath : NavKey {
+
+    val name: String
 
     /**
      * UI for simple recipes with simple ingredients and results.
      * (similar to legacy UI)
      *
      */
-    interface Simple : CraftingPaths {
+    interface Simple : CraftingPath {
 
         companion object {
 
@@ -34,28 +36,36 @@ interface CraftingPaths : NavKey {
          *
          * Trim options
          */
-        object Formula : Simple
+        object Formula : Simple {
+            override val name: String = "Formula"
+        }
 
         /**
          * Configure Result.
          *
          * Choices, Persistency
          */
-        object Result : Simple
+        object Result : Simple {
+            override val name: String = "Result"
+        }
 
         /**
          * Extra properties that do not fit into other categories, or are common across recipe types.
          *
          * Recipe Group, Priority, etc.
          */
-        object ExtraProperties : Simple
+        object ExtraProperties : Simple {
+            override val name: String = "Common Settings"
+        }
 
         /**
          * Saving/Exporting the recipe.
          *
          * Name, Directory, Save As, etc.
          */
-        object Saving : Simple
+        object Saving : Simple {
+            override val name: String = "Save"
+        }
 
     }
 
@@ -66,7 +76,7 @@ interface CraftingPaths : NavKey {
      *
      *
      */
-    interface Advanced : NavKey {
+    interface Advanced : CraftingPath {
 
         companion object {
             val values = listOf(
@@ -82,7 +92,9 @@ interface CraftingPaths : NavKey {
          * (similar to the legacy shift+right-click on ingredients, but with separate buttons for those functions)
          *
          */
-        object AddIngredients : Advanced
+        object AddIngredients : Advanced {
+            override val name: String = "Ingredients"
+        }
 
         /**
          * Assigns the ingredients from the [AddIngredients] to specific slots
@@ -94,33 +106,43 @@ interface CraftingPaths : NavKey {
          *
          * Configure mirror options
          */
-        object Formula : Advanced
+        object Formula : Advanced {
+            override val name: String = "Formula"
+        }
 
         /**
          * Configures the result with advanced features.
          *
          * Result persistency, choices, actions, and modifiers.
          */
-        object Result : Advanced
+        object Result : Advanced {
+            override val name: String = "Result"
+        }
 
         /**
          * Configures the conditions of the recipe
          */
-        object Conditions : Advanced
+        object Conditions : Advanced {
+            override val name: String = "Conditions"
+        }
 
         /**
          * Extra properties that do not fit into other categories, or are common across recipe types.
          *
          * Recipe Group, Priority, etc.
          */
-        object ExtraProperties : Advanced
+        object ExtraProperties : Advanced {
+            override val name: String = "Common Settings"
+        }
 
         /**
          * Saving/Exporting the recipe.
          *
          * Name, Directory, Save As, etc.
          */
-        object Saving : Advanced
+        object Saving : Advanced {
+            override val name: String = "Save"
+        }
 
     }
 

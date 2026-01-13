@@ -21,11 +21,13 @@ interface RecipeCraftingModel : RecipeModel.RecipeTypeSpecificModel<CustomRecipe
      */
     interface IngredientCollectionModel {
 
-        val ingredients: List<IngredientModel>
+        val ingredients: MutableList<IngredientModel>
 
         fun addNew()
 
         fun add(ingredient: IngredientModel)
+
+        fun set(index: Int, ingredient: IngredientModel)
 
         fun remove(index: Int)
 

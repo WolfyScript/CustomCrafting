@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.editor.domain
+package com.wolfyscript.customcrafting.editor.domain.model
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel

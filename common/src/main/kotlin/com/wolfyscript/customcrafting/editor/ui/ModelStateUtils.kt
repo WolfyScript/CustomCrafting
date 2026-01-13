@@ -14,10 +14,15 @@ internal fun <T> withEditorSession(viewer: UUID, fn: (EditorSession) -> T): T {
     error("Failed to fetch data from session: Session not available")
 }
 
-internal fun <T> withCraftingState(viewer: UUID, fn: (RecipeCraftingModel) -> T): T =
+internal fun <T> withCraftingModel(viewer: UUID, fn: (RecipeCraftingModel) -> T): T =
     withEditorSession(viewer) { session ->
-        val state = session.state?.recipeModel?.recipeTypeSpecificModel as? RecipeCraftingModel
-            ?: error("Expected RecipeCraftingState, but was ${session.state?.recipeModel?.recipeTypeSpecificModel}")
+        val state = session.model?.recipeModel?.recipeTypeSpecificModel as? RecipeCraftingModel
+            ?: error("Expected RecipeCraftingState, but was ${session.model?.recipeModel?.recipeTypeSpecificModel}")
         return@withEditorSession fn(state)
     }
 
+internal fun <T> withCraftingModel(session: EditorSession, fn: (RecipeCraftingModel) -> T): T {
+    val state = session.model?.recipeModel?.recipeTypeSpecificModel as? RecipeCraftingModel
+        ?: error("Expected RecipeCraftingState, but was ${session.model?.recipeModel?.recipeTypeSpecificModel}")
+    return fn(state)
+}

@@ -2,10 +2,10 @@ package com.wolfyscript.customcrafting.editor
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.SessionModel
-import com.wolfyscript.customcrafting.editor.domain.CreateRecipeSessionModel
-import com.wolfyscript.customcrafting.editor.domain.EditRecipeSessionModel
+import com.wolfyscript.customcrafting.editor.domain.model.CreateRecipeSessionModel
+import com.wolfyscript.customcrafting.editor.domain.model.EditRecipeSessionModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
-import com.wolfyscript.customcrafting.editor.domain.RecipeModelImpl
+import com.wolfyscript.customcrafting.editor.domain.model.RecipeModelImpl
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.RecipeType
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
@@ -16,7 +16,7 @@ class EditorSessionImpl(
     override val user: UUID,
 ) : EditorSession {
 
-    override var state: SessionModel? = null
+    override var model: SessionModel? = null
         private set
 
     override fun edit(recipeKey: Key): Result<SessionModel> {
@@ -24,19 +24,19 @@ class EditorSessionImpl(
             ?: return Result.failure(IllegalArgumentException("Recipe $recipeKey not found"))
         val store = edit(recipe)
             ?: return Result.failure(IllegalArgumentException("Failed to load recipe $recipeKey: missing type factory for editor. Is it registered?"))
-        state = EditRecipeSessionModel(recipeKey, store)
-        return Result.success(state!!)
+        model = EditRecipeSessionModel(recipeKey, store)
+        return Result.success(model!!)
     }
 
     override fun create(recipeType: RecipeType<*>): Result<SessionModel> {
-        if (state != null) {
-            return Result.failure(IllegalStateException("Already editing a recipe of type ${state!!.recipeModel.recipeType}. Cancel and try again."))
+        if (model != null) {
+            return Result.failure(IllegalStateException("Already editing a recipe of type ${model!!.recipeModel.recipeType}. Cancel and try again."))
         }
 
         val store = createTyped(recipeType)
             ?: return Result.failure(IllegalArgumentException("Failed to create editor store: missing type factory for recipe type $recipeType"))
-        state = CreateRecipeSessionModel(store)
-        return Result.success(state!!)
+        model = CreateRecipeSessionModel(store)
+        return Result.success(model!!)
     }
 
     private fun <T: CustomRecipe<*,*>> createTyped(recipeType: RecipeType<T>): RecipeModel<T>? {
@@ -58,7 +58,7 @@ class EditorSessionImpl(
 
     override fun cancel() {
         // TODO: Reset state
-        state = null
+        model = null
     }
 
 }
