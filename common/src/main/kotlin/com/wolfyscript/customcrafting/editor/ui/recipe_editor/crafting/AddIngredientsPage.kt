@@ -25,7 +25,6 @@ import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxHeight
 import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxWidth
 import com.wolfyscript.viewportl.gui.compose.modifier.height
 import com.wolfyscript.viewportl.gui.elements.*
-import com.wolfyscript.viewportl.gui.model.LocalView
 import com.wolfyscript.viewportl.gui.model.Store
 import com.wolfyscript.viewportl.gui.model.store
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,9 +40,9 @@ class AddIngredientStore(
     val getIngredientsUseCase: RecipeCraftingUseCases.IngredientCollection.GetUseCase,
     val addIngredientUseCase: RecipeCraftingUseCases.IngredientCollection.AddIngredientUseCase,
     val removeIngredientUseCase: RecipeCraftingUseCases.IngredientCollection.RemoveIngredientUseCase,
-    val setStackChoiceUseCase: IngredientUseCases.SetStackChoiceUseCase,
-    val removeStackChoiceUseCase: IngredientUseCases.RemoveStackChoiceUseCase,
-    val addStackChoiceUseCase: IngredientUseCases.AddStackChoiceUseCase,
+    val setStackChoiceUseCase: IngredientUseCases.Choices.Set,
+    val removeStackChoiceUseCase: IngredientUseCases.Choices.Remove,
+    val addStackChoiceUseCase: IngredientUseCases.Choices.Add,
 ) : Store() {
 
     data class State(
@@ -103,9 +102,9 @@ fun AddIngredientsPage() {
             getIngredientCollectionUseCase,
             RecipeCraftingUseCases.IngredientCollection.AddIngredientUseCase(session, getIngredientCollectionUseCase),
             RecipeCraftingUseCases.IngredientCollection.RemoveIngredientUseCase(session),
-            IngredientUseCases.SetStackChoiceUseCase(getIngredientUseCase, setIngredientUseCase),
-            IngredientUseCases.RemoveStackChoiceUseCase(getIngredientUseCase, setIngredientUseCase),
-            IngredientUseCases.AddStackChoiceUseCase(getIngredientUseCase, setIngredientUseCase),
+            IngredientUseCases.Choices.Set(getIngredientUseCase, setIngredientUseCase),
+            IngredientUseCases.Choices.Remove(getIngredientUseCase, setIngredientUseCase),
+            IngredientUseCases.Choices.Add(getIngredientUseCase, setIngredientUseCase),
         )
     }
     val collection by store.ingredientCollection.collectAsState()
