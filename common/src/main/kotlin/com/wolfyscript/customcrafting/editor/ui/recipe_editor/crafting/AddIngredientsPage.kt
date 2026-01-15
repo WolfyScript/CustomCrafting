@@ -13,6 +13,8 @@ import com.wolfyscript.customcrafting.editor.recipeEditor
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.UIIngredientPreview
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.toUIState
 import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.scafall.adventure.deser
+import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.snapshot
@@ -31,8 +33,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.component.ItemLore
 import java.util.*
 
 class AddIngredientStore(
@@ -49,7 +53,8 @@ class AddIngredientStore(
         val previews: List<UIIngredientPreview>,
     )
 
-    val ingredientCollection: StateFlow<State> = MutableStateFlow(State(getIngredientsUseCase.getCollection().toUIState()))
+    val ingredientCollection: StateFlow<State> =
+        MutableStateFlow(State(getIngredientsUseCase.getCollection().toUIState()))
 
     fun addIngredient() {
         addIngredientUseCase.add(CustomIngredientModelImpl())
@@ -95,7 +100,8 @@ fun AddIngredientsPage() {
         val session = CustomCraftingProvider.get().server!!.recipeEditor.getOrCreateSession(it).getOrThrow()
         val getIngredientCollectionUseCase = RecipeCraftingUseCases.IngredientCollection.GetUseCase(session)
         val getIngredientUseCase = IngredientUseCases.GetIngredientUseCase(getIngredientCollectionUseCase)
-        val setIngredientUseCase = RecipeCraftingUseCases.IngredientCollection.SetIngredientUseCase(session, getIngredientCollectionUseCase)
+        val setIngredientUseCase =
+            RecipeCraftingUseCases.IngredientCollection.SetIngredientUseCase(session, getIngredientCollectionUseCase)
 
         AddIngredientStore(
             it,
@@ -183,14 +189,54 @@ private fun CustomIngredientSelector(
             }
         )
         if (ingredient.icon.isEmpty /* && ingredient.tags.isEmpty()*/) {
-            Icon(stack = ItemStack(Items.ITEM_FRAME).snapshot())
+            Icon(stack = EditIngredientDisabledIcon)
         } else {
             Button(onClick = {}) {
-                Icon(stack = ItemStack(Items.GLOW_ITEM_FRAME).snapshot())
+                Icon(stack = EditIngredientIcon)
             }
         }
         Button(onClick = {}) {
-            Icon(stack = ItemStack(Items.BOOKSHELF).snapshot())
+            Icon(stack = SelectSavedIngredientIcon)
         }
     }
 }
+
+private val EditIngredientDisabledIcon = ItemStack(Items.ITEM_FRAME).apply {
+    set(DataComponents.ITEM_NAME, "<grey><st>Edit Ingredient".deser().vanilla())
+    set(
+        DataComponents.LORE,
+        ItemLore(
+            listOf(
+                "<!i><white>^ Place the first item ^".deser().vanilla(),
+                "<!i><white>^ into the slot above! ^".deser().vanilla()
+            )
+        )
+    )
+}.snapshot()
+
+private val EditIngredientIcon = ItemStack(Items.GLOW_ITEM_FRAME).apply {
+    set(DataComponents.ITEM_NAME, "<yellow>Edit Ingredient".deser().vanilla())
+    set(
+        DataComponents.LORE,
+        ItemLore(
+            listOf(
+                "<!i><white>Edit this custom Ingredients'".deser().vanilla(),
+                "<!i><white>Choices, Tags & more".deser().vanilla(),
+            )
+        )
+    )
+}.snapshot()
+
+private val SelectSavedIngredientIcon = ItemStack(Items.BOOKSHELF).apply {
+    set(DataComponents.ITEM_NAME, "<yellow>Select Ingredient".deser().vanilla())
+    set(
+        DataComponents.LORE,
+        ItemLore(
+            listOf(
+                "<!i><white>Select an existing ingredient".deser().vanilla(),
+                "<!i><white>that you've saved.".deser().vanilla()
+            )
+        )
+    )
+}.snapshot()
+
