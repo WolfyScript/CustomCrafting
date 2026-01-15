@@ -56,13 +56,21 @@ data class RecipeCraftingModelImpl(
 ) : RecipeCraftingModel {
 
     override fun setFormulaType(type: Class<out CraftingFormula>) {
-        val previousFormula = formula
+        val ingredients = when(val previousFormula = formula) {
+            is RecipeCraftingModel.CraftingFormulaModel.Shaped -> previousFormula.ingredients
+            is RecipeCraftingModel.CraftingFormulaModel.Shapeless -> previousFormula.ingredients
+            else -> emptyList()
+        }
+
         formula = when (type) {
-            CraftingFormula.Shaped::class.java -> ShapedCraftingFormulaModel()
-            CraftingFormula.Shapeless::class.java -> ShapelessCraftingFormulaModel()
+            CraftingFormula.Shaped::class.java -> ShapedCraftingFormulaModel(
+                ingredients = ingredients.toMutableList(),
+            )
+            CraftingFormula.Shapeless::class.java -> ShapelessCraftingFormulaModel(
+                ingredients = ingredients.filterNotNull().toMutableList()
+            )
             else -> ShapedCraftingFormulaModel()
         }
-        // TODO: copy properties like ingredients to not reset them
     }
 
     override fun complete(common: RecipeModel<CustomRecipeCrafting>): Result<CustomRecipeCrafting> {
@@ -104,6 +112,30 @@ data class ShapelessCraftingFormulaModel(
         ingredients.removeAt(index)
     }
 
+    override fun assignIngredient(
+        index: Int,
+        ingredient: IngredientModel,
+    ) {
+        if (index >= 0 && index < ingredients.size) {
+            ingredients[index] = ingredient
+        } else if (index > ingredients.size){
+            addIngredient(ingredient)
+        }
+    }
+
+    override fun unassignIngredient(index: Int) {
+        if (index >= 0 && ingredients.size < 9) {
+            ingredients.removeAt(index)
+        }
+    }
+
+    override fun getIngredient(index: Int): IngredientModel? {
+        if (index > 0 && index < ingredients.size) {
+            return ingredients[index]
+        }
+        return null
+    }
+
     override fun complete(): Result<CraftingFormula.Shapeless> {
         if (ingredients.isEmpty()) {
             return Result.failure(IllegalStateException("Failed to create shapeless formula: Must have at least 1 ingredient"))
@@ -138,9 +170,15 @@ data class ShapedCraftingFormulaModel(
         index: Int,
         ingredient: Ingredient,
     ) {
-        if (index > 0 && index < ingredients.size) {
-            val state = CustomIngredientModelImpl.loadFrom(ingredient)
-            ingredients[index] = state
+        assignIngredient(index, CustomIngredientModelImpl.loadFrom(ingredient))
+    }
+
+    override fun assignIngredient(
+        index: Int,
+        ingredient: IngredientModel,
+    ) {
+        if (index >= 0 && index < ingredients.size) {
+            ingredients[index] = ingredient
 
             ingredientToId.clear()
             for ((index, ingredientState) in ingredients.distinct().withIndex()) {
@@ -151,9 +189,22 @@ data class ShapedCraftingFormulaModel(
         }
     }
 
+    override fun unassignIngredient(index: Int) {
+        if (index >= 0 && index < ingredients.size) {
+            ingredients[index] = null
+        }
+    }
+
+    override fun getIngredient(index: Int): IngredientModel? {
+        if (index >= 0 && index < ingredients.size) {
+            return ingredients[index]
+        }
+        return null
+    }
+
     override fun clearIngredient(index: Int) {
-        if (index > 0 && index < ingredients.size) {
-            ingredients.removeAt(index)
+        if (index >= 0 && index < ingredients.size) {
+            ingredients[index] = null
         }
     }
 

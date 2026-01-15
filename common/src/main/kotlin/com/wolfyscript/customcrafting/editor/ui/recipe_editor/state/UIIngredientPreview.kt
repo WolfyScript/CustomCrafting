@@ -9,13 +9,15 @@ import net.minecraft.world.item.ItemStack
 
 interface UIIngredientPreview {
 
+    val icon: ItemStackSnapshot
+
     data class Custom(
-        val icon: ItemStackSnapshot,
+        override val icon: ItemStackSnapshot,
         val replaceWithRemains: Boolean,
     ) : UIIngredientPreview
 
     data class Saved(
-        val key: Key,
+        val key: Key, override val icon: ItemStackSnapshot,
     ) : UIIngredientPreview
 
 }
@@ -28,7 +30,8 @@ fun IngredientModel.toPreview(): UIIngredientPreview? {
         )
 
         is IngredientModel.SavedIngredientModel -> UIIngredientPreview.Saved(
-            key
+            key,
+            icon,
         )
 
         else -> null

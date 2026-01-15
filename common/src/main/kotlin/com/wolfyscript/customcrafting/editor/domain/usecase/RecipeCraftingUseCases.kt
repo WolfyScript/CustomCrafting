@@ -76,6 +76,29 @@ interface RecipeCraftingUseCases {
 
         }
 
+        class AssignIngredient(val session: EditorSession) {
+
+            fun assign(index: Int, ingredient: IngredientModel) = withCraftingModel(session) { model ->
+                model.formula.assignIngredient(index, ingredient)
+            }
+        }
+
+        class UnassignIngredient(val session: EditorSession) {
+
+            fun unassign(index: Int) = withCraftingModel(session) { model ->
+                model.formula.unassignIngredient(index)
+            }
+
+        }
+
+        class GetIngredient(val session: EditorSession) {
+
+            fun get(index: Int) = withCraftingModel(session) { model ->
+                model.formula.getIngredient(index)
+            }
+
+        }
+
     }
 
 }

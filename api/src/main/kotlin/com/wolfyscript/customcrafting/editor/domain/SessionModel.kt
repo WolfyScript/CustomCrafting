@@ -1,6 +1,5 @@
 package com.wolfyscript.customcrafting.editor.domain
 
-import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
 import com.wolfyscript.scafall.identifier.Key
 
 interface SessionModel {

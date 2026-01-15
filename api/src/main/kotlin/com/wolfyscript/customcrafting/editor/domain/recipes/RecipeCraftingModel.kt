@@ -35,6 +35,15 @@ interface RecipeCraftingModel : RecipeModel.RecipeTypeSpecificModel<CustomRecipe
 
     interface CraftingFormulaModel<T: CraftingFormula> {
 
+        fun assignIngredient(
+            index: Int,
+            ingredient: IngredientModel,
+        )
+
+        fun unassignIngredient(index: Int)
+
+        fun getIngredient(index: Int): IngredientModel?
+
         fun complete(): Result<T>
 
         interface Shapeless : CraftingFormulaModel<CraftingFormula.Shapeless> {
