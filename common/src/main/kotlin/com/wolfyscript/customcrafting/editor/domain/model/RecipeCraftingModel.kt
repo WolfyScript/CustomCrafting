@@ -63,9 +63,13 @@ data class RecipeCraftingModelImpl(
         }
 
         formula = when (type) {
-            CraftingFormula.Shaped::class.java -> ShapedCraftingFormulaModel(
-                ingredients = ingredients.toMutableList(),
-            )
+            CraftingFormula.Shaped::class.java -> {
+                val newList = ArrayList<IngredientModel?>(9)
+                for (i in 0 until 9) {
+                    newList.add(ingredients.getOrElse(i) { null })
+                }
+                ShapedCraftingFormulaModel(ingredients = newList,)
+            }
             CraftingFormula.Shapeless::class.java -> ShapelessCraftingFormulaModel(
                 ingredients = ingredients.filterNotNull().toMutableList()
             )
