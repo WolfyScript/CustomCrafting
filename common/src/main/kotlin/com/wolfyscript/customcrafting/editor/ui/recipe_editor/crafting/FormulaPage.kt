@@ -127,15 +127,7 @@ private class FormulaStore(
 
     fun getIngredientCollectionIcons(): List<ItemStack> {
         val stacks = mutableListOf<ItemStack>()
-        stacks.add(ItemStack(Items.BARRIER).apply {
-            set(DataComponents.ITEM_NAME, "<red><b>Reset (Empty)".deser().vanilla())
-            set(DataComponents.MAX_STACK_SIZE, 1)
-            set(
-                DataComponents.LORE, ItemLore(
-                    listOf("<!i><white>Resets slot item to air".deser().vanilla())
-                )
-            )
-        })
+        stacks.add(FormulaPageDefaults.IngredientScrollSelectReset)
         getIngredientCollection.getCollection().ingredients.mapNotNullTo(stacks) {
             if (it is IngredientModel.CustomIngredientModel) {
                 return@mapNotNullTo it.stacks.firstOrNull()?.create()?.unwrap()
@@ -201,7 +193,7 @@ fun FormulaPageAdvanced() {
                         val index = row * 3 + column
                         ScrollSelect(onSubmit = {
                             if (it >= 1) {
-                                store.setIngredientForSlot(index, it-1)
+                                store.setIngredientForSlot(index, it - 1)
                             } else {
                                 store.resetIngredientForSlot(index)
                             }
@@ -212,17 +204,16 @@ fun FormulaPageAdvanced() {
                                 stack?.count ?: 1
                             ).apply {
                                 if (stack != null) {
+                                    // We copy all the components of the original stack and then override some
                                     applyComponents(stack.components)
                                 } else {
                                     set(DataComponents.ITEM_MODEL, BuiltInRegistries.ITEM.getKey(Items.AIR))
+                                    set(DataComponents.ITEM_NAME, "Slot $index".deser().vanilla())
                                 }
-                                set(DataComponents.ITEM_NAME, "Slot $index".deser().vanilla())
-                                update(DataComponents.LORE, ItemLore(emptyList())) {
-                                    it.withLineAdded(
-                                        "<!i><yellow>Scroll <white>Select ingredient".deser().vanilla()
-                                    ).withLineAdded(
-                                        "<!i><yellow><key:key.use> <white>Submit selection".deser().vanilla()
-                                    )
+                                update(DataComponents.LORE, ItemLore.EMPTY) {
+                                    ItemLore(it.lines.toMutableList().apply {
+                                        addAll(FormulaPageDefaults.IngredientScrollSelectInteractionLore)
+                                    })
                                 }
                                 set(DataComponents.BUNDLE_CONTENTS, BundleContents(store.getIngredientCollectionIcons()))
                             }.snapshot()
@@ -250,9 +241,9 @@ fun FormulaPageAdvanced() {
                 is FormulaStore.FormulaState.Shaped -> {
                     Button(onClick = { }) {
                         if (state.shape.trim) {
-                            Icon(stack = ItemStack(Items.SHEARS).snapshot())
+                            Icon(stack = FormulaPageDefaults.TrimShapeIcon)
                         } else {
-                            Icon(stack = ItemStack(Items.PAPER).snapshot())
+                            Icon(stack = FormulaPageDefaults.KeepShapeIcon)
                         }
                     }
                 }
@@ -282,4 +273,34 @@ fun FormulaPageSimple() {
         // Formula type selection & type specific settings
 
     }
+}
+
+private object FormulaPageDefaults {
+
+    val IngredientScrollSelectInteractionLore = listOf(
+        "<!i><yellow>Scroll <white>Select ingredient".deser().vanilla(),
+        "<!i><yellow><key:key.use> <white>Submit selection".deser().vanilla()
+    )
+
+    val IngredientScrollSelectReset = ItemStack(Items.BARRIER).apply {
+        set(DataComponents.ITEM_NAME, "<red><b>Reset (Empty)".deser().vanilla())
+        set(DataComponents.MAX_STACK_SIZE, 1)
+    }
+
+    val KeepShapeIcon = ItemStack(Items.PAPER).apply {
+        set(DataComponents.ITEM_NAME, "Keep Shape Size".deser().vanilla())
+        set(DataComponents.LORE, ItemLore(listOf(
+            "<white>Keeps the shape size at max width & height.".deser().vanilla(),
+            "<white>Items must be placed <b>exactly</b> where they are in the recipe.".deser().vanilla()
+        )))
+    }.snapshot()
+
+    val TrimShapeIcon = ItemStack(Items.SHEARS).apply {
+        set(DataComponents.ITEM_NAME, "Trim Shape Size".deser().vanilla())
+        set(DataComponents.LORE, ItemLore(listOf(
+            "<white>Trims the shape size to fit the ingredients.".deser().vanilla(),
+            "<white>Allows placing smaller shapes anywhere into the grid.".deser().vanilla()
+        )))
+    }.snapshot()
+
 }
