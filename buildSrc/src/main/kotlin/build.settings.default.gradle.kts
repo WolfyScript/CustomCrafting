@@ -28,6 +28,9 @@ repositories {
 
 kotlin {
     jvmToolchain(21)
+    compilerOptions {
+        freeCompilerArgs.add("-Xexplicit-backing-fields")
+    }
 }
 
 tasks {

@@ -61,16 +61,17 @@ private fun RecipeCraftingModel.CraftingFormulaModel<*>.toUIState(): FormulaStor
 
 private class FormulaStore(
     val viewer: UUID,
-    val getFormula: RecipeCraftingUseCases.Formula.Get,
-    val setFormulaType: RecipeCraftingUseCases.Formula.SetType,
-    val assignIngredient: RecipeCraftingUseCases.Formula.AssignIngredient,
-    val unassignIngredient: RecipeCraftingUseCases.Formula.UnassignIngredient,
-    val toggleTrimShape: RecipeCraftingUseCases.Formula.ToggleTrimShape,
-    val toggleShapeSymmetry: RecipeCraftingUseCases.Formula.ToggleShapeSymmetry,
-    val getIngredientCollection: RecipeCraftingUseCases.IngredientCollection.GetUseCase,
+    private val getFormula: RecipeCraftingUseCases.Formula.Get,
+    private val setFormulaType: RecipeCraftingUseCases.Formula.SetType,
+    private val assignIngredient: RecipeCraftingUseCases.Formula.AssignIngredient,
+    private val unassignIngredient: RecipeCraftingUseCases.Formula.UnassignIngredient,
+    private val toggleTrimShape: RecipeCraftingUseCases.Formula.ToggleTrimShape,
+    private val toggleShapeSymmetry: RecipeCraftingUseCases.Formula.ToggleShapeSymmetry,
+    private val getIngredientCollection: RecipeCraftingUseCases.IngredientCollection.GetUseCase,
 ) : Store() {
 
-    val formulaState: StateFlow<FormulaState> = MutableStateFlow(getFormula.get().toUIState())
+    val formulaState: StateFlow<FormulaState>
+        field = MutableStateFlow(getFormula.get().toUIState())
 
     interface FormulaState {
 
@@ -153,7 +154,7 @@ private class FormulaStore(
     @Deprecated("Temporary! updating should be moved to the yet to be implemented domain repository")
     fun updateFormulaState() {
         storeCoroutineScope.launch {
-            (formulaState as MutableStateFlow).update {
+            formulaState.update {
                 getFormula.get().toUIState()
             }
         }
