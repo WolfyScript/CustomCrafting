@@ -1,40 +1,33 @@
 package com.wolfyscript.customcrafting.editor.domain.model
 
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeChoicesModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultActionState
 import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModifierState
-import com.wolfyscript.customcrafting.recipes.RecipeChoicesImpl
 import com.wolfyscript.customcrafting.recipes.RecipeItemModifier
 import com.wolfyscript.customcrafting.recipes.RecipeItemModifierImpl
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.customcrafting.recipes.RecipeResultImpl
-import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.items.ItemStackRef
-import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 class ResultModelImpl : ResultModel {
 
-    override val stacks: MutableList<ScafallItemStack> = mutableListOf()
-    override val tags: MutableList<Key> = mutableListOf()
+    override val choices: RecipeChoicesModel = RecipeChoicesModelImpl()
     override val actions: MutableList<ResultActionState<*>> = mutableListOf()
     override val modifier: ResultModifierState = ResultModifierStateImpl()
 
     override fun complete(): Result<RecipeResult> {
-        if (stacks.isEmpty() && tags.isEmpty()) {
-            return Result.failure(IllegalArgumentException("Result must have at least one stack or tag."))
+        val recipeChoices = choices.complete().getOrElse {
+            return Result.failure(IllegalStateException("Failed to complete result", it))
         }
-        val stackRefs = mutableListOf<ItemStackRef>()
-        for (stack in stacks) {
-            stackRefs.add(ItemStackRef.parse(stack) ?: ItemStackRef.create(stack))
+        if (recipeChoices.all().isEmpty()) {
+            return Result.failure(IllegalArgumentException("Result must have at least one stack or tag."))
         }
 
         // TODO
 
         return Result.success(
             RecipeResultImpl(
-                choices = RecipeChoicesImpl(
-                    stackRefs, tags
-                ),
+                choices = recipeChoices,
                 modifier = RecipeItemModifierImpl(),
                 actions = mutableListOf(),
                 bulkActions = mutableListOf(),

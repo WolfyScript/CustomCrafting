@@ -25,7 +25,7 @@ interface UIIngredientPreview {
 fun IngredientModel.toPreview(): UIIngredientPreview? {
     return when (this) {
         is IngredientModel.CustomIngredientModel -> UIIngredientPreview.Custom(
-            stacks.firstOrNull()?.create()?.snapshot() ?: ItemStack.EMPTY.snapshot(),
+            choices.stacks.firstOrNull()?.create()?.snapshot() ?: ItemStack.EMPTY.snapshot(),
             replaceWithRemains
         )
 

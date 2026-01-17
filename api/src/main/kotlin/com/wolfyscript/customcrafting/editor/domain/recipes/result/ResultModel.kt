@@ -1,14 +1,11 @@
 package com.wolfyscript.customcrafting.editor.domain.recipes.result
 
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeChoicesModel
 import com.wolfyscript.customcrafting.recipes.RecipeResult
-import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 interface ResultModel {
 
-    val stacks: MutableList<ScafallItemStack>
-
-    val tags: MutableList<Key>
+    val choices: RecipeChoicesModel
 
     val actions: List<ResultActionState<*>>
 

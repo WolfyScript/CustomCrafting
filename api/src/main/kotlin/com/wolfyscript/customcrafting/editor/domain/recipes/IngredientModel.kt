@@ -11,9 +11,7 @@ interface IngredientModel {
 
     interface CustomIngredientModel : IngredientModel {
 
-        val stacks: MutableList<ItemStackRef>
-
-        val tags: MutableList<Key>
+        val choices: RecipeChoicesModel
 
         val replaceWithRemains: Boolean
 

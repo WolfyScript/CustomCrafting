@@ -144,14 +144,13 @@ private class FormulaStore(
         stacks.add(FormulaPageDefaults.IngredientScrollSelectReset)
         getIngredientCollection.getCollection().ingredients.mapNotNullTo(stacks) {
             if (it is IngredientModel.CustomIngredientModel) {
-                return@mapNotNullTo it.stacks.firstOrNull()?.create()?.unwrap()
+                return@mapNotNullTo it.choices.stacks.firstOrNull()?.create()?.unwrap()
             }
             null
         }
         return stacks
     }
 
-    @Deprecated("Temporary! updating should be moved to the yet to be implemented domain repository")
     fun updateFormulaState() {
         storeCoroutineScope.launch {
             formulaState.update {

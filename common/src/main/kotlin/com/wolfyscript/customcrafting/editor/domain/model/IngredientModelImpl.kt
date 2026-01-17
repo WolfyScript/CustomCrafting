@@ -2,30 +2,30 @@ package com.wolfyscript.customcrafting.editor.domain.model
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeChoicesModel
 import com.wolfyscript.customcrafting.recipes.IngredientImpl
-import com.wolfyscript.customcrafting.recipes.RecipeChoicesImpl
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
 import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.snapshot
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
 import kotlinx.coroutines.runBlocking
 import net.minecraft.world.item.ItemStack
 
 class CustomIngredientModelImpl(
-    override val stacks: MutableList<ItemStackRef> = mutableListOf(),
-    override val tags: MutableList<Key> = mutableListOf(),
     override var replaceWithRemains: Boolean = true,
+    override val choices: RecipeChoicesModel = RecipeChoicesModelImpl(),
 ) : IngredientModel.CustomIngredientModel {
 
     companion object {
 
         fun loadFrom(ingredient: Ingredient) : CustomIngredientModelImpl {
             val state = CustomIngredientModelImpl(
-                ingredient.choices.stacks.toMutableList(),
-                ingredient.choices.tags.toMutableList(),
-                (ingredient.consumption is IngredientConsumer.Consume)
+                (ingredient.consumption is IngredientConsumer.Consume),
+                RecipeChoicesModelImpl(
+                    ingredient.choices.stacks.toMutableList(),
+                    ingredient.choices.tags.toMutableList(),
+                ),
             )
             // TODO: properly clone values!
             return state
@@ -35,21 +35,15 @@ class CustomIngredientModelImpl(
 
     override fun complete(): Result<Ingredient> {
         return runBlocking {
-            val finalStacks = stacks.toMutableList()
-            val finalTags = tags.toMutableList()
+            val recipeChoices = choices.complete().getOrElse {
+                return@runBlocking Result.failure(IllegalStateException("Failed to complete Ingredient.", it))
+            }
 
-            if (finalStacks.isEmpty() && finalTags.isEmpty()) {
+            if (recipeChoices.all().isEmpty()) {
                 return@runBlocking Result.failure(IllegalArgumentException("Ingredient must have at least one stack or tag."))
             }
 
-            return@runBlocking Result.success(
-                IngredientImpl(
-                    RecipeChoicesImpl(
-                        finalStacks,
-                        finalTags
-                    )
-                )
-            )
+            return@runBlocking Result.success(IngredientImpl(recipeChoices))
         }
     }
 

@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.editor.domain.usecase
 
 import com.wolfyscript.customcrafting.editor.domain.model.CustomIngredientModelImpl
+import com.wolfyscript.customcrafting.editor.domain.model.RecipeChoicesModelImpl
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
 import com.wolfyscript.scafall.items.ItemStackRef
 
@@ -47,9 +48,9 @@ interface IngredientUseCases {
             fun add(ingredient: Int, stack: ItemStackRef) {
                 val updated = when (val ingredient = getIngredientUseCase.get(ingredient)) {
                     is IngredientModel.CustomIngredientModel -> {
-                        val stacks = ingredient.stacks.toMutableList()
+                        val stacks = ingredient.choices.stacks.toMutableList()
                         stacks.add(stack)
-                        CustomIngredientModelImpl(stacks, ingredient.tags, ingredient.replaceWithRemains)
+                        CustomIngredientModelImpl(ingredient.replaceWithRemains, RecipeChoicesModelImpl(stacks, ingredient.choices.tags))
                     }
 
                     is IngredientModel.SavedIngredientModel -> {
@@ -72,9 +73,9 @@ interface IngredientUseCases {
             fun remove(ingredient: Int, index: Int) {
                 val updated = when (val ingredient = getIngredientUseCase.get(ingredient)) {
                     is IngredientModel.CustomIngredientModel -> {
-                        val stacks = ingredient.stacks.toMutableList()
+                        val stacks = ingredient.choices.stacks.toMutableList()
                         stacks.removeAt(index)
-                        CustomIngredientModelImpl(stacks, ingredient.tags, ingredient.replaceWithRemains)
+                        CustomIngredientModelImpl(ingredient.replaceWithRemains, RecipeChoicesModelImpl(stacks, ingredient.choices.tags))
                     }
 
                     is IngredientModel.SavedIngredientModel -> {
@@ -98,9 +99,9 @@ interface IngredientUseCases {
             fun set(ingredient: Int, index: Int, stack: ItemStackRef) {
                 val updated = when (val ingredient = getIngredientUseCase.get(ingredient)) {
                     is IngredientModel.CustomIngredientModel -> {
-                        val stacks = ingredient.stacks.toMutableList()
+                        val stacks = ingredient.choices.stacks.toMutableList()
                         stacks[index] = stack
-                        CustomIngredientModelImpl(stacks, ingredient.tags, ingredient.replaceWithRemains)
+                        CustomIngredientModelImpl(ingredient.replaceWithRemains, RecipeChoicesModelImpl(stacks, ingredient.choices.tags))
                     }
 
                     is IngredientModel.SavedIngredientModel -> {
