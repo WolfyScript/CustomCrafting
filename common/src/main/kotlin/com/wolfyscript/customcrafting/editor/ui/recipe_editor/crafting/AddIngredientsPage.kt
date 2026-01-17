@@ -10,6 +10,9 @@ import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
 import com.wolfyscript.customcrafting.editor.domain.usecase.IngredientUseCases
 import com.wolfyscript.customcrafting.editor.domain.usecase.RecipeCraftingUseCases
 import com.wolfyscript.customcrafting.editor.recipeEditor
+import com.wolfyscript.customcrafting.editor.ui.recipe_editor.crafting.AddIngredientDefaults.EditIngredientDisabledIcon
+import com.wolfyscript.customcrafting.editor.ui.recipe_editor.crafting.AddIngredientDefaults.EditIngredientIcon
+import com.wolfyscript.customcrafting.editor.ui.recipe_editor.crafting.AddIngredientDefaults.SelectSavedIngredientIcon
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.UIIngredientPreview
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.state.toUIState
 import com.wolfyscript.customcrafting.util.customCrafting
@@ -148,7 +151,7 @@ fun AddIngredientsPage() {
                     Button(onClick = {
                         store.addIngredient()
                     }) {
-                        Icon(stack = ItemStack(Items.GREEN_CONCRETE).snapshot())
+                        Icon(stack = AddIngredientDefaults.AddNewIngredientIcon)
                     }
                 }
             }
@@ -201,42 +204,50 @@ private fun CustomIngredientSelector(
     }
 }
 
-private val EditIngredientDisabledIcon = ItemStack(Items.ITEM_FRAME).apply {
-    set(DataComponents.ITEM_NAME, "<grey><st>Edit Ingredient".deser().vanilla())
-    set(
-        DataComponents.LORE,
-        ItemLore(
-            listOf(
-                "<!i><white>^ Place the first item ^".deser().vanilla(),
-                "<!i><white>^ into the slot above! ^".deser().vanilla()
-            )
-        )
-    )
-}.snapshot()
+private object AddIngredientDefaults {
 
-private val EditIngredientIcon = ItemStack(Items.GLOW_ITEM_FRAME).apply {
-    set(DataComponents.ITEM_NAME, "<yellow>Edit Ingredient".deser().vanilla())
-    set(
-        DataComponents.LORE,
-        ItemLore(
-            listOf(
-                "<!i><white>Edit this custom Ingredients'".deser().vanilla(),
-                "<!i><white>Choices, Tags & more".deser().vanilla(),
-            )
-        )
-    )
-}.snapshot()
+    val AddNewIngredientIcon = ItemStack(Items.GREEN_CONCRETE).apply {
+        set(DataComponents.ITEM_NAME, "Add Ingredient".deser().vanilla())
+    }.snapshot()
 
-private val SelectSavedIngredientIcon = ItemStack(Items.BOOKSHELF).apply {
-    set(DataComponents.ITEM_NAME, "<yellow>Select Ingredient".deser().vanilla())
-    set(
-        DataComponents.LORE,
-        ItemLore(
-            listOf(
-                "<!i><white>Select an existing ingredient".deser().vanilla(),
-                "<!i><white>that you've saved.".deser().vanilla()
+    val EditIngredientDisabledIcon = ItemStack(Items.ITEM_FRAME).apply {
+        set(DataComponents.ITEM_NAME, "<grey><st>Edit Ingredient".deser().vanilla())
+        set(
+            DataComponents.LORE,
+            ItemLore(
+                listOf(
+                    "<!i><white>^ Place the first item ^".deser().vanilla(),
+                    "<!i><white>^ into the slot above! ^".deser().vanilla()
+                )
             )
         )
-    )
-}.snapshot()
+    }.snapshot()
+
+    val EditIngredientIcon = ItemStack(Items.GLOW_ITEM_FRAME).apply {
+        set(DataComponents.ITEM_NAME, "<yellow>Edit Ingredient".deser().vanilla())
+        set(
+            DataComponents.LORE,
+            ItemLore(
+                listOf(
+                    "<!i><white>Edit this custom Ingredients'".deser().vanilla(),
+                    "<!i><white>Choices, Tags & more".deser().vanilla(),
+                )
+            )
+        )
+    }.snapshot()
+
+    val SelectSavedIngredientIcon = ItemStack(Items.BOOKSHELF).apply {
+        set(DataComponents.ITEM_NAME, "<yellow>Select Ingredient".deser().vanilla())
+        set(
+            DataComponents.LORE,
+            ItemLore(
+                listOf(
+                    "<!i><white>Select an existing ingredient".deser().vanilla(),
+                    "<!i><white>that you've saved.".deser().vanilla()
+                )
+            )
+        )
+    }.snapshot()
+}
+
 
