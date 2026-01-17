@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.BundleContents
@@ -64,6 +65,8 @@ private class FormulaStore(
     val setFormulaType: RecipeCraftingUseCases.Formula.SetType,
     val assignIngredient: RecipeCraftingUseCases.Formula.AssignIngredient,
     val unassignIngredient: RecipeCraftingUseCases.Formula.UnassignIngredient,
+    val toggleTrimShape: RecipeCraftingUseCases.Formula.ToggleTrimShape,
+    val setShapeSymmetry: RecipeCraftingUseCases.Formula.SetShapeSymmetry,
     val getIngredientCollection: RecipeCraftingUseCases.IngredientCollection.GetUseCase,
 ) : Store() {
 
@@ -115,8 +118,13 @@ private class FormulaStore(
         updateFormulaState()
     }
 
+    fun toggleTrimShape() {
+        toggleTrimShape.toggle()
+        updateFormulaState()
+    }
+
     fun setIngredientForSlot(index: Int, ingredientIndex: Int) {
-        assignIngredient.assign(index, getIngredientCollection.get()[ingredientIndex])
+        assignIngredient.assign(index, getIngredientCollection.get().filter { it.toPreview()?.icon?.isEmpty?.not() ?: false }[ingredientIndex])
         updateFormulaState()
     }
 
@@ -157,12 +165,8 @@ private class FormulaStore(
 @Composable
 fun FormulaPageAdvanced() {
     // TODO:
-    // - Set Formula Type (shapeless, shaped)
     // - Shaped:
-    //   - Select Ingredients for each slot
     //   - Set shape (symmetry, trim)
-    // - Shapeless:
-    //   - add/remove ingredients
 
     val store = store<FormulaStore>(Key.customCrafting("crafting/formula_advanced")) {
         val session = CustomCraftingProvider.get().server!!.recipeEditor.getOrCreateSession(it).getOrThrow()
@@ -172,6 +176,8 @@ fun FormulaPageAdvanced() {
             RecipeCraftingUseCases.Formula.SetType(session),
             RecipeCraftingUseCases.Formula.AssignIngredient(session),
             RecipeCraftingUseCases.Formula.UnassignIngredient(session),
+            RecipeCraftingUseCases.Formula.ToggleTrimShape(session),
+            RecipeCraftingUseCases.Formula.SetShapeSymmetry(session),
             RecipeCraftingUseCases.IngredientCollection.GetUseCase(session),
         )
     }
@@ -179,71 +185,84 @@ fun FormulaPageAdvanced() {
     val formulaState by store.formulaState.collectAsState()
     val isShapeless = formulaState is FormulaStore.FormulaState.Shapeless
 
-    Row(
-        Modifier.fillMaxWidth().height(4.slots),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        // 3x3 Grid of selector buttons (not slot inputs!)
-        Column(Modifier.height(3.slots)) {
-            repeat(3) { row ->
-                Row(Modifier.width(3.slots)) {
-                    repeat(3) { column ->
-                        val index = row * 3 + column
-                        ScrollSelect(onSubmit = {
-                            if (it >= 1) {
-                                store.setIngredientForSlot(index, it - 1)
-                            } else {
-                                store.resetIngredientForSlot(index)
-                            }
-                        }, icon = formulaState.getIngredient(index).let { ingredientPreview ->
-                            val stack = ingredientPreview?.icon?.unwrap()
-                            ItemStack(
-                                Items.RED_BUNDLE,
-                                stack?.count ?: 1
-                            ).apply {
-                                if (stack != null) {
-                                    // We copy all the components of the original stack and then override some
-                                    applyComponents(stack.components)
-                                } else {
-                                    set(DataComponents.ITEM_MODEL, BuiltInRegistries.ITEM.getKey(Items.AIR))
-                                    set(DataComponents.ITEM_NAME, "Slot $index".deser().vanilla())
-                                }
-                                update(DataComponents.LORE, ItemLore.EMPTY) {
-                                    ItemLore(it.lines.toMutableList().apply {
-                                        addAll(FormulaPageDefaults.IngredientScrollSelectInteractionLore)
-                                    })
-                                }
-                                set(DataComponents.BUNDLE_CONTENTS, BundleContents(store.getIngredientCollectionIcons()))
-                            }.snapshot()
-                        })
-                    }
-                }
-            }
-        }
-
-        Row(Modifier.width(3.slots)) {
+    Column(Modifier.height(4.slots)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             // Formula type selection & type specific settings
             Button(onClick = {
                 store.toggleFormulaType()
             }) {
-                Icon(stack = ItemStack(Items.CRAFTER).apply {
-                    set(DataComponents.ITEM_NAME, (if (isShapeless) "Shapeless" else "Shaped").deser().vanilla())
-                }.snapshot())
+                if (isShapeless) {
+                    Icon(stack = FormulaPageDefaults.ShapelessIcon)
+                } else {
+                    Icon(stack = FormulaPageDefaults.ShapedIcon)
+                }
+            }
+        }
+
+        Row(
+            Modifier.fillMaxWidth().height(3.slots),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            // 3x3 Grid of selector buttons (not slot inputs!)
+            Column(Modifier.height(3.slots)) {
+                repeat(3) { row ->
+                    Row(Modifier.width(3.slots)) {
+                        repeat(3) { column ->
+                            val index = row * 3 + column
+                            ScrollSelect(onSubmit = {
+                                if (it >= 1) {
+                                    store.setIngredientForSlot(index, it - 1)
+                                } else {
+                                    store.resetIngredientForSlot(index)
+                                }
+                            }, icon = formulaState.getIngredient(index).let { ingredientPreview ->
+                                val stack = ingredientPreview?.icon?.unwrap()
+                                ItemStack(
+                                    Items.RED_BUNDLE,
+                                    stack?.count ?: 1
+                                ).apply {
+                                    if (stack != null) {
+                                        // We copy all the components of the original stack and then override some
+                                        applyComponents(stack.components)
+                                    } else {
+                                        set(DataComponents.ITEM_MODEL, BuiltInRegistries.ITEM.getKey(Items.AIR))
+                                        set(DataComponents.ITEM_NAME, "Slot $index".deser().vanilla())
+                                    }
+                                    update(DataComponents.LORE, ItemLore.EMPTY) {
+                                        ItemLore(it.lines.toMutableList().apply {
+                                            addAll(FormulaPageDefaults.IngredientScrollSelectInteractionLore)
+                                        })
+                                    }
+                                    set(
+                                        DataComponents.BUNDLE_CONTENTS,
+                                        BundleContents(store.getIngredientCollectionIcons())
+                                    )
+                                }.snapshot()
+                            })
+                        }
+                    }
+                }
             }
 
-            when (val state = formulaState) {
-                is FormulaStore.FormulaState.Shapeless -> {
-                    // No options, so far
-                }
+            Column(
+                Modifier.width(3.slots).height(3.slots),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                when (val state = formulaState) {
+                    is FormulaStore.FormulaState.Shapeless -> {
+                        // No options, so far
+                    }
 
-                is FormulaStore.FormulaState.Shaped -> {
-                    Button(onClick = { }) {
-                        if (state.shape.trim) {
-                            Icon(stack = FormulaPageDefaults.TrimShapeIcon)
-                        } else {
-                            Icon(stack = FormulaPageDefaults.KeepShapeIcon)
+                    is FormulaStore.FormulaState.Shaped -> {
+                        Button(onClick = { store.toggleTrimShape() }) {
+                            if (state.shape.trim) {
+                                Icon(stack = FormulaPageDefaults.TrimShapeIcon)
+                            } else {
+                                Icon(stack = FormulaPageDefaults.KeepShapeIcon)
+                            }
                         }
                     }
                 }
@@ -278,6 +297,7 @@ fun FormulaPageSimple() {
 private object FormulaPageDefaults {
 
     val IngredientScrollSelectInteractionLore = listOf(
+        Component.empty(),
         "<!i><yellow>Scroll <white>Select ingredient".deser().vanilla(),
         "<!i><yellow><key:key.use> <white>Submit selection".deser().vanilla()
     )
@@ -287,20 +307,54 @@ private object FormulaPageDefaults {
         set(DataComponents.MAX_STACK_SIZE, 1)
     }
 
+    val ShapelessIcon = ItemStack(Items.CRAFTER).apply {
+        set(DataComponents.ITEM_NAME, "Shapeless".deser().vanilla())
+        set(
+            DataComponents.LORE, ItemLore(
+                listOf(
+                    "<white>Ingredients can be placed anywhere".deser().vanilla(),
+                    "<white>in no specific order or shape.".deser().vanilla(),
+                )
+            )
+        )
+    }.snapshot()
+
+    val ShapedIcon = ItemStack(Items.CRAFTER).apply {
+        set(DataComponents.ITEM_NAME, "Shaped".deser().vanilla())
+        set(
+            DataComponents.LORE, ItemLore(
+                listOf(
+                    "<white>Ingredients must be placed".deser().vanilla(),
+                    "<white>in the shape of the recipe.".deser().vanilla(),
+                )
+            )
+        )
+    }.snapshot()
+
     val KeepShapeIcon = ItemStack(Items.PAPER).apply {
         set(DataComponents.ITEM_NAME, "Keep Shape Size".deser().vanilla())
-        set(DataComponents.LORE, ItemLore(listOf(
-            "<white>Keeps the shape size at max width & height.".deser().vanilla(),
-            "<white>Items must be placed <b>exactly</b> where they are in the recipe.".deser().vanilla()
-        )))
+        set(
+            DataComponents.LORE, ItemLore(
+                listOf(
+                    "<white>Keeps shape size at max width & height.".deser().vanilla(),
+                    "<white>Items must be placed <b>exactly</b>".deser().vanilla(),
+                    "<white>where they are in the recipe.".deser().vanilla()
+                )
+            )
+        )
     }.snapshot()
 
     val TrimShapeIcon = ItemStack(Items.SHEARS).apply {
         set(DataComponents.ITEM_NAME, "Trim Shape Size".deser().vanilla())
-        set(DataComponents.LORE, ItemLore(listOf(
-            "<white>Trims the shape size to fit the ingredients.".deser().vanilla(),
-            "<white>Allows placing smaller shapes anywhere into the grid.".deser().vanilla()
-        )))
+        set(
+            DataComponents.LORE, ItemLore(
+                listOf(
+                    "<white>Trims shape size to fit ingredients.".deser().vanilla(),
+                    "<white>Allows placing smaller shapes".deser().vanilla(),
+                    "<white>anywhere into the grid.".deser().vanilla()
+                )
+            )
+        )
     }.snapshot()
 
 }

@@ -91,10 +91,24 @@ interface RecipeCraftingUseCases {
 
         }
 
-        class GetIngredient(val session: EditorSession) {
+        class ToggleTrimShape(val session: EditorSession) {
 
-            fun get(index: Int) = withCraftingModel(session) { model ->
-                model.formula.getIngredient(index)
+            fun toggle() = withCraftingModel(session) { model ->
+                val formula = model.formula
+                if (formula is RecipeCraftingModel.CraftingFormulaModel.Shaped) {
+                    formula.shape.trim = !formula.shape.trim
+                }
+            }
+
+        }
+
+        class SetShapeSymmetry(val session: EditorSession) {
+
+            fun set(symmetry: CraftingFormula.Shaped.ShapeSymmetry) = withCraftingModel(session) {
+                val formula = it.formula
+                if (formula is RecipeCraftingModel.CraftingFormulaModel.Shaped) {
+                    formula.shape.symmetry = symmetry
+                }
             }
 
         }
