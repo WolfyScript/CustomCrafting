@@ -66,7 +66,7 @@ private class FormulaStore(
     val assignIngredient: RecipeCraftingUseCases.Formula.AssignIngredient,
     val unassignIngredient: RecipeCraftingUseCases.Formula.UnassignIngredient,
     val toggleTrimShape: RecipeCraftingUseCases.Formula.ToggleTrimShape,
-    val setShapeSymmetry: RecipeCraftingUseCases.Formula.SetShapeSymmetry,
+    val toggleShapeSymmetry: RecipeCraftingUseCases.Formula.ToggleShapeSymmetry,
     val getIngredientCollection: RecipeCraftingUseCases.IngredientCollection.GetUseCase,
 ) : Store() {
 
@@ -133,6 +133,11 @@ private class FormulaStore(
         updateFormulaState()
     }
 
+    fun toggleShapeSymmetry(horizontal: Boolean = false, vertical: Boolean = false, rotate: Boolean = false) {
+        toggleShapeSymmetry.toggle(horizontal, vertical, rotate)
+        updateFormulaState()
+    }
+
     fun getIngredientCollectionIcons(): List<ItemStack> {
         val stacks = mutableListOf<ItemStack>()
         stacks.add(FormulaPageDefaults.IngredientScrollSelectReset)
@@ -177,7 +182,7 @@ fun FormulaPageAdvanced() {
             RecipeCraftingUseCases.Formula.AssignIngredient(session),
             RecipeCraftingUseCases.Formula.UnassignIngredient(session),
             RecipeCraftingUseCases.Formula.ToggleTrimShape(session),
-            RecipeCraftingUseCases.Formula.SetShapeSymmetry(session),
+            RecipeCraftingUseCases.Formula.ToggleShapeSymmetry(session),
             RecipeCraftingUseCases.IngredientCollection.GetUseCase(session),
         )
     }
@@ -262,6 +267,26 @@ fun FormulaPageAdvanced() {
                                 Icon(stack = FormulaPageDefaults.TrimShapeIcon)
                             } else {
                                 Icon(stack = FormulaPageDefaults.KeepShapeIcon)
+                            }
+                        }
+
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                            Button(onClick = {
+                                store.toggleShapeSymmetry(horizontal = true)
+                            }) {
+                                Icon(stack = if (state.shape.symmetry.horizontal) FormulaPageDefaults.SymmetryHorizontalEnabled else FormulaPageDefaults.SymmetryHorizontalDisabled)
+                            }
+                            Button(onClick = {
+                                store.toggleShapeSymmetry(vertical = true)
+                            }) {
+                                Icon(stack = if(state.shape.symmetry.vertical) FormulaPageDefaults.SymmetryVerticalEnabled else FormulaPageDefaults.SymmetryVerticalDisabled)
+                            }
+                            if (state.shape.symmetry.vertical && state.shape.symmetry.horizontal) {
+                                Button(onClick = {
+                                    store.toggleShapeSymmetry(rotate = true)
+                                }) {
+                                    Icon(stack = if (state.shape.symmetry.rotate) FormulaPageDefaults.SymmetryRotateEnabled else FormulaPageDefaults.SymmetryRotateDisabled)
+                                }
                             }
                         }
                     }
@@ -357,4 +382,36 @@ private object FormulaPageDefaults {
         )
     }.snapshot()
 
+    val SymmetryHorizontalEnabled = ItemStack(Items.ITEM_FRAME).apply {
+        set(DataComponents.ITEM_NAME, "Mirror Horizontally".deser().vanilla())
+    }.snapshot()
+
+    val SymmetryHorizontalDisabled = ItemStack(Items.ITEM_FRAME).apply {
+        set(DataComponents.ITEM_NAME, "Fixed Horizontally".deser().vanilla())
+    }.snapshot()
+
+    val SymmetryVerticalEnabled = ItemStack(Items.ITEM_FRAME).apply {
+        set(DataComponents.ITEM_NAME, "Mirror Vertically".deser().vanilla())
+    }.snapshot()
+
+    val SymmetryVerticalDisabled = ItemStack(Items.ITEM_FRAME).apply {
+        set(DataComponents.ITEM_NAME, "Fixed Vertically".deser().vanilla())
+    }.snapshot()
+
+    val SymmetryRotateEnabled = ItemStack(Items.ITEM_FRAME).apply {
+        set(DataComponents.ITEM_NAME, "Mirror Both Axis (Rotate)".deser().vanilla())
+        set(DataComponents.LORE, ItemLore(listOf(
+            "Allows crafting the recipe".deser().vanilla(),
+            "with the shape being rotated.".deser().vanilla(),
+            "e.g. flipped Horizontally + Vertically".deser().vanilla()
+        )))
+    }.snapshot()
+
+    val SymmetryRotateDisabled = ItemStack(Items.ITEM_FRAME).apply {
+        set(DataComponents.ITEM_NAME, "Mirror Single Axis".deser().vanilla())
+        set(DataComponents.LORE, ItemLore(listOf(
+            "Shape may be mirrored horizontally".deser().vanilla(),
+            "or vertically, but not both.".deser().vanilla(),
+        )))
+    }.snapshot()
 }
