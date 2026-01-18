@@ -9,7 +9,7 @@ interface RecipeCraftingModel : RecipeModel.RecipeTypeSpecificModel<CustomRecipe
 
     val ingredientCollection: IngredientCollectionModel
 
-    val result: ResultModel
+    var result: ResultModel
 
     val formula: CraftingFormulaModel<*>
 

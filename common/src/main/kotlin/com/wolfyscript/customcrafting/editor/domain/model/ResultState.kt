@@ -9,11 +9,11 @@ import com.wolfyscript.customcrafting.recipes.RecipeItemModifierImpl
 import com.wolfyscript.customcrafting.recipes.RecipeResult
 import com.wolfyscript.customcrafting.recipes.RecipeResultImpl
 
-class ResultModelImpl : ResultModel {
-
-    override val choices: RecipeChoicesModel = RecipeChoicesModelImpl()
-    override val actions: MutableList<ResultActionState<*>> = mutableListOf()
-    override val modifier: ResultModifierState = ResultModifierStateImpl()
+class ResultModelImpl(
+    override val choices: RecipeChoicesModel = RecipeChoicesModelImpl(),
+    override val actions: MutableList<ResultActionState<*>> = mutableListOf(),
+    override val modifier: ResultModifierState = ResultModifierStateImpl(),
+) : ResultModel {
 
     override fun complete(): Result<RecipeResult> {
         val recipeChoices = choices.complete().getOrElse {

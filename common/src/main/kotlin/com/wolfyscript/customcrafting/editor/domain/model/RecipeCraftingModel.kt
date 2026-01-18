@@ -50,7 +50,7 @@ data class IngredientCollectionModelImpl(
 }
 
 data class RecipeCraftingModelImpl(
-    override val result: ResultModel = ResultModelImpl(),
+    override var result: ResultModel = ResultModelImpl(),
     override var formula: RecipeCraftingModel.CraftingFormulaModel<*> = ShapedCraftingFormulaModel(),
     override val ingredientCollection: RecipeCraftingModel.IngredientCollectionModel = IngredientCollectionModelImpl(),
 ) : RecipeCraftingModel {

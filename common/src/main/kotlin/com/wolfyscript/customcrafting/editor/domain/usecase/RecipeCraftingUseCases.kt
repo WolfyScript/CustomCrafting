@@ -3,6 +3,7 @@ package com.wolfyscript.customcrafting.editor.domain.usecase
 import com.wolfyscript.customcrafting.editor.EditorSession
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModel
 import com.wolfyscript.customcrafting.editor.ui.withCraftingModel
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.ShapedCraftingFormulaImpl
@@ -117,6 +118,26 @@ interface RecipeCraftingUseCases {
                         )
                     }
                 }
+
+        }
+
+    }
+
+    interface Result {
+
+        class Get(val session: EditorSession) : RecipeResultUseCases.GetResultUseCase {
+
+            override fun get(): ResultModel = withCraftingModel(session) { model ->
+                model.result
+            }
+
+        }
+
+        class Set(val session: EditorSession) : RecipeResultUseCases.SetResultUseCase {
+
+            override fun set(result: ResultModel) = withCraftingModel(session) { model ->
+                model.result = result
+            }
 
         }
 
