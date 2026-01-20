@@ -5,11 +5,13 @@ import com.wolfyscript.customcrafting.editor.domain.SessionModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.resource.DataType
+import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 
 private fun saveRecipe(key: Key, recipe: CustomRecipe<*,*>) {
     val resourceLoader = CustomCraftingProvider.get().server?.resourceManager?.resourceLoader ?: return
     resourceLoader.save(DataType.Recipes, key, recipe)
+    ScafallProvider.get().logger.info("[RecipeManager] Saved $key with $recipe")
 }
 
 class EditRecipeSessionModel(key: Key, override val recipeModel: RecipeModel<*>) : SessionModel.EditModel {
@@ -18,18 +20,19 @@ class EditRecipeSessionModel(key: Key, override val recipeModel: RecipeModel<*>)
         private set
 
     override fun saveAs(key: Key) {
-        currentKey = key
-        save()
-    }
-
-    override fun save() {
         val result = recipeModel.complete()
         if (result.isFailure) {
+            ScafallProvider.get().logger.error("Failed to save recipe: ", result.exceptionOrNull())
             return
         }
         val recipe = result.getOrThrow()
-        saveRecipe(currentKey, recipe)
+        currentKey = key
+        saveRecipe(key, recipe)
         // TODO: update recipe manager? or require to manually reload later?
+    }
+
+    override fun save() {
+        saveAs(currentKey)
     }
 
     override fun cancel() {
@@ -44,6 +47,7 @@ class CreateRecipeSessionModel(override val recipeModel: RecipeModel<*>) : Sessi
     override fun save(key: Key) {
         val result = recipeModel.complete()
         if (result.isFailure) {
+            ScafallProvider.get().logger.error("Failed to save recipe: ", result.exceptionOrNull())
             return
         }
         val recipe = result.getOrThrow()
