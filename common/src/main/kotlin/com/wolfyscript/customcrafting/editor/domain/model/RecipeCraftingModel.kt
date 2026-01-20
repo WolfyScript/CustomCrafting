@@ -141,10 +141,6 @@ data class ShapelessCraftingFormulaModel(
     }
 
     override fun complete(): Result<CraftingFormula.Shapeless> {
-        if (ingredients.isEmpty()) {
-            return Result.failure(IllegalStateException("Failed to create shapeless formula: Must have at least 1 ingredient"))
-        }
-
         val completedIngredients = mutableListOf<Ingredient>()
         for ((index, ingredientState) in ingredients.withIndex()) {
             val ingredient = ingredientState.complete().getOrElse {
@@ -156,6 +152,10 @@ data class ShapelessCraftingFormulaModel(
                 )
             }
             completedIngredients.add(ingredient)
+        }
+
+        if (completedIngredients.isEmpty()) {
+            return Result.failure(IllegalStateException("Failed to create shapeless formula: Must have at least 1 ingredient"))
         }
 
         return Result.success(ShapelessCraftingFormulaImpl(completedIngredients))
@@ -225,6 +225,9 @@ data class ShapedCraftingFormulaModel(
                 }
             }
         }
+        if (mappedIngredients.isEmpty()) {
+            return Result.failure(IllegalStateException("Failed to create shaped formula: Must have at least 1 ingredient"))
+        }
         val completedShape = shape.complete().getOrElse {
             return Result.failure(
                 IllegalStateException(
@@ -232,6 +235,9 @@ data class ShapedCraftingFormulaModel(
                     it
                 )
             )
+        }
+        if (completedShape.rows.all { it.isBlank() }) {
+            return Result.failure(IllegalStateException("Failed to create shaped formula: Must have a defined shape"))
         }
 
         val shaped = ShapedCraftingFormulaImpl(mappedIngredients, completedShape)
