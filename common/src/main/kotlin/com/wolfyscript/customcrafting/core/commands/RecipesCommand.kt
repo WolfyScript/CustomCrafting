@@ -26,7 +26,7 @@ object RecipesCommand {
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         sequenceOf(ROOT_NAME, "cc:$ROOT_NAME", "${Key.CUSTOMCRAFTING_NAMESPACE}:$ROOT_NAME").forEach { alias ->
             dispatcher.register(
-                Commands.literal(alias).requires { it.permissions().hasPermission(Permissions.COMMANDS_ADMIN) }.apply {
+                Commands.literal(alias).requires { it.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER) }.apply {
                     then(Commands.literal("reload").executes { reload(CustomCraftingProvider.get()) })
                     then(Commands.literal("status").executes { ctx ->
                         printStatus(ctx, CustomCraftingProvider.get())

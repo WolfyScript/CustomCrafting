@@ -1,13 +1,15 @@
 package com.wolfyscript.customcrafting.editor.cli
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.core.commands.SUCCESS_RESULT
+import com.wolfyscript.customcrafting.editor.domain.SessionModel
 import com.wolfyscript.customcrafting.editor.recipeEditor
 import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
-import com.wolfyscript.customcrafting.server.CustomCraftingServer
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.customcrafting.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.identifier.toKey
 import net.minecraft.commands.CommandSourceStack
@@ -16,6 +18,30 @@ import net.minecraft.commands.arguments.IdentifierArgument
 import net.minecraft.network.chat.Component
 
 internal fun LiteralArgumentBuilder<CommandSourceStack>.recipeEditorCLIEntry(dispatcher: CommandDispatcher<CommandSourceStack>) {
+    then(
+        Commands.literal("editor")
+            .then(Commands.literal("save").then(
+                Commands.argument("recipe_name", StringArgumentType.word()).executes { ctx ->
+                    val executor = ctx.source.player ?: return@executes 0
+
+                    val editor = CustomCraftingProvider.get().server?.recipeEditor
+                        ?: return@executes SUCCESS_RESULT
+                    val session = editor.getOrCreateSession(executor.uuid).getOrThrow()
+                    val model = session.model ?: return@executes SUCCESS_RESULT
+
+                    val recipeName = StringArgumentType.getString(ctx, "recipe_name")
+
+                    if (model is SessionModel.CreateModel) {
+                        model.save(Key.customCrafting(recipeName))
+                    } else if(model is SessionModel.EditModel) {
+                        model.saveAs(Key.customCrafting(recipeName))
+                    }
+
+                    ctx.source.sendSuccess({ Component.literal("Saved recipe under $recipeName") }, false)
+                    return@executes 0
+                }
+            ))
+    )
     then(
         Commands.literal("create")
             .then(Commands.argument("type", IdentifierArgument.id()).executes { ctx ->
