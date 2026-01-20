@@ -1,9 +1,11 @@
 package com.wolfyscript.customcrafting.recipes
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.JsonTypeName
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
@@ -44,7 +46,6 @@ interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, R
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-// This could in theory be expanded to allow custom types from a type registry, but for now there is no need for that
 @JsonSubTypes(
     JsonSubTypes.Type(value = CraftingFormula.Shapeless::class, name = "shapeless"),
     JsonSubTypes.Type(value = CraftingFormula.Shaped::class, name = "shaped")
@@ -57,6 +58,7 @@ interface CraftingFormula {
     /**
      * A crafting formula with a list of ingredients that can be arranged in any order
      */
+    @JsonTypeName("shapeless")
     interface Shapeless : CraftingFormula {
 
         val ingredients: List<Ingredient>
@@ -68,6 +70,7 @@ interface CraftingFormula {
      *
      * The shape may allow ingredients to be arranged mirrored (see [ShapeSymmetry]).
      */
+    @JsonTypeName("shaped")
     interface Shaped : CraftingFormula {
 
         val ingredients: List<Ingredient>
@@ -106,11 +109,13 @@ interface CraftingFormula {
             /**
              * The width of the final shape (i.e. trimmed shape if [trim] is true)
              */
+            @get:JsonIgnore
             val width: Int
 
             /**
              * The height of the final shape (i.e. trimmed shape if [trim] is true)
              */
+            @get:JsonIgnore
             val height: Int
 
             /**
@@ -129,11 +134,13 @@ interface CraftingFormula {
              * A list of possible arrangements the shape can be in.
              * The 2d shapes are represented as 1d arrays of the ingredient indices based on the [ingredientIndices].
              */
+            @get:JsonIgnore
             val variations: List<Array<Int>>
 
             /**
              * List of the ingredient keys in the shape in order of appearance.
              */
+            @get:JsonIgnore
             val ingredientIndices: List<Char>
 
         }

@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.recipes
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.*
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
@@ -63,6 +64,7 @@ class ShapedCraftingFormulaImpl(
      * Converts the mapped ingredients to a more efficient lookup using indices instead.
      * This constructs a list of Ingredients by replacing the [shapes][shape] ingredient indices with their corresponding ingredient.
      */
+    @JsonIgnore
     override val ingredients: List<Ingredient> = shape.ingredientIndices.map {
         mappedIngredients[it] ?: throw IllegalArgumentException("No ingredient for character '$it'")
     }
