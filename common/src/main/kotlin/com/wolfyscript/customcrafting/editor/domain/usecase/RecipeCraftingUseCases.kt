@@ -12,7 +12,7 @@ interface RecipeCraftingUseCases {
 
     interface IngredientCollection {
 
-        class GetUseCase(val session: EditorSession) : IngredientUseCases.GetIngredientListUseCase {
+        class Get(val session: EditorSession) : IngredientUseCases.GetIngredientListUseCase {
 
             fun getCollection(): RecipeCraftingModel.IngredientCollectionModel = withCraftingModel(session) {
                 it.ingredientCollection
@@ -24,9 +24,9 @@ interface RecipeCraftingUseCases {
 
         }
 
-        class SetIngredientUseCase(
+        class Set(
             val session: EditorSession,
-            val getIngredientCollectionUseCase: GetUseCase,
+            val getIngredientCollectionUseCase: Get,
         ) : IngredientUseCases.SetIngredientAtUseCase {
 
             override fun set(
@@ -39,9 +39,9 @@ interface RecipeCraftingUseCases {
 
         }
 
-        class AddIngredientUseCase(
+        class Add(
             val session: EditorSession,
-            val getIngredientCollectionUseCase: GetUseCase,
+            val getIngredientCollectionUseCase: Get,
         ) {
 
             fun add(toAdd: IngredientModel) = withCraftingModel(session) {

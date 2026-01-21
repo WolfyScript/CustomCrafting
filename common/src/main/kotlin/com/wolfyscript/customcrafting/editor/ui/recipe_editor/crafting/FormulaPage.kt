@@ -67,7 +67,7 @@ private class FormulaStore(
     private val unassignIngredient: RecipeCraftingUseCases.Formula.UnassignIngredient,
     private val toggleTrimShape: RecipeCraftingUseCases.Formula.ToggleTrimShape,
     private val toggleShapeSymmetry: RecipeCraftingUseCases.Formula.ToggleShapeSymmetry,
-    private val getIngredientCollection: RecipeCraftingUseCases.IngredientCollection.GetUseCase,
+    private val getIngredientCollection: RecipeCraftingUseCases.IngredientCollection.Get,
 ) : Store() {
 
     val formulaState: StateFlow<FormulaState>
@@ -183,7 +183,7 @@ fun FormulaPageAdvanced() {
             RecipeCraftingUseCases.Formula.UnassignIngredient(session),
             RecipeCraftingUseCases.Formula.ToggleTrimShape(session),
             RecipeCraftingUseCases.Formula.ToggleShapeSymmetry(session),
-            RecipeCraftingUseCases.IngredientCollection.GetUseCase(session),
+            RecipeCraftingUseCases.IngredientCollection.Get(session),
         )
     }
 

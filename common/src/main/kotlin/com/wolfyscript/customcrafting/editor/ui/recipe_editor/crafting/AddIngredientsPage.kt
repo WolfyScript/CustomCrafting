@@ -6,10 +6,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.model.CustomIngredientModelImpl
-import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
 import com.wolfyscript.customcrafting.editor.domain.usecase.IngredientUseCases
 import com.wolfyscript.customcrafting.editor.domain.usecase.RecipeCraftingUseCases
 import com.wolfyscript.customcrafting.editor.recipeEditor
+import com.wolfyscript.customcrafting.editor.ui.recipe_editor.IngredientEditor
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.crafting.AddIngredientDefaults.EditIngredientDisabledIcon
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.crafting.AddIngredientDefaults.EditIngredientIcon
 import com.wolfyscript.customcrafting.editor.ui.recipe_editor.crafting.AddIngredientDefaults.SelectSavedIngredientIcon
@@ -44,8 +44,9 @@ import java.util.*
 
 class AddIngredientStore(
     val viewer: UUID,
-    val getIngredientsUseCase: RecipeCraftingUseCases.IngredientCollection.GetUseCase,
-    val addIngredientUseCase: RecipeCraftingUseCases.IngredientCollection.AddIngredientUseCase,
+    val getIngredientsUseCase: RecipeCraftingUseCases.IngredientCollection.Get,
+    val setIngredientsUseCase: RecipeCraftingUseCases.IngredientCollection.Set,
+    val addIngredientUseCase: RecipeCraftingUseCases.IngredientCollection.Add,
     val removeIngredientUseCase: RecipeCraftingUseCases.IngredientCollection.RemoveIngredientUseCase,
     val setStackChoiceUseCase: IngredientUseCases.Choices.Set,
     val removeStackChoiceUseCase: IngredientUseCases.Choices.Remove,
@@ -56,17 +57,21 @@ class AddIngredientStore(
         val previews: List<UIIngredientPreview>,
     )
 
-    val ingredientCollection: StateFlow<State> =
-        MutableStateFlow(State(getIngredientsUseCase.getCollection().toUIState()))
+    val ingredientCollection: StateFlow<State>
+        field = MutableStateFlow(State(getIngredientsUseCase.getCollection().toUIState()))
+
+    val selectedIngredient: StateFlow<Int?>
+        field = MutableStateFlow(null)
 
     fun addIngredient() {
         addIngredientUseCase.add(CustomIngredientModelImpl())
         updateIngredients()
     }
 
-    fun addIngredient(ingredientModel: IngredientModel) {
-        addIngredientUseCase.add(ingredientModel)
-        updateIngredients()
+    fun editIngredient(index: Int?) {
+        storeCoroutineScope.launch {
+            selectedIngredient.update { index }
+        }
     }
 
     fun removeIngredient(index: Int) {
@@ -89,7 +94,7 @@ class AddIngredientStore(
     @Deprecated("Temporary! updating should be moved to the yet to be implemented domain repository")
     fun updateIngredients() {
         storeCoroutineScope.launch {
-            (ingredientCollection as MutableStateFlow).update {
+            ingredientCollection.update {
                 State(getIngredientsUseCase.getCollection().toUIState())
             }
         }
@@ -101,15 +106,16 @@ class AddIngredientStore(
 fun AddIngredientsPage() {
     val store = store(key = Key.customCrafting("ingredient_collection")) {
         val session = CustomCraftingProvider.get().server!!.recipeEditor.getOrCreateSession(it).getOrThrow()
-        val getIngredientCollectionUseCase = RecipeCraftingUseCases.IngredientCollection.GetUseCase(session)
+        val getIngredientCollectionUseCase = RecipeCraftingUseCases.IngredientCollection.Get(session)
         val getIngredientUseCase = IngredientUseCases.GetIngredientUseCase(getIngredientCollectionUseCase)
         val setIngredientUseCase =
-            RecipeCraftingUseCases.IngredientCollection.SetIngredientUseCase(session, getIngredientCollectionUseCase)
+            RecipeCraftingUseCases.IngredientCollection.Set(session, getIngredientCollectionUseCase)
 
         AddIngredientStore(
             it,
             getIngredientCollectionUseCase,
-            RecipeCraftingUseCases.IngredientCollection.AddIngredientUseCase(session, getIngredientCollectionUseCase),
+            setIngredientUseCase,
+            RecipeCraftingUseCases.IngredientCollection.Add(session, getIngredientCollectionUseCase),
             RecipeCraftingUseCases.IngredientCollection.RemoveIngredientUseCase(session),
             IngredientUseCases.Choices.Set(getIngredientUseCase, setIngredientUseCase),
             IngredientUseCases.Choices.Remove(getIngredientUseCase, setIngredientUseCase),
@@ -117,41 +123,54 @@ fun AddIngredientsPage() {
         )
     }
     val collection by store.ingredientCollection.collectAsState()
+    val selectedIngredientIndex by store.selectedIngredient.collectAsState()
 
     Column(Modifier.fillMaxHeight()) {
-        Row(Modifier.fillMaxWidth()) {
-            repeat(9) {
-                Icon(stack = ItemStack(Items.GRAY_STAINED_GLASS_PANE).snapshot())
+        if (selectedIngredientIndex != null) {
+            IngredientEditor(
+                selectedIngredientIndex!!,
+                { store.editIngredient(null) },
+                IngredientUseCases.GetIngredientUseCase(store.getIngredientsUseCase),
+                store.setIngredientsUseCase
+            )
+        } else {
+            Row(Modifier.fillMaxWidth()) {
+                repeat(9) {
+                    Icon(stack = ItemStack(Items.GRAY_STAINED_GLASS_PANE).snapshot())
+                }
             }
-        }
 
-        Row(Modifier.fillMaxWidth().height(3.slots), verticalAlignment = Alignment.Top) {
-            collection.previews.forEachIndexed { index, ingredient ->
-                key(ingredient) {
-                    when (ingredient) {
-                        is UIIngredientPreview.Saved -> {
+            Row(Modifier.fillMaxWidth().height(3.slots), verticalAlignment = Alignment.Top) {
+                collection.previews.forEachIndexed { index, ingredient ->
+                    key(ingredient) {
+                        when (ingredient) {
+                            is UIIngredientPreview.Saved -> {
 //                        Icon(stack = ingredient.icon)
-                        }
+                            }
 
-                        is UIIngredientPreview.Custom -> {
-                            CustomIngredientSelector(
-                                ingredient,
-                                onAdd = { store.addFirstStackChoice(index, it) },
-                                onRemove = { store.removeFirstStackChoiceFor(index) },
-                                onReplace = { store.setFirstStackChoiceFor(index, it) },
-                                onModify = {
-                                    store.updateIngredients() // Refresh entire list TODO: look for a better solution
-                                })
+                            is UIIngredientPreview.Custom -> {
+                                CustomIngredientSelector(
+                                    ingredient,
+                                    onAdd = { store.addFirstStackChoice(index, it) },
+                                    onRemove = { store.removeFirstStackChoiceFor(index) },
+                                    onReplace = { store.setFirstStackChoiceFor(index, it) },
+                                    onModify = {
+                                        store.updateIngredients() // Refresh entire list TODO: look for a better solution
+                                    },
+                                    onEdit = {
+                                        store.editIngredient(index)
+                                    })
+                            }
                         }
                     }
                 }
-            }
-            if (collection.previews.size < 9) {
-                Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-                    Button(onClick = {
-                        store.addIngredient()
-                    }) {
-                        Icon(stack = AddIngredientDefaults.AddNewIngredientIcon)
+                if (collection.previews.size < 9) {
+                    Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+                        Button(onClick = {
+                            store.addIngredient()
+                        }) {
+                            Icon(stack = AddIngredientDefaults.AddNewIngredientIcon)
+                        }
                     }
                 }
             }
@@ -166,6 +185,7 @@ private fun CustomIngredientSelector(
     onRemove: () -> Unit,
     onAdd: (ItemStackRef) -> Unit,
     onReplace: (ItemStackRef) -> Unit,
+    onEdit: () -> Unit
 ) {
     Column(Modifier.height(3.slots), verticalArrangement = Arrangement.Top) {
         Slot(
@@ -194,7 +214,7 @@ private fun CustomIngredientSelector(
         if (ingredient.icon.isEmpty /* && ingredient.tags.isEmpty()*/) {
             Icon(stack = EditIngredientDisabledIcon)
         } else {
-            Button(onClick = {}) {
+            Button(onClick = { onEdit() }) {
                 Icon(stack = EditIngredientIcon)
             }
         }

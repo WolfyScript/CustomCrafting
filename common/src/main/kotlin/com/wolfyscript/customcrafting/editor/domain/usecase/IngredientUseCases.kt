@@ -41,77 +41,50 @@ interface IngredientUseCases {
     interface Choices {
 
         class Add(
-            val getIngredientUseCase: GetIngredientUseCase,
+            val getIngredientUseCase: GetIngredientByIndexUseCase,
             val setIngredientUseCase: SetIngredientAtUseCase,
         ) {
 
-            fun add(ingredient: Int, stack: ItemStackRef) {
-                val updated = when (val ingredient = getIngredientUseCase.get(ingredient)) {
-                    is IngredientModel.CustomIngredientModel -> {
-                        val stacks = ingredient.choices.stacks.toMutableList()
-                        stacks.add(stack)
-                        CustomIngredientModelImpl(ingredient.replaceWithRemains, RecipeChoicesModelImpl(stacks, ingredient.choices.tags))
-                    }
-
-                    is IngredientModel.SavedIngredientModel -> {
-                        null
-                    }
-
-                    else -> null
-                }
-                if (updated != null) {
-                    setIngredientUseCase.set(ingredient, updated)
+            fun add(ingredientIndex: Int, stack: ItemStackRef) {
+                val ingredient = getIngredientUseCase.get(ingredientIndex)
+                if (ingredient is IngredientModel.CustomIngredientModel) {
+                    val stacks = ingredient.choices.stacks.toMutableList()
+                    stacks.add(stack)
+                    val updated = CustomIngredientModelImpl(ingredient.replaceWithRemains, RecipeChoicesModelImpl(stacks, ingredient.choices.tags))
+                    setIngredientUseCase.set(ingredientIndex, updated)
                 }
             }
         }
 
         class Remove(
-            val getIngredientUseCase: GetIngredientUseCase,
+            val getIngredientUseCase: GetIngredientByIndexUseCase,
             val setIngredientUseCase: SetIngredientAtUseCase,
         ) {
 
-            fun remove(ingredient: Int, index: Int) {
-                val updated = when (val ingredient = getIngredientUseCase.get(ingredient)) {
-                    is IngredientModel.CustomIngredientModel -> {
-                        val stacks = ingredient.choices.stacks.toMutableList()
-                        stacks.removeAt(index)
-                        CustomIngredientModelImpl(ingredient.replaceWithRemains, RecipeChoicesModelImpl(stacks, ingredient.choices.tags))
-                    }
-
-                    is IngredientModel.SavedIngredientModel -> {
-                        null
-                    }
-
-                    else -> null
-                }
-                if (updated != null) {
-                    setIngredientUseCase.set(ingredient, updated)
+            fun remove(ingredientIndex: Int, index: Int) {
+                val ingredient = getIngredientUseCase.get(ingredientIndex)
+                if (ingredient is IngredientModel.CustomIngredientModel) {
+                    val stacks = ingredient.choices.stacks.toMutableList()
+                    stacks.removeAt(index)
+                    val updated = CustomIngredientModelImpl(ingredient.replaceWithRemains, RecipeChoicesModelImpl(stacks, ingredient.choices.tags))
+                    setIngredientUseCase.set(ingredientIndex, updated)
                 }
             }
 
         }
 
         class Set(
-            val getIngredientUseCase: GetIngredientUseCase,
+            val getIngredientUseCase: GetIngredientByIndexUseCase,
             val setIngredientUseCase: SetIngredientAtUseCase,
         ) {
 
-            fun set(ingredient: Int, index: Int, stack: ItemStackRef) {
-                val updated = when (val ingredient = getIngredientUseCase.get(ingredient)) {
-                    is IngredientModel.CustomIngredientModel -> {
-                        val stacks = ingredient.choices.stacks.toMutableList()
-                        stacks[index] = stack
-                        CustomIngredientModelImpl(ingredient.replaceWithRemains, RecipeChoicesModelImpl(stacks, ingredient.choices.tags))
-                    }
-
-                    is IngredientModel.SavedIngredientModel -> {
-                        null
-                    }
-
-                    else -> null
-                }
-                if (updated != null) {
-                    setIngredientUseCase.set(ingredient, updated)
+            fun set(ingredientIndex: Int, index: Int, stack: ItemStackRef) {
+                val ingredient = getIngredientUseCase.get(ingredientIndex)
+                if (ingredient is IngredientModel.CustomIngredientModel) {
+                    val stacks = ingredient.choices.stacks.toMutableList()
+                    stacks[index] = stack
+                    val updated = CustomIngredientModelImpl(ingredient.replaceWithRemains, RecipeChoicesModelImpl(stacks, ingredient.choices.tags))
+                    setIngredientUseCase.set(ingredientIndex, updated)
                 }
             }
         }
