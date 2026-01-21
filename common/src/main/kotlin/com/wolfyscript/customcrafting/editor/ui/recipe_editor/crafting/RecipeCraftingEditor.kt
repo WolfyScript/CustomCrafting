@@ -21,6 +21,7 @@ import com.wolfyscript.viewportl.gui.model.store
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.component.ItemLore
 
 class CraftingRecipeStore : Store() {
 
@@ -69,64 +70,33 @@ fun RecipeCraftingEditor(existingRecipeKey: Key? = null, topBackStack: SnapshotS
                 }.snapshot())
             }
             Row {
-                // Bottom Nav
                 BottomNavButton(
-                    ItemStack(Items.BOOKSHELF).apply {
-                        set(
-                            DataComponents.ITEM_NAME,
-                            "<light_purple><b>Ingredients".deser().vanilla()
-                        )
-                    }.snapshot(),
+                    Defaults.IngredientsCollectionTab,
                     CraftingPath.Advanced.AddIngredients,
                     craftingBackStack
                 )
                 BottomNavButton(
-                    ItemStack(Items.BREWING_STAND).apply {
-                        set(
-                            DataComponents.ITEM_NAME,
-                            "<light_purple><b>Formula".deser().vanilla()
-                        )
-                    }.snapshot(),
+                    Defaults.FormulaTab,
                     CraftingPath.Advanced.Formula,
                     craftingBackStack
                 )
                 BottomNavButton(
-                    ItemStack(Items.ITEM_FRAME).apply {
-                        set(
-                            DataComponents.ITEM_NAME,
-                            "<light_purple><b>Result".deser().vanilla()
-                        )
-                    }.snapshot(),
+                    Defaults.ResultTab,
                     CraftingPath.Advanced.Result,
                     craftingBackStack
                 )
                 BottomNavButton(
-                    ItemStack(Items.COMMAND_BLOCK).apply {
-                        set(
-                            DataComponents.ITEM_NAME,
-                            "<light_purple><b>Conditions".deser().vanilla()
-                        )
-                    }.snapshot(),
+                    Defaults.ConditionsTab,
                     CraftingPath.Advanced.Conditions,
                     craftingBackStack
                 )
                 BottomNavButton(
-                    ItemStack(Items.PAPER).apply {
-                        set(
-                            DataComponents.ITEM_NAME,
-                            "<light_purple><b>Common Settings".deser().vanilla()
-                        )
-                    }.snapshot(),
+                    Defaults.CommonSettingsTab,
                     CraftingPath.Advanced.ExtraProperties,
                     craftingBackStack
                 )
                 BottomNavButton(
-                    ItemStack(Items.WRITABLE_BOOK).apply {
-                        set(
-                            DataComponents.ITEM_NAME,
-                            "<light_purple><b>Save".deser().vanilla()
-                        )
-                    }.snapshot(),
+                    Defaults.SaveTab,
                     CraftingPath.Advanced.Saving,
                     craftingBackStack
                 )
@@ -142,4 +112,70 @@ private fun BottomNavButton(stack: ItemStackSnapshot, path: NavKey, backStack: S
     }) {
         Icon(stack = stack)
     }
+}
+
+private object Defaults {
+
+    val IngredientsCollectionTab = ItemStack(Items.BOOKSHELF).apply {
+        set(DataComponents.ITEM_NAME, "<light_purple><b>Ingredients".deser().vanilla())
+        set(DataComponents.LORE, ItemLore(listOf(
+            "Collection of Ingredients to be".deser().vanilla(),
+            "used in the Recipe Formula.".deser().vanilla()
+        )))
+    }.snapshot()
+
+    val FormulaTab = ItemStack(Items.BREWING_STAND).apply {
+        set(
+            DataComponents.ITEM_NAME,
+            "<light_purple><b>Formula".deser().vanilla()
+        )
+        set(DataComponents.LORE, ItemLore(listOf(
+            "Associate Recipe slots with".deser().vanilla(),
+            "ingredients from previous step.".deser().vanilla(),
+        )))
+    }.snapshot()
+
+    val ResultTab = ItemStack(Items.ITEM_FRAME).apply {
+        set(
+            DataComponents.ITEM_NAME,
+            "<light_purple><b>Result".deser().vanilla()
+        )
+        set(DataComponents.LORE, ItemLore(listOf(
+            "Configure what the recipe produces.".deser().vanilla(),
+            "e.g. Choices, Modifiers, Actions".deser().vanilla(),
+        )))
+    }.snapshot()
+
+    val ConditionsTab = ItemStack(Items.COMMAND_BLOCK).apply {
+        set(
+            DataComponents.ITEM_NAME,
+            "<light_purple><b>Conditions".deser().vanilla()
+        )
+        set(DataComponents.LORE, ItemLore(listOf(
+            "Configure requirements for".deser().vanilla(),
+            "the recipe to work.".deser().vanilla(),
+        )))
+    }.snapshot()
+
+    val CommonSettingsTab = ItemStack(Items.PAPER).apply {
+        set(
+            DataComponents.ITEM_NAME,
+            "<light_purple><b>Common Settings".deser().vanilla()
+        )
+        set(DataComponents.LORE, ItemLore(listOf(
+            "Configure common settings".deser().vanilla(),
+            "such as group, etc.".deser().vanilla(),
+        )))
+    }.snapshot()
+
+    val SaveTab = ItemStack(Items.WRITABLE_BOOK).apply {
+        set(
+            DataComponents.ITEM_NAME,
+            "<light_purple><b>Save".deser().vanilla()
+        )
+        set(DataComponents.LORE, ItemLore(listOf(
+            "Save and Export the recipe".deser().vanilla(),
+        )))
+    }.snapshot()
+
 }
