@@ -7,10 +7,8 @@ import com.wolfyscript.customcrafting.recipes.IngredientImpl
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
 import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.wrappers.snapshot
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
 import kotlinx.coroutines.runBlocking
-import net.minecraft.world.item.ItemStack
 
 class CustomIngredientModelImpl(
     override var replaceWithRemains: Boolean = true,
@@ -19,7 +17,7 @@ class CustomIngredientModelImpl(
 
     companion object {
 
-        fun loadFrom(ingredient: Ingredient) : CustomIngredientModelImpl {
+        fun loadFrom(ingredient: Ingredient): CustomIngredientModelImpl {
             val state = CustomIngredientModelImpl(
                 (ingredient.consumption is IngredientConsumer.Consume),
                 RecipeChoicesModelImpl(
@@ -51,14 +49,15 @@ class CustomIngredientModelImpl(
 
 class SavedIngredientModelImpl(
     override val key: Key,
-    override val icon: ItemStackSnapshot
+    override val icon: ItemStackSnapshot,
 ) : IngredientModel.SavedIngredientModel {
 
     override fun complete(): Result<Ingredient> {
-        CustomCraftingProvider.get().server?.ingredientManager?.let { manager ->
-            manager.getIngredient(key)?.choices?.all()?.getOrNull(0)?.create()?.snapshot()
-        } ?: ItemStack.EMPTY.snapshot()
-        TODO("Not yet implemented")
+        val ingredient =
+            CustomCraftingProvider.get().server?.ingredientManager?.getIngredient(key) ?: return Result.failure(
+                IllegalStateException("Failed to complete Ingredient: No ingredient found for key $key")
+            )
+        return Result.success(ingredient)
     }
 
 }
