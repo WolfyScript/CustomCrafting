@@ -81,18 +81,21 @@ class AddIngredientStore(
 
     fun addFirstStackChoice(ingredientIndex: Int, stack: ItemStackRef) {
         addStackChoiceUseCase.add(ingredientIndex, stack)
+        updateIngredients()
     }
 
     fun removeFirstStackChoiceFor(ingredientIndex: Int) {
         removeStackChoiceUseCase.remove(ingredientIndex, 0)
+        updateIngredients()
     }
 
     fun setFirstStackChoiceFor(ingredientIndex: Int, stack: ItemStackRef) {
         setStackChoiceUseCase.set(ingredientIndex, 0, stack)
+        updateIngredients()
     }
 
     @Deprecated("Temporary! updating should be moved to the yet to be implemented domain repository")
-    fun updateIngredients() {
+    private fun updateIngredients() {
         storeCoroutineScope.launch {
             ingredientCollection.update {
                 State(getIngredientsUseCase.getCollection().toUIState())
@@ -154,9 +157,6 @@ fun AddIngredientsPage() {
                                     onAdd = { store.addFirstStackChoice(index, it) },
                                     onRemove = { store.removeFirstStackChoiceFor(index) },
                                     onReplace = { store.setFirstStackChoiceFor(index, it) },
-                                    onModify = {
-                                        store.updateIngredients() // Refresh entire list TODO: look for a better solution
-                                    },
                                     onEdit = {
                                         store.editIngredient(index)
                                     })
@@ -181,7 +181,6 @@ fun AddIngredientsPage() {
 @Composable
 private fun CustomIngredientSelector(
     ingredient: UIIngredientPreview.Custom,
-    onModify: (ItemStackSnapshot) -> Unit,
     onRemove: () -> Unit,
     onAdd: (ItemStackRef) -> Unit,
     onReplace: (ItemStackRef) -> Unit,
@@ -193,22 +192,16 @@ private fun CustomIngredientSelector(
                 ingredient.icon
             },
             onValueChange = {
-                if (it.isEmpty) {
+                val stackRef = ItemStackRef.parse(it.createStack())
+                if (it.isEmpty || stackRef == null) {
                     onRemove()
-                    onModify(it)
                     return@Slot
                 }
-                val stackRef = ItemStackRef.parse(it.createStack())
-                if (stackRef != null) {
-                    if (ingredient.icon.isEmpty) {
-                        onAdd(stackRef)
-                    } else {
-                        onReplace(stackRef)
-                    }
-                } else if (!ingredient.icon.isEmpty) {
-                    onRemove()
+                if (ingredient.icon.isEmpty) {
+                    onAdd(stackRef)
+                } else {
+                    onReplace(stackRef)
                 }
-                onModify(it)
             }
         )
         if (ingredient.icon.isEmpty /* && ingredient.tags.isEmpty()*/) {

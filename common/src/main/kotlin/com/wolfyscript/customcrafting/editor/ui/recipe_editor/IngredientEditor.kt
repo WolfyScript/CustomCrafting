@@ -14,7 +14,10 @@ import com.wolfyscript.viewportl.gui.compose.modifier.Modifier
 import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxHeight
 import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxWidth
 import com.wolfyscript.viewportl.gui.compose.modifier.height
-import com.wolfyscript.viewportl.gui.elements.*
+import com.wolfyscript.viewportl.gui.elements.Button
+import com.wolfyscript.viewportl.gui.elements.Column
+import com.wolfyscript.viewportl.gui.elements.Icon
+import com.wolfyscript.viewportl.gui.elements.Row
 import com.wolfyscript.viewportl.gui.model.Store
 import com.wolfyscript.viewportl.gui.model.store
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,13 +40,14 @@ private class IngredientEditorStore(
 
     data class StackChoicesState(val choices: List<ItemStackRef>)
 
-    data class TagChoicesState(val tags: Set<Key>)
+    data class TagChoicesState(val tags: List<Key>)
 
     val choices: StateFlow<StackChoicesState>
         field = MutableStateFlow(StackChoicesState(getStackChoicesUseCases.get(ingredientIndex)))
 
+    // TODO
     val tags: StateFlow<TagChoicesState>
-        field = MutableStateFlow(TagChoicesState(emptySet()))
+        field = MutableStateFlow(TagChoicesState(emptyList()))
 
     fun addStackChoice(stack: ItemStackRef) {
         addStackChoiceUseCase.add(ingredientIndex, stack)
@@ -61,11 +65,13 @@ private class IngredientEditorStore(
     }
 
     fun addTag(tagKey: Key) {
-
+        // TODO
+        updateTags()
     }
 
     fun removeTag(tagKey: Key) {
-
+        // TODO
+        updateTags()
     }
 
     private fun updateChoices() {
@@ -77,7 +83,7 @@ private class IngredientEditorStore(
     }
 
     private fun updateTags() {
-
+        // TODO
     }
 
 }
@@ -130,8 +136,8 @@ fun IngredientEditor(
         }
         when (currentSubMenu) {
             SubMenu.STACK_CHOICES -> {
-                StackChoices(
-                    { choicesState },
+                StackChoicesMenu(
+                    choices = { choicesState.choices },
                     onRemove = { store.removeStackChoiceAt(it) },
                     onAdd = { index, stack -> store.addStackChoice(stack) },
                     onReplace = { index, stack -> store.setStackChoiceAt(index, stack) }
@@ -139,7 +145,10 @@ fun IngredientEditor(
             }
 
             SubMenu.TAG_CHOICES -> {
-                TagChoices(tagsState)
+                TagChoicesMenu(
+                    { tagsState.tags },
+                    { store.removeTag(it) },
+                    { store.addTag(it) })
             }
 
             SubMenu.MATCHER -> {
@@ -180,44 +189,6 @@ fun IngredientEditor(
                         }
                     }
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun StackChoices(
-    state: () -> IngredientEditorStore.StackChoicesState,
-    onRemove: (Int) -> Unit,
-    onAdd: (Int, ItemStackRef) -> Unit,
-    onReplace: (Int, ItemStackRef) -> Unit,
-) {
-    Column(Modifier.fillMaxWidth().height(4.slots)) {
-        repeat(3) { row ->
-            Row {
-                repeat(9) { col ->
-                    val index = row * 9 + col
-                    Slot(
-                        value = { state().choices.getOrNull(index)?.create()?.snapshot() ?: ItemStack.EMPTY.snapshot() },
-                        onValueChange = {
-                            val stackRef = ItemStackRef.parse(it.createStack())
-                            if (it.isEmpty || stackRef == null) {
-                                onRemove(index)
-                                return@Slot
-                            }
-                            if (state().choices.getOrNull(index)?.create()?.snapshot()?.isEmpty ?: true) {
-                                onAdd(index, stackRef)
-                            } else {
-                                onReplace(index, stackRef)
-                            }
-                        }
-                    )
-                }
-            }
-        }
-        Row {
-            repeat(9) {
-                Icon(stack = ItemStack(Items.GRAY_STAINED_GLASS_PANE).snapshot())
             }
         }
     }
