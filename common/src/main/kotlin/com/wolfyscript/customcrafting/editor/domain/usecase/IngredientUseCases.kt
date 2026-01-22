@@ -40,6 +40,20 @@ interface IngredientUseCases {
 
     interface Choices {
 
+        class Get(
+            val getIngredientUseCase: GetIngredientByIndexUseCase
+        ) {
+
+            fun get(ingredientIndex: Int): List<ItemStackRef> {
+                val ingredient = getIngredientUseCase.get(ingredientIndex)
+                if (ingredient is IngredientModel.CustomIngredientModel) {
+                    return ingredient.choices.stacks.toList()
+                }
+                return emptyList()
+            }
+
+        }
+
         class Add(
             val getIngredientUseCase: GetIngredientByIndexUseCase,
             val setIngredientUseCase: SetIngredientAtUseCase,
