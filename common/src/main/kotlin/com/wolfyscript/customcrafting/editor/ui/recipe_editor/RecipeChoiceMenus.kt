@@ -72,7 +72,9 @@ private object CachedTags {
 
     fun getTagsSubList(fromIndex: Int, toIndex: Int): List<HolderSet.Named<Item>> {
         if (tags.isEmpty()) {
-            tags = BuiltInRegistries.ITEM.tags.sorted { holders, holders1 -> holders.key().location.compareTo(holders1.key().location) }.toList()
+            tags = BuiltInRegistries.ITEM.tags
+                .sorted { holders, holders1 -> holders.key().location.compareTo(holders1.key().location) }
+                .toList()
         }
         if (fromIndex > toIndex || toIndex > tags.size) {
             return emptyList()
@@ -128,35 +130,15 @@ fun TagChoicesMenu(
 
     Column(Modifier.fillMaxWidth().height(4.slots)) {
         if (selectingTag) {
-            var selectorPage by remember { mutableStateOf(0) }
             val tagPreviews by store.availableTags.collectAsState()
-
-            TagSelectPage(
+            TagSelection(
                 tagPreviews,
-                onSelect = {
-                    onAdd(it.key)
+                onAdd = {
+                    onAdd(it)
                     selectingTag = false
-                    selectorPage = 0
-                }
+                },
+                onPageChange = { store.setSelectionPage(it) }
             )
-            Row(Modifier.fillMaxWidth().height(1.slots), horizontalArrangement = Arrangement.SpaceAround) {
-                Button(onClick = {
-                    if (selectorPage > 0) {
-                        selectorPage -= 1
-                        store.setSelectionPage(selectorPage)
-                    }
-                }) {
-                    Icon(stack = Defaults.PreviousPage)
-                }
-                Button(onClick = {
-                    if (tagPreviews.tags.size >= 27) {
-                        selectorPage += 1
-                        store.setSelectionPage(selectorPage)
-                    }
-                }) {
-                    Icon(stack = Defaults.NextPage)
-                }
-            }
         } else {
             var page by remember { mutableStateOf(0) }
 
@@ -201,8 +183,41 @@ fun TagChoicesMenu(
                 }) {
                     Icon(stack = Defaults.NextPage)
                 }
-
             }
+        }
+    }
+}
+
+@Composable
+private fun TagSelection(
+    tagPreviews: TagChoicesStore.TagsState,
+    onAdd: (Key) -> Unit,
+    onPageChange: (Int) -> Unit,
+) {
+    var selectorPage by remember { mutableStateOf(0) }
+    TagSelectPage(
+        tagPreviews,
+        onSelect = {
+            onAdd(it.key)
+            selectorPage = 0
+        }
+    )
+    Row(Modifier.fillMaxWidth().height(1.slots), horizontalArrangement = Arrangement.SpaceAround) {
+        Button(onClick = {
+            if (selectorPage > 0) {
+                selectorPage -= 1
+                onPageChange(selectorPage)
+            }
+        }) {
+            Icon(stack = Defaults.PreviousPage)
+        }
+        Button(onClick = {
+            if (tagPreviews.tags.size >= 27) {
+                selectorPage += 1
+                onPageChange(selectorPage)
+            }
+        }) {
+            Icon(stack = Defaults.NextPage)
         }
     }
 }

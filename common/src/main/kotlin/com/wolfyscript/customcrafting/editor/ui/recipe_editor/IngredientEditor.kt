@@ -29,13 +29,13 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 
 private class IngredientEditorStore(
-    val ingredientIndex: Int,
-    val getIngredientUseCase: IngredientUseCases.GetIngredientByIndexUseCase,
-    val setIngredientUseCase: IngredientUseCases.SetIngredientAtUseCase,
     val getStackChoicesUseCases: IngredientUseCases.Choices.Get,
     val setStackChoiceUseCase: IngredientUseCases.Choices.Set,
     val removeStackChoiceUseCase: IngredientUseCases.Choices.Remove,
     val addStackChoiceUseCase: IngredientUseCases.Choices.Add,
+    val getTagChoicesState: IngredientUseCases.Tags.Get,
+    val addTagUseCase: IngredientUseCases.Tags.Add,
+    val removeTagUseCase: IngredientUseCases.Tags.Remove,
 ) : Store() {
 
     data class StackChoicesState(val choices: List<ItemStackRef>)
@@ -43,38 +43,37 @@ private class IngredientEditorStore(
     data class TagChoicesState(val tags: List<Key>)
 
     val choices: StateFlow<StackChoicesState>
-        field = MutableStateFlow(StackChoicesState(getStackChoicesUseCases.get(ingredientIndex)))
+        field = MutableStateFlow(StackChoicesState(emptyList()))
 
-    // TODO
     val tags: StateFlow<TagChoicesState>
         field = MutableStateFlow(TagChoicesState(emptyList()))
 
-    fun addStackChoice(stack: ItemStackRef) {
+    fun addStackChoice(ingredientIndex: Int, stack: ItemStackRef) {
         addStackChoiceUseCase.add(ingredientIndex, stack)
-        updateChoices()
+        fetchChoices(ingredientIndex)
     }
 
-    fun removeStackChoiceAt(index: Int) {
+    fun removeStackChoiceAt(ingredientIndex: Int, index: Int) {
         removeStackChoiceUseCase.remove(ingredientIndex, index)
-        updateChoices()
+        fetchChoices(ingredientIndex)
     }
 
-    fun setStackChoiceAt(index: Int, stack: ItemStackRef) {
+    fun setStackChoiceAt(ingredientIndex: Int, index: Int, stack: ItemStackRef) {
         setStackChoiceUseCase.set(ingredientIndex, index, stack)
-        updateChoices()
+        fetchChoices(ingredientIndex)
     }
 
-    fun addTag(tagKey: Key) {
-        // TODO
-        updateTags()
+    fun addTag(ingredientIndex: Int, tagKey: Key) {
+        addTagUseCase.add(ingredientIndex, tagKey)
+        fetchTags(ingredientIndex)
     }
 
-    fun removeTag(tagKey: Key) {
-        // TODO
-        updateTags()
+    fun removeTag(ingredientIndex: Int, tagKey: Key) {
+        removeTagUseCase.remove(ingredientIndex, tagKey)
+        fetchTags(ingredientIndex)
     }
 
-    private fun updateChoices() {
+    fun fetchChoices(ingredientIndex: Int) {
         storeCoroutineScope.launch {
             choices.update {
                 StackChoicesState(getStackChoicesUseCases.get(ingredientIndex))
@@ -82,8 +81,12 @@ private class IngredientEditorStore(
         }
     }
 
-    private fun updateTags() {
-        // TODO
+    fun fetchTags(ingredientIndex: Int) {
+        storeCoroutineScope.launch {
+            tags.update {
+                TagChoicesState(getTagChoicesState.get(ingredientIndex))
+            }
+        }
     }
 
 }
@@ -104,13 +107,13 @@ fun IngredientEditor(
 ) {
     val store = store(Key.customCrafting("ingredient_editor")) {
         IngredientEditorStore(
-            index,
-            getIngredientsUseCase,
-            setIngredientUseCase,
             IngredientUseCases.Choices.Get(getIngredientsUseCase),
             IngredientUseCases.Choices.Set(getIngredientsUseCase, setIngredientUseCase),
             IngredientUseCases.Choices.Remove(getIngredientsUseCase, setIngredientUseCase),
             IngredientUseCases.Choices.Add(getIngredientsUseCase, setIngredientUseCase),
+            IngredientUseCases.Tags.Get(getIngredientsUseCase),
+            IngredientUseCases.Tags.Add(getIngredientsUseCase, setIngredientUseCase),
+            IngredientUseCases.Tags.Remove(getIngredientsUseCase, setIngredientUseCase),
         )
     }
     var currentSubMenu: SubMenu? by mutableStateOf(null)
@@ -138,17 +141,17 @@ fun IngredientEditor(
             SubMenu.STACK_CHOICES -> {
                 StackChoicesMenu(
                     choices = { choicesState.choices },
-                    onRemove = { store.removeStackChoiceAt(it) },
-                    onAdd = { index, stack -> store.addStackChoice(stack) },
-                    onReplace = { index, stack -> store.setStackChoiceAt(index, stack) }
+                    onRemove = { store.removeStackChoiceAt(index, it) },
+                    onAdd = { _, stack -> store.addStackChoice(index, stack) },
+                    onReplace = { choiceIndex, stack -> store.setStackChoiceAt(index, choiceIndex, stack) }
                 )
             }
 
             SubMenu.TAG_CHOICES -> {
                 TagChoicesMenu(
                     { tagsState.tags },
-                    { store.removeTag(it) },
-                    { store.addTag(it) })
+                    { store.removeTag(index, it) },
+                    { store.addTag(index, it) })
             }
 
             SubMenu.MATCHER -> {
@@ -164,12 +167,14 @@ fun IngredientEditor(
                     Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.SpaceAround) {
                         Button(onClick = {
                             currentSubMenu = SubMenu.STACK_CHOICES
+                            store.fetchChoices(index)
                         }) {
                             Icon(stack = IngredientEditorDefaults.EditChoices)
                         }
 
                         Button(onClick = {
                             currentSubMenu = SubMenu.TAG_CHOICES
+                            store.fetchTags(index)
                         }) {
                             Icon(stack = IngredientEditorDefaults.EditTags)
                         }
@@ -192,11 +197,6 @@ fun IngredientEditor(
             }
         }
     }
-}
-
-@Composable
-private fun TagChoices(state: IngredientEditorStore.TagChoicesState) {
-
 }
 
 @Composable
