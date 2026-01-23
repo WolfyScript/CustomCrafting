@@ -3,7 +3,6 @@ package com.wolfyscript.customcrafting.editor.domain.recipes
 import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModel
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 
 interface RecipeCraftingModel : RecipeModel.RecipeTypeSpecificModel<CustomRecipeCrafting> {
 
@@ -37,46 +36,22 @@ interface RecipeCraftingModel : RecipeModel.RecipeTypeSpecificModel<CustomRecipe
 
         fun assignIngredient(
             index: Int,
-            ingredient: IngredientModel,
+            collectionIndex: Int,
         )
 
         fun unassignIngredient(index: Int)
 
-        fun getIngredient(index: Int): IngredientModel?
-
-        fun complete(): Result<T>
+        fun complete(collection: IngredientCollectionModel): Result<T>
 
         interface Shapeless : CraftingFormulaModel<CraftingFormula.Shapeless> {
 
-            val ingredients: MutableList<IngredientModel>
-
-            /**
-             * Adds an ingredient to the end of the [ingredients]
-             */
-            fun addIngredient(ingredient: Ingredient)
-
-            fun addIngredient(ingredient: IngredientModel)
-
-            /**
-             * Removes an ingredient from the [ingredients] at the specified index
-             */
-            fun removeIngredient(index: Int)
+            val ingredientRefs: MutableList<IngredientModelRef>
 
         }
 
         interface Shaped : CraftingFormulaModel<CraftingFormula.Shaped> {
 
-            val ingredients: MutableList<IngredientModel?>
-
-            /**
-             * Assigns an ingredient to the specified index in the recipe
-             */
-            fun assignIngredient(index: Int, ingredient: Ingredient)
-
-            /**
-             * Clears/Unassigns the ingredient at the specified index
-             */
-            fun clearIngredient(index: Int)
+            val ingredientRefs: MutableList<IngredientModelRef?>
 
             var shape: ShapeModel
 
@@ -99,3 +74,4 @@ interface RecipeCraftingModel : RecipeModel.RecipeTypeSpecificModel<CustomRecipe
 inline fun <reified T: CraftingFormula> RecipeCraftingModel.setFormulaType() {
     setFormulaType(T::class.java)
 }
+

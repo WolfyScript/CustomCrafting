@@ -40,18 +40,18 @@ import net.minecraft.world.item.component.BundleContents
 import net.minecraft.world.item.component.ItemLore
 import java.util.*
 
-private fun RecipeCraftingModel.CraftingFormulaModel<*>.toUIState(): FormulaStore.FormulaState {
+private fun RecipeCraftingModel.CraftingFormulaModel<*>.toUIState(collection: RecipeCraftingModel.IngredientCollectionModel): FormulaStore.FormulaState {
     return when (this) {
         is RecipeCraftingModel.CraftingFormulaModel.Shaped -> {
             FormulaStore.FormulaState.Shaped(
                 FormulaStore.FormulaState.Shaped.Shape(shape.symmetry, shape.trim),
-                ingredients.map { it?.toPreview() },
+                ingredientRefs.map { it?.resolveFor(collection)?.toPreview() },
             )
         }
 
         is RecipeCraftingModel.CraftingFormulaModel.Shapeless -> {
             FormulaStore.FormulaState.Shapeless(
-                ingredients.mapNotNull { it.toPreview() },
+                ingredientRefs.mapNotNull { it.resolveFor(collection)?.toPreview() },
             )
         }
 
@@ -71,7 +71,7 @@ private class FormulaStore(
 ) : Store() {
 
     val formulaState: StateFlow<FormulaState>
-        field = MutableStateFlow(getFormula.get().toUIState())
+        field = MutableStateFlow(getFormula.get().toUIState(getIngredientCollection.getCollection()))
 
     interface FormulaState {
 
@@ -125,7 +125,7 @@ private class FormulaStore(
     }
 
     fun setIngredientForSlot(index: Int, ingredientIndex: Int) {
-        assignIngredient.assign(index, getIngredientCollection.get().filter { it.toPreview()?.icon?.isEmpty?.not() ?: false }[ingredientIndex])
+        assignIngredient.assign(index, ingredientIndex)
         updateFormulaState()
     }
 
@@ -154,7 +154,7 @@ private class FormulaStore(
     fun updateFormulaState() {
         storeCoroutineScope.launch {
             formulaState.update {
-                getFormula.get().toUIState()
+                getFormula.get().toUIState(getIngredientCollection.getCollection())
             }
         }
     }

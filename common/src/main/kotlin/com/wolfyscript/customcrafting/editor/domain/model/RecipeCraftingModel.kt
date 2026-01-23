@@ -1,12 +1,12 @@
 package com.wolfyscript.customcrafting.editor.domain.model
 
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModelRef
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModel
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
-import kotlin.collections.get
 
 class RecipeCraftingModelFactory() : RecipeModel.RecipeTypeSpecificModel.Factory<CustomRecipeCrafting> {
 
@@ -56,29 +56,31 @@ data class RecipeCraftingModelImpl(
 ) : RecipeCraftingModel {
 
     override fun setFormulaType(type: Class<out CraftingFormula>) {
-        val ingredients = when(val previousFormula = formula) {
-            is RecipeCraftingModel.CraftingFormulaModel.Shaped -> previousFormula.ingredients
-            is RecipeCraftingModel.CraftingFormulaModel.Shapeless -> previousFormula.ingredients
+        val ingredients = when (val previousFormula = formula) {
+            is RecipeCraftingModel.CraftingFormulaModel.Shaped -> previousFormula.ingredientRefs
+            is RecipeCraftingModel.CraftingFormulaModel.Shapeless -> previousFormula.ingredientRefs
             else -> emptyList()
         }
 
         formula = when (type) {
             CraftingFormula.Shaped::class.java -> {
-                val newList = ArrayList<IngredientModel?>(9)
+                val newList = ArrayList<IngredientModelRef?>(9)
                 for (i in 0 until 9) {
                     newList.add(ingredients.getOrElse(i) { null })
                 }
-                ShapedCraftingFormulaModel(ingredients = newList,)
+                ShapedCraftingFormulaModel(ingredientRefs = newList)
             }
+
             CraftingFormula.Shapeless::class.java -> ShapelessCraftingFormulaModel(
-                ingredients = ingredients.filterNotNull().toMutableList()
+                ingredientRefs = ingredients.filterNotNull().toMutableList()
             )
+
             else -> ShapedCraftingFormulaModel()
         }
     }
 
     override fun complete(common: RecipeModel<CustomRecipeCrafting>): Result<CustomRecipeCrafting> {
-        val completedFormula = formula.complete().getOrElse {
+        val completedFormula = formula.complete(ingredientCollection).getOrElse {
             return Result.failure(IllegalStateException("Failed to create crafting recipe: Invalid formula", it))
         }
         val completedResult = result.complete().getOrElse {
@@ -97,53 +99,32 @@ data class RecipeCraftingModelImpl(
 }
 
 data class ShapelessCraftingFormulaModel(
-    override val ingredients: MutableList<IngredientModel> = mutableListOf()
+    override val ingredientRefs: MutableList<IngredientModelRef> = mutableListOf(),
 ) : RecipeCraftingModel.CraftingFormulaModel.Shapeless {
-
-    override fun addIngredient(ingredient: Ingredient) {
-        if (ingredients.size < 9) {
-            ingredients.add(CustomIngredientModelImpl.loadFrom(ingredient))
-        }
-    }
-
-    override fun addIngredient(ingredient: IngredientModel) {
-        if (ingredients.size < 9) {
-            ingredients.add(ingredient)
-        }
-    }
-
-    override fun removeIngredient(index: Int) {
-        ingredients.removeAt(index)
-    }
 
     override fun assignIngredient(
         index: Int,
-        ingredient: IngredientModel,
+        collectionIndex: Int,
     ) {
-        if (index >= 0 && index < ingredients.size) {
-            ingredients[index] = ingredient
-        } else if (index > ingredients.size){
-            addIngredient(ingredient)
+        if (index >= 0 && index < ingredientRefs.size) {
+            ingredientRefs[index] = IngredientModelRefImpl(collectionIndex)
+        } else if (index > ingredientRefs.size && ingredientRefs.size < 9) {
+            ingredientRefs.add(IngredientModelRefImpl(collectionIndex))
         }
     }
 
     override fun unassignIngredient(index: Int) {
-        if (index >= 0 && ingredients.size < 9) {
-            ingredients.removeAt(index)
+        if (index >= 0 && ingredientRefs.size < 9) {
+            ingredientRefs.removeAt(index)
         }
     }
 
-    override fun getIngredient(index: Int): IngredientModel? {
-        if (index > 0 && index < ingredients.size) {
-            return ingredients[index]
-        }
-        return null
-    }
-
-    override fun complete(): Result<CraftingFormula.Shapeless> {
+    override fun complete(collection: RecipeCraftingModel.IngredientCollectionModel): Result<CraftingFormula.Shapeless> {
         val completedIngredients = mutableListOf<Ingredient>()
-        for ((index, ingredientState) in ingredients.withIndex()) {
-            val ingredient = ingredientState.complete().getOrElse {
+        for ((index, ref) in ingredientRefs.withIndex()) {
+            val resolved = ref.resolveFor(collection)
+                ?: return Result.failure(IllegalStateException("Failed to resolve ingredient $ref: Missing ingredient in collection"))
+            val ingredient = resolved.complete().getOrElse {
                 return Result.failure(
                     IllegalStateException(
                         "Failed to create shapeless formula: invalid ingredient at index $index",
@@ -165,60 +146,37 @@ data class ShapelessCraftingFormulaModel(
 
 data class ShapedCraftingFormulaModel(
     // TODO: Make immutable
-    override val ingredients: MutableList<IngredientModel?> = arrayOfNulls<IngredientModel?>(9).toMutableList(),
-    private val ingredientToId: MutableMap<IngredientModel, Char> = mutableMapOf(),
-    override var shape: RecipeCraftingModel.CraftingFormulaModel.Shaped.ShapeModel = ShapeModel(ingredients, ingredientToId),
+    override val ingredientRefs: MutableList<IngredientModelRef?> = arrayOfNulls<IngredientModelRef?>(9).toMutableList(),
+    override var shape: RecipeCraftingModel.CraftingFormulaModel.Shaped.ShapeModel = ShapeModel(
+        ingredientRefs
+    ),
 ) : RecipeCraftingModel.CraftingFormulaModel.Shaped {
 
     override fun assignIngredient(
         index: Int,
-        ingredient: Ingredient,
+        collectionIndex: Int,
     ) {
-        assignIngredient(index, CustomIngredientModelImpl.loadFrom(ingredient))
-    }
-
-    override fun assignIngredient(
-        index: Int,
-        ingredient: IngredientModel,
-    ) {
-        if (index >= 0 && index < ingredients.size) {
-            ingredients[index] = ingredient
-
-            ingredientToId.clear()
-            for ((index, ingredientState) in ingredients.distinct().withIndex()) {
-                if (ingredientState != null) {
-                    ingredientToId[ingredientState] = index.digitToChar()
-                }
-            }
+        if (index >= 0 && index < ingredientRefs.size) {
+            ingredientRefs[index] = IngredientModelRefImpl(collectionIndex)
         }
     }
 
     override fun unassignIngredient(index: Int) {
-        if (index >= 0 && index < ingredients.size) {
-            ingredients[index] = null
+        if (index >= 0 && index < ingredientRefs.size) {
+            ingredientRefs[index] = null
         }
     }
 
-    override fun getIngredient(index: Int): IngredientModel? {
-        if (index >= 0 && index < ingredients.size) {
-            return ingredients[index]
-        }
-        return null
-    }
-
-    override fun clearIngredient(index: Int) {
-        if (index >= 0 && index < ingredients.size) {
-            ingredients[index] = null
-        }
-    }
-
-    override fun complete(): Result<CraftingFormula.Shaped> {
+    override fun complete(collection: RecipeCraftingModel.IngredientCollectionModel): Result<CraftingFormula.Shaped> {
         val mappedIngredients = buildMap {
-            for ((ingredient, key) in ingredientToId.entries) {
-                this[key] = ingredient.complete().getOrElse {
+            for (ref in ingredientRefs) {
+                val resolvedIngredient = ref?.resolveFor(collection)
+                    ?: return Result.failure(IllegalStateException("Failed to resolve ingredient for $ref: Missing ingredient in collection"))
+                val shapeId = ref.toShapeId()
+                this[shapeId] = resolvedIngredient.complete().getOrElse {
                     return Result.failure(
                         IllegalStateException(
-                            "Failed to create shaped formula: invalid ingredient $key",
+                            "Failed to create shaped formula: invalid ingredient at index ${ref.indexInCollection}",
                             it
                         )
                     )
@@ -245,8 +203,7 @@ data class ShapedCraftingFormulaModel(
     }
 
     class ShapeModel(
-        val ingredients: List<IngredientModel?>,
-        private val ingredientToId: Map<IngredientModel, Char>,
+        val ingredientRefs: List<IngredientModelRef?>,
         override var symmetry: CraftingFormula.Shaped.ShapeSymmetry = ShapedCraftingFormulaImpl.ShapeSymmetryImpl(
             horizontal = false,
             vertical = false,
@@ -257,9 +214,8 @@ data class ShapedCraftingFormulaModel(
 
         override fun complete(): Result<CraftingFormula.Shaped.Shape> {
             val rows: MutableList<String> = mutableListOf("", "", "")
-            for ((index, ingredientState) in ingredients.withIndex()) {
-                val char: Char = ingredientToId[ingredientState] ?: ' '
-                rows[index / 3] += char
+            for ((index, ref) in ingredientRefs.withIndex()) {
+                rows[index / 3] += ref?.toShapeId() ?: ' '
             }
             return Result.success(ShapedCraftingFormulaImpl.ShapeImpl(rows, symmetry, trim))
         }

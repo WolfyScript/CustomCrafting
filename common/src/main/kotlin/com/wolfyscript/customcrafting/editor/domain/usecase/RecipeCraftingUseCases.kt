@@ -80,8 +80,8 @@ interface RecipeCraftingUseCases {
 
         class AssignIngredient(val session: EditorSession) {
 
-            fun assign(index: Int, ingredient: IngredientModel) = withCraftingModel(session) { model ->
-                model.formula.assignIngredient(index, ingredient)
+            fun assign(index: Int, ingredientIndex: Int) = withCraftingModel(session) { model ->
+                model.formula.assignIngredient(index, ingredientIndex)
             }
         }
 
