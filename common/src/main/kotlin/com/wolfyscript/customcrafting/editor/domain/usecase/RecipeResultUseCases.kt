@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.editor.domain.usecase
 
 import com.wolfyscript.customcrafting.editor.domain.model.RecipeChoicesModelImpl
 import com.wolfyscript.customcrafting.editor.domain.model.ResultModelImpl
-import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.ResultModel
 import com.wolfyscript.scafall.items.ItemStackRef
 
 interface RecipeResultUseCases {

@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.editor.domain.usecase
 import com.wolfyscript.customcrafting.editor.EditorSession
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
-import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.ResultModel
 import com.wolfyscript.customcrafting.editor.ui.withCraftingModel
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.recipes.ShapedCraftingFormulaImpl

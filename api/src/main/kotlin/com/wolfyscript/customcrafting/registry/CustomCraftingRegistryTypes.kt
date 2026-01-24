@@ -3,8 +3,12 @@ package com.wolfyscript.customcrafting.registry
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.conditions.ConditionModel
-import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultActionState
-import com.wolfyscript.customcrafting.editor.domain.recipes.result.TransmuterStore
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientConsumerModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientMatcherModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientRemainderModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.ResultActionModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.TransmuterModel
+import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainder
@@ -65,18 +69,29 @@ object CustomCraftingRegistryTypes {
     val ingredientRemainders = create<Class<out IngredientRemainder>>("types/recipe/ingredient/remainders")
 
     //
-    // Editor Store Registries
+    // Editor Model/UI Registries
     // -----------------------
-    // Used to store the types of content used in the editor. Usually associated with a type of the above type registries.
+    // Used to store data in the editor and render the UI for custom extensions.
+    //  - When editing a recipe the data is converted into the model and it's submodels.
+    //  - The editor manipulates the model and it's submodels.
+    //  - When saving, a new recipe is constructed from the model and submodels.
+    //    - each submodel may fail if requirements are not fulfilled, e.g. missing properties.
+    //    - in which case a Result.failure is returned and propagates up the submodels producing a detailed stack of the issue.
     //
 
     val recipeTypeSpecificModelFactories = create<RecipeModel.RecipeTypeSpecificModel.Factory<*>>("editor/recipe/factories")
 
-    val conditionStores = create<Class<out ConditionModel<*>>>("editor/recipe/conditions")
+    val conditionModels = create<EditorUIFactory<out ConditionModel<*>>>("editor/recipe/conditions")
 
-    val recipeItemTransmuterStores = create<Class<out TransmuterStore<*>>>("editor/recipe/item/transmuters")
+    val ingredientMatcherModels = create<EditorUIFactory<out IngredientMatcherModel<*>>>("editor/recipe/ingredient/matchers")
 
-    val resultActionStores = create<Class<out ResultActionState<*>>>("editor/recipe/result/actions")
+    val ingredientConsumerModels = create<EditorUIFactory<out IngredientConsumerModel<*>>>("editor/recipe/ingredient/consumers")
+
+    val ingredientRemainderModels = create<EditorUIFactory<out IngredientRemainderModel<*>>>("editor/recipe/ingredient/remainders")
+
+    val recipeItemTransmuterModels = create<EditorUIFactory<out TransmuterModel<*>>>("editor/recipe/item/transmuters")
+
+    val resultActionModel = create<EditorUIFactory<out ResultActionModel<*>>>("editor/recipe/result/actions")
 
     private fun <T> create(registryKey: String): RegistryReference<T> {
         return RegistryKey.of<T>(root, Key.customCrafting(registryKey)).reference { CustomCraftingProvider.get().registries }

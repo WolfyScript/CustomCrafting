@@ -4,7 +4,7 @@ import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModelRef
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeCraftingModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
-import com.wolfyscript.customcrafting.editor.domain.recipes.result.ResultModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.ResultModel
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 

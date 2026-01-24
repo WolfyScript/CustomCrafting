@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.editor.domain.recipes.result
+package com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem
 
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeChoicesModel
 import com.wolfyscript.customcrafting.recipes.RecipeResult
@@ -7,9 +7,9 @@ interface ResultModel {
 
     val choices: RecipeChoicesModel
 
-    val actions: List<ResultActionState<*>>
+    val actions: List<ResultActionModel<*>>
 
-    val modifier: ResultModifierState
+    val modifier: RecipeItemModifierModel
 
     fun complete(): Result<RecipeResult>
 

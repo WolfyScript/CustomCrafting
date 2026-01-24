@@ -3,6 +3,8 @@ package com.wolfyscript.customcrafting.editor.domain.usecase
 import com.wolfyscript.customcrafting.editor.domain.model.CustomIngredientModelImpl
 import com.wolfyscript.customcrafting.editor.domain.model.RecipeChoicesModelImpl
 import com.wolfyscript.customcrafting.editor.domain.recipes.IngredientModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientConsumerModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientMatcherModel
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 
@@ -181,6 +183,57 @@ interface IngredientUseCases {
                     )
                     setIngredientUseCase.set(ingredientIndex, updated)
                 }
+            }
+
+        }
+
+    }
+
+    interface Matcher {
+
+        class Get(val getIngredientUseCase: GetIngredientByIndexUseCase) {
+
+            fun get(ingredientIndex: Int): IngredientMatcherModel<*>? {
+                val ingredientModel = getIngredientUseCase.get(ingredientIndex)
+                if (ingredientModel is IngredientModel.CustomIngredientModel) {
+                    return ingredientModel.matcher
+                }
+                return null
+            }
+
+        }
+
+        class Set(
+            val getIngredientUseCase: GetIngredientByIndexUseCase,
+            val setIngredientUseCase: SetIngredientAtUseCase
+        ) {
+
+            fun set(ingredientIndex: Int, matcher: IngredientMatcherModel<*>) {
+                val ingredient = getIngredientUseCase.get(ingredientIndex)
+                if (ingredient is IngredientModel.CustomIngredientModel) {
+                    val updated = CustomIngredientModelImpl(
+                        ingredient.replaceWithRemains,
+
+                    )
+
+                }
+
+            }
+
+        }
+
+    }
+
+    interface Consumer {
+
+        class Get(val getIngredientUseCase: GetIngredientByIndexUseCase) {
+
+            fun get(ingredientIndex: Int): IngredientConsumerModel<*>? {
+                val ingredientModel = getIngredientUseCase.get(ingredientIndex)
+                if (ingredientModel is IngredientModel.CustomIngredientModel) {
+                    return ingredientModel.consumer
+                }
+                return null
             }
 
         }

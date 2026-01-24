@@ -3,6 +3,20 @@ package com.wolfyscript.customcrafting.registry
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
 import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeTypeSpecificStateFactories
 import com.wolfyscript.customcrafting.editor.domain.model.RecipeCraftingModelFactory
+import com.wolfyscript.customcrafting.editor.domain.model.recipeitem.ExactIngredientMatcherUIFactory
+import com.wolfyscript.customcrafting.editor.domain.model.recipeitem.IngredientConsumerConsumeUIFactory
+import com.wolfyscript.customcrafting.editor.domain.model.recipeitem.IngredientConsumerKeepUIFactory
+import com.wolfyscript.customcrafting.editor.domain.model.recipeitem.IngredientConsumerReplaceUIFactory
+import com.wolfyscript.customcrafting.editor.domain.model.recipeitem.IngredientRemainderModelCustomUIFactory
+import com.wolfyscript.customcrafting.editor.domain.model.recipeitem.IngredientRemainderModelDefaultUIFactory
+import com.wolfyscript.customcrafting.editor.domain.model.recipeitem.ItemIngredientMatcherUIFactory
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientConsumerModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientConsumerModels
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientMatcherModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientMatcherModels
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientRemainderModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientRemainderModels
+import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.actions.CommandResultAction
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
@@ -71,9 +85,29 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
                 register(RecipeTypeSpecificStateFactories.crafting.key.key, RecipeCraftingModelFactory())
             }
         }
-        createRegistry(CustomCraftingRegistryTypes.conditionStores) { RegistrySimple(it) }
-        createRegistry(CustomCraftingRegistryTypes.recipeItemTransmuterStores) { RegistrySimple(it) }
-        createRegistry(CustomCraftingRegistryTypes.resultActionStores) { RegistrySimple(it) }
+        createRegistry(CustomCraftingRegistryTypes.conditionModels) { RegistrySimple(it) }
+        createRegistry(CustomCraftingRegistryTypes.recipeItemTransmuterModels) { RegistrySimple(it) }
+        createRegistry(CustomCraftingRegistryTypes.resultActionModel) { RegistrySimple(it) }
+
+        createRegistry(CustomCraftingRegistryTypes.ingredientConsumerModels) {
+            RegistrySimple<EditorUIFactory<out IngredientConsumerModel<*>>>(it).apply {
+                register(IngredientConsumerModels.consume.key.key, IngredientConsumerConsumeUIFactory())
+                register(IngredientConsumerModels.replace.key.key, IngredientConsumerReplaceUIFactory())
+                register(IngredientConsumerModels.keep.key.key, IngredientConsumerKeepUIFactory())
+            }
+        }
+        createRegistry(CustomCraftingRegistryTypes.ingredientRemainderModels) {
+            RegistrySimple<EditorUIFactory<out IngredientRemainderModel<*>>>(it).apply {
+                register(IngredientRemainderModels.default.key.key, IngredientRemainderModelDefaultUIFactory())
+                register(IngredientRemainderModels.custom.key.key, IngredientRemainderModelCustomUIFactory())
+            }
+        }
+        createRegistry(CustomCraftingRegistryTypes.ingredientMatcherModels) {
+            RegistrySimple<EditorUIFactory<out IngredientMatcherModel<*>>>(it).apply {
+                register(IngredientMatcherModels.exact.key.key, ExactIngredientMatcherUIFactory())
+                register(IngredientMatcherModels.item.key.key, ItemIngredientMatcherUIFactory())
+            }
+        }
 
         registerJacksonTypes()
     }
