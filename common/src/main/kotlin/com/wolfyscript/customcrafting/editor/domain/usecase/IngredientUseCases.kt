@@ -245,6 +245,26 @@ interface IngredientUseCases {
 
         }
 
+        class Set(
+            val getIngredientUseCase: GetIngredientByIndexUseCase,
+            val setIngredientUseCase: SetIngredientAtUseCase
+        ) {
+
+            fun set(ingredientIndex: Int, consumer: IngredientConsumerModel<*>) {
+                val ingredient = getIngredientUseCase.get(ingredientIndex)
+                if (ingredient is IngredientModel.CustomIngredientModel) {
+                    val updated = CustomIngredientModelImpl(
+                        ingredient.replaceWithRemains,
+                        ingredient.choices,
+                        ingredient.matcher,
+                        consumer = consumer
+                    )
+                    setIngredientUseCase.set(ingredientIndex, updated)
+                }
+            }
+
+        }
+
     }
 
 }
