@@ -12,7 +12,6 @@ import com.wolfyscript.customcrafting.recipes.IngredientConsumerKeepImpl
 import com.wolfyscript.customcrafting.recipes.IngredientConsumerReplaceImpl
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
 import com.wolfyscript.scafall.items.ItemStackRef
-import com.wolfyscript.scafall.wrappers.snapshot
 import com.wolfyscript.scafall.wrappers.wrap
 import net.minecraft.world.item.ItemStack
 
@@ -50,6 +49,8 @@ class IngredientConsumerKeepModel(
 
 class IngredientConsumerConsumeUIFactory() : EditorUIFactory<IngredientConsumerModel<IngredientConsumer.Consume>> {
 
+    override val modelType = IngredientConsumerModel::class.java as Class<IngredientConsumerModel<IngredientConsumer.Consume>>
+
     override fun loadIntoModel(recipe: CustomRecipe<*, *>): IngredientConsumerModel<IngredientConsumer.Consume> {
         TODO("Not yet implemented")
     }
@@ -59,11 +60,13 @@ class IngredientConsumerConsumeUIFactory() : EditorUIFactory<IngredientConsumerM
     }
 
     @Composable
-    override fun renderUI() {}
+    override fun renderUI(model: IngredientConsumerModel<IngredientConsumer.Consume>) {}
 
 }
 
 class IngredientConsumerReplaceUIFactory : EditorUIFactory<IngredientConsumerModel<IngredientConsumer.Replace>> {
+
+    override val modelType = IngredientConsumerModel::class.java as Class<IngredientConsumerModel<IngredientConsumer.Replace>>
 
     override fun loadIntoModel(recipe: CustomRecipe<*, *>): IngredientConsumerModel<IngredientConsumer.Replace> {
         TODO("Not yet implemented")
@@ -74,11 +77,13 @@ class IngredientConsumerReplaceUIFactory : EditorUIFactory<IngredientConsumerMod
     }
 
     @Composable
-    override fun renderUI() {}
+    override fun renderUI(model: IngredientConsumerModel<IngredientConsumer.Replace>) {}
 
 }
 
 class IngredientConsumerKeepUIFactory : EditorUIFactory<IngredientConsumerModel<IngredientConsumer.Keep>> {
+
+    override val modelType = IngredientConsumerModel::class.java as Class<IngredientConsumerModel<IngredientConsumer.Keep>>
 
     override fun loadIntoModel(recipe: CustomRecipe<*, *>): IngredientConsumerModel<IngredientConsumer.Keep> {
         TODO("Not yet implemented")
@@ -89,6 +94,6 @@ class IngredientConsumerKeepUIFactory : EditorUIFactory<IngredientConsumerModel<
     }
 
     @Composable
-    override fun renderUI() {}
+    override fun renderUI(model: IngredientConsumerModel<IngredientConsumer.Keep>) {}
 
 }

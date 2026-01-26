@@ -33,6 +33,8 @@ class IngredientRemainderModelCustom(
 class IngredientRemainderModelDefaultUIFactory :
     EditorUIFactory<IngredientRemainderModel<IngredientRemainder.Default>> {
 
+    override val modelType = IngredientRemainderModel::class.java as Class<IngredientRemainderModel<IngredientRemainder.Default>>
+
     override fun loadIntoModel(recipe: CustomRecipe<*, *>): IngredientRemainderModel<IngredientRemainder.Default> {
         TODO("Not yet implemented")
     }
@@ -42,12 +44,14 @@ class IngredientRemainderModelDefaultUIFactory :
     }
 
     @Composable
-    override fun renderUI() {
+    override fun renderUI(model: IngredientRemainderModel<IngredientRemainder.Default>) {
     }
 
 }
 
 class IngredientRemainderModelCustomUIFactory : EditorUIFactory<IngredientRemainderModel<IngredientRemainder.Custom>> {
+
+    override val modelType = IngredientRemainderModel::class.java as Class<IngredientRemainderModel<IngredientRemainder.Custom>>
 
     override fun loadIntoModel(recipe: CustomRecipe<*, *>): IngredientRemainderModel<IngredientRemainder.Custom> {
         TODO("Not yet implemented")
@@ -58,7 +62,7 @@ class IngredientRemainderModelCustomUIFactory : EditorUIFactory<IngredientRemain
     }
 
     @Composable
-    override fun renderUI() {
+    override fun renderUI(model: IngredientRemainderModel<IngredientRemainder.Custom>) {
     }
 
 }

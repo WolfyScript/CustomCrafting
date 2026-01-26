@@ -1,6 +1,9 @@
 package com.wolfyscript.customcrafting.editor.ui.recipe_editor
 
 import androidx.compose.runtime.*
+import com.wolfyscript.customcrafting.editor.domain.model.recipeitem.IngredientMatcherExactModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientMatcherModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientMatcherModels
 import com.wolfyscript.customcrafting.editor.domain.usecase.IngredientUseCases
 import com.wolfyscript.customcrafting.util.customCrafting
 import com.wolfyscript.scafall.adventure.deser
@@ -36,17 +39,24 @@ private class IngredientEditorStore(
     val getTagChoicesState: IngredientUseCases.Tags.Get,
     val addTagUseCase: IngredientUseCases.Tags.Add,
     val removeTagUseCase: IngredientUseCases.Tags.Remove,
+    val getMatcher: IngredientUseCases.Matcher.Get,
+    val setMatcher: IngredientUseCases.Matcher.Set,
 ) : Store() {
 
     data class StackChoicesState(val choices: List<ItemStackRef>)
 
     data class TagChoicesState(val tags: List<Key>)
 
+    data class MatcherState(val matcher: IngredientMatcherModel<*> = IngredientMatcherExactModel())
+
     val choices: StateFlow<StackChoicesState>
         field = MutableStateFlow(StackChoicesState(emptyList()))
 
     val tags: StateFlow<TagChoicesState>
         field = MutableStateFlow(TagChoicesState(emptyList()))
+
+    val matcher: StateFlow<MatcherState>
+        field = MutableStateFlow(MatcherState())
 
     fun addStackChoice(ingredientIndex: Int, stack: ItemStackRef) {
         addStackChoiceUseCase.add(ingredientIndex, stack)
@@ -71,6 +81,19 @@ private class IngredientEditorStore(
     fun removeTag(ingredientIndex: Int, tagKey: Key) {
         removeTagUseCase.remove(ingredientIndex, tagKey)
         fetchTags(ingredientIndex)
+    }
+
+    fun setMatcher(ingredientIndex: Int, matcher: IngredientMatcherModel<*>) {
+        setMatcher.set(ingredientIndex, matcher)
+        fetchMatcher(ingredientIndex)
+    }
+
+    fun fetchMatcher(ingredientIndex: Int) {
+        storeCoroutineScope.launch {
+            matcher.update {
+                getMatcher.get(ingredientIndex)?.let { MatcherState(it) } ?: MatcherState()
+            }
+        }
     }
 
     fun fetchChoices(ingredientIndex: Int) {
@@ -114,11 +137,14 @@ fun IngredientEditor(
             IngredientUseCases.Tags.Get(getIngredientsUseCase),
             IngredientUseCases.Tags.Add(getIngredientsUseCase, setIngredientUseCase),
             IngredientUseCases.Tags.Remove(getIngredientsUseCase, setIngredientUseCase),
+            IngredientUseCases.Matcher.Get(getIngredientsUseCase),
+            IngredientUseCases.Matcher.Set(getIngredientsUseCase, setIngredientUseCase),
         )
     }
     var currentSubMenu: SubMenu? by mutableStateOf(null)
     val choicesState by store.choices.collectAsState()
     val tagsState by store.tags.collectAsState()
+    val matcher by store.matcher.collectAsState()
 
     Column(Modifier.height(5.slots)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -155,7 +181,13 @@ fun IngredientEditor(
             }
 
             SubMenu.MATCHER -> {
-                MatcherMenu()
+                IngredientMatcherMenu(
+                    matcher.matcher,
+                    {
+                        store.setMatcher(index, it.createEmptyModel())
+                    }, {
+                        store.setMatcher(index, IngredientMatcherModels.exact.resolveOrThrow().createEmptyModel())
+                    })
             }
 
             SubMenu.CONSUMER -> {
@@ -183,6 +215,7 @@ fun IngredientEditor(
                     Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.SpaceAround) {
                         Button(onClick = {
                             currentSubMenu = SubMenu.MATCHER
+                            store.fetchMatcher(index)
                         }) {
                             Icon(stack = IngredientEditorDefaults.EditMatcher)
                         }
@@ -197,11 +230,6 @@ fun IngredientEditor(
             }
         }
     }
-}
-
-@Composable
-private fun MatcherMenu() {
-
 }
 
 @Composable

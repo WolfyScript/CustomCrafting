@@ -5,11 +5,13 @@ import com.wolfyscript.customcrafting.recipes.CustomRecipe
 
 interface EditorUIFactory<M> {
 
+    val modelType: Class<M>
+
     fun loadIntoModel(recipe: CustomRecipe<*, *>): M
 
     fun createEmptyModel(): M
 
     @Composable
-    fun renderUI()
+    fun renderUI(model: M)
 
 }
