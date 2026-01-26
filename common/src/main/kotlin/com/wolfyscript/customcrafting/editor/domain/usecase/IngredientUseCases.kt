@@ -147,7 +147,9 @@ interface IngredientUseCases {
                     }
                     val updated = CustomIngredientModelImpl(
                         ingredient.replaceWithRemains,
-                        RecipeChoicesModelImpl(ingredient.choices.stacks, tags)
+                        RecipeChoicesModelImpl(ingredient.choices.stacks, tags),
+                        ingredient.matcher,
+                        ingredient.consumer
                     )
                     setIngredientUseCase.set(ingredientIndex, updated)
                 }
@@ -166,7 +168,9 @@ interface IngredientUseCases {
                     tags.removeAt(index)
                     val updated = CustomIngredientModelImpl(
                         ingredient.replaceWithRemains,
-                        RecipeChoicesModelImpl(ingredient.choices.stacks, tags)
+                        RecipeChoicesModelImpl(ingredient.choices.stacks, tags),
+                        ingredient.matcher,
+                        ingredient.consumer
                     )
                     setIngredientUseCase.set(ingredientIndex, updated)
                 }
@@ -179,7 +183,9 @@ interface IngredientUseCases {
                     tags.remove(key)
                     val updated = CustomIngredientModelImpl(
                         ingredient.replaceWithRemains,
-                        RecipeChoicesModelImpl(ingredient.choices.stacks, tags)
+                        RecipeChoicesModelImpl(ingredient.choices.stacks, tags),
+                        ingredient.matcher,
+                        ingredient.consumer
                     )
                     setIngredientUseCase.set(ingredientIndex, updated)
                 }
@@ -213,11 +219,12 @@ interface IngredientUseCases {
                 if (ingredient is IngredientModel.CustomIngredientModel) {
                     val updated = CustomIngredientModelImpl(
                         ingredient.replaceWithRemains,
-
+                        ingredient.choices,
+                        matcher = matcher,
+                        ingredient.consumer
                     )
-
+                    setIngredientUseCase.set(ingredientIndex, updated)
                 }
-
             }
 
         }
