@@ -11,7 +11,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":spigotlike"))
+    implementation(project(":core:spigotlike"))
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
@@ -22,7 +22,7 @@ tasks {
         archiveFileName.set("${archiveName()}-mojmap.jar")
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
         dependencies {
-            include(project(":spigotlike"))
+            include(project(":core:spigotlike"))
             libs.bundles.sentry.get().forEach {
                 include(dependency(it))
             }

@@ -33,7 +33,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":spigotlike"))
+    implementation(project(":core:spigotlike"))
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
@@ -48,7 +48,7 @@ tasks {
         finalizedBy(reobfJar)
 
         dependencies {
-            include(project(":spigotlike"))
+            include(project(":core:spigotlike"))
             libs.bundles.sentry.get().forEach {
                 include(dependency(it))
             }

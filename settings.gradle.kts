@@ -63,15 +63,15 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
+// Core
 sequenceOf(
+    "api",
+    "common",
     "spigotlike",
     "spigot",
     "paper",
     "fabric",
 ).forEach {
-    include(":${it}")
-    project(":${it}").projectDir = file(it.replace(":", "/"))
+    include(":core:${it}")
+    project(":core:${it}").projectDir = file("core/${it.replace(":", "/")}")
 }
-
-include("api")
-include("common")

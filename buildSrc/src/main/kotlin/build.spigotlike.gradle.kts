@@ -26,8 +26,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":api"))
-    implementation(project(":common"))
+    implementation(project(":core:api"))
+    implementation(project(":core:common"))
     implementation(kotlin("reflect"))
     implementation(libs.scafall.loader)
     implementation(libs.jackson.kotlin)

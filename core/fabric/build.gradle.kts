@@ -19,8 +19,8 @@ loom {
 }
 
 dependencies {
-    api(shadow(project(":api"))!!)
-    api(shadow(project(":common"))!!)
+    api(shadow(project(":core:api"))!!)
+    api(shadow(project(":core:common"))!!)
 
 
     implementation(libs.scafall.loader)
@@ -50,8 +50,8 @@ tasks {
         finalizedBy(remapJar)
 
         dependencies {
-            include(project(":api"))
-            include(project(":common"))
+            include(project(":core:api"))
+            include(project(":core:common"))
             libs.bundles.sentry.get().forEach {
                 include(dependency(it))
             }

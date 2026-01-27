@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":api"))
+    api(project(":core:api"))
     implementation(libs.bundles.exposed)
     implementation(libs.bundles.database.drivers)
     compileOnly(libs.jackson.kotlin)

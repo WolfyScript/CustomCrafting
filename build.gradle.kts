@@ -45,7 +45,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly(project(":spigot"))
+    compileOnly(project(":core:spigot"))
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_21
@@ -53,7 +53,7 @@ java.sourceCompatibility = JavaVersion.VERSION_21
 tasks.named<ShadowJar>("shadowJar") {
     archiveClassifier.set("")
 
-    from(project(":spigot").tasks.shadowJar.get().archiveFile)
+    from(project(":core:spigot").tasks.shadowJar.get().archiveFile)
 }
 
 publishing {
