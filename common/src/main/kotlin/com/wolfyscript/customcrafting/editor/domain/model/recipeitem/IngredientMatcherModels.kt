@@ -1,7 +1,8 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipeitem
 
 import androidx.compose.runtime.Composable
-import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.IngredientMatcherModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.ExactIngredientMatcherModel
+import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.ItemIngredientMatcherModel
 import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.recipes.IngredientMatcherExactImpl
@@ -21,21 +22,21 @@ import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 
-class ExactIngredientMatcherUIFactory : EditorUIFactory<IngredientMatcherModel<IngredientMatcher.Exact>> {
+class ExactIngredientMatcherUIFactory : EditorUIFactory<ExactIngredientMatcherModel> {
 
-    override val modelType: Class<IngredientMatcherModel<IngredientMatcher.Exact>> = IngredientMatcherModel::class.java as Class<IngredientMatcherModel<IngredientMatcher.Exact>>
+    override val modelType: Class<ExactIngredientMatcherModel> = ExactIngredientMatcherModel::class.java
 
-    override fun loadIntoModel(recipe: CustomRecipe<*, *>): IngredientMatcherModel<IngredientMatcher.Exact> {
+    override fun loadIntoModel(recipe: CustomRecipe<*, *>): ExactIngredientMatcherModel {
         TODO("Not yet implemented")
     }
 
-    override fun createEmptyModel(): IngredientMatcherModel<IngredientMatcher.Exact> {
+    override fun createEmptyModel(): ExactIngredientMatcherModel {
         return IngredientMatcherExactModel()
     }
 
     @Composable
-    override fun renderUI(model: IngredientMatcherModel<IngredientMatcher.Exact>) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    override fun renderUI(model: ExactIngredientMatcherModel) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
             Icon(stack = ItemStack(Items.CYAN_CONCRETE).apply {
                 set(DataComponents.ITEM_NAME, "This matcher requires no configuration!".deser().vanilla())
             }.snapshot())
@@ -44,24 +45,29 @@ class ExactIngredientMatcherUIFactory : EditorUIFactory<IngredientMatcherModel<I
 
 }
 
-class ItemIngredientMatcherUIFactory : EditorUIFactory<IngredientMatcherModel<IngredientMatcher.Item>> {
+class ItemIngredientMatcherUIFactory : EditorUIFactory<ItemIngredientMatcherModel> {
 
-    override val modelType: Class<IngredientMatcherModel<IngredientMatcher.Item>> = IngredientMatcherModel::class.java as Class<IngredientMatcherModel<IngredientMatcher.Item>>
+    override val modelType: Class<ItemIngredientMatcherModel> = ItemIngredientMatcherModel::class.java
 
-    override fun loadIntoModel(recipe: CustomRecipe<*, *>): IngredientMatcherModel<IngredientMatcher.Item> {
+    override fun loadIntoModel(recipe: CustomRecipe<*, *>): ItemIngredientMatcherModel {
         TODO("Not yet implemented")
     }
 
-    override fun createEmptyModel(): IngredientMatcherModel<IngredientMatcher.Item> {
+    override fun createEmptyModel(): ItemIngredientMatcherModel {
         return IngredientMatcherItemModel()
     }
 
     @Composable
-    override fun renderUI(model: IngredientMatcherModel<IngredientMatcher.Item>) {}
+    override fun renderUI(model: ItemIngredientMatcherModel) {
+
+
+
+
+    }
 
 }
 
-class IngredientMatcherExactModel : IngredientMatcherModel<IngredientMatcher.Exact> {
+class IngredientMatcherExactModel : ExactIngredientMatcherModel {
 
     override val type: Class<IngredientMatcher.Exact> = IngredientMatcher.Exact::class.java
     override val typeKey: Key = IngredientMatchers.exact.key.key
@@ -73,9 +79,9 @@ class IngredientMatcherExactModel : IngredientMatcherModel<IngredientMatcher.Exa
 }
 
 class IngredientMatcherItemModel(
-    val mustContain: MutableSet<Key> = mutableSetOf(),
-    val mustNotContain: MutableSet<Key> = mutableSetOf()
-) : IngredientMatcherModel<IngredientMatcher.Item> {
+    override val mustContain: MutableSet<Key> = mutableSetOf(),
+    override val mustNotContain: MutableSet<Key> = mutableSetOf()
+) : ItemIngredientMatcherModel {
 
     override val type: Class<IngredientMatcher.Item> = IngredientMatcher.Item::class.java
     override val typeKey: Key = IngredientMatchers.item.key.key
