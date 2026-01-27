@@ -63,7 +63,20 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
-// Core
+/**
+ * # Core
+ * This contains the core functionality of CustomCrafting.
+ * Which includes
+ * - all the features for custom recipes
+ * - registration of custom recipes and components
+ * - de-/serialization of all the content
+ * - database and file management
+ *
+ * The core is the only module required to get CustomCrafting to run.
+ * Recipe files can be modified with any text-editor that support the HOCON format.
+ *
+ * The Editor and UI modules are optional and provide a way to edit content in-game.
+ */
 sequenceOf(
     "api",
     "common",
@@ -74,4 +87,32 @@ sequenceOf(
 ).forEach {
     include(":core:${it}")
     project(":core:${it}").projectDir = file("core/${it.replace(":", "/")}")
+}
+
+/**
+ * # Editor
+ * The editor module contains all the functionality for the editor.
+ * That includes,
+ * - the data models, that reflect objects in the editor,
+ * - use-cases, that contain the logic to modify the models,
+ * - the repository that stores the data,
+ * - and the CLI that allows editing recipes via commands.
+ */
+sequenceOf(
+    "api",
+).forEach {
+    include(":editor:${it}")
+    project(":editor:${it}").projectDir = file("editor/${it.replace(":", "/")}")
+}
+
+/**
+ * # UI
+ * > Requires the Editor module.
+ * Adds a UI that allows editing and creating content with an in-game UI.
+ */
+sequenceOf(
+    "api",
+).forEach {
+    include(":ui:${it}")
+    project(":ui:${it}").projectDir = file("ui/${it.replace(":", "/")}")
 }

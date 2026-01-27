@@ -13,7 +13,7 @@ publishing {
     publications {
         create<MavenPublication>("lib") {
             from(components.getByName("java"))
-            groupId = "com.wolfyscript.customcrafting.core"
+            groupId = "com.wolfyscript.customcrafting.ui"
             artifactId = "api"
             artifact(tasks.kotlinSourcesJar) {
                 classifier = "sources"
