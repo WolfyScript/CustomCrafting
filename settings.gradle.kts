@@ -27,6 +27,7 @@
  */
 
 rootProject.name = "customcrafting"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
@@ -86,7 +87,10 @@ sequenceOf(
     "fabric",
 ).forEach {
     include(":core:${it}")
-    project(":core:${it}").projectDir = file("core/${it.replace(":", "/")}")
+    project(":core:${it}").apply {
+        projectDir = file("core/${it.replace(":", "/")}")
+        name = "core-${it.replace(":", "-")}"
+    }
 }
 
 /**
@@ -100,9 +104,13 @@ sequenceOf(
  */
 sequenceOf(
     "api",
+    "common"
 ).forEach {
     include(":editor:${it}")
-    project(":editor:${it}").projectDir = file("editor/${it.replace(":", "/")}")
+    project(":editor:${it}").apply {
+        projectDir = file("editor/${it.replace(":", "/")}")
+        name = "editor-${it.replace(":", "-")}"
+    }
 }
 
 /**
@@ -112,7 +120,33 @@ sequenceOf(
  */
 sequenceOf(
     "api",
+    "common"
 ).forEach {
     include(":ui:${it}")
-    project(":ui:${it}").projectDir = file("ui/${it.replace(":", "/")}")
+    project(":ui:${it}").apply {
+        projectDir = file("ui/${it.replace(":", "/")}")
+        name = "ui-${it.replace(":", "-")}"
+    }
+}
+
+/**
+ * # Loader
+ * The platform entrypoints, the task of which is to initiate customcrafting, and all modules.
+ * It bundles the dependencies or provides them dynamically if the platform supports it.
+ *
+ * Currently, there is the all-in-one bundle that includes core, editor and ui.
+ *
+ * TODO: A standalone core bundle is planned
+ */
+sequenceOf(
+    "common",
+    "aio-spigot",
+    "aio-paper",
+    "aio-fabric",
+).forEach {
+    include(":loader:${it}")
+    project(":loader:${it}").apply {
+        projectDir = file("loader/${it.replace(":", "/")}")
+        name = "loader-${it.replace(":", "-")}"
+    }
 }

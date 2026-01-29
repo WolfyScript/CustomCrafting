@@ -3,7 +3,6 @@ package com.wolfyscript.customcrafting.fabric.api
 import com.wolfyscript.customcrafting.CustomCraftingCommon
 import com.wolfyscript.customcrafting.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
-import com.wolfyscript.customcrafting.fabric.CustomCraftingFabricMod
 import com.wolfyscript.customcrafting.fabric.CustomCraftingServerFabric
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
@@ -13,8 +12,6 @@ import org.slf4j.Logger
 import java.io.File
 
 class CustomCraftingFabric(
-    val classLoader: ClassLoader,
-    val mod: CustomCraftingFabricMod,
     override val logger: Logger,
 ) : CustomCraftingCommon() {
 

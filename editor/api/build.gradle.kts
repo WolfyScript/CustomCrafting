@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.core.coreApi)
     compileOnly(libs.scafall.loader)
 
 }

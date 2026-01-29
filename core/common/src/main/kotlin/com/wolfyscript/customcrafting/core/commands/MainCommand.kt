@@ -2,6 +2,7 @@ package com.wolfyscript.customcrafting.core.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.commands.SUCCESS_RESULT
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 import net.minecraft.commands.CommandSourceStack

@@ -12,5 +12,8 @@ internal class InternalBootstrap(innerJarClassloader: ClassLoader) : CustomCraft
         CustomCraftingProvider.register(module)
     }
 
+    override fun onCompleted(module: CustomCrafting) {
+        CustomCraftingProvider.notifyListeners()
+    }
 
 }

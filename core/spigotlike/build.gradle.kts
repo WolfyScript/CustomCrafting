@@ -19,8 +19,8 @@ fun archiveName() = "${project.name}-${project.version}"
 tasks {
     shadowJar {
         dependencies {
-            include(project(":core:api"))
-            include(project(":core:common"))
+            include(project(":core:core-api"))
+            include(project(":core:core-common"))
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
     }

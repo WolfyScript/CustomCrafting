@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.commands.SUCCESS_RESULT
 import com.wolfyscript.customcrafting.editor.cli.recipeEditorCLIEntry
 import com.wolfyscript.customcrafting.editor.ui.recipeEditorUIEntry
 import com.wolfyscript.customcrafting.recipes.RecipeManagerCommon

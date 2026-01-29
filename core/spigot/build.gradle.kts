@@ -26,14 +26,12 @@ plugins {
     `maven-publish`
     alias(libs.plugins.shadow)
     alias(libs.plugins.artifactory)
-    alias(libs.plugins.resource.factory.bukkit)
     id("build.settings.default")
-    id("build.docker.run")
     id("build.spigotlike")
 }
 
 dependencies {
-    implementation(project(":core:spigotlike"))
+    implementation(project(":core:core-spigotlike"))
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
@@ -48,7 +46,7 @@ tasks {
         finalizedBy(reobfJar)
 
         dependencies {
-            include(project(":core:spigotlike"))
+            include(project(":core:core-spigotlike"))
             libs.bundles.sentry.get().forEach {
                 include(dependency(it))
             }
@@ -72,42 +70,4 @@ tasks {
 
 artifacts {
     archives(tasks.reobfJar)
-}
-
-bukkitPluginYaml {
-    name = "CustomCrafting"
-    version = project.version.toString()
-    main = "com.wolfyscript.customcrafting.spigot.SpigotLoaderPlugin"
-    apiVersion = libs.versions.minecraft.get() // Only support the latest Minecraft version!
-    authors.add("WolfyScript")
-    depend.add("scafall")
-
-    libraries.apply {
-//        libs.bundles.exposed.get().forEach {
-//            add(it.toString())
-//        }
-        libs.bundles.database.drivers.get().forEach {
-            add(it.toString())
-        }
-
-        addAll(
-            libs.typesafe.config.get().toString(),
-            libs.caffeine.get().toString(),
-            libs.bstats.get().toString(),
-        )
-    }
-}
-
-minecraftServers {
-    libName.set("${archiveName()}.jar")
-    servers {
-        register("spigot") {
-            destFileName.set("customcrafting.jar")
-            version.set(libs.versions.minecraft.get())
-            type.set("SPIGOT")
-            extraEnv.put("BUILD_FROM_SOURCE", "true")
-            imageVersion.set("java21-graalvm") // graalvm contains the jdk required to build from source
-            ports.add("25569:25565")
-        }
-    }
 }

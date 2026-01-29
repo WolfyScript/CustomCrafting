@@ -1,11 +1,5 @@
 package com.wolfyscript.customcrafting.registry
 
-import com.wolfyscript.customcrafting.editor.domain.model.RecipeCraftingModelFactory
-import com.wolfyscript.customcrafting.editor.domain.model.recipeitem.*
-import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeModel
-import com.wolfyscript.customcrafting.editor.domain.recipes.RecipeTypeSpecificStateFactories
-import com.wolfyscript.customcrafting.editor.domain.recipes.recipeitem.*
-import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
 import com.wolfyscript.customcrafting.recipes.*
 import com.wolfyscript.customcrafting.recipes.actions.CommandResultAction
 import com.wolfyscript.customcrafting.recipes.ingredient.*
@@ -64,35 +58,6 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
             }
         }
 
-        createRegistry(CustomCraftingRegistryTypes.recipeTypeSpecificModelFactories) {
-            RegistrySimple<RecipeModel.RecipeTypeSpecificModel.Factory<*>>(it).apply {
-                register(RecipeTypeSpecificStateFactories.crafting.key.key, RecipeCraftingModelFactory())
-            }
-        }
-        createRegistry(CustomCraftingRegistryTypes.conditionModels) { RegistrySimple(it) }
-        createRegistry(CustomCraftingRegistryTypes.recipeItemTransmuterModels) { RegistrySimple(it) }
-        createRegistry(CustomCraftingRegistryTypes.resultActionModel) { RegistrySimple(it) }
-
-        createRegistry(CustomCraftingRegistryTypes.ingredientConsumerModels) {
-            RegistrySimple<EditorUIFactory<out IngredientConsumerModel<*>>>(it).apply {
-                register(IngredientConsumerModels.consume.key.key, IngredientConsumerConsumeUIFactory())
-                register(IngredientConsumerModels.replace.key.key, IngredientConsumerReplaceUIFactory())
-                register(IngredientConsumerModels.keep.key.key, IngredientConsumerKeepUIFactory())
-            }
-        }
-        createRegistry(CustomCraftingRegistryTypes.ingredientRemainderModels) {
-            RegistrySimple<EditorUIFactory<out IngredientRemainderModel<*>>>(it).apply {
-                register(IngredientRemainderModels.default.key.key, IngredientRemainderModelDefaultUIFactory())
-                register(IngredientRemainderModels.custom.key.key, IngredientRemainderModelCustomUIFactory())
-            }
-        }
-        createRegistry(CustomCraftingRegistryTypes.ingredientMatcherModels) {
-            RegistrySimple<EditorUIFactory<out IngredientMatcherModel<*>>>(it).apply {
-                register(IngredientMatcherModels.exact.key.key, ExactIngredientMatcherUIFactory())
-                register(IngredientMatcherModels.item.key.key, ItemIngredientMatcherUIFactory())
-            }
-        }
-
         registerJacksonTypes()
     }
 
@@ -113,7 +78,6 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
             IngredientRemainder::class.java,
             get(CustomCraftingRegistryTypes.ingredientRemainders.key).getOrThrow()
         )
-
     }
 
     fun <T> createRegistry(type: RegistryReference<T>, loader: (key: Key) -> Registry<T>) {
