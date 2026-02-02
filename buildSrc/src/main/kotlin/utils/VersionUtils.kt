@@ -1,5 +1,6 @@
 package utils
 
+import org.gradle.api.Project
 import kotlin.collections.joinToString
 import kotlin.collections.mapIndexed
 import kotlin.text.indexOfFirst
@@ -34,3 +35,5 @@ fun String.convertToEpochVer(prefixFactor: Int = 1000): String {
     println("Converted version: $this -> $epochVer")
     return epochVer
 }
+
+fun Project.archiveName(type: String, mcVersion: String): String = "${rootProject.name}-${version}-${type}-${mcVersion}"

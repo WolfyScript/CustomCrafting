@@ -139,7 +139,6 @@ sequenceOf(
  * TODO: A standalone core bundle is planned
  */
 sequenceOf(
-    "common",
     "aio-spigot",
     "aio-paper",
     "aio-fabric",

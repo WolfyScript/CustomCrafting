@@ -1,3 +1,5 @@
+import utils.archiveName
+
 plugins {
     kotlin("jvm")
     `java-library`
@@ -19,11 +21,11 @@ dependencies {
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
-fun archiveName() = "${project.rootProject.name}-${project.version}-paper-${libs.versions.minecraft.get()}"
+val customArchiveName = archiveName("paper", libs.versions.minecraft.get())
 
 tasks {
     shadowJar {
-        archiveFileName.set("${archiveName()}-mojmap.jar")
+        archiveFileName.set("${customArchiveName}.jar")
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
         dependencies {
             include(project(project.projects.core.coreSpigotlike))
@@ -76,7 +78,7 @@ bukkitPluginYaml {
 }
 
 minecraftServers {
-    libName.set("${archiveName()}-mojmap.jar")
+    libName.set("${customArchiveName}.jar")
     servers {
         register("paper") {
             destFileName.set("customcrafting.jar")

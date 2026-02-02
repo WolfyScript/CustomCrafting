@@ -1,3 +1,5 @@
+import utils.archiveName
+
 plugins {
     kotlin("jvm")
     `java-library`
@@ -19,12 +21,12 @@ loom {
 }
 
 dependencies {
-    api(shadow(project(":core:core-api"))!!)
-    api(shadow(project(":core:core-common"))!!)
+    api(shadow(projects.core.coreApi)!!)
+    api(shadow(projects.core.coreCommon)!!)
+    api(shadow(projects.core.coreFabric)!!)
 
-    implementation(projects.core.coreFabric)
-    implementation(projects.editor.editorCommon)
-    implementation(projects.ui.uiCommon)
+    api(shadow(projects.editor.editorCommon)!!)
+    api(shadow(projects.ui.uiCommon)!!)
 
     implementation(libs.scafall.loader)
     implementation(libs.bundles.exposed)
@@ -53,8 +55,13 @@ tasks {
         finalizedBy(remapJar)
 
         dependencies {
-            include(project(":core:core-api"))
-            include(project(":core:core-common"))
+            include(project(project.projects.core.coreApi))
+            include(project(project.projects.core.coreCommon))
+            include(project(project.projects.core.coreFabric))
+
+            include(project(project.projects.editor.editorCommon))
+            include(project(project.projects.ui.uiCommon))
+
             libs.bundles.sentry.get().forEach {
                 include(dependency(it))
             }
@@ -76,7 +83,7 @@ tasks {
 }
 
 minecraftServers {
-    libName.set("${project.rootProject.name}-${version}-fabric-${libs.versions.minecraft.get()}.jar")
+    libName.set("${archiveName("fabric", libs.versions.minecraft.get())}.jar")
     servers {
         register("fabric") {
             destPath.set("mods")

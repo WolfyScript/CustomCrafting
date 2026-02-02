@@ -1,3 +1,5 @@
+import utils.archiveName
+
 /*
  *       ____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____
  *       |    |  | [__   |  |  | |\/| |    |__/ |__| |___  |  | |\ | | __
@@ -41,13 +43,13 @@ dependencies {
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
-fun archiveName() = "${project.rootProject.name}-${project.version}-spigot-${libs.versions.minecraft.get()}"
+val customArchiveName = archiveName("spigot", libs.versions.minecraft.get())
 
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
 
 tasks {
     shadowJar {
-        archiveFileName.set("${archiveName()}-mojmap.jar")
+        archiveFileName.set("${customArchiveName}-mojmap.jar")
 
         finalizedBy(reobfJar)
 
@@ -62,18 +64,13 @@ tasks {
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
 
-        minimize()
-//        minimize {
-//            include(dependency(libs.sentry))
-//        }
-
-        relocate("org.bstats", "com.wolfyscript.customcrafting.bukkit.metrics")
+        relocate("org.bstats", "com.wolfyscript.customcrafting.spigot.bstats")
         relocate("io.sentry", "com.wolfyscript.customcrafting.sentry")
     }
     reobfJar {
         dependsOn(shadowJar)
         finalizedBy("spigot_copy")
-        outputJar.set(layout.buildDirectory.file("libs/${archiveName()}.jar"))
+        outputJar.set(layout.buildDirectory.file("libs/${customArchiveName}.jar"))
     }
 }
 
@@ -106,7 +103,7 @@ bukkitPluginYaml {
 }
 
 minecraftServers {
-    libName.set("${archiveName()}.jar")
+    libName.set("${customArchiveName}.jar")
     servers {
         register("spigot") {
             destFileName.set("customcrafting.jar")
