@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.recipes
 
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 
@@ -7,6 +8,11 @@ import com.wolfyscript.scafall.items.ItemStackRef
  * A list of ItemStacks and/or Tags that an [com.wolfyscript.customcrafting.recipes.ingredient.Ingredient] accepts or a [RecipeResult] can choose from.
  */
 interface RecipeChoices {
+
+    companion object {
+        fun of(stacks: List<ItemStackRef>, tags: List<Key> = emptyList()) =
+            CustomCraftingProvider.get().factories.recipeFactory.recipeItem.createChoices(stacks, tags)
+    }
 
     /**
      * The stacks of this choice

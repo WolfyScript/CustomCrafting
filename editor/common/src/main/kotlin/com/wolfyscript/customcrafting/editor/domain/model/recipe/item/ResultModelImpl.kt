@@ -1,14 +1,7 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.RecipeChoicesModel
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultActionModel
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultModel
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.RecipeItemModifierModel
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.TransformationModel
 import com.wolfyscript.customcrafting.recipes.RecipeItemModifier
-import com.wolfyscript.customcrafting.recipes.RecipeItemModifierImpl
 import com.wolfyscript.customcrafting.recipes.RecipeResult
-import com.wolfyscript.customcrafting.recipes.RecipeResultImpl
 
 class ResultModelImpl(
     override val choices: RecipeChoicesModel = RecipeChoicesModelImpl(),
@@ -31,7 +24,7 @@ class ResultModelImpl(
         // TODO
 
         return Result.success(
-            RecipeResultImpl(
+            RecipeResult.of(
                 choices = recipeChoices,
                 modifier = itemModifier,
                 actions = mutableListOf(),
@@ -53,7 +46,7 @@ class RecipeItemModifierModelImpl(
             }
         }
 
-        return Result.success(RecipeItemModifierImpl(completedTransformations))
+        return Result.success(RecipeItemModifier.of(completedTransformations))
     }
 
 }

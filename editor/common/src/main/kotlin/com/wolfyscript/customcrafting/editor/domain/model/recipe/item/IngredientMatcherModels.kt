@@ -3,10 +3,9 @@ package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 import androidx.compose.runtime.Composable
 import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.recipes.IngredientMatcherExactImpl
-import com.wolfyscript.customcrafting.recipes.IngredientMatcherItemImpl
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatchers
+import com.wolfyscript.customcrafting.recipes.ingredient.of
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key
@@ -58,9 +57,6 @@ class ItemIngredientMatcherUIFactory : EditorUIFactory<ItemIngredientMatcherMode
     @Composable
     override fun renderUI(model: ItemIngredientMatcherModel) {
 
-
-
-
     }
 
 }
@@ -71,7 +67,7 @@ class IngredientMatcherExactModel : ExactIngredientMatcherModel {
     override val typeKey: Key = IngredientMatchers.exact.key.key
 
     override fun complete(): Result<IngredientMatcher.Exact> {
-        return Result.success(IngredientMatcherExactImpl())
+        return Result.success(IngredientMatcher.Exact.of())
     }
 
 }
@@ -85,7 +81,7 @@ class IngredientMatcherItemModel(
     override val typeKey: Key = IngredientMatchers.item.key.key
 
     override fun complete(): Result<IngredientMatcher.Item> {
-        return Result.success(IngredientMatcherItemImpl(mustContain, mustNotContain))
+        return Result.success(IngredientMatcher.Item.of(mustContain, mustNotContain))
     }
 
 }

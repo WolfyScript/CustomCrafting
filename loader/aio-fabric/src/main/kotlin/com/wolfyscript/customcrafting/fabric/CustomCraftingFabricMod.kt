@@ -19,7 +19,7 @@ class CustomCraftingFabricMod : ModInitializer {
     private val boostrap = ScafallLoader.loadObject(
         CustomCraftingBoostrap::class.java,
         javaClass.classLoader,
-        CustomCraftingBoostrap.Companion.PATH_TO_INTERNAL_BOOTSTRAP
+        CustomCraftingBoostrap.PATH_TO_INTERNAL_BOOTSTRAP
     )
     private val logger = LoggerFactory.getLogger(javaClass)
     private lateinit var customCrafting: CustomCraftingFabric
@@ -32,9 +32,7 @@ class CustomCraftingFabricMod : ModInitializer {
         }
 
         ScafallProvider.whenReady { // Load order isn't deterministic, so need to make sure scafall is available!
-            customCrafting = boostrap.loadModule {
-                CustomCraftingFabric(logger)
-            }
+            customCrafting = boostrap.loadModule { CustomCraftingFabric(logger) }
         }
     }
 

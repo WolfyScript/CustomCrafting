@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
@@ -12,6 +13,11 @@ import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
  * Modifies a target item with transformations using information about the recipe ingredients.
  */
 interface RecipeItemModifier {
+
+    companion object {
+        fun of(transformations: List<Transformation>) : RecipeItemModifier =
+            CustomCraftingProvider.get().factories.recipeFactory.recipeItem.createModifier(transformations)
+    }
 
     /**
      * The transformations that are applied to the target item.
@@ -33,6 +39,11 @@ interface RecipeItemModifier {
      * Modifies the result using the data from the specified ingredients in the recipe.
      */
     interface Transformation {
+
+        companion object {
+            fun of(ingredients: Array<Int>, transmuter: Transmuter) : Transformation =
+                CustomCraftingProvider.get().factories.recipeFactory.recipeItem.createTransformation(ingredients, transmuter)
+        }
 
         /**
          * The ingredient slots that are used to modify the target.

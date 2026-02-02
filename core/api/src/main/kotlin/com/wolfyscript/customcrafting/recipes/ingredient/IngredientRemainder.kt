@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.RemainsIgnoreOptions
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
@@ -44,6 +45,7 @@ interface IngredientRemainder {
      * Uses the vanilla remainders or modded/plugin remainders, if available and not ignored.
      */
     interface Default : IngredientRemainder {
+        companion object
 
         /**
          * Specifies which remainders should be ignored.
@@ -58,6 +60,7 @@ interface IngredientRemainder {
      * Uses a custom remainder and replaces the existing remainders, if not ignored.
      */
     interface Custom : IngredientRemainder {
+        companion object
 
         /**
          * Specifies which remainders should be ignored.
@@ -75,3 +78,9 @@ interface IngredientRemainder {
     }
 
 }
+
+fun IngredientRemainder.Default.Companion.of(ignore: RemainsIgnoreOptions) =
+    CustomCraftingProvider.get().factories.recipeFactory.ingredient.createRemainderDefault(ignore)
+
+fun IngredientRemainder.Custom.Companion.of(ignore: RemainsIgnoreOptions, remainder: ItemStackRef) =
+    CustomCraftingProvider.get().factories.recipeFactory.ingredient.createRemainderCustom(ignore, remainder)

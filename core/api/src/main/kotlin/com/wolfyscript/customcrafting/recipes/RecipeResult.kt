@@ -1,5 +1,7 @@
 package com.wolfyscript.customcrafting.recipes
 
+import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.factories.Factories
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import kotlin.random.Random
@@ -8,6 +10,21 @@ import kotlin.random.Random
  * The result of a recipe with modifiers and actions.
  */
 interface RecipeResult {
+
+    companion object {
+
+        fun of(
+            choices: RecipeChoices,
+            modifier: RecipeItemModifier,
+            actions: List<ResultAction> = emptyList(),
+            bulkActions: List<ResultAction> = emptyList(),
+            alwaysKeepPrevious: Boolean = false,
+        ): RecipeResult =
+            Factories.recipeFactory.result.create(
+                choices, modifier, actions, bulkActions, alwaysKeepPrevious
+            )
+
+    }
 
     /**
      * The items from which the result is chosen upon processing it.
@@ -49,7 +66,11 @@ interface RecipeResult {
      * Therefore, when the result contains multiple items, it always picks the same item given the same seed.
      * Preventing players from rerolling the result.
      */
-    fun compute(recipeEvaluationResult: RecipeEvaluationResult<*,*>, context: EvaluationContext, random: Random): ScafallItemStack
+    fun compute(
+        recipeEvaluationResult: RecipeEvaluationResult<*, *>,
+        context: EvaluationContext,
+        random: Random,
+    ): ScafallItemStack
 
     /**
      * Runs the specified actions in the given [EvaluationContext].

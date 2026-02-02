@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe
 
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.CustomIngredientModelImpl
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientModelRefImpl
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultModelImpl
@@ -7,6 +8,7 @@ import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.Ingredient
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientModelRef
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultModel
 import com.wolfyscript.customcrafting.recipes.*
+import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import kotlin.text.isBlank
 
@@ -89,9 +91,10 @@ internal data class RecipeCraftingModelImpl(
             return Result.failure(IllegalStateException("Failed to create crafting recipe: Invalid result", it))
         }
 
-        val recipe = CustomRecipeCraftingImpl(
+        val recipe = CustomCraftingProvider.get().factories.recipeFactory.createRecipeCrafting(
+            group = "", // TODO
             priority = common.priority,
-            conditions = common.condition?.complete()?.getOrNull() ?: RecipeConditionsImpl(),
+            conditions = common.condition?.complete()?.getOrNull() ?: RecipeConditions.of(),
             formula = completedFormula,
             result = completedResult
         )
@@ -141,7 +144,7 @@ internal data class ShapelessCraftingFormulaModel(
             return Result.failure(IllegalStateException("Failed to create shapeless formula: Must have at least 1 ingredient"))
         }
 
-        return Result.success(ShapelessCraftingFormulaImpl(completedIngredients))
+        return Result.success(CraftingFormula.Shapeless.of(completedIngredients))
     }
 
 }
@@ -200,13 +203,13 @@ internal data class ShapedCraftingFormulaModel(
             return Result.failure(IllegalStateException("Failed to create shaped formula: Must have a defined shape"))
         }
 
-        val shaped = ShapedCraftingFormulaImpl(mappedIngredients, completedShape)
+        val shaped = CraftingFormula.Shaped.of(mappedIngredients, completedShape)
         return Result.success(shaped)
     }
 
     class ShapeModel(
         val ingredientRefs: List<IngredientModelRef?>,
-        override var symmetry: CraftingFormula.Shaped.ShapeSymmetry = ShapedCraftingFormulaImpl.ShapeSymmetryImpl(
+        override var symmetry: CraftingFormula.Shaped.ShapeSymmetry = CraftingFormula.Shaped.ShapeSymmetry.of(
             horizontal = false,
             vertical = false,
             rotate = false
@@ -219,7 +222,7 @@ internal data class ShapedCraftingFormulaModel(
             for ((index, ref) in ingredientRefs.withIndex()) {
                 rows[index / 3] += ref?.toShapeId() ?: ' '
             }
-            return Result.success(ShapedCraftingFormulaImpl.ShapeImpl(rows, symmetry, trim))
+            return Result.success(CraftingFormula.Shaped.Shape.of(rows, trim, symmetry))
         }
     }
 

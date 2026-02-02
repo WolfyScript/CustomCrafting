@@ -1,9 +1,6 @@
 package com.wolfyscript.customcrafting.editor
 
-import com.wolfyscript.customcrafting.server.CustomCraftingServer
 import java.util.UUID
-
-val CustomCraftingServer.recipeEditor: SessionManager by lazy { SessionManagerImpl() }
 
 /**
  * Manages the creation and editing of recipes.

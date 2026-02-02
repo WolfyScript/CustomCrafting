@@ -2,15 +2,10 @@ package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
 import androidx.compose.runtime.Composable
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.IngredientRemainderModels
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientConsumerModel
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientRemainderModel
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientRemainderModels
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.RecipeItemModifierModel
 import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
 import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.recipes.IngredientConsumerKeepImpl
-import com.wolfyscript.customcrafting.recipes.IngredientConsumerReplaceImpl
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
+import com.wolfyscript.customcrafting.recipes.ingredient.of
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.wrap
 import net.minecraft.world.item.ItemStack
@@ -20,7 +15,10 @@ class IngredientConsumerConsumeModel(
 ) : IngredientConsumerModel<IngredientConsumer.Consume> {
 
     override fun complete(): Result<IngredientConsumer.Consume> {
-        TODO("Not yet implemented")
+        val completedRemainder = remainder.complete().getOrElse {
+            return Result.failure(IllegalStateException("Failed to create Keep Ingredient Consumer: ", it))
+        }
+        return Result.success(IngredientConsumer.Consume.of(completedRemainder))
     }
 
 }
@@ -30,7 +28,7 @@ class IngredientConsumerReplaceModel(
 ) : IngredientConsumerModel<IngredientConsumer.Replace> {
 
     override fun complete(): Result<IngredientConsumer.Replace> {
-        return Result.success(IngredientConsumerReplaceImpl(replacement))
+        return Result.success(IngredientConsumer.Replace.of(replacement))
     }
 
 }
@@ -40,9 +38,10 @@ class IngredientConsumerKeepModel(
 ) : IngredientConsumerModel<IngredientConsumer.Keep> {
 
     override fun complete(): Result<IngredientConsumer.Keep> {
-        val completedModifier = modifier
-
-        return Result.success(IngredientConsumerKeepImpl())
+        val completedModifier = modifier.complete().getOrElse {
+            return Result.failure(IllegalStateException("Failed to create Keep Ingredient Consumer: ", it))
+        }
+        return Result.success(IngredientConsumer.Keep.of(completedModifier))
     }
 
 }

@@ -15,6 +15,6 @@ class RecipeChoicesModelImpl(
             return Result.failure(IllegalArgumentException("Recipe Choices must have at least one stack or tag."))
         }
 
-        return Result.success(RecipeChoicesImpl(stacks.toList(), tags.toList()))
+        return Result.success(RecipeChoices.of(stacks.toList(), tags.toList()))
     }
 }

@@ -6,7 +6,6 @@ import com.wolfyscript.customcrafting.editor.domain.model.recipe.RecipeCraftingM
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.withCraftingModel
 import com.wolfyscript.customcrafting.recipes.CraftingFormula
-import com.wolfyscript.customcrafting.recipes.ShapedCraftingFormulaImpl
 
 interface RecipeCraftingUseCases {
 
@@ -111,7 +110,7 @@ interface RecipeCraftingUseCases {
                     val formula = it.formula
                     if (formula is RecipeCraftingModel.CraftingFormulaModel.Shaped) {
                         val old = formula.shape.symmetry
-                        formula.shape.symmetry = ShapedCraftingFormulaImpl.ShapeSymmetryImpl(
+                        formula.shape.symmetry = CraftingFormula.Shaped.ShapeSymmetry.of(
                             old.horizontal.xor(horizontal),
                             old.vertical.xor(vertical),
                             old.rotate.xor(rotate)

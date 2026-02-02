@@ -1,14 +1,8 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.RecipeChoicesModelImpl
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientModel
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.RecipeChoicesModel
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientConsumerModel
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientConsumerModels
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientMatcherModel
-import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientMatcherModels
-import com.wolfyscript.customcrafting.recipes.IngredientImpl
+import com.wolfyscript.customcrafting.editor.domain.model.recipe.IngredientConsumerModels
+import com.wolfyscript.customcrafting.editor.domain.model.recipe.IngredientMatcherModels
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
 import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
 import com.wolfyscript.scafall.identifier.Key
@@ -43,12 +37,17 @@ class CustomIngredientModelImpl(
             val recipeChoices = choices.complete().getOrElse {
                 return@runBlocking Result.failure(IllegalStateException("Failed to complete Ingredient.", it))
             }
-
             if (recipeChoices.all().isEmpty()) {
                 return@runBlocking Result.failure(IllegalArgumentException("Ingredient must have at least one stack or tag."))
             }
+            val completedMatcher = matcher.complete().getOrElse {
+                return@runBlocking Result.failure(IllegalStateException("Failed to complete Ingredient.", it))
+            }
+            val completedConsumer = consumer.complete().getOrElse {
+                return@runBlocking Result.failure(IllegalStateException("Failed to complete Ingredient.", it))
+            }
 
-            return@runBlocking Result.success(IngredientImpl(recipeChoices))
+            return@runBlocking Result.success(Ingredient.of(recipeChoices, completedMatcher, completedConsumer))
         }
     }
 

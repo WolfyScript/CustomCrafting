@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
@@ -41,13 +42,16 @@ interface IngredientMatcher {
     /**
      * Checks if the item type and the components match.
      */
-    interface Exact : IngredientMatcher
+    interface Exact : IngredientMatcher {
+        companion object
+    }
 
     /**
      * Checks if the item type matches.
      * Additionally, checks if the item contains the specified components [mustContain].
      */
     interface Item : IngredientMatcher {
+        companion object
 
         /**
          * The components the stack must contain to pass the check.
@@ -66,3 +70,14 @@ interface IngredientMatcher {
     }
 
 }
+
+fun IngredientMatcher.Exact.Companion.of() : IngredientMatcher.Exact =
+    CustomCraftingProvider.get().factories.recipeFactory.ingredient.createMatcherExact()
+
+fun IngredientMatcher.Item.Companion.of(
+    mustContain: Set<Key>,
+    mustNotContain: Set<Key>,
+) : IngredientMatcher.Item =
+    CustomCraftingProvider.get().factories.recipeFactory.ingredient.createMatcherItem(
+        mustContain, mustNotContain
+    )

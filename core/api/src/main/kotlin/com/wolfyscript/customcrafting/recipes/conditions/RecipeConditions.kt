@@ -1,11 +1,19 @@
 package com.wolfyscript.customcrafting.recipes.conditions
 
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 
 /**
  * A collection of [Conditions][Condition] which checks if all of them are satisfied.
  */
 interface RecipeConditions {
+
+    companion object {
+
+        fun of(conditions: List<Condition> = emptyList()): RecipeConditions =
+            CustomCraftingProvider.get().factories.recipeFactory.createRecipeConditions(conditions)
+
+    }
 
     val conditions: List<Condition>
 

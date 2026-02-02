@@ -39,7 +39,7 @@ internal fun LiteralArgumentBuilder<CommandSourceStack>.recipeEditorUIEntry(disp
 
 @Composable
 internal fun RecipeEditorRoot() {
-    viewProperties(Key.Companion.customCrafting("recipe_editor")) {
+    viewProperties(Key.customCrafting("recipe_editor")) {
         size(9.slots, 4.slots)
         title("<b>Recipe Editor")
     }

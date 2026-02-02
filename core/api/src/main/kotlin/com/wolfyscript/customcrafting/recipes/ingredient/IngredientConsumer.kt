@@ -4,9 +4,13 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.RecipeItemModifier
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer.Consume
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer.Keep
+import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer.Replace
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
@@ -46,6 +50,7 @@ interface IngredientConsumer {
      * Otherwise, the [consume] has side effects and either stores remains in the inventory or drops them on the ground.
      */
     interface Consume : IngredientConsumer {
+        companion object
 
         /**
          * The remains this ingredient produces.
@@ -58,6 +63,7 @@ interface IngredientConsumer {
      * Replaces the source item with the specified item no matter the amount of the source item.
      */
     interface Replace : IngredientConsumer {
+        companion object
 
         val replacement: ItemStackRef
 
@@ -67,6 +73,7 @@ interface IngredientConsumer {
      * Keeps the source item as is without consuming it.
      */
     interface Keep : IngredientConsumer {
+        companion object
 
         /**
          * Modify the source item.
@@ -77,3 +84,12 @@ interface IngredientConsumer {
     }
 
 }
+
+fun Keep.Companion.of(modifier: RecipeItemModifier) : Keep =
+    CustomCraftingProvider.get().factories.recipeFactory.ingredient.createConsumerKeep(modifier)
+
+fun Replace.Companion.of(replacement: ItemStackRef) : Replace =
+    CustomCraftingProvider.get().factories.recipeFactory.ingredient.createConsumerReplace(replacement)
+
+fun Consume.Companion.of(remains: IngredientRemainder) : Consume =
+    CustomCraftingProvider.get().factories.recipeFactory.ingredient.createConsumerConsume(remains)

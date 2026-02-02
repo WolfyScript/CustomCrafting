@@ -1,11 +1,9 @@
 package com.wolfyscript.customcrafting.recipes
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonPropertyOrder
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.fasterxml.jackson.annotation.JsonTypeName
+import com.fasterxml.jackson.annotation.*
+import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.factories.Factories
+import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
@@ -18,6 +16,15 @@ import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
  *
  */
 interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, RecipeEvaluationResult.Data> {
+
+    companion object {
+
+        fun of(
+            group: String, priority: Int, conditions: RecipeConditions, formula: CraftingFormula, result: RecipeResult,
+        ): CustomRecipeCrafting =
+            Factories.recipeFactory.createRecipeCrafting(group, priority, conditions, formula, result)
+
+    }
 
     override val type: RecipeType<CustomRecipeCrafting>
         get() = RecipeTypes.crafting.resolveOrThrow()
@@ -40,7 +47,13 @@ interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, R
      *
      * @param applyStacks A function that is called for each stack in the matrix that is shrunk.
      */
-    fun shrink(input: RecipeInput.CraftingRecipeInput, recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>, context: EvaluationContext, count: Int, applyStacks: (index: Int, new: ScafallItemStack) -> Unit)
+    fun shrink(
+        input: RecipeInput.CraftingRecipeInput,
+        recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>,
+        context: EvaluationContext,
+        count: Int,
+        applyStacks: (index: Int, new: ScafallItemStack) -> Unit,
+    )
 
 }
 
@@ -53,13 +66,23 @@ interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, R
 @JsonPropertyOrder(value = ["type"])
 interface CraftingFormula {
 
-    fun evaluate(input: RecipeInput.CraftingRecipeInput, recipeCrafting: CustomRecipeCrafting): RecipeEvaluationResult.Data?
+    fun evaluate(
+        input: RecipeInput.CraftingRecipeInput,
+        recipeCrafting: CustomRecipeCrafting,
+    ): RecipeEvaluationResult.Data?
 
     /**
      * A crafting formula with a list of ingredients that can be arranged in any order
      */
     @JsonTypeName("shapeless")
     interface Shapeless : CraftingFormula {
+
+        companion object {
+
+            fun of(ingredients: List<Ingredient>): Shapeless =
+                CustomCraftingProvider.get().factories.recipeFactory.craftingFormula.createShapelessFormula(ingredients)
+
+        }
 
         val ingredients: List<Ingredient>
 
@@ -73,6 +96,19 @@ interface CraftingFormula {
     @JsonTypeName("shaped")
     interface Shaped : CraftingFormula {
 
+        companion object {
+
+            fun of(
+                mappedIngredients: Map<Char, Ingredient>,
+                shape: Shape,
+            ): Shaped =
+                CustomCraftingProvider.get().factories.recipeFactory.craftingFormula.createShapedFormula(
+                    mappedIngredients,
+                    shape
+                )
+
+        }
+
         val ingredients: List<Ingredient>
 
         val shape: Shape
@@ -81,6 +117,21 @@ interface CraftingFormula {
          * Defines how the shape of the crafting grid may be mirrored.
          */
         interface ShapeSymmetry {
+
+            companion object {
+
+                fun of(
+                    horizontal: Boolean,
+                    vertical: Boolean,
+                    rotate: Boolean,
+                ) = CustomCraftingProvider.get().factories.recipeFactory.craftingFormula.createSymmetry(
+                    horizontal,
+                    vertical,
+                    rotate
+                )
+
+            }
+
             /**
              * Whether the shape may be mirrored horizontally.
              */
@@ -103,6 +154,18 @@ interface CraftingFormula {
          * Pre-calculates the [variations] of the shape based on the [symmetry] upon initialization.
          */
         interface Shape {
+
+            companion object {
+
+                fun of(
+                    rows: List<String>,
+                    trim: Boolean = true,
+                    symmetry: ShapeSymmetry,
+                ): Shape = CustomCraftingProvider.get().factories.recipeFactory.craftingFormula.createShape(
+                    rows, trim, symmetry
+                )
+
+            }
 
             val symmetry: ShapeSymmetry
 
@@ -144,7 +207,7 @@ interface CraftingFormula {
             val ingredientIndices: List<Char>
 
         }
-        
+
     }
-    
+
 }

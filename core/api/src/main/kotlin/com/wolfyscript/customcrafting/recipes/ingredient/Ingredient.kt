@@ -1,12 +1,29 @@
 package com.wolfyscript.customcrafting.recipes.ingredient
 
+import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.RecipeChoices
+import com.wolfyscript.customcrafting.recipes.RemainsIgnoreOptions
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 interface Ingredient {
+
+    companion object {
+
+        fun of(
+            choices: RecipeChoices,
+            matching: IngredientMatcher = IngredientMatcher.Exact.of(),
+            consumption: IngredientConsumer = IngredientConsumer.Consume.of(
+                IngredientRemainder.Default.of(
+                    RemainsIgnoreOptions.of()
+                )
+            ),
+        ): Ingredient =
+            CustomCraftingProvider.get().factories.recipeFactory.ingredient.create(choices, matching, consumption)
+
+    }
 
     /**
      * The items that can be used to fulfill this ingredient.
@@ -45,5 +62,11 @@ interface Ingredient {
      *
      * @return the updated/new [ScafallItemStack] after consumption.
      */
-    fun shrink(target: ScafallItemStack, count: Int, ref: ItemStackRef, context: EvaluationContext, evalResult: RecipeEvaluationResult<*, *>): ScafallItemStack
+    fun shrink(
+        target: ScafallItemStack,
+        count: Int,
+        ref: ItemStackRef,
+        context: EvaluationContext,
+        evalResult: RecipeEvaluationResult<*, *>,
+    ): ScafallItemStack
 }
