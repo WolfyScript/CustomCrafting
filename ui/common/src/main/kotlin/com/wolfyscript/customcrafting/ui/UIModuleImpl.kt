@@ -1,13 +1,11 @@
 package com.wolfyscript.customcrafting.ui
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.scafall.loader.module.BasicModule
 import com.wolfyscript.scafall.loader.module.Client
 import com.wolfyscript.scafall.loader.module.Server
 
-internal class UIModuleImpl(classLoader: ClassLoader) : UIModule {
-
-    override val server: Server? = null
-    override val client: Client? = null
+internal class UIModuleImpl(classLoader: ClassLoader) : BasicModule<Server, Client>(), UIModule {
 
     init {
         UIModule.register(this)

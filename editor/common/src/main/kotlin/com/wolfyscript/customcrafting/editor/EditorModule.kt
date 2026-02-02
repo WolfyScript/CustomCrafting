@@ -3,13 +3,10 @@ package com.wolfyscript.customcrafting.editor
 import com.wolfyscript.customcrafting.util.ModuleImpl
 import com.wolfyscript.scafall.loader.module.Client
 import com.wolfyscript.scafall.loader.module.Module
-import com.wolfyscript.scafall.loader.module.Server
 import org.jetbrains.annotations.ApiStatus
 
 @ModuleImpl(EditorModuleImpl::class)
-interface EditorModule : Module<Server, Client> {
-
-    val sessionmanager: SessionManager
+interface EditorModule : Module<EditorServer, Client> {
 
     companion object {
 
