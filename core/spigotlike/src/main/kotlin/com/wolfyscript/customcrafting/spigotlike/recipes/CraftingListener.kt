@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.exceptions.CraftingRecipeException
+import com.wolfyscript.customcrafting.core.exceptions.CraftingRecipeException
 import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl

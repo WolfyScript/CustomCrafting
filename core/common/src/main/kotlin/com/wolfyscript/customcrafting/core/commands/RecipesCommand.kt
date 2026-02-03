@@ -5,7 +5,7 @@ import com.mojang.brigadier.context.CommandContext
 import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.commands.SUCCESS_RESULT
-import com.wolfyscript.customcrafting.recipes.RecipeManagerCommon
+import com.wolfyscript.customcrafting.core.recipes.RecipeManagerCommon
 import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.adventure.deser

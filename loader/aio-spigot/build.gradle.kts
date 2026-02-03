@@ -65,7 +65,7 @@ tasks {
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
 
         relocate("org.bstats", "com.wolfyscript.customcrafting.spigot.bstats")
-        relocate("io.sentry", "com.wolfyscript.customcrafting.sentry")
+        relocate("io.sentry", "com.wolfyscript.customcrafting.core.sentry")
     }
     reobfJar {
         dependsOn(shadowJar)

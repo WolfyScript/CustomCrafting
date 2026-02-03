@@ -41,7 +41,7 @@ tasks {
             attributes["paperweight-mappings-namespace"] = "mojang"
         }
         relocate("org.bstats", "com.wolfyscript.customcrafting.bukkit.metrics")
-        relocate("io.sentry", "com.wolfyscript.customcrafting.sentry")
+        relocate("io.sentry", "com.wolfyscript.customcrafting.core.sentry")
 //        relocate("com.fasterxml.jackson", "com.wolfyscript.scafall.lib.jackson")
     }
     assemble {

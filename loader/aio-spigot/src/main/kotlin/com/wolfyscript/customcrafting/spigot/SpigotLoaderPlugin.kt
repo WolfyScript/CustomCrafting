@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.spigot
 
 import com.wolfyscript.customcrafting.CustomCraftingBoostrap
-import com.wolfyscript.customcrafting.sentry.initSentry
+import com.wolfyscript.customcrafting.core.sentry.initSentry
 import com.wolfyscript.scafall.loader.ScafallLoader
 import io.sentry.Sentry
 import org.bukkit.Bukkit

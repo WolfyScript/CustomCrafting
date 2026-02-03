@@ -56,7 +56,7 @@ tasks {
             }
         }
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
-        relocate("io.sentry", "com.wolfyscript.customcrafting.sentry")
+        relocate("io.sentry", "com.wolfyscript.customcrafting.core.sentry")
     }
     java {
 //        withSourcesJar()

@@ -9,8 +9,8 @@ import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
 import com.wolfyscript.customcrafting.recipes.RecipeReference
 import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState
-import com.wolfyscript.customcrafting.util.toMc
-import com.wolfyscript.customcrafting.util.toMcDisplay
+import com.wolfyscript.customcrafting.core.util.toMc
+import com.wolfyscript.customcrafting.core.util.toMcDisplay
 import com.wolfyscript.scafall.wrappers.snapshot
 import com.wolfyscript.scafall.wrappers.unwrap
 import net.minecraft.core.HolderLookup

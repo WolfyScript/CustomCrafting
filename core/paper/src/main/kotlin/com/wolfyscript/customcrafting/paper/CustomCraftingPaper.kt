@@ -1,8 +1,7 @@
 package com.wolfyscript.customcrafting.paper
 
-import com.wolfyscript.customcrafting.CustomCraftingCommon
-import com.wolfyscript.customcrafting.configuration.ConfigurationManagerImpl
-import com.wolfyscript.customcrafting.server.CustomCraftingServer
+import com.wolfyscript.customcrafting.core.CustomCraftingCommon
+import com.wolfyscript.customcrafting.core.configuration.ConfigurationManagerImpl
 import com.wolfyscript.customcrafting.spigotlike.CustomCraftingServerSpigotLike
 import io.sentry.Sentry
 import org.bukkit.Bukkit

@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.paper
 import com.wolfyscript.customcrafting.CustomCraftingBoostrap
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.EditorModule
-import com.wolfyscript.customcrafting.sentry.initSentry
+import com.wolfyscript.customcrafting.core.sentry.initSentry
 import com.wolfyscript.customcrafting.ui.UIModule
 import com.wolfyscript.customcrafting.util.ModuleImpl
 import com.wolfyscript.scafall.loader.ScafallLoader
