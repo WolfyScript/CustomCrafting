@@ -1,12 +1,12 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.getRecipeTyped
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
+import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipes.data.CraftingMatrixData
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipes.getRecipeTyped
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toBlockPos
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal

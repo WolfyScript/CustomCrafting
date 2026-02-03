@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.core.configuration.resources
 
-import com.wolfyscript.customcrafting.configuration.resources.SourceSettings
+import com.wolfyscript.customcrafting.core.configuration.resources.SourceSettings
 
 class FilterSettingsImpl(
     override val includes: SourceSettings.FilterSettings.FilterEntry? = null,

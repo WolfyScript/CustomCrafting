@@ -2,8 +2,8 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
-import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting;
-import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeStonecutting;
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
 import net.minecraft.server.level.ServerPlayer;

@@ -2,13 +2,13 @@ package com.wolfyscript.customcrafting.core.recipes
 
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientManager.Companion.LOG_PREFIX
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientManager
-import com.wolfyscript.customcrafting.resource.DataType
-import com.wolfyscript.customcrafting.resource.LoadedObject
-import com.wolfyscript.customcrafting.resource.ResourceLoader
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientManager.Companion.LOG_PREFIX
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientManager
+import com.wolfyscript.customcrafting.core.resource.DataType
+import com.wolfyscript.customcrafting.core.resource.LoadedObject
+import com.wolfyscript.customcrafting.core.resource.ResourceLoader
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet

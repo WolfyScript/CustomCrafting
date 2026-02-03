@@ -1,12 +1,12 @@
 package com.wolfyscript.customcrafting.core.recipes
 
-import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
-import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.data.RepairingRecipeDataImpl
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
-import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
+import com.wolfyscript.customcrafting.core.recipes.conditions.RecipeConditions
+import com.wolfyscript.customcrafting.core.recipes.data.IngredientDataImpl
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipes.data.RepairingRecipeDataImpl
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing
 
 class CustomRecipeRepairingImpl(
     override val priority: Int = 0,

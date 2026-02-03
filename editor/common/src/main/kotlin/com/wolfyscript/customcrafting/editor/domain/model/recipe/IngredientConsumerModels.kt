@@ -4,10 +4,10 @@ import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.EditorRegistryTypes
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientConsumerModel
 import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.ValueReference
 import com.wolfyscript.scafall.registry.referenced

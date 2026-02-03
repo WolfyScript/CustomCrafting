@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.editor.domain.model.recipe.IngredientMatch
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientMatcherExactModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientMatcherModel
 import com.wolfyscript.customcrafting.editor.domain.usecase.IngredientUseCases
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key

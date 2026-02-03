@@ -3,11 +3,11 @@ package com.wolfyscript.customcrafting.fabric.recipes.proxy
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking
-import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.recipes.RecipeReference
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCooking
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
+import com.wolfyscript.customcrafting.core.recipes.RecipeReference
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState
 import com.wolfyscript.scafall.wrappers.unwrap
 import net.minecraft.core.HolderLookup
 import net.minecraft.world.item.ItemStack

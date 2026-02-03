@@ -2,10 +2,10 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
-import com.wolfyscript.customcrafting.recipes.*;
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
-import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing;
+import com.wolfyscript.customcrafting.core.recipes.*;
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
+import com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
 import kotlin.random.Random;

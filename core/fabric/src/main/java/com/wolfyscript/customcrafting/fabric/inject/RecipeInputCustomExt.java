@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.fabric.inject;
 
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
 import org.jetbrains.annotations.Nullable;
 
 public interface RecipeInputCustomExt<I extends RecipeInput, R extends RecipeEvaluationResult<?,?>> {

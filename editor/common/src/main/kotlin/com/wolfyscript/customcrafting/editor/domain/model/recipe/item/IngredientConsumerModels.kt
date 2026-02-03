@@ -3,9 +3,9 @@ package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 import androidx.compose.runtime.Composable
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.IngredientRemainderModels
 import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
-import com.wolfyscript.customcrafting.recipes.ingredient.of
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer
+import com.wolfyscript.customcrafting.core.recipes.ingredient.of
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.wrap
 import net.minecraft.world.item.ItemStack

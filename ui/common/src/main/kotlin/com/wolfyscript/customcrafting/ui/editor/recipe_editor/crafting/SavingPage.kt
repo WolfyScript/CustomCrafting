@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.SessionModel
 import com.wolfyscript.customcrafting.editor.recipeEditor
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.withEditorSession
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla

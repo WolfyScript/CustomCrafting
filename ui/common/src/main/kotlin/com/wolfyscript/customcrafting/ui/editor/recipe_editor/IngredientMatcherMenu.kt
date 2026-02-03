@@ -4,8 +4,8 @@ import androidx.compose.runtime.*
 import com.wolfyscript.customcrafting.editor.EditorRegistryTypes
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientMatcherModel
 import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla

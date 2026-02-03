@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.core.recipes.grinding
 
-import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchantRemoval
-import com.wolfyscript.customcrafting.recipes.process.SetInclusionExclusionType
+import com.wolfyscript.customcrafting.core.recipes.process.ProcedureEnchantRemoval
+import com.wolfyscript.customcrafting.core.recipes.process.SetInclusionExclusionType
 import com.wolfyscript.scafall.identifier.toScafall
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.unwrap

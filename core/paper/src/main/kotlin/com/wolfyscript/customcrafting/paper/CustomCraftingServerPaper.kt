@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.paper
 
 import com.wolfyscript.customcrafting.paper.recipes.StonecutterListener
-import com.wolfyscript.customcrafting.server.CustomCraftingServer
+import com.wolfyscript.customcrafting.core.server.CustomCraftingServer
 import com.wolfyscript.customcrafting.spigotlike.CustomCraftingServerSpigotLike
 import org.bukkit.Bukkit
 

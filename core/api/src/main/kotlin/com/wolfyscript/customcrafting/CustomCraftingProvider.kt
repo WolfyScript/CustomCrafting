@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting
 
+import com.wolfyscript.customcrafting.core.CustomCrafting
 import org.jetbrains.annotations.ApiStatus
 
 class CustomCraftingProvider {

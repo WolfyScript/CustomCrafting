@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.ui
 
-import com.wolfyscript.customcrafting.util.ModuleImpl
+import com.wolfyscript.customcrafting.core.util.ModuleImpl
 import com.wolfyscript.scafall.loader.module.Client
 import com.wolfyscript.scafall.loader.module.Module
 import com.wolfyscript.scafall.loader.module.Server

@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.RecipeChoicesModel
-import com.wolfyscript.customcrafting.recipes.RecipeChoices
+import com.wolfyscript.customcrafting.core.recipes.RecipeChoices
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 

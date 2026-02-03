@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.spigotlike
 
-import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 import org.bukkit.NamespacedKey
 

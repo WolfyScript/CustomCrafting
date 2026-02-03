@@ -1,12 +1,12 @@
 package com.wolfyscript.customcrafting.core.recipes.repair
 
-import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
-import com.wolfyscript.customcrafting.recipes.EvaluationContext
-import com.wolfyscript.customcrafting.recipes.RecipeResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.process.ProcedureRename
-import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeRepairing
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipes.RecipeResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipes.process.ProcedureRename
+import com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import kotlin.random.Random
 

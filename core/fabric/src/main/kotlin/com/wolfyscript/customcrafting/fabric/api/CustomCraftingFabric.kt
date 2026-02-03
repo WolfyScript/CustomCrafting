@@ -1,10 +1,10 @@
 package com.wolfyscript.customcrafting.fabric.api
 
 import com.wolfyscript.customcrafting.core.CustomCraftingCommon
-import com.wolfyscript.customcrafting.configuration.ConfigurationManager
+import com.wolfyscript.customcrafting.core.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.core.configuration.ConfigurationManagerImpl
 import com.wolfyscript.customcrafting.fabric.CustomCraftingServerFabric
-import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.server.MinecraftServer

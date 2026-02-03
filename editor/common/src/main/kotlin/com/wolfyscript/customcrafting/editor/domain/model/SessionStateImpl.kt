@@ -3,8 +3,8 @@ package com.wolfyscript.customcrafting.editor.domain.model
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.SessionModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.RecipeModel
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.resource.DataType
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.core.resource.DataType
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 

@@ -12,7 +12,7 @@ import com.wolfyscript.customcrafting.editor.recipeEditor
 import com.wolfyscript.customcrafting.ui.editor.recipe_editor.IngredientEditor
 import com.wolfyscript.customcrafting.ui.editor.recipe_editor.state.UIIngredientPreview
 import com.wolfyscript.customcrafting.ui.editor.recipe_editor.state.toUIState
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key

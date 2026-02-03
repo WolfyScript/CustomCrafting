@@ -1,9 +1,9 @@
 package com.wolfyscript.customcrafting.core.resource
 
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.configuration.resources.BackupSettings
-import com.wolfyscript.customcrafting.resource.BackupManager
-import com.wolfyscript.customcrafting.resource.ResourceManager
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.configuration.resources.BackupSettings
+import com.wolfyscript.customcrafting.core.resource.BackupManager
+import com.wolfyscript.customcrafting.core.resource.ResourceManager
 
 class BackupManagerImpl(val customCrafting: CustomCrafting, val resourceManager: ResourceManager, val settings: BackupSettings) :
     BackupManager {

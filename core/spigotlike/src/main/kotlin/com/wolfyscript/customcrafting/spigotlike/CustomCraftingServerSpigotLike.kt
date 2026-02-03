@@ -1,14 +1,14 @@
 package com.wolfyscript.customcrafting.spigotlike
 
-import com.wolfyscript.customcrafting.CustomCrafting
+import com.wolfyscript.customcrafting.core.CustomCrafting
 import com.wolfyscript.customcrafting.core.commands.CCCommands
-import com.wolfyscript.customcrafting.recipes.IngredientManagerCommon
-import com.wolfyscript.customcrafting.recipes.RecipeManager
-import com.wolfyscript.customcrafting.recipes.RecipeManagerCommon
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientManager
-import com.wolfyscript.customcrafting.resource.ResourceManager
+import com.wolfyscript.customcrafting.core.recipes.IngredientManagerCommon
+import com.wolfyscript.customcrafting.core.recipes.RecipeManager
+import com.wolfyscript.customcrafting.core.recipes.RecipeManagerCommon
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientManager
+import com.wolfyscript.customcrafting.core.resource.ResourceManager
 import com.wolfyscript.customcrafting.core.resource.ResourceManagerCommon
-import com.wolfyscript.customcrafting.server.CustomCraftingServer
+import com.wolfyscript.customcrafting.core.server.CustomCraftingServer
 import com.wolfyscript.customcrafting.spigotlike.recipes.registerCommonRecipeListeners
 import com.wolfyscript.customcrafting.spigotlike.recipes.registerDisplayRecipes
 import com.wolfyscript.customcrafting.spigotlike.recipes.registerPlaceholderRecipes

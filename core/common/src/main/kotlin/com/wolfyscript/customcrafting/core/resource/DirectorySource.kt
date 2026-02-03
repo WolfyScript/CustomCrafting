@@ -2,13 +2,13 @@ package com.wolfyscript.customcrafting.core.resource
 
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.InjectableValues
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.configuration.resources.SourceSettings
-import com.wolfyscript.customcrafting.resource.DataType
-import com.wolfyscript.customcrafting.resource.LoadedObject
-import com.wolfyscript.customcrafting.resource.ResourceLoader
-import com.wolfyscript.customcrafting.resource.Source
-import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.configuration.resources.SourceSettings
+import com.wolfyscript.customcrafting.core.resource.DataType
+import com.wolfyscript.customcrafting.core.resource.LoadedObject
+import com.wolfyscript.customcrafting.core.resource.ResourceLoader
+import com.wolfyscript.customcrafting.core.resource.Source
+import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
 import java.io.IOException

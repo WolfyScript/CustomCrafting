@@ -3,9 +3,9 @@ package com.wolfyscript.customcrafting.core.recipes
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableListMultimap
 import com.google.common.collect.ImmutableMap
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.resource.LoadedObject
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.resource.LoadedObject
 import com.wolfyscript.scafall.identifier.Key
 import java.util.*
 
@@ -29,7 +29,7 @@ internal class RecipeIndex {
     internal val byKey: Map<Key, RecipeReference<*>>
     internal val byType: ImmutableListMultimap<RecipeType<*>, RecipeReference<*>>
 
-    constructor(recipes: Collection<LoadedObject<CustomRecipe<*,*>>>) {
+    constructor(recipes: Collection<LoadedObject<CustomRecipe<*, *>>>) {
         val recipesBuilder = ImmutableList.builder<CustomRecipe<*, *>>()
         val byKeyBuilder = ImmutableMap.builder<Key, RecipeReference<*>>()
         val byTypeBuilder = ImmutableListMultimap.Builder<RecipeType<*>, RecipeReference<*>>()

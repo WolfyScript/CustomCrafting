@@ -1,10 +1,10 @@
 package com.wolfyscript.customcrafting.core.registry
 
-import com.wolfyscript.customcrafting.recipes.*
-import com.wolfyscript.customcrafting.recipes.actions.CommandResultAction
-import com.wolfyscript.customcrafting.recipes.ingredient.*
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistries
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
+import com.wolfyscript.customcrafting.core.recipes.*
+import com.wolfyscript.customcrafting.core.recipes.actions.CommandResultAction
+import com.wolfyscript.customcrafting.core.recipes.ingredient.*
+import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistries
+import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.scafall.config.jackson.registerTypeRegistry
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.Registry
@@ -55,8 +55,8 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
         }
         createRegistry(CustomCraftingRegistryTypes.ingredientRemainders) {
             RegistrySimple<Class<out IngredientRemainder>>(it).apply {
-                register(IngredientRemainders.custom.key.key, IngredientRemainderCustomImpl::class.java)
-                register(IngredientRemainders.default.key.key, IngredientRemainderDefaultImpl::class.java)
+                register(_root_ide_package_.com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainders.custom.key.key, IngredientRemainderCustomImpl::class.java)
+                register(_root_ide_package_.com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainders.default.key.key, IngredientRemainderDefaultImpl::class.java)
             }
         }
 

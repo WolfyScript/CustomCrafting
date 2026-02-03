@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.editor.ext
 
 import androidx.compose.runtime.Composable
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
 
 interface EditorUIFactory<M> {
 

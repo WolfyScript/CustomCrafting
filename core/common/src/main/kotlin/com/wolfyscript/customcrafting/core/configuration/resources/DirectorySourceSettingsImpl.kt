@@ -1,10 +1,10 @@
 package com.wolfyscript.customcrafting.core.configuration.resources
 
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.configuration.resources.SourceSettings
-import com.wolfyscript.customcrafting.resource.Source
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.configuration.resources.SourceSettings
+import com.wolfyscript.customcrafting.core.resource.Source
 import com.wolfyscript.customcrafting.core.resource.DirectorySource
-import com.wolfyscript.customcrafting.resource.ResourceLoader
+import com.wolfyscript.customcrafting.core.resource.ResourceLoader
 
 class DirectorySourceSettingsImpl(
     override val path: String?,

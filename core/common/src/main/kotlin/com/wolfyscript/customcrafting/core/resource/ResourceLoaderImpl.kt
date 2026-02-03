@@ -1,12 +1,12 @@
 package com.wolfyscript.customcrafting.core.resource
 
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.configuration.resources.ResourceSettings
-import com.wolfyscript.customcrafting.resource.DataType
-import com.wolfyscript.customcrafting.resource.LoadedObject
-import com.wolfyscript.customcrafting.resource.ResourceListener
-import com.wolfyscript.customcrafting.resource.ResourceLoader
-import com.wolfyscript.customcrafting.resource.Source
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.configuration.resources.ResourceSettings
+import com.wolfyscript.customcrafting.core.resource.DataType
+import com.wolfyscript.customcrafting.core.resource.LoadedObject
+import com.wolfyscript.customcrafting.core.resource.ResourceListener
+import com.wolfyscript.customcrafting.core.resource.ResourceLoader
+import com.wolfyscript.customcrafting.core.resource.Source
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
 

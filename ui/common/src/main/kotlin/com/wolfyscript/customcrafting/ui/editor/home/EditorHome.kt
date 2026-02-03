@@ -5,7 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.wolfyscript.customcrafting.ui.editor.Paths
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.viewportl.gui.compose.layout.Alignment.CenterVertically
 import com.wolfyscript.viewportl.gui.compose.layout.Arrangement

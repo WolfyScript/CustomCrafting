@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.core.exceptions
 
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.recipes.RecipeReference
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.core.recipes.RecipeReference
 
 class CraftingRecipeException(
     message: String,

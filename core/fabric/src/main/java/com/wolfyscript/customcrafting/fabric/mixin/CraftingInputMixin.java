@@ -1,10 +1,10 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting;
-import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixDataImpl;
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput;
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting;
+import com.wolfyscript.customcrafting.core.recipes.data.CraftingMatrixDataImpl;
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
 import com.wolfyscript.scafall.ScafallProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;

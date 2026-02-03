@@ -1,8 +1,8 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe
 
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.conditions.RecipeConditionsModel
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.recipes.RecipeType
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.core.recipes.RecipeType
 
 internal class RecipeModelImpl<T: CustomRecipe<*, *>>(
     override val recipeType: RecipeType<T>,

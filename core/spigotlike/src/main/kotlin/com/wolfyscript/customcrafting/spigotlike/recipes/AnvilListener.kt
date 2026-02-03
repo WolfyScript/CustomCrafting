@@ -2,13 +2,13 @@ package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.destroystokyo.paper.event.block.AnvilDamagedEvent
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
-import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeRepairing
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
+import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing
 import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.scafall.platform.ifPaperCompatible
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal

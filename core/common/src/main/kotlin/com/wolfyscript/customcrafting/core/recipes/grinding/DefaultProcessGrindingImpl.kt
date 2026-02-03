@@ -1,16 +1,16 @@
 package com.wolfyscript.customcrafting.core.recipes.grinding
 
-import com.wolfyscript.customcrafting.recipes.CustomRecipeGrinding
-import com.wolfyscript.customcrafting.recipes.EvaluationContext
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.process.ProcedureDamageCombine
-import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchantRemoval
-import com.wolfyscript.customcrafting.recipes.process.ProcessGrinding
-import com.wolfyscript.customcrafting.recipes.process.ProcedureRepairCost
-import com.wolfyscript.customcrafting.recipes.repair.ProcedureDamageCombineImpl
-import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchanting
-import com.wolfyscript.customcrafting.recipes.repair.ProcedureEnchantingImpl
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeGrinding
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipes.process.ProcedureDamageCombine
+import com.wolfyscript.customcrafting.core.recipes.process.ProcedureEnchantRemoval
+import com.wolfyscript.customcrafting.core.recipes.process.ProcessGrinding
+import com.wolfyscript.customcrafting.core.recipes.process.ProcedureRepairCost
+import com.wolfyscript.customcrafting.core.recipes.repair.ProcedureDamageCombineImpl
+import com.wolfyscript.customcrafting.core.recipes.process.ProcedureEnchanting
+import com.wolfyscript.customcrafting.core.recipes.repair.ProcedureEnchantingImpl
 import com.wolfyscript.scafall.wrappers.unwrap
 import com.wolfyscript.scafall.wrappers.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack

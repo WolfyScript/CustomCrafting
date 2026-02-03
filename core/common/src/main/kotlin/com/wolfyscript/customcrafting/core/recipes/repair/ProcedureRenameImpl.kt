@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.core.recipes.repair
 
-import com.wolfyscript.customcrafting.recipes.process.ProcedureRename
+import com.wolfyscript.customcrafting.core.recipes.process.ProcedureRename
 
 class ProcedureRenameImpl(
     override val formatted: Boolean = false,

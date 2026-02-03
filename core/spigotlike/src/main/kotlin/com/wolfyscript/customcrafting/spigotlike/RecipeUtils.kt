@@ -1,8 +1,8 @@
 package com.wolfyscript.customcrafting.spigotlike
 
-import com.wolfyscript.customcrafting.recipes.EvaluationContext
-import com.wolfyscript.customcrafting.recipes.RecipeResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipes.RecipeResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import org.bukkit.Material
 import org.bukkit.event.inventory.InventoryClickEvent

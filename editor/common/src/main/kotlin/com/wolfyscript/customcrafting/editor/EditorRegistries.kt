@@ -17,8 +17,8 @@ import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.Ingredient
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientRemainderModelDefaultUIFactory
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ItemIngredientMatcherUIFactory
 import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistries
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
+import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistries
+import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.Registry
 import com.wolfyscript.scafall.registry.RegistryKey

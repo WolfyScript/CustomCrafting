@@ -10,11 +10,11 @@ import com.fasterxml.jackson.databind.jsontype.TypeDeserializer
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainder
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainder
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.unwrap

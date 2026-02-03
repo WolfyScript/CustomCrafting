@@ -1,14 +1,14 @@
 package com.wolfyscript.customcrafting.core.recipes.repair
 
-import com.wolfyscript.customcrafting.recipes.CustomRecipeRepairing
-import com.wolfyscript.customcrafting.recipes.EvaluationContext
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.process.ProcedureDamageCombine
-import com.wolfyscript.customcrafting.recipes.process.ProcedureEnchanting
-import com.wolfyscript.customcrafting.recipes.process.ProcedureItemRepair
-import com.wolfyscript.customcrafting.recipes.process.ProcedureRename
-import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeRepairing
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipes.process.ProcedureDamageCombine
+import com.wolfyscript.customcrafting.core.recipes.process.ProcedureEnchanting
+import com.wolfyscript.customcrafting.core.recipes.process.ProcedureItemRepair
+import com.wolfyscript.customcrafting.core.recipes.process.ProcedureRename
+import com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.wrappers.unwrap

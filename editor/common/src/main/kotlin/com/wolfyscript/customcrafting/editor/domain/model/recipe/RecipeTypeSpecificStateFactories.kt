@@ -2,9 +2,9 @@ package com.wolfyscript.customcrafting.editor.domain.model.recipe
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.EditorRegistryTypes
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.ValueReference
 import com.wolfyscript.scafall.registry.referenced

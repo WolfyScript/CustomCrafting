@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.ui.editor.recipe_editor
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.key
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key

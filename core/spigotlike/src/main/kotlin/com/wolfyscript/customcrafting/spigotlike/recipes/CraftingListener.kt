@@ -1,15 +1,15 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.wolfyscript.customcrafting.CustomCrafting
+import com.wolfyscript.customcrafting.core.CustomCrafting
 import com.wolfyscript.customcrafting.core.exceptions.CraftingRecipeException
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.recipes.EvaluationContext
-import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.recipes.data.CraftingMatrixData
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
+import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipes.data.CraftingMatrixData
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.customcrafting.spigotlike.collectResultAndRunActions
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal

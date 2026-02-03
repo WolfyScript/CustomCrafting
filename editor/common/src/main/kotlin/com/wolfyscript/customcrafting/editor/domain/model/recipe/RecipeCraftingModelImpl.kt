@@ -7,9 +7,9 @@ import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultMode
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientModelRef
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultModel
-import com.wolfyscript.customcrafting.recipes.*
-import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.*
+import com.wolfyscript.customcrafting.core.recipes.conditions.RecipeConditions
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
 import kotlin.text.isBlank
 
 internal class RecipeCraftingModelFactory() : RecipeModel.RecipeTypeSpecificModel.Factory<CustomRecipeCrafting> {

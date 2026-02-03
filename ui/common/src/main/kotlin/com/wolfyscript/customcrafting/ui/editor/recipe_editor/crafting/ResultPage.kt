@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.usecase.RecipeCraftingUseCases
 import com.wolfyscript.customcrafting.editor.domain.usecase.RecipeResultUseCases
 import com.wolfyscript.customcrafting.editor.recipeEditor
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key

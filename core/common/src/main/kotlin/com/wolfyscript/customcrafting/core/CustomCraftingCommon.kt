@@ -1,10 +1,9 @@
 package com.wolfyscript.customcrafting.core
 
-import com.wolfyscript.customcrafting.CustomCrafting
 import com.wolfyscript.customcrafting.core.factories.FactoriesCommon
 import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistriesCommon
-import com.wolfyscript.customcrafting.factories.Factories
-import com.wolfyscript.customcrafting.server.CustomCraftingServer
+import com.wolfyscript.customcrafting.core.factories.Factories
+import com.wolfyscript.customcrafting.core.server.CustomCraftingServer
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.loader.module.BasicModule
 import com.wolfyscript.scafall.loader.module.Client

@@ -8,10 +8,10 @@ import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.Ingredient
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.RecipeCraftingModel
 import com.wolfyscript.customcrafting.editor.domain.usecase.RecipeCraftingUseCases
 import com.wolfyscript.customcrafting.editor.recipeEditor
-import com.wolfyscript.customcrafting.recipes.CraftingFormula
+import com.wolfyscript.customcrafting.core.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.ui.editor.recipe_editor.state.UIIngredientPreview
 import com.wolfyscript.customcrafting.ui.editor.recipe_editor.state.toPreview
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key

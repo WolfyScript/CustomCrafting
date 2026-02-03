@@ -2,10 +2,10 @@ package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
 import androidx.compose.runtime.Composable
 import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatchers
-import com.wolfyscript.customcrafting.recipes.ingredient.of
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatchers
+import com.wolfyscript.customcrafting.core.recipes.ingredient.of
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key

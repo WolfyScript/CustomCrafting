@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
-import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
-import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
+import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
 import net.minecraft.world.entity.player.Player;

@@ -1,8 +1,8 @@
 package com.wolfyscript.customcrafting.core.util
 
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
-import com.wolfyscript.customcrafting.recipes.RecipeResult
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.core.recipes.RecipeResult
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.unwrap
 import net.minecraft.core.HolderSet

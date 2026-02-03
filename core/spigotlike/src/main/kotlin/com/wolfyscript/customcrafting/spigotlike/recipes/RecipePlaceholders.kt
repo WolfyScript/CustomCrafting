@@ -1,8 +1,8 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
-import com.wolfyscript.customcrafting.recipes.*
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.core.recipes.*
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall

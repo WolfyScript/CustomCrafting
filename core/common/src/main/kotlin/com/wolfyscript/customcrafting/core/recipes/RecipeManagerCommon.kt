@@ -1,14 +1,14 @@
 package com.wolfyscript.customcrafting.core.recipes
 
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.recipes.RecipeManager.Companion.LOG_PREFIX
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.resource.DataType
-import com.wolfyscript.customcrafting.resource.LoadedObject
-import com.wolfyscript.customcrafting.resource.ResourceListener
-import com.wolfyscript.customcrafting.resource.ResourceLoader
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.resource.LoadedObject
+import com.wolfyscript.customcrafting.core.resource.ResourceLoader
+import com.wolfyscript.customcrafting.core.recipes.RecipeManager.Companion.LOG_PREFIX
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.resource.DataType
+import com.wolfyscript.customcrafting.core.resource.ResourceListener
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.verification.VerificationResult
@@ -173,7 +173,7 @@ class RecipeManagerCommon(val customCrafting: CustomCrafting) : RecipeManager, R
         return index.get(key)
     }
 
-    override fun registerOrUpdateRecipes(recipes: Collection<LoadedObject<CustomRecipe<*,*>>>) {
+    override fun registerOrUpdateRecipes(recipes: Collection<LoadedObject<CustomRecipe<*, *>>>) {
         index = index.registerOrUpdateAll(recipes)
     }
 

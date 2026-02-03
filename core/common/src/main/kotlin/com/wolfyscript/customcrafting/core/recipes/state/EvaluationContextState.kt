@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.core.recipes.state
 
-import com.wolfyscript.customcrafting.recipes.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContext
 
 object EvaluationContextState {
 

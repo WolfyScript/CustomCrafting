@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
-import com.wolfyscript.customcrafting.recipes.RecipeItemModifier
-import com.wolfyscript.customcrafting.recipes.RecipeResult
+import com.wolfyscript.customcrafting.core.recipes.RecipeItemModifier
+import com.wolfyscript.customcrafting.core.recipes.RecipeResult
 
 class ResultModelImpl(
     override val choices: RecipeChoicesModel = RecipeChoicesModelImpl(),

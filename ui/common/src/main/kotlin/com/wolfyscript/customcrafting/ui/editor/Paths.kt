@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.ui.editor
 
-import com.wolfyscript.customcrafting.recipes.RecipeType
+import com.wolfyscript.customcrafting.core.recipes.RecipeType
 import com.wolfyscript.viewportl.gui.elements.NavKey
 
 interface Paths {

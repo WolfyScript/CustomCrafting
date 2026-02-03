@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
 

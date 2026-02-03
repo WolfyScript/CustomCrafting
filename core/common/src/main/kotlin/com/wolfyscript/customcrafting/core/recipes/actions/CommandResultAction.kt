@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.core.recipes.actions
 
-import com.wolfyscript.customcrafting.recipes.EvaluationContext
-import com.wolfyscript.customcrafting.recipes.ResultAction
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipes.ResultAction
 import com.wolfyscript.scafall.wrappers.unwrap
 import net.minecraft.commands.CommandSource
 import net.minecraft.commands.CommandSourceStack

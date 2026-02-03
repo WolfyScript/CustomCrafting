@@ -2,9 +2,9 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
-import com.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
-import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl;
-import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState;
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCooking;
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
+import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState;
 import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -75,12 +75,12 @@ public abstract class CampfireBlockEntityMixin extends BlockEntity {
 //        RecipeInput input = args.get(1);
 //        var wrapper = ScafallProvider.Companion.get().getMinecraftWrapper();
 //        var source = wrapper.wrapMcStack(items.get(0));
-//        ((CookingCustomInputExt) input).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.CookingRecipeInput.Companion.of(source, null));
+//        ((CookingCustomInputExt) input).setCustomInput(com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.CookingRecipeInput.Companion.of(source, null));
 //    }
 
     @Redirect(method = "placeFood", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/RecipeManager;getRecipeFor(Lnet/minecraft/world/item/crafting/RecipeType;Lnet/minecraft/world/item/crafting/RecipeInput;Lnet/minecraft/world/level/Level;)Ljava/util/Optional;"))
     private Optional<RecipeHolder<CampfireCookingRecipe>> injectCustomDataIntoSingleRecipeInputRedirect(RecipeManager instance, RecipeType<CampfireCookingRecipe> recipeType, RecipeInput input, Level level, ServerLevel serverLevel, LivingEntity livingEntity, ItemStack itemStack) {
-        ((RecipeInputSingleSlotCustomExt) input).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.SingleSlotRecipeInput.Companion.of(MinecraftWrapperKt.wrap(itemStack)));
+        ((RecipeInputSingleSlotCustomExt) input).setCustomInput(com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.SingleSlotRecipeInput.Companion.of(MinecraftWrapperKt.wrap(itemStack)));
 
         return instance.getRecipeFor(recipeType, (SingleRecipeInput) input, level);
     }
@@ -92,7 +92,7 @@ public abstract class CampfireBlockEntityMixin extends BlockEntity {
         ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check
     ) {
         var source = MinecraftWrapperKt.wrap(singleRecipeInput.item());
-        ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).setCustomInput(com.wolfyscript.customcrafting.recipes.data.RecipeInput.SingleSlotRecipeInput.Companion.of(source));
+        ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).setCustomInput(com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.SingleSlotRecipeInput.Companion.of(source));
         return singleRecipeInput;
     }
 

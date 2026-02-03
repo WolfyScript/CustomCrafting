@@ -4,11 +4,11 @@ import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
-import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting
-import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.recipes.RecipeReference
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.recipes.state.EvaluationContextState
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeStonecutting
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
+import com.wolfyscript.customcrafting.core.recipes.RecipeReference
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState
 import com.wolfyscript.customcrafting.core.util.toMc
 import com.wolfyscript.customcrafting.core.util.toMcDisplay
 import com.wolfyscript.scafall.wrappers.snapshot

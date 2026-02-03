@@ -1,15 +1,15 @@
 package com.wolfyscript.customcrafting.core.factories
 
-import com.wolfyscript.customcrafting.factories.RecipeFactory
-import com.wolfyscript.customcrafting.recipes.*
-import com.wolfyscript.customcrafting.recipes.conditions.Condition
-import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
-import com.wolfyscript.customcrafting.recipes.data.*
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientConsumer
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientMatcher
-import com.wolfyscript.customcrafting.recipes.ingredient.IngredientRemainder
-import com.wolfyscript.customcrafting.recipes.process.ProcessRepairing
+import com.wolfyscript.customcrafting.core.factories.RecipeFactory
+import com.wolfyscript.customcrafting.core.recipes.*
+import com.wolfyscript.customcrafting.core.recipes.conditions.Condition
+import com.wolfyscript.customcrafting.core.recipes.conditions.RecipeConditions
+import com.wolfyscript.customcrafting.core.recipes.data.*
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainder
+import com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack

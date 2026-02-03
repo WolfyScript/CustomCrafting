@@ -1,15 +1,15 @@
 package com.wolfyscript.customcrafting.paper.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.recipes.CustomRecipeStonecutting
-import com.wolfyscript.customcrafting.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.recipes.RecipeReferenceImpl
-import com.wolfyscript.customcrafting.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.getRecipeTyped
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipeStonecutting
+import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
+import com.wolfyscript.customcrafting.core.recipes.RecipeReferenceImpl
+import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipes.getRecipeTyped
 import com.wolfyscript.customcrafting.spigotlike.collectResultAndRunActions
 import com.wolfyscript.customcrafting.spigotlike.recipes.isPlaceholder
 import com.wolfyscript.customcrafting.spigotlike.recipes.originalRecipeKey

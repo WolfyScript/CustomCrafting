@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
-import com.wolfyscript.customcrafting.CustomCrafting
+import com.wolfyscript.customcrafting.core.CustomCrafting
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.PluginManager
 

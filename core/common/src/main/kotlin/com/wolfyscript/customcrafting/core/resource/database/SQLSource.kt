@@ -1,13 +1,13 @@
 package com.wolfyscript.customcrafting.core.resource.database
 
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.configuration.resources.SourceSettings
-import com.wolfyscript.customcrafting.resource.DataType
-import com.wolfyscript.customcrafting.resource.Source
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.configuration.resources.SourceSettings
+import com.wolfyscript.customcrafting.core.resource.DataType
+import com.wolfyscript.customcrafting.core.resource.Source
 import com.wolfyscript.customcrafting.core.resource.DestinationFilter
-import com.wolfyscript.customcrafting.resource.LoadedObject
+import com.wolfyscript.customcrafting.core.resource.LoadedObject
 import com.wolfyscript.customcrafting.core.resource.ResourceLoaderImpl
-import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.v1.core.and

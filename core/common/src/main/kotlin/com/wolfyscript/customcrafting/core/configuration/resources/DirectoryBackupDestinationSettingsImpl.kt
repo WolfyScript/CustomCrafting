@@ -1,10 +1,10 @@
 package com.wolfyscript.customcrafting.core.configuration.resources
 
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.configuration.resources.BackupSettings
-import com.wolfyscript.customcrafting.resource.BackupDestination
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.configuration.resources.BackupSettings
+import com.wolfyscript.customcrafting.core.resource.BackupDestination
 import com.wolfyscript.customcrafting.core.resource.DirectoryBackupDestination
-import com.wolfyscript.customcrafting.resource.ResourceLoader
+import com.wolfyscript.customcrafting.core.resource.ResourceLoader
 
 class DirectoryBackupDestinationSettingsImpl(
     override val path: String,

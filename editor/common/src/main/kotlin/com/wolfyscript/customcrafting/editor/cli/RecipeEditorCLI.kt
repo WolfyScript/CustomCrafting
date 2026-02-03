@@ -4,12 +4,12 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.commands.SUCCESS_RESULT
+import com.wolfyscript.customcrafting.core.commands.SUCCESS_RESULT
 import com.wolfyscript.customcrafting.editor.domain.SessionModel
 import com.wolfyscript.customcrafting.editor.recipeEditor
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes
-import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes
+import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.identifier.toKey
 import net.minecraft.commands.CommandSourceStack

@@ -1,8 +1,8 @@
 package com.wolfyscript.customcrafting.core.recipes
 
-import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
-import com.wolfyscript.customcrafting.recipes.data.*
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.conditions.RecipeConditions
+import com.wolfyscript.customcrafting.core.recipes.data.*
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.identifier.toScafall
 import com.wolfyscript.scafall.wrappers.unwrap

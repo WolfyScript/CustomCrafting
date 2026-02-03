@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.inject;
 
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
 import org.jetbrains.annotations.Nullable;
 
 /**

@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.core.resource.database
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.resource.DataType
+import com.wolfyscript.customcrafting.core.resource.DataType
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.json.json
 

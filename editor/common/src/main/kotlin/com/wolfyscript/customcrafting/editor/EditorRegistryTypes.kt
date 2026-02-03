@@ -9,8 +9,8 @@ import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.Ingredient
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultActionModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.TransmuterModel
 import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
-import com.wolfyscript.customcrafting.registry.CustomCraftingRegistryTypes.root
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.root
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.RegistryKey
 import com.wolfyscript.scafall.registry.RegistryReference

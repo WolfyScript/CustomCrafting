@@ -1,9 +1,9 @@
 package com.wolfyscript.customcrafting.core.resource
 
-import com.wolfyscript.customcrafting.CustomCrafting
-import com.wolfyscript.customcrafting.configuration.resources.BackupSettings
-import com.wolfyscript.customcrafting.resource.BackupDestination
-import com.wolfyscript.customcrafting.resource.ResourceLoader
+import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.configuration.resources.BackupSettings
+import com.wolfyscript.customcrafting.core.resource.BackupDestination
+import com.wolfyscript.customcrafting.core.resource.ResourceLoader
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

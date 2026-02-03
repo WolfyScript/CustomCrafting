@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.Ingredient
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.RecipeCraftingModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.withCraftingModel
-import com.wolfyscript.customcrafting.recipes.CraftingFormula
+import com.wolfyscript.customcrafting.core.recipes.CraftingFormula
 
 interface RecipeCraftingUseCases {
 

@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.core.recipes.data
 
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
 import com.wolfyscript.scafall.items.ItemStackRef
 
 data class IngredientDataImpl(

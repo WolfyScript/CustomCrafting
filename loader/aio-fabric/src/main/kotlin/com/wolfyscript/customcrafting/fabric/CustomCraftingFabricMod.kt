@@ -4,7 +4,7 @@ import com.wolfyscript.customcrafting.CustomCraftingBoostrap
 import com.wolfyscript.customcrafting.core.commands.CCCommands
 import com.wolfyscript.customcrafting.fabric.api.CustomCraftingFabric
 import com.wolfyscript.customcrafting.core.sentry.initSentry
-import com.wolfyscript.customcrafting.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.loader.ScafallLoader
 import io.sentry.Sentry

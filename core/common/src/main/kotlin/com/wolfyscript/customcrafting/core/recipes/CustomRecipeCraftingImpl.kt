@@ -1,9 +1,9 @@
 package com.wolfyscript.customcrafting.core.recipes
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
-import com.wolfyscript.customcrafting.recipes.data.*
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.conditions.RecipeConditions
+import com.wolfyscript.customcrafting.core.recipes.data.*
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.util.ArrayListDeque
 import org.apache.commons.lang3.ArrayUtils

@@ -1,9 +1,9 @@
 package com.wolfyscript.customcrafting.core.recipes.data
 
-import com.wolfyscript.customcrafting.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.recipes.RecipeReference
+import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.core.recipes.RecipeReference
 
-class RecipeEvaluationResultImpl<D: RecipeEvaluationResult.Data, T: CustomRecipe<*,*>>(
+class RecipeEvaluationResultImpl<D: RecipeEvaluationResult.Data, T: CustomRecipe<*, *>>(
     override val recipe: RecipeReference<T>,
     override val data: D
 ) : RecipeEvaluationResult<D, T> {

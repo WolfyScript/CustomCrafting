@@ -4,11 +4,11 @@ import androidx.compose.runtime.*
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.commands.SUCCESS_RESULT
+import com.wolfyscript.customcrafting.core.commands.SUCCESS_RESULT
 import com.wolfyscript.customcrafting.editor.recipeEditor
 import com.wolfyscript.customcrafting.ui.editor.home.EditorHome
 import com.wolfyscript.customcrafting.ui.editor.recipe_editor.RecipeEditor
-import com.wolfyscript.customcrafting.util.customCrafting
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.viewportl.gui.compose.layout.slots

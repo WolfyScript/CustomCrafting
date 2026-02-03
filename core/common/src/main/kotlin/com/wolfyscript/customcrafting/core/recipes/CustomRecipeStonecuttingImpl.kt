@@ -1,11 +1,11 @@
 package com.wolfyscript.customcrafting.core.recipes
 
-import com.wolfyscript.customcrafting.recipes.conditions.RecipeConditions
-import com.wolfyscript.customcrafting.recipes.data.DefaultDataImpl
-import com.wolfyscript.customcrafting.recipes.data.IngredientDataImpl
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipes.conditions.RecipeConditions
+import com.wolfyscript.customcrafting.core.recipes.data.DefaultDataImpl
+import com.wolfyscript.customcrafting.core.recipes.data.IngredientDataImpl
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
 
 class CustomRecipeStonecuttingImpl(
     override val priority: Int = 0,

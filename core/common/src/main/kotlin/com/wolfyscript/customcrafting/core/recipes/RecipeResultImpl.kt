@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.core.recipes
 
-import com.wolfyscript.customcrafting.recipes.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import kotlin.random.Random
 
