@@ -9,12 +9,12 @@ import com.wolfyscript.customcrafting.core.recipes.RecipeReference
  *
  * Some types (like [RepairingRecipeData]) may expand it with type-specific data.
  */
-interface RecipeEvaluationResult<D: RecipeEvaluationResult.Data, T: com.wolfyscript.customcrafting.core.recipes.CustomRecipe<*, *>> {
+interface RecipeEvaluationResult<D: RecipeEvaluationResult.Data, T: CustomRecipe<*, *>> {
 
     /**
      * The selected recipe
      */
-    val recipe: com.wolfyscript.customcrafting.core.recipes.RecipeReference<T>
+    val recipe: RecipeReference<T>
 
     val data: D
 

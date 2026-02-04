@@ -27,9 +27,9 @@ sealed interface ProcessRepairing {
      * Preventing players from rerolling the result.
      */
     fun compute(
-        recipeEvaluationResult: com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult<com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.RepairingRecipeData, com.wolfyscript.customcrafting.core.recipes.CustomRecipeRepairing>,
-        input: com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.RepairingRecipeInput,
-        context: com.wolfyscript.customcrafting.core.recipes.EvaluationContext,
+        recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.RepairingRecipeData, CustomRecipeRepairing>,
+        input: RecipeInput.RepairingRecipeInput,
+        context: EvaluationContext,
         random: Random,
     ): ScafallItemStack
 
@@ -46,7 +46,7 @@ sealed interface ProcessRepairing {
          */
         val rename: ProcedureRename?
 
-        val result: com.wolfyscript.customcrafting.core.recipes.RecipeResult
+        val result: RecipeResult
 
         val cost: Int?
 

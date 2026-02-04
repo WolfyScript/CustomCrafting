@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
 import com.wolfyscript.scafall.identifier.Key
 
-interface CustomRecipeSmithing : CustomRecipe<com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.SmithingRecipeInput, com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.Data> {
+interface CustomRecipeSmithing : CustomRecipe<RecipeInput.SmithingRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeSmithing>
         get() = RecipeTypes.smithing.resolveOrThrow()
@@ -13,18 +13,18 @@ interface CustomRecipeSmithing : CustomRecipe<com.wolfyscript.customcrafting.cor
     /**
      * The template required to upgrade the [base]
      */
-    val template: com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient?
+    val template: Ingredient?
 
     /**
      * The base item to upgrade with the [addition].
      * A base ingredient is required and cannot be empty!
      */
-    val base: com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+    val base: Ingredient
 
     /**
      * The addition with which to upgrade the [base]
      */
-    val addition: com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient?
+    val addition: Ingredient?
 
     val result: RecipeResult
 

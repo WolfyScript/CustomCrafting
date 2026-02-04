@@ -7,6 +7,6 @@ interface Paths {
 
     object Home : NavKey
     class RecipeEditor(val recipeType: RecipeType<*>) : NavKey
-    class IngredientEditor() : NavKey
+    class IngredientEditor : NavKey
 
 }

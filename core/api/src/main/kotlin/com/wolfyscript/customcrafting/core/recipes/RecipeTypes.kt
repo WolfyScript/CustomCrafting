@@ -24,8 +24,8 @@ object RecipeTypes {
     val grinding = create<CustomRecipeGrinding>("grinding")
 
     private inline fun <reified T: CustomRecipe<*, *>> create(key: String) : ValueReference<RecipeType<*>, RecipeType<T>> {
-        return _root_ide_package_.com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.recipeTypes.key.referenced<RecipeType<*>, RecipeType<T>>(
-            _root_ide_package_.com.wolfyscript.scafall.identifier.Key.Companion.customCrafting(key)).reference { CustomCraftingProvider.get().registries }
+        return CustomCraftingRegistryTypes.recipeTypes.key.referenced<RecipeType<*>, RecipeType<T>>(
+            Key.customCrafting(key)).reference { CustomCraftingProvider.get().registries }
     }
 
 }

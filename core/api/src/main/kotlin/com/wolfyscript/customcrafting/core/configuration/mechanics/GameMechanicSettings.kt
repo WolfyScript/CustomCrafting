@@ -18,9 +18,7 @@ interface GameMechanicSettings {
 
 }
 
-interface CraftingSettings {
-
-}
+interface CraftingSettings
 
 interface CauldronSettings {
 
@@ -33,18 +31,10 @@ interface CauldronSettings {
 
 }
 
-interface AnvilSettings {
+interface AnvilSettings
 
-}
+interface SmithingSettings
 
-interface SmithingSettings {
+interface StonecuttingSettings
 
-}
-
-interface StonecuttingSettings {
-
-}
-
-interface CookingSettings {
-
-}
+interface CookingSettings

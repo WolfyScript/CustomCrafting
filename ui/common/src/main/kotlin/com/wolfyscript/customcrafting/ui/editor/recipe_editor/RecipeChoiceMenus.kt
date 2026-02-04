@@ -87,7 +87,7 @@ private object CachedTags {
 
 }
 
-private class TagChoicesStore() : Store() {
+private class TagChoicesStore : Store() {
 
     val availableTags: StateFlow<TagsState>
         field = MutableStateFlow(TagsState())
@@ -125,7 +125,7 @@ fun TagChoicesMenu(
     onRemove: (Key) -> Unit,
     onAdd: (Key) -> Unit,
 ) {
-    val store = store(Key.Companion.customCrafting("tag_choices")) {
+    val store = store(Key.customCrafting("tag_choices")) {
         TagChoicesStore()
     }
 

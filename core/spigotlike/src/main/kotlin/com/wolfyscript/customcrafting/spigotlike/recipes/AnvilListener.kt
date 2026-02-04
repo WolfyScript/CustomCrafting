@@ -133,7 +133,7 @@ class AnvilListener(val plugin: Plugin, val customCrafting: CustomCrafting) : Li
             location.world.playEffect(location, Effect.ANVIL_USE, 0)
 
             // Mirror the vanilla behaviour of damaging the Anvil
-            if (player.gameMode != GameMode.CREATIVE && Random.Default.nextFloat() < 0.12) {
+            if (player.gameMode != GameMode.CREATIVE && Random.nextFloat() < 0.12) {
 
                 val block = location.block
                 block.type = when (block.type) {
@@ -180,7 +180,7 @@ class AnvilListener(val plugin: Plugin, val customCrafting: CustomCrafting) : Li
         // By this point, the recipe was processed, levels and ingredients consumed,
         // Now clear the cache
         recipeCache.invalidate(player.uniqueId)
-        player.persistentDataContainer.set(RecipeSeeds.playerRepairingSeedKey, PersistentDataType.LONG, Random.Default.nextLong())
+        player.persistentDataContainer.set(RecipeSeeds.playerRepairingSeedKey, PersistentDataType.LONG, Random.nextLong())
         // and reset the cost, as vanilla would do normally
         view.repairCost = -1
     }
@@ -191,7 +191,7 @@ class AnvilListener(val plugin: Plugin, val customCrafting: CustomCrafting) : Li
             PersistentDataType.LONG
         )
         if (seed == null) {
-            seed = Random.Default.nextLong()
+            seed = Random.nextLong()
             bukkitPlayer.persistentDataContainer.set(
                 RecipeSeeds.playerRepairingSeedKey,
                 PersistentDataType.LONG,

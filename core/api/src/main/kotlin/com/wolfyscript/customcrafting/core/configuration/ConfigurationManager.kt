@@ -13,14 +13,14 @@ interface ConfigurationManager {
 
     fun load()
 
-    val resourceSettings: com.wolfyscript.customcrafting.core.configuration.resources.ResourceSettings
+    val resourceSettings: ResourceSettings
 
-    val gameMechanicSettings: com.wolfyscript.customcrafting.core.configuration.mechanics.GameMechanicSettings
+    val gameMechanicSettings: GameMechanicSettings
 
-    val guiSettings: com.wolfyscript.customcrafting.core.configuration.gui.GUISettings
+    val guiSettings: GUISettings
 
-    val cliSettings: com.wolfyscript.customcrafting.core.configuration.cli.CLISettings
+    val cliSettings: CLISettings
 
-    val editorSettings: com.wolfyscript.customcrafting.core.configuration.editor.EditorSettings
+    val editorSettings: EditorSettings
 
 }

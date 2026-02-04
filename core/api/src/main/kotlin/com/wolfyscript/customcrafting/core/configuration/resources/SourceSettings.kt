@@ -38,7 +38,7 @@ interface SourceSettings {
      */
     val propagateSavedResources: Boolean
 
-    fun configureFor(customCrafting: com.wolfyscript.customcrafting.core.CustomCrafting, resourceLoader: com.wolfyscript.customcrafting.core.resource.ResourceLoader): com.wolfyscript.customcrafting.core.resource.Source
+    fun configureFor(customCrafting: CustomCrafting, resourceLoader: ResourceLoader): Source
 
     interface DirectorySourceSettings : SourceSettings {
 

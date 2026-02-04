@@ -55,8 +55,8 @@ class CustomCraftingRegistriesCommon : CustomCraftingRegistries {
         }
         createRegistry(CustomCraftingRegistryTypes.ingredientRemainders) {
             RegistrySimple<Class<out IngredientRemainder>>(it).apply {
-                register(_root_ide_package_.com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainders.custom.key.key, IngredientRemainderCustomImpl::class.java)
-                register(_root_ide_package_.com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainders.default.key.key, IngredientRemainderDefaultImpl::class.java)
+                register(IngredientRemainders.custom.key.key, IngredientRemainderCustomImpl::class.java)
+                register(IngredientRemainders.default.key.key, IngredientRemainderDefaultImpl::class.java)
             }
         }
 

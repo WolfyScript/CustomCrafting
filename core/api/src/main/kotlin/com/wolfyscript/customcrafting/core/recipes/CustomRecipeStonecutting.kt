@@ -4,12 +4,12 @@ import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
 
-interface CustomRecipeStonecutting : CustomRecipe<com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.SingleSlotRecipeInput, com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.Data> {
+interface CustomRecipeStonecutting : CustomRecipe<RecipeInput.SingleSlotRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeStonecutting>
         get() = RecipeTypes.stonecutting.resolveOrThrow()
 
-    val source: com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+    val source: Ingredient
 
     val result: RecipeResult
 

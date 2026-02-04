@@ -15,16 +15,16 @@ import org.slf4j.Logger
  * * [server] The part of the API only available on the Server (Integrated or Dedicated)
  * * [client] The part of the API only available on the Client
  */
-interface CustomCrafting : Module<com.wolfyscript.customcrafting.core.server.CustomCraftingServer, Client> {
+interface CustomCrafting : Module<CustomCraftingServer, Client> {
 
-    val registries: com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistries
+    val registries: CustomCraftingRegistries
 
-    val configurationManager: com.wolfyscript.customcrafting.core.configuration.ConfigurationManager
+    val configurationManager: ConfigurationManager
 
     /**
      * The factories to instantiate objects with platform specific implementations.
      */
-    val factories: com.wolfyscript.customcrafting.core.factories.Factories
+    val factories: Factories
 
     val logger: Logger
 

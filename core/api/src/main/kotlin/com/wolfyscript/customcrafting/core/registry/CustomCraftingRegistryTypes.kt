@@ -19,12 +19,12 @@ import com.wolfyscript.scafall.registry.RegistryReference
  */
 object CustomCraftingRegistryTypes {
 
-    val root = _root_ide_package_.com.wolfyscript.scafall.identifier.Key.Companion.customCrafting("root")
+    val root = Key.customCrafting("root")
 
     /**
      * [RecipeTypes][com.wolfyscript.customcrafting.core.recipes.RecipeTypes]
      */
-    val recipeTypes = create<com.wolfyscript.customcrafting.core.recipes.RecipeType<*>>("recipe_types")
+    val recipeTypes = create<RecipeType<*>>("recipe_types")
 
     //
     // Type Registries
@@ -34,32 +34,32 @@ object CustomCraftingRegistryTypes {
     /**
      * [RecipeConditions][com.wolfyscript.customcrafting.core.recipes.RecipeConditions]
      */
-    val recipeConditionTypes = create<Class<out com.wolfyscript.customcrafting.core.recipes.conditions.Condition>>("types/recipes/conditions")
+    val recipeConditionTypes = create<Class<out Condition>>("types/recipes/conditions")
 
     /**
      * [RecipeItemTransmuters][com.wolfyscript.customcrafting.core.recipes.RecipeItemTransmuters]
      */
-    val recipeItemTransmuters = create<Class<out com.wolfyscript.customcrafting.core.recipes.RecipeItemModifier.Transformation.Transmuter>>("types/recipe/item/transmuters")
+    val recipeItemTransmuters = create<Class<out RecipeItemModifier.Transformation.Transmuter>>("types/recipe/item/transmuters")
 
     /**
      * [ResultActions][com.wolfyscript.customcrafting.core.recipes.ResultActions]
      */
-    val resultActions = create<Class<out com.wolfyscript.customcrafting.core.recipes.ResultAction>>("types/recipe/result/actions")
+    val resultActions = create<Class<out ResultAction>>("types/recipe/result/actions")
 
     /**
      * [IngredientConsumers][com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumers]
      */
-    val ingredientConsumers = create<Class<out com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer>>("types/recipe/ingredient/consumers")
+    val ingredientConsumers = create<Class<out IngredientConsumer>>("types/recipe/ingredient/consumers")
 
     /**
      * [IngredientMatchers][com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatchers]
      */
-    val ingredientMatchers = create<Class<out com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher>>("types/recipe/ingredient/matchers")
+    val ingredientMatchers = create<Class<out IngredientMatcher>>("types/recipe/ingredient/matchers")
 
     /**
      * [IngredientRemainders][com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainders]
      */
-    val ingredientRemainders = create<Class<out com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainder>>("types/recipe/ingredient/remainders")
+    val ingredientRemainders = create<Class<out IngredientRemainder>>("types/recipe/ingredient/remainders")
 
     private fun <T> create(registryKey: String): RegistryReference<T> {
         return RegistryKey.of<T>(root, Key.customCrafting(registryKey)).reference { CustomCraftingProvider.get().registries }

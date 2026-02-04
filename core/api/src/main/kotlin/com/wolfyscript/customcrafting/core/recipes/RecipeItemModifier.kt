@@ -33,7 +33,7 @@ interface RecipeItemModifier {
      *
      * @return the modified target item.
      */
-    fun modify(target: ScafallItemStack, evalResult: com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult<*, *>, context: EvaluationContext): ScafallItemStack
+    fun modify(target: ScafallItemStack, evalResult: RecipeEvaluationResult<*, *>, context: EvaluationContext): ScafallItemStack
 
     /**
      * Modifies the result using the data from the specified ingredients in the recipe.
@@ -58,7 +58,7 @@ interface RecipeItemModifier {
         /**
          * Transforms the target item using the specified ingredients and transmuter.
          */
-        fun transform(target: ScafallItemStack, evalResult: com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult<*, *>, context: EvaluationContext): ScafallItemStack
+        fun transform(target: ScafallItemStack, evalResult: RecipeEvaluationResult<*, *>, context: EvaluationContext): ScafallItemStack
 
         /**
          * Gets the data from the specified ingredients and modifies the target item with it.
@@ -75,7 +75,7 @@ interface RecipeItemModifier {
             /**
              * Mutates the given target item using the specified transformation data.
              */
-            fun mutate(target: ScafallItemStack, transformation: Transformation, evalResult: com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult<*, *>, context: EvaluationContext): ScafallItemStack
+            fun mutate(target: ScafallItemStack, transformation: Transformation, evalResult: RecipeEvaluationResult<*, *>, context: EvaluationContext): ScafallItemStack
 
         }
 

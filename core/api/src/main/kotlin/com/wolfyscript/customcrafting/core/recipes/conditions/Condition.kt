@@ -17,6 +17,6 @@ import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 @JsonPropertyOrder("type")
 interface Condition {
 
-    fun isSatisfied(evaluationContext: com.wolfyscript.customcrafting.core.recipes.EvaluationContext): Boolean
+    fun isSatisfied(evaluationContext: EvaluationContext): Boolean
 
 }

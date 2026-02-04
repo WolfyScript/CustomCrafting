@@ -174,7 +174,7 @@ fun FormulaPageAdvanced() {
     // - Shaped:
     //   - Set shape (symmetry, trim)
 
-    val store = store<FormulaStore>(Key.Companion.customCrafting("crafting/formula_advanced")) {
+    val store = store<FormulaStore>(Key.customCrafting("crafting/formula_advanced")) {
         val session = CustomCraftingProvider.get().server!!.recipeEditor.getOrCreateSession(it).getOrThrow()
         FormulaStore(
             it,

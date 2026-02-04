@@ -32,7 +32,7 @@ import net.minecraft.world.item.component.ItemLore
 import kotlin.text.get
 import kotlin.text.set
 
-private class IngredientMatcherStore() : Store() {
+private class IngredientMatcherStore : Store() {
 
     data class AvailableMatchers(
         val loading: Boolean = false,
@@ -78,7 +78,7 @@ fun <M : IngredientMatcherModel<*>> IngredientMatcherMenu(
     onSelect: (EditorUIFactory<out IngredientMatcherModel<*>>) -> Unit,
     onReset: () -> Unit,
 ) {
-    val store = store(Key.Companion.customCrafting("ingredient_matchers")) {
+    val store = store(Key.customCrafting("ingredient_matchers")) {
         IngredientMatcherStore()
     }
     var selectingType: Boolean by remember { mutableStateOf(false) }

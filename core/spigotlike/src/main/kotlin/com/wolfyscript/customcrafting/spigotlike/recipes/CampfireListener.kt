@@ -126,7 +126,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
             data,
             context,
             // No need to store the seed. Cannot determine the result beforehand to cheese it.
-            Random(Random.Default.nextLong())
+            Random(Random.nextLong())
         ).unwrapSpigot()
     }
 

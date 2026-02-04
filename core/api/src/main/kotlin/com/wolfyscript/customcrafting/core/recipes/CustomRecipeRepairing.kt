@@ -8,7 +8,7 @@ import com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing
 /**
  * Recipe used to repair items in the Anvil
  */
-interface CustomRecipeRepairing : CustomRecipe<com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.RepairingRecipeInput, com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.RepairingRecipeData> {
+interface CustomRecipeRepairing : CustomRecipe<RecipeInput.RepairingRecipeInput, RecipeEvaluationResult.RepairingRecipeData> {
 
     override val type: RecipeType<CustomRecipeRepairing>
         get() = RecipeTypes.repairing.resolveOrThrow()
@@ -16,22 +16,22 @@ interface CustomRecipeRepairing : CustomRecipe<com.wolfyscript.customcrafting.co
     /**
      * The base ingredient, the first slot in the Anvil menu (the item to repair/enchant)
      */
-    val base: com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+    val base: Ingredient
 
     /**
      * The addition ingredient, the second slot in the Anvil menu (the item to sacrifice for repair/enchanting)
      */
-    val addition: com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient?
+    val addition: Ingredient?
 
     /**
      * The process to produce the result in the Anvil menu.
      * This is processed **after** the recipe has been evaluated.
      */
-    val process: com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing
+    val process: ProcessRepairing
 
     override fun evaluate(
-        input: com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.RepairingRecipeInput,
+        input: RecipeInput.RepairingRecipeInput,
         context: EvaluationContext,
-    ): com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.RepairingRecipeData?
+    ): RecipeEvaluationResult.RepairingRecipeData?
 
 }

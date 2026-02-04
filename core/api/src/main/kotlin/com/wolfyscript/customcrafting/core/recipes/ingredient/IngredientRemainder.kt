@@ -39,7 +39,7 @@ interface IngredientRemainder {
      *
      * @return the list of remaining item stacks.
      */
-    fun calculate(target: ItemStackSnapshot, count: Int, ref: ItemStackRef, context: com.wolfyscript.customcrafting.core.recipes.EvaluationContext, evalResult: com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult<*, *>): List<ScafallItemStack>
+    fun calculate(target: ItemStackSnapshot, count: Int, ref: ItemStackRef, context: EvaluationContext, evalResult: RecipeEvaluationResult<*, *>): List<ScafallItemStack>
 
     /**
      * Uses the vanilla remainders or modded/plugin remainders, if available and not ignored.
@@ -52,7 +52,7 @@ interface IngredientRemainder {
          *
          * Optional: when omitted, all remainders are used if available.
          */
-        val ignore: com.wolfyscript.customcrafting.core.recipes.RemainsIgnoreOptions
+        val ignore: RemainsIgnoreOptions
 
     }
 
@@ -68,7 +68,7 @@ interface IngredientRemainder {
          *
          * Optional: when omitted, all remainders are replaced.
          */
-        val ignore: com.wolfyscript.customcrafting.core.recipes.RemainsIgnoreOptions
+        val ignore: RemainsIgnoreOptions
 
         /**
          * The custom remainder to use.
@@ -79,8 +79,8 @@ interface IngredientRemainder {
 
 }
 
-fun IngredientRemainder.Default.Companion.of(ignore: com.wolfyscript.customcrafting.core.recipes.RemainsIgnoreOptions) =
+fun IngredientRemainder.Default.Companion.of(ignore: RemainsIgnoreOptions) =
     CustomCraftingProvider.get().factories.recipeFactory.ingredient.createRemainderDefault(ignore)
 
-fun IngredientRemainder.Custom.Companion.of(ignore: com.wolfyscript.customcrafting.core.recipes.RemainsIgnoreOptions, remainder: ItemStackRef) =
+fun IngredientRemainder.Custom.Companion.of(ignore: RemainsIgnoreOptions, remainder: ItemStackRef) =
     CustomCraftingProvider.get().factories.recipeFactory.ingredient.createRemainderCustom(ignore, remainder)

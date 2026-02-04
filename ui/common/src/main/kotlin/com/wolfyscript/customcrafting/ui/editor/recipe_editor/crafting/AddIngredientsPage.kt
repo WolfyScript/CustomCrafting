@@ -103,7 +103,7 @@ class AddIngredientStore(
 
 @Composable
 fun AddIngredientsPage() {
-    val store = store(key = Key.Companion.customCrafting("ingredient_collection")) {
+    val store = store(key = Key.customCrafting("ingredient_collection")) {
         val session = CustomCraftingProvider.get().server!!.recipeEditor.getOrCreateSession(it).getOrThrow()
         val getIngredientCollectionUseCase = RecipeCraftingUseCases.IngredientCollection.Get(session)
         val getIngredientUseCase = IngredientUseCases.GetIngredientUseCase(getIngredientCollectionUseCase)

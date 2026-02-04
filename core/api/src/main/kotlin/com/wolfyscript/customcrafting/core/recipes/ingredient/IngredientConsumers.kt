@@ -18,8 +18,8 @@ object IngredientConsumers {
     val keep = create<Class<IngredientConsumer>>("keep")
 
     private inline fun <reified T: Class<out IngredientConsumer>> create(key: String) : ValueReference<Class<out IngredientConsumer>, T> {
-        return _root_ide_package_.com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.ingredientConsumers.key
-            .referenced<Class<out IngredientConsumer>, T>(_root_ide_package_.com.wolfyscript.scafall.identifier.Key.Companion.customCrafting(key))
+        return CustomCraftingRegistryTypes.ingredientConsumers.key
+            .referenced<Class<out IngredientConsumer>, T>(Key.customCrafting(key))
             .reference { CustomCraftingProvider.get().registries }
     }
 

@@ -4,14 +4,7 @@ import androidx.compose.runtime.Composable
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ItemIngredientMatcherModel
 import com.wolfyscript.viewportl.gui.model.Store
 
-private class ItemIngredientMatcherStore(
-
-) : Store() {
-
-
-
-
-}
+private class ItemIngredientMatcherStore : Store()
 
 @Composable
 fun ItemIngredientMatcherMenu(

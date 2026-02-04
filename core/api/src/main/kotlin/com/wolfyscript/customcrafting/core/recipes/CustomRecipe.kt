@@ -12,7 +12,7 @@ import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
 @JsonTypeResolver(RecipeTypeResolver::class)
 @JsonTypeIdResolver(RecipeTypeIdResolver::class)
 @JsonPropertyOrder("type")
-interface CustomRecipe<I: com.wolfyscript.customcrafting.core.recipes.data.RecipeInput, D: com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.Data> {
+interface CustomRecipe<I: RecipeInput, D: RecipeEvaluationResult.Data> {
 
     /**
      * The type of the recipe.
@@ -28,7 +28,7 @@ interface CustomRecipe<I: com.wolfyscript.customcrafting.core.recipes.data.Recip
     /**
      * Conditions that must be met for the recipe to work.
      */
-    val conditions: com.wolfyscript.customcrafting.core.recipes.conditions.RecipeConditions
+    val conditions: RecipeConditions
 
     val group: String
 

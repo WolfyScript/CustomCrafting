@@ -23,7 +23,7 @@ import com.wolfyscript.scafall.identifier.Key
  *
  * On deserialization the [Key] is used to look up the type from [com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.recipeTypes], which determines the Class to deserialize the data.
  */
-class RecipeTypeIdResolver : com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase() {
+class RecipeTypeIdResolver : TypeIdResolverBase() {
 
     private lateinit var superType: JavaType
 
@@ -32,11 +32,11 @@ class RecipeTypeIdResolver : com.fasterxml.jackson.databind.jsontype.impl.TypeId
         superType = bt ?: throw IllegalArgumentException("Failed to initialize recipe type resolver: missing super type!")
     }
 
-    override fun idFromValue(value: Any?): String? {
+    override fun idFromValue(value: Any?): String {
         return getKey(value)
     }
 
-    override fun idFromValueAndType(value: Any?, suggestedType: Class<*>?): String? {
+    override fun idFromValueAndType(value: Any?, suggestedType: Class<*>?): String {
         return getKey(value)
     }
 
@@ -45,7 +45,7 @@ class RecipeTypeIdResolver : com.fasterxml.jackson.databind.jsontype.impl.TypeId
             throw IllegalArgumentException("Failed to get recipe type null type!")
         }
         if (value is CustomRecipe<*,*>) {
-            val key = _root_ide_package_.com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.recipeTypes.resolveOrThrow().getKey(value.type)
+            val key = CustomCraftingRegistryTypes.recipeTypes.resolveOrThrow().getKey(value.type)
             if (key != null) {
                 return key.toString()
             }
@@ -58,22 +58,22 @@ class RecipeTypeIdResolver : com.fasterxml.jackson.databind.jsontype.impl.TypeId
         val namespacedKey = if (id.contains(':')) {
             Key.parse(id)
         } else {
-            _root_ide_package_.com.wolfyscript.scafall.identifier.Key.Companion.key(_root_ide_package_.com.wolfyscript.scafall.identifier.Key.Companion.CUSTOMCRAFTING_NAMESPACE, id)
+            Key.key(Key.CUSTOMCRAFTING_NAMESPACE, id)
         }
-        val value = _root_ide_package_.com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.recipeTypes.resolveOrThrow()[namespacedKey]
+        val value = CustomCraftingRegistryTypes.recipeTypes.resolveOrThrow()[namespacedKey]
         if (value != null) {
             return context.constructSpecializedType(superType, value.recipeClass)
         }
         return TypeFactory.unknownType()
     }
 
-    override fun getMechanism(): JsonTypeInfo.Id? {
+    override fun getMechanism(): JsonTypeInfo.Id {
         return JsonTypeInfo.Id.CUSTOM
     }
 
 }
 
-class RecipeTypeResolver : com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder() {
+class RecipeTypeResolver : StdTypeResolverBuilder() {
 
     override fun buildTypeSerializer(
         config: SerializationConfig,

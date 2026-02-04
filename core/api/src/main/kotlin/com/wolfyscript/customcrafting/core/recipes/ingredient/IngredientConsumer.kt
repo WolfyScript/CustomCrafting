@@ -41,7 +41,7 @@ interface IngredientConsumer {
      *
      * @return the updated/new [ScafallItemStack] after consumption.
      */
-    fun consume(target: ScafallItemStack, count: Int, ref: ItemStackRef, context: com.wolfyscript.customcrafting.core.recipes.EvaluationContext, evalResult: com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult<*, *>): ScafallItemStack
+    fun consume(target: ScafallItemStack, count: Int, ref: ItemStackRef, context: EvaluationContext, evalResult: RecipeEvaluationResult<*, *>): ScafallItemStack
 
     /**
      * Consumes the amount from the source item and returns its remains.
@@ -79,17 +79,17 @@ interface IngredientConsumer {
          * Modify the source item.
          * Optional; if not declared, no modification is done.
          */
-        val modifier: com.wolfyscript.customcrafting.core.recipes.RecipeItemModifier
+        val modifier: RecipeItemModifier
 
     }
 
 }
 
-fun com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer.Keep.Companion.of(modifier: com.wolfyscript.customcrafting.core.recipes.RecipeItemModifier) : com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer.Keep =
+fun Keep.Companion.of(modifier: RecipeItemModifier) : Keep =
     CustomCraftingProvider.get().factories.recipeFactory.ingredient.createConsumerKeep(modifier)
 
-fun com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer.Replace.Companion.of(replacement: ItemStackRef) : com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer.Replace =
+fun Replace.Companion.of(replacement: ItemStackRef) : Replace =
     CustomCraftingProvider.get().factories.recipeFactory.ingredient.createConsumerReplace(replacement)
 
-fun com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer.Consume.Companion.of(remains: IngredientRemainder) : com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer.Consume =
+fun Consume.Companion.of(remains: IngredientRemainder) : Consume =
     CustomCraftingProvider.get().factories.recipeFactory.ingredient.createConsumerConsume(remains)

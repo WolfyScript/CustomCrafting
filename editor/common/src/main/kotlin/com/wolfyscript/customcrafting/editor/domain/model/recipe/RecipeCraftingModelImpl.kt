@@ -12,7 +12,7 @@ import com.wolfyscript.customcrafting.core.recipes.conditions.RecipeConditions
 import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
 import kotlin.text.isBlank
 
-internal class RecipeCraftingModelFactory() : RecipeModel.RecipeTypeSpecificModel.Factory<CustomRecipeCrafting> {
+internal class RecipeCraftingModelFactory : RecipeModel.RecipeTypeSpecificModel.Factory<CustomRecipeCrafting> {
 
     override val recipeType: RecipeType<CustomRecipeCrafting> by lazy { RecipeTypes.crafting.resolveOrThrow() }
 

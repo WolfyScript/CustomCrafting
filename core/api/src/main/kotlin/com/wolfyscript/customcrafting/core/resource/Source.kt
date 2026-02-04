@@ -12,7 +12,7 @@ interface Source {
 
     val filter: Filter?
 
-    val settings: com.wolfyscript.customcrafting.core.configuration.resources.SourceSettings
+    val settings: SourceSettings
 
     fun <T: Any> load(type: DataType<T>, accept: (value: LoadedObject<T>) -> Unit)
 

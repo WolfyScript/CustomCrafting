@@ -31,7 +31,7 @@ interface BackupSettings {
          */
         val keep: Int
 
-        fun configureFor(customCrafting: com.wolfyscript.customcrafting.core.CustomCrafting, resourceLoader: com.wolfyscript.customcrafting.core.resource.ResourceLoader, backupSettings: BackupSettings): com.wolfyscript.customcrafting.core.resource.BackupDestination
+        fun configureFor(customCrafting: CustomCrafting, resourceLoader: ResourceLoader, backupSettings: BackupSettings): BackupDestination
 
     }
 

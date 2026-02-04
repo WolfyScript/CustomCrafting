@@ -22,7 +22,7 @@ interface IngredientData {
     /**
      * The ingredient associated with this information
      */
-    val selectedIngredient: com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+    val selectedIngredient: Ingredient
 
     val matchedItemStackRef: ItemStackRef
 

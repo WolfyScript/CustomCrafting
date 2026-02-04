@@ -86,7 +86,7 @@ fun ResultPage() {
     // - Result Actions Button -> subpage
     // - Result Modifiers Button -> subpage
     //
-    val store = store(Key.Companion.customCrafting("result")) {
+    val store = store(Key.customCrafting("result")) {
         val session = CustomCraftingProvider.get().server!!.recipeEditor.getOrCreateSession(it).getOrThrow()
         val getResult = RecipeCraftingUseCases.Result.Get(session)
         val setResult = RecipeCraftingUseCases.Result.Set(session)

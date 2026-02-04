@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
 /**
  * Recipe used to mix items in the Cauldron
  */
-interface CustomRecipeMixing : CustomRecipe<com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.MixingRecipeInput, com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.Data> {
+interface CustomRecipeMixing : CustomRecipe<RecipeInput.MixingRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeMixing>
         get() = RecipeTypes.mixing.resolveOrThrow()
@@ -18,7 +18,7 @@ interface CustomRecipeMixing : CustomRecipe<com.wolfyscript.customcrafting.core.
 
     val results: List<RecipeResult>
 
-    val ingredients: List<com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient>
+    val ingredients: List<Ingredient>
 
     val fluidRequirement: FluidRequirement?
 

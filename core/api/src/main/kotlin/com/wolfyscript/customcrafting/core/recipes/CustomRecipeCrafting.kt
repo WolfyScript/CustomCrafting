@@ -15,14 +15,14 @@ import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
  * The [formula] defines how the recipe is evaluated. (Shapeless or Shaped)
  *
  */
-interface CustomRecipeCrafting : CustomRecipe<com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.CraftingRecipeInput, com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.Data> {
+interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, RecipeEvaluationResult.Data> {
 
     companion object {
 
         fun of(
-            group: String, priority: Int, conditions: com.wolfyscript.customcrafting.core.recipes.conditions.RecipeConditions, formula: CraftingFormula, result: RecipeResult,
+            group: String, priority: Int, conditions: RecipeConditions, formula: CraftingFormula, result: RecipeResult,
         ): CustomRecipeCrafting =
-            _root_ide_package_.com.wolfyscript.customcrafting.core.factories.Factories.Companion.recipeFactory.createRecipeCrafting(group, priority, conditions, formula, result)
+            Factories.recipeFactory.createRecipeCrafting(group, priority, conditions, formula, result)
 
     }
 
@@ -48,8 +48,8 @@ interface CustomRecipeCrafting : CustomRecipe<com.wolfyscript.customcrafting.cor
      * @param applyStacks A function that is called for each stack in the matrix that is shrunk.
      */
     fun shrink(
-        input: com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.CraftingRecipeInput,
-        recipeEvaluationResult: com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult<com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.Data, CustomRecipeCrafting>,
+        input: RecipeInput.CraftingRecipeInput,
+        recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>,
         context: EvaluationContext,
         count: Int,
         applyStacks: (index: Int, new: ScafallItemStack) -> Unit,
@@ -67,9 +67,9 @@ interface CustomRecipeCrafting : CustomRecipe<com.wolfyscript.customcrafting.cor
 interface CraftingFormula {
 
     fun evaluate(
-        input: com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.CraftingRecipeInput,
+        input: RecipeInput.CraftingRecipeInput,
         recipeCrafting: CustomRecipeCrafting,
-    ): com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.Data?
+    ): RecipeEvaluationResult.Data?
 
     /**
      * A crafting formula with a list of ingredients that can be arranged in any order
@@ -79,12 +79,12 @@ interface CraftingFormula {
 
         companion object {
 
-            fun of(ingredients: List<com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient>): Shapeless =
+            fun of(ingredients: List<Ingredient>): Shapeless =
                 CustomCraftingProvider.get().factories.recipeFactory.craftingFormula.createShapelessFormula(ingredients)
 
         }
 
-        val ingredients: List<com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient>
+        val ingredients: List<Ingredient>
 
     }
 
@@ -99,7 +99,7 @@ interface CraftingFormula {
         companion object {
 
             fun of(
-                mappedIngredients: Map<Char, com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient>,
+                mappedIngredients: Map<Char, Ingredient>,
                 shape: Shape,
             ): Shaped =
                 CustomCraftingProvider.get().factories.recipeFactory.craftingFormula.createShapedFormula(
@@ -109,7 +109,7 @@ interface CraftingFormula {
 
         }
 
-        val ingredients: List<com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient>
+        val ingredients: List<Ingredient>
 
         val shape: Shape
 

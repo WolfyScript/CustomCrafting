@@ -20,7 +20,7 @@ interface RecipeConditions {
     /**
      * Checks if all the [conditions] are satisfied by the specified [evaluationContext].
      */
-    fun areSatisfied(evaluationContext: com.wolfyscript.customcrafting.core.recipes.EvaluationContext): Boolean
+    fun areSatisfied(evaluationContext: EvaluationContext): Boolean
 
 }
 

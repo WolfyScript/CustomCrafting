@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
 
-interface CustomRecipeCooking : CustomRecipe<com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.SingleSlotRecipeInput, com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.Data> {
+interface CustomRecipeCooking : CustomRecipe<RecipeInput.SingleSlotRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeCooking>
         get() = RecipeTypes.cooking.resolveOrThrow()
@@ -30,7 +30,7 @@ interface CustomRecipeCooking : CustomRecipe<com.wolfyscript.customcrafting.core
         /**
          * The source of the cooking process
          */
-        val source: com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+        val source: Ingredient
 
         /**
          * The duration of the cooking process in ticks
@@ -40,7 +40,7 @@ interface CustomRecipeCooking : CustomRecipe<com.wolfyscript.customcrafting.core
         /**
          * Evaluates the specified recipe for these workstation settings.
          */
-        fun evaluate(input: com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.SingleSlotRecipeInput, recipe: CustomRecipeCooking, context: EvaluationContext): com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.Data?
+        fun evaluate(input: RecipeInput.SingleSlotRecipeInput, recipe: CustomRecipeCooking, context: EvaluationContext): RecipeEvaluationResult.Data?
 
         @JsonTypeName("blasting")
         interface Blasting : WorkstationProcessing

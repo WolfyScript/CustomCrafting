@@ -22,22 +22,18 @@ import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
-import kotlin.text.set
 
-class CraftingRecipeStore : Store() {
-
-
-}
+class CraftingRecipeStore : Store()
 
 
 @Composable
 fun RecipeCraftingEditor(existingRecipeKey: Key? = null, topBackStack: SnapshotStateList<NavKey>) {
-    viewProperties(Key.Companion.customCrafting("recipe_editor_crafting")) {
+    viewProperties(Key.customCrafting("recipe_editor_crafting")) {
         size(9.slots, 6.slots)
         title("<b>Crafting</b>: <gold>${existingRecipeKey ?: "unnamed"}")
     }
 
-    val craftingRecipeStore = store(key = Key.Companion.customCrafting("recipe_crafting")) {
+    store(key = Key.customCrafting("recipe_crafting")) {
         CraftingRecipeStore()
     }
 

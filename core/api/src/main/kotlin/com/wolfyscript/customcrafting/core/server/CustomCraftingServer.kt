@@ -10,10 +10,10 @@ import com.wolfyscript.scafall.loader.module.Server
  */
 interface CustomCraftingServer : Server {
 
-    val recipeManager: com.wolfyscript.customcrafting.core.recipes.RecipeManager
+    val recipeManager: RecipeManager
 
-    val ingredientManager: com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientManager
+    val ingredientManager: IngredientManager
 
-    val resourceManager: com.wolfyscript.customcrafting.core.resource.ResourceManager
+    val resourceManager: ResourceManager
 
 }

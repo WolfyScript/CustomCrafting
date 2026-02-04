@@ -9,14 +9,14 @@ interface DataType<T> {
 
     val classType: Class<T>
 
-    object Recipes : DataType<com.wolfyscript.customcrafting.core.recipes.CustomRecipe<*, *>> {
+    object Recipes : DataType<CustomRecipe<*, *>> {
         override val id: String = "recipes"
-        override val classType: Class<com.wolfyscript.customcrafting.core.recipes.CustomRecipe<*, *>> = _root_ide_package_.com.wolfyscript.customcrafting.core.recipes.CustomRecipe::class.java
+        override val classType: Class<CustomRecipe<*, *>> = CustomRecipe::class.java
     }
 
-    object Ingredients : DataType<com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient> {
+    object Ingredients : DataType<Ingredient> {
         override val id: String = "ingredients"
-        override val classType: Class<com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient> = _root_ide_package_.com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient::class.java
+        override val classType: Class<Ingredient> = Ingredient::class.java
     }
 
 }

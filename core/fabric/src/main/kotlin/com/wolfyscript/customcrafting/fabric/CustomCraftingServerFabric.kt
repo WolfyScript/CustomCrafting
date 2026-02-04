@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.core.recipes.RecipeManagerCommon
 import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientManager
 import com.wolfyscript.customcrafting.core.resource.ResourceManager
 import com.wolfyscript.customcrafting.core.resource.ResourceManagerCommon
-import com.wolfyscript.customcrafting.server.CustomCraftingServer
+import com.wolfyscript.customcrafting.core.server.CustomCraftingServer
 import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key

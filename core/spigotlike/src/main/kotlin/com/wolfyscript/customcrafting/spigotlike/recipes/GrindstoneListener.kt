@@ -107,7 +107,7 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         }
 
         recipeCache.invalidate(player.uniqueId)
-        player.persistentDataContainer.set(RecipeSeeds.playerGrindingSeedKey, PersistentDataType.LONG, Random.Default.nextLong())
+        player.persistentDataContainer.set(RecipeSeeds.playerGrindingSeedKey, PersistentDataType.LONG, Random.nextLong())
     }
 
     @EventHandler
@@ -138,8 +138,8 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         if (event.slot == 2 || event.slotType == InventoryType.SlotType.RESULT) {
             return // Ignore result slot
         }
-        val player = event.whoClicked as Player
-        val action = event.action
+        event.whoClicked as Player
+        event.action
 
         val currentItem = event.currentItem
         val cursor = event.cursor
@@ -225,7 +225,7 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
             PersistentDataType.LONG
         )
         if (seed == null) {
-            seed = Random.Default.nextLong()
+            seed = Random.nextLong()
             bukkitPlayer.persistentDataContainer.set(
                 RecipeSeeds.playerGrindingSeedKey,
                 PersistentDataType.LONG,

@@ -6,7 +6,7 @@ import com.wolfyscript.scafall.identifier.Key
 /**
  * Manages ingredients that are saved and which can be reused.
  */
-interface IngredientManager : com.wolfyscript.customcrafting.core.resource.ResourceListener {
+interface IngredientManager : ResourceListener {
 
     companion object {
         const val LOG_PREFIX = "[Ingredient Manager] "

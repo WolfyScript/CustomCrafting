@@ -14,11 +14,11 @@ interface Ingredient {
     companion object {
 
         fun of(
-            choices: com.wolfyscript.customcrafting.core.recipes.RecipeChoices,
+            choices: RecipeChoices,
             matching: IngredientMatcher = IngredientMatcher.Exact.of(),
             consumption: IngredientConsumer = IngredientConsumer.Consume.of(
                 IngredientRemainder.Default.of(
-                    _root_ide_package_.com.wolfyscript.customcrafting.core.recipes.RemainsIgnoreOptions.Companion.of()
+                    RemainsIgnoreOptions.of()
                 )
             ),
         ): Ingredient =
@@ -29,7 +29,7 @@ interface Ingredient {
     /**
      * The items that can be used to fulfill this ingredient.
      */
-    val choices: com.wolfyscript.customcrafting.core.recipes.RecipeChoices
+    val choices: RecipeChoices
 
     /**
      * Specifies how the ingredient is matched against the item stacks in the inventory slots.
@@ -67,7 +67,7 @@ interface Ingredient {
         target: ScafallItemStack,
         count: Int,
         ref: ItemStackRef,
-        context: com.wolfyscript.customcrafting.core.recipes.EvaluationContext,
-        evalResult: com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult<*, *>,
+        context: EvaluationContext,
+        evalResult: RecipeEvaluationResult<*, *>,
     ): ScafallItemStack
 }

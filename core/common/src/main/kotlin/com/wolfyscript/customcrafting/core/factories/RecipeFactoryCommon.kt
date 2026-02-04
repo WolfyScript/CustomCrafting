@@ -143,7 +143,7 @@ class RecipeFactoryCommon : RecipeFactory {
 
 }
 
-private class CraftingFormulaFactoryImpl() : RecipeFactory.CraftingFormulaFactory {
+private class CraftingFormulaFactoryImpl : RecipeFactory.CraftingFormulaFactory {
 
     override fun createShapedFormula(
         mappedIngredients: Map<Char, Ingredient>,
@@ -235,7 +235,7 @@ private class ResultFactoryImpl : RecipeFactory.ResultFactory {
 
 }
 
-private class RecipeItemFactoryImpl() : RecipeFactory.RecipeItemFactory {
+private class RecipeItemFactoryImpl : RecipeFactory.RecipeItemFactory {
 
     override fun createChoices(
         stacks: List<ItemStackRef>,

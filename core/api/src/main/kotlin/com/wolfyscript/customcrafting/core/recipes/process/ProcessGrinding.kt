@@ -27,9 +27,9 @@ sealed interface ProcessGrinding {
      * Preventing players from rerolling the result.
      */
     fun compute(
-        recipeEvaluationResult: com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult<com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult.GrindingRecipeData, com.wolfyscript.customcrafting.core.recipes.CustomRecipeGrinding>,
-        input: com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.GrindingRecipeInput,
-        context: com.wolfyscript.customcrafting.core.recipes.EvaluationContext,
+        recipeEvaluationResult: RecipeEvaluationResult<RecipeEvaluationResult.GrindingRecipeData, CustomRecipeGrinding>,
+        input: RecipeInput.GrindingRecipeInput,
+        context: EvaluationContext,
         random: Random,
     ): ScafallItemStack
 
@@ -39,7 +39,7 @@ sealed interface ProcessGrinding {
     @JsonTypeName("fixed_result")
     interface FixedResultProcessGrinding : ProcessGrinding {
 
-        val result: com.wolfyscript.customcrafting.core.recipes.RecipeResult
+        val result: RecipeResult
 
         val xp: Int
 

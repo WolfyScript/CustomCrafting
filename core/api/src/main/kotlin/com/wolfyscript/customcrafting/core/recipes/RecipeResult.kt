@@ -20,7 +20,7 @@ interface RecipeResult {
             bulkActions: List<ResultAction> = emptyList(),
             alwaysKeepPrevious: Boolean = false,
         ): RecipeResult =
-            _root_ide_package_.com.wolfyscript.customcrafting.core.factories.Factories.Companion.recipeFactory.result.create(
+            Factories.recipeFactory.result.create(
                 choices, modifier, actions, bulkActions, alwaysKeepPrevious
             )
 
@@ -67,7 +67,7 @@ interface RecipeResult {
      * Preventing players from rerolling the result.
      */
     fun compute(
-        recipeEvaluationResult: com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult<*, *>,
+        recipeEvaluationResult: RecipeEvaluationResult<*, *>,
         context: EvaluationContext,
         random: Random,
     ): ScafallItemStack

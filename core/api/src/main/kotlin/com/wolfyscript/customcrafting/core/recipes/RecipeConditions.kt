@@ -14,9 +14,9 @@ import com.wolfyscript.scafall.registry.referenced
  */
 object RecipeConditions {
 
-    private inline fun <reified T: Class<out com.wolfyscript.customcrafting.core.recipes.conditions.Condition>> create(key: String) : ValueReference<Class<out com.wolfyscript.customcrafting.core.recipes.conditions.Condition>, T> {
-        return _root_ide_package_.com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.recipeConditionTypes.key.referenced<Class<out com.wolfyscript.customcrafting.core.recipes.conditions.Condition>, T>(
-            _root_ide_package_.com.wolfyscript.scafall.identifier.Key.Companion.customCrafting(key)).reference { CustomCraftingProvider.get().registries }
+    private inline fun <reified T: Class<out Condition>> create(key: String) : ValueReference<Class<out Condition>, T> {
+        return CustomCraftingRegistryTypes.recipeConditionTypes.key.referenced<Class<out Condition>, T>(
+            Key.customCrafting(key)).reference { CustomCraftingProvider.get().registries }
     }
 
 }

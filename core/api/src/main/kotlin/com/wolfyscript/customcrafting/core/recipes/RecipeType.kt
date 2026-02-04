@@ -14,7 +14,7 @@ interface RecipeType<T: CustomRecipe<*,*>> {
 
     @JsonValue
     private fun serializeValue(): String {
-        return _root_ide_package_.com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.recipeTypes.resolveOrThrow().getKey(this).toString()
+        return CustomCraftingRegistryTypes.recipeTypes.resolveOrThrow().getKey(this).toString()
     }
 
 }

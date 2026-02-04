@@ -17,8 +17,8 @@ object IngredientRemainders {
     val custom = create<Class<IngredientRemainder>>("custom")
 
     private inline fun <reified T: Class<out IngredientRemainder>> create(key: String) : ValueReference<Class<out IngredientRemainder>, T> {
-        return _root_ide_package_.com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.ingredientRemainders.key
-            .referenced<Class<out IngredientRemainder>, T>(_root_ide_package_.com.wolfyscript.scafall.identifier.Key.Companion.customCrafting(key))
+        return CustomCraftingRegistryTypes.ingredientRemainders.key
+            .referenced<Class<out IngredientRemainder>, T>(Key.customCrafting(key))
             .reference { CustomCraftingProvider.get().registries }
     }
 

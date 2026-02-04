@@ -17,8 +17,8 @@ object IngredientMatchers {
     val exact = create<Class<IngredientMatcher>>("exact")
 
     private inline fun <reified T: Class<out IngredientMatcher>> create(key: String) : ValueReference<Class<out IngredientMatcher>, T> {
-        return _root_ide_package_.com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.ingredientMatchers.key
-            .referenced<Class<out IngredientMatcher>, T>(_root_ide_package_.com.wolfyscript.scafall.identifier.Key.Companion.customCrafting(key))
+        return CustomCraftingRegistryTypes.ingredientMatchers.key
+            .referenced<Class<out IngredientMatcher>, T>(Key.customCrafting(key))
             .reference { CustomCraftingProvider.get().registries }
     }
 

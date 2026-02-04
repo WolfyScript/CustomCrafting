@@ -89,7 +89,7 @@ private class IngredientRef(val key: Key) : Ingredient {
 
 }
 
-class IngredientMatcherExactImpl() : IngredientMatcher.Exact {
+class IngredientMatcherExactImpl : IngredientMatcher.Exact {
 
     override fun match(
         ingredient: Ingredient,
@@ -346,7 +346,7 @@ class IngredientSerializerModifier : BeanSerializerModifier() {
     }
 }
 
-class IngredientDeserializerModifier() : BeanDeserializerModifier() {
+class IngredientDeserializerModifier : BeanDeserializerModifier() {
     override fun modifyDeserializer(
         config: DeserializationConfig,
         beanDesc: BeanDescription,

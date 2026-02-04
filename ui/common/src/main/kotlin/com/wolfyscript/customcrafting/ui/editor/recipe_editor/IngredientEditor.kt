@@ -128,7 +128,7 @@ fun IngredientEditor(
     getIngredientsUseCase: IngredientUseCases.GetIngredientByIndexUseCase,
     setIngredientUseCase: IngredientUseCases.SetIngredientAtUseCase,
 ) {
-    val store = store(Key.Companion.customCrafting("ingredient_editor")) {
+    val store = store(Key.customCrafting("ingredient_editor")) {
         IngredientEditorStore(
             IngredientUseCases.Choices.Get(getIngredientsUseCase),
             IngredientUseCases.Choices.Set(getIngredientsUseCase, setIngredientUseCase),

@@ -46,7 +46,7 @@ class IngredientConsumerKeepModel(
 
 }
 
-class IngredientConsumerConsumeUIFactory() : EditorUIFactory<IngredientConsumerModel<IngredientConsumer.Consume>> {
+class IngredientConsumerConsumeUIFactory : EditorUIFactory<IngredientConsumerModel<IngredientConsumer.Consume>> {
 
     override val modelType = IngredientConsumerModel::class.java as Class<IngredientConsumerModel<IngredientConsumer.Consume>>
 

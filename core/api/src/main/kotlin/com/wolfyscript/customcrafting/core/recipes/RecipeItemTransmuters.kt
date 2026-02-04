@@ -14,8 +14,8 @@ import com.wolfyscript.scafall.registry.referenced
 object RecipeItemTransmuters {
 
     private inline fun <reified T: Class<out RecipeItemModifier.Transformation.Transmuter>> create(key: String) : ValueReference<Class<out RecipeItemModifier.Transformation.Transmuter>, T> {
-        return _root_ide_package_.com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.recipeItemTransmuters.key.referenced<Class<out RecipeItemModifier.Transformation.Transmuter>, T>(
-            _root_ide_package_.com.wolfyscript.scafall.identifier.Key.Companion.customCrafting(key)).reference { CustomCraftingProvider.get().registries }
+        return CustomCraftingRegistryTypes.recipeItemTransmuters.key.referenced<Class<out RecipeItemModifier.Transformation.Transmuter>, T>(
+            Key.customCrafting(key)).reference { CustomCraftingProvider.get().registries }
     }
 
 }

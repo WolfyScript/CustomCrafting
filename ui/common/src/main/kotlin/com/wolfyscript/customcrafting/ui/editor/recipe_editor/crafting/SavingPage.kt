@@ -122,7 +122,7 @@ fun SavingPage() {
     val session =
         CustomCraftingProvider.get().server!!.recipeEditor.getOrCreateSession(LocalView.current.viewer).getOrThrow()
 
-    val store = store(Key.Companion.customCrafting("saving")) {
+    val store = store(Key.customCrafting("saving")) {
         SavingStore(it)
     }
 

@@ -19,7 +19,7 @@ class ProcedureEnchantingImpl(
     override val upgradeEnchants: Boolean = true,
 ) : ProcedureEnchanting {
 
-    override fun merge(resultStack: ScafallItemStack, player: ScafallPlayer?, addition: ScafallItemStack) : MergeResultImpl? {
+    override fun merge(resultStack: ScafallItemStack, player: ScafallPlayer?, addition: ScafallItemStack) : MergeResultImpl {
         val additionEnchants = addition.unwrap().enchantments
         val result = resultStack.unwrap()
         val resultEnchants = if (!preserveBaseEnchants) {
@@ -93,7 +93,5 @@ class ProcedureEnchantingImpl(
         override val failed: Boolean,
         override val cost: Int,
         override val result: ScafallItemStack
-    ) : ProcedureEnchanting.MergeResult {
-
-    }
+    ) : ProcedureEnchanting.MergeResult
 }

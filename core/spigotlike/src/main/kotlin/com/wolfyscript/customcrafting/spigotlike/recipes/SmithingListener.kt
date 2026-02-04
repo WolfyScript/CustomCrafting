@@ -44,7 +44,7 @@ class SmithingListener(val plugin: Plugin, val customCrafting: CustomCrafting) :
             PersistentDataType.LONG
         )
         if (seed == null) {
-            seed = Random.Default.nextLong()
+            seed = Random.nextLong()
             bukkitPlayer.persistentDataContainer.set(
                 RecipeSeeds.playerSmithingSeedKey,
                 PersistentDataType.LONG,
@@ -169,7 +169,7 @@ class SmithingListener(val plugin: Plugin, val customCrafting: CustomCrafting) :
         player.persistentDataContainer.set(
             RecipeSeeds.playerSmithingSeedKey,
             PersistentDataType.LONG,
-            Random.Default.nextLong()
+            Random.nextLong()
         )
         recipeCache.invalidate(player.uniqueId)
     }
