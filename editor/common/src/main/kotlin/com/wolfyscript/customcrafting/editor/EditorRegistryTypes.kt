@@ -1,6 +1,5 @@
 package com.wolfyscript.customcrafting.editor
 
-import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.RecipeModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.conditions.ConditionModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientConsumerModel
@@ -43,7 +42,7 @@ object EditorRegistryTypes {
     val resultActions = create<EditorUIFactory<out ResultActionModel<*>>>("editor/recipe/result/actions")
 
     private fun <T> create(registryKey: String): RegistryReference<T> {
-        return RegistryKey.of<T>(root, Key.customCrafting(registryKey)).reference { CustomCraftingProvider.get().registries }
+        return RegistryKey.of<T>(root, Key.customCrafting(registryKey)).reference { EditorModule.get().registries }
     }
 
 }

@@ -8,7 +8,7 @@ import com.wolfyscript.scafall.loader.module.Server
 
 internal class EditorModuleImpl(classLoader: ClassLoader) : BasicModule<EditorServer, Client>(), EditorModule {
 
-    val registries: EditorRegistries = EditorRegistries()
+    override val registries: EditorRegistries = EditorRegistries()
 
     init {
         EditorModule.register(this)
