@@ -8,6 +8,7 @@ import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer
 import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
 import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.core.util.customCrafting
+import com.wolfyscript.customcrafting.editor.EditorModule
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.ValueReference
 import com.wolfyscript.scafall.registry.referenced
@@ -24,7 +25,7 @@ object IngredientConsumerModels {
     private inline fun <reified T: EditorUIFactory<out IngredientConsumerModel<*>>> create(key: String) : ValueReference<EditorUIFactory<out IngredientConsumerModel<*>>, T> {
         return EditorRegistryTypes.ingredientConsumers.key
             .referenced<EditorUIFactory<out IngredientConsumerModel<*>>, T>(Key.customCrafting(key))
-            .reference { CustomCraftingProvider.get().registries }
+            .reference { EditorModule.get().registries }
     }
 
 }
