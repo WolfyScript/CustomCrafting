@@ -1,7 +1,6 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
-import androidx.compose.runtime.Composable
-import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
+import com.wolfyscript.customcrafting.editor.ext.EditorModelFactory
 import com.wolfyscript.customcrafting.core.recipes.*
 import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainder
 import com.wolfyscript.customcrafting.core.recipes.ingredient.of
@@ -30,8 +29,8 @@ class IngredientRemainderModelCustom(
 
 }
 
-class IngredientRemainderModelDefaultUIFactory :
-    EditorUIFactory<IngredientRemainderModel<IngredientRemainder.Default>> {
+class IngredientRemainderModelDefaultModelFactory :
+    EditorModelFactory<IngredientRemainderModel<IngredientRemainder.Default>> {
 
     override val modelType = IngredientRemainderModel::class.java as Class<IngredientRemainderModel<IngredientRemainder.Default>>
 
@@ -43,13 +42,9 @@ class IngredientRemainderModelDefaultUIFactory :
         return IngredientRemainderModelDefault()
     }
 
-    @Composable
-    override fun renderUI(model: IngredientRemainderModel<IngredientRemainder.Default>) {
-    }
-
 }
 
-class IngredientRemainderModelCustomUIFactory : EditorUIFactory<IngredientRemainderModel<IngredientRemainder.Custom>> {
+class IngredientRemainderModelCustomModelFactory : EditorModelFactory<IngredientRemainderModel<IngredientRemainder.Custom>> {
 
     override val modelType = IngredientRemainderModel::class.java as Class<IngredientRemainderModel<IngredientRemainder.Custom>>
 
@@ -59,10 +54,6 @@ class IngredientRemainderModelCustomUIFactory : EditorUIFactory<IngredientRemain
 
     override fun createEmptyModel(): IngredientRemainderModel<IngredientRemainder.Custom> {
         return IngredientRemainderModelCustom()
-    }
-
-    @Composable
-    override fun renderUI(model: IngredientRemainderModel<IngredientRemainder.Custom>) {
     }
 
 }

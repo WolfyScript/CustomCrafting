@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.Ingredient
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientRemainderModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultActionModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.TransmuterModel
-import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
+import com.wolfyscript.customcrafting.editor.ext.EditorModelFactory
 import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes.root
 import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
@@ -29,17 +29,17 @@ object EditorRegistryTypes {
 
     val recipeTypeSpecificModelFactories = create<RecipeModel.RecipeTypeSpecificModel.Factory<*>>("editor/recipe/factories")
 
-    val conditions = create<EditorUIFactory<out ConditionModel<*>>>("editor/recipe/conditions")
+    val conditions = create<EditorModelFactory<out ConditionModel<*>>>("editor/recipe/conditions")
 
-    val ingredientMatchers = create<EditorUIFactory<out IngredientMatcherModel<*>>>("editor/recipe/ingredient/matchers")
+    val ingredientMatchers = create<EditorModelFactory<out IngredientMatcherModel<*>>>("editor/recipe/ingredient/matchers")
 
-    val ingredientConsumers = create<EditorUIFactory<out IngredientConsumerModel<*>>>("editor/recipe/ingredient/consumers")
+    val ingredientConsumers = create<EditorModelFactory<out IngredientConsumerModel<*>>>("editor/recipe/ingredient/consumers")
 
-    val ingredientRemainders = create<EditorUIFactory<out IngredientRemainderModel<*>>>("editor/recipe/ingredient/remainders")
+    val ingredientRemainders = create<EditorModelFactory<out IngredientRemainderModel<*>>>("editor/recipe/ingredient/remainders")
 
-    val recipeItemTransmuters = create<EditorUIFactory<out TransmuterModel<*>>>("editor/recipe/item/transmuters")
+    val recipeItemTransmuters = create<EditorModelFactory<out TransmuterModel<*>>>("editor/recipe/item/transmuters")
 
-    val resultActions = create<EditorUIFactory<out ResultActionModel<*>>>("editor/recipe/result/actions")
+    val resultActions = create<EditorModelFactory<out ResultActionModel<*>>>("editor/recipe/result/actions")
 
     private fun <T> create(registryKey: String): RegistryReference<T> {
         return RegistryKey.of<T>(root, Key.customCrafting(registryKey)).reference { EditorModule.get().registries }

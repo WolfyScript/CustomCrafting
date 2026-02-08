@@ -1,8 +1,7 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
-import androidx.compose.runtime.Composable
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.IngredientRemainderModels
-import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
+import com.wolfyscript.customcrafting.editor.ext.EditorModelFactory
 import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer
 import com.wolfyscript.customcrafting.core.recipes.ingredient.of
@@ -46,7 +45,7 @@ class IngredientConsumerKeepModel(
 
 }
 
-class IngredientConsumerConsumeUIFactory : EditorUIFactory<IngredientConsumerModel<IngredientConsumer.Consume>> {
+class IngredientConsumerConsumeModelFactory : EditorModelFactory<IngredientConsumerModel<IngredientConsumer.Consume>> {
 
     override val modelType = IngredientConsumerModel::class.java as Class<IngredientConsumerModel<IngredientConsumer.Consume>>
 
@@ -58,12 +57,9 @@ class IngredientConsumerConsumeUIFactory : EditorUIFactory<IngredientConsumerMod
         return IngredientConsumerConsumeModel()
     }
 
-    @Composable
-    override fun renderUI(model: IngredientConsumerModel<IngredientConsumer.Consume>) {}
-
 }
 
-class IngredientConsumerReplaceUIFactory : EditorUIFactory<IngredientConsumerModel<IngredientConsumer.Replace>> {
+class IngredientConsumerReplaceModelFactory : EditorModelFactory<IngredientConsumerModel<IngredientConsumer.Replace>> {
 
     override val modelType = IngredientConsumerModel::class.java as Class<IngredientConsumerModel<IngredientConsumer.Replace>>
 
@@ -75,12 +71,9 @@ class IngredientConsumerReplaceUIFactory : EditorUIFactory<IngredientConsumerMod
         return IngredientConsumerReplaceModel()
     }
 
-    @Composable
-    override fun renderUI(model: IngredientConsumerModel<IngredientConsumer.Replace>) {}
-
 }
 
-class IngredientConsumerKeepUIFactory : EditorUIFactory<IngredientConsumerModel<IngredientConsumer.Keep>> {
+class IngredientConsumerKeepModelFactory : EditorModelFactory<IngredientConsumerModel<IngredientConsumer.Keep>> {
 
     override val modelType = IngredientConsumerModel::class.java as Class<IngredientConsumerModel<IngredientConsumer.Keep>>
 
@@ -91,8 +84,5 @@ class IngredientConsumerKeepUIFactory : EditorUIFactory<IngredientConsumerModel<
     override fun createEmptyModel(): IngredientConsumerModel<IngredientConsumer.Keep> {
         return IngredientConsumerKeepModel()
     }
-
-    @Composable
-    override fun renderUI(model: IngredientConsumerModel<IngredientConsumer.Keep>) {}
 
 }

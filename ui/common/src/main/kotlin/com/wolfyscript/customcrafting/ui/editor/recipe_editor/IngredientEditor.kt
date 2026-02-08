@@ -185,6 +185,8 @@ fun IngredientEditor(
                     matcher.matcher,
                     {
                         store.setMatcher(index, it.createEmptyModel())
+                    },{ matcher ->
+                        store.setMatcher(index, matcher)
                     }, {
                         store.setMatcher(index, IngredientMatcherModels.exact.resolveOrThrow().createEmptyModel())
                     })

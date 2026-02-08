@@ -1,25 +1,13 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
-import androidx.compose.runtime.Composable
-import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
+import com.wolfyscript.customcrafting.editor.ext.EditorModelFactory
 import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
 import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
 import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatchers
 import com.wolfyscript.customcrafting.core.recipes.ingredient.of
-import com.wolfyscript.scafall.adventure.deser
-import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.wrappers.snapshot
-import com.wolfyscript.viewportl.gui.compose.layout.Alignment
-import com.wolfyscript.viewportl.gui.compose.modifier.Modifier
-import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxSize
-import com.wolfyscript.viewportl.gui.elements.Box
-import com.wolfyscript.viewportl.gui.elements.Icon
-import net.minecraft.core.component.DataComponents
-import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
 
-class ExactIngredientMatcherUIFactory : EditorUIFactory<ExactIngredientMatcherModel> {
+class ExactIngredientMatcherModelFactory : EditorModelFactory<ExactIngredientMatcherModel> {
 
     override val modelType: Class<ExactIngredientMatcherModel> = ExactIngredientMatcherModel::class.java
 
@@ -31,18 +19,9 @@ class ExactIngredientMatcherUIFactory : EditorUIFactory<ExactIngredientMatcherMo
         return IngredientMatcherExactModel()
     }
 
-    @Composable
-    override fun renderUI(model: ExactIngredientMatcherModel) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-            Icon(stack = ItemStack(Items.CYAN_CONCRETE).apply {
-                set(DataComponents.ITEM_NAME, "This matcher requires no configuration!".deser().vanilla())
-            }.snapshot())
-        }
-    }
-
 }
 
-class ItemIngredientMatcherUIFactory : EditorUIFactory<ItemIngredientMatcherModel> {
+class ItemIngredientMatcherModelFactory : EditorModelFactory<ItemIngredientMatcherModel> {
 
     override val modelType: Class<ItemIngredientMatcherModel> = ItemIngredientMatcherModel::class.java
 
@@ -52,11 +31,6 @@ class ItemIngredientMatcherUIFactory : EditorUIFactory<ItemIngredientMatcherMode
 
     override fun createEmptyModel(): ItemIngredientMatcherModel {
         return IngredientMatcherItemModel()
-    }
-
-    @Composable
-    override fun renderUI(model: ItemIngredientMatcherModel) {
-
     }
 
 }

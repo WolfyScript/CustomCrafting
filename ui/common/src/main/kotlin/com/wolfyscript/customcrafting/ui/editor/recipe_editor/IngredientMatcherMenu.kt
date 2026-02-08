@@ -1,11 +1,13 @@
 package com.wolfyscript.customcrafting.ui.editor.recipe_editor
 
 import androidx.compose.runtime.*
+import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.customcrafting.editor.EditorRegistryTypes
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientMatcherModel
-import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
-import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes
-import com.wolfyscript.customcrafting.core.util.customCrafting
+import com.wolfyscript.customcrafting.editor.ext.EditorModelFactory
+import com.wolfyscript.customcrafting.ui.UIRegistryTypes
+import com.wolfyscript.customcrafting.ui.editor.IngredientMatcherContext
+import com.wolfyscript.customcrafting.ui.editor.IngredientMatcherCustomUIProvider
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
@@ -14,10 +16,7 @@ import com.wolfyscript.scafall.wrappers.snapshot
 import com.wolfyscript.viewportl.gui.compose.layout.Alignment
 import com.wolfyscript.viewportl.gui.compose.layout.Arrangement
 import com.wolfyscript.viewportl.gui.compose.layout.slots
-import com.wolfyscript.viewportl.gui.compose.modifier.Modifier
-import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxWidth
-import com.wolfyscript.viewportl.gui.compose.modifier.height
-import com.wolfyscript.viewportl.gui.compose.modifier.width
+import com.wolfyscript.viewportl.gui.compose.modifier.*
 import com.wolfyscript.viewportl.gui.elements.*
 import com.wolfyscript.viewportl.gui.model.Store
 import com.wolfyscript.viewportl.gui.model.store
@@ -29,14 +28,12 @@ import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
-import kotlin.text.get
-import kotlin.text.set
 
 private class IngredientMatcherStore : Store() {
 
     data class AvailableMatchers(
         val loading: Boolean = false,
-        val matchers: List<EditorUIFactory<out IngredientMatcherModel<*>>> = emptyList(),
+        val matchers: List<EditorModelFactory<out IngredientMatcherModel<*>>> = emptyList(),
     )
 
     val availableMatchers: StateFlow<AvailableMatchers>
@@ -75,8 +72,9 @@ private class IngredientMatcherStore : Store() {
 @Composable
 fun <M : IngredientMatcherModel<*>> IngredientMatcherMenu(
     matcher: M,
-    onSelect: (EditorUIFactory<out IngredientMatcherModel<*>>) -> Unit,
-    onReset: () -> Unit,
+    onSelect: (EditorModelFactory<out IngredientMatcherModel<*>>) -> Unit,
+    onModify: (matcher: M) -> Unit,
+    onReset: (EditorModelFactory<out IngredientMatcherModel<*>>) -> Unit,
 ) {
     val store = store(Key.customCrafting("ingredient_matchers")) {
         IngredientMatcherStore()
@@ -84,14 +82,18 @@ fun <M : IngredientMatcherModel<*>> IngredientMatcherMenu(
     var selectingType: Boolean by remember { mutableStateOf(false) }
 
     Column {
-        Row(Modifier.fillMaxWidth()) {
-            Column(Modifier.width(3.slots).height(3.slots), horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(Modifier.fillMaxWidth().weight(1f)) {
+            Column(Modifier.width(3.slots), horizontalAlignment = Alignment.CenterHorizontally) {
                 // current type
                 Icon(stack = ItemStack(Items.COMMAND_BLOCK).apply {
                     set(DataComponents.ITEM_NAME, "Selected:".deser().vanilla())
-                    set(DataComponents.LORE, ItemLore(listOf(
-                        "<!i><yellow>${matcher.typeKey}".deser().vanilla()
-                    )))
+                    set(
+                        DataComponents.LORE, ItemLore(
+                            listOf(
+                                "<!i><yellow>${matcher.typeKey}".deser().vanilla()
+                            )
+                        )
+                    )
                 }.snapshot())
 
                 if (selectingType) {
@@ -124,22 +126,27 @@ fun <M : IngredientMatcherModel<*>> IngredientMatcherMenu(
                     })
             } else {
                 // Custom UI of Matcher
-                Box(Modifier.height(4.slots).width(6.slots)) {
+                Box(Modifier.fillMaxHeight().weight(1f)) {
                     val ui = try {
-                        EditorRegistryTypes.ingredientMatchers.resolveOrThrow()[matcher.typeKey]
+                        UIRegistryTypes.ingredientMatchers.resolveOrThrow()[matcher.typeKey]
                     } catch (e: Exception) {
                         ScafallProvider.get().logger.error("Failed to render ui for matcher $matcher", e)
                         null
                     }
-                    if (ui != null) {
-                        if (ui.modelType.isInstance(matcher)) {
-                            val castUI: EditorUIFactory<M>? = try {
-                                ui as EditorUIFactory<M>
-                            } catch (e: Exception) {
-                                ScafallProvider.get().logger.error("Failed to render ui for matcher $matcher", e)
-                                null
+                    if (ui != null && ui.modelType.isInstance(matcher)) {
+                        val castUI: IngredientMatcherCustomUIProvider<M>? = try {
+                            ui as IngredientMatcherCustomUIProvider<M>
+                        } catch (e: Exception) {
+                            ScafallProvider.get().logger.error("Failed to render ui for matcher $matcher", e)
+                            null
+                        }
+                        if (castUI != null) {
+                            val context = IngredientMatcherContext(
+                                updateMatcher = onModify
+                            )
+                            with(castUI) {
+                                context.render(matcher)
                             }
-                            castUI?.renderUI(matcher)
                         }
                     }
                 }
@@ -151,7 +158,7 @@ fun <M : IngredientMatcherModel<*>> IngredientMatcherMenu(
 @Composable
 private fun SelectMatcherType(
     matchers: IngredientMatcherStore.AvailableMatchers,
-    onSelect: (EditorUIFactory<out IngredientMatcherModel<*>>) -> Unit,
+    onSelect: (EditorModelFactory<out IngredientMatcherModel<*>>) -> Unit,
     onPageChange: (Int) -> Unit,
 ) {
     var page: Int by remember { mutableStateOf(0) }
@@ -179,7 +186,7 @@ private fun SelectMatcherType(
 @Composable
 private fun SelectMatcherTypePage(
     matchers: IngredientMatcherStore.AvailableMatchers,
-    onSelect: (EditorUIFactory<out IngredientMatcherModel<*>>) -> Unit,
+    onSelect: (EditorModelFactory<out IngredientMatcherModel<*>>) -> Unit,
 ) {
     if (matchers.loading) {
         Box(Modifier.width(5.slots).height(4.slots), contentAlignment = Alignment.Center) {
@@ -219,9 +226,13 @@ private object MatcherMenuDefaults {
 
     val EditCurrentMatcher = ItemStack(Items.GLOW_ITEM_FRAME).apply {
         set(DataComponents.ITEM_NAME, "Cancel Selection".deser().vanilla())
-        set(DataComponents.LORE, ItemLore(listOf(
-            "<!i><grey>(Edit Selected)".deser().vanilla(),
-        )))
+        set(
+            DataComponents.LORE, ItemLore(
+                listOf(
+                    "<!i><grey>(Edit Selected)".deser().vanilla(),
+                )
+            )
+        )
     }.snapshot()
 
 }

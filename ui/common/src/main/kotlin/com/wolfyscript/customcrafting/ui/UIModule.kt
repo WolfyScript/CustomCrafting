@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.ui
 
+import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistries
 import com.wolfyscript.customcrafting.core.util.ModuleImpl
 import com.wolfyscript.scafall.loader.module.Client
 import com.wolfyscript.scafall.loader.module.Module
@@ -8,6 +9,8 @@ import org.jetbrains.annotations.ApiStatus
 
 @ModuleImpl(UIModuleImpl::class)
 interface UIModule : Module<Server, Client> {
+
+    val registries: CustomCraftingRegistries
 
     companion object {
         private var instance: UIModule? = null

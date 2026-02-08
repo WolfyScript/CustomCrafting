@@ -1,12 +1,10 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe
 
-import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.EditorRegistryTypes
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientConsumerModel
-import com.wolfyscript.customcrafting.editor.ext.EditorUIFactory
+import com.wolfyscript.customcrafting.editor.ext.EditorModelFactory
 import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer
 import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
-import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes
 import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.customcrafting.editor.EditorModule
 import com.wolfyscript.scafall.identifier.Key
@@ -18,13 +16,13 @@ import com.wolfyscript.scafall.registry.referenced
  */
 object IngredientConsumerModels {
 
-    val consume = create<EditorUIFactory<IngredientConsumerModel<IngredientConsumer.Consume>>>("consume")
-    val replace = create<EditorUIFactory<IngredientConsumerModel<IngredientConsumer.Replace>>>("replace")
-    val keep = create<EditorUIFactory<IngredientConsumerModel<IngredientConsumer.Keep>>>("keep")
+    val consume = create<EditorModelFactory<IngredientConsumerModel<IngredientConsumer.Consume>>>("consume")
+    val replace = create<EditorModelFactory<IngredientConsumerModel<IngredientConsumer.Replace>>>("replace")
+    val keep = create<EditorModelFactory<IngredientConsumerModel<IngredientConsumer.Keep>>>("keep")
 
-    private inline fun <reified T: EditorUIFactory<out IngredientConsumerModel<*>>> create(key: String) : ValueReference<EditorUIFactory<out IngredientConsumerModel<*>>, T> {
+    private inline fun <reified T: EditorModelFactory<out IngredientConsumerModel<*>>> create(key: String) : ValueReference<EditorModelFactory<out IngredientConsumerModel<*>>, T> {
         return EditorRegistryTypes.ingredientConsumers.key
-            .referenced<EditorUIFactory<out IngredientConsumerModel<*>>, T>(Key.customCrafting(key))
+            .referenced<EditorModelFactory<out IngredientConsumerModel<*>>, T>(Key.customCrafting(key))
             .reference { EditorModule.get().registries }
     }
 

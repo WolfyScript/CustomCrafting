@@ -9,12 +9,15 @@ import com.wolfyscript.scafall.loader.module.Server
 
 internal class UIModuleImpl(classLoader: ClassLoader) : BasicModule<Server, Client>(), UIModule {
 
+    override val registries = UIRegistries()
+
     init {
         UIModule.register(this)
     }
 
     override fun onInit() {
         CustomCraftingProvider.get().logger.info("[UI] Initializing UI Module")
+        registries.init()
 
         ScafallProvider.get().server?.minecraftServer?.commands?.dispatcher?.let {
             RecipesEditorUICommand.register(it)
