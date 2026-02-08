@@ -57,6 +57,8 @@ pluginManagement {
             }
         }
         maven("https://artifacts.wolfyscript.com/artifactory/gradle-dev")
+        maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        google()
     }
 }
 
@@ -103,7 +105,6 @@ sequenceOf(
  * - and the CLI that allows editing recipes via commands.
  */
 sequenceOf(
-    "api",
     "common"
 ).forEach {
     include(":editor:${it}")
@@ -119,7 +120,6 @@ sequenceOf(
  * Adds a UI that allows editing and creating content with an in-game UI.
  */
 sequenceOf(
-    "api",
     "common"
 ).forEach {
     include(":ui:${it}")

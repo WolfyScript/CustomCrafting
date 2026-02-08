@@ -1,10 +1,9 @@
 plugins {
     kotlin("jvm")
     `java-library`
-    alias(libs.plugins.shadow)
-    alias(libs.plugins.fabric.loom)
     id(libs.plugins.devtools.docker.minecraft.get().pluginId)
     id("build.settings.default")
+    id("build.settings.fabric-loom")
     id("build.docker.run")
 }
 
@@ -27,8 +26,6 @@ dependencies {
     implementation(libs.bundles.database.drivers)
     compileOnly(libs.jackson.kotlin)
 
-    minecraft(libs.minecraft)
-    mappings(loom.officialMojangMappings()) // TODO: Remove next MC release
     // TODO: Change next MC release
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.api)

@@ -1,28 +1,18 @@
+val Project.libs
+    get() = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
+
 plugins {
     `java-library`
     `maven-publish`
     kotlin("jvm")
-    id("org.jetbrains.compose")
-    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://maven.parchmentmc.org/")
-        content { includeGroup("org.parchmentmc.data") }
-    }
-    maven {
-        url = uri("https://maven.neoforged.net/releases")
-        content { includeGroup("org.parchmentmc.data") }
-    }
     maven(url = "https://artifacts.wolfyscript.com/artifactory/gradle-dev")
     maven(url = "https://libraries.minecraft.net/")
     maven(url = "https://jitpack.io")
     maven(url = "https://repo.maven.apache.org/maven2/")
-    google()
-    maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
-
     mavenLocal()
 }
 
@@ -53,12 +43,8 @@ tasks {
     }
 }
 
-val Project.libs
-    get() = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
-
 dependencies {
     api(libs.scafall.api)
-    api(libs.viewportl)
     implementation(libs.bundles.jetbrains)
 
     compileOnly(libs.inject.guice)

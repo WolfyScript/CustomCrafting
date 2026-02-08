@@ -8,8 +8,14 @@ plugins {
     alias(libs.plugins.artifactory)
     alias(libs.plugins.resource.factory.bukkit)
     id("build.settings.default")
+    id("build.settings.fabric-loom")
     id("build.docker.run")
     id("build.spigotlike")
+}
+
+repositories {
+    maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    google()
 }
 
 dependencies {

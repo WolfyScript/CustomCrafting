@@ -1,13 +1,20 @@
 plugins {
     kotlin("jvm")
     id("build.settings.default")
-    alias(libs.plugins.fabric.loom)
+    id("build.settings.fabric-loom")
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.jetbrains.compose)
+}
+
+repositories {
+    maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    google()
 }
 
 dependencies {
+    api(libs.viewportl)
     implementation(projects.core.coreApi)
     implementation(projects.editor.editorCommon)
-    implementation(projects.ui.uiApi)
 
     implementation(libs.bundles.exposed)
     implementation(libs.bundles.database.drivers)

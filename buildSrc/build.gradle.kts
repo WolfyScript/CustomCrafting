@@ -8,7 +8,14 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven("https://artifacts.wolfyscript.com/artifactory/gradle-dev")
-    maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven {
+        name = "Fabric"
+        url = uri("https://maven.fabricmc.net")
+        content {
+            includeGroupAndSubgroups("net.fabricmc")
+            includeGroup("fabric-loom")
+        }
+    }
 }
 
 dependencies {
@@ -18,8 +25,7 @@ dependencies {
     implementation(libs.plugins.devtools.docker.minecraft.depNotation())
     implementation(libs.plugins.paperweight.userdev.depNotation())
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
-    implementation(libs.plugins.compose.compiler.depNotation())
-    implementation(libs.plugins.jetbrains.compose.depNotation())
+    implementation(libs.plugins.fabric.loom.depNotation())
 }
 
 kotlin {
