@@ -18,8 +18,8 @@ loom {
 }
 
 dependencies {
-    api(shadow(project(":core:core-api"))!!)
-    api(shadow(project(":core:core-common"))!!)
+    api(projects.core.coreApi)
+    api(projects.core.coreCommon)
 
     implementation(libs.scafall.loader)
     implementation(libs.bundles.exposed)

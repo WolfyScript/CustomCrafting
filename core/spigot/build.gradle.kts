@@ -31,8 +31,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":core:core-spigotlike"))
+    implementation(projects.core.coreSpigotlike)
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
-
-paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION

@@ -50,12 +50,6 @@ dependencies {
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 
-tasks.named<ShadowJar>("shadowJar") {
-    archiveClassifier.set("")
-
-    from(project(":core:core-spigot").tasks.shadowJar.get().archiveFile)
-}
-
 publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
