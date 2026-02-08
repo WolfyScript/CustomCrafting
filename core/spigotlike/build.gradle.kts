@@ -14,24 +14,6 @@ dependencies {
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
-fun archiveName() = "${project.name}-${project.version}"
-
-tasks {
-    shadowJar {
-        dependencies {
-            include(project(":core:core-api"))
-            include(project(":core:core-common"))
-        }
-        metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
-    }
-    reobfJar {
-        enabled = false
-    }
-    build {
-        dependsOn(shadowJar)
-    }
-}
-
 artifacts {
     archives(tasks.shadowJar)
     default(tasks.shadowJar)

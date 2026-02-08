@@ -35,39 +35,4 @@ dependencies {
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
-fun archiveName() = "${project.rootProject.name}-${project.version}-spigot-${libs.versions.minecraft.get()}"
-
-paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
-
-tasks {
-    shadowJar {
-        archiveFileName.set("${archiveName()}-mojmap.jar")
-
-        finalizedBy(reobfJar)
-
-        dependencies {
-            include(project(":core:core-spigotlike"))
-            libs.bundles.sentry.get().forEach {
-                include(dependency(it))
-            }
-        }
-        metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
-
-        minimize()
-//        minimize {
-//            include(dependency(libs.sentry))
-//        }
-
-        relocate("org.bstats", "com.wolfyscript.customcrafting.bukkit.metrics")
-        relocate("io.sentry", "com.wolfyscript.customcrafting.sentry")
-    }
-    reobfJar {
-        dependsOn(shadowJar)
-        finalizedBy("spigot_copy")
-        outputJar.set(layout.buildDirectory.file("libs/${archiveName()}.jar"))
-    }
-}
-
-artifacts {
-    archives(tasks.reobfJar)
-}
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
