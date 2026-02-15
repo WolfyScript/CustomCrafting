@@ -17,9 +17,9 @@ import com.wolfyscript.viewportl.gui.compose.layout.Alignment
 import com.wolfyscript.viewportl.gui.compose.layout.Arrangement
 import com.wolfyscript.viewportl.gui.compose.layout.slots
 import com.wolfyscript.viewportl.gui.compose.modifier.Modifier
-import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxWidth
-import com.wolfyscript.viewportl.gui.compose.modifier.height
+import com.wolfyscript.viewportl.gui.compose.modifier.fillMaxSize
 import com.wolfyscript.viewportl.gui.compose.modifier.width
+import com.wolfyscript.viewportl.gui.elements.Box
 import com.wolfyscript.viewportl.gui.elements.Button
 import com.wolfyscript.viewportl.gui.elements.Icon
 import com.wolfyscript.viewportl.gui.elements.Row
@@ -131,10 +131,9 @@ fun SavingPage() {
     // 'Save as' Button
     //
 
-    Row(
-        Modifier.fillMaxWidth().height(4.slots),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         Row(Modifier.width(3.slots), horizontalArrangement = Arrangement.SpaceAround) {
 

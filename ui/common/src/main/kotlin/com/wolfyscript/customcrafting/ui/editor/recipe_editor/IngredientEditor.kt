@@ -146,7 +146,7 @@ fun IngredientEditor(
     val tagsState by store.tags.collectAsState()
     val matcher by store.matcher.collectAsState()
 
-    Column(Modifier.height(5.slots)) {
+    Column(Modifier.fillMaxHeight()) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Button(onClick = {
                 if (currentSubMenu != null) {

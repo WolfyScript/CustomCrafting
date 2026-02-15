@@ -170,10 +170,6 @@ private class FormulaStore(
  */
 @Composable
 fun FormulaPageAdvanced() {
-    // TODO:
-    // - Shaped:
-    //   - Set shape (symmetry, trim)
-
     val store = store<FormulaStore>(Key.customCrafting("crafting/formula_advanced")) {
         val session = CustomCraftingProvider.get().server!!.recipeEditor.getOrCreateSession(it).getOrThrow()
         FormulaStore(
@@ -206,7 +202,7 @@ fun FormulaPageAdvanced() {
         }
 
         Row(
-            Modifier.fillMaxWidth().height(3.slots),
+            Modifier.fillMaxWidth().weight(1f),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {

@@ -44,7 +44,7 @@ fun RecipeCraftingEditor(existingRecipeKey: Key? = null, topBackStack: SnapshotS
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(Modifier.height(5.slots).fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
+        Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
             // Main Content
             NavigationRoot(craftingBackStack) {
                 composable<CraftingPath.Advanced.AddIngredients> { AddIngredientsPage() }
@@ -66,7 +66,7 @@ fun RecipeCraftingEditor(existingRecipeKey: Key? = null, topBackStack: SnapshotS
                     )
                 }.snapshot())
             }
-            Row {
+            Row(Modifier.weight(1f), horizontalArrangement = Arrangement.Center) {
                 BottomNavButton(
                     Defaults.IngredientsCollectionTab,
                     CraftingPath.Advanced.AddIngredients,

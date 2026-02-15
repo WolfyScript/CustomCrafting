@@ -116,7 +116,7 @@ fun ResultPage() {
             onReplace = { store.setFirstChoice(it) },
         )
 
-        Column(Modifier.height(3.slots), verticalArrangement = Arrangement.SpaceBetween) {
+        Column(verticalArrangement = Arrangement.SpaceBetween) {
             // Actions
             Button(onClick = { }) {
                 Icon(stack = ResultDefaults.EditActionsIcon)
@@ -139,7 +139,7 @@ private fun ResultInput(
     onAdd: (ItemStackRef) -> Unit,
     onReplace: (ItemStackRef) -> Unit,
 ) {
-    Column(Modifier.height(2.slots), verticalArrangement = Arrangement.Top) {
+    Column(verticalArrangement = Arrangement.Top) {
         Slot(
             value = iconGetter,
             onValueChange = {
