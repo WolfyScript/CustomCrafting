@@ -42,7 +42,6 @@ dependencies {
     compileOnly(libs.netty.all)
     compileOnly(libs.placeholderapi)
     compileOnly(libs.oraxen)
-    compileOnly(libs.wolfyutils.spigot)
     compileOnly(libs.nbtapi)
     compileOnly(libs.bundles.exposed)
     compileOnly(libs.bundles.database.drivers)
