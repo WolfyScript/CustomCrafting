@@ -19,6 +19,8 @@ repositories {
 }
 
 dependencies {
+    implementation(projects.core.coreApi)
+    implementation(projects.core.coreCommon)
     implementation(projects.core.coreSpigotlike)
     implementation(projects.core.corePaper)
     implementation(projects.editor.editorCommon)
@@ -34,6 +36,8 @@ tasks {
         archiveFileName.set("${customArchiveName}.jar")
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
         dependencies {
+            include(project(project.projects.core.coreApi))
+            include(project(project.projects.core.coreCommon))
             include(project(project.projects.core.coreSpigotlike))
             include(project(project.projects.core.corePaper))
             include(project(project.projects.editor.editorCommon))

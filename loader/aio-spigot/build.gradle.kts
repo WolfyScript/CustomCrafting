@@ -41,6 +41,8 @@ repositories {
 }
 
 dependencies {
+    implementation(projects.core.coreApi)
+    implementation(projects.core.coreCommon)
     implementation(projects.core.coreSpigotlike)
     implementation(projects.core.coreSpigot)
     implementation(projects.editor.editorCommon)
@@ -60,6 +62,8 @@ tasks {
         finalizedBy(reobfJar)
 
         dependencies {
+            include(project(project.projects.core.coreApi))
+            include(project(project.projects.core.coreCommon))
             include(project(project.projects.core.coreSpigotlike))
             include(project(project.projects.core.coreSpigot))
             include(project(project.projects.editor.editorCommon))
