@@ -22,7 +22,7 @@ minecraftDockerRun {
             "EULA" to "true",
 //            "DEBUG" to "true",
             // Allows to attach the IntelliJ Debugger
-            "JVM_OPTS" to "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${debugPort}",
+            "JVM_OPTS" to "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${debugPort} -ea",
             "FORCE_REDOWNLOAD" to "false"
         )
     )
