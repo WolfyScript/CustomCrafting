@@ -19,12 +19,12 @@ repositories {
 }
 
 dependencies {
-    implementation(projects.core.coreApi)
-    implementation(projects.core.coreCommon)
-    implementation(projects.core.coreSpigotlike)
-    implementation(projects.core.corePaper)
-    implementation(projects.editor.editorCommon)
-    implementation(projects.ui.uiCommon)
+    implementation(shadow(projects.core.coreApi)!!)
+    implementation(shadow(projects.core.coreCommon)!!)
+    implementation(shadow(projects.core.coreSpigotlike)!!)
+    implementation(shadow(projects.core.corePaper)!!)
+    implementation(shadow(projects.editor.editorCommon)!!)
+    implementation(shadow(projects.ui.uiCommon)!!)
 
     paperweight.paperDevBundle(libs.versions.papermc.get())
 }
@@ -33,6 +33,10 @@ val customArchiveName = archiveName("paper", libs.versions.minecraft.get())
 
 tasks {
     shadowJar {
+        // Mappings are in the runtime classpath. Not sure why they are included even though we use include for dependencies...
+        // So to be sure nothing else slips in, just accept dependencies from the shadow configuration.
+        configurations = listOf(project.configurations.shadow.get())
+
         archiveFileName.set("${customArchiveName}.jar")
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
         dependencies {
@@ -64,7 +68,7 @@ artifacts {
 }
 
 bukkitPluginYaml {
-    name = "CustomCrafting"
+    name = "customcrafting"
     version = project.version.toString()
     main = "com.wolfyscript.customcrafting.paper.PaperLoaderPlugin"
     apiVersion = libs.versions.minecraft.get() // Only support the latest Minecraft version!
