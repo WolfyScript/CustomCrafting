@@ -2,7 +2,7 @@
 
 [versions]
 # Kotlin & Jetbrains
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 jetbrains-annotations = "23.0.0"
 exposed = "1.0.0-beta-2"
 
@@ -32,7 +32,7 @@ adventure-minimessage = "4.10.0"
 
 # viewportl / UI
 viewportl = "alpha0.1.0.0-SNAPSHOT"
-compose = "1.9.0"
+compose = "1.10.1"
 
 # Minecraft
 minecraft = "1.21.11"
