@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.spigot
 
-import com.wolfyscript.customcrafting.server.CustomCraftingServer
+import com.wolfyscript.customcrafting.core.server.CustomCraftingServer
 import com.wolfyscript.customcrafting.spigotlike.CustomCraftingServerSpigotLike
 
 class CustomCraftingServerSpigot(
