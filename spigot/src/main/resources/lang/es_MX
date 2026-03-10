@@ -1,0 +1,3802 @@
+{
+  "author": "SrLink16",
+  "version": "6.1.0",
+  "info": [
+    "YouTube: https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g  ",
+    "GitHub:  https://github.com/WolfyScript  "
+  ],
+  "crafting": {
+    "workbench": {
+      "name": "<gold>Banco de Trabajo Avanzado</gold>",
+      "lore": [
+        "<grey>Banco de trabajo para crafteo avanzado</grey>"
+      ]
+    },
+    "knowledgebook": {
+      "name": "<gold>Libro de Conocimiento</gold>",
+      "lore": [
+        "<grey>Contiene recetas interesantes</grey>"
+      ]
+    }
+  },
+  "recipe_book": {
+    "filter_navigation": [
+      "<grey>[<green>Clic Izquierdo</green>] Siguiente categoría</grey>",
+      "<grey>[<green>Clic Derecho</green>] Categoría anterior</grey>"
+    ],
+    "category": {
+      "main": {
+        "name": "<gold><b>Recetas</b></gold>"
+      },
+      "customcrafting": {
+        "name": "<gold><b>CustomCrafting</b></gold>"
+      }
+    },
+    "filter": {
+      "search": {
+        "name": "<grey>❯</grey> <gold><b>Buscar</b></gold>"
+      },
+      "building_blocks": {
+        "name": "<grey>❯</grey> <gold><b>Bloques de Construcción</b></gold>"
+      },
+      "colored_blocks" : {
+        "name": "<grey>❯</grey> <gold><b>Bloques de Colores</b></gold>"
+      },
+      "natural_blocks" : {
+        "name": "<grey>❯</grey> <gold><b>Bloques Naturales</b></gold>"
+      },
+      "functional_blocks" : {
+        "name": "<grey>❯</grey> <gold><b>Bloques Funcionales</b></gold>"
+      },
+      "redstone_blocks" : {
+        "name": "<grey>❯</grey> <gold><b>Bloques de Redstone</b></gold>"
+      },
+      "tools_and_utilities" : {
+        "name": "<grey>❯</grey> <gold><b>Herramientas y Utilidades</b></gold>"
+      },
+      "combat": {
+        "name": "<grey>❯</grey> <gold><b>Combate</b></gold>"
+      },
+      "food_and_drinks": {
+        "name": "<grey>❯</grey> <gold><b>Comida y Bebidas</b></gold>"
+      },
+      "ingredients": {
+        "name": "<grey>❯</grey> <gold><b>Ingredientes</b></gold>"
+      },
+      "spawn_eggs": {
+        "name": "<grey>❯</grey> <gold><b>Huevos de Generación</b></gold>"
+      },
+      "brewing": {
+        "name": "<grey>❯</grey> <gold><b>Alquimia</b></gold>"
+      },
+      "decorations": {
+        "name": "<grey>❯</grey> <gold><b>Decoraciones</b></gold>"
+      },
+      "tools": {
+        "name": "<grey>❯</grey> <gold><b>Herramientas</b></gold>"
+      },
+      "redstone": {
+        "name": "<grey>❯</grey> <gold><b>Redstone</b></gold>"
+      },
+      "food": {
+        "name": "<grey>❯</grey> <gold><b>Comida</b></gold>"
+      },
+      "transportation": {
+        "name": "<grey>❯</grey> <gold><b>Transporte</b></gold>"
+      },
+      "misc": {
+        "name": "<grey>❯</grey> <gold><b>Varios</b></gold>"
+      }
+    }
+  },
+  "recipe": {
+    "type": {
+      "crafting" : {
+        "crafting_shaped": "Receta de Crafteo con Forma",
+        "crafting_shapeless": "Receta de Crafteo sin Forma"
+      },
+      "elite_crafting" : {
+        "elite_crafting_shaped": "Receta de Crafteo Élite con Forma",
+        "elite_crafting_shapeless": "Receta de Crafteo Élite sin Forma"
+      },
+      "cooking" : {
+        "furnace": "Receta de Fundición",
+        "blast_furnace": "Receta de Alto Horno",
+        "smoker": "Receta de Ahumador",
+        "campfire": "Receta de Hoguera"
+      },
+      "brewing_stand" : "Receta de Soporte de Pociones",
+      "anvil" : "Receta de Yunque",
+      "stonecutter" : "Receta de Cortapiedras",
+      "grindstone" : "Receta de Amoladora",
+      "smithing" : "Receta de herrería",
+      "cauldron" : "Receta de Caldero"
+    }
+  },
+  "msg": {
+    "auto_save": {
+      "start": "   Guardado automático de datos   ",
+      "complete": " Guardado automático completado "
+    },
+    "startup": {
+      "outdated": "¡Tu versión está desactualizada! ¡Hay una nueva versión disponible! Descárgala aquí: https://www.spigotmc.org/resources/55883/  ",
+      "update_check_fail": "Error al verificar actualizaciones en Spigot",
+      "playerstats": "Cargando estadísticas de jugadores",
+      "inventories": "Iniciando interfaces de inventario",
+      "placeholder": "Registrando PlaceHolder",
+      "recipes": {
+        "title": "Cargando recetas y objetos",
+        "items": "Cargando objetos",
+        "recipes": "Cargando recetas",
+        "particles": "Cargando partículas",
+        "duplicate": "¡Ignorando receta duplicada %namespace%:%key% con el archivo de configuración %key%.%file_type%!",
+        "incompatible": "¡Tipo de archivo no compatible! Ignorando %namespace%:%key% con el archivo de configuración %key%.%file_type%! "
+      }
+    },
+    "denied_perm": "<red>¡No tienes el permiso <dark_red>%PERM%</dark_red>!</red>",
+    "player": {
+      "outdated": {
+        "msg": "<red>¡Tu versión está desactualizada! ¡Hay una nueva versión disponible!</red>",
+        "msg2": "<green>¡Descárgala ahora!</green>",
+        "link": " <grey>[<dark_aqua>Haz clic aquí</dark_aqua>]</grey>"
+      },
+      "invalid_namespacedkey": [
+        "<red>¡La carpeta y la clave deben estar en minúsculas y solo</red>",
+        "<red>pueden contener los siguientes caracteres [a-z 0-9 _ -]!</red>",
+        "<yellow>¡Por favor, vuelve a escribir la carpeta y la clave!</yellow>"
+      ]
+    },
+    "input":{
+      "mini_message" : "<#00ccff>Usa <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html  '><hover:show_text:'<white>MiniMessage usa etiquetas en lugar de códigos de color antiguos!<br>Estas etiquetas pueden usarse para especificar: <br>* Colores: <#FD6684><_colorname_></#FD6684><br>    <#FD6684>\\<green></#FD6684>: <green>Verde</green><br>    <#FD6684>\\<#5662F6></#FD6684>: <#5662F6>Color-Hex</#5662F6><br>    ... etc.<br><br>* Decoraciones:<br>    <#FD6684>\\<bold></#FD6684>, <#FD6684>\\<b></#FD6684>: <b>Negrita</b>,<br>    <#FD6684>\\<italic></#FD6684>, <#FD6684>\\<em></#FD6684>, <#FD6684>\\<i></#FD6684>: <em>Cursiva</em>,<br>    <#FD6684>\\<underline></#FD6684>, <#FD6684>\\<u></#FD6684>: <u>Subrayado</u>,<br>    <#FD6684>\\<strikethrough></#FD6684>, <#FD6684>\\<st></#FD6684>: <st>Tachado</st>,<br>    <#FD6684>\\<obfuscated></#FD6684>, <#FD6684>\\<obf></#FD6684>: <obf>Ofuscado</obf><br><br>* Degradados: <#FD6684><gradient:<#50E975>[color1]</#50E975>:<#50E975>[color...]</#50E975>:<#50E975>[fase]</#50E975>></#FD6684><br>    <#FD6684>\\<gradient></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient><br>    <#FD6684>\\<gradient:<#50E975>#5e4fa2</#50E975>:<#50E975>#f79459</#50E975>:<#50E975>red</#50E975>></#FD6684>||||||||||||||||||||||||<#FD6684>\\</gradient></#FD6684>: <gradient:#5e4fa2:#f79459:red>||||||||||||||||||||||||</gradient><br><br>* Fuentes: <#FD6684>\\<font:<#50E975>clave</#50E975>></#FD6684><br>    <#FD6684>\\<font:<#50E975>uniform</#50E975>></#FD6684>Uniforme<#FD6684>\\</font></#FD6684>: <font:uniform>Uniforme</font><br>    <#FD6684>\\<font:<#50E975>alt</#50E975>></#FD6684>Alt<#FD6684>\\</font></#FD6684>: <font:alt>Alt</font><br><br>* y más    <br><br><grey>(<green>Clic</green>)</grey> <yellow>Abrir enlace a la Wiki'><u><yellow>MiniMessage</yellow></u></hover></click> para color y formato!",
+      "wui_command": "<#00ccff>Usa el comando <click:suggest_command:'/wui '><hover:show_text:'<white>¡Usa el comando <yellow>/wui</yellow> para ingresar tus valores, en lugar de escribirlos directamente en el chat!<br>¡Proporciona autocompletado y evita problemas con plugins de chat!<br><br>Simplemente escribe tu entrada después del comando con un espacio.<br>Así: <yellow>/wui <green>tu entrada aquí</green></yellow><br><br><grey>(<green>Clic</green>)</grey> <yellow>Completar comando'><u><yellow>/wui</yellow></u></hover></click> para ingresar tus valores!"
+    },
+    "chat_editor": {
+      "list_edit": {
+        "title": "<grey>┌──── [<green>Modificar Lista</green>]</grey>",
+        "back_to_gui": "<grey>└─── [<yellow><b>➥ Volver a la interfaz</b></yellow>]</grey>",
+        "empty": "<red><b>La lista está vacía</b></red>",
+        "pages": "<gold><b><current_page><b><grey> / </grey><pages></gold>",
+        "entry": {
+          "number": "<list_entry>. ",
+          "remove": "<hover:show_text:'<red><b>Eliminar entrada <list_entry></b></red>'><b><red>-</red></b></hover>",
+          "edit": "<hover:show_text:'Editar entrada <list_entry>'><b><yellow>✎</yellow></b></hover>",
+          "add": "<hover:show_text:'Agregar nueva entrada'><b><green>+ Agregar entrada</green></b></hover>",
+          "add_below": "<hover:show_text:'Agregar debajo de la entrada <list_entry>'><b><green>+</green></b></hover>",
+          "move_up": "<hover:show_text:'Mover entrada <list_entry> hacia arriba'><b><gold>∧</gold></b></hover>",
+          "move_down": "<hover:show_text:'Mover entrada <list_entry> hacia abajo'><b><gold>∨</gold></b></hover>"
+        },
+        "input_new_entry": "<white>Escribe el nuevo valor para la entrada <list_entry>.",
+        "input_add_entry": "<white>Escribe un valor para la nueva entrada."
+      }
+    }
+  },
+  "commands": {
+    "help": [
+      "<yellow>/cc <grey>- Abre la interfaz gráfica</grey></yellow>",
+      "",
+      "<yellow>/cc <grey><opción></grey></yellow>",
+      "",
+      "<grey>Opciones:</grey>",
+      "<yellow>info       <grey>-</grey> Muestra información sobre este plugin</yellow>",
+      "<yellow>give       <grey>-</grey> Da objetos personalizados a jugadores</yellow>",
+      "<yellow>database   <grey>-</grey> Exporta datos específicos a la base de datos</yellow>",
+      "<yellow>darkmode   <grey>-</grey> Alterna el modo oscuro/claro de la interfaz</yellow>",
+      "<yellow>debug      <grey>-</grey> Activa el modo de depuración. ¡Podría generar muchos mensajes!</yellow>",
+      "<yellow>lockdown   <grey>-</grey> Activa el modo de bloqueo. ¡Si está activado, no se podrá craftear ninguna receta personalizada!</yellow>",
+      "<yellow>help       <grey>-</grey> Muestra la lista de comandos</yellow>",
+      "",
+      "Para más información visita la Wiki:"
+    ],
+    "info": "<dark_aqua>escribe <gold>/cc help </gold>para obtener ayuda!</dark_aqua>",
+    "lockdown": {
+      "enabled": "<grey>[<red><b>Bloqueo</b></red>]</grey> <green>¡ACTIVADO! </green><red>¡Todas las recetas personalizadas serán bloqueadas!</red>",
+      "disabled": "<grey>[<red><b>Bloqueo</b></red>]</grey> <red>¡DESACTIVADO! ¡Las recetas personalizadas ya no serán bloqueadas!</red>",
+      "confirm": "<yellow>¡El bloqueo está actualmente <b><state></b>! Para alternar el bloqueo, ejecuta <white>/cc lockdown confirm</white>"
+    },
+    "darkmode": {
+      "enabled": "<green>¡Modo oscuro activado para las interfaces!</green>",
+      "disabled": "<red>¡Modo oscuro desactivado para las interfaces!</red>"
+    },
+    "give": {
+      "invalid_usage": "<dark_red>Uso: </dark_red><red>/cc give <jugador> <objeto> [<cantidad> <soltar_objetos>]</red>",
+      "invalid_target": "<red>¡El objetivo \"%target%\" no existe!</red>",
+      "player_offline": "<red>¡El jugador <dark_red>%PLAYER% </dark_red>no está en línea!</red>",
+      "invalid_amount": "<red>¡Cantidad inválida! ¿Es un número?</red>",
+      "success": "<green>Se dio <yellow>%ITEM%</yellow> a <yellow>%PLAYER%</yellow></green>",
+      "success_amount": "<green>Se dio <yellow>%AMOUNT%x %ITEM%</yellow> a <yellow>%PLAYER%</yellow></green>",
+      "no_inv_space": "<red>¡No hay espacio en el inventario para <dark_red>%ITEM%!</dark_red></red>",
+      "invalid_item": "<red>¡El objeto <dark_red>%ITEM%</dark_red> no existe!</red>"
+    },
+    "recipes": {
+      "toggle": {
+        "invalid_usage": "<dark_red>Uso: </dark_red><red>/recipes toggle <receta></red>",
+        "enabled": "<yellow>Receta activada <green>%recipe%</green></yellow>",
+        "disabled": "<yellow>Receta desactivada <red>%recipe%</red></yellow>"
+      },
+      "edit": {
+        "invalid_usage": "<dark_red>Uso: </dark_red><red>/recipes edit <receta></red>",
+        "invalid_recipe": "<red>¡Tipo de receta no compatible!</red>"
+      },
+      "delete": {
+        "invalid_usage": "<dark_red>Uso: </dark_red><red>/recipes delete <receta></red>",
+        "confirm": "<yellow>¿Realmente deseas eliminar <gold>%recipe%? </gold></yellow>",
+        "confirmation": "<grey>[<green>SÍ</green>]</grey> ",
+        "cancel": "<grey>[<red>NO</red>]</grey>"
+      },
+      "lookup": {
+        "invalid_usage": "<dark_red>Uso: </dark_red><red>/recipes lookup <receta></red>"
+      },
+      "invalid_recipe": "<red>¡La receta <yellow>%recipe%</yellow> no existe!</red>"
+    },
+    "database": {
+      "invalid_usage": "<red>Uso inválido: <dark_red>/cc database <export_items | export_recipes></dark_red></red>"
+    }
+  },
+  "recipe_conditions": {
+    "world_time": {
+      "name": "Hora",
+      "description": [
+        "<grey>Establece la hora del mundo en la que </grey>",
+        "<grey>se puede craftear la receta.</grey>"
+      ]
+    },
+    "player_experience": {
+      "name": "Experiencia del jugador",
+      "description": [
+        "<grey>Establece los niveles que un jugador debe</grey>",
+        "<grey>tener para craftear la receta.</grey>"
+      ]
+    },
+    "world_name": {
+      "name": "Mundo",
+      "description": []
+    },
+    "world_biome": {
+      "name": "Bioma",
+      "description": []
+    },
+    "weather": {
+      "name": "Clima",
+      "description": [
+        "<grey>Establece el clima en el que se puede</grey>",
+        "<grey>craftear la receta.</grey>"
+      ],
+      "modes": {
+        "storm": "<yellow>Lluvia/Nieve</yellow>",
+        "thunder": "<yellow>Truenos</yellow>",
+        "storm_thunder": "<yellow>Lluvia/Nieve <grey>+ Truenos</grey></yellow>",
+        "none": "<yellow>Sol</yellow>"
+      }
+    },
+    "advanced_crafting_table": {
+      "name": "Banco de Trabajo Avanzado",
+      "description": [
+        "<grey>Permite que la receta solo funcione en el </grey>",
+        "<grey>Banco de Trabajo Avanzado.</grey>"
+      ]
+    },
+    "elite_crafting_table": {
+      "name": "Banco de Trabajo Élite",
+      "description": [
+      ]
+    },
+    "permission": {
+      "name": "Permiso",
+      "description": [
+        "<grey>Establece un permiso que los jugadores necesitan </grey>",
+        "<grey>para poder craftear la receta.</grey>"
+      ]
+    },
+    "craft_delay": {
+      "name": "Retraso de crafteo",
+      "description": [
+        "<grey>Establece un retraso que el jugador</grey>",
+        "<grey>debe esperar para volver a craftear.</grey>"
+      ]
+    },
+    "craft_limit": {
+      "name": "Límite de crafteo",
+      "description": [
+        "<grey>Limita la cantidad de veces</grey>",
+        "<grey>que se puede craftear la receta.</grey>"
+      ]
+    },
+    "player_advancements": {
+      "name": "Progresos",
+      "description": [
+        "<grey>Establece los progresos que un jugador</grey>",
+        "<grey>requiere para craftear la receta.</grey>"
+      ]
+    },
+    "player_scoreboard": {
+      "name": "Marcador del jugador",
+      "description": [
+        "<grey>Evalúa valores del marcador</grey>",
+        "<grey>requeridos para craftear la receta.</grey>",
+        "<red>¡Debe configurarse en el archivo JSON de recetas!</red>"
+      ]
+    },
+    "player/custom_check": {
+      "name": "Verificación personalizada del jugador",
+      "description": [
+        "<grey>Evalúa una verificación personalizada que se</grey>",
+        "<grey>requiere para craftear la receta.</grey>",
+        "<red>¡Debe configurarse en el archivo JSON de recetas!</red>"
+      ]
+    }
+  },
+  "inventories": {
+    "none": {
+      "global_items": {
+        "background": {
+          "name": " "
+        },
+        "back": {
+          "name": "<grey>➦</grey>  <gold><b>Volver</b></gold>"
+        },
+        "back_bottom": {
+          "name": "<grey>➦</grey>  <red><b>Volver</b></red>"
+        },
+        "close": {
+          "name": "<dark_red><b>Cerrar</b></dark_red>"
+        },
+        "gui_help_on": {
+          "name": "<white><b><u>[?] Información</u></b></white>",
+          "lore": [
+            "<grey><list_entry:0></grey>",
+            "<grey><list_entry:1></grey>",
+            "<grey><list_entry:2></grey>",
+            "<grey><list_entry:3></grey>",
+            "<grey><list_entry:4></grey>",
+            "<grey><list_entry:5></grey>",
+            "<grey><list_entry:6></grey>",
+            "<grey><list_entry:7></grey>"
+          ]
+        },
+        "patreon": {
+          "name": "<grey>➥</grey>  <#FF424D><b><obf>tt</obf>   Patreon   <obf>tt</obf></b>",
+          "lore": [
+            "<grey>Conviértete en Patrocinador y obtén acceso a </grey>",
+            "<grey>las últimas actualizaciones.</grey>",
+            "",
+            "<grey>[<green>Clic</green>]</grey> <yellow>Ver créditos de patrocinadores actuales"
+          ]
+        },
+        "youtube": {
+          "name": "<grey>❖</grey>  <red><b>YouTube</b></red>",
+          "lore": [
+            "<yellow>Suscríbete a mi canal de YouTube</yellow>"
+          ]
+        },
+        "github": {
+          "name": "<grey>❖</grey>  <grey><b>GitHub</b></grey>",
+          "lore": [
+            "<yellow>¿Necesitas una Wiki, tutoriales o quieres contribuir?</yellow>",
+            "<yellow>Echa un vistazo al repositorio de GitHub.</yellow>"
+          ]
+        },
+        "discord": {
+          "name": "<grey>❖</grey>  <blue><b>Discord</b></blue>",
+          "lore": [
+            "<yellow>¿Necesitas soporte? ¿Encontraste un error?</yellow>",
+            "<yellow>¡No dudes en unirte al servidor de Discord!</yellow>"
+          ]
+        },
+        "recipe_list": {
+          "name": "<grey>➥</grey>  <gold><b>Lista de Recetas</b></gold>",
+          "lore": [
+            "<yellow>Lista de recetas personalizadas y vanilla </yellow>",
+            "<yellow>Desactiva<grey>/</grey>Activa cualquier receta.</yellow>"
+          ]
+        },
+        "item_list": {
+          "name": "<grey>➥</grey>  <gold><b>Lista de Objetos</b></gold>",
+          "lore": [
+            "<yellow>Lista todos tus objetos personalizados.</yellow>",
+            "<yellow>Obtén, edita o elimínalos fácilmente.</yellow>",
+            "",
+            "<grey>[<green>Clic</green>]</grey><yellow> Abrir lista de objetos</yellow>"
+          ]
+        }
+      },
+      "main_menu": {
+        "gui_name": "<dark_aqua><b>CustomCrafting</b></dark_aqua> <grey>[<dark_grey><plugin_version></dark_grey>]</grey>",
+        "gui_help": [
+          "<gold><b>Opciones:</b></gold>",
+          "<grey>- </grey><yellow>Haz clic en el tipo de receta para el que </yellow>",
+          "   <yellow>deseas crear una nueva receta.</yellow>",
+          "<grey>- </grey><yellow>Crea objetos personalizados mediante ItemCreator</yellow>",
+          "   <yellow>(Abajo a la izquierda)</yellow>",
+          "<grey>- </grey><yellow>Visualiza tus recetas en la Lista de Recetas</yellow>",
+          "   <yellow>(Abajo a la derecha)</yellow>",
+          "<grey>- </grey><yellow>Configuración en la esquina superior izquierda.</yellow>"
+        ],
+        "items": {
+          "settings": {
+            "name": "<grey>➥</grey>  <gold><b>Configuración</b></gold>",
+            "lore": [
+              "<yellow>Configura los ajustes principales </yellow>",
+              "<yellow>sin detener el servidor.</yellow>"
+            ]
+          },
+          "recipe_book_editor": {
+            "name": "<grey>➥</grey>  <gold><b>Libro de Recetas</b></gold> <dark_grey>[<grey>Beta</grey>]</dark_grey>",
+            "lore": [
+              "<yellow>Configura el Libro de Recetas.</yellow>",
+              "<yellow>Crea categorías y establece qué</yellow>",
+              "<yellow>recetas se muestran, agrega materiales, etc.</yellow>"
+            ]
+          },
+          "crafting": {
+            "name": "<grey>➥</grey>  <gold><b>Receta de Banco de Trabajo</b></gold>",
+            "lore": [
+              "<grey>Crea recetas normales y avanzadas</grey>",
+              "<grey>para el banco de trabajo.</grey>"
+            ]
+          },
+          "elite_crafting": {
+            "name": "<grey>➥</grey>  <gold><b>Banco de Trabajo Élite</b></gold> <dark_grey>[<grey>Beta</grey>]</dark_grey>",
+            "lore": [
+              "<grey>Crea recetas para el Banco de Trabajo Élite</grey>",
+              "<grey>con una cuadrícula de crafteo de hasta 6x6.</grey>"
+            ]
+          },
+          "anvil": {
+            "name": "<grey>➥</grey>  <gold><b>Receta de Yunque</b></gold>"
+          },
+          "furnace": {
+            "name": "<grey>➥</grey>  <gold><b>Receta de Horno</b></gold>"
+          },
+          "blast_furnace": {
+            "name": "<grey>➥</grey>  <gold><b>Receta de Alto Horno</b></gold>"
+          },
+          "smoker": {
+            "name": "<grey>➥</grey>  <gold><b>Receta de Ahumador</b></gold>"
+          },
+          "campfire": {
+            "name": "<grey>➥</grey>  <gold><b>Receta de Hoguera</b></gold>"
+          },
+          "cauldron": {
+            "name": "<grey>➥</grey>  <gold><b>Caldero</b></gold>",
+            "lore": [
+              "<grey>¡Crea recetas de caldero para preparar/cocinar</grey>",
+              "<grey>objetos dentro del caldero!</grey>"
+            ]
+          },
+          "stonecutter": {
+            "name": "<grey>➥</grey>  <gold><b>Receta de Cortapiedras</b></gold>"
+          },
+          "grindstone": {
+            "name": "<grey>➥</grey>  <gold><b>Receta de Amoladora</b></gold>"
+          },
+          "brewing_stand": {
+            "name": "<grey>➥</grey>  <gold><b>Receta de Soporte de Pociones</b></gold>"
+          },
+          "brewing_stand_disabled": {
+            "name": "<red>❌ </red>  <gold><b>Receta de Soporte de Pociones</b></gold>",
+            "lore": [
+              "<red>¡Las recetas de Soporte de Pociones están desactivadas!",
+              "<red>¡Debes activarlas en la configuración!",
+              "",
+              "<red>Nota: El desarrollo está en pausa y",
+              "<red>      ¡podrían no funcionar como se espera!"
+            ]
+          },
+          "smithing": {
+            "name": "<grey>➥</grey>  <gold><b>Receta de Herrería</b></gold>"
+          },
+          "item_editor": {
+            "name": "<grey>➥</grey>  <gold><b>Creador de Objetos</b></gold>",
+            "lore": [
+              "<yellow>Crea<grey>/</grey>Edita objetos personalizados.</yellow>",
+              "<yellow>con características especiales, por ejemplo:</yellow>",
+              "<yellow>Durabilidad personalizada<grey>,</grey> Combustible para horno<grey>,</grey> </yellow>",
+              "<yellow>Equipamiento personalizado y más.</yellow>"
+            ]
+          }
+        }
+      },
+      "patrons_menu": {
+        "gui_name": "<#FF424D><b><obf>tt</obf>   Patreon   <obf>tt</obf></b>",
+        "gui_help": [
+          "<grey>Agradecimientos especiales a mis Patrocinadores por apoyar</grey>",
+          "<grey>el desarrollo de este proyecto.</grey>"
+        ],
+        "items": {
+          "patreon": {
+            "name": "",
+            "lore": [
+              "<yellow>Conviértete en Patrocinador y obtén acceso anticipado y participa</yellow>",
+              "<yellow>en el desarrollo del plugin,</yellow>",
+              "<yellow>obtén acceso a versiones de desarrollo y más.</yellow>"
+            ]
+          }
+        }
+      },
+      "recipe_list": {
+        "gui_name": "<dark_grey><b>Lista de Recetas</b></dark_grey>",
+        "gui_help": [
+          "<yellow>Activa/Desactiva recetas personalizadas y vanilla.</yellow>",
+          "<yellow>¡Si una receta está desactivada, nadie podrá craftearla!</yellow>"
+        ],
+        "items": {
+          "lores": {
+            "disabled": "<grey>[<red><b>DESACTIVADA</b></red>]</grey>",
+            "enabled": "<grey>[<green><b>ACTIVADA</b></green>]</grey>",
+            "edit": "<grey>[<green>Shift-Clic Izquierdo</green>]</grey> <yellow>Editar Receta</yellow>",
+            "delete": "<grey>[<red>Shift-Clic Derecho</red>]</grey> <red>Eliminar Receta</red>"
+          },
+          "namespace": {
+            "name": "<gold><b>%namespace%</b></gold>",
+            "lore": [
+              "<grey>[<green>Clic</green>]</grey> <yellow>Abrir namespace</yellow>",
+              "<grey>[<green>Shift Clic Izquierdo</green>]</grey> <red>Desactivar todas las recetas</red>",
+              "<grey>[<green>Shift Clic Derecho</green>]</grey> <yellow>Activar todas las recetas</yellow>"
+            ]
+          },
+          "folder": {
+            "name": "<gold><b>%folder%</b></gold>",
+            "lore": [
+              "<grey>[<green>Clic</green>]</grey> <yellow>Abrir carpeta</yellow>",
+              "<grey>[<green>Shift Clic Izquierdo</green>]</grey> <red>Desactivar todas las recetas</red>",
+              "<grey>[<green>Shift Clic Derecho</green>]</grey> <yellow>Activar todas las recetas</yellow>"
+            ]
+          },
+          "previous_page": {
+            "name": "<grey>⏪</grey>  <gold><b>Página Anterior</b></gold>"
+          },
+          "next_page": {
+            "name": "<grey>⏩</grey>  <gold><b>Siguiente Página</b></gold>"
+          },
+          "workstation_filter": {
+            "name": "<gold><b>Tipo: </b></gold><yellow>%type%</yellow>",
+            "lore": [
+              "",
+              "<grey>[<green>Clic Izquierdo</green>]</grey> <yellow>Siguiente tipo</yellow>",
+              "<grey>[<green>Clic Derecho</green>]</grey> <yellow>Tipo anterior</yellow>"
+            ]
+          }
+        },
+        "messages": {
+          "invalid_recipe": "<red>¡Esta receta no es del tipo %recipe_type%!</red>",
+          "delete": {
+            "confirm": "<yellow>¿Realmente deseas eliminar <gold>%recipe%?</gold></yellow>",
+            "confirmed": "<grey>[<green>SÍ</green>]</grey>",
+            "confirm_hover": "<green>¡Sí, eliminar la receta!</green>",
+            "declined": "<grey>[<red>NO</red>]</grey>",
+            "decline_hover": "<red>¡No, no eliminar la receta!</red>"
+          }
+        }
+      },
+      "settings": {
+        "gui_name": "<dark_grey>Configuración</dark_grey>",
+        "gui_help": [
+          "<grey>Edita la configuración del archivo principal</grey>",
+          "",
+          "<grey>¡Ten cuidado con el Bloqueo!</grey>"
+        ],
+        "items": {
+          "lockdown": {
+            "enabled": {
+              "name": "<green>✔ </green><gold><b>Bloqueo</b></gold>",
+              "lore": [
+                "<grey>»» [<green><b>Activado</b></green>]</grey>",
+                "<yellow>¡Las recetas están siendo bloqueadas!</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌ </red><gold><b>Bloqueo</b></gold>",
+              "lore": [
+                "<grey>»» [<red><b>Desactivado</b></red>]</grey>",
+                "<yellow>¡Las recetas no están bloqueadas!</yellow>"
+              ]
+            }
+          },
+          "darkMode": {
+            "enabled": {
+              "name": "<grey>■ </grey><gold><b>Modo Oscuro</b></gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Cambiar a Modo Claro"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>□ </grey><gold><b>Modo Claro</b></gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Cambiar a Modo Oscuro"
+              ]
+            }
+          },
+          "pretty_printing": {
+            "enabled": {
+              "name": "<grey>■ </grey><gold><b>Formato Legible</b></gold>",
+              "lore": [
+                "<grey>¡Los archivos JSON se guardan con </grey>",
+                "<grey>el formato correcto!</grey>",
+                "<grey>[<green>Clic</green>] Alternar impresión en una línea</grey>"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>□ </grey><gold><b>Impresión en Una Línea</b></gold>",
+              "lore": [
+                "<grey>¡Los archivos JSON se guardan en una sola línea!</grey>",
+                "<grey>[<green>Clic</green>] Alternar formato legible</grey>"
+              ]
+            }
+          },
+          "advanced_workbench": {
+            "enabled": {
+              "name": "<green>✔ </green><gold><b>Banco de Trabajo Avanzado</b></gold>",
+              "lore": [
+                "<grey>¡El Banco de Trabajo Avanzado está activado!</grey>",
+                "<grey>[<green>Clic</green>] Alternar banco de trabajo avanzado</grey>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌ </red><gold><b>Banco de Trabajo Avanzado</b></gold>",
+              "lore": [
+                "<grey>¡El Banco de Trabajo Avanzado está desactivado!</grey>",
+                "<grey>[<green>Clic</green>] Alternar banco de trabajo avanzado</grey>"
+              ]
+            }
+          },
+          "language": {
+            "name": "<gold><b>Idioma</b></gold>",
+            "lore": [
+              "<yellow>» <b><list_entry:0></b></yellow>",
+              "<grey><list_entry:1></grey>",
+              "<grey><list_entry:2></grey>",
+              "<grey><list_entry:3></grey>",
+              "<grey><list_entry:4></grey>",
+              "<grey>[<green>Clic Izquierdo</green>] Siguiente idioma</grey>",
+              "<grey>[<green>Clic Derecho</green>] Idioma anterior</grey>",
+              "<grey>[<green>Shift Clic</green>] Recargar idioma e interfaces</grey>"
+            ]
+          },
+          "debug": {
+            "enabled": {
+              "name": "<gold><b>Depuración</b></gold>",
+              "lore": [
+                "<grey>¡La depuración está activada!</grey>",
+                "<grey>¡A partir de ahora podrías recibir muchos mensajes!</grey>",
+                "<grey>[<green>Clic</green>] Alternar depuración</grey>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>Depuración</red>",
+              "lore": [
+                "<grey>¡La depuración está desactivada!</grey>",
+                "<grey>[<green>Clic</green>] Alternar depuración</grey>"
+              ]
+            }
+          },
+          "creator": {
+            "reset_after_save": {
+              "enabled": {
+                "name": "<gold><b>Reiniciar Creador de Recetas</b></gold>",
+                "lore": [
+                  "<grey>Reinicia el contenido del Creador de Recetas</grey>",
+                  "<grey>después de guardar.</grey>",
+                  "<grey>[<green>Clic</green>] Mantener contenido después de guardar</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<gold><b>Mantener Creador de Recetas</b></gold>",
+                "lore": [
+                  "<grey>Mantiene el contenido del Creador de Recetas</grey>",
+                  "<grey>después de guardar.</grey>",
+                  "<grey>[<green>Clic</green>] Reiniciar contenido después de guardar</grey>"
+                ]
+              }
+            }
+          },
+          "draw_background": {
+            "enabled": {
+              "name": "<grey>■ </grey><gold><b>Fondo</b></gold>",
+              "lore": [
+                "<grey>Cada menú de interfaz tiene un fondo de panel de vidrio</grey>",
+                "",
+                "<grey>[<green>Clic</green>] Desactivar fondo de panel de vidrio"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>□ </grey><gold><b>Fondo</b></gold>",
+              "lore": [
+                "<grey>¡Las interfaces no tienen fondo de panel de vidrio!</grey>",
+                "<red>Esto hace que las cuadrículas de crafteo y otras ranuras de entrada</red>",
+                "<red>sean invisibles. ¡Se debería usar un menú con textura personalizada!</red>",
+                "",
+                "<grey>[<green>Clic</green>] Activar fondo de panel de vidrio"
+              ]
+            }
+          },
+          "recipe_book_keep_last_open": {
+            "enabled": {
+              "name": "<green>✔ </green><gold><b>Mantener Último Abierto</b></gold>",
+              "lore": [
+                "<grey>Al reabrir el libro de recetas, se abre</grey>",
+                "<grey>el menú en el que el jugador estuvo por última vez.</grey>",
+                "",
+                "<grey>[<green>Clic</green>] Desactivar Mantener Último Abierto"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌ </red><gold><b>Mantener último abierto</b></gold>",
+              "lore": [
+                "<grey>Al reabrir el libro de recetas,</grey>",
+                "<grey>siempre se abre la vista general de recetas.</grey>",
+                "",
+                "<grey>[<green>Clic</green>] Activar Mantener Último Abierto"
+              ]
+            }
+          }
+        }
+      },
+      "item_list": {
+        "gui_name": "<black><b>Lista de Objetos</b></black>",
+        "items": {
+          "next_page": {
+            "name": "<gold>Siguiente Página</gold>"
+          },
+          "previous_page": {
+            "name": "<gold>Página Anterior</gold>"
+          },
+          "custom_item": {
+            "lore": [
+              "",
+              "<grey>[<green>Clic Derecho</green>]</grey><yellow> Editar objeto usando el Creador de Objetos</yellow>",
+              "<grey>[<red>Shift Clic Derecho</red>]</grey><red> Eliminar objeto</red>",
+              "<grey>[<green>Clic Izquierdo</green>]</grey><yellow> Dar un solo objeto</yellow>",
+              "<grey>[<green>Shift Clic Izquierdo</green>]</grey><yellow> Dar pila completa del objeto</yellow>"
+            ]
+          },
+          "custom_item_error": {
+            "name": "<red>¡Error al cargar el objeto!</red>"
+          },
+          "namespace": {
+            "name": "<grey>%namespace%</grey>",
+            "lore": [
+              "",
+              "<grey>[<green>Clic</green>] Ver objetos de este namespace</grey>"
+            ]
+          }
+        },
+        "messages": {
+          "delete": {
+            "confirm": "<yellow>¿Realmente deseas eliminar <gold>%item%?</gold></yellow>",
+            "confirmed": "<grey>[<green>SÍ</green>]</grey>  ",
+            "declined": "<grey>[<red>NO</red>]</grey>"
+          }
+        }
+      }
+    },
+    "item_creator": {
+      "main_menu": {
+        "gui_name": "<black><b>Creador de Objetos</b></black>",
+        "gui_help": [
+          "<grey>Coloca el objeto que deseas editar en la parte superior central</grey>",
+          "<yellow>¡Algunas características solo están disponibles si guardas el objeto!</yellow>"
+        ],
+        "messages": {
+          "save": {
+            "input": {
+              "line1": "<white>Escribe el <hover:show_text:'Los objetos personalizados se guardan de la siguiente manera: <yellow>/data/<folder>/items/<item_name>.conf</yellow><br><br>¡La carpeta se puede usar para agrupar tus objetos y se permiten carpetas anidadas!<br>Ingresa tu carpeta y nombre así: <yellow>/wui <folder> <name></yellow><br><br><red>¡Asegúrate de que la carpeta y el nombre solo contengan: <br> - letras minúsculas,<br> - números,<br> - guiones bajos,<br> - o guiones!<br>Usa <yellow>/wui </yellow>para obtener asistencia de entrada, como autocompletado!</red>'><yellow>carpeta y nombre del objeto</yellow></hover>, bajo el cual guardar el objeto"
+            },
+            "success": "<green>Configuración guardada en:</green>"
+          },
+          "enchant": {
+            "invalid_lvl": "<red>¡Nivel inválido! ¡No es un número!</red>",
+            "invalid_enchant": "<red>¡Encantamiento inválido! <dark_red>%ENCHANT%</dark_red> no existe!</red>",
+            "no_lvl": "<red>¡No se estableció ningún nivel!</red>"
+          },
+          "potion": {
+            "error_number": "<red>¡Error al analizar números! <dark_red><name> <duration> <level> [<ambient> <particles>]</dark_red></red>",
+            "wrong_args": "<red>¡Argumentos incorrectos o nombre inválido! <dark_red><name> <duration> <level> [<ambient> <particles>]</dark_red></red>",
+            "success": "<green>Efecto de poción añadido </green><gold>%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%</gold>",
+            "invalid_name": "<red>¡Nombre inválido! <dark_red>%NAME%</dark_red> no existe!</red>"
+          },
+          "attribute": {
+            "amount": {
+              "error": "<red>¡Error al analizar el número! ¿Es un número? ¡Debería serlo!</red>"
+            },
+            "uuid": {
+              "error": {
+                "line1": "<red>UUID inválido: <dark_red>%UUID%</dark_red></red>",
+                "line2": "<red>¡Ingresa un UUID válido!</red>"
+              }
+            }
+          },
+          "damage": {
+            "invalid_type": "<red>¡El objeto actual no admite valor de daño!</red>",
+            "value_success": "<green>¡Daño del objeto establecido en <gold>%VALUE%</gold>!</green>",
+            "invalid_value": "<red>¡El valor <dark_red>%VALUE%</dark_red> no es un número!</red>"
+          },
+          "repair": {
+            "invalid_type": "<red>¡El objeto actual no admite costo de reparación!</red>",
+            "value_success": "<green>¡Costo de reparación establecido en <gold>%VALUE%</gold>!</green>",
+            "invalid_value": "<red>¡El valor <dark_red>%VALUE%</dark_red> no es un número válido!</red>"
+          },
+          "fuel": {
+            "value_success": "<green>¡Tiempo de combustión establecido en <gold>%VALUE% ticks</gold>!</green>",
+            "invalid_value": "<red>¡El valor <dark_red>%VALUE%</dark_red> no es un número válido!</red>"
+          },
+          "custom_model_data": {
+            "disabled": "<red><b>Desactivado</b></red>",
+            "success": "<green>¡Datos del modelo establecidos en <gold>%VALUE%</gold>!</green>",
+            "invalid_value": "<red>¡El valor <dark_red>%VALUE%</dark_red> no es un número válido para datos del modelo!</red>"
+          },
+          "consume": {
+            "valid": "<green>Costo de durabilidad establecido en </green><yellow>%VALUE%</yellow>",
+            "invalid": "<red>¡Esto no es un número! Por favor, escribe un número válido, por ejemplo: <yellow>1 </yellow>o<yellow> -1</yellow></red>"
+          }
+        },
+        "items": {
+          "invalid_type": {
+            "name": "<red>Objeto inválido</red>",
+            "lore": [
+              "<grey>Este objeto no es compatible</grey>",
+              "<grey>con esta configuración!</grey>"
+            ]
+          },
+          "invalid_version": {
+            "name": "<red>Versión de Minecraft inválida</red>",
+            "lore": [
+              "<grey>¡Esta característica no es compatible</grey>",
+              "<grey>con la versión actual de Minecraft!</grey>",
+              "<grey>¡Necesitas al menos la versión 1.14 para usar esta característica!</grey>"
+            ]
+          },
+          "page_next": {
+            "name": "<grey>⏩</grey>  <gold><b>Siguiente Página</b></gold>"
+          },
+          "page_previous": {
+            "name": "<grey>⏪</grey>  <gold><b>Página Anterior</b></gold>"
+          },
+          "save_item": {
+            "name": "<grey>▷</grey>  <gold><b>Guardar Objeto</b></gold>",
+            "lore": [
+              "<yellow>¡Guarda el objeto bajo la carpeta y clave existentes!</yellow>"
+            ]
+          },
+          "save_item_as": {
+            "name": "<grey>✎</grey>  <gold><b>Guardar como...</b></gold>",
+            "lore": [
+              "<grey>Guarda el objeto con una nueva carpeta y clave.</grey>",
+              "<grey>Entrada: <yellow><b>carpeta clave_objeto</b></yellow></grey>",
+              "<red>La carpeta y la clave deben estar en minúsculas y</red>",
+              "<red>¡solo contener letras, números, '_', '-', o '/'!</red>"
+            ]
+          },
+          "apply_item": {
+            "name": "<grey>▷</grey>  <green><b>Aplicar Objeto</b></green>",
+            "help": [
+              "<yellow>Aplica el objeto a la receta</yellow>"
+            ]
+          },
+          "cancel": {
+            "name": "<grey>➦</grey> <red><b>Cancelar",
+            "lore": [
+              "<red>¡Algunas opciones solo están disponibles al guardar el objeto!",
+              "<red>¡Esas opciones no se aplicarán al objeto!"
+            ]
+          },
+          "reference": {
+            "wolfyutilities": {
+              "name": "<gold><b>WolfyUtilities</b></gold>",
+              "lore": [
+                "<grey>Este objeto fue creado con WolfyUtilities</grey>",
+                "<grey>y está vinculado a <yellow>%item_key%</yellow>!</grey>",
+                "<gold>¡Para editar el objeto usa CustomCrafting o la API!</gold>"
+              ]
+            },
+            "oraxen": {
+              "name": "<gold><b>Oraxen</b></gold>",
+              "lore": [
+                "<grey>Este objeto fue creado con Oraxen</grey>",
+                "<grey>y está vinculado a <yellow>%item_key%</yellow>!</grey>",
+                "<yellow>¡Para editar el objeto usa Oraxen!</yellow>"
+              ]
+            },
+            "itemsadder": {
+              "name": "<gold><b>ItemsAdder</b></gold>",
+              "lore": [
+                "<grey>Este objeto fue creado con ItemsAdder</grey>",
+                "<grey>y está vinculado a <yellow>%item_key%</yellow>!</grey>",
+                "<yellow>¡Para editar el objeto usa ItemsAdder!</yellow>"
+              ]
+            },
+            "mythicmobs": {
+              "name": "<gold><b>MythicMobs</b></gold>",
+              "lore": [
+                "<grey>Este objeto fue creado con MythicMobs</grey>",
+                "<yellow>¡Para editar el objeto usa MythicMobs!</yellow>"
+              ]
+            }
+          },
+          "meta_ignore": {
+            "name": "<grey>Modo: <dark_aqua>%VAR%</dark_aqua></grey>",
+            "lore": [
+              "<yellow>¡Cambia la forma en que se verifica este meta!</yellow>",
+              "<grey>Ignora meta específico, por ejemplo, DisplayName</grey>",
+              "<grey>¡El meta numérico también se puede configurar para</grey>",
+              "<grey>permitir solo valores más altos o más bajos!</grey>"
+            ],
+            "help": [
+              "<grey>----------------------------------------</grey>",
+              "<dark_aqua>EXACTO </dark_aqua><grey>- ¡El meta debe ser exactamente igual!</grey>",
+              "<dark_aqua>IGNORAR </dark_aqua><grey>- ¡El meta se ignora y no es necesario!</grey>",
+              "<grey>Para elementos numéricos:</grey>",
+              "<dark_aqua>MÁS ALTO </dark_aqua><grey>- ¡El valor puede ser mayor que el valor establecido!</grey>",
+              "<dark_aqua>MÁS BAJO </dark_aqua><grey>- ¡El valor puede ser menor que el valor establecido!</grey>"
+            ]
+          },
+          "display_name": {
+            "option": {
+              "name": "<gold>Cambiar nombre",
+              "lore": [
+                "<grey>Editar nombre para mostrar"
+              ]
+            },
+            "set": {
+              "name": "<grey>✎ <gold><b>Establecer nombre para mostrar",
+              "lore": [
+                "<yellow>Cambiar nombre para mostrar"
+              ],
+              "message": "<white>Escribe el nuevo nombre para el objeto."
+            },
+            "remove": {
+              "name": "<grey>▷ <gold><b>Eliminar nombre para mostrar",
+              "lore": [
+                "<yellow>Elimina el nombre para mostrar y",
+                "<yellow>lo restablece al valor predeterminado"
+              ]
+            }
+          },
+          "enchantments": {
+            "option": {
+              "name": "<gold>Encantamientos</gold>",
+              "lore": [
+                "<grey>Editar encantamientos</grey>"
+              ]
+            },
+            "add": {
+              "name": "<gold>Agregar encantamiento</gold>",
+              "message": "<yellow>¡Escribe el encantamiento y el nivel! </yellow><gold>unbreaking 5</gold>"
+            },
+            "remove": {
+              "name": "<dark_red>Eliminar encantamiento</dark_red>",
+              "message": "<yellow>¡Escribe el encantamiento! </yellow><gold>unbreaking</gold>"
+            }
+          },
+          "lore": {
+            "option": {
+              "name": "<gold>Editar descripción",
+              "lore": [
+                "<yellow>Agregar o eliminar líneas de descripción"
+              ]
+            },
+            "add": {
+              "name": "<grey>✎ <gold><b>Agregar descripción",
+              "message": "<yellow>Escribe una nueva línea de descripción </yellow><grey>(<yellow>Formato: <click:open_url:'https://docs.adventure.kyori.net/minimessage/format.html    '><u><gold>MiniMessage</gold></u></click></yellow>)</grey>"
+            },
+            "edit": {
+              "name": "<grey>✎ <gold><b>Editar descripción",
+              "message": "<yellow>Eliminar y editar líneas específicas de descripción</yellow>"
+            }
+          },
+          "flags": {
+            "option": {
+              "name": "<gold>Establecer banderas</gold>",
+              "lore": [
+                "<grey>Alternar banderas de objeto</grey>",
+                "<grey>por ejemplo, ocultar encantamientos</grey>"
+              ]
+            },
+            "enchants": {
+              "enabled": {
+                "name": "<green><b>Ocultar encantamientos</b></green>"
+              },
+              "disabled": {
+                "name": "<red><b>Ocultar encantamientos</b></red>"
+              }
+            },
+            "attributes": {
+              "enabled": {
+                "name": "<green><b>Ocultar atributos</b></green>"
+              },
+              "disabled": {
+                "name": "<red><b>Ocultar atributos</b></red>"
+              }
+            },
+            "unbreakable": {
+              "enabled": {
+                "name": "<green><b>Ocultar irrompible</b></green>"
+              },
+              "disabled": {
+                "name": "<red><b>Ocultar irrompible</b></red>"
+              }
+            },
+            "destroys": {
+              "enabled": {
+                "name": "<green><b>Ocultar destruye</b></green>"
+              },
+              "disabled": {
+                "name": "<red><b>Ocultar destruye</b></red>"
+              }
+            },
+            "placed_on": {
+              "enabled": {
+                "name": "<green><b>Ocultar colocado en</b></green>"
+              },
+              "disabled": {
+                "name": "<red><b>Ocultar colocado en</b></red>"
+              }
+            },
+            "potion_effects": {
+              "enabled": {
+                "name": "<green><b>Ocultar pociones</b></green>"
+              },
+              "disabled": {
+                "name": "<red><b>Ocultar pociones</b></red>"
+              }
+            },
+            "dye": {
+              "enabled": {
+                "name": "<green><b>Ocultar tinte</b></green>"
+              },
+              "disabled": {
+                "name": "<red><b>Ocultar tinte</b></red>"
+              }
+            }
+          },
+          "player_head": {
+            "option": {
+              "name": "<gold>Configuración de calavera</gold>",
+              "lore": [
+                "<grey>Agregar texturas a cabezas de jugador</grey>"
+              ]
+            },
+            "texture": {
+              "apply": {
+                "name": "<gold>Aplicar textura</gold>",
+                "lore": [
+                  "<yellow>Aplica la textura de la cabeza de jugador</yellow>",
+                  "<grey>«« </grey><yellow>¡Coloca la cabeza de jugador con la textura en la ranura vacía!</yellow>",
+                  "<grey>[<green>Clic</green>] Aplicar textura</grey>"
+                ]
+              }
+            },
+            "owner": {
+              "name": "<gold>Establecer propietario de calavera</gold>",
+              "lore": [
+                "<yellow>Establece el propietario de la calavera</yellow>",
+                "<grey>[<green>Clic</green>] Ingresa el UUID o nombre del jugador</grey>"
+              ],
+              "message": "<yellow>¡Escribe el nombre del jugador!</yellow>"
+            }
+          },
+          "unbreakable": {
+            "enabled": {
+              "name": "<green>Irrompible</green>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Desactivar irrompible</grey>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>Rompi ble</red>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Activar irrompible</grey>"
+              ]
+            }
+          },
+          "potion": {
+            "option": {
+              "name": "<gold>Efectos de poción</gold>",
+              "lore": [
+                "<grey>Configurar efectos de poción</grey>"
+              ]
+            },
+            "add": {
+              "name": "<green>Agregar efecto de poción</green>",
+              "lore": [
+                "<yellow>Crea y agrega un efecto de poción</yellow>",
+                "<yellow>Esto abrirá una interfaz donde puedes</yellow>",
+                "<yellow>crear fácilmente tu efecto.</yellow>",
+                "",
+                "<grey>[<green>Clic</green>] Abrir creador de efectos de poción</grey>"
+              ]
+            },
+            "remove": {
+              "name": "<dark_red>Eliminar efecto de poción</dark_red>",
+              "lore": [
+                "<yellow>Elimina un efecto de poción de un tipo específico.</yellow>",
+                "<yellow>Esto abrirá una interfaz donde puedes hacer clic en el</yellow>",
+                "<yellow>tipo de efecto que deseas eliminar.</yellow>",
+                "",
+                "<grey>[<green>Clic</green>] Abrir selector de tipos de efectos de poción</grey>"
+              ],
+              "message": "<yellow>¡Escribe el nombre de la poción que deseas eliminar!</yellow>"
+            }
+          },
+          "attribute": {
+            "option": {
+              "name": "<gold>Establecer atributos</gold>",
+              "lore": [
+                "<grey>Agregar o eliminar modificadores de atributo</grey>"
+              ]
+            },
+            "generic_max_health": {
+              "name": "<gold>Salud máxima genérica</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Configurar modificador</grey>"
+              ]
+            },
+            "generic_follow_range": {
+              "name": "<gold>Rango de seguimiento genérico</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Configurar modificador</grey>"
+              ]
+            },
+            "generic_knockback_resistance": {
+              "name": "<gold>Resistencia al retroceso genérica</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Configurar modificador</grey>"
+              ]
+            },
+            "generic_movement_speed": {
+              "name": "<gold>Velocidad de movimiento genérica</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Configurar modificador</grey>"
+              ]
+            },
+            "generic_flying_speed": {
+              "name": "<gold>Velocidad de vuelo genérica</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Configurar modificador</grey>"
+              ]
+            },
+            "generic_attack_damage": {
+              "name": "<gold>Daño de ataque genérico</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Configurar modificador</grey>"
+              ]
+            },
+            "generic_attack_speed": {
+              "name": "<gold>Velocidad de ataque genérica</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Configurar modificador</grey>"
+              ]
+            },
+            "generic_armor": {
+              "name": "<gold>Armadura genérica</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Configurar modificador</grey>"
+              ]
+            },
+            "generic_armor_toughness": {
+              "name": "<gold>Resistencia de armadura genérica</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Configurar modificador</grey>"
+              ]
+            },
+            "generic_luck": {
+              "name": "<gold>Suerte genérica</gold>",
+              "lore": []
+            },
+            "horse_jump_strength": {
+              "name": "<gold>Fuerza de salto de caballo</gold>",
+              "lore": []
+            },
+            "zombie_spawn_reinforcements": {
+              "name": "<gold>Refuerzos de aparición de zombi</gold>",
+              "lore": []
+            },
+            "add_number": {
+              "name": "%C%Añadir número",
+              "lore": [
+                "§eAgrega todas las cantidades de los modificadores al valor actual del atributo."
+              ]
+            },
+            "add_scalar": {
+              "name": "%C%Multiplicar número",
+              "lore": [
+                "<yellow>Multiplica el valor actual del atributo por (1 + x), </yellow>",
+                "<yellow>donde x es la suma de las cantidades de los modificadores</yellow>"
+              ]
+            },
+            "multiply_scalar_1": {
+              "name": "%C%Multiplicar escalar",
+              "lore": [
+                "<yellow>¡La opción más compleja! ¡Activa la ayuda (arriba a la derecha) para más información!</yellow>",
+                "<yellow>Para cada modificador, multiplica el valor actual del atributo por (1 + x),</yellow>",
+                "<yellow>donde x es la cantidad del modificador particular.</yellow>"
+              ],
+              "help": [
+                "<grey>---------------------------------------------------</grey>",
+                "<yellow>Funciona igual que la Operación 1 (Multiplicar) si solo hay un único modificador </yellow>",
+                "<yellow>con operación 1 o 2 (Multiplicar escalar).</yellow>",
+                "<yellow>Sin embargo, para múltiples modificadores, multiplicará los modificadores </yellow>",
+                "<yellow>en lugar de sumarlos. </yellow>",
+                "<yellow>Por ejemplo, modificar un atributo con {Amount:2,Operation:2} y </yellow>",
+                "<yellow>{Amount:4,Operation:2} con una base de 3 resulta en 45 (3*(1 + 2)*(1 + 4) = 45)</yellow>",
+                "<gold>Ver Wiki de Minecraft: <dark_aqua>https://minecraft.gamepedia.com/Attribute#Operations  </dark_aqua></gold>"
+              ]
+            },
+            "slot_hand": {
+              "name": "<gold>Mano</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Alternar activado/desactivado</grey>"
+              ]
+            },
+            "slot_off_hand": {
+              "name": "<gold>Mano secundaria</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Alternar activado/desactivado</grey>"
+              ]
+            },
+            "slot_feet": {
+              "name": "<gold>Pies</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Alternar activado/desactivado</grey>"
+              ]
+            },
+            "slot_legs": {
+              "name": "<gold>Piernas</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Alternar activado/desactivado</grey>"
+              ]
+            },
+            "slot_chest": {
+              "name": "<gold>Pecho</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Alternar activado/desactivado</grey>"
+              ]
+            },
+            "slot_head": {
+              "name": "<gold>Cabeza</gold>",
+              "lore": [
+                "<grey>[<green>Clic</green>] Alternar activado/desactivado</grey>"
+              ]
+            },
+            "save": {
+              "name": "<green>Agregar atributo</green>",
+              "lore": [
+                "<yellow>Aplica un modificador de atributo al objeto</yellow>",
+                "<yellow>con las opciones y valores establecidos.</yellow>",
+                "<grey>[<green>Clic</green>] Agregar modificador de atributo</grey>"
+              ]
+            },
+            "delete": {
+              "name": "<red>Eliminar atributo</red>",
+              "lore": [
+                "<yellow>Elimina los modificadores de atributo</yellow>",
+                "<yellow>de este objeto.</yellow>",
+                "<grey>[<green>Clic</green>] Abrir interfaz de chat</grey>"
+              ]
+            },
+            "set_amount": {
+              "name": "<grey>Cantidad: </grey><yellow>%NUMBER%</yellow>",
+              "lore": [
+                "<yellow>Establece el valor de este modificador</yellow>",
+                "",
+                "<grey>[<green>Clic</green>] Ingresar valor numérico</grey>"
+              ],
+              "message": "<yellow>¡Escribe la cantidad que deseas! Por ejemplo<gold> 0.4</gold></yellow>"
+            },
+            "set_name": {
+              "name": "<grey>Nombre: </grey><yellow>%NAME%</yellow>",
+              "lore": [
+                "<yellow>Establece el nombre de este modificador</yellow>",
+                "<grey>[<green>Clic</green>] Ingresar el nombre</grey>"
+              ],
+              "message": "<yellow>¡Escribe el nombre!</yellow>"
+            },
+            "set_uuid": {
+              "name": "<grey>UUID: </grey><yellow>%UUID%</yellow>",
+              "lore": [
+                "<yellow>Establece el UUID de este modificador</yellow>",
+                "<red>¡Debe ser un formato UUID válido!</red>",
+                "<grey>[<green>Clic</green>] Ingresar el UUID</grey>"
+              ],
+              "message": "<yellow>¡Escribe el UUID para el atributo! ¡Debe ser un UUID válido!</yellow>"
+            }
+          },
+          "damage": {
+            "option": {
+              "name": "<gold>Establecer daño del objeto</gold>",
+              "lore": [
+                "<grey>Establece el valor de daño del objeto</grey>"
+              ]
+            },
+            "set": {
+              "name": "<gold>Establecer daño</gold>",
+              "lore": [
+                "<yellow>¡Establece el valor de daño!</yellow>",
+                "<grey>[<green>Clic</green>] Ingresar valor numérico</grey>"
+              ],
+              "message": "<yellow>¡Escribe la cantidad de daño!</yellow>"
+            },
+            "reset": {
+              "name": "<red>Restablecer daño</red>",
+              "help": [
+                "<yellow>Restablece el valor de daño a 0</yellow>",
+                "<grey>[<green>Clic</green>] Restablecer daño</grey>"
+              ]
+            }
+          },
+          "repair_cost": {
+            "option": {
+              "name": "<gold>Costo de reparación</gold>",
+              "lore": [
+                "<grey>¡Establece el costo de reparación para este objeto!</grey>",
+                "<grey>por ejemplo, para prevenir reparaciones</grey>"
+              ]
+            },
+            "set": {
+              "name": "<gold>Establecer costo de reparación</gold>",
+              "message": "<yellow>Escribe la cantidad del costo</yellow>"
+            },
+            "reset": {
+              "name": "<red>Restablecer costo de reparación</red>",
+              "lore": [
+                "<grey>Restablece el costo de reparación a 0</grey>"
+              ]
+            }
+          },
+          "fuel": {
+            "option": {
+              "name": "<gold>Configuración de combustible</gold>",
+              "lore": [
+                "<grey>Permite que este objeto sea usado como combustible en hornos.</grey>",
+                "<red>Requiere objeto guardado</red>"
+              ]
+            },
+            "burn_time": {
+              "set": {
+                "name": "<green>Tiempo de combustión: </green><grey>%VAR% ticks</grey>",
+                "lore": [
+                  "<grey>[<green>Clic</green>] Establecer tiempo de combustión</grey>"
+                ],
+                "help": [
+                  "<grey>¡Establece el tiempo de combustión en ticks!</grey>",
+                  "<grey>20 ticks = 1 segundo</grey>",
+                  "<red>¡Establecerlo en 0 desactivará que se</red>",
+                  "<red>guarde como combustible!</red>"
+                ],
+                "message": "<yellow>¡Escribe el tiempo de combustión en ticks!</yellow>"
+              },
+              "reset": {
+                "name": "<red>Restablecer tiempo de combustión</red>",
+                "lore": [
+                  "<grey>¡El objeto ya no se guardará</grey>",
+                  "<grey>como combustible!</grey>"
+                ]
+              }
+            },
+            "furnace": {
+              "enabled": {
+                "name": "<green>Horno</green>",
+                "lore": [
+                  "<grey>Puede usarse en horno</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>Horno</red>",
+                "lore": [
+                  "<grey>No puede usarse en horno</grey>"
+                ]
+              }
+            },
+            "blast_furnace": {
+              "enabled": {
+                "name": "<green>Alto horno</green>",
+                "lore": [
+                  "<grey>Puede usarse en alto horno</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>Alto horno</red>",
+                "lore": [
+                  "<grey>No puede usarse en alto horno</grey>"
+                ]
+              }
+            },
+            "smoker": {
+              "enabled": {
+                "name": "<green>Ahumador</green>",
+                "lore": [
+                  "<grey>Puede usarse en ahumador</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>Ahumador</red>",
+                "lore": [
+                  "<grey>No puede usarse en ahumador</grey>"
+                ]
+              }
+            }
+          },
+          "custom_model_data": {
+            "option": {
+              "name": "<gold>Datos de modelo personalizado</gold>",
+              "lore": [
+                "<grey>Establece los datos de modelo personalizado</grey>",
+                "<grey>¡Se usa para modelos y texturas personalizados!</grey>",
+                "<grey>Disponible desde Minecraft 1.14</grey>"
+              ]
+            },
+            "set": {
+              "name": "<grey>Datos del modelo: %VAR%</grey>",
+              "help": [
+                "<grey>¡Establece los datos de modelo personalizado</grey>",
+                "<grey>para este objeto!</grey>"
+              ],
+              "message": "<yellow>¡Escribe los datos de modelo personalizado!</yellow>"
+            },
+            "reset": {
+              "name": "<red>Eliminar datos del modelo</red>",
+              "help": [
+                "<grey>¡Elimina los datos de modelo personalizado</grey>",
+                "<grey>de este objeto!</grey>"
+              ]
+            }
+          },
+          "consume": {
+            "option": {
+              "name": "<gold>Costo de durabilidad y reemplazo</gold>",
+              "lore": [
+                "<grey>Crea un objeto que pierda durabilidad o sea reemplazado</grey>",
+                "<grey>cuando se use dentro de una receta.</grey>",
+                "<red>Requiere objeto guardado</red>"
+              ]
+            },
+            "durability_cost": {
+              "enabled": {
+                "name": "<grey>Costo de durabilidad: <dark_aqua>%VAR%</dark_aqua></grey>",
+                "lore": [
+                  "<grey>>0 = </grey><dark_aqua>¡disminuir durabilidad!</dark_aqua>",
+                  "<grey> 0 = </grey><dark_aqua>¡eliminado completamente! ¡Usa reemplazo para prevenirlo!</dark_aqua>",
+                  "<grey><0 = </grey><dark_aqua>¡aumentar durabilidad!</dark_aqua>"
+                ],
+                "message": "<yellow>Escribe el costo de durabilidad, que se restará del objeto cuando se use en la cuadrícula de crafteo</yellow>"
+              },
+              "disabled": {
+                "name": "<grey>Costo de durabilidad: <dark_red><b>Desactivado</b></dark_red></grey>",
+                "lore": [
+                  "<red>¡El objeto no debe ser apilable!</red>",
+                  "<red>¡El reemplazo debe estar desactivado!</red>"
+                ]
+              }
+            },
+            "consume_item": {
+              "enabled": {
+                "name": "<green>Consumido</green>",
+                "lore": [
+                  "<grey>¡El objeto será consumido!</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>No consumido</red>",
+                "lore": [
+                  "<grey>¡El objeto no será consumido!</grey>"
+                ]
+              }
+            },
+            "replacement": {
+              "enabled": {
+                "name": "<green>¡Reemplazo activado!</green>",
+                "lore": [
+                  "<grey>¡El costo de durabilidad está bloqueado ahora!</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>¡Reemplazo desactivado!</red>"
+              }
+            }
+          },
+          "custom_durability": {
+            "option": {
+              "name": "<gold>Durabilidad y daño personalizados</gold>",
+              "lore": [
+                "<grey>¡Establece durabilidad y daño personalizados a tu objeto!</grey>",
+                "<grey>¡Esto reemplazará la durabilidad y el daño vanilla!</grey>"
+              ]
+            },
+            "remove": {
+              "name": "<red>Eliminar</red>",
+              "lore": [
+                "<yellow>Elimina la durabilidad personalizada de este objeto.</yellow>",
+                "<grey>[<green>Clic</green>] Eliminar durabilidad personalizada</grey>"
+              ]
+            },
+            "set_durability": {
+              "name": "<grey>Establecer durabilidad: <dark_aqua>%VAR%</dark_aqua></grey>",
+              "lore": [
+                "<yellow>Establece una durabilidad personalizada para este objeto.</yellow>",
+                "<grey>[<green>Clic</green>] Ingresar durabilidad</grey>"
+              ],
+              "message": "<yellow>Escribe la durabilidad personalizada. <red>Valor máximo: 2,147,483,647</red></yellow>"
+            },
+            "set_damage": {
+              "name": "<grey>Establecer daño: <dark_aqua>%VAR%</dark_aqua></grey>",
+              "lore": [
+                "<yellow>Establece el daño que tiene el objeto.</yellow>",
+                "<grey>[<green>Clic</green>] Ingresar daño</grey>"
+              ],
+              "message": "<yellow>Escribe el daño personalizado del objeto. <red>Valor máximo: 2,147,483,647</red></yellow>"
+            },
+            "set_tag": {
+              "name": "<grey>Establecer etiqueta: <dark_aqua>%VAR%</dark_aqua></grey>",
+              "lore": [
+                "<yellow>Establece la etiqueta que muestra la durabilidad y el daño</yellow>",
+                "<grey><u>Reemplazos:</u></grey> ",
+                "<gold>%dur% </gold><grey>-> </grey><yellow>la durabilidad que queda para usar</yellow>",
+                "<gold>%max_dur% </gold><grey>-> </grey><yellow>durabilidad máxima del objeto</yellow>",
+                "<grey>[<green>Clic</green>] Ingresar la etiqueta personalizada</grey>"
+              ],
+              "message": "<yellow>¡Escribe la etiqueta que debería aparecer al final de la descripción! %dur%</yellow>"
+            }
+          },
+          "localized_name": {
+            "option": {
+              "name": "<gold>Nombre localizado</gold>",
+              "lore": [
+                "<grey>Establece el nombre localizado para usar</grey>",
+                "<grey>traducciones de paquetes de recursos, etc.</grey>"
+              ]
+            },
+            "set": {
+              "name": "<grey>Establecer nombre localizado: <white>%VAR%</white></grey>",
+              "message": "<yellow>Escribe el nombre localizado</yellow>"
+            },
+            "remove": {
+              "name": "<red>Eliminar nombre localizado</red>"
+            }
+          },
+          "permission": {
+            "option": {
+              "name": "<gold>Permiso</gold>",
+              "lore": [
+                "<grey>Establece el permiso necesario para obtener este objeto</grey>",
+                "<grey>por ejemplo, usarlo para crafteo o resultados de recetas de yunque</grey>",
+                "<red>Requiere objeto guardado</red>"
+              ]
+            },
+            "set": {
+              "name": "<grey>Establecer permiso: <dark_aqua>%VAR%</dark_aqua></grey>",
+              "message": "<yellow>Escribe la cadena de permiso que los jugadores necesitan para obtener este objeto</yellow>"
+            },
+            "remove": {
+              "name": "<grey>Eliminar permiso</grey>"
+            }
+          },
+          "rarity": {
+            "option": {
+              "name": "<gold>Rareza </gold><dark_grey>[<grey>Beta</grey>]</dark_grey>",
+              "lore": [
+                "<grey>Establece la rareza de este objeto.</grey>",
+                "<grey>Este valor puede usarse en crafteo o resultados de recetas de yunque</grey>",
+                "<red>Requiere objeto guardado</red>"
+              ]
+            },
+            "set": {
+              "name": "<grey>Establecer porcentaje de rareza: <dark_aqua>%VAR%</dark_aqua></grey>",
+              "lore": [
+                "<grey>Escribe un valor de 1.0 o menor</grey>",
+                "<grey>por ejemplo, 1.0 -> 100%</grey>",
+                "     <grey>0.04 -> 4%</grey>"
+              ],
+              "message": "<yellow>Escribe el porcentaje de qué tan raro debe ser este objeto. <red>¡El número debe ser menor que 1.0!</red></yellow>"
+            },
+            "reset": {
+              "name": "<grey>Restablecer el porcentaje de rareza</grey>",
+              "lore": [
+                "<grey>Restablece el porcentaje a 1.0 (100%)</grey>"
+              ]
+            }
+          },
+          "persistent_data": {
+            "option": {
+              "name": "<gold>Datos NBT persistentes </gold>",
+              "lore": [
+                "<grey>Almacena datos personalizados en NBT, vinculados a una clave.</grey>"
+              ]
+            }
+          },
+          "elite_workbench": {
+            "option": {
+              "name": "<gold>Banco de Trabajo Élite </gold><dark_grey>[<grey>Beta</grey>]</dark_grey>",
+              "lore": [
+                "<grey>Crea y configura tu propio banco de trabajo único</grey>",
+                "<grey>con una cuadrícula de crafteo de hasta 6x6</grey>",
+                "<red>Requiere objeto guardado</red>"
+              ]
+            },
+            "grid_size": {
+              "size_2": {
+                "name": "<grey><b>Tamaño de cuadrícula:</b> 2<dark_grey>x</dark_grey>2 <dark_grey>[<green>Recomendado</green>]</dark_grey></grey>",
+                "lore": [
+                  "<yellow>Una cuadrícula de crafteo 2x2, para recetas más pequeñas.</yellow>",
+                  "",
+                  "<grey>[<green>Clic</green>] Cambiar a cuadrícula de crafteo 3x3</grey>"
+                ]
+              },
+              "size_3": {
+                "name": "<grey><b>Tamaño de cuadrícula:</b> 3<dark_grey>x</dark_grey>3 <dark_grey>[<green>Recomendado</green>]</dark_grey></grey>",
+                "lore": [
+                  "<yellow>Una cuadrícula de crafteo 3x3.</yellow>",
+                  "<yellow>Para el comportamiento de crafteo normal.</yellow>",
+                  "",
+                  "<grey>[<green>Clic</green>] Cambiar a cuadrícula de crafteo 4x4</grey>"
+                ]
+              },
+              "size_4": {
+                "name": "<grey><b>Tamaño de cuadrícula:</b> <yellow>4</yellow><dark_grey>x</dark_grey><yellow>4</yellow></grey>",
+                "lore": [
+                  "<yellow>Más espacio para craftear.</yellow>",
+                  "<yellow>Crea recetas complejas con más objetos.</yellow>",
+                  "",
+                  "<grey>[<green>Clic</green>] Cambiar a cuadrícula de crafteo 5x5</grey>"
+                ]
+              },
+              "size_5": {
+                "name": "<grey><b>Tamaño de cuadrícula:</b> <gold>5</gold><dark_grey>x</dark_grey><gold>5 </gold><dark_grey>[<red><b>Advertencia</b></red>]</dark_grey></grey>",
+                "lore": [
+                  "<yellow>Aún más ranuras...</yellow>",
+                  "<yellow>para crear recetas más complejas.</yellow>",
+                  "",
+                  "<red>¡Esto probablemente causará lag!</red>",
+                  "<red>¡Deberías usar la condición <yellow>Retraso de crafteo</yellow>!</red>",
+                  "",
+                  "<grey>[<green>Clic</green>] Cambiar a cuadrícula de crafteo 6x6</grey>"
+                ]
+              },
+              "size_6": {
+                "name": "<grey><b>Tamaño de cuadrícula:</b> <dark_red>6</dark_red><dark_grey>x</dark_grey><dark_red>6 </dark_red><dark_grey>[<red><b>Obsoleto</b></red>]</dark_grey></grey>",
+                "lore": [
+                  "<yellow>Una cuadrícula de crafteo muy grande</yellow>",
+                  "<yellow>para crear recetas muy complejas.</yellow>",
+                  "",
+                  "<red>¡Las recetas necesitan más recursos y pueden</red>",
+                  "<red>causar lag si se usan demasiado en poco tiempo!</red>",
+                  "<red>¡Asegúrate de usar la condición <yellow>Retraso de crafteo</yellow>!</red>",
+                  "",
+                  "<grey>[<green>Clic</green>] Cambiar a cuadrícula de crafteo 2x2</grey>"
+                ]
+              }
+            },
+            "toggle": {
+              "enabled": {
+                "name": "<green>Activado</green>",
+                "lore": [
+                  "<yellow>Banco de Trabajo Élite activado.</yellow>",
+                  "<grey>[<green>Clic</green>] Desactivar Banco de Trabajo Élite</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>Desactivado</red>",
+                "lore": [
+                  "<yellow>El Banco de Trabajo Élite está desactivado.</yellow>",
+                  "<grey>[<green>Clic</green>] Activar Banco de Trabajo Élite</grey>"
+                ]
+              }
+            },
+            "advanced_recipes": {
+              "enabled": {
+                "name": "<green>Recetas normales permitidas</green>",
+                "lore": [
+                  "<grey>Se pueden craftear recetas normales y recetas Élite.</grey>",
+                  "<yellow>Recetas personalizadas que no están creadas específicamente para el Banco de Trabajo Avanzado</yellow>",
+                  "<yellow>y recetas Élite pueden ser crafteadas</yellow>",
+                  "<grey>[<green>Clic</green>] Alternar a solo recetas Élite</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<grey>Solo recetas Élite</grey>",
+                "lore": [
+                  "<yellow>¡Solo se pueden craftear recetas Élite!</yellow>",
+                  "<grey>[<green>Clic</green>] Alternar para permitir recetas normales</grey>"
+                ]
+              }
+            },
+            "particles": {
+              "name": "<gold>Efectos de partículas</gold>",
+              "lore": [
+                "<yellow>Establece partículas para el banco de trabajo.</yellow>",
+                "<red>¡Debe configurarse en el archivo JSON del objeto!</red>"
+              ]
+            }
+          },
+          "knowledge_book": {
+            "option": {
+              "name": "<gold>Libro de Conocimiento</gold>",
+              "lore": [
+                "<grey>Permite que este objeto funcione como el Libro de Conocimiento</grey>",
+                "<red>Requiere objeto guardado</red>"
+              ]
+            },
+            "toggle": {
+              "enabled": {
+                "name": "<green>Activado</green>",
+                "lore": [
+                  "<yellow>Libro de Conocimiento activado</yellow>",
+                  "<grey>[<green>Clic</green>] Desactivar Libro de Conocimiento</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>Desactivado</red>",
+                "lore": [
+                  "<yellow>Libro de Conocimiento desactivado</yellow>",
+                  "<grey>[<green>Clic</green>] Activar Libro de Conocimiento</grey>"
+                ]
+              }
+            }
+          },
+          "armor_slots": {
+            "option": {
+              "name": "<gold>Equipamiento personalizado</gold>",
+              "lore": [
+                "<grey>Configura las ranuras de armadura en las que este objeto puede</grey>",
+                "<grey>ser equipado.</grey>",
+                "<red>Requiere objeto guardado</red>"
+              ]
+            },
+            "head": {
+              "enabled": {
+                "name": "<green>Cabeza</green>",
+                "lore": [
+                  "<grey>Puede equiparse en la cabeza.</grey>",
+                  "<grey>[<green>Clic</green>] Desactivar cabeza</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>Cabeza</red>",
+                "lore": [
+                  "<grey>No puede equiparse en la cabeza.</grey>",
+                  "<grey>[<green>Clic</green>] Activar cabeza</grey>"
+                ]
+              }
+            },
+            "chest": {
+              "enabled": {
+                "name": "<green>Pecho</green>",
+                "lore": [
+                  "<grey>Puede equiparse en el pecho.</grey>",
+                  "<grey>[<green>Clic</green>] Desactivar pecho</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>Pecho</red>",
+                "lore": [
+                  "<grey>No puede equiparse en el pecho.</grey>",
+                  "<grey>[<green>Clic</green>] Activar pecho</grey>"
+                ]
+              }
+            },
+            "legs": {
+              "enabled": {
+                "name": "<green>Piernas</green>",
+                "lore": [
+                  "<grey>Puede equiparse en las piernas.</grey>",
+                  "<grey>[<green>Clic</green>] Desactivar piernas</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>Piernas</red>",
+                "lore": [
+                  "<grey>No puede equiparse en las piernas.</grey>",
+                  "<grey>[<green>Clic</green>] Activar piernas</grey>"
+                ]
+              }
+            },
+            "feet": {
+              "enabled": {
+                "name": "<green>Pies</green>",
+                "lore": [
+                  "<grey>Puede equiparse en los pies.</grey>",
+                  "<grey>[<green>Clic</green>] Desactivar pies</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>Pies</red>",
+                "lore": [
+                  "<grey>No puede equiparse en los pies.</grey>",
+                  "<grey>[<green>Clic</green>] Activar pies</grey>"
+                ]
+              }
+            }
+          },
+          "particle_effects": {
+            "option": {
+              "name": "<gold>Efectos de partículas </gold><dark_grey>[<grey>Experimental</grey>]</dark_grey>",
+              "lore": [
+                "<grey>Configura efectos de partículas que</grey>",
+                "<grey>se generan al sostener, equipar</grey>",
+                "<grey>o colocar este objeto personalizado.</grey>",
+                "<red>¡Requiere objeto guardado!</red>",
+                "<red>¡Debe configurarse en el archivo JSON!</red>"
+              ]
+            }
+          },
+          "vanilla": {
+            "option": {
+              "name": "<gold>Configuración vanilla</gold>",
+              "lore": [
+                "<grey>Bloquea características vanilla,</grey>",
+                "<grey>por ejemplo, bloquear el uso en recetas vanilla</grey>",
+                "<red>Requiere objeto guardado</red>"
+              ]
+            },
+            "block_recipes": {
+              "enabled": {
+                "name": "<green>Bloqueado</green>",
+                "lore": [
+                  "<yellow>El objeto está bloqueado en recetas vanilla</yellow>",
+                  "<grey>[<green>Clic</green>] Desactivar bloqueo</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<red>Desactivado</red>",
+                "lore": [
+                  "<yellow>El objeto puede usarse en recetas vanilla</yellow>",
+                  "<grey>[<green>Clic</green>] Activar bloqueo</grey>"
+                ]
+              }
+            },
+            "block_placement": {
+              "enabled": {
+                "name": "<gold>Bloquear colocación</gold>",
+                "lore": [
+                  "<yellow>¡La colocación de este bloque es cancelada!</yellow>",
+                  "<grey>[<green>Clic</green>] Permitir colocación</grey>"
+                ]
+              },
+              "disabled": {
+                "name": "<gold>Bloquear colocación</gold>",
+                "lore": [
+                  "<yellow>¡La colocación de este bloque está permitida!</yellow>",
+                  "<grey>[<green>Clic</green>] Cancelar colocación</grey>"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "recipe_creator": {
+      "global_items": {
+        "save": {
+          "name": "<grey>▷</grey> <gold><b>Guardar</b></gold>",
+          "lore": [
+            "<yellow>Guarda la receta bajo la</yellow>",
+            "<yellow>carpeta y clave existentes.</yellow>",
+            "<grey>Carpeta: </grey><yellow><recipe_folder></yellow>",
+            "<grey>Clave: </grey><yellow><recipe_key></yellow>"
+          ]
+        },
+        "save_as": {
+          "name": "<grey>✎</grey>  <gold><b>Guardar como...</b></gold>",
+          "lore": [
+            "<grey>¡Guarda la receta bajo una nueva carpeta y clave!</grey>",
+            "<grey>Entrada: <yellow><b>carpeta clave_receta</b></yellow></grey>",
+            "<red>La carpeta y la clave deben estar en minúsculas y</red>",
+            "<red>¡solo contener letras, números, '_', '-', o '/'!</red>"
+          ]
+        },
+        "priority": {
+          "name": "<grey><b>❯ </b></grey><gold><b>Prioridad:</b></gold><green> %PRI%</green>",
+          "lore": [
+            "<grey>¡Establece la prioridad de esta receta!</grey>",
+            "<grey>Prioridades: </grey>",
+            "<blue>MÁS_BAJA</blue><grey>: verificada al final</grey>",
+            "<aqua>BAJA</aqua>",
+            "<dark_aqua>NORMAL</dark_aqua><grey>: prioridad normal</grey>",
+            "<red>ALTA</red>",
+            "<dark_red>MÁS_ALTA</dark_red><grey>: verificada primero</grey>"
+          ]
+        },
+        "conditions": {
+          "name": "<grey>➥</grey>  <gold><b>Condiciones</b></gold>",
+          "lore": [
+            "<yellow>Agrega condiciones a tu receta.</yellow>",
+            "<yellow>para personalizarla aún más. por ejemplo: </yellow>",
+            "<yellow>Mundo, Hora, Clima, Biomas, etc.</yellow>",
+            "",
+            "<grey>[<green>Clic</green>] Configurar condiciones</grey>"
+          ]
+        },
+        "hidden": {
+          "enabled": {
+            "name": "<red>❌ </red><gold><b>Ocultar receta</b></gold>",
+            "lore": [
+              "<yellow>¡La receta está oculta tanto en el </yellow>",
+              "<yellow>plugin como en el libro de recetas vanilla!</yellow>",
+              "",
+              "<grey>[<green>Clic</green>] Mostrar en el libro de recetas del plugin</grey>"
+            ]
+          },
+          "disabled": {
+            "name": "<green>✔ </green><gold><b>Mostrar receta</b></gold>",
+            "lore": [
+              "<yellow>La receta se muestra en el libro de recetas.</yellow>",
+              "",
+              "<grey>[<green>Clic</green>] Ocultar en el libro de recetas del plugin</grey>"
+            ]
+          }
+        },
+        "vanilla_book": {
+          "vanilla_book_discover": {
+            "name": "<grey><b>❯ </b></grey><gold><b>Libro de recetas vanilla y descubrimiento automático</b></gold>",
+            "lore": [
+              "<yellow>¡La receta será visible en el libro de recetas</yellow>",
+              "<yellow>vanilla y se descubrirá automáticamente al unirse! </yellow>",
+              "<red>¡El NBT para ingredientes no se mostrará y </red>",
+              "<red>será ignorado por el autocompletado!</red>",
+              "",
+              "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Desactivar descubrimiento automático</yellow>"
+            ]
+          },
+          "vanilla_book_no_discover" : {
+            "name": "<grey><b>❯ </b></grey><gold><b>Libro de recetas vanilla</b></gold>",
+            "lore": [
+              "<yellow>La receta será visible en el libro de recetas</yellow>",
+              "<yellow>vanilla.</yellow>",
+              "<red>¡El NBT para ingredientes no se mostrará y </red>",
+              "<red>será ignorado por el autocompletado!</red>",
+              "",
+              "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Desactivar libro de recetas vanilla</yellow>"
+            ]
+          },
+          "no_vanilla_book": {
+            "name": "<grey><b>❯ </b></grey><gold><b>Sin libro de recetas vanilla</b></gold>",
+            "lore": [
+              "<yellow>La receta no es visible en el libro de recetas</yellow>",
+              "<yellow>vanilla. </yellow>",
+              "",
+              "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Activar libro de recetas vanilla y descubrimiento automático</yellow>"
+            ]
+          }
+        },
+        "exact_meta": {
+          "enabled": {
+            "name": "<grey>■</grey>  <gold><b>Verificación completa de NBT</b></gold>",
+            "lore": [
+              "<yellow>Verifica el NBT de cada</yellow>",
+              "<yellow>ingrediente.</yellow>",
+              "<yellow>Si el ingrediente no tiene</yellow>",
+              "<yellow>NBT, entonces solo coincide</yellow>",
+              "<yellow>con objetos sin ningún NBT.</yellow>",
+              "",
+              "<grey>[<green>Clic</green>] Verificación predeterminada de NBT</grey>"
+            ]
+          },
+          "disabled": {
+            "name": "<grey>□</grey>  <gold><b>Verificación predeterminada de objeto</b></gold>",
+            "lore": [
+              "<yellow>Los ingredientes sin NBT solo</yellow>",
+              "<yellow>necesitan coincidir en tipo!</yellow>",
+              "<red>Los ingredientes con NBT aún</red>",
+              "<red>necesitan coincidir exactamente con la entrada!</red>",
+              "",
+              "<grey>[<green>Clic</green>] Verificación completa de NBT</grey>"
+            ]
+          }
+        },
+        "crafting": {
+          "shapeless": {
+            "enabled": {
+              "name": "<grey>□</grey>  <gold><b>Receta sin forma</b></gold>",
+              "lore": [
+                "<yellow>Los ingredientes no tienen forma.</yellow>",
+                "<yellow>es decir, pueden colocarse en</yellow>",
+                "<yellow>la cuadrícula sin ningún orden específico.</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>■</grey>  <gold><b>Receta con forma</b></gold>",
+              "lore": [
+                "<yellow>Los ingredientes tienen una forma.</yellow>",
+                "<yellow>es decir, deben colocarse en</yellow>",
+                "<yellow>la cuadrícula, en esta forma exacta.</yellow>"
+              ]
+            }
+          },
+          "mirror_horizontal": {
+            "enabled": {
+              "name": "<grey>⇄</grey>  <gold><b>Simetría horizontal</b></gold>",
+              "lore": [
+                "<yellow>La forma se refleja horizontalmente.</yellow>",
+                "<yellow>Como en las recetas vanilla</yellow>",
+                "<yellow>por ejemplo, hacha, otras herramientas, etc.</yellow>",
+                "",
+                "<grey>[<green>Clic</green>] Fijado horizontalmente</grey>"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>❌</grey>  <gold><b>Fijado horizontalmente</b></gold>",
+              "lore": [
+                "<yellow>La forma está fijada horizontalmente.</yellow>",
+                "<yellow>es decir, la receta no puede craftearse</yellow>",
+                "<yellow>reflejada horizontalmente, a diferencia de</yellow>",
+                "<yellow>recetas vanilla como herramientas, etc.</yellow>",
+                "",
+                "<grey>[<green>Clic</green>] Simetría horizontal</grey>"
+              ]
+            }
+          },
+          "mirror_vertical": {
+            "enabled": {
+              "name": "<grey>⇅</grey>  <gold><b>Simetría vertical</b></gold>",
+              "lore": [
+                "<yellow>La forma se refleja verticalmente.</yellow>",
+                "",
+                "<grey>[<green>Clic</green>] Fijado verticalmente</grey>"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>❌</grey>  <gold><b>Fijado verticalmente</b></gold>",
+              "lore": [
+                "<yellow>La forma está fijada verticalmente.</yellow>",
+                "<yellow>es decir, la receta no puede craftearse</yellow>",
+                "<yellow>reflejada verticalmente</yellow>",
+                "",
+                "<grey>[<green>Clic</green>] Simetría vertical</grey>"
+              ]
+            }
+          },
+          "mirror_rotation": {
+            "disabled": {
+              "name": "<grey>❌</grey>  <gold><b>Sin rotación de receta</b></gold>",
+              "lore": [
+                "<yellow>La receta puede reflejarse</yellow>",
+                "<yellow>horizontalmente <b>o</b> verticalmente!</yellow>",
+                "",
+                "<grey>[<green>Clic</green>] Rotar receta</grey>"
+              ]
+            },
+            "enabled": {
+              "name": "<grey>←↓</grey> <gold><b>Rotar receta</b></gold>",
+              "lore": [
+                "<yellow>La receta puede reflejarse</yellow>",
+                "<yellow>horizontalmente <b>y</b> verticalmente,</yellow>",
+                "<yellow>lo que resulta en una rotación completa.</yellow>",
+                "",
+                "<grey>[<green>Clic</green>] Sin rotación de receta</grey>"
+              ]
+            }
+          }
+        },
+        "tags": {
+          "name": "<grey>➥</grey>  <gold><b>Etiquetas</b></gold>",
+          "lore": [
+            "<grey>Te permite configurar etiquetas.</grey>",
+            "<grey>Las etiquetas son una colección de objetos,</grey>",
+            "<grey>que pueden facilitar mucho la creación.</grey>"
+          ]
+        },
+        "group": {
+          "name": "<grey>✎</grey>  <gold><b>ID de grupo de receta</b></gold>",
+          "lore": [
+            "<grey>Grupo: </grey><yellow>%group%</yellow>",
+            "<yellow>Las recetas con el mismo ID de grupo se</yellow>",
+            "<yellow>agrupan juntas en una ranura del libro de recetas.</yellow>",
+            "<yellow>Similar a las variantes de madera en Minecraft vanilla.</yellow>",
+            "",
+            "<grey>[<green>Clic Izquierdo</green>]</grey> <yellow>Ingresar grupo</yellow>",
+            "<grey>[<green>Clic Derecho</green>]</grey> <yellow>Restablecer grupo</yellow>"
+          ],
+          "message": "<yellow>¡Escribe el ID del grupo!</yellow>"
+        }
+      },
+      "global_messages": {
+        "override": "<white>Escribe la carpeta y la clave de la receta",
+        "valid_number": "<red>¡Escribe un número válido!</red>",
+        "group_id": {
+          "invalid" : "<red>El grupo contiene un carácter inválido. Ten en cuenta que los códigos de color no son necesarios ya que los IDs solo se usan internamente."
+        },
+        "save": {
+          "input": "<white>Escribe el <hover:show_text:'Las recetas se guardan de la siguiente manera: <yellow>/data/<folder>/recipes/<recipe_name>.conf</yellow><br><br>¡La carpeta se puede usar para agrupar tus recetas y se permiten carpetas anidadas!<br>Ingresa tu carpeta y nombre así: <yellow>/wui <folder> <name></yellow><br><br><red>¡Asegúrate de que la carpeta y el nombre solo contengan: <br> - letras minúsculas,<br> - números,<br> - guiones bajos,<br> - o guiones!<br>¡No puedes usar el namespace de minecraft!<br>Usa <yellow>/wui </yellow>para obtener asistencia de entrada, como autocompletado!</red>'><yellow>carpeta y nombre de la receta</yellow></hover>, bajo el cual guardar la receta",
+          "key": {
+            "invalid": "<red>¡La entrada no es una carpeta o clave válida! \nAsegúrate de que solo contenga: \n - letras minúsculas,\n - números,\n - guiones bajos, \n - o guiones!\n - ¡No puedes usar el namespace de minecraft!\nUsa <yellow>/wui </yellow>para obtener asistencia de entrada, como autocompletado!</red>"
+          },
+          "empty": "<red>¡No se puede guardar una receta vacía! Revisa el resultado y la fuente/ingredientes</red>",
+          "success": "<green>Receta guardada exitosamente en:</green>"
+        },
+        "loading": {
+          "error": "<red>Ocurrió un error al cargar la receta <dark_red>%REC%</dark_red></red>",
+          "success": "<green>¡Receta cargada e inyectada exitosamente!</green>",
+          "warning": "<red>¡Es mejor reiniciar el servidor después de terminar, para prevenir que las recetas no funcionen correctamente!</red>"
+        }
+      },
+      "conditions": {
+        "gui_name": "Condiciones",
+        "mode_names": {
+          "exact": "<yellow>Valor exacto</yellow>",
+          "ignore": "<red>Desactivado</red>",
+          "higher": "<yellow>></yellow>",
+          "lower": "<yellow><</yellow>",
+          "higher_lower": "<yellow>Más alto o más bajo</yellow>",
+          "higher_exact": "<yellow>>=</yellow>",
+          "lower_exact": "<yellow><=</yellow>"
+        },
+        "items": {
+          "select": {
+            "name": "<gold><b>%name%</b></gold>",
+            "lore": [
+              "<list_entry:0>",
+              "<list_entry:1>",
+              "<list_entry:2>",
+              "",
+              "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Abrir configuración</grey>"
+            ]
+          },
+          "add": {
+            "name": "<grey><b>Agregar condición</b></grey>",
+            "lore": [
+              "",
+              "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Abrir menú de selección</grey>"
+            ]
+          },
+          "remove": {
+            "name": "<red><b>Eliminar</b></red>",
+            "lore": [
+              "<yellow>Elimina esta condición</yellow>",
+              "<yellow>seleccionada de la receta.</yellow>",
+              "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Eliminar condición</grey>"
+            ]
+          },
+          "page_up": {
+            "name": "<grey><b>Arriba</b></grey>"
+          },
+          "page_down": {
+            "name": "<grey><b>Abajo</b></grey>"
+          },
+          "toggle_mode": {
+            "name": "<gold><b>Alternar modo</b></gold>",
+            "lore": [
+              "<grey>Modo: %mode%</grey>",
+              "",
+              "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Alternar modo</grey>"
+            ]
+          },
+          "conditions": {
+            "world_time": {
+              "set": {
+                "name": "<green><b>Establecer hora</b></green>",
+                "lore": [
+                  "<grey>Hora:</grey><yellow> %VALUE% ticks</yellow>",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Establecer hora</grey>"
+                ],
+                "message": "<yellow>Escribe la hora en ticks.</yellow>"
+              }
+            },
+            "player_experience": {
+              "set": {
+                "name": "<green><b>Establecer experiencia</b></green>",
+                "lore": [
+                  "<grey>Experiencia:</grey><yellow> %VALUE%</yellow>",
+                  "",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Establecer nivel de experiencia</grey>"
+                ],
+                "message": "<yellow>Escribe los niveles de experiencia.</yellow>"
+              }
+            },
+            "world_name": {
+              "add": {
+                "name": "<green><b>Agregar mundo</b></green>",
+                "lore": [
+                  "",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Agregar nombre de mundo</grey>"
+                ],
+                "message": "<yellow>Escribe el nombre del mundo para agregar.</yellow>"
+              },
+              "list": {
+                "name": "<gold><b>Valores</b></gold>",
+                "lore": [
+                  "<grey> - </grey><yellow>%var0%</yellow>",
+                  "<grey> - </grey><yellow>%var1%</yellow>",
+                  "<grey> - </grey><yellow>%var2%</yellow>",
+                  "<grey> - </grey><yellow>%var3%</yellow>"
+                ]
+              },
+              "remove": {
+                "name": "<red><b>Eliminar mundo</b></red>",
+                "lore": [
+                  "<grey>Elimina el último mundo de los valores.</grey>",
+                  "",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Eliminar nombre de mundo</grey>"
+                ]
+              }
+            },
+            "world_biome": {
+              "add": {
+                "name": "<green><b>Agregar bioma</b></green>",
+                "lore": [
+                  "",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Agregar bioma</grey>"
+                ],
+                "message": "<yellow>¡Escribe el bioma que deseas agregar! Uso: <gold><nombre_bioma></gold></yellow>"
+              },
+              "list": {
+                "name": "<gold><b>Valores</b></gold>",
+                "lore": [
+                  "<grey> - </grey><yellow>%var0%</yellow>",
+                  "<grey> - </grey><yellow>%var1%</yellow>",
+                  "<grey> - </grey><yellow>%var2%</yellow>",
+                  "<grey> - </grey><yellow>%var3%</yellow>"
+                ]
+              },
+              "remove": {
+                "name": "<red><b>Eliminar bioma</b></red>",
+                "lore": [
+                  "",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Eliminar bioma</grey>"
+                ]
+              }
+            },
+            "weather": {
+              "set": {
+                "name": "<gold><b>Clima del mundo</b></gold>",
+                "lore": [
+                  "<grey>Clima: %weather%</grey>",
+                  "",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Cambiar clima</grey>"
+                ]
+              }
+            },
+            "elite_crafting_table": {
+              "add": {
+                "name": "<green><b>Agregar banco de trabajo Élite</b></green>",
+                "lore": [
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Agregar bancos de trabajo Élite</grey>"
+                ],
+                "message": "<white>¡Escribe la carpeta y la clave del objeto de banco de trabajo Élite!</white>"
+              },
+              "list": {
+                "name": "<gold><b>Valores</b></gold>",
+                "lore": [
+                  "<grey> - </grey><yellow>%var0%</yellow>",
+                  "<grey> - </grey><yellow>%var1%</yellow>",
+                  "<grey> - </grey><yellow>%var2%</yellow>",
+                  "<grey> - </grey><yellow>%var3%</yellow>"
+                ]
+              },
+              "remove": {
+                "name": "<red><b>Eliminar banco de trabajo Élite</b></red>",
+                "lore": [
+                  "",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Eliminar banco de trabajo Élite</grey>"
+                ]
+              }
+            },
+            "permission": {
+              "set": {
+                "name": "<gold><b>Establecer permiso</b></gold>",
+                "lore": [
+                  "<grey>Permiso:</grey><yellow> %VALUE%</yellow>",
+                  "",
+                  "<dark_grey>[<green>Clic Izquierdo</green>]</dark_grey> <grey>Establecer permiso</grey>"
+                ],
+                "message": "<yellow>¡Escribe el permiso! Uso: <gold><permiso></gold></yellow>"
+              }
+            },
+            "craft_delay": {
+              "set": {
+                "name": "<green><b>Establecer retraso de crafteo</b></green>",
+                "lore": [
+                  "<grey>Retraso:</grey><yellow> %VALUE%ms</yellow>",
+                  "",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Establecer retraso</grey>"
+                ],
+                "message": "<yellow>¡Escribe el retraso de crafteo en milisegundos! Uso: <gold><retraso_crafteo></gold></yellow>"
+              }
+            },
+            "craft_limit": {
+              "set": {
+                "name": "<grey><b>Establecer límite de crafteo</b></grey>",
+                "lore": [
+                  "<grey>Límite:</grey><yellow> %VALUE%</yellow>",
+                  "",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Establecer límite</grey>"
+                ]
+              },
+              "message": "<yellow>¡Escribe el límite de crafteo! Uso: <gold><limite_crafteo></gold></yellow>"
+            },
+            "player_advancements": {
+              "add": {
+                "name": "<green><b>Agregar progreso</b></green>",
+                "lore": [
+                  "",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Agregar progreso</grey>"
+                ],
+                "message": "<yellow>¡Escribe el namespace y la clave del progreso! <gold>/wui</gold> para autocompletado!</yellow>"
+              },
+              "list": {
+                "name": "<gold><b>Valores</b></gold>",
+                "lore": [
+                  "<grey> - </grey><yellow>%var0%</yellow>",
+                  "<grey> - </grey><yellow>%var1%</yellow>",
+                  "<grey> - </grey><yellow>%var2%</yellow>",
+                  "<grey> - </grey><yellow>%var3%</yellow>"
+                ]
+              },
+              "remove": {
+                "name": "<red><b>Eliminar progreso</b></red>",
+                "lore": [
+                  "<grey>Elimina el último progreso de los valores.</grey>",
+                  "",
+                  "<dark_grey>[<green>Clic</green>]</dark_grey> <grey>Eliminar progreso</grey>"
+                ]
+              }
+            }
+          }
+        },
+        "messages": {
+          "world_time": "<yellow>¡Escribe la hora en ticks! por ejemplo, 1500</yellow>",
+          "world_name": "<yellow>Escribe el nombre exacto del mundo</yellow>",
+          "world_biome": "<yellow>Escribe el nombre exacto del bioma</yellow>",
+          "missing_world": "<red>¡Este mundo no existe!</red>",
+          "elite_workbench": "<yellow>¡Escribe el namespace y la clave del objeto personalizado! Ejemplo: <gold>[namespace] [clave]</gold></yellow>",
+          "player_experience": "<yellow>¡Escribe la experiencia requerida!</yellow>",
+          "permission": "<yellow>Escribe la cadena de permiso</yellow>",
+          "error": "<red>¡Este objeto no existe o no está cargado!</red>",
+          "no_name": "<red>¡Necesitas escribir la clave del objeto!</red>",
+          "not_elite_workbench": "<red>¡Este objeto no es un banco de trabajo Élite!</red>",
+          "already_existing": "<red>¡Ya agregaste este objeto!</red>",
+          "craft_delay": "<yellow>Escribe el retraso en milisegundos</yellow>",
+          "craft_limit": "<yellow>Escribe el límite (¡Cuántas veces se puede craftear la receta! Shift-Clic = 1 uso)</yellow>"
+        }
+      },
+      "conditions_add": {
+        "gui_name": "<dark_grey><b>Agregar categorías</b></dark_grey>",
+        "items": {
+          "icon": {
+            "name": "<gold><b>%name%</b></gold>",
+            "lore": [
+              "<list_entry:0>",
+              "<list_entry:1>",
+              "<list_entry:2>",
+              "",
+              "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Agregar a la receta</yellow>"
+            ]
+          }
+        }
+      },
+      "crafting": {
+        "gui_name": "<dark_red><b>Creador </b></dark_red><grey>[<dark_grey>Banco de Trabajo]</dark_grey></grey>",
+        "gui_help": [
+          "<gold><b>Ranura de resultado/ingrediente</b></gold><grey>:</grey>",
+          " <green>Shift<grey>+</grey>Clic Derecho</green>",
+          " <grey>➠</grey> <yellow> Abrir el editor de resultado/ingrediente</yellow>",
+          ""
+        ]
+      },
+      "elite_crafting": {
+        "gui_name": "<dark_red><b>Creador </b></dark_red><grey>[<dark_grey>Banco de Trabajo Élite]</dark_grey></grey>",
+        "gui_help": [
+          "<grey>Consejo:</grey>",
+          "<yellow>Shift<grey>+Clic derecho en Resultado o Ingredientes </grey></yellow>",
+          "<grey>te permitirá editar el/los objeto/s</grey>"
+        ],
+        "items": {
+          "settings": {
+            "name": "<grey>➥</grey>  <gold><b>Configuración</b></gold>",
+            "lore": [
+              "<grey>Abre la configuración como prioridad,</grey>",
+              "<grey>condiciones, meta, y más</grey>"
+            ]
+          }
+        }
+      },
+      "elite_crafting_settings": {
+        "gui_name": "<dark_red><b>Creador </b></dark_red><grey>[<dark_grey>Banco de Trabajo Élite]</dark_grey></grey>",
+        "gui_help": [],
+        "items": {
+        }
+      },
+      "stonecutter": {
+        "gui_name": "<dark_red><b>Creador de Recetas </b></dark_red><grey>[<dark_grey>Cortapiedras]</dark_grey></grey>",
+        "gui_help": [
+          "<grey>Consejo:</grey>",
+          "<yellow>Shift <grey>+ Clic derecho en Resultado o Ingredientes </grey></yellow>",
+          "<grey>te permitirá editar el/los objeto/s</grey>"
+        ],
+        "items": {
+        }
+      },
+      "cooking": {
+        "gui_name": "<dark_red>Creador de Recetas</dark_red><grey>[<dark_grey>Cocción/Fundición]</dark_grey></grey>",
+        "gui_help": [
+          "<grey>Consejo:</grey>",
+          "<yellow>Shift </yellow><grey>+ <yellow>Clic derecho </yellow>en Resultado o Ingredientes </grey>",
+          "<grey>te permitirá editar el/los objeto/s</grey>"
+        ],
+        "items": {
+          "xp": {
+            "name": "<grey>✎</grey>  <gold><b>Experiencia</b></gold>",
+            "lore": [
+              "<grey>Experiencia: </grey><yellow>%XP%</yellow>"
+            ],
+            "message": "<dark_aqua>Escribe la cantidad de experiencia. por ejemplo, 0.5</dark_aqua>"
+          },
+          "cooking_time": {
+            "name": "<grey>✎</grey>  <gold><b>Tiempo de cocción</b></gold>",
+            "lore": [
+              "<grey>Tiempo de cocción: </grey><yellow>%TIME% ticks</yellow>",
+              "<yellow>El tiempo de cocción en ticks.</yellow>",
+              "<yellow>(20 ticks = 1 seg)</yellow>"
+            ],
+            "message": "<yellow>Escribe el tiempo de cocción en ticks. por ejemplo, 20. <red>Valor máximo: 32767</red></yellow>"
+          }
+        }
+      },
+      "anvil": {
+        "gui_name": "<dark_red><b>Creador de Recetas </b></dark_red><grey>[<dark_grey>Yunque]</dark_grey></grey>",
+        "gui_help": [
+          "<gold><b>Ranura de resultado/ingrediente</b></gold><grey>:</grey>",
+          "  <green>Shift<grey>+</grey>Clic Derecho</green> <grey>➠</grey>",
+          "    <yellow>¡abre el editor de resultado/ingrediente!</yellow>",
+          ""
+        ],
+        "items": {
+          "mode": {
+            "name": "<grey>❯</grey> <gold><b>Modo:</b></gold><green> %MODE%</green>",
+            "lore": [
+              "<yellow>El modo del resultado.</yellow>",
+              "<grey><b>–––––––––––––––––</b></grey>",
+              "<green>Resultado </green><grey>- Aplica el objeto de resultado especificado.</grey>",
+              "<green>Ninguno </green><grey>- Actúa igual que las recetas vanilla.</grey>",
+              "          <grey>(Bloquear características ver abajo a la izquierda)</grey>",
+              "<green>Durabilidad </green><grey>- Igual que Ninguno, además puedes modificar</grey>",
+              "                <grey>la cantidad de daño a reparar.</grey>"
+            ]
+          },
+          "repair_cost": {
+            "name": "<grey>✎</grey> <gold><b>Costo de reparación:</b></gold><yellow> %VAR%</yellow>",
+            "lore": [
+              "<yellow>El costo de reparación para esta receta.</yellow>",
+              "<red>¡Debe ser mayor que 0!</red>",
+              "",
+              "<grey>[<green>Clic</green>] Cambiar costo de reparación</grey>"
+            ],
+            "message": "<yellow>Escribe la cantidad del costo de reparación (en niveles). <red>¡Debe ser mayor que 0!</red></yellow>"
+          },
+          "block_repair": {
+            "true": {
+              "name": "<red>❌</red>  <gold><b>Reparación bloqueada</b></gold>",
+              "lore": [
+                "<yellow>El ingrediente izquierdo no puede ser reparado.</yellow>"
+              ]
+            },
+            "false": {
+              "name": "<green>✔</green>  <gold><b>Reparación permitida</b></gold>",
+              "lore": [
+                "<yellow>El ingrediente izquierdo puede ser reparado.</yellow>",
+                "<yellow>(¡Si es posible en vanilla!)</yellow>"
+              ]
+            }
+          },
+          "block_rename": {
+            "true": {
+              "name": "<red>❌</red>  <gold><b>Renombrado bloqueado</b></gold>",
+              "lore": [
+                "<yellow>El ingrediente izquierdo no puede ser renombrado.</yellow>"
+              ]
+            },
+            "false": {
+              "name": "<green>✔</green>  <gold><b>Renombrado permitido</b></gold>",
+              "lore": [
+                "<yellow>El ingrediente izquierdo puede ser renombrado.</yellow>",
+                "<yellow>(¡Si es posible en vanilla!)</yellow>"
+              ]
+            }
+          },
+          "block_enchant": {
+            "true": {
+              "name": "<red>❌</red>  <gold><b>Encantamiento bloqueado</b></gold>",
+              "lore": [
+                "<yellow>El ingrediente izquierdo no puede ser encantado.</yellow>"
+              ]
+            },
+            "false": {
+              "name": "<green>✔</green>  <gold><b>Encantamiento permitido</b></gold>",
+              "lore": [
+                "<yellow>El ingrediente izquierdo puede ser encantado.</yellow>",
+                "<yellow>(¡Si es posible en vanilla!)</yellow>"
+              ]
+            }
+          },
+          "durability": {
+            "name": "<grey>✎</grey> <gold><b>Reparación de daño:</b></gold><green> %VAR%</green>",
+            "lore": [
+              "<yellow>La cantidad de daño a reparar.</yellow>"
+            ],
+            "message": "<dark_aqua>Escribe la cantidad de durabilidad. </dark_aqua><gold>>0 aumentar</gold><grey>, </grey><0 disminuir"
+          },
+          "repair_apply": {
+            "true": {
+              "name": "<green>✔</green>  <gold><b>Aplicar costo de reparación</b></gold>",
+              "lore": [
+                "<yellow>¡Aplica el costo de reparación</yellow>",
+                "<yellow>al objeto resultado!</yellow>",
+                "",
+                "<grey>[<green>Clic</green>] No aplicar costo de reparación</grey>"
+              ]
+            },
+            "false": {
+              "name": "<red>❌</red>  <gold><b>No aplicar costo de reparación</b></gold>",
+              "lore": [
+                "<yellow>No aplica el costo de reparación.</yellow>",
+                "",
+                "<grey>[<green>Clic</green>] Aplicar costo de reparación</grey>"
+              ]
+            }
+          },
+
+          "repair_mode": {
+            "name": "<grey>❯</grey> <gold><b>Modo de costo de reparación: </b></gold><green>%VAR%</green>",
+            "lore": [
+              "<yellow>Este modo especifica cómo el costo de reparación</yellow>",
+              "<yellow>debe verse afectado por el ingrediente izquierdo!</yellow>",
+              "<grey><b>–––––––––––––––––</b></grey>",
+              "<green>NINGUNO </green><grey>- No se ve afectado en absoluto</grey>",
+              "<green>AÑADIR </green><grey>- Se agrega al costo de reparación de la receta!</grey>",
+              "<green>MULTIPLICAR </green><grey>- Se multiplica con el costo de reparación de la receta</grey>",
+              "",
+              "<grey>[<green>Clic</green>] Alternar modo</grey>"
+            ]
+          }
+        }
+      },
+      "cauldron": {
+        "gui_name": "<dark_red><b>Creador de Recetas </b></dark_red><grey>[<dark_grey>Caldero]</dark_grey></grey>",
+        "messages": {
+          "mythicMob": "<yellow>Escribe el mob que deseas agregar.\n<<gold>nombre_mob</gold>> <<gold>nivel</gold>> [<<gold>x</gold>> <<gold>y</gold>> <<gold>z</gold>>]</yellow>"
+        },
+        "items": {
+          "cauldron": {
+            "name": " "
+          },
+          "campfire": {
+            "enabled": {
+              "name": "<green>✔</green> <gold><b>Hoguera</b></gold>",
+              "lore": [
+                "<yellow>¡La receta requiere una hoguera encendida</yellow>",
+                "<yellow>debajo del caldero!</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌</red> <gold><b>Hoguera</b></gold>",
+              "lore": [
+                "<yellow>La receta funciona sin hoguera</yellow>"
+              ]
+            }
+          },
+          "soul_campfire": {
+            "enabled": {
+              "name": "<green>✔</green> <gold><b>Hoguera de Almas</b></gold>",
+              "lore": [
+                "<yellow>¡La receta requiere una hoguera de almas encendida</yellow>",
+                "<yellow>debajo del caldero!</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌</red> <gold><b>Hoguera de Almas</b></gold>",
+              "lore": [
+                "<yellow>La receta funciona sin hoguera de almas</yellow>"
+              ]
+            }
+          },
+          "signal_fire": {
+            "enabled": {
+              "name": "<green>✔</green> <gold><b>Hoguera de Señal</b></gold>",
+              "lore": [
+                "<yellow>La receta requiere que la hoguera tenga</yellow>",
+                "<yellow>la propiedad de hoguera de señal (paca de heno debajo)</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌</red> <gold><b>Hoguera de Señal</b></gold>",
+              "lore": [
+                "<yellow>La receta funciona con una hoguera normal</yellow>"
+              ]
+            }
+          },
+          "can_cook_in_water": {
+            "enabled": {
+              "name": "<green>✔</green> <gold><b>Puede cocinar en agua</b></gold>",
+              "lore": [
+                "<yellow>La receta puede cocinarse en agua</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌</red>  <gold><b>¡No se requiere agua!</b></gold>",
+              "lore": [
+                "<yellow>¡La receta funciona sin agua!</yellow>"
+              ]
+            }
+          },
+          "can_cook_in_lava": {
+            "enabled": {
+              "name": "<green>✔</green> <gold><b>Puede cocinar en lava</b></gold>",
+              "lore": [
+                "<yellow>La receta puede cocinarse en lava</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌</red>  <gold><b>¡No se requiere lava!</b></gold>",
+              "lore": [
+                "<yellow>¡La receta funciona sin lava!</yellow>"
+              ]
+            }
+          },
+          "xp": {
+            "name": "<grey>✎</grey>  <gold><b>Experiencia</b></gold>",
+            "lore": [
+              "<grey>Experiencia: </grey><yellow>%xp%</yellow>"
+            ],
+            "message": "<dark_aqua>Escribe la cantidad de experiencia. por ejemplo, 2</dark_aqua>"
+          },
+          "cookingTime": {
+            "name": "<grey>✎</grey>  <gold><b>Tiempo de cocción</b></gold>",
+            "lore": [
+              "<grey>Tiempo: </grey><yellow>%time% ticks</yellow>",
+              "<yellow>El tiempo de cocción en ticks.</yellow>",
+              "<yellow>(20 ticks = 1 seg)</yellow>"
+            ],
+            "message": "<yellow>Escribe el tiempo de cocción en ticks. por ejemplo, 20</yellow>"
+          },
+          "fluid_level": {
+            "name": "<grey>✎</grey>  <gold><b>Nivel de fluido</b></gold>",
+            "lore": [
+              "<grey>Requiere un nivel de </grey><yellow>%level%</yellow>",
+              "",
+              "<yellow>Consume el nivel especificado del fluido.</yellow>",
+              "<yellow>Cuando se usa lava, consume todo el</yellow>",
+              "<yellow>fluido, por lo que el caldero queda vacío.</yellow>"
+            ],
+            "message": "<yellow>¡Escribe la cantidad de agua que necesita tener el caldero! <red>Máx: <dark_red>3</dark_red></red></yellow>"
+          },
+          "mythicMob": {
+            "name": "<gold>MythicMob</gold>",
+            "lore": [
+              "<grey>-Configuración de Mob-</grey>",
+              "<grey>Nombre: </grey><yellow>%mob.name%</yellow>",
+              "<grey>Nivel: </grey><yellow>%mob.level%</yellow>",
+              "<grey>Ubicación de aparición (relativa): </grey>",
+              "   <grey>x: </grey><yellow>%mob.modX%</yellow>",
+              "   <grey>y: </grey><yellow>%mob.modY%</yellow>",
+              "   <grey>z: </grey><yellow>%mob.modZ%</yellow>",
+              ""
+            ],
+            "message": "<yellow>¡Escribe el MythicMob que deseas! <nombre_mob> [<nivel> <x_relativa> <y_relativa> <z_relativa>]</yellow>"
+          }
+        }
+      },
+      "grindstone": {
+        "gui_name": "<dark_red><b>Creador </b></dark_red><grey>[<dark_grey>Amoladora]</dark_grey></grey>",
+        "gui_help": [
+          "<grey>Consejo:</grey>",
+          "<grey><yellow>Shift</yellow> + <yellow>Clic derecho</yellow> en Resultado o Ingredientes</grey>",
+          "<grey>te permitirá editar el/los objeto/s</grey>"
+        ],
+        "items": {
+          "grindstone": {
+            "name": ""
+          },
+          "xp": {
+            "name": "<grey>✎</grey>  <gold><b>Experiencia</b></gold>",
+            "lore": [
+              "<grey>Experiencia: </grey><yellow>%xp%</yellow>",
+              "<yellow>La cantidad de experiencia de la receta</yellow>"
+            ],
+            "message": "<yellow>Escribe la cantidad de experiencia. por ejemplo, 0.5</yellow>"
+          }
+        }
+      },
+      "brewing_stand": {
+        "gui_name": "<dark_red><b>Creador </b></dark_red><grey>[<dark_grey>Soporte de Pociones]</dark_grey></grey>",
+        "messages": {
+          "duration_change": "<yellow>Escribe la cantidad de ticks que debe cambiar la duración de las pociones</yellow>",
+          "amplifier_change": "<yellow>Escribe la cantidad de niveles que debe cambiar el amplificador de las pociones</yellow>"
+        },
+        "items": {
+          "brewing_stand": {
+            "name": "<gold>Ingrediente de Soporte de Pociones</gold>",
+            "lore": [
+              "<yellow>¡Coloca el ingrediente en la ranura de la izquierda!</yellow>",
+              "<yellow>««««</yellow>",
+              "<grey>« Shift + Clic derecho para establecer múltiples objetos.</grey>"
+            ]
+          },
+          "allowed_items": {
+            "name": "<gold>Pociones permitidas</gold>",
+            "lore": [
+              "<yellow>¡Coloca los objetos que esta receta permite</yellow>",
+              "<yellow>en la ranura de la izquierda!</yellow>",
+              "<yellow>««««</yellow>",
+              "<grey>« Shift + Clic derecho para establecer múltiples objetos.</grey>",
+              "<yellow>Estos objetos se verificarán contra las 3 ranuras en</yellow>",
+              "<yellow>la parte inferior del Soporte de Pociones!</yellow>",
+              "<yellow>Si está vacío, todos los objetos están permitidos y pueden</yellow>",
+              "<yellow>personalizarse aún más a la derecha.</yellow>"
+            ]
+          },
+          "duration_change": {
+            "name": "<grey>Duración de poción</grey>",
+            "lore": [
+              "<yellow>Cambio de duración: <gold>%value%</gold></yellow>",
+              "<grey>[<green>Clic Izquierdo</green>]</grey> <yellow>Cambiar valor</yellow>",
+              "<grey>[<red>Clic Derecho</red>]</grey> <red>Restablecer acción</red>"
+            ]
+          },
+          "amplifier_change": {
+            "name": "<grey>Amplificador de poción</grey>",
+            "lore": [
+              "<yellow>Cambio de amplificador: <gold>%value%</gold></yellow>",
+              "<grey>[<green>Clic Izquierdo</green>]</grey> <yellow>Cambiar valor</yellow>",
+              "<grey>[<red>Clic Derecho</red>]</grey> <red>Restablecer acción</red>"
+            ]
+          },
+          "reset_effects": {
+            "enabled": {
+              "name": "<red>Restablecer efectos de poción</red>",
+              "lore": [
+                "<yellow>¡Los efectos de poción se restablecen para cada poción!</yellow>",
+                "<grey>[<green>Clic</green>] Mantener efectos de poción</grey>"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>Mantener efectos de poción</grey>",
+              "lore": [
+                "<yellow>¡Los efectos de poción se mantienen para cada poción!</yellow>",
+                "<grey>[<green>Clic</green>] Restablecer efectos de poción</grey>"
+              ]
+            }
+          },
+          "effect_color": {
+            "name": "<gold>Color RGB del efecto</gold>",
+            "lore": [
+              "<yellow>Esta opción establece el color específico de las pociones.</yellow>",
+              "<grey>[<green>Clic Izquierdo</green>]</grey> <yellow>Establecer color (entrada: <red> <green> <blue>)</yellow>",
+              "<grey>[<green>Clic Derecho</green>]</grey> <red>Restablecer color</red>"
+            ]
+          },
+          "required_effects": {
+            "option": {
+              "name": "<gold>Efectos requeridos </gold><grey>[<dark_grey>Próximamente]</dark_grey></grey>",
+              "lore": [
+                "<yellow>¡Configura los efectos que las pociones deben contener!</yellow>"
+              ]
+            }
+          },
+          "effect_removals": {
+            "option": {
+              "name": "<gold>Eliminación de efectos</gold>",
+              "lore": [
+                "<yellow>Configura los tipos de efectos que se eliminarán de las pociones</yellow>"
+              ]
+            },
+            "info": {
+              "name": "<gold>Efectos</gold>",
+              "lore": [
+                "<yellow>¡Los efectos se eliminarán de las pociones!</yellow>",
+                "<yellow>¡El amplificador y la duración se ignoran!</yellow>"
+              ]
+            },
+            "add_type": {
+              "name": "<gold>Agregar tipo de efecto</gold>",
+              "lore": [
+                "<yellow>Agrega un efecto a la lista</yellow>",
+                "<yellow>para ser eliminado.</yellow>"
+              ]
+            },
+            "remove_type": {
+              "name": "<gold>Eliminar tipo de efecto</gold>",
+              "lore": [
+              ]
+            }
+          },
+          "effect_additions": {
+            "option": {
+              "name": "<gold>Añadir efectos</gold>",
+              "lore": [
+                "<yellow>Configura los efectos que se agregan a las pociones</yellow>"
+              ]
+            },
+            "info": {
+              "name": "<gold>Efectos de poción</gold>",
+              "lore": [
+                "<yellow>Estos efectos se agregan a las pociones</yellow>"
+              ]
+            },
+            "potion_effect": {
+              "name": "<gold>Efecto de poción</gold>",
+              "lore": [
+                "<yellow>El efecto de poción actual.</yellow>",
+                "<yellow>Haz clic en Aplicar para agregarlos a la lista.</yellow>"
+              ]
+            },
+            "replace": {
+              "enabled": {
+                "name": "<gold>Reemplazado</gold>",
+                "lore": [
+                  "<yellow>El efecto se reemplazará si la</yellow>",
+                  "<yellow>poción ya lo contiene.</yellow>"
+                ]
+              },
+              "disabled": {
+                "name": "<gold>Mantenido</gold>",
+                "lore": [
+                  "<yellow>El efecto no se reemplazará si la</yellow>",
+                  "<yellow>poción ya lo contiene.</yellow>"
+                ]
+              }
+            },
+            "apply": {
+              "name": "<gold>Aplicar</gold>",
+              "lore": [
+                "<yellow>¡Aplica el efecto a la lista de efectos añadidos!</yellow>"
+              ]
+            },
+            "remove": {
+              "name": "<gold>Eliminar</gold>",
+              "lore": [
+                ""
+              ]
+            }
+          },
+          "effect_upgrades": {
+            "option": {
+              "name": "<gold>Mejoras de efecto</gold>",
+              "lore": [
+                "<yellow>Configura los efectos que se mejoran.</yellow>",
+                "<yellow>Establece la cantidad de niveles y duración que se agregan.</yellow>"
+              ]
+            },
+            "info": {
+              "name": "<gold>Mejoras de efecto</gold>",
+              "lore": [
+                "<yellow>Estos efectos se agregan a las pociones.</yellow>",
+                "<yellow>A continuación hay una lista más detallada (¡con nombres internos de poción!):</yellow>",
+                "%values%"
+              ]
+            },
+            "amplifier": {
+              "name": "<gold>Amplificador</gold>",
+              "lore": [
+                "<yellow>Valor: <grey>%value%</grey></yellow>",
+                "<yellow>Este valor se agregará al</yellow>",
+                "<yellow>amplificador del efecto de poción seleccionado.</yellow>"
+              ],
+              "message": "<yellow>Escribe el valor del amplificador.</yellow>"
+            },
+            "duration": {
+              "name": "<gold>Duración</gold>",
+              "lore": [
+                "<yellow>Valor: <grey>%value%</grey></yellow>",
+                "<yellow>Este valor se agregará a la</yellow>",
+                "<yellow>duración del efecto de poción seleccionado.</yellow>"
+              ],
+              "message": "<yellow>Escribe el valor de la duración.</yellow>"
+            },
+            "add_type": {
+              "name": "<gold>Tipo de efecto de poción</gold>",
+              "lore": [
+                "<yellow>Este tipo de efecto de poción está seleccionado</yellow>",
+                "<yellow>para esta configuración de mejora.</yellow>",
+                "<yellow>La configuración se agregará a los</yellow>",
+                "<yellow>efectos de poción de las pociones.</yellow>",
+                "<yellow>El efecto de poción de ejemplo en este objeto</yellow>",
+                "<yellow>representa los valores. </yellow>",
+                "<yellow>(¡No puede representar valores negativos!)</yellow>"
+              ]
+            },
+            "apply": {
+              "name": "<gold>Aplicar mejora</gold>",
+              "lore": [
+                "<yellow>¡Aplica la mejora a la receta!</yellow>",
+                "<yellow>Solo puede haber una mejora por</yellow>",
+                "<yellow>tipo de efecto de poción!</yellow>",
+                "<red>Si el tipo de efecto ya existe </red>",
+                "<red>¡será sobrescrito!</red>"
+              ]
+            },
+            "remove": {
+              "name": "<gold>Eliminar mejora</gold>",
+              "lore": [
+                "<yellow>¡Elimina una mejora de la receta!</yellow>",
+                "<yellow>Selecciona el tipo de efecto de poción que</yellow>",
+                "<yellow>deseas eliminar</yellow>"
+              ]
+            }
+          },
+
+          "result": {
+            "option": {
+              "name": "<gold>Resultado</gold>",
+              "lore": [
+                "<yellow>Configura los objetos de resultado que </yellow>",
+                "<yellow>reemplazarán las pociones!</yellow>",
+                "<yellow>¡Esta opción anulará las otras opciones de mejora, </yellow>",
+                "<yellow>adiciones y eliminaciones!</yellow>"
+              ]
+            },
+            "info": {
+              "name": "<gold>Configurar resultados</gold>",
+              "lore": [
+                "<yellow>« ¡Configura tus resultados que reemplazarán las Pociones!</yellow>",
+                "<grey>« Shift + Clic derecho para establecer múltiples objetos.</grey>"
+              ]
+            }
+          }
+        }
+      },
+      "smithing": {
+        "gui_name": "<dark_red><b>Creador </b></dark_red><grey>[<dark_grey>Mesa de Herrería]</dark_grey></grey>",
+        "items": {
+          "change_material": {
+            "enabled": {
+              "name": "<gold><b>Solo material</b></gold>",
+              "lore": [
+                "<yellow>Esto tomará el objeto base</yellow>",
+                "<yellow>y cambiará el material al</yellow>",
+                "<yellow>material del resultado.</yellow>",
+                "<red>¡Cualquier NBT del resultado se ignora!</red>",
+                "",
+                "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Usar objeto de resultado completo</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<gold><b>Usar objeto de resultado</b></gold>",
+              "lore": [
+                "<yellow>Usa el objeto de resultado establecido</yellow>",
+                "<yellow>con todos sus datos NBT.</yellow>",
+                "",
+                "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Solo material</yellow>"
+              ]
+            }
+          },
+          "preserve_enchants": {
+            "enabled": {
+              "name": "<green>✔</green>  <gold><b>Conservar encantamientos</b></gold>",
+              "lore": [
+                "<yellow>Copia los encantamientos de</yellow>",
+                "<yellow>la base al objeto resultado.</yellow>",
+                "",
+                "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Desechar encantamientos</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌</red>  <gold><b>Desechar encantamientos</b></gold>",
+              "lore": [
+                "<yellow>Deja los encantamientos del</yellow>",
+                "<yellow>resultado como están y descarta</yellow>",
+                "<yellow>los encantamientos del ingrediente base.</yellow>",
+                "",
+                "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Conservar encantamientos</yellow>"
+              ]
+            }
+          },
+          "preserve_damage": {
+            "enabled": {
+              "name": "<green>✔</green>  <gold><b>Conservar daño</b></gold>",
+              "lore": [
+                "<yellow>Copia el daño de</yellow>",
+                "<yellow>la base al objeto resultado.</yellow>",
+                "",
+                "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Desechar daño</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌</red>  <gold><b>Desechar daño</b></gold>",
+              "lore": [
+                "<yellow>Deja el daño del</yellow>",
+                "<yellow>resultado como está y descarta</yellow>",
+                "<yellow>el daño del ingrediente base.</yellow>",
+                "",
+                "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Conservar daño</yellow>"
+              ]
+            }
+          },
+          "preserve_trim": {
+            "enabled": {
+              "name": "<green>✔</green>  <gold><b>Conservar adorno</b></gold>",
+              "lore": [
+                "<yellow>Copia el adorno de</yellow>",
+                "<yellow>la base al objeto resultado.</yellow>",
+                "",
+                "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Desechar adorno</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<red>❌</red>  <gold><b>Desechar adorno</b></gold>",
+              "lore": [
+                "<yellow>Deja el adorno del</yellow>",
+                "<yellow>resultado como está y descarta</yellow>",
+                "<yellow>el adorno del ingrediente base.</yellow>",
+                "",
+                "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Conservar adorno</yellow>"
+              ]
+            }
+          }
+        }
+      },
+      "variants": {
+        "gui_name": "<dark_grey>Variantes</dark_grey>",
+        "gui_help": [
+          "<grey>Configura las variantes de la ranura elegida.</grey>",
+          "<grey>Coloca tantos objetos como desees.</grey>",
+          "<grey>Consejo:</grey>",
+          "<yellow>Shift <grey>+ Clic derecho abrirá el Editor de Objetos</grey></yellow>"
+        ]
+      },
+      "ingredient": {
+        "gui_name": "<dark_grey><b>Opciones de ingrediente</b></dark_grey>",
+        "items": {
+          "replace_with_remains": {
+            "enabled": {
+              "name": "<green>✔ </green><gold><b>Restos de crafteo</b></gold>",
+              "lore": [
+                "<yellow>El ingrediente será reemplazado</yellow>",
+                "<yellow>por los restos de crafteo vanilla.</yellow>",
+                "<yellow>O por el reemplazo personalizado/costo de durabilidad</yellow>",
+                "<yellow>si es un CustomItem que lo tiene activado.</yellow>",
+                "",
+                "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Desactivar restos de crafteo vanilla</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<dark_red>❌ </dark_red><gold><b>Restos de crafteo</b></gold>",
+              "lore": [
+                "<yellow>El ingrediente será eliminado completamente.</yellow>",
+                "<yellow>La única excepción son los CustomItems que tienen</yellow>",
+                "<yellow>un reemplazo personalizado o costo de durabilidad.</yellow>",
+                "",
+                "<dark_grey>[<green>Clic</green>]</dark_grey> <yellow>Activar restos de crafteo vanilla</yellow>"
+              ]
+            }
+          }
+        }
+      },
+      "result": {
+        "gui_name": "<dark_grey><b>Opciones de resultado</b></dark_grey>",
+        "items": {
+          "target": {
+            "name": "<gold><b>Objetivo </b></gold><dark_grey>[<grey>Solo configuración</grey>]</dark_grey>",
+            "lore": [
+              "<grey>Permite apuntar a una ranura de ingrediente de la receta</grey>",
+              "<grey>y fusionar sus datos en el resultado o</grey>",
+              "<grey>manipular el objeto resultante de otras maneras.</grey>"
+            ]
+          },
+          "extensions": {
+            "name": "<gold><b>Extensiones </b></gold><dark_grey>[<grey>Solo configuración</grey>]</dark_grey>",
+            "lore": [
+              "<grey>Ejecuta extensiones al craftear, fundir y más.</grey>",
+              "<grey>Pueden ser comandos, aparición de mobs, sonido, etc.</grey>"
+            ]
+          }
+        }
+      },
+      "item_editor": {
+        "gui_name": "<black><b>Configurar pila de objetos</b></black>",
+        "items": {
+          "create_item": {
+            "name": "<grey>➥</grey>  <gold><b>Editar</b></gold>",
+            "lore": [
+              "<grey>Edita la pila usando el Creador de Objetos</grey>",
+              "",
+              "<grey>[<green>Clic</green>] Abrir Creador de Objetos</grey>"
+            ]
+          },
+          "reference": {
+            "icon": {
+              "name": "<gold><b><name></b></gold>",
+              "lore": []
+            },
+            "swap": {
+              "name": "<gold><b><name></b></gold>",
+              "lore": [
+                "<grey>Cambia el analizador actual con este analizador</grey>",
+                "",
+                "<grey>[<green>Clic</green>] Seleccionar analizador</grey>"
+              ]
+            }
+          }
+        },
+        "messages": {
+          "item_applied": "<green>¡Objeto aplicado exitosamente a la receta!</green>",
+          "item_editable": "<green>¡Este objeto ahora puede ser editado!</green>"
+        }
+      },
+      "tag_settings": {
+        "gui_name": "<dark_grey><b>Configuración de etiquetas</b></dark_grey>",
+        "items": {
+          "add_tag_list": {
+            "name": "<gold><b>Agregar etiqueta </b></gold><dark_grey>[<grey>Lista</grey>]</dark_grey>",
+            "lore": [
+              "<grey>Agregar etiqueta desde la lista de la interfaz</grey>"
+            ]
+          },
+          "add_tag_chat": {
+            "name": "<gold><b>Agregar etiqueta </b></gold><dark_grey>[<grey>Chat</grey>]</dark_grey>",
+            "lore": [
+              "<grey>Agregar etiqueta mediante entrada de chat</grey>"
+            ]
+          },
+          "tag_container": {
+            "name": "<gold><b>Etiqueta</b></gold>",
+            "lore": [
+              "<grey>%namespaced_key%</grey>",
+              "",
+              "<grey>[<green>Shift-Clic Derecho</green>] Eliminar etiqueta</grey>"
+            ]
+          }
+        }
+      },
+      "tag_list": {
+        "gui_name": "<dark_grey><b>Etiquetas</b></dark_grey>",
+        "items": {
+          "next_page": {
+            "name": "<grey><b>Siguiente</b></grey>"
+          },
+          "previous_page": {
+            "name": "<grey><b>Anterior</b></grey>"
+          },
+          "tag": {
+            "name": "<gold><b>%namespaced_key%</b></gold>",
+            "lore": [
+              "",
+              "<grey>[<green>Clic</green>] Agregar etiqueta</grey>"
+            ]
+          }
+        }
+      }
+    },
+    "recipe_book": {
+      "global_items": {
+        "conditions": {
+          "world_time": {
+            "name": "<gold><b>» Hora del mundo «</b></gold>",
+            "lore": [
+              "<grey>¡Esta receta se puede craftear cuando la </grey>",
+              "<grey>hora del mundo sea %mode% %value%!</grey>"
+            ]
+          },
+          "weather": {
+            "name": "<gold><b>» Clima del mundo «</b></gold>",
+            "lore": [
+              "<grey>¡Esta receta requiere </grey>",
+              "<gold>%value% </gold><grey>para ser crafteada!</grey>"
+            ]
+          },
+          "advanced_workbench": {
+            "name": "<gold><b>» Banco de Trabajo Avanzado «</b></gold>",
+            "lore": [
+              "<grey>Esta receta solo se puede craftear </grey>"
+            ]
+          },
+          "permission": {
+            "name": "<gold><b>» Permiso «</b></gold>",
+            "lore": [
+              "<grey>Permiso:</grey><yellow> %VALUE%</yellow>",
+              "<grey>Modo:</grey><yellow> %MODE%</yellow>"
+            ]
+          }
+        },
+        "previous_page": {
+          "name": "<grey>⏪</grey>  <gold><b>Página Anterior</b></gold>"
+        },
+        "next_page": {
+          "name": "<grey>⏩</grey>  <gold><b>Siguiente Página</b></gold>"
+        },
+        "lores": {
+          "click": "<grey>[<green>Clic</green>] Ver Receta</grey>"
+        },
+        "stonecutter": {
+          "name": "<gold><b>Cortapiedras</b></gold>"
+        },
+        "anvil": {
+          "durability": {
+            "name": "<gold>Durabilidad</gold>",
+            "lore": [
+              "<grey>La durabilidad del objeto se ve afectada.</grey>",
+              "<grey>Cantidad de cambio: </grey><yellow>%var%</yellow>"
+            ]
+          },
+          "result": {
+            "name": "<gold>Resultado</gold>",
+            "lore": [
+              "<grey>La receta produce el resultado establecido.</grey>",
+              ""
+            ]
+          }
+        },
+        "workbench": {
+          "filter_button": {
+            "all": {
+              "name": "<grey>Filtro de recetas:<dark_aqua> TODAS</dark_aqua></grey>",
+              "lore": [
+                "<grey>Mostrando todas las recetas</grey>"
+              ]
+            },
+            "normal": {
+              "name": "<grey>Filtro de recetas:<dark_aqua> NORMAL</dark_aqua></grey>",
+              "lore": [
+                "<grey>Mostrando solo recetas normales</grey>"
+              ]
+            },
+            "advanced": {
+              "name": "<grey>Filtro de recetas:<dark_aqua> AVANZADAS</dark_aqua></grey>",
+              "lore": [
+                "<grey>Mostrando solo recetas avanzadas</grey>"
+              ]
+            }
+          },
+          "adv_workbench_on": {
+            "name": "<gold>Banco de Trabajo Avanzado</gold>",
+            "lore": [
+              "<grey>Solo se puede craftear en</grey>",
+              "<grey>el Banco de Trabajo Avanzado</grey>",
+              ""
+            ]
+          },
+          "adv_workbench_off": {
+            "name": "<gold>Cualquier Banco de Trabajo</gold>",
+            "lore": [
+              "<grey>Se puede craftear en cualquier Banco de Trabajo</grey>"
+            ]
+          },
+          "shapeless_off": {
+            "name": "<gold><b>Receta con forma</b></gold>",
+            "lore": [
+              "<grey>¡Esta receta tiene una forma!</grey>",
+              "<grey>Los ingredientes deben organizarse</grey>",
+              "<grey>en esa forma exacta</grey>"
+            ]
+          },
+          "shapeless_on": {
+            "name": "<gold><b>Receta sin forma</b></gold>",
+            "lore": [
+              "<grey>¡Esta receta es sin forma!</grey>",
+              "<grey>Los objetos no tienen orden y</grey>",
+              "<grey>pueden organizarse en cualquier forma.</grey>"
+            ]
+          }
+        },
+        "cooking": {
+          "icon": {
+            "name": "<gold><b>%type%</b></gold>",
+            "lore": [
+              "<grey>Tiempo de cocción: </grey><yellow>%time% ticks</yellow>",
+              "<grey>Experiencia: </grey><yellow>%xp%</yellow>"
+            ]
+          }
+        },
+        "cauldron": {
+          "water": {
+            "enabled": {
+              "name": "<gold><b>Caldero</b></gold>",
+              "lore": [
+                "<yellow>¡El caldero debe estar lleno de agua!</yellow>",
+                "<grey>Nivel mínimo de agua: </grey><yellow>%lvl%</yellow>",
+                "<grey>Tiempo de cocción: </grey><yellow>%time%</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<gold><b>Caldero</b></gold>",
+              "lore": [
+                "<yellow>¡El caldero debe estar vacío!</yellow>",
+                "<yellow>Tiempo de cocción: %time%</yellow>"
+              ]
+            }
+          },
+          "fire": {
+            "enabled": {
+              "name": "<gold><b>Hoguera encendida</b></gold>",
+              "lore": [
+                "<yellow>Requiere una hoguera encendida</yellow>",
+                "<yellow>debajo del caldero</yellow>"
+              ]
+            },
+            "disabled": {
+              "name": "<gold><b>Hoguera apagada</b></gold>",
+              "lore": [
+                "<yellow>Requiere una hoguera apagada</yellow>",
+                "<yellow>debajo del caldero</yellow>"
+              ]
+            }
+          }
+        },
+        "brewing": {
+          "icon": {
+            "name": "<gold><b>Alquimia</b></gold>",
+            "lore": [
+              "<grey>Costo de combustible: </grey><yellow>%cost%</yellow>"
+            ]
+          }
+        },
+        "grindstone": {
+          "name": "<gold><b>Amoladora</b></gold>"
+        },
+        "smithing": {
+          "name": "<gold><b>Mesa de Herrería</b></gold>"
+        },
+        "back_to_list": {
+          "name": "<grey>➦</grey> <yellow><b>Volver</b></yellow>",
+          "lore": [
+            "<green>Clic Izquierdo</green> <grey>»</grey> <yellow>Receta Anterior</yellow>",
+            "<green>Clic Derecho</green> <grey>»</grey> <yellow>Lista de Recetas</yellow>",
+            "<green>Shift-Clic</green> <grey>»</grey> <yellow>Cerrar Libro</yellow>"
+          ]
+        }
+      },
+      "main_menu": {
+        "gui_name": "<dark_grey><b>Libro de Recetas</b></dark_grey>",
+        "items": {
+          "elite_workbench": {
+            "name": "<gold>Recetas de Banco de Trabajo Élite</gold>"
+          },
+          "workbench": {
+            "name": "<gold>Recetas de Banco de Trabajo</gold>"
+          },
+          "furnace": {
+            "name": "<gold>Recetas de Horno</gold>"
+          },
+          "anvil": {
+            "name": "<gold>Recetas de Yunque</gold>"
+          },
+          "blast_furnace": {
+            "name": "<gold>Recetas de Alto Horno</gold>"
+          },
+          "smoker": {
+            "name": "<gold>Recetas de Ahumador</gold>"
+          },
+          "campfire": {
+            "name": "<gold>Recetas de Hoguera</gold>"
+          },
+          "stonecutter": {
+            "name": "<gold>Recetas de Cortapiedras</gold>"
+          },
+          "cauldron": {
+            "name": "<gold>Recetas de Caldero</gold>"
+          },
+          "brewing": {
+            "name": "<gold>Recetas de Alquimia</gold>"
+          }
+        }
+      },
+      "recipe_book": {
+        "gui_name": "<recipe_type_title>",
+        "items": {
+          "next_recipe": {
+            "name": "<grey><b>» Siguiente</b></grey>",
+            "lore": [
+              "<yellow>Página <grey>%page%</grey>/<grey>%max_pages%</grey></yellow>"
+            ]
+          },
+          "previous_recipe": {
+            "name": "<grey><b>« Anterior</b></grey>",
+            "lore": [
+              "<yellow>Página <grey>%page%</grey>/<grey>%max_pages%</grey></yellow>"
+            ]
+          }
+        }
+      },
+      "category_overview": {
+        "gui_name": "<category_name>",
+        "items": {
+
+        }
+      }
+    },
+    "recipe_view": {
+      "single_recipe": {
+        "gui_name": "<recipe_type_title>"
+      }
+    },
+    "recipe_book_editor": {
+      "global_items": {
+        "save": {
+          "name": "<grey>▷</grey> <gold><b>Guardar</b></gold>",
+          "lore": [
+            "<grey>Guardar con el ID actual.</grey>",
+            "<grey>ID: </grey><yellow><id></yellow>"
+          ]
+        },
+        "save_as": {
+          "name": "<grey>✎</grey>  <gold><b>Guardar como...</b></gold>",
+          "lore": [
+            "<grey>Guardar bajo un nuevo ID.</grey>",
+            "<grey>Entrada: </grey><yellow><b><category_key></b></yellow>",
+            "<red>El ID debe estar en minúsculas y</red>",
+            "<red>¡solo contener letras, números, '_', '-', o '/'!</red>"
+          ]
+        },
+        "name": {
+          "name": "<grey>✎</grey> <gold><b>Nombre</b>",
+          "lore": [
+            "<grey>Nombre Actual:",
+            "<name>",
+            "",
+            "<grey>(<green>Clic</green>)</grey> <yellow>Cambiar nombre"
+          ],
+          "message": "<white>¡Escribe el nuevo nombre!</white>"
+        },
+        "description": {
+          "edit": {
+            "name": "<grey>✎</grey> <gold><b>Descripción</b></gold>",
+            "lore": [
+              "<list_entry:0>",
+              "<list_entry:1>",
+              "<list_entry:2>",
+              "<list_entry:3>",
+              "<list_entry:4>",
+              "<list_entry:5>",
+              "<list_entry:6>",
+              "<list_entry:7>",
+              "...",
+              "",
+              "<grey>(<green>Clic</green>)</grey> <yellow>Editar Descripción"
+            ]
+          }
+        },
+        "recipes": {
+          "name": "<gold><b>Recetas</b></gold>",
+          "lore": [
+            "<grey>[<green>Clic Izquierdo</green>] Agregar Receta</grey>",
+            "<grey>[<green>Clic Derecho</green>] Eliminar Receta</grey>",
+            "<yellow>Recetas Configuradas:</yellow>",
+            "%recipes%"
+          ]
+        },
+        "folders": {
+          "name": "<gold><b>Carpetas</b></gold>",
+          "lore": [
+            "<grey>[<green>Clic Izquierdo</green>] Agregar Carpeta</grey>",
+            "<grey>[<green>Clic Derecho</green>] Eliminar Carpeta</grey>",
+            "<yellow>Carpetas Configuradas:</yellow>",
+            "%folders%"
+          ]
+        },
+        "groups": {
+          "name": "<gold><b>Grupos</b></gold>",
+          "lore": [
+            "<grey>[<green>Clic Izquierdo</green>] Agregar Grupo</grey>",
+            "<grey>[<green>Clic Derecho</green>] Eliminar Grupo</grey>",
+            "<yellow>Grupos Configurados:</yellow>",
+            "%groups%"
+          ]
+        },
+        "previous_page": {
+          "name": "<grey>⏪</grey> <gold><b>Página Anterior</b></gold>"
+        },
+        "next_page": {
+          "name": "<grey>⏩</grey> <gold><b>Siguiente Página</b></gold>"
+        }
+      },
+      "global_messages": {
+        "not_existing": "<red>¡La receta<dark_red> %recipe% </dark_red>no existe!</red>",
+        "save": {
+          "input": "<yellow>¡Escribe la clave! ¡Debe ser alfanumérica en minúsculas! [a-z0-9/._-]</yellow>",
+          "error": "<red>¡Verifica si falta el ícono!</red>",
+          "failed_backup": "<red>¡Error al crear copia de seguridad de recipe_book.json!</red>",
+          "success": "<green>¡Guardado exitosamente!</green>"
+        }
+      },
+      "editor_main": {
+        "gui_name": "<dark_grey><b>Libro de Recetas </b></dark_grey><grey>[<dark_grey>Editor</dark_grey>]</grey>",
+        "items": {
+          "filters": {
+            "name": "<grey>➥</grey> <gold><b>Filtros</b></gold>",
+            "lore": [
+              "<yellow>Los Filtros están presentes en la parte superior de </yellow>",
+              "<yellow>cada Categoría y puedes ciclar</yellow>",
+              "<yellow>a través de ellos haciendo clic en ellos.</yellow>"
+            ]
+          },
+          "categories": {
+            "name": "<grey>➥</grey> <gold><b>Categorías</b></gold>",
+            "lore": [
+              "<yellow>Las Categorías se muestran en el</yellow>",
+              "<yellow>Menú Principal del Libro de Recetas.</yellow>",
+              "<yellow>Si solo hay una Categoría disponible</yellow>",
+              "<yellow>la interfaz abrirá directamente esa Categoría</yellow>",
+              "<yellow>sin mostrar el Menú Principal!</yellow>"
+            ]
+          },
+          "cancel": {
+            "name": "<red>❌</red> <gold><b>Cancelar</b></gold>",
+            "lore": [
+              "<grey>¡Revierte los cambios realizados al Libro de Recetas!</grey>",
+              "<red>¡Todos tus cambios desde el último guardado se descartarán!"
+            ]
+          },
+          "save": {
+            "name": "<green>▷</green> <gold><b>Guardar</b></gold>",
+            "lore": [
+              "<grey>¡Guarda la configuración del Libro de Recetas en la configuración!</grey>",
+              "<grey>Para cargar y aplicar los cambios necesitas</grey>",
+              "<grey>ejecutar: </grey><yellow>/cc reload</yellow>"
+            ]
+          }
+        }
+      },
+      "categories": {
+        "gui_name": "<dark_grey><b>Libro de Recetas </b></dark_grey><grey>[<dark_grey>Editar Categorías</dark_grey>]</grey>",
+        "items": {
+          "edit_category": {
+            "name": "<grey>➥</grey> <gold><b>Configurar</b></gold>",
+            "lore": [
+              "<grey>[<green>Clic Izquierdo</green>]</grey> <yellow>Editar Categoría</yellow>",
+              "<grey>[<green>Shift + Clic Derecho</green>]</grey> <yellow>Mover a la Derecha</yellow>",
+              "<grey>[<green>Shift + Clic Izquierdo</green>]</grey> <yellow>Mover a la Izquierda</yellow>"
+            ]
+          },
+          "add": {
+            "name": "<grey>➥</grey> <gold><b>Agregar Categoría</b></gold>",
+            "lore": [
+              "<yellow>Configura una nueva Categoría para</yellow>",
+              "<yellow>el Libro de Recetas</yellow>"
+            ]
+          }
+        }
+      },
+      "filters": {
+        "gui_name": "<dark_grey><b>Libro de Recetas </b></dark_grey><grey>[<dark_grey>Editar Filtros</dark_grey>]</grey>",
+        "items": {
+          "filter": {
+            "name": "%name%",
+            "lore": [
+              "%description%",
+              "<grey>--------------------</grey>",
+              "<grey>[<green>Clic Izquierdo</green>]</grey> <yellow>Editar Filtro</yellow>",
+              "<grey>[<red>Shift + Clic Derecho</red>]</grey> <red>Eliminar Filtro</red>"
+            ]
+          },
+          "edit_filter": {
+            "name": "<grey>➥</grey> <gold><b>Configurar</b></gold>",
+            "lore": [
+              "<grey>[<green>Clic Izquierdo</green>]</grey> <yellow>Editar Filtro</yellow>",
+              "<grey>[<green>Shift + Clic Derecho</green>]</grey> <yellow>Mover a la Derecha</yellow>",
+              "<grey>[<green>Shift + Clic Izquierdo</green>]</grey> <yellow>Mover a la Izquierda</yellow>"
+            ]
+          },
+          "add": {
+            "name": "<grey>➥</grey> <gold><b>Agregar Filtro</b></gold>",
+            "lore": [
+              "<yellow>Configura un nuevo Filtro para</yellow>",
+              "<yellow>el Libro de Recetas</yellow>"
+            ]
+          }
+        }
+      },
+      "category": {
+        "gui_name": "<dark_grey><b>Libro de Recetas </b></dark_grey><grey>[<dark_grey>Editar Categoría</dark_grey>]</grey>",
+        "items": {
+          "delete": {
+            "name": "<grey>▷</grey> <red><b>Eliminar Categoría",
+            "lore": [
+              "<grey>¡Elimina la categoría seleccionada actualmente!",
+              "<grey>ID de Categoría: <yellow><id>"
+            ]
+          },
+          "auto": {
+            "enabled": {
+              "name": "<gold><b>AUTO</b></gold>",
+              "lore": [
+                "<grey>Todas las Recetas y grupos disponibles</grey>",
+                "<grey>se agregarán automáticamente a esta</grey>",
+                "<grey>categoría. ¡Las recetas que tienen un grupo</grey>",
+                "<grey>solo se muestran en ese grupo!</grey>",
+                "<red>¡Las Recetas y Grupos que se agregan</red>",
+                "<red>manualmente serán ignorados!</red>"
+              ]
+            },
+            "disabled": {
+              "name": "<gold><b>Manualmente</b></gold>",
+              "lore": [
+                "<grey>Las Recetas, Namespaces y Grupos</grey>",
+                "<grey>necesitan ser agregados manualmente</grey>",
+                "<red>Si un grupo no está contenido en</red>",
+                "<red>la categoría, las recetas se</red>",
+                "<red>mostrarán por separado!</red>"
+              ]
+            }
+          }
+        }
+      },
+      "filter": {
+        "gui_name": "<dark_grey><b>Libro de Recetas </b></dark_grey><grey>[<dark_grey>Editar Filtro</dark_grey>]</grey>",
+        "items": {
+          "delete": {
+            "name": "<grey>▷</grey> <red><b>Eliminar Filtro",
+            "lore": [
+              "<grey>¡Elimina el filtro seleccionado actualmente!",
+              "<grey>ID de Filtro: <yellow><id>"
+            ]
+          }
+        }
+      }
+    },
+    "crafting": {
+      "global_items": {
+        "recipe_book": {
+          "name": "<yellow>Libro de Recetas</yellow>",
+          "lore": [
+          ]
+        }
+      },
+      "crafting_grid3": {
+        "gui_name": "<dark_grey><b>Banco de Trabajo Élite</b></dark_grey>",
+        "items": {
+        }
+      },
+      "crafting_grid4": {
+        "gui_name": "<dark_grey><b>Banco de Trabajo Élite</b></dark_grey>"
+      },
+      "crafting_grid5": {
+        "gui_name": "<dark_grey><b>Banco de Trabajo Élite</b></dark_grey>"
+      },
+      "crafting_grid6": {
+        "gui_name": "<dark_grey><b>Banco de Trabajo Élite</b></dark_grey>"
+      },
+      "recipe_book": {
+        "gui_name": "<dark_grey><b>Libro de Recetas</b></dark_grey>"
+      }
+    },
+    "particle_creator": {
+      "main_menu": {
+        "gui_name": "<grey>Creador de Partículas</grey>",
+        "items": {
+          "particle_effect": {
+            "select": {
+              "name": "%effect_name%",
+              "lore": [
+                "%effect_description%",
+                "",
+                "<grey>[<green>Clic Derecho</green>] Seleccionar Efecto</grey>"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "potion_creator": {
+      "potion_creator": {
+        "gui_name": "<black><b>Creador de Efectos de Poción</b></black>",
+        "items": {
+          "apply": {
+            "name": "<green>Aplicar Efecto de Poción</green>",
+            "lore": [
+              "<yellow>Aplica el Efecto de Poción al</yellow>",
+              "<yellow>destino correspondiente.</yellow>",
+              "<yellow>por ejemplo, CustomItem, BrewingRecipe</yellow>"
+            ]
+          },
+          "cancel": {
+            "name": "<red>Cancelar</red>",
+            "lore": [
+              "<yellow>Cancela la creación de este Efecto de Poción.</yellow>",
+              "<yellow>¡No se aplicará!</yellow>"
+            ]
+          },
+          "potion_effect_type": {
+            "name": "<grey>Tipo de Efecto: </grey><dark_aqua>%effect_type%</dark_aqua>",
+            "lore": [
+              "<yellow>Elige el Tipo de este Efecto de Poción</yellow>"
+            ]
+          },
+          "duration": {
+            "name": "<grey>Duración: </grey><dark_aqua>%duration%</dark_aqua>",
+            "lore": [
+              "<yellow>Establece la duración del Efecto de Poción</yellow>",
+              "<yellow>en ticks.</yellow>",
+              "<grey>[<green>Clic</green>] Ingresar duración</grey>"
+            ],
+            "message": "<yellow>¡Escribe el valor numérico de la Duración en ticks! 20 ticks = 1 seg</yellow>"
+          },
+          "amplifier": {
+            "name": "<grey>Amplificador: </grey><dark_aqua>%amplifier%</dark_aqua>",
+            "lore": [
+              "<yellow>Establece el amplificador del Efecto de Poción</yellow>",
+              "<grey>[<green>Clic</green>] Ingresar amplificador</grey>"
+            ],
+            "message": "<yellow>¡Escribe el valor numérico del Amplificador!</yellow>"
+          },
+          "ambient": {
+            "enabled": {
+              "name": "<grey>Ambiental: </grey><green>activado</green>",
+              "lore": [
+                "<yellow>Produce partículas ambientales más translúcidas</yellow>",
+                "<grey>[<green>Clic</green>] Desactivar partículas ambientales</grey>"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>Ambiental: </grey><red>desactivado</red>",
+              "lore": [
+                "<yellow>Produce menos partículas ambientales</yellow>",
+                "<grey>[<green>Clic</green>] Activar partículas ambientales</grey>"
+              ]
+            }
+          },
+          "particles": {
+            "enabled": {
+              "name": "<grey>Partícula: </grey><green>activada</green>",
+              "lore": [
+                "<yellow>Se producen partículas</yellow>",
+                "<grey>[<green>Clic</green>] Desactivar partículas</grey>"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>Partícula: </grey><red>desactivada</red>",
+              "lore": [
+                "<yellow>No se producen partículas</yellow>",
+                "<grey>[<green>Clic</green>] Activar partículas</grey>"
+              ]
+            }
+          },
+          "icon": {
+            "enabled": {
+              "name": "<grey>Ícono: </grey><green>activado</green>",
+              "lore": [
+                "<yellow>Se muestra el ícono del efecto de partícula</yellow>",
+                "<grey>[<green>Clic</green>] Desactivar el ícono</grey>"
+              ]
+            },
+            "disabled": {
+              "name": "<grey>Ícono: </grey><red>desactivado</red>",
+              "lore": [
+                "<yellow>El ícono del efecto de partícula está oculto</yellow>",
+                "<grey>[<green>Clic</green>] Activar el ícono</grey>"
+              ]
+            }
+          }
+        }
+      },
+      "potion_effect_type_selection": {
+        "gui_name": "<black><b>Creador de Efectos de Poción</b></black>",
+        "items": {
+          "effect_type": {
+            "name": "%effect_type%"
+          }
+        }
+      }
+    },
+    "cauldron": {
+      "cauldron": {
+        "default_title": "<dark_grey>Caldero</dark_grey>",
+        "gui_name": "<title>",
+        "items": {
+          "start": {
+            "enabled": {
+              "name": "<green><b>Iniciar cocción</b></green>"
+            },
+            "disabled": {
+              "name": "<red><b>No se puede cocinar</b></red>",
+              "lore": [
+                "<grey>¡Receta o requisitos inválidos!",
+                "",
+                "<yellow>Verifica los requisitos:",
+                "<grey>- <gold>Líquido <grey>(<blue>Agua</blue>/<red>Lava</red>)</grey>",
+                "<grey>- <gold>Hoguera</gold> <grey>(<aqua>Almas</aqua>/<yellow>Normal</yellow>)</grey>",
+                "<grey>- <gold>Hoguera de señal <grey>(Paca de heno)</grey>"
+              ]
+            }
+          },
+          "indicator":{
+            "water": {
+              "name": "<blue><level></blue>"
+            },
+            "lava": {
+              "name": "<gold><level></gold>"
+            }
+          },
+          "signal_fire": {
+            "name": "<gold>Hoguera de señal</gold>"
+          }
+        }
+      }
+    }
+  }
+}
