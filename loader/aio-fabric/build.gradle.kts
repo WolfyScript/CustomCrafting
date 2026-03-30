@@ -38,9 +38,8 @@ dependencies {
     implementation(libs.bundles.database.drivers)
     compileOnly(libs.jackson.kotlin)
 
-    // TODO: Change next MC release
-    modImplementation(libs.fabric.loader)
-    modImplementation(libs.fabric.api)
+    implementation(libs.fabric.loader)
+    implementation(libs.fabric.api)
 }
 
 tasks {
@@ -55,7 +54,7 @@ tasks {
         // Mappings are in the runtime classpath. Not sure why they are included even though we use include for dependencies...
         // So to be sure nothing else slips in, just accept dependencies from the shadow configuration.
         configurations = listOf(project.configurations.shadow.get())
-        finalizedBy(remapJar)
+        finalizedBy("fabric_copy")
 
         dependencies {
             include(project(project.projects.core.coreApi))
@@ -74,14 +73,6 @@ tasks {
     }
     java {
 //        withSourcesJar()
-    }
-    // TODO: Remove next MC release
-    remapJar {
-        dependsOn(shadowJar)
-        finalizedBy("fabric_copy")
-        inputFile.set(shadowJar.get().archiveFile)
-        archiveBaseName.set(project.rootProject.name)
-        archiveClassifier.set("fabric-${libs.versions.minecraft.get()}")
     }
 }
 

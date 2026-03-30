@@ -45,6 +45,8 @@ dependencies {
     compileOnly(libs.nbtapi)
     compileOnly(libs.bundles.exposed)
     compileOnly(libs.bundles.database.drivers)
+
+    paperweight.paperDevBundle(libs.versions.papermc.get())
 }
 
 fun archiveName() = "${project.rootProject.name}-${project.version}-spigot-${libs.versions.minecraft.get()}"

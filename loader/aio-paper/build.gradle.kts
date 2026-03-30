@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.artifactory)
     alias(libs.plugins.resource.factory.bukkit)
     id("build.settings.default")
-    id("build.settings.fabric-loom")
     id("build.docker.run")
     id("build.spigotlike")
 }
