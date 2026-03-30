@@ -1,7 +1,6 @@
 package com.wolfyscript.customcrafting.ui.editor.recipe_editor
 
 import androidx.compose.runtime.*
-import androidx.compose.runtime.key
 import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
@@ -28,8 +27,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import kotlin.text.compareTo
-import kotlin.text.set
+import kotlin.math.ceil
 
 @Composable
 fun StackChoicesMenu(
@@ -73,6 +71,8 @@ private object CachedTags {
 
     private var tags: List<HolderSet.Named<Item>> = emptyList()
 
+    val totalPages: Int get() = tags.size
+
     fun getTagsSubList(fromIndex: Int, toIndex: Int): List<HolderSet.Named<Item>> {
         if (tags.isEmpty()) {
             tags = BuiltInRegistries.ITEM.tags
@@ -94,6 +94,7 @@ private class TagChoicesStore : Store() {
 
     data class TagsState(
         val loading: Boolean = false,
+        val totalPages: Int = 0,
         val tags: List<TagPreview> = emptyList(),
     )
 
@@ -111,6 +112,8 @@ private class TagChoicesStore : Store() {
             }
             availableTags.update {
                 TagsState(
+                    loading = false,
+                    totalPages = CachedTags.totalPages,
                     tags = CachedTags.getTagsSubList(fromIndex, toIndex)
                         .map { TagPreview(it.key().location.toKey(), icon = it.firstOrNull()?.value()) })
             }
@@ -143,48 +146,37 @@ fun TagChoicesMenu(
                 onPageChange = { store.setSelectionPage(it) }
             )
         } else {
-            var page by remember { mutableStateOf(0) }
-
-            Column(Modifier.fillMaxWidth().height(3.slots)) {
-                repeat(3) { row ->
-                    Row(Modifier.fillMaxWidth()) {
-                        repeat(9) { col ->
-                            val index = row * 9 + col
-                            tags().getOrNull(index)?.let { key ->
-                                Button(onClick = {
-                                    onRemove(key)
-                                }) {
-                                    Icon(stack = ItemStack(Items.NAME_TAG).apply {
-                                        set(DataComponents.ITEM_NAME, key.toString().deser().vanilla())
-                                    }.snapshot())
+            Paged(
+                Modifier,
+                ceil(tags().size / 27.toFloat()).toInt(),
+                onPageChange = {},
+                controlContent = {
+                    Button(onClick = {
+                        selectingTag = true
+                        store.setSelectionPage(0)
+                    }) {
+                        Icon(stack = Defaults.AddNewTag)
+                    }
+                }
+            ) {
+                // TODO: Create a "Flow Row (Grid)" Component that automatically arranges items in 2d
+                Column(Modifier.fillMaxWidth().height(3.slots)) {
+                    repeat(3) { row ->
+                        Row(Modifier.fillMaxWidth()) {
+                            repeat(9) { col ->
+                                val index = row * 9 + col
+                                tags().getOrNull(index)?.let { key ->
+                                    Button(onClick = {
+                                        onRemove(key)
+                                    }) {
+                                        Icon(stack = ItemStack(Items.NAME_TAG).apply {
+                                            set(DataComponents.ITEM_NAME, key.toString().deser().vanilla())
+                                        }.snapshot())
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            }
-            Row(Modifier.fillMaxWidth().height(1.slots), horizontalArrangement = Arrangement.SpaceAround) {
-                Button(onClick = {
-                    if (page > 0) {
-                        page -= 1
-                    }
-                }) {
-                    Icon(stack = Defaults.PreviousPage)
-                }
-
-                Button(onClick = {
-                    selectingTag = true
-                    store.setSelectionPage(0)
-                }) {
-                    Icon(stack = Defaults.AddNewTag)
-                }
-
-                Button(onClick = {
-                    if (page < tags().size / 27) {
-                        page += 1
-                    }
-                }) {
-                    Icon(stack = Defaults.NextPage)
                 }
             }
         }
@@ -197,31 +189,13 @@ private fun TagSelection(
     onAdd: (Key) -> Unit,
     onPageChange: (Int) -> Unit,
 ) {
-    var selectorPage by remember { mutableStateOf(0) }
-    TagSelectPage(
-        tagPreviews,
-        onSelect = {
-            onAdd(it.key)
-            selectorPage = 0
-        }
-    )
-    Row(Modifier.fillMaxWidth().height(1.slots), horizontalArrangement = Arrangement.SpaceAround) {
-        Button(onClick = {
-            if (selectorPage > 0) {
-                selectorPage -= 1
-                onPageChange(selectorPage)
+    Paged(Modifier, tagPreviews.totalPages, { onPageChange(it) }) {
+        TagSelectPage(
+            tagPreviews,
+            onSelect = {
+                onAdd(it.key)
             }
-        }) {
-            Icon(stack = Defaults.PreviousPage)
-        }
-        Button(onClick = {
-            if (tagPreviews.tags.size >= 27) {
-                selectorPage += 1
-                onPageChange(selectorPage)
-            }
-        }) {
-            Icon(stack = Defaults.NextPage)
-        }
+        )
     }
 }
 
@@ -274,14 +248,6 @@ private object Defaults {
 
     val AddNewTag = ItemStack(Items.BOOKSHELF).apply {
         set(DataComponents.ITEM_NAME, "Add Item Tag".deser().vanilla())
-    }.snapshot()
-
-    val NextPage = ItemStack(Items.GREEN_CONCRETE).apply {
-        set(DataComponents.ITEM_NAME, "Next Page".deser().vanilla())
-    }.snapshot()
-
-    val PreviousPage = ItemStack(Items.RED_CONCRETE).apply {
-        set(DataComponents.ITEM_NAME, "Previous Page".deser().vanilla())
     }.snapshot()
 
 }

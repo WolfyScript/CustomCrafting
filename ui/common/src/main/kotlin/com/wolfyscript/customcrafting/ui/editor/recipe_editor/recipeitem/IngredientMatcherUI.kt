@@ -32,6 +32,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import kotlin.math.ceil
 
 class ExactIngredientMatcherUIProvider : IngredientMatcherCustomUIProvider<IngredientMatcherExactModel> {
 
@@ -62,8 +63,11 @@ class ItemIngredientMatcherUIProvider : IngredientMatcherCustomUIProvider<ItemIn
 
 }
 
+private const val ITEMS_PER_PAGE = 18
+
 private data class AvailableDataComponentsState(
     val loading: Boolean,
+    val totalPages: Int,
     val components: List<DataComponentDisplay>,
 )
 
@@ -75,20 +79,20 @@ private data class DataComponentDisplay(
 private class ItemIngredientMatcherExactStore : Store() {
 
     val availableDataComponents: StateFlow<AvailableDataComponentsState>
-        field = MutableStateFlow(AvailableDataComponentsState(loading = false, components = emptyList()))
+        field = MutableStateFlow(AvailableDataComponentsState(loading = false, 0, components = emptyList()))
 
     fun setSelectionPage(page: Int) {
-        getAvailableComponentsList(page * 18, 18)
+        getAvailableComponentsList(page * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
     }
 
     private fun getAvailableComponentsList(fromIndex: Int, count: Int) {
         storeCoroutineScope.launch {
             availableDataComponents.update {
-                AvailableDataComponentsState(loading = true, emptyList())
+                AvailableDataComponentsState(loading = true, 0, emptyList())
             }
             availableDataComponents.update {
-                val dataComponents = try {
-                    BuiltInRegistries.DATA_COMPONENT_TYPE.entrySet().stream()
+                try {
+                    val components = BuiltInRegistries.DATA_COMPONENT_TYPE.entrySet().stream()
                         .sorted { entry, other -> entry.key.toString().compareTo(other.key.toString()) }
                         .skip(fromIndex.toLong())
                         .limit(count.toLong())
@@ -99,12 +103,12 @@ private class ItemIngredientMatcherExactStore : Store() {
                             )
                         }
                         .toList()
+                    val pages = ceil(BuiltInRegistries.DATA_COMPONENT_TYPE.size() / ITEMS_PER_PAGE.toFloat()).toInt()
+                    AvailableDataComponentsState(loading = false, pages, components)
                 } catch (e: Exception) {
                     ScafallProvider.get().logger.error("Error while fetching data component types", e)
-                    emptyList()
+                    AvailableDataComponentsState(loading = false, 0, emptyList())
                 }
-
-                AvailableDataComponentsState(loading = false, dataComponents)
             }
         }
     }
@@ -182,108 +186,74 @@ private fun DataComponentsList(
     onRemove: (Key) -> Unit,
     onComplete: () -> Unit,
 ) {
-
     val store = store(Key.customCrafting("ingredient_matcher/exact")) {
         ItemIngredientMatcherExactStore()
     }
-
-    var selectingTag: Boolean by remember { mutableStateOf(false) }
+    var selecting: Boolean by remember { mutableStateOf(false) }
 
     Column(Modifier.fillMaxWidth().height(4.slots)) {
-        if (selectingTag) {
+        if (selecting) {
             val components by store.availableDataComponents.collectAsState()
             DataComponentSelection(
                 components,
                 onAdd = {
                     onAdd(it)
-                    selectingTag = false
+                    selecting = false
                 },
                 onPageChange = { store.setSelectionPage(it) }
             )
         } else {
-            var page by remember { mutableStateOf(0) }
-
-            // TODO: Create a "Flow Row (Grid)" Component that automatically arranges items in 2d
-            Column(Modifier.fillMaxWidth().height(3.slots)) {
-                repeat(3) { row ->
-                    Row(Modifier.fillMaxWidth()) {
-                        repeat(6) { col ->
-                            val index = row * 6 + col
-                            components().getOrNull(index)?.let { key ->
-                                Button(onClick = { onRemove(key) }) {
-                                    Icon(stack = ItemStack(Items.NAME_TAG).apply {
-                                        set(DataComponents.ITEM_NAME, key.toString().deser().vanilla())
-                                    }.snapshot())
+            Paged(
+                Modifier,
+                ceil(components().size / ITEMS_PER_PAGE.toFloat()).toInt(),
+                onPageChange = {},
+                controlContent = {
+                    Button(onClick = { onComplete() }) {
+                        Icon(stack = Defaults.Done)
+                    }
+                    Button(onClick = {
+                        selecting = true
+                        store.setSelectionPage(0)
+                    }) {
+                        Icon(stack = Defaults.AddNew)
+                    }
+                }
+            ) {
+                // TODO: Create a "Flow Row (Grid)" Component that automatically arranges items in 2d
+                Column(Modifier.fillMaxWidth().height(3.slots)) {
+                    repeat(3) { row ->
+                        Row(Modifier.fillMaxWidth()) {
+                            repeat(6) { col ->
+                                val index = row * 6 + col
+                                components().getOrNull(index)?.let { key ->
+                                    Button(onClick = { onRemove(key) }) {
+                                        Icon(stack = ItemStack(Items.NAME_TAG).apply {
+                                            set(DataComponents.ITEM_NAME, key.toString().deser().vanilla())
+                                        }.snapshot())
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-            Row(Modifier.fillMaxWidth().height(1.slots), horizontalArrangement = Arrangement.SpaceAround) {
-                Button(onClick = { onComplete() }) {
-                    Icon(stack = Defaults.Done)
-                }
-                Button(onClick = {
-                    if (page > 0) {
-                        page -= 1
-                    }
-                }) {
-                    Icon(stack = Defaults.PreviousPage)
-                }
-
-                Button(onClick = {
-                    selectingTag = true
-                    store.setSelectionPage(0)
-                }) {
-                    Icon(stack = Defaults.AddNew)
-                }
-
-                Button(onClick = {
-                    if (page < components().size / 18) {
-                        page += 1
-                    }
-                }) {
-                    Icon(stack = Defaults.NextPage)
-                }
-            }
         }
     }
 }
 
-// TODO: Create a general "Paged" Component that we can use here and in other places
 @Composable
 private fun DataComponentSelection(
     componentsState: AvailableDataComponentsState,
     onAdd: (Key) -> Unit,
     onPageChange: (Int) -> Unit,
 ) {
-    var selectorPage by remember { mutableStateOf(0) }
-
-    DataComponentsSelectionPage(
-        componentsState,
-        onSelect = {
-            onAdd(it)
-            selectorPage = 0
-        }
-    )
-    Row(Modifier.fillMaxWidth().height(1.slots), horizontalArrangement = Arrangement.SpaceAround) {
-        Button(onClick = {
-            if (selectorPage > 0) {
-                selectorPage -= 1
-                onPageChange(selectorPage)
+    Paged(Modifier, componentsState.totalPages, onPageChange = { onPageChange(it) }) {
+        DataComponentsSelectionPage(
+            componentsState,
+            onSelect = {
+                onAdd(it)
             }
-        }) {
-            Icon(stack = Defaults.PreviousPage)
-        }
-        Button(onClick = {
-            if (componentsState.components.size >= 18) {
-                selectorPage += 1
-                onPageChange(selectorPage)
-            }
-        }) {
-            Icon(stack = Defaults.NextPage)
-        }
+        )
     }
 }
 
@@ -307,6 +277,7 @@ private fun DataComponentsSelectionPage(
             }
         }
     } else {
+        // TODO: Create a "Flow Row (Grid)" Component that automatically arranges items in 2d
         Column(Modifier.fillMaxWidth().height(3.slots)) {
             repeat(3) { row ->
                 Row(Modifier.fillMaxWidth()) {
@@ -350,14 +321,6 @@ private object Defaults {
 
     val AddNew = ItemStack(Items.BOOKSHELF).apply {
         set(DataComponents.ITEM_NAME, "Add Data Component".deser().vanilla())
-    }.snapshot()
-
-    val NextPage = ItemStack(Items.GREEN_CONCRETE).apply {
-        set(DataComponents.ITEM_NAME, "Next Page".deser().vanilla())
-    }.snapshot()
-
-    val PreviousPage = ItemStack(Items.RED_CONCRETE).apply {
-        set(DataComponents.ITEM_NAME, "Previous Page".deser().vanilla())
     }.snapshot()
 
 }
