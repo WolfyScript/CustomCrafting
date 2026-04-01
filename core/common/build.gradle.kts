@@ -6,9 +6,9 @@ plugins {
 
 dependencies {
     api(project(":core:core-api"))
-    implementation(libs.bundles.exposed)
-    implementation(libs.bundles.database.drivers)
-    compileOnly(libs.jackson.kotlin)
+    implementation(sharedLibs.bundles.exposed)
+    implementation(sharedLibs.bundles.database.drivers)
+    compileOnly(sharedLibs.jackson.kotlin)
 }
 
 tasks {

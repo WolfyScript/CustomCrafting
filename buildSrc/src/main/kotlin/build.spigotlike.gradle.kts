@@ -1,6 +1,8 @@
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 
+val Project.sharedLibs
+    get() = extensions.getByType(org.gradle.accessors.dm.LibrariesForSharedLibs::class)
 val Project.libs
     get() = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
 
@@ -29,27 +31,28 @@ dependencies {
     implementation(project(":core:core-api"))
     implementation(project(":core:core-common"))
     implementation(kotlin("reflect"))
-    implementation(libs.scafall.loader)
-    implementation(libs.jackson.kotlin)
+    api(sharedLibs.scafall.spigot)
+    implementation(sharedLibs.scafall.loader)
+    implementation(sharedLibs.jackson.kotlin)
+    implementation(sharedLibs.caffeine)
+    compileOnly(sharedLibs.papermc.paper)
+    compileOnly(sharedLibs.mojang.authlib)
+    compileOnly(sharedLibs.jetbrains.annotations)
+    compileOnly(sharedLibs.netty.all)
+    compileOnly(sharedLibs.bundles.exposed)
+    compileOnly(sharedLibs.bundles.database.drivers)
+
     api(libs.protocollib)
     api(libs.bstats)
-    api(libs.scafall.spigot.api)
-    implementation(libs.caffeine)
     compileOnly(libs.mythic.dist)
-    compileOnly(libs.papermc.paper)
-    compileOnly(libs.mojang.authlib)
-    compileOnly(libs.jetbrains.annotations)
-    compileOnly(libs.netty.all)
     compileOnly(libs.placeholderapi)
     compileOnly(libs.oraxen)
     compileOnly(libs.nbtapi)
-    compileOnly(libs.bundles.exposed)
-    compileOnly(libs.bundles.database.drivers)
 
-    paperweight.paperDevBundle(libs.versions.papermc.get())
+    paperweight.paperDevBundle(sharedLibs.versions.papermc.get())
 }
 
-fun archiveName() = "${project.rootProject.name}-${project.version}-spigot-${libs.versions.minecraft.get()}"
+fun archiveName() = "${project.rootProject.name}-${project.version}-spigot-${sharedLibs.versions.minecraft.get()}"
 
 publishing {
     publications.create<MavenPublication>("maven") {

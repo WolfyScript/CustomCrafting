@@ -4,9 +4,9 @@ plugins {
     kotlin("jvm")
     `java-library`
     `maven-publish`
-    alias(libs.plugins.shadow)
-    alias(libs.plugins.artifactory)
-    alias(libs.plugins.resource.factory.bukkit)
+    alias(sharedLibs.plugins.shadow)
+    alias(sharedLibs.plugins.artifactory)
+    alias(sharedLibs.plugins.resource.factory.bukkit)
     id("build.settings.default")
     id("build.docker.run")
     id("build.spigotlike")
@@ -25,10 +25,10 @@ dependencies {
     implementation(shadow(projects.editor.editorCommon)!!)
     implementation(shadow(projects.ui.uiCommon)!!)
 
-    paperweight.paperDevBundle(libs.versions.papermc.get())
+    paperweight.paperDevBundle(sharedLibs.versions.papermc.get())
 }
 
-val customArchiveName = archiveName("paper", libs.versions.minecraft.get())
+val customArchiveName = archiveName("paper", sharedLibs.versions.minecraft.get())
 
 tasks {
     shadowJar {
@@ -46,7 +46,7 @@ tasks {
             include(project(project.projects.editor.editorCommon))
             include(project(project.projects.ui.uiCommon))
 
-            libs.bundles.sentry.get().forEach {
+            sharedLibs.bundles.sentry.get().forEach {
                 include(dependency(it))
             }
         }
@@ -70,7 +70,7 @@ bukkitPluginYaml {
     name = "customcrafting"
     version = project.version.toString()
     main = "com.wolfyscript.customcrafting.paper.PaperLoaderPlugin"
-    apiVersion = libs.versions.minecraft.get() // Only support the latest Minecraft version!
+    apiVersion = sharedLibs.versions.minecraft.get() // Only support the latest Minecraft version!
     authors.add("WolfyScript")
     depend.add("scafall")
 
@@ -78,13 +78,13 @@ bukkitPluginYaml {
 //        libs.bundles.exposed.get().forEach {
 //            add(it.toString())
 //        }
-        libs.bundles.database.drivers.get().forEach {
+        sharedLibs.bundles.database.drivers.get().forEach {
             add(it.toString())
         }
 
         addAll(
-            libs.typesafe.config.get().toString(),
-            libs.caffeine.get().toString(),
+            sharedLibs.typesafe.config.get().toString(),
+            sharedLibs.caffeine.get().toString(),
             libs.bstats.get().toString(),
         )
     }
@@ -95,7 +95,7 @@ minecraftServers {
     servers {
         register("paper") {
             destFileName.set("customcrafting.jar")
-            version.set(libs.versions.minecraft.get())
+            version.set(sharedLibs.versions.minecraft.get())
             type.set("PAPER")
             imageVersion.set("java21")
             ports.add("25570:25565")

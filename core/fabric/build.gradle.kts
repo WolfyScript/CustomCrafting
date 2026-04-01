@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm")
     `java-library`
-    id(libs.plugins.devtools.docker.minecraft.get().pluginId)
+    id(sharedLibs.plugins.devtools.docker.minecraft.get().pluginId)
     id("build.settings.default")
     id("build.settings.fabric-loom")
     id("build.docker.run")
@@ -21,11 +21,11 @@ dependencies {
     api(projects.core.coreApi)
     api(projects.core.coreCommon)
 
-    implementation(libs.scafall.loader)
-    implementation(libs.bundles.exposed)
-    implementation(libs.bundles.database.drivers)
-    compileOnly(libs.jackson.kotlin)
+    implementation(sharedLibs.scafall.loader)
+    implementation(sharedLibs.bundles.exposed)
+    implementation(sharedLibs.bundles.database.drivers)
+    compileOnly(sharedLibs.jackson.kotlin)
 
-    implementation(libs.fabric.loader)
-    implementation(libs.fabric.api)
+    implementation(sharedLibs.fabric.loader)
+    implementation(sharedLibs.fabric.api)
 }

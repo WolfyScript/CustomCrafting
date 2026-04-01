@@ -24,7 +24,7 @@ plugins {
     kotlin("jvm")
     `java-library`
     `maven-publish`
-    alias(libs.plugins.artifactory)
+    alias(sharedLibs.plugins.artifactory)
     id("build.settings.default")
     id("build.spigotlike")
 }

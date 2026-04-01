@@ -24,9 +24,9 @@ plugins {
     `java-library`
     `maven-publish`
     kotlin("jvm")
-    alias(libs.plugins.shadow)
-    alias(libs.plugins.modrinth.minotaur)
-    alias(libs.plugins.artifactory)
+    alias(sharedLibs.plugins.shadow)
+    alias(sharedLibs.plugins.modrinth.minotaur)
+    alias(sharedLibs.plugins.artifactory)
 }
 
 repositories {

@@ -1,5 +1,5 @@
-val Project.libs
-    get() = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
+val Project.sharedLibs
+    get() = extensions.getByType(org.gradle.accessors.dm.LibrariesForSharedLibs::class)
 
 plugins {
     `java-library`
@@ -44,18 +44,18 @@ tasks {
 }
 
 dependencies {
-    api(libs.scafall.api)
-    implementation(libs.bundles.jetbrains)
+    api(sharedLibs.scafall.api)
+    implementation(sharedLibs.bundles.jetbrains)
 
-    compileOnly(libs.inject.guice)
-    compileOnly(libs.slf4j.api)
+    compileOnly(sharedLibs.inject.guice)
+    compileOnly(sharedLibs.slf4j.api)
 
-    implementation(libs.bundles.sentry)
+    implementation(sharedLibs.bundles.sentry)
 
-    compileOnly(libs.bundles.minecraft.deps)
-    compileOnlyApi(libs.bundles.jackson)
-    compileOnlyApi(libs.bundles.adventure)
+    compileOnly(sharedLibs.bundles.minecraft.deps)
+    compileOnlyApi(sharedLibs.bundles.jackson)
+    compileOnlyApi(sharedLibs.bundles.adventure)
 
-    testImplementation(libs.bundles.testing)
+    testImplementation(sharedLibs.bundles.testing)
     testImplementation(kotlin("test"))
 }

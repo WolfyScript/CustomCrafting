@@ -29,6 +29,19 @@
 rootProject.name = "customcrafting"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+dependencyResolutionManagement {
+    repositories {
+//        mavenLocal()
+        maven("https://artifacts.wolfyscript.com/artifactory/gradle-dev")
+    }
+
+    versionCatalogs {
+        create("sharedLibs") {
+            from("com.wolfyscript.scafall:scafall-versions:1.0-SNAPSHOT")
+        }
+    }
+}
+
 pluginManagement {
     repositories {
         mavenLocal()

@@ -1,7 +1,7 @@
-import org.gradle.accessors.dm.LibrariesForLibs
+import org.gradle.accessors.dm.LibrariesForSharedLibs
 
-val Project.libs
-    get() = extensions.getByType(LibrariesForLibs::class)
+val Project.sharedLibs
+    get() = extensions.getByType(LibrariesForSharedLibs::class)
 
 plugins {
     `java-library`
@@ -24,5 +24,5 @@ tasks {
 }
 
 dependencies {
-    minecraft(libs.minecraft)
+    minecraft(sharedLibs.minecraft)
 }

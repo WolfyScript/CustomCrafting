@@ -19,13 +19,14 @@ repositories {
 }
 
 dependencies {
+    compileOnly(files(sharedLibs::class.java.protectionDomain.codeSource.location))
     compileOnly(files(libs::class.java.protectionDomain.codeSource.location))
 
-    implementation(libs.plugins.devtools.docker.run.depNotation())
-    implementation(libs.plugins.devtools.docker.minecraft.depNotation())
-    implementation(libs.plugins.paperweight.userdev.depNotation())
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
-    implementation(libs.plugins.fabric.loom.depNotation())
+    implementation(sharedLibs.plugins.devtools.docker.run.depNotation())
+    implementation(sharedLibs.plugins.devtools.docker.minecraft.depNotation())
+    implementation(sharedLibs.plugins.paperweight.userdev.depNotation())
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${sharedLibs.versions.kotlin.get()}")
+    implementation(sharedLibs.plugins.fabric.loom.depNotation())
 }
 
 kotlin {

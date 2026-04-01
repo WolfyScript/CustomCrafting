@@ -3,8 +3,8 @@ import utils.archiveName
 plugins {
     kotlin("jvm")
     `java-library`
-    alias(libs.plugins.shadow)
-    id(libs.plugins.devtools.docker.minecraft.get().pluginId)
+    alias(sharedLibs.plugins.shadow)
+    id(sharedLibs.plugins.devtools.docker.minecraft.get().pluginId)
     id("build.settings.default")
     id("build.settings.fabric-loom")
     id("build.docker.run")
@@ -33,13 +33,13 @@ dependencies {
     api(shadow(projects.editor.editorCommon)!!)
     api(shadow(projects.ui.uiCommon)!!)
 
-    implementation(libs.scafall.loader)
-    implementation(libs.bundles.exposed)
-    implementation(libs.bundles.database.drivers)
-    compileOnly(libs.jackson.kotlin)
+    implementation(sharedLibs.scafall.loader)
+    implementation(sharedLibs.bundles.exposed)
+    implementation(sharedLibs.bundles.database.drivers)
+    compileOnly(sharedLibs.jackson.kotlin)
 
-    implementation(libs.fabric.loader)
-    implementation(libs.fabric.api)
+    implementation(sharedLibs.fabric.loader)
+    implementation(sharedLibs.fabric.api)
 }
 
 tasks {
@@ -64,7 +64,7 @@ tasks {
             include(project(project.projects.editor.editorCommon))
             include(project(project.projects.ui.uiCommon))
 
-            libs.bundles.sentry.get().forEach {
+            sharedLibs.bundles.sentry.get().forEach {
                 include(dependency(it))
             }
         }
@@ -77,17 +77,17 @@ tasks {
 }
 
 minecraftServers {
-    libName.set("${archiveName("fabric", libs.versions.minecraft.get())}.jar")
+    libName.set("${archiveName("fabric", sharedLibs.versions.minecraft.get())}.jar")
     servers {
         register("fabric") {
             destPath.set("mods")
             destFileName.set("customcrafting.jar")
-            version.set(libs.versions.minecraft.get())
+            version.set(sharedLibs.versions.minecraft.get())
             type.set("FABRIC")
             imageVersion.set("java21")
             ports.add("25569:25565")
             extraEnv.put("MODRINTH_PROJECTS", "fabric-api, fabric-language-kotlin")
-            extraEnv.put("FABRIC_LOADER_VERSION", libs.versions.fabric.loader.get())
+            extraEnv.put("FABRIC_LOADER_VERSION", sharedLibs.versions.fabric.loader.get())
         }
     }
 }
