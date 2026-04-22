@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.core.recipes.actions
 
 import com.wolfyscript.customcrafting.core.recipes.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipes.ResultAction
-import com.wolfyscript.scafall.wrappers.unwrap
+import com.wolfyscript.scafall.wrappers.minecraft.unwrap
 import net.minecraft.commands.CommandSource
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.Component

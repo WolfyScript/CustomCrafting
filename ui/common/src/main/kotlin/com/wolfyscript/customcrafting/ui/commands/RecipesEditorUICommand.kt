@@ -36,7 +36,7 @@ internal fun LiteralArgumentBuilder<CommandSourceStack>.recipeEditorUIEntry(disp
             .executes { ctx ->
                 val viewportl = ScafallProvider.get().viewportl
                 val executor = ctx.source.player ?: return@executes 0
-                ScafallProvider.get().scheduler.asyncTask(ScafallProvider.get().modInfo) {
+                ScafallProvider.get().scheduler.async(ScafallProvider.get().modInfo) {
                     CustomCraftingProvider.get().server?.recipeEditor?.getOrCreateSession(executor.uuid)
                     viewportl.guiManager.getViewRuntime(executor.uuid).let { playerRuntime ->
                         playerRuntime.joinViewer(executor.uuid)

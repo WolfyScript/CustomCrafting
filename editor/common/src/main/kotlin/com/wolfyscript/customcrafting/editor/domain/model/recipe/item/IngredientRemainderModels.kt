@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.core.recipes.*
 import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainder
 import com.wolfyscript.customcrafting.core.recipes.ingredient.of
 import com.wolfyscript.scafall.items.ItemStackRef
-import com.wolfyscript.scafall.wrappers.wrap
+import com.wolfyscript.scafall.wrappers.minecraft.wrap
 import net.minecraft.world.item.ItemStack
 
 class IngredientRemainderModelDefault(

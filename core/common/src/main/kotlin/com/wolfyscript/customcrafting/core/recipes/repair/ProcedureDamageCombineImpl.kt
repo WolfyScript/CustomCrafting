@@ -1,8 +1,8 @@
 package com.wolfyscript.customcrafting.core.recipes.repair
 
 import com.wolfyscript.customcrafting.core.recipes.process.ProcedureDamageCombine
-import com.wolfyscript.scafall.wrappers.unwrap
-import com.wolfyscript.scafall.wrappers.wrap
+import com.wolfyscript.scafall.wrappers.minecraft.unwrap
+import com.wolfyscript.scafall.wrappers.minecraft.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 class ProcedureDamageCombineImpl(

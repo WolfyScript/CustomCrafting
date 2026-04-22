@@ -16,7 +16,7 @@ import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.core.recipes.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.core.recipes.CustomRecipeStonecutting
 import com.wolfyscript.customcrafting.core.recipes.RecipeReference
-import com.wolfyscript.scafall.wrappers.unwrap
+import com.wolfyscript.scafall.wrappers.minecraft.unwrap
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey

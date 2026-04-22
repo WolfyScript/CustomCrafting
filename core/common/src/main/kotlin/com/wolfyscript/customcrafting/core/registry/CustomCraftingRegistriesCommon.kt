@@ -11,7 +11,7 @@ import com.wolfyscript.scafall.registry.Registry
 import com.wolfyscript.scafall.registry.RegistryKey
 import com.wolfyscript.scafall.registry.RegistryReference
 import com.wolfyscript.scafall.registry.RegistrySimple
-import com.wolfyscript.scafall.wrappers.snapshot
+import com.wolfyscript.scafall.wrappers.minecraft.snapshot
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 

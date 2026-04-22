@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.core.recipes.data
 
-import com.wolfyscript.scafall.wrappers.wrap
+import com.wolfyscript.scafall.wrappers.minecraft.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.world.item.crafting.CraftingInput
 import kotlin.math.max

@@ -7,7 +7,7 @@ import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
-import com.wolfyscript.scafall.wrappers.unwrap
+import com.wolfyscript.scafall.wrappers.minecraft.unwrap
 import net.minecraft.core.HolderSet
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.Identifier

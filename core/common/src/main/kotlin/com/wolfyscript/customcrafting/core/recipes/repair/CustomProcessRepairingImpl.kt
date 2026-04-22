@@ -11,8 +11,8 @@ import com.wolfyscript.customcrafting.core.recipes.process.ProcedureRename
 import com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
-import com.wolfyscript.scafall.wrappers.unwrap
-import com.wolfyscript.scafall.wrappers.wrap
+import com.wolfyscript.scafall.wrappers.minecraft.unwrap
+import com.wolfyscript.scafall.wrappers.minecraft.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component

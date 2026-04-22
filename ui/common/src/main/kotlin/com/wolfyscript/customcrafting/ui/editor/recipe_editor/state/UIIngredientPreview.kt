@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.ui.editor.recipe_editor.state
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.RecipeCraftingModel
 import com.wolfyscript.scafall.identifier.Key
-import com.wolfyscript.scafall.wrappers.snapshot
+import com.wolfyscript.scafall.wrappers.minecraft.snapshot
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
 import net.minecraft.world.item.ItemStack
 

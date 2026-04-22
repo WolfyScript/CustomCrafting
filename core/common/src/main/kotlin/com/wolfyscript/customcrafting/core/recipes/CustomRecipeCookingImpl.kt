@@ -6,7 +6,7 @@ import com.wolfyscript.customcrafting.core.recipes.data.IngredientDataImpl
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
 import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
-import com.wolfyscript.scafall.wrappers.unwrap
+import com.wolfyscript.scafall.wrappers.minecraft.unwrap
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntityType
 

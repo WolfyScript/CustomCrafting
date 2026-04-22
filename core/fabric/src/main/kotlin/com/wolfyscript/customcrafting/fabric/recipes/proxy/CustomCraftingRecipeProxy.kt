@@ -11,7 +11,7 @@ import com.wolfyscript.customcrafting.core.recipes.RecipeReference
 import com.wolfyscript.customcrafting.core.recipes.ShapedCraftingFormulaImpl
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState
-import com.wolfyscript.scafall.wrappers.unwrap
+import com.wolfyscript.scafall.wrappers.minecraft.unwrap
 import net.minecraft.core.HolderLookup
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
