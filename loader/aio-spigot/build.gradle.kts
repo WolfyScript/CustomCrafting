@@ -52,13 +52,11 @@ dependencies {
 
 val customArchiveName = archiveName("spigot", sharedLibs.versions.minecraft.get())
 
-paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
-
 tasks {
     shadowJar {
-        archiveFileName.set("${customArchiveName}-mojmap.jar")
+        archiveFileName.set("${customArchiveName}.jar")
 
-        finalizedBy(reobfJar)
+        finalizedBy("spigot_copy")
 
         dependencies {
             include(project(project.projects.core.coreApi))
@@ -75,11 +73,6 @@ tasks {
 
         relocate("org.bstats", "com.wolfyscript.customcrafting.spigot.bstats")
         relocate("io.sentry", "com.wolfyscript.customcrafting.core.sentry")
-    }
-    reobfJar {
-        dependsOn(shadowJar)
-        finalizedBy("spigot_copy")
-        outputJar.set(layout.buildDirectory.file("libs/${customArchiveName}.jar"))
     }
 }
 

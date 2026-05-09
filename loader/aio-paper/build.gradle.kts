@@ -57,9 +57,6 @@ tasks {
         relocate("io.sentry", "com.wolfyscript.customcrafting.core.sentry")
 //        relocate("com.fasterxml.jackson", "com.wolfyscript.scafall.lib.jackson")
     }
-    assemble {
-        dependsOn(shadowJar)
-    }
 }
 
 artifacts {
