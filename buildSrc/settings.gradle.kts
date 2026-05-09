@@ -1,3 +1,5 @@
+rootProject.name = "buildSrc" // fix gradle warning with type-safe project accessors
+
 dependencyResolutionManagement {
     repositories {
 //        mavenLocal()
