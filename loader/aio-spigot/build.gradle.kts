@@ -112,7 +112,7 @@ minecraftServers {
             version.set(sharedLibs.versions.minecraft.get())
             type.set("SPIGOT")
             extraEnv.put("BUILD_FROM_SOURCE", "true")
-            imageVersion.set("java21-graalvm") // graalvm contains the jdk required to build from source
+            imageVersion.set("java${sharedLibs.versions.jdk.get()}-graalvm") // graalvm contains the jdk required to build from source
             ports.add("25569:25565")
         }
     }

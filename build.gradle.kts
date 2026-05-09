@@ -46,8 +46,6 @@ dependencies {
     compileOnly(project(":core:core-spigot"))
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_21
-
 publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
@@ -88,7 +86,7 @@ modrinth {
     versionType.set("release") // TODO: Automatically determine this from the version
     uploadFile.set(tasks.shadowJar) // Use the shadowed jar !!
     changelog.set(System.getenv("CHANGELOG"))
-    gameVersions.addAll("1.21.5") // Must be an array, even with only one version
+    gameVersions.addAll(sharedLibs.versions.minecraft.get()) // Must be an array, even with only one version
     loaders.addAll("bukkit", "spigot", "paper", "purpur") // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
     dependencies { // A special DSL for creating dependencies
         // scope.type

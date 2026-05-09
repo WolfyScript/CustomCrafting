@@ -30,7 +30,7 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(25)
+    jvmToolchain(Integer.parseInt(sharedLibs.versions.jdk.get()))
 }
 
 fun Provider<PluginDependency>.depNotation(): String {

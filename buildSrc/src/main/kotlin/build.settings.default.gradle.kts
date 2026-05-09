@@ -17,7 +17,7 @@ repositories {
 }
 
 kotlin {
-    jvmToolchain(25)
+    jvmToolchain(Integer.parseInt(sharedLibs.versions.jdk.get()))
     compilerOptions {
         freeCompilerArgs.add("-Xexplicit-backing-fields")
     }
