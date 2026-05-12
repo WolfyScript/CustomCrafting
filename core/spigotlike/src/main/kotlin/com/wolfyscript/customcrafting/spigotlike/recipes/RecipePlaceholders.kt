@@ -13,8 +13,8 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.ItemStackTemplate
 import net.minecraft.world.item.crafting.RecipeHolder
-import net.minecraft.world.item.crafting.TransmuteResult
 import net.minecraft.world.level.ItemLike
 import org.bukkit.Bukkit
 import org.bukkit.Keyed
@@ -140,7 +140,7 @@ fun Ingredient?.toMinecraft() : net.minecraft.world.item.crafting.Ingredient {
     if (matching is IngredientMatcher.Exact) {
         return net.minecraft.world.item.crafting.Ingredient.ofStacks(choices.all().map { it.create().unwrap() })
     }
-    return  net.minecraft.world.item.crafting.Ingredient.of(HolderSet.direct(choices.all().map { it.create().unwrap().itemHolder }))
+    return  net.minecraft.world.item.crafting.Ingredient.of(HolderSet.direct(choices.all().map { it.create().unwrap().typeHolder() }))
 }
 
 fun CustomRecipeSmithing.toPlaceholder(key: Key): SmithingTransformRecipe? {
@@ -149,10 +149,11 @@ fun CustomRecipeSmithing.toPlaceholder(key: Key): SmithingTransformRecipe? {
     val stack: ItemStack = result.choices.all().first().create().unwrap()
 
     val recipe = net.minecraft.world.item.crafting.SmithingTransformRecipe(
+        net.minecraft.world.item.crafting.Recipe.CommonInfo(false),
         Optional.ofNullable(template?.toMinecraft()),
         base.toMinecraft(),
         Optional.ofNullable(addition?.toMinecraft()),
-        TransmuteResult(stack.itemHolder, stack.count, stack.componentsPatch)
+        ItemStackTemplate(stack.typeHolder(), stack.count, stack.componentsPatch)
     )
     ScafallProvider.get().server?.minecraftServer?.recipeManager?.addRecipe(RecipeHolder(key.toMcPlaceholderRecipeKey(), recipe))
 

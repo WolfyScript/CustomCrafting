@@ -262,9 +262,10 @@ class IngredientRemainderCustomImpl(
     ): List<ScafallItemStack> {
         val mcSource = target.unwrap()
         val customRemainder = remainder.create()
+        val vanillaRemainder = mcSource.item.craftingRemainder
 
-        if (!ignore.vanilla && !mcSource.item.craftingRemainder.isEmpty) {
-            return listOf(mcSource.item.craftingRemainder.wrap())
+        if (!ignore.vanilla && vanillaRemainder != null) {
+            return listOf(vanillaRemainder.create().wrap())
         }
         if (!ignore.others) {
             // TODO: determine remains from third-party mods/plugins
@@ -292,10 +293,11 @@ class IngredientRemainderDefaultImpl(
     ): List<ScafallItemStack> {
 
         val remains = mutableListOf<ScafallItemStack>()
+        val mcStack = target.unwrap()
+        val vanillaRemainder = mcStack.item.craftingRemainder
 
-        if (!ignore.vanilla) {
-            val mcStack = target.unwrap()
-            remains.add(mcStack.item.craftingRemainder.wrap())
+        if (!ignore.vanilla && vanillaRemainder != null) {
+            remains.add(vanillaRemainder.create().wrap())
         }
 
         if (!ignore.others) {

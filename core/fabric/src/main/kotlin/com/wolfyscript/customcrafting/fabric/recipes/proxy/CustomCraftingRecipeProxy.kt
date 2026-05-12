@@ -11,8 +11,8 @@ import com.wolfyscript.customcrafting.core.recipes.RecipeReference
 import com.wolfyscript.customcrafting.core.recipes.ShapedCraftingFormulaImpl
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState
+import com.wolfyscript.customcrafting.core.util.toTemplate
 import com.wolfyscript.scafall.wrappers.minecraft.unwrap
-import net.minecraft.core.HolderLookup
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.*
@@ -38,7 +38,7 @@ private fun RecipeReference<CustomRecipeCrafting>.matches(recipeInput: CraftingI
     return true
 }
 
-private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: CraftingInput, provider: HolderLookup.Provider): ItemStack {
+private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: CraftingInput): ItemStack {
     if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(key)) { return ItemStack.EMPTY }
     val recipe = value ?: return ItemStack.EMPTY
     if (recipeInput !is RecipeInputCraftingCustomExt) { return ItemStack.EMPTY }
@@ -51,10 +51,13 @@ private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: Crafting
 }
 
 class CustomRecipeShapedProxy(override val customRecipe: RecipeReference<CustomRecipeCrafting>) : ShapedRecipe(
-    "", // TODO
-    CraftingBookCategory.MISC, // TODO
+    Recipe.CommonInfo(false),
+    CraftingRecipe.CraftingBookInfo(
+        CraftingBookCategory.MISC,
+        customRecipe.value!!.group
+    ),
     (customRecipe.value!!.formula as CraftingFormula.Shaped).toShapedRecipePattern(),
-    (customRecipe.value!!).result.choices.stacks.first().create().unwrap()
+    (customRecipe.value!!).result.choices.stacks.first().toTemplate()
 ), ProxyRecipe {
 
     override fun matches(
@@ -64,19 +67,19 @@ class CustomRecipeShapedProxy(override val customRecipe: RecipeReference<CustomR
         return customRecipe.matches(recipeInput, level)
     }
 
-    override fun assemble(
-        recipeInput: CraftingInput,
-        provider: HolderLookup.Provider,
-    ): ItemStack {
-        return customRecipe.assemble(recipeInput, provider)
+    override fun assemble(recipeInput: CraftingInput): ItemStack {
+        return customRecipe.assemble(recipeInput)
     }
 
 }
 
 class CustomRecipeShapelessProxy(override val customRecipe: RecipeReference<CustomRecipeCrafting>) : ShapelessRecipe(
-    "", // TODO
-    CraftingBookCategory.MISC, // TODO
-    (customRecipe.value!!).result.choices.stacks.first().create().unwrap(),
+    Recipe.CommonInfo(false),
+    CraftingRecipe.CraftingBookInfo(
+        CraftingBookCategory.MISC,
+        customRecipe.value!!.group
+    ),
+    (customRecipe.value!!).result.choices.stacks.first().toTemplate(),
     ((customRecipe.value!!).formula as CraftingFormula.Shapeless).ingredients.map { Ingredient.of(*it.choices.stacks.map { stack -> stack.create().unwrap().item }.toTypedArray()) }
 ), ProxyRecipe {
 
@@ -87,11 +90,8 @@ class CustomRecipeShapelessProxy(override val customRecipe: RecipeReference<Cust
         return customRecipe.matches(recipeInput, level)
     }
 
-    override fun assemble(
-        recipeInput: CraftingInput,
-        provider: HolderLookup.Provider,
-    ): ItemStack {
-        return customRecipe.assemble(recipeInput, provider)
+    override fun assemble(recipeInput: CraftingInput): ItemStack {
+        return customRecipe.assemble(recipeInput)
     }
 
 }

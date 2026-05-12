@@ -1,6 +1,5 @@
 package com.wolfyscript.customcrafting.fabric.recipes.proxy
 
-import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
@@ -18,9 +17,6 @@ import com.wolfyscript.customcrafting.core.util.toMc
 import com.wolfyscript.customcrafting.core.util.toMcDisplay
 import com.wolfyscript.scafall.identifier.toScafall
 import com.wolfyscript.scafall.wrappers.minecraft.unwrap
-import net.minecraft.core.HolderLookup
-import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerPlayer
@@ -79,7 +75,6 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
 
     override fun assemble(
         input: SmithingRecipeInput,
-        registries: HolderLookup.Provider,
     ): ItemStack {
         if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(customRecipe.key)) { return ItemStack.EMPTY }
         val recipe = customRecipe.value ?: return ItemStack.EMPTY
@@ -92,6 +87,12 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
         val stack = recipe.result.compute(resultInfo, context, random)
         SmithingUtils.copyDataComponentsTo(baseStack, stack, recipe.copyOptions!!)
         return stack.unwrap()
+    }
+
+    override fun showNotification(): Boolean = false
+
+    override fun group(): String {
+        return customRecipe.value?.group ?: ""
     }
 
     override fun placementInfo(): PlacementInfo = placementInfo
@@ -110,41 +111,25 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
     }
 
     override fun getSerializer(): RecipeSerializer<CustomSmithingRecipeProxy> {
-        return BuiltInRegistries.RECIPE_SERIALIZER.get(Identifier.fromNamespaceAndPath("customcrafting", "smithing")).get().value() as RecipeSerializer<CustomSmithingRecipeProxy>
-    }
-
-    class Serializer : RecipeSerializer<CustomSmithingRecipeProxy> {
-
-        companion object {
-            val CODEC: MapCodec<CustomSmithingRecipeProxy> = RecordCodecBuilder.mapCodec { instance ->
+        return RecipeSerializer<CustomSmithingRecipeProxy>(
+            RecordCodecBuilder.mapCodec { instance ->
                 instance.group(
                     Identifier.CODEC.fieldOf("customRecipe").forGetter { it.customRecipe.key.toMc() }
                 ).apply(instance) { recipeFromLocation(it) }
-            }
-
-            val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, CustomSmithingRecipeProxy> = StreamCodec.composite(
+            },
+            StreamCodec.composite(
                 Identifier.STREAM_CODEC,
                 { recipe -> recipe.customRecipe.key.toMc() },
                 { recipeFromLocation(it)}
             )
+        )
+    }
 
-            private fun recipeFromLocation(recipeId: Identifier): CustomSmithingRecipeProxy {
-                val key = recipeId.toScafall()
-                val recipe = CustomCraftingProvider.get().server!!.recipeManager.getRecipeTyped(key, RecipeTypes.smithing.resolveOrThrow())
-                    ?: error("Recipe not found: $recipeId")
-                return CustomSmithingRecipeProxy(recipe)
-            }
-        }
-
-        override fun codec(): MapCodec<CustomSmithingRecipeProxy> {
-            return CODEC
-        }
-
-        @Deprecated("Deprecated in Java. Most likely since recipes are no longer send to clients")
-        override fun streamCodec(): StreamCodec<RegistryFriendlyByteBuf, CustomSmithingRecipeProxy> {
-            return STREAM_CODEC
-        }
-
+    private fun recipeFromLocation(recipeId: Identifier): CustomSmithingRecipeProxy {
+        val key = recipeId.toScafall()
+        val recipe = CustomCraftingProvider.get().server!!.recipeManager.getRecipeTyped(key, RecipeTypes.smithing.resolveOrThrow())
+            ?: error("Recipe not found: $recipeId")
+        return CustomSmithingRecipeProxy(recipe)
     }
 
 }

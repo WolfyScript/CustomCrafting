@@ -12,6 +12,7 @@ import com.wolfyscript.customcrafting.core.recipes.CraftingFormula
 import com.wolfyscript.customcrafting.ui.editor.recipe_editor.state.UIIngredientPreview
 import com.wolfyscript.customcrafting.ui.editor.recipe_editor.state.toPreview
 import com.wolfyscript.customcrafting.core.util.customCrafting
+import com.wolfyscript.customcrafting.core.util.toTemplate
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key
@@ -31,15 +32,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.minecraft.core.component.DataComponentPatch
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.ItemStackTemplate
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.BundleContents
 import net.minecraft.world.item.component.ItemLore
 import java.util.*
-import kotlin.text.set
 
 private fun RecipeCraftingModel.CraftingFormulaModel<*>.toUIState(collection: RecipeCraftingModel.IngredientCollectionModel): FormulaStore.FormulaState {
     return when (this) {
@@ -140,12 +142,12 @@ private class FormulaStore(
         updateFormulaState()
     }
 
-    fun getIngredientCollectionIcons(): List<ItemStack> {
-        val stacks = mutableListOf<ItemStack>()
+    fun getIngredientCollectionIcons(): List<ItemStackTemplate> {
+        val stacks = mutableListOf<ItemStackTemplate>()
         stacks.add(FormulaPageDefaults.IngredientScrollSelectReset)
         getIngredientCollection.getCollection().ingredients.mapNotNullTo(stacks) {
             if (it is IngredientModel.CustomIngredientModel) {
-                return@mapNotNullTo it.choices.stacks.firstOrNull()?.create()?.unwrap()
+                return@mapNotNullTo it.choices.stacks.firstOrNull()?.toTemplate()
             }
             null
         }
@@ -324,10 +326,10 @@ private object FormulaPageDefaults {
         "<!i><yellow><key:key.use> <white>Submit selection".deser().vanilla()
     )
 
-    val IngredientScrollSelectReset = ItemStack(Items.BARRIER).apply {
+    val IngredientScrollSelectReset = ItemStackTemplate(Items.BARRIER, DataComponentPatch.builder().apply {
         set(DataComponents.ITEM_NAME, "<red><b>Reset (Empty)".deser().vanilla())
         set(DataComponents.MAX_STACK_SIZE, 1)
-    }
+    }.build())
 
     val ShapelessIcon = ItemStack(Items.CRAFTER).apply {
         set(DataComponents.ITEM_NAME, "Shapeless".deser().vanilla())

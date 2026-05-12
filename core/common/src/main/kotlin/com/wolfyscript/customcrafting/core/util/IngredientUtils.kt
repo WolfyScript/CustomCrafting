@@ -34,7 +34,7 @@ fun ItemStackRef.toMcDisplay(itemOnly: Boolean = false) : SlotDisplay {
     if (itemOnly) {
         return SlotDisplay.ItemSlotDisplay(mcStack.item)
     }
-    return SlotDisplay.ItemStackSlotDisplay(mcStack)
+    return SlotDisplay.ItemStackSlotDisplay(this.toTemplate())
 }
 
 fun RecipeResult.toMcDisplay() : SlotDisplay {

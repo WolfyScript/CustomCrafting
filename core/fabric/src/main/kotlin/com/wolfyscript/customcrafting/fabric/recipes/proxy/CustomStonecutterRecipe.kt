@@ -11,12 +11,14 @@ import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultIm
 import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState
 import com.wolfyscript.customcrafting.core.util.toMc
 import com.wolfyscript.customcrafting.core.util.toMcDisplay
-import com.wolfyscript.scafall.wrappers.minecraft.snapshot
+import com.wolfyscript.customcrafting.core.util.toTemplate
 import com.wolfyscript.scafall.wrappers.minecraft.unwrap
-import net.minecraft.core.HolderLookup
+import com.wolfyscript.scafall.wrappers.minecraft.wrap
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.ItemStackTemplate
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.SingleRecipeInput
 import net.minecraft.world.item.crafting.StonecutterRecipe
 import net.minecraft.world.item.crafting.display.RecipeDisplay
@@ -38,7 +40,6 @@ fun RecipeReference<CustomRecipeStonecutting>.matches(input: SingleRecipeInput, 
 
 fun RecipeReference<CustomRecipeStonecutting>.assemble(
     input: SingleRecipeInput,
-    provider: HolderLookup.Provider,
 ): ItemStack {
     if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(key)) { return ItemStack.EMPTY }
     val recipe = value ?: return ItemStack.EMPTY
@@ -56,18 +57,18 @@ class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {
     val split: Boolean
 
     constructor(recipe: RecipeReference<CustomRecipeStonecutting>) : super(
-        "",
+        Recipe.CommonInfo(false),
         recipe.value!!.source.toMc(),
-        recipe.value!!.result.choices.stacks.first().create().unwrap()
+        recipe.value!!.result.choices.stacks.first().toTemplate()
     ) {
         this.customRecipe = recipe
         split = false
     }
 
     internal constructor(recipe: RecipeReference<CustomRecipeStonecutting>, result: ItemStack) : super(
-        "",
+        Recipe.CommonInfo(false),
         recipe.value!!.source.toMc(),
-        result
+        ItemStackTemplate(result.item, result.componentsPatch)
     ) {
         this.customRecipe = recipe
         split = true
@@ -94,17 +95,17 @@ class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {
         return customRecipe.matches(singleRecipeInput, level)
     }
 
-    override fun assemble(input: SingleRecipeInput, provider: HolderLookup.Provider): ItemStack {
+    override fun assemble(input: SingleRecipeInput): ItemStack {
         if (split) {
             val recipeVal = customRecipe.value ?: return ItemStack.EMPTY
             input as RecipeInputSingleSlotCustomExt
             val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
             val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
-            val stack = result().snapshot().createStack()
+            val stack = result().create().wrap()
             recipeVal.result.modifier.modify(stack, resultInfo, context)
             return stack.unwrap()
         }
-        return customRecipe.assemble(input, provider)
+        return customRecipe.assemble(input)
     }
 
 }
