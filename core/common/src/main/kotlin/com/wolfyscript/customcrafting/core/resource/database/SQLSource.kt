@@ -9,8 +9,8 @@ import com.wolfyscript.customcrafting.core.resource.LoadedObject
 import com.wolfyscript.customcrafting.core.resource.ResourceLoaderImpl
 import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
-import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
