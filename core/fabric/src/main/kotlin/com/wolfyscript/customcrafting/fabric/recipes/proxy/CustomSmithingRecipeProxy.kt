@@ -31,6 +31,30 @@ import java.util.*
 
 class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<CustomRecipeSmithing>) : SmithingRecipe, ProxyRecipe {
 
+    companion object {
+
+        @JvmField
+        val SERIALIZER = RecipeSerializer<CustomSmithingRecipeProxy>(
+            RecordCodecBuilder.mapCodec { instance ->
+                instance.group(
+                    Identifier.CODEC.fieldOf("customRecipe").forGetter { it.customRecipe.key.toMc() }
+                ).apply(instance) { recipeFromLocation(it) }
+            },
+            StreamCodec.composite(
+                Identifier.STREAM_CODEC,
+                { recipe -> recipe.customRecipe.key.toMc() },
+                { recipeFromLocation(it)}
+            )
+        )
+
+        private fun recipeFromLocation(recipeId: Identifier): CustomSmithingRecipeProxy {
+            val key = recipeId.toScafall()
+            val recipe = CustomCraftingProvider.get().server!!.recipeManager.getRecipeTyped(key, RecipeTypes.smithing.resolveOrThrow())
+                ?: error("Recipe not found: $recipeId")
+            return CustomSmithingRecipeProxy(recipe)
+        }
+    }
+
     init {
         if (customRecipe.value == null) throw IllegalArgumentException("Cannot create a SmithingRecipeProxy for a null recipe")
     }
@@ -111,25 +135,9 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
     }
 
     override fun getSerializer(): RecipeSerializer<CustomSmithingRecipeProxy> {
-        return RecipeSerializer<CustomSmithingRecipeProxy>(
-            RecordCodecBuilder.mapCodec { instance ->
-                instance.group(
-                    Identifier.CODEC.fieldOf("customRecipe").forGetter { it.customRecipe.key.toMc() }
-                ).apply(instance) { recipeFromLocation(it) }
-            },
-            StreamCodec.composite(
-                Identifier.STREAM_CODEC,
-                { recipe -> recipe.customRecipe.key.toMc() },
-                { recipeFromLocation(it)}
-            )
-        )
+        return SERIALIZER
     }
 
-    private fun recipeFromLocation(recipeId: Identifier): CustomSmithingRecipeProxy {
-        val key = recipeId.toScafall()
-        val recipe = CustomCraftingProvider.get().server!!.recipeManager.getRecipeTyped(key, RecipeTypes.smithing.resolveOrThrow())
-            ?: error("Recipe not found: $recipeId")
-        return CustomSmithingRecipeProxy(recipe)
-    }
+
 
 }

@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.core.recipes.process
 
-import com.wolfyscript.scafall.wrappers.ScafallPlayer
+import com.wolfyscript.scafall.wrappers.world.entity.ScafallPlayer
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 /**
