@@ -6,7 +6,6 @@ plugins {
 }
 
 dependencies {
-    compileOnly(sharedLibs.scafall.loader)
 }
 
 publishing {

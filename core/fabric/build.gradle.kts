@@ -21,7 +21,6 @@ dependencies {
     api(projects.core.coreApi)
     api(projects.core.coreCommon)
 
-    implementation(sharedLibs.scafall.loader)
     implementation(sharedLibs.bundles.exposed)
     implementation(sharedLibs.bundles.database.drivers)
     compileOnly(sharedLibs.jackson.kotlin)

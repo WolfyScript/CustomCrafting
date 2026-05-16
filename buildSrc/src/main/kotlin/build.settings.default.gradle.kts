@@ -1,5 +1,7 @@
 val Project.sharedLibs
     get() = extensions.getByType(org.gradle.accessors.dm.LibrariesForSharedLibs::class)
+val Project.libs
+    get() = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
 
 plugins {
     `java-library`
@@ -44,7 +46,7 @@ tasks {
 }
 
 dependencies {
-    api(sharedLibs.scafall.api)
+    api(libs.scafall.api)
     implementation(sharedLibs.bundles.jetbrains)
 
     compileOnly(sharedLibs.inject.guice)

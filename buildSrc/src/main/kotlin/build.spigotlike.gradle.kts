@@ -32,7 +32,6 @@ dependencies {
     implementation(project(":core:core-common"))
     implementation(kotlin("reflect"))
     api(sharedLibs.scafall.spigot)
-    implementation(sharedLibs.scafall.loader)
     implementation(sharedLibs.jackson.kotlin)
     implementation(sharedLibs.caffeine)
     compileOnly(sharedLibs.papermc.paper)

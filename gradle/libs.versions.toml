@@ -1,6 +1,7 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
+scafall = "1.0-alpha.0.5-SNAPSHOT"
 viewportl = "alpha0.1.0.0-SNAPSHOT"
 adventure-platform-api = "4.1.0"
 
@@ -14,6 +15,10 @@ bstats = "3.0.0"
 
 [libraries]
 viewportl = { module = "com.wolfyscript.viewportl:viewportl-api", version.ref = "viewportl" }
+
+scafall-api = { module = "com.wolfyscript.scafall:api", version.ref = "scafall" }
+scafall-spigot = { module = "com.wolfyscript.scafall.spigot:spigot-api", version.ref = "scafall" }
+scafall-sponge-impl = { module = "com.wolfyscript.scafall.sponge:sponge", version.ref = "scafall" }
 
 adventure-platform-bukkit = { module = "net.kyori:adventure-platform-bukkit", version.ref = "adventure-platform-api" }
 bstats = { module = "org.bstats:bstats-bukkit", version.ref = "bstats" }
