@@ -2,9 +2,7 @@ package com.wolfyscript.customcrafting.paper
 
 import com.wolfyscript.customcrafting.CustomCraftingBoostrap
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.editor.EditorModule
 import com.wolfyscript.customcrafting.core.sentry.initSentry
-import com.wolfyscript.customcrafting.ui.UIModule
 import com.wolfyscript.customcrafting.core.util.ModuleImpl
 import com.wolfyscript.scafall.loader.ScafallLoader
 import com.wolfyscript.scafall.loader.module.Module
@@ -36,14 +34,9 @@ class PaperLoaderPlugin : JavaPlugin() {
         customCrafting.configurationManager.load()
 
         customCrafting.initServer(Bukkit.getServer())
-
-        CustomCraftingProvider.whenReady {
-            loadModule<EditorModule>()?.onInit()
-            loadModule<UIModule>()?.onInit()
-        }
     }
 
-    private inline fun <reified T: Module<*,*>> loadModule(): T? {
+    private inline fun <reified T: Module<*, *>> loadModule(): T? {
         return T::class.findAnnotations(ModuleImpl::class).firstOrNull()?.let {
             ScafallLoader.loadObject<T>(this.classLoader, it.implType.java.name)
         }

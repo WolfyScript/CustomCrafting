@@ -141,24 +141,3 @@ sequenceOf(
         name = "ui-${it.replace(":", "-")}"
     }
 }
-
-/**
- * # Loader
- * The platform entrypoints, the task of which is to initiate customcrafting, and all modules.
- * It bundles the dependencies or provides them dynamically if the platform supports it.
- *
- * Currently, there is the all-in-one bundle that includes core, editor and ui.
- *
- * TODO: A standalone core bundle is planned
- */
-sequenceOf(
-    "aio-spigot",
-    "aio-paper",
-    "aio-fabric",
-).forEach {
-    include(":loader:${it}")
-    project(":loader:${it}").apply {
-        projectDir = file("loader/${it.replace(":", "/")}")
-        name = "loader-${it.replace(":", "-")}"
-    }
-}
