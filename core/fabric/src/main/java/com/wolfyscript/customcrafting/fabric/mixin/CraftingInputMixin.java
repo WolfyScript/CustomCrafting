@@ -6,6 +6,7 @@ import com.wolfyscript.customcrafting.core.recipes.data.CraftingMatrixDataImpl;
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
 import com.wolfyscript.scafall.ScafallProvider;
+import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +55,7 @@ public class CraftingInputMixin implements RecipeInputCraftingCustomExt {
         var matrixData = CraftingMatrixDataImpl.Companion.of(
             positioned,
             list.stream()
-                .map((stack) -> ScafallProvider.Companion.get().getMinecraftWrapper().wrapMcStack(stack))
+                .map(ItemStackWrappersKt::wrap)
                 .toList()
         );
         ((RecipeInputCraftingCustomExt) input).setCustomInput(RecipeInput.CraftingRecipeInput.Companion.of(matrixData));

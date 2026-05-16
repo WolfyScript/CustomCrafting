@@ -24,10 +24,7 @@ class CustomRecipeStonecuttingImpl(
             return null
         }
 
-        val matchResult = source.match(input.source)
-        if (matchResult == null) {
-            return null
-        }
+        val matchResult = source.match(input.source) ?: return null
 
         return DefaultDataImpl(arrayOf(IngredientDataImpl(0, 0, source, matchResult)))
     }

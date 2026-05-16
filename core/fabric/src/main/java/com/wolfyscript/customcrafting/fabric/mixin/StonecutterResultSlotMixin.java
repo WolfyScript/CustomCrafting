@@ -5,7 +5,9 @@ import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
 import com.wolfyscript.customcrafting.core.recipes.CustomRecipeStonecutting;
 import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
 import com.wolfyscript.scafall.identifier.Key;
-import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
+import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PositionWrappersKt;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -44,7 +46,7 @@ public abstract class StonecutterResultSlotMixin extends Slot {
         }
 
         var playerLevel = player.level();
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().identifier())));
+        var context = new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().identifier())));
         RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
 
         var recipe = resultInfo.getRecipe().getValue();
@@ -53,13 +55,13 @@ public abstract class StonecutterResultSlotMixin extends Slot {
 
             var input = resultInfo.getData().bySlot(0);
             if (input != null) {
-                var shrunken = MinecraftWrapperKt.unwrap(customRecipe.getSource().shrink(
-                    MinecraftWrapperKt.wrap(stonecutterMenu.getSlot(0).getItem()),
+                var shrunken = customRecipe.getSource().shrink(
+                    ItemStackWrappersKt.wrap(stonecutterMenu.getSlot(0).getItem()),
                     1,
                     input.getMatchedItemStackRef(),
                     context,
                     resultInfo
-                ));
+                ).unwrap();
                 instance.set(shrunken);
                 return shrunken;
             }

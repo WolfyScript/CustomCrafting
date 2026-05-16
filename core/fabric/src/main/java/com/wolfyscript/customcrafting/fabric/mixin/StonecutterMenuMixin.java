@@ -7,7 +7,9 @@ import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.core.recipes.data.SingleSlotRecipeInputImpl;
 import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState;
 import com.wolfyscript.scafall.identifier.Key;
-import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
+import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PositionWrappersKt;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -37,7 +39,7 @@ public class StonecutterMenuMixin {
 
     @Shadow
     @Final
-    ResultContainer resultContainer;
+    private ResultContainer resultContainer;
 
     @Shadow
     @Final
@@ -51,13 +53,13 @@ public class StonecutterMenuMixin {
     private Player player;
 
     @Inject(at = @At("TAIL"), method = "<init>(ILnet/minecraft/world/entity/player/Inventory;)V")
-    private void setPlayer(int containerId, Inventory playerInventory, CallbackInfo ci) {
-        player = playerInventory.player;
+    private void setPlayer(int containerId, Inventory inventory, CallbackInfo ci) {
+        player = inventory.player;
     }
 
     @Inject(at = @At("TAIL"), method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/inventory/ContainerLevelAccess;)V")
-    private void setPlayer(int containerId, Inventory playerInventory, ContainerLevelAccess containerLevelAccess, CallbackInfo ci) {
-        player = playerInventory.player;
+    private void setPlayer(int containerId, Inventory inventory, ContainerLevelAccess access, CallbackInfo ci) {
+        player = inventory.player;
     }
 
     /**
@@ -65,23 +67,23 @@ public class StonecutterMenuMixin {
      * (client mod would be required to do this).
      * Instead, just check if the recipe is custom and matches before assembling the result.
      */
-    @Inject(method = "method_64655", at = @At("HEAD"), cancellable = true)
-    private void matchCustomProxyRecipe(RecipeHolder<StonecutterRecipe> recipeHolder, CallbackInfo ci) {
-        var recipe = recipeHolder.value();
-        if (recipe instanceof ProxyRecipe) {
+    @Inject(method = "lambda$setupResultSlot$0", at = @At("HEAD"), cancellable = true)
+    private void matchCustomProxyRecipe(RecipeHolder<StonecutterRecipe> recipe, CallbackInfo ci) {
+        var recipeVal = recipe.value();
+        if (recipeVal instanceof ProxyRecipe) {
             ci.cancel();
-            EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()))));
+            EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()))));
             var stack = container.getItem(0);
             var input = new SingleRecipeInput(stack);
             ((RecipeInputSingleSlotCustomExt) (Object) input).setCustomInput(
-                new SingleSlotRecipeInputImpl(MinecraftWrapperKt.wrap(stack))
+                new SingleSlotRecipeInputImpl(ItemStackWrappersKt.wrap(stack))
             );
-            if (recipe.matches(input, level)) {
+            if (recipeVal.matches(input, level)) {
                 ((CCResultContainerExt) resultContainer).setResultInfo(
                     ((RecipeInputSingleSlotCustomExt) (Object) input).getResultInfo()
                 );
-                resultContainer.setRecipeUsed(recipeHolder);
-                resultSlot.set(recipe.assemble(input, level.registryAccess()));
+                resultContainer.setRecipeUsed(recipe);
+                resultSlot.set(recipeVal.assemble(input));
             } else {
                 resultContainer.setRecipeUsed(null);
                 resultSlot.set(ItemStack.EMPTY);

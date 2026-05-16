@@ -5,7 +5,7 @@ import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt
 import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState;
 import com.wolfyscript.scafall.identifier.Key;
-import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PositionWrappersKt;
 import kotlin.Unit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -30,7 +30,7 @@ public class CrafterMixin {
         method = "dispenseFrom"
     )
     private void enterEvalContext(BlockState state, ServerLevel level, BlockPos pos, CallbackInfo ci) {
-        var wrappedPosition = MinecraftWrapperKt.wrap(pos.getCenter(), Key.fromMc(level.dimension().identifier()));
+        var wrappedPosition = PositionWrappersKt.wrap(pos.getCenter(), Key.fromMc(level.dimension().identifier()));
         EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(null, wrappedPosition));
     }
 
@@ -60,7 +60,7 @@ public class CrafterMixin {
         if (recipe == null) return; // Recipe was removed in the meantime
 
         recipe.shrink(customInput, resultInfo, context, 1, (slot, stack) -> {
-            blockEntity.setItem(slot, MinecraftWrapperKt.unwrap(stack));
+            blockEntity.setItem(slot, stack.unwrap());
             return Unit.INSTANCE;
         });
 

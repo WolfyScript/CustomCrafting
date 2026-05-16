@@ -1,11 +1,13 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
 import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCooking;
 import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState;
-import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
+import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
+import com.wolfyscript.scafall.wrappers.minecraft.EntityWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PositionWrappersKt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
@@ -48,22 +50,30 @@ public abstract class CampfireBlockEntityMixin extends BlockEntity {
     }
 
     @Inject(at = @At("HEAD"), method = "placeFood")
-    private void enterEvalContextOnPlace(ServerLevel level, LivingEntity entity, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(null, null, MinecraftWrapperKt.wrap(worldPosition), MinecraftWrapperKt.wrap(this)));
+    private void enterEvalContextOnPlace(ServerLevel serverLevel, LivingEntity sourceEntity, ItemStack placeItem, CallbackInfoReturnable<Boolean> cir) {
+        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(
+            null, null,
+            PositionWrappersKt.wrap(worldPosition),
+            EntityWrappersKt.wrap(this)
+        ));
     }
 
     @Inject(at = @At("RETURN"), method = "placeFood")
-    private void exitEvalContextOnPlace(ServerLevel level, LivingEntity entity, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+    private void exitEvalContextOnPlace(ServerLevel serverLevel, LivingEntity sourceEntity, ItemStack placeItem, CallbackInfoReturnable<Boolean> cir) {
         EvaluationContextState.INSTANCE.exit();
     }
 
     @Inject(at = @At("HEAD"), method = "cookTick")
-    private static void enterEvalContextOnCookTick(ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check, CallbackInfo ci) {
-        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(null, null, MinecraftWrapperKt.wrap(pos), MinecraftWrapperKt.wrap(campfire)));
+    private static void enterEvalContextOnCookTick(ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity entity, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> recipeCache, CallbackInfo ci) {
+        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(
+            null, null,
+            PositionWrappersKt.wrap(pos),
+            EntityWrappersKt.wrap(entity)
+        ));
     }
 
     @Inject(at = @At("RETURN"), method = "cookTick")
-    private static void exitEvalContextOnCookTick(ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check, CallbackInfo ci) {
+    private static void exitEvalContextOnCookTick(ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity entity, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> recipeCache, CallbackInfo ci) {
         EvaluationContextState.INSTANCE.exit();
     }
 
@@ -80,25 +90,26 @@ public abstract class CampfireBlockEntityMixin extends BlockEntity {
 
     @Redirect(method = "placeFood", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/RecipeManager;getRecipeFor(Lnet/minecraft/world/item/crafting/RecipeType;Lnet/minecraft/world/item/crafting/RecipeInput;Lnet/minecraft/world/level/Level;)Ljava/util/Optional;"))
     private Optional<RecipeHolder<CampfireCookingRecipe>> injectCustomDataIntoSingleRecipeInputRedirect(RecipeManager instance, RecipeType<CampfireCookingRecipe> recipeType, RecipeInput input, Level level, ServerLevel serverLevel, LivingEntity livingEntity, ItemStack itemStack) {
-        ((RecipeInputSingleSlotCustomExt) input).setCustomInput(com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.SingleSlotRecipeInput.Companion.of(MinecraftWrapperKt.wrap(itemStack)));
-
+        ((RecipeInputSingleSlotCustomExt) input).setCustomInput(
+            com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.SingleSlotRecipeInput.Companion.of(ItemStackWrappersKt.wrap(itemStack))
+        );
         return instance.getRecipeFor(recipeType, (SingleRecipeInput) input, level);
     }
 
 
     @ModifyVariable(method = "cookTick", at = @At(value = "STORE"))
     private static SingleRecipeInput injectCustomDataIntoSingleRecipeInput(
-        SingleRecipeInput singleRecipeInput,
-        ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check
+        SingleRecipeInput input,
+        ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity entity, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check
     ) {
-        var source = MinecraftWrapperKt.wrap(singleRecipeInput.item());
-        ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).setCustomInput(com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.SingleSlotRecipeInput.Companion.of(source));
-        return singleRecipeInput;
+        var source = ItemStackWrappersKt.wrap(input.item());
+        ((RecipeInputSingleSlotCustomExt) (Object) input).setCustomInput(com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.SingleSlotRecipeInput.Companion.of(source));
+        return input;
     }
 
     @Inject(method = "cookTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Containers;dropItemStack(Lnet/minecraft/world/level/Level;DDDLnet/minecraft/world/item/ItemStack;)V"))
     private static void customCookTick(ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check, CallbackInfo ci, @Local SingleRecipeInput singleRecipeInput, @Local int index) {
-        var context = new EvaluationContextImpl(null, null, MinecraftWrapperKt.wrap(pos), MinecraftWrapperKt.wrap(campfire));
+        var context = new EvaluationContextImpl(null, null, PositionWrappersKt.wrap(pos), EntityWrappersKt.wrap(campfire));
 
         var resultInfo = ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).getResultInfo();
         if (resultInfo == null || resultInfo.getRecipe().getValue() == null) {
@@ -110,21 +121,21 @@ public abstract class CampfireBlockEntityMixin extends BlockEntity {
 
             var input = resultInfo.getData().bySlot(INPUT_SLOT);
             if (input != null) {
-                var stack = MinecraftWrapperKt.wrap(campfire.getItems().get(index));
+                var stack = ItemStackWrappersKt.wrap(campfire.getItems().get(index));
                 stack = cookingRecipe.getProcessing().getSource().shrink(stack, 1, input.getMatchedItemStackRef(), context, resultInfo);
-                campfire.getItems().set(index, MinecraftWrapperKt.unwrap(stack));
+                campfire.getItems().set(index, stack.unwrap());
             }
         }
     }
 
     @Redirect(method = "cookTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/NonNullList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
-    private static <E> E preventInputReset(NonNullList<E> instance, int index, E value, @Local SingleRecipeInput singleRecipeInput) {
-        var resultInfo = ((RecipeInputSingleSlotCustomExt) (Object) singleRecipeInput).getResultInfo();
+    private static <E> E preventInputReset(NonNullList<E> instance, int index, E element, @Local(name = "input") SingleRecipeInput input) {
+        var resultInfo = ((RecipeInputSingleSlotCustomExt) (Object) input).getResultInfo();
         if (resultInfo == null || resultInfo.getRecipe().getValue() == null) {
-            return instance.set(index, value);
+            return instance.set(index, element);
         }
         // nop when it is a custom recipe
-        return value;
+        return element;
     }
 
 }

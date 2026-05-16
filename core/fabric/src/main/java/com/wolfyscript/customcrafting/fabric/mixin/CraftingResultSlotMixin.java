@@ -1,7 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.wolfyscript.customcrafting.CustomCraftingProvider;
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
@@ -9,7 +8,8 @@ import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting;
 import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.scafall.identifier.Key;
-import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PositionWrappersKt;
 import kotlin.Unit;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -53,13 +53,13 @@ public abstract class CraftingResultSlotMixin extends Slot {
         ci.cancel(); // Return before vanilla logic
 
         var level = player.level();
-        var wrappedPosition = MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()));
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), wrappedPosition);
+        var wrappedPosition = PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()));
+        var context = new EvaluationContextImpl(PlayerWrappersKt.wrap(player), wrappedPosition);
 
         RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
 
         craftingRecipe.shrink(customInput, (RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>) resultInfo, context, 1, (slot, stack1) -> {
-            craftSlots.setItem(slot, MinecraftWrapperKt.unwrap(stack1));
+            craftSlots.setItem(slot, stack1.unwrap());
             return Unit.INSTANCE;
         });
 

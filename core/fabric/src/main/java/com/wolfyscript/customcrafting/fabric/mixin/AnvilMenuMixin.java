@@ -7,7 +7,9 @@ import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
 import com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing;
 import com.wolfyscript.scafall.identifier.Key;
-import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
+import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PositionWrappersKt;
 import kotlin.random.Random;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -56,8 +58,8 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
         resultInfo = null;
         var customcrafting = CustomCraftingProvider.Companion.get();
         var level = player.level();
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().identifier())));
-        var input = RecipeInput.RepairingRecipeInput.Companion.of(MinecraftWrapperKt.wrap(getSlot(0).getItem()), MinecraftWrapperKt.wrap(getSlot(1).getItem()), itemName);
+        var context = new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier())));
+        var input = RecipeInput.RepairingRecipeInput.Companion.of(ItemStackWrappersKt.wrap(getSlot(0).getItem()), ItemStackWrappersKt.wrap(getSlot(1).getItem()), itemName);
 
         var data = customcrafting.getServer().getRecipeManager().evaluateRecipesOfType(RecipeTypes.INSTANCE.getRepairing().resolveOrThrow(), input, context);
         if (data == null || data.getRecipe().getValue() == null) {
@@ -69,7 +71,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
         var recipe = data.getRecipe().getValue();
         var result = recipe.getProcess().compute(data, input, context, getResultRandom(player, resultInfo.getRecipe()));
 
-        getSlot(getResultSlot()).set(MinecraftWrapperKt.unwrap(result));
+        getSlot(getResultSlot()).set(result.unwrap());
     }
 
     @Unique
@@ -103,13 +105,13 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
         }
 
         var playerLevel = player.level();
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().identifier())));
+        var context = new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().identifier())));
         var data = resultInfo.getData();
 
         var base = data.bySlot(BASE_SLOT);
         if (base != null) {
             base.getSelectedIngredient().shrink(
-                MinecraftWrapperKt.wrap(getSlot(BASE_SLOT).getItem()),
+                ItemStackWrappersKt.wrap(getSlot(BASE_SLOT).getItem()),
                 1,
                 base.getMatchedItemStackRef(),
                 context,
@@ -123,7 +125,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
                 count = data.getItemRepairCost();
             }
             addition.getSelectedIngredient().shrink(
-                MinecraftWrapperKt.wrap(getSlot(ADDITION_SLOT).getItem()),
+                ItemStackWrappersKt.wrap(getSlot(ADDITION_SLOT).getItem()),
                 count,
                 addition.getMatchedItemStackRef(),
                 context,

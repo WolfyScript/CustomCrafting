@@ -10,7 +10,9 @@ import com.wolfyscript.customcrafting.core.recipes.RecipeTypes;
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
 import com.wolfyscript.customcrafting.core.recipes.process.ProcessGrinding;
 import com.wolfyscript.scafall.identifier.Key;
-import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
+import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PositionWrappersKt;
 import kotlin.random.Random;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -47,13 +49,13 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
     }
 
     @Inject(at = @At("TAIL"), method = "<init>(ILnet/minecraft/world/entity/player/Inventory;)V")
-    private void setPlayer(int containerId, Inventory playerInventory, CallbackInfo ci) {
-        player = playerInventory.player;
+    private void setPlayer(int containerId, Inventory inventory, CallbackInfo ci) {
+        player = inventory.player;
     }
 
     @Inject(at = @At("TAIL"), method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/inventory/ContainerLevelAccess;)V")
-    private void setPlayer(int containerId, Inventory playerInventory, ContainerLevelAccess containerLevelAccess, CallbackInfo ci) {
-        player = playerInventory.player;
+    private void setPlayer(int containerId, Inventory inventory, ContainerLevelAccess access, CallbackInfo ci) {
+        player = inventory.player;
     }
 
     @Inject(at = @At("HEAD"), method = "createResult", cancellable = true)
@@ -61,9 +63,15 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
         var customcrafting = CustomCraftingProvider.Companion.get();
 
         var level = player.level();
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(level.dimension().identifier())));
+        var context = new EvaluationContextImpl(
+            PlayerWrappersKt.wrap(player),
+            PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()))
+        );
 
-        var input = RecipeInput.GrindingRecipeInput.Companion.of(MinecraftWrapperKt.wrap(repairSlots.getItem(0)), MinecraftWrapperKt.wrap(repairSlots.getItem(1)));
+        var input = RecipeInput.GrindingRecipeInput.Companion.of(
+            ItemStackWrappersKt.wrap(repairSlots.getItem(0)),
+            ItemStackWrappersKt.wrap(repairSlots.getItem(1))
+        );
 
         var data = customcrafting.getServer().getRecipeManager().evaluateRecipesOfType(RecipeTypes.INSTANCE.getGrinding().resolveOrThrow(), input, context);
         if (data == null || data.getRecipe().getValue() == null) {
@@ -78,7 +86,7 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
             getResultRandom(player, data.getRecipe())
         );
         ((GrindstoneResultSlotsExt) getSlot(2)).setResultInfo(data);
-        resultSlots.setItem(0, MinecraftWrapperKt.unwrap(result));
+        resultSlots.setItem(0, result.unwrap());
         broadcastChanges();
     }
 

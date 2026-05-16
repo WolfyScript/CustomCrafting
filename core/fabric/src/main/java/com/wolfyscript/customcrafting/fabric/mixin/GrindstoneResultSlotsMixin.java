@@ -6,7 +6,9 @@ import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.customcrafting.core.recipes.process.ProcessGrinding;
 import com.wolfyscript.scafall.identifier.Key;
-import com.wolfyscript.scafall.wrappers.MinecraftWrapperKt;
+import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
+import com.wolfyscript.scafall.wrappers.minecraft.PositionWrappersKt;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -59,7 +61,7 @@ public class GrindstoneResultSlotsMixin implements GrindstoneResultSlotsExt {
         var recipe = resultInfo.getRecipe().getValue();
         var data = resultInfo.getData();
         var lvl = player.level();
-        var context = new EvaluationContextImpl(MinecraftWrapperKt.wrap(player), MinecraftWrapperKt.wrap(player.position(), Key.fromMc(lvl.dimension().identifier())));
+        var context = new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(lvl.dimension().identifier())));
 
         var totalYield = data.getYield() - data.getPenalty();
         if (totalYield > 0) {
@@ -78,7 +80,7 @@ public class GrindstoneResultSlotsMixin implements GrindstoneResultSlotsExt {
         var base = data.bySlot(0);
         if (base != null) {
             base.getSelectedIngredient().shrink(
-                MinecraftWrapperKt.wrap(grindstoneMenu.getSlot(0).getItem()),
+                ItemStackWrappersKt.wrap(grindstoneMenu.getSlot(0).getItem()),
                 1,
                 base.getMatchedItemStackRef(),
                 context,
@@ -89,7 +91,7 @@ public class GrindstoneResultSlotsMixin implements GrindstoneResultSlotsExt {
         var addition = data.bySlot(1);
         if (addition != null) {
             addition.getSelectedIngredient().shrink(
-                MinecraftWrapperKt.wrap(grindstoneMenu.getSlot(1).getItem()),
+                ItemStackWrappersKt.wrap(grindstoneMenu.getSlot(1).getItem()),
                 1,
                 addition.getMatchedItemStackRef(),
                 context,

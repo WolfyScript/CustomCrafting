@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class GrindstoneRepairSlot0Mixin {
 
     @Inject(method = "mayPlace", at = @At(value = "RETURN"), cancellable = true)
-    private void allowRecipeItems(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+    private void allowRecipeItems(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(true);
     }
 
