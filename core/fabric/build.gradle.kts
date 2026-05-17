@@ -32,18 +32,27 @@ dependencies {
     implementation(sharedLibs.fabric.api)
 }
 
+val customArchiveName = archiveName("fabric", sharedLibs.versions.minecraft.get())
+
 tasks {
     processResources {
-        inputs.property("version", project.version)
+        doNotTrackState("Always process resources to stay up-to-date with versions")
 
         filesMatching("fabric.mod.json") {
-            expand("version" to project.version)
+            expand(
+                "version" to project.version,
+                "minecraftVersion" to sharedLibs.versions.minecraft.get(),
+                "fabricLoaderVersion" to sharedLibs.versions.fabric.loader.get(),
+                "javaVersion" to kotlin.target.compilerOptions.jvmTarget.get().target,
+                "scafallVersion" to libs.versions.scafall.get()
+            )
         }
     }
     shadowJar {
         // Mappings are in the runtime classpath. Not sure why they are included even though we use include for dependencies...
         // So to be sure nothing else slips in, just accept dependencies from the shadow configuration.
         configurations = listOf(project.configurations.shadow.get())
+        archiveFileName = "${customArchiveName}.jar"
         finalizedBy("fabric_copy")
 
         dependencies {
@@ -63,7 +72,7 @@ tasks {
 }
 
 minecraftServers {
-    libName.set("${archiveName("fabric", sharedLibs.versions.minecraft.get())}.jar")
+    libName.set("${customArchiveName}.jar")
     servers {
         register("fabric") {
             destPath.set("mods")

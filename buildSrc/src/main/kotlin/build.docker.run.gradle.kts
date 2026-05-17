@@ -1,3 +1,5 @@
+import com.wolfyscript.devtools.docker.run.ContainerPlatform
+
 plugins {
     id("com.wolfyscript.devtools.docker.run")
     id("com.wolfyscript.devtools.docker.minecraft_servers")
@@ -11,6 +13,8 @@ minecraftServers {
 }
 
 minecraftDockerRun {
+    platform.set(ContainerPlatform.PODMAN)
+    clean.set(false)
     // By default the container is removed when stopped.
     // That makes it impossible to know why a container may fail to start.
     // In that case disable it to debug and delete container manually.
@@ -31,7 +35,8 @@ minecraftDockerRun {
         "--cpus",
         "2",
         // allow console interactivity (docker attach)
-        "-it"
+        "-it",
+        "--userns=keep-id"
     )
     ports.set(listOf(debugPortMapping))
 }
