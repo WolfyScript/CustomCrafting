@@ -25,6 +25,7 @@ class CustomCraftingFabric(
 
     fun initServer(minecraftServer: MinecraftServer) {
         server = CustomCraftingServerFabric(this, minecraftServer)
+        registries.initRegistries()
     }
 
     override fun onInit() {
