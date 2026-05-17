@@ -52,7 +52,7 @@ interface RecipeFactory {
     /**
      * @see com.wolfyscript.customcrafting.core.recipes.data.CraftingMatrixData.Companion.of
      */
-    fun createMatrixData(ingredients: List<ScafallItemStack?>) : CraftingMatrixData
+    fun createMatrixData(ingredients: List<ScafallItemStack>) : CraftingMatrixData
 
     /**
      * @see com.wolfyscript.customcrafting.core.recipes.data.RecipeInput.CraftingRecipeInput.Companion.of

@@ -7,7 +7,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
 
-fun List<ScafallItemStack?>.toCraftingMatrixData(): CraftingMatrixData {
+fun List<ScafallItemStack>.toCraftingMatrixData(): CraftingMatrixData {
     val gridSize: Int = this.gridSize()
 
     // Find the leading and trailing empty rows
@@ -19,7 +19,7 @@ fun List<ScafallItemStack?>.toCraftingMatrixData(): CraftingMatrixData {
     for (row in 0 until gridSize) {
         var emptyRow = true
         for (column in 0 until gridSize) {
-            if (this[index] != null) {
+            if (!this[index].unwrap().isEmpty) {
                 emptyRow = false
                 minColumn = min(minColumn, column)
                 maxColumn = max(maxColumn, column)
@@ -67,14 +67,14 @@ private fun List<ScafallItemStack?>.gridSize(): Int {
 
 class CraftingMatrixDataImpl(
     override val gridSize: Int,
-    override val matrix: Array<ScafallItemStack?>,
+    override val matrix: Array<ScafallItemStack>,
     override val width: Int,
     override val height: Int,
     override val rowOffset: Int,
     override val columnOffset: Int,
 ) : CraftingMatrixData {
 
-    override val flatItems: List<ScafallItemStack> = matrix.filterNotNull()
+    override val flatItems: List<ScafallItemStack> = matrix.filter { !it.unwrap().isEmpty }
 
     override val recipeOffset = rowOffset * gridSize + columnOffset
     override val rowSkip = gridSize - width
@@ -103,7 +103,7 @@ class CraftingMatrixDataImpl(
 
     companion object {
 
-        fun of(input: CraftingInput.Positioned, originalItems: List<ScafallItemStack?>): CraftingMatrixData {
+        fun of(input: CraftingInput.Positioned, originalItems: List<ScafallItemStack>): CraftingMatrixData {
             // Since Vanilla does the same as CustomCrafting would, use the vanilla data.
             // No need to recalculate the trimmed matrix, just add the original ingredient list.
             val craftingInput = input.input

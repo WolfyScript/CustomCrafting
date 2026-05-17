@@ -28,7 +28,7 @@ class RecipeFactoryCommon : RecipeFactory {
         return RecipeReferenceImpl(key, recipe)
     }
 
-    override fun createMatrixData(ingredients: List<ScafallItemStack?>): CraftingMatrixData {
+    override fun createMatrixData(ingredients: List<ScafallItemStack>): CraftingMatrixData {
         return ingredients.toCraftingMatrixData()
     }
 

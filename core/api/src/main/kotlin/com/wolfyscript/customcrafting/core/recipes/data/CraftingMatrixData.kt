@@ -15,7 +15,7 @@ interface CraftingMatrixData {
      * The trimmed matrix, without outer empty rows and columns.
      * That means that this matrix **may be smaller** than the original matrix and **may not be square**.
      */
-    val matrix: Array<ScafallItemStack?>
+    val matrix: Array<ScafallItemStack>
 
     val itemIndices: List<Int>
 
@@ -62,7 +62,7 @@ interface CraftingMatrixData {
 
     companion object {
 
-        fun of(ingredients: List<ScafallItemStack?>): CraftingMatrixData = CustomCraftingProvider.get().factories.recipeFactory.createMatrixData(ingredients)
+        fun of(ingredients: List<ScafallItemStack>): CraftingMatrixData = CustomCraftingProvider.get().factories.recipeFactory.createMatrixData(ingredients)
 
     }
 }
