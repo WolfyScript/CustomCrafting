@@ -36,8 +36,10 @@ class CustomRecipeCraftingImpl(
         count: Int,
         applyStacks: (Int, ScafallItemStack) -> Unit,
     ) {
+        result.runActions(context, count)
+
         for (value in recipeEvaluationResult.data.nonNullIngredients) {
-            var stack = input.matrixData.matrix[value.recipeIndex] ?: continue
+            var stack = input.matrixData.matrix[value.recipeIndex]
             stack = value.selectedIngredient.shrink(
                 stack,
                 count,

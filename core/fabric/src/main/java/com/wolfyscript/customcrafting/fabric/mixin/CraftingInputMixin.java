@@ -5,7 +5,6 @@ import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting;
 import com.wolfyscript.customcrafting.core.recipes.data.CraftingMatrixDataImpl;
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
 import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
-import com.wolfyscript.scafall.ScafallProvider;
 import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -49,12 +48,12 @@ public class CraftingInputMixin implements RecipeInputCraftingCustomExt {
     }
 
     @Inject(method = "ofPositioned(IILjava/util/List;)Lnet/minecraft/world/item/crafting/CraftingInput$Positioned;", at = @At(value = "RETURN"))
-    private static void addCustomInput(int i, int j, List<ItemStack> list, CallbackInfoReturnable<CraftingInput.Positioned> cir) {
+    private static void addCustomInput(int width, int height, List<ItemStack> items, CallbackInfoReturnable<CraftingInput.Positioned> cir) {
         var positioned = cir.getReturnValue();
         var input = positioned.input();
         var matrixData = CraftingMatrixDataImpl.Companion.of(
             positioned,
-            list.stream()
+            items.stream()
                 .map(ItemStackWrappersKt::wrap)
                 .toList()
         );
