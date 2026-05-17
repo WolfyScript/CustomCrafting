@@ -24,10 +24,10 @@
     "customcrafting.mixins.json"
   ],
   "depends": {
-    "scafall": "alpha0.4.0.0-SNAPSHOT",
-    "fabricloader": ">=0.16.14",
-    "minecraft": "~1.21.7",
-    "java": ">=21",
+    "scafall": "${scafallVersion}",
+    "fabricloader": ">=${fabricLoaderVersion}",
+    "minecraft": "~${minecraftVersion}",
+    "java": ">=${javaVersion}",
     "fabric-api": "*",
     "fabric-language-kotlin": "*"
   }
