@@ -2,8 +2,8 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeStonecutting;
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeStonecutting;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
 import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
@@ -46,7 +46,7 @@ public abstract class StonecutterResultSlotMixin extends Slot {
         }
 
         var playerLevel = player.level();
-        var context = new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().identifier())));
+        var context = EvaluationContext.of(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().identifier())));
         RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
 
         var recipe = resultInfo.getRecipe().getValue();

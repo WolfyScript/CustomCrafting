@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import com.wolfyscript.customcrafting.core.CustomCrafting
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.core.recipes.RecipeManagerCommon
 import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.adventure.deser
@@ -39,7 +38,7 @@ object RecipesCommand {
                                 ctx.source.sendSuccess({ Component.literal("Disabled Recipe $recipeKey") }, false)
                                 return@executes SUCCESS_RESULT
                             }.suggests { ctx, builder ->
-                                (CustomCraftingProvider.get().server!!.recipeManager as RecipeManagerCommon).recipesLoadedByCC
+                                CustomCraftingProvider.get().server!!.recipeManager.recipesLoadedByCC
                                     .map { it.toString() }
                                     .filter { it.startsWith(builder.remaining) }
                                     .forEach { builder.suggest(it) }
@@ -77,7 +76,7 @@ object RecipesCommand {
     }
 
     private fun printStatus(ctx: CommandContext<CommandSourceStack>, customCrafting: CustomCrafting) {
-        val recipeManager = customCrafting.server!!.recipeManager as RecipeManagerCommon
+        val recipeManager = customCrafting.server!!.recipeManager
 
         val totalRecipeCount = recipeManager.recipes().count()
         val ccRecipesCount = recipeManager.recipesLoadedByCC.size

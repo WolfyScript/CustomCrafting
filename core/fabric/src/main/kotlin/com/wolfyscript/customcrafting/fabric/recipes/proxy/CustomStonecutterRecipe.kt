@@ -4,11 +4,11 @@ import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeStonecutting
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeReference
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeStonecutting
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.RecipeReference
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState
 import com.wolfyscript.customcrafting.core.util.toMc
 import com.wolfyscript.customcrafting.core.util.toMcDisplay
 import com.wolfyscript.customcrafting.core.util.toTemplate
@@ -31,7 +31,7 @@ fun RecipeReference<CustomRecipeStonecutting>.matches(input: SingleRecipeInput, 
     val recipe = value ?: return false
     input as RecipeInputSingleSlotCustomExt
     val data = input.customInput ?: return false
-    val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
+    val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
     val result = recipe.evaluate(data, context) ?: return false
     input.resultInfo = RecipeEvaluationResultImpl(this, result)
@@ -45,7 +45,7 @@ fun RecipeReference<CustomRecipeStonecutting>.assemble(
     val recipe = value ?: return ItemStack.EMPTY
     input as RecipeInputSingleSlotCustomExt
     val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
-    val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
+    val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
     val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeResultCachedRandom(key, recipe.result.alwaysKeepPrevious) ?: return ItemStack.EMPTY
 
     return recipe.result.compute(resultInfo, context, random).unwrap()
@@ -100,7 +100,7 @@ class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {
             val recipeVal = customRecipe.value ?: return ItemStack.EMPTY
             input as RecipeInputSingleSlotCustomExt
             val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
-            val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
+            val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
             val stack = result().create().wrap()
             recipeVal.result.modifier.modify(stack, resultInfo, context)
             return stack.unwrap()

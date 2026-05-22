@@ -3,8 +3,8 @@ package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.IngredientConsumerModels
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.IngredientMatcherModels
-import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer
+import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientConsumer
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.world.items.ItemStackSnapshot
 import kotlinx.coroutines.runBlocking

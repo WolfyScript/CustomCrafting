@@ -3,12 +3,12 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 import com.wolfyscript.customcrafting.CustomCraftingProvider;
 import com.wolfyscript.customcrafting.fabric.inject.GrindstoneResultSlotsExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeGrinding;
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
-import com.wolfyscript.customcrafting.core.recipes.RecipeReference;
-import com.wolfyscript.customcrafting.core.recipes.RecipeTypes;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
-import com.wolfyscript.customcrafting.core.recipes.process.ProcessGrinding;
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeGrinding;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
+import com.wolfyscript.customcrafting.core.recipe.RecipeReference;
+import com.wolfyscript.customcrafting.core.recipe.RecipeTypes;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput;
+import com.wolfyscript.customcrafting.core.recipe.process.ProcessGrinding;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
 import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
@@ -63,7 +63,7 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
         var customcrafting = CustomCraftingProvider.Companion.get();
 
         var level = player.level();
-        var context = new EvaluationContextImpl(
+        var context = EvaluationContext.of(
             PlayerWrappersKt.wrap(player),
             PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()))
         );

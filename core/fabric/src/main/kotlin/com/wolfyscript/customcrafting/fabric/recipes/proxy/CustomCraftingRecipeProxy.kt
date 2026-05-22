@@ -4,34 +4,27 @@ import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
-import com.wolfyscript.customcrafting.core.recipes.CraftingFormula
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeReference
-import com.wolfyscript.customcrafting.core.recipes.ShapedCraftingFormulaImpl
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState
+import com.wolfyscript.customcrafting.core.recipe.CraftingFormula
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.RecipeReference
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipe.ingredient.toShapedRecipePattern
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState
 import com.wolfyscript.customcrafting.core.util.toTemplate
 import com.wolfyscript.scafall.wrappers.minecraft.unwrap
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.*
 import net.minecraft.world.level.Level
-import kotlin.collections.mapValues
 import kotlin.random.Random
-
-fun CraftingFormula.Shaped.toShapedRecipePattern(): ShapedRecipePattern {
-    this as ShapedCraftingFormulaImpl
-    val ingredients = this.mappedIngredients.mapValues { Ingredient.of(*it.value.choices.stacks.map { stack -> stack.create().unwrap().item }.toTypedArray()) }
-    return ShapedRecipePattern.of(ingredients, shape.rows)
-}
 
 private fun RecipeReference<CustomRecipeCrafting>.matches(recipeInput: CraftingInput, level: Level): Boolean {
     if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(key)) { return false }
     val recipe = value ?: return false
     if (recipeInput !is RecipeInputCraftingCustomExt) { return false }
     val data = recipeInput.customInput ?: return false
-    val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
+    val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
     val result = recipe.evaluate(data, context) ?: return false
     recipeInput.resultInfo = RecipeEvaluationResultImpl(this, result)

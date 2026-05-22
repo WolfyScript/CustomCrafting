@@ -2,8 +2,8 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
-import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.PositionWrappersKt;
 import kotlin.Unit;
@@ -31,7 +31,7 @@ public class CrafterMixin {
     )
     private void enterEvalContext(BlockState state, ServerLevel level, BlockPos pos, CallbackInfo ci) {
         var wrappedPosition = PositionWrappersKt.wrap(pos.getCenter(), Key.fromMc(level.dimension().identifier()));
-        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(null, wrappedPosition));
+        EvaluationContextState.INSTANCE.enter(EvaluationContext.of(null, wrappedPosition));
     }
 
     @Inject(at = @At("RETURN"), method = "dispenseFrom")

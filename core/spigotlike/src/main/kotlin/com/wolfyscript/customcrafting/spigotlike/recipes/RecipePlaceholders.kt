@@ -1,13 +1,12 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
-import com.wolfyscript.customcrafting.core.recipes.*
-import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.core.recipe.*
+import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientMatcher
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
-import com.wolfyscript.scafall.wrappers.minecraft.unwrap
 import net.minecraft.core.HolderSet
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.Identifier

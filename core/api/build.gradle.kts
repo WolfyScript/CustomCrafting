@@ -6,6 +6,9 @@ plugins {
 }
 
 dependencies {
+    implementation(sharedLibs.bundles.exposed)
+    implementation(sharedLibs.bundles.database.drivers)
+    compileOnly(sharedLibs.jackson.kotlin)
 }
 
 publishing {

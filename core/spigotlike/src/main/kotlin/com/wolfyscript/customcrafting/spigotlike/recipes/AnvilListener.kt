@@ -3,12 +3,12 @@ package com.wolfyscript.customcrafting.spigotlike.recipes
 import com.destroystokyo.paper.event.block.AnvilDamagedEvent
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.core.CustomCrafting
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeRepairing
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeRepairing
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.process.ProcessRepairing
 import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.scafall.platform.ifPaperCompatible
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
@@ -46,7 +46,7 @@ class AnvilListener(val plugin: Plugin, val customCrafting: CustomCrafting) : Li
         }
         val addition = inventory.getItem(1)
 
-        val context = EvaluationContextImpl(player.wrap(), inventory.location?.toPreciseGlobal())
+        val context = EvaluationContext.of(player.wrap(), inventory.location?.toPreciseGlobal())
         val input = RecipeInput.RepairingRecipeInput.of(base.wrap(), addition?.wrap(), event.view.renameText)
 
         val data = customCrafting.server!!.recipeManager.evaluateRecipesOfType(RecipeTypes.repairing.resolveOrThrow(), input, context) ?: return
@@ -121,7 +121,7 @@ class AnvilListener(val plugin: Plugin, val customCrafting: CustomCrafting) : Li
 
         player.level -= view.repairCost
 
-        val context = EvaluationContextImpl(player.wrap(), inventory.location?.toPreciseGlobal())
+        val context = EvaluationContext.of(player.wrap(), inventory.location?.toPreciseGlobal())
 
         val process = recipe.process
         if (process is ProcessRepairing.FixedResult) {

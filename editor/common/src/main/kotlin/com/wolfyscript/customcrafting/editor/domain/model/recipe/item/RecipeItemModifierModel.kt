@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
-import com.wolfyscript.customcrafting.core.recipes.RecipeItemModifier
+import com.wolfyscript.customcrafting.core.recipe.modifier.RecipeItemModifier
 
 interface RecipeItemModifierModel {
 

@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.editor
 
 import com.wolfyscript.customcrafting.editor.domain.SessionModel
-import com.wolfyscript.customcrafting.core.recipes.RecipeType
+import com.wolfyscript.customcrafting.core.recipe.RecipeType
 import com.wolfyscript.scafall.identifier.Key
 import java.util.UUID
 

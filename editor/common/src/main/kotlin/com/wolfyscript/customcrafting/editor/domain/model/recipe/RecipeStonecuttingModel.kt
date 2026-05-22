@@ -1,5 +1,5 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe
 
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeStonecutting
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeStonecutting
 
 interface RecipeStonecuttingModel : RecipeModel.RecipeTypeSpecificModel<CustomRecipeStonecutting>

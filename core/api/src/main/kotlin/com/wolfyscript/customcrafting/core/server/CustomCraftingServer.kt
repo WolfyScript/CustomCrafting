@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.core.server
 
-import com.wolfyscript.customcrafting.core.recipes.RecipeManager
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientManager
+import com.wolfyscript.customcrafting.core.recipe.RecipeManager
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientManager
 import com.wolfyscript.customcrafting.core.resource.ResourceManager
 import com.wolfyscript.scafall.loader.module.Server
 

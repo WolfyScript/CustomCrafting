@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.conditions
 
-import com.wolfyscript.customcrafting.core.recipes.conditions.RecipeConditions
+import com.wolfyscript.customcrafting.core.recipe.condition.RecipeConditions
 
 interface RecipeConditionsModel {
 

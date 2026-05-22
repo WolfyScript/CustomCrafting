@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.inject
 
-import com.wolfyscript.customcrafting.core.recipes.RecipeReference
+import com.wolfyscript.customcrafting.core.recipe.RecipeReference
 
 /**
  * A proxy recipe delegates the logic of a vanilla recipe to the logic of the CustomCrafting recipe.

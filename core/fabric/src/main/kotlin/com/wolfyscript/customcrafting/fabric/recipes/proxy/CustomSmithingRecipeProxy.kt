@@ -5,14 +5,14 @@ import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSmithingCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeSmithing
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeReference
-import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipes.SmithingUtils
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.core.recipes.getRecipeTyped
-import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeSmithing
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.RecipeReference
+import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipe.SmithingUtils
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipe.getRecipeTyped
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState
 import com.wolfyscript.customcrafting.core.util.toMc
 import com.wolfyscript.customcrafting.core.util.toMcDisplay
 import com.wolfyscript.scafall.identifier.toScafall
@@ -90,7 +90,7 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
         val recipe = customRecipe.value ?: return false
         if (smithingRecipeInput !is RecipeInputSmithingCustomExt) return false
         val customInput = smithingRecipeInput.customInput ?: return false
-        val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
+        val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
         val result = recipe.evaluate(customInput, context) ?: return false
         smithingRecipeInput.resultInfo = RecipeEvaluationResultImpl(customRecipe, result)
@@ -105,7 +105,7 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
         if (input !is RecipeInputSmithingCustomExt) return ItemStack.EMPTY
         val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
         val baseStack = input.customInput?.base ?: return ItemStack.EMPTY
-        val context = EvaluationContextState.current ?: EvaluationContextImpl(null, null)
+        val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
         val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeResultCachedRandom(customRecipe.key, recipe.result.alwaysKeepPrevious) ?: return ItemStack.EMPTY
 
         val stack = recipe.result.compute(resultInfo, context, random)

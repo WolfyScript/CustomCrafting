@@ -2,11 +2,11 @@ package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.core.CustomCrafting
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCooking
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCooking
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
 import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.*
@@ -44,7 +44,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
         val customBackingRecipe = bukkitRecipe.isPlaceholder() || bukkitRecipe.isDisplay()
 
         val input = RecipeInput.SingleSlotRecipeInput.of(source.wrap())
-        val context = EvaluationContextImpl(
+        val context = EvaluationContext.of(
             null,
             block.location.toPreciseGlobal(),
             block.location.toBlockPos(),
@@ -90,7 +90,7 @@ class FurnaceListener(val customCrafting: CustomCrafting) : Listener {
 
                 val result = recipe.result
 
-                val context = EvaluationContextImpl(
+                val context = EvaluationContext.of(
                     null,
                     block.location.toPreciseGlobal(),
                     block.location.toBlockPos(),

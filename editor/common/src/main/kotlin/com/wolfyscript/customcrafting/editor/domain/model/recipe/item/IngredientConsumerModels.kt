@@ -2,9 +2,9 @@ package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.IngredientRemainderModels
 import com.wolfyscript.customcrafting.editor.ext.EditorModelFactory
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer
-import com.wolfyscript.customcrafting.core.recipes.ingredient.of
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipe
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientConsumer
+import com.wolfyscript.customcrafting.core.recipe.ingredient.of
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.minecraft.wrap
 import net.minecraft.world.item.ItemStack

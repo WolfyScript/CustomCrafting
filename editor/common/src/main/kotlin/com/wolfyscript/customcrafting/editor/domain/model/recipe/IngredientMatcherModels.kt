@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.editor.domain.model.recipe
 import com.wolfyscript.customcrafting.editor.EditorRegistryTypes
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientMatcherModel
 import com.wolfyscript.customcrafting.editor.ext.EditorModelFactory
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientMatcher
 import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.customcrafting.editor.EditorModule
 import com.wolfyscript.scafall.identifier.Key

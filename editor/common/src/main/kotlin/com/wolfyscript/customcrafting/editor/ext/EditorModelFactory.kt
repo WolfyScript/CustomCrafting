@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.editor.ext
 
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipe
 
 interface EditorModelFactory<M> {
 

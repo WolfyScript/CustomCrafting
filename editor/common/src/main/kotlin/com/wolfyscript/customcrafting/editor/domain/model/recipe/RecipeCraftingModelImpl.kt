@@ -1,15 +1,14 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe
 
-import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.CustomIngredientModelImpl
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientModelRefImpl
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultModelImpl
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientModelRef
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultModel
-import com.wolfyscript.customcrafting.core.recipes.*
-import com.wolfyscript.customcrafting.core.recipes.conditions.RecipeConditions
-import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipe.*
+import com.wolfyscript.customcrafting.core.recipe.condition.RecipeConditions
+import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 import kotlin.text.isBlank
 
 internal class RecipeCraftingModelFactory : RecipeModel.RecipeTypeSpecificModel.Factory<CustomRecipeCrafting> {
@@ -91,7 +90,7 @@ internal data class RecipeCraftingModelImpl(
             return Result.failure(IllegalStateException("Failed to create crafting recipe: Invalid result", it))
         }
 
-        val recipe = CustomCraftingProvider.get().factories.recipeFactory.createRecipeCrafting(
+        val recipe = CustomRecipeCrafting.of(
             group = "", // TODO
             priority = common.priority,
             conditions = common.condition?.complete()?.getOrNull() ?: RecipeConditions.of(),

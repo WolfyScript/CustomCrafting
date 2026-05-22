@@ -2,12 +2,9 @@ package com.wolfyscript.customcrafting.spigotlike
 
 import com.wolfyscript.customcrafting.core.CustomCrafting
 import com.wolfyscript.customcrafting.core.commands.CCCommands
-import com.wolfyscript.customcrafting.core.recipes.IngredientManagerCommon
-import com.wolfyscript.customcrafting.core.recipes.RecipeManager
-import com.wolfyscript.customcrafting.core.recipes.RecipeManagerCommon
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientManager
+import com.wolfyscript.customcrafting.core.recipe.RecipeManager
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientManager
 import com.wolfyscript.customcrafting.core.resource.ResourceManager
-import com.wolfyscript.customcrafting.core.resource.ResourceManagerCommon
 import com.wolfyscript.customcrafting.core.server.CustomCraftingServer
 import com.wolfyscript.customcrafting.spigotlike.recipes.registerCommonRecipeListeners
 import com.wolfyscript.customcrafting.spigotlike.recipes.registerDisplayRecipes
@@ -18,9 +15,9 @@ import org.bukkit.plugin.Plugin
 
 class CustomCraftingServerSpigotLike(val customCrafting: CustomCrafting, val plugin: Plugin) : CustomCraftingServer {
 
-    override val resourceManager: ResourceManager = ResourceManagerCommon(customCrafting, plugin.dataFolder)
-    override val ingredientManager: IngredientManager = IngredientManagerCommon(customCrafting)
-    override val recipeManager: RecipeManager = RecipeManagerCommon(customCrafting)
+    override val resourceManager: ResourceManager = ResourceManager.createNewForDir(customCrafting, plugin.dataFolder)
+    override val ingredientManager: IngredientManager = IngredientManager.createNew(customCrafting)
+    override val recipeManager: RecipeManager = RecipeManager.createNew(customCrafting)
 
     init {
         resourceManager.resourceLoader.registerListener(recipeManager)

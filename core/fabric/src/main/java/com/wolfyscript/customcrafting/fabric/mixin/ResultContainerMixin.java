@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult;
 import net.minecraft.world.inventory.ResultContainer;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;

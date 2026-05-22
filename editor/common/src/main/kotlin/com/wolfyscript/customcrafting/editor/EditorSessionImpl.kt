@@ -6,8 +6,8 @@ import com.wolfyscript.customcrafting.editor.domain.model.CreateRecipeSessionMod
 import com.wolfyscript.customcrafting.editor.domain.model.EditRecipeSessionModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.RecipeModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.RecipeModelImpl
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.core.recipes.RecipeType
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipe
+import com.wolfyscript.customcrafting.core.recipe.RecipeType
 import com.wolfyscript.scafall.identifier.Key
 import java.util.*
 

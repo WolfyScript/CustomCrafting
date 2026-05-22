@@ -2,14 +2,13 @@ package com.wolfyscript.customcrafting.core.registry
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.core.util.customCrafting
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumer
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainder
-import com.wolfyscript.customcrafting.core.recipes.conditions.Condition
-import com.wolfyscript.customcrafting.core.recipes.RecipeType
-import com.wolfyscript.customcrafting.core.recipes.ResultAction
-import com.wolfyscript.customcrafting.core.recipes.RecipeItemModifier
-import com.wolfyscript.customcrafting.core.util.customCrafting
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientConsumer
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientRemainder
+import com.wolfyscript.customcrafting.core.recipe.condition.Condition
+import com.wolfyscript.customcrafting.core.recipe.RecipeType
+import com.wolfyscript.customcrafting.core.recipe.action.ResultAction
+import com.wolfyscript.customcrafting.core.recipe.modifier.Transformation
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.registry.RegistryKey
 import com.wolfyscript.scafall.registry.RegistryReference
@@ -22,7 +21,7 @@ object CustomCraftingRegistryTypes {
     val root = Key.customCrafting("root")
 
     /**
-     * [RecipeTypes][com.wolfyscript.customcrafting.core.recipes.RecipeTypes]
+     * [RecipeTypes][com.wolfyscript.customcrafting.core.recipe.RecipeTypes]
      */
     val recipeTypes = create<RecipeType<*>>("recipe_types")
 
@@ -32,32 +31,32 @@ object CustomCraftingRegistryTypes {
     // Used to store all the available types of content. Allows for easy deserialization of custom types.
     //
     /**
-     * [RecipeConditions][com.wolfyscript.customcrafting.core.recipes.RecipeConditions]
+     * [RecipeConditions][com.wolfyscript.customcrafting.core.recipe.RecipeConditions]
      */
     val recipeConditionTypes = create<Class<out Condition>>("types/recipes/conditions")
 
     /**
-     * [RecipeItemTransmuters][com.wolfyscript.customcrafting.core.recipes.RecipeItemTransmuters]
+     * [RecipeItemTransmuters][com.wolfyscript.customcrafting.core.recipe.RecipeItemTransmuters]
      */
-    val recipeItemTransmuters = create<Class<out RecipeItemModifier.Transformation.Transmuter>>("types/recipe/item/transmuters")
+    val recipeItemTransmuters = create<Class<out Transformation.Transmuter>>("types/recipe/item/transmuters")
 
     /**
-     * [ResultActions][com.wolfyscript.customcrafting.core.recipes.ResultActions]
+     * [ResultActions][com.wolfyscript.customcrafting.core.recipe.ResultActions]
      */
     val resultActions = create<Class<out ResultAction>>("types/recipe/result/actions")
 
     /**
-     * [IngredientConsumers][com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientConsumers]
+     * [IngredientConsumers][com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientConsumers]
      */
     val ingredientConsumers = create<Class<out IngredientConsumer>>("types/recipe/ingredient/consumers")
 
     /**
-     * [IngredientMatchers][com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatchers]
+     * [IngredientMatchers][com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientMatchers]
      */
     val ingredientMatchers = create<Class<out IngredientMatcher>>("types/recipe/ingredient/matchers")
 
     /**
-     * [IngredientRemainders][com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientRemainders]
+     * [IngredientRemainders][com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientRemainders]
      */
     val ingredientRemainders = create<Class<out IngredientRemainder>>("types/recipe/ingredient/remainders")
 

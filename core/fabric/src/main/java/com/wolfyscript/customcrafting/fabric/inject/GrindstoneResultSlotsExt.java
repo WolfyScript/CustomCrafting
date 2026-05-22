@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.fabric.inject;
 
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeGrinding;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeGrinding;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult;
 import org.jetbrains.annotations.Nullable;
 
 public interface GrindstoneResultSlotsExt {

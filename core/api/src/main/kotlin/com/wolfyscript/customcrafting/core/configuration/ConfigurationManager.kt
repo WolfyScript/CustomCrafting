@@ -1,7 +1,6 @@
 package com.wolfyscript.customcrafting.core.configuration
 
 import com.wolfyscript.customcrafting.core.configuration.cli.CLISettings
-import com.wolfyscript.customcrafting.core.configuration.editor.EditorSettings
 import com.wolfyscript.customcrafting.core.configuration.gui.GUISettings
 import com.wolfyscript.customcrafting.core.configuration.mechanics.GameMechanicSettings
 import com.wolfyscript.customcrafting.core.configuration.resources.ResourceSettings
@@ -20,7 +19,5 @@ interface ConfigurationManager {
     val guiSettings: GUISettings
 
     val cliSettings: CLISettings
-
-    val editorSettings: EditorSettings
 
 }

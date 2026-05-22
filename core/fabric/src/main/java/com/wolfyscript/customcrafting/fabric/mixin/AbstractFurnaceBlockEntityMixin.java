@@ -3,10 +3,10 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCooking;
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
-import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState;
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCooking;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultCacheExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateCache;
@@ -40,7 +40,7 @@ public abstract class AbstractFurnaceBlockEntityMixin implements RecipeResultCac
 
     @Inject(at = @At(value = "HEAD"), method = "serverTick")
     private static void enterEvalContext(ServerLevel level, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity entity, CallbackInfo ci) {
-        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(null, null, PositionWrappersKt.wrap(pos), EntityWrappersKt.wrap(entity)));
+        EvaluationContextState.INSTANCE.enter(EvaluationContext.of(null, null, PositionWrappersKt.wrap(pos), EntityWrappersKt.wrap(entity)));
     }
 
     @Inject(at = @At(value = "TAIL"), method = "serverTick")
@@ -74,7 +74,7 @@ public abstract class AbstractFurnaceBlockEntityMixin implements RecipeResultCac
             return;
         }
 
-        var context = new EvaluationContextImpl(null, null, PositionWrappersKt.wrap(pos), EntityWrappersKt.wrap(entity));
+        var context = EvaluationContext.of(null, null, PositionWrappersKt.wrap(pos), EntityWrappersKt.wrap(entity));
         var random = ((RecipeResultCacheExt) entity).customcrafting$getRecipeResultStateCache()
             .get(resultInfo.getRecipe().getKey(), cookingRecipe.getResult().getAlwaysKeepPrevious()).getRandom();
         var resultStack = cookingRecipe.getResult().compute(resultInfo, context, random).unwrap();

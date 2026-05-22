@@ -4,9 +4,9 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting;
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
 import com.wolfyscript.scafall.wrappers.minecraft.PositionWrappersKt;
@@ -54,7 +54,7 @@ public abstract class CraftingResultSlotMixin extends Slot {
 
         var level = player.level();
         var wrappedPosition = PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()));
-        var context = new EvaluationContextImpl(PlayerWrappersKt.wrap(player), wrappedPosition);
+        var context = EvaluationContext.of(PlayerWrappersKt.wrap(player), wrappedPosition);
 
         RecipeResultStateKt.resetRecipeResult((ServerPlayer) player, resultInfo.getRecipe().getKey());
 

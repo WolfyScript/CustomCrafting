@@ -1,12 +1,10 @@
 package com.wolfyscript.customcrafting.fabric
 
 import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.recipe.RecipeManager
 import com.wolfyscript.customcrafting.fabric.inject.RecipeManagerCustomRecipesExt
-import com.wolfyscript.customcrafting.core.recipes.IngredientManagerCommon
-import com.wolfyscript.customcrafting.core.recipes.RecipeManagerCommon
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientManager
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientManager
 import com.wolfyscript.customcrafting.core.resource.ResourceManager
-import com.wolfyscript.customcrafting.core.resource.ResourceManagerCommon
 import com.wolfyscript.customcrafting.core.server.CustomCraftingServer
 import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
@@ -18,12 +16,12 @@ import java.io.File
 class CustomCraftingServerFabric(customCrafting: CustomCrafting, val minecraftServer: MinecraftServer) :
     CustomCraftingServer {
 
-    override val resourceManager: ResourceManager = ResourceManagerCommon(
+    override val resourceManager: ResourceManager = ResourceManager.createNewForDir(
         customCrafting,
         File(FabricLoader.getInstance().configDir.toFile(), Key.CUSTOMCRAFTING_NAMESPACE)
     )
-    override val ingredientManager: IngredientManager = IngredientManagerCommon(customCrafting)
-    override val recipeManager: RecipeManagerCommon = RecipeManagerCommon(customCrafting)
+    override val ingredientManager: IngredientManager = IngredientManager.createNew(customCrafting)
+    override val recipeManager: RecipeManager = RecipeManager.createNew(customCrafting)
 
     init {
         resourceManager.resourceLoader.registerListener(recipeManager)

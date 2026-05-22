@@ -3,12 +3,11 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSmithingCustomExt;
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeSmithing;
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContext;
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
-import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState;
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeSmithing;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
 import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
@@ -74,7 +73,7 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         method = "createResult"
     )
     private void enterEvalContext(CallbackInfo ci) {
-        EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()))));
+        EvaluationContextState.INSTANCE.enter(EvaluationContext.of(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()))));
     }
 
     @Inject(
@@ -99,7 +98,7 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         if (resultInfo == null || resultInfo.getRecipe().getValue() == null) return;
         ci.cancel(); // Return before vanilla logic
 
-        var context = new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier())));
+        var context = EvaluationContext.of(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier())));
         shrinkCustomIngredient(0, context, resultInfo);
         shrinkCustomIngredient(1, context, resultInfo);
         shrinkCustomIngredient(2, context, resultInfo);

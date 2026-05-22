@@ -1,10 +1,10 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.fabric.inject.GrindstoneResultSlotsExt;
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeGrinding;
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
-import com.wolfyscript.customcrafting.core.recipes.process.ProcessGrinding;
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeGrinding;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipe.process.ProcessGrinding;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
 import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
@@ -61,7 +61,7 @@ public class GrindstoneResultSlotsMixin implements GrindstoneResultSlotsExt {
         var recipe = resultInfo.getRecipe().getValue();
         var data = resultInfo.getData();
         var lvl = player.level();
-        var context = new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(lvl.dimension().identifier())));
+        var context = EvaluationContext.of(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(lvl.dimension().identifier())));
 
         var totalYield = data.getYield() - data.getPenalty();
         if (totalYield > 0) {

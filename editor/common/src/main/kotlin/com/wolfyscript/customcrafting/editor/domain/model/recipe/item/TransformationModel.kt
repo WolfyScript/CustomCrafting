@@ -1,6 +1,6 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
-import com.wolfyscript.customcrafting.core.recipes.RecipeItemModifier
+import com.wolfyscript.customcrafting.core.recipe.modifier.Transformation
 
 interface TransformationModel {
 
@@ -8,5 +8,5 @@ interface TransformationModel {
 
     val ingredients: MutableList<Int>
 
-    fun complete(): Result<RecipeItemModifier.Transformation>
+    fun complete(): Result<Transformation>
 }

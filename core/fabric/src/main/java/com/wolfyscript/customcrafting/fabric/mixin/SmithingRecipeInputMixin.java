@@ -1,9 +1,9 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSmithingCustomExt;
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeSmithing;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeSmithing;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;

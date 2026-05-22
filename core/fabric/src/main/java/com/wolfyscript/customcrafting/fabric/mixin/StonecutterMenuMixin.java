@@ -3,9 +3,9 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl;
-import com.wolfyscript.customcrafting.core.recipes.data.SingleSlotRecipeInputImpl;
-import com.wolfyscript.customcrafting.core.recipes.state.EvaluationContextState;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
+import com.wolfyscript.customcrafting.core.recipe.data.SingleSlotRecipeInputImpl;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
 import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
@@ -72,7 +72,7 @@ public class StonecutterMenuMixin {
         var recipeVal = recipe.value();
         if (recipeVal instanceof ProxyRecipe) {
             ci.cancel();
-            EvaluationContextState.INSTANCE.enter(new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()))));
+            EvaluationContextState.INSTANCE.enter(EvaluationContext.of(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier()))));
             var stack = container.getItem(0);
             var input = new SingleRecipeInput(stack);
             ((RecipeInputSingleSlotCustomExt) (Object) input).setCustomInput(

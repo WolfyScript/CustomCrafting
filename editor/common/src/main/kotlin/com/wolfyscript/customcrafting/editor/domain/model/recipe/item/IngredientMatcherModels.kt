@@ -1,10 +1,10 @@
 package com.wolfyscript.customcrafting.editor.domain.model.recipe.item
 
 import com.wolfyscript.customcrafting.editor.ext.EditorModelFactory
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatcher
-import com.wolfyscript.customcrafting.core.recipes.ingredient.IngredientMatchers
-import com.wolfyscript.customcrafting.core.recipes.ingredient.of
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipe
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientMatcher
+import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientMatchers
+import com.wolfyscript.customcrafting.core.recipe.ingredient.of
 import com.wolfyscript.scafall.identifier.Key
 
 class ExactIngredientMatcherModelFactory : EditorModelFactory<ExactIngredientMatcherModel> {

@@ -2,14 +2,14 @@ package com.wolfyscript.customcrafting.paper.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.core.CustomCrafting
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeStonecutting
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeReferenceImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.core.recipes.getRecipeTyped
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeStonecutting
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.RecipeReference
+import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.getRecipeTyped
 import com.wolfyscript.customcrafting.spigotlike.collectResultAndRunActions
 import com.wolfyscript.customcrafting.spigotlike.recipes.isPlaceholder
 import com.wolfyscript.customcrafting.spigotlike.recipes.originalRecipeKey
@@ -46,11 +46,11 @@ class StonecutterListener(val customCrafting: CustomCrafting) : Listener {
         val recipe = customCrafting.server!!.recipeManager.getRecipeTyped(key, RecipeTypes.stonecutting.resolveOrThrow())?.value ?: return
         event.isCancelled = true
         val source = event.stonecutterInventory.getItem(INPUT_SLOT) ?: ItemStack(Material.AIR)
-        val context = EvaluationContextImpl(event.player.wrap(), event.player.location.toPreciseGlobal())
+        val context = EvaluationContext.of(event.player.wrap(), event.player.location.toPreciseGlobal())
         val data = recipe.evaluate(RecipeInput.SingleSlotRecipeInput.of(source.wrap()), context)
 
         if (data != null) {
-            val evalResult = RecipeEvaluationResultImpl(RecipeReferenceImpl(key, recipe), data)
+            val evalResult = RecipeEvaluationResultImpl(RecipeReference.of(key, recipe), data)
             event.stonecutterInventory.result = recipe.result.compute(evalResult, context, Random).unwrapSpigot()
             recipeCache.put(event.player.uniqueId, evalResult)
         } else {
@@ -76,7 +76,7 @@ class StonecutterListener(val customCrafting: CustomCrafting) : Listener {
         }
         val evalResult = recipeCache.getIfPresent(player.uniqueId) ?: return
         val recipe = evalResult.recipe.value ?: return
-        val context = EvaluationContextImpl(player.wrap(), player.location.toPreciseGlobal())
+        val context = EvaluationContext.of(player.wrap(), player.location.toPreciseGlobal())
 
         val maxPossible = collectResultAndRunActions(
             event,

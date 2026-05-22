@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.ui.editor.home
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.editor.EditorRegistryTypes
 import com.wolfyscript.customcrafting.editor.recipeEditor
-import com.wolfyscript.customcrafting.core.recipes.RecipeType
+import com.wolfyscript.customcrafting.core.recipe.RecipeType
 import com.wolfyscript.viewportl.gui.model.Store
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

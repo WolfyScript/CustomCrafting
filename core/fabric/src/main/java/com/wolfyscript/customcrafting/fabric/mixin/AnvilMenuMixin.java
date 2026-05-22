@@ -1,11 +1,12 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
-import com.wolfyscript.customcrafting.core.recipes.*;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult;
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput;
-import com.wolfyscript.customcrafting.core.recipes.process.ProcessRepairing;
+import com.wolfyscript.customcrafting.core.recipe.*;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput;
+import com.wolfyscript.customcrafting.core.recipe.process.ProcessRepairing;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
 import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
@@ -58,7 +59,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
         resultInfo = null;
         var customcrafting = CustomCraftingProvider.Companion.get();
         var level = player.level();
-        var context = new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier())));
+        var context = EvaluationContext.of(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(level.dimension().identifier())));
         var input = RecipeInput.RepairingRecipeInput.Companion.of(ItemStackWrappersKt.wrap(getSlot(0).getItem()), ItemStackWrappersKt.wrap(getSlot(1).getItem()), itemName);
 
         var data = customcrafting.getServer().getRecipeManager().evaluateRecipesOfType(RecipeTypes.INSTANCE.getRepairing().resolveOrThrow(), input, context);
@@ -105,7 +106,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
         }
 
         var playerLevel = player.level();
-        var context = new EvaluationContextImpl(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().identifier())));
+        var context = EvaluationContext.of(PlayerWrappersKt.wrap(player), PositionWrappersKt.wrap(player.position(), Key.fromMc(playerLevel.dimension().identifier())));
         var data = resultInfo.getData();
 
         var base = data.bySlot(BASE_SLOT);

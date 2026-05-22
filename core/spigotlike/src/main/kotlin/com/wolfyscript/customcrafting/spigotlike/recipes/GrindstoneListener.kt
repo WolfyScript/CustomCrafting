@@ -2,12 +2,12 @@ package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.core.CustomCrafting
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeGrinding
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.core.recipes.process.ProcessGrinding
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeGrinding
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.process.ProcessGrinding
 import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
@@ -79,7 +79,7 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         }
 
         val context =
-            EvaluationContextImpl((event.view.player as Player).wrap(), event.inventory.location?.toPreciseGlobal())
+            EvaluationContext.of((event.view.player as Player).wrap(), event.inventory.location?.toPreciseGlobal())
 
         val totalYield = max(0, data.data.yield - data.data.penalty)
 
@@ -115,7 +115,7 @@ class GrindstoneListener(val customCrafting: CustomCrafting) : Listener {
         recipeCache.invalidate(event.view.player.uniqueId)
 
         val context =
-            EvaluationContextImpl((event.view.player as Player).wrap(), event.inventory.location?.toPreciseGlobal())
+            EvaluationContext.of((event.view.player as Player).wrap(), event.inventory.location?.toPreciseGlobal())
         val input =
             RecipeInput.GrindingRecipeInput.of(event.inventory.getItem(0)?.wrap(), event.inventory.getItem(1)?.wrap())
 

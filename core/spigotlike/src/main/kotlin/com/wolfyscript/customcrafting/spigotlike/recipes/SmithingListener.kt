@@ -2,12 +2,12 @@ package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.core.CustomCrafting
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeSmithing
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipes.SmithingUtils
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeSmithing
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipe.SmithingUtils
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
 import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
@@ -70,7 +70,7 @@ class SmithingListener(val plugin: Plugin, val customCrafting: CustomCrafting) :
             }
         }
 
-        val context = EvaluationContextImpl((event.view.player as Player).wrap(), inventory.location?.toPreciseGlobal())
+        val context = EvaluationContext.of((event.view.player as Player).wrap(), inventory.location?.toPreciseGlobal())
         val templateStack = inventory.getItem(0)
         val baseStack = inventory.getItem(1)
         val additionStack = inventory.getItem(2)
@@ -152,7 +152,7 @@ class SmithingListener(val plugin: Plugin, val customCrafting: CustomCrafting) :
             })
         }
 
-        val context = EvaluationContextImpl((event.whoClicked as Player).wrap(), inventory.location?.toPreciseGlobal())
+        val context = EvaluationContext.of((event.whoClicked as Player).wrap(), inventory.location?.toPreciseGlobal())
 
         recipe.result.runActions(context, 1)
 

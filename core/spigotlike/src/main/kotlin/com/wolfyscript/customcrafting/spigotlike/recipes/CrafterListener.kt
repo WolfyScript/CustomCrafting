@@ -1,12 +1,12 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.wolfyscript.customcrafting.core.CustomCrafting
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipes.data.CraftingMatrixData
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
-import com.wolfyscript.customcrafting.core.recipes.getRecipeTyped
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipe.data.CraftingMatrixData
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.getRecipeTyped
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toBlockPos
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
@@ -38,7 +38,7 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCrafting) : 
         }
         val inventory = state.inventory
 
-        val context = EvaluationContextImpl(null, block.location.toPreciseGlobal(), block.location.toBlockPos(), state.wrap())
+        val context = EvaluationContext.of(null, block.location.toPreciseGlobal(), block.location.toBlockPos(), state.wrap())
         val matrix = CraftingMatrixData.of(inventory.contents.map { it?.wrap() })
         val input = RecipeInput.CraftingRecipeInput.of(matrix)
 

@@ -3,8 +3,8 @@ package com.wolfyscript.customcrafting.editor.domain.model.recipe
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientModel
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.IngredientModelRef
 import com.wolfyscript.customcrafting.editor.domain.model.recipe.item.ResultModel
-import com.wolfyscript.customcrafting.core.recipes.CraftingFormula
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.core.recipe.CraftingFormula
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting
 
 interface RecipeCraftingModel : RecipeModel.RecipeTypeSpecificModel<CustomRecipeCrafting> {
 

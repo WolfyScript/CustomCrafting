@@ -1,9 +1,9 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
 import com.wolfyscript.customcrafting.core.CustomCrafting
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toBlockPos
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
@@ -28,7 +28,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
     fun onStart(event: CampfireStartEvent) {
         val source = event.source
 
-        val context = EvaluationContextImpl(null, event.block.location.toPreciseGlobal())
+        val context = EvaluationContext.of(null, event.block.location.toPreciseGlobal())
         val input = RecipeInput.SingleSlotRecipeInput.of(source.wrap())
         val data = customCrafting.server!!.recipeManager.evaluateRecipesOfType(RecipeTypes.cooking.resolveOrThrow(), input, context)
 
@@ -66,7 +66,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
             state.getItem(campfireSlot)?.let { it.type == Material.AIR } ?: true
         } ?: return // Cannot place item. No empty slot!
 
-        val context = EvaluationContextImpl(
+        val context = EvaluationContext.of(
             event.player.wrap(),
             block.location.toPreciseGlobal(),
             block.location.toBlockPos(),
@@ -108,7 +108,7 @@ class CampfireListener(val customCrafting: CustomCrafting) : Listener {
         }
 
         val source = event.source
-        val context = EvaluationContextImpl(
+        val context = EvaluationContext.of(
             null,
             block.location.toPreciseGlobal(),
             block.location.toBlockPos(),

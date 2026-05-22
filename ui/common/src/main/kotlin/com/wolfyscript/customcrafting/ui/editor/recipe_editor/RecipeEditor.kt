@@ -2,8 +2,8 @@ package com.wolfyscript.customcrafting.ui.editor.recipe_editor
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.wolfyscript.customcrafting.core.recipes.RecipeType
-import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipe.RecipeType
+import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
 import com.wolfyscript.customcrafting.ui.editor.recipe_editor.crafting.RecipeCraftingEditor
 import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key

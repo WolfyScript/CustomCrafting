@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.core.resource
 
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipe
-import com.wolfyscript.customcrafting.core.recipes.ingredient.Ingredient
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipe
+import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 
 interface DataType<T> {
 

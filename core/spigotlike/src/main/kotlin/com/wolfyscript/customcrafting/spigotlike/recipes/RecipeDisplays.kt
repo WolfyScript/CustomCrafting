@@ -1,8 +1,8 @@
 package com.wolfyscript.customcrafting.spigotlike.recipes
 
-import com.wolfyscript.customcrafting.core.recipes.CraftingFormula
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.core.recipes.RecipeReference
+import com.wolfyscript.customcrafting.core.recipe.CraftingFormula
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.core.recipe.RecipeReference
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import org.bukkit.Bukkit

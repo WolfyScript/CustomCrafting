@@ -3,13 +3,12 @@ package com.wolfyscript.customcrafting.spigotlike.recipes
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.wolfyscript.customcrafting.core.CustomCrafting
 import com.wolfyscript.customcrafting.core.exceptions.CraftingRecipeException
-import com.wolfyscript.customcrafting.core.recipes.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContext
-import com.wolfyscript.customcrafting.core.recipes.EvaluationContextImpl
-import com.wolfyscript.customcrafting.core.recipes.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipes.data.CraftingMatrixData
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipes.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
+import com.wolfyscript.customcrafting.core.recipe.data.CraftingMatrixData
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
 import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.customcrafting.spigotlike.collectResultAndRunActions
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
@@ -80,7 +79,7 @@ class CraftingListener(val plugin: Plugin, val customCrafting: CustomCrafting) :
             craftingDataCache.invalidate(player.uniqueId)
 
             val context: EvaluationContext =
-                EvaluationContextImpl(player.wrap(), event.inventory.location?.toPreciseGlobal())
+                EvaluationContext.of(player.wrap(), event.inventory.location?.toPreciseGlobal())
 
             // At this point do not change the inventory! Because that would call the PrepareItemCraftEvent, invalidating the recipe and preventing consumption of the recipe!
             val count: Int = collectResult(event, player, craftingData, matrixData, context)
@@ -105,7 +104,7 @@ class CraftingListener(val plugin: Plugin, val customCrafting: CustomCrafting) :
             matrixDataCache.put(player.uniqueId, matrix)
 
             val block = e.inventory.location?.block ?: player.location.block
-            val context: EvaluationContext = EvaluationContextImpl(player.wrap(), block.location.toPreciseGlobal())
+            val context: EvaluationContext = EvaluationContext.of(player.wrap(), block.location.toPreciseGlobal())
             val resultStack = recipeManager.evaluateRecipesOfType(RecipeTypes.crafting.resolveOrThrow(), input, context)?.let {
                 craftingDataCache.put(player.uniqueId, it)
                 it.recipe.value?.result?.compute(it, context, Random(getCraftSeed(player)))
