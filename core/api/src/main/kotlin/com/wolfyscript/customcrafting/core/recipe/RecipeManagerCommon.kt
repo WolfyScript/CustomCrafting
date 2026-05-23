@@ -32,15 +32,15 @@ internal class RecipeManagerCommon(val customCrafting: CustomCrafting) : RecipeM
     /**
      * Recipes can be loaded by other plugins. We keep track of which recipes CC registers, to not unload third-party recipes, for example, on a reload.
      */
-    override val recipesLoadedByCC: Set<Key>
+    final override val recipesLoadedByCC: Set<Key>
         field = ObjectOpenHashSet()
 
-    override val disabledRecipes: Set<Key>
+    final override val disabledRecipes: Set<Key>
         get() {
             return Collections.unmodifiableSet(backingDisabledRecipes)
         }
 
-    override val invalidRecipes: List<VerificationResult<CustomRecipe<*, *>>>
+    final override val invalidRecipes: List<VerificationResult<CustomRecipe<*, *>>>
         field = mutableListOf()
 
     val backingDisabledRecipes: MutableSet<Key> = ObjectOpenHashSet()
