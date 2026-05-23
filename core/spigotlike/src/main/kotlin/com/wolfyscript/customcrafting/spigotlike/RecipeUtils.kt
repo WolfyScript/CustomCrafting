@@ -2,7 +2,7 @@ package com.wolfyscript.customcrafting.spigotlike
 
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import org.bukkit.Material
 import org.bukkit.event.inventory.InventoryClickEvent

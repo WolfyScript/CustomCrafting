@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.core.recipe.data
+package com.wolfyscript.customcrafting.core.recipe.evaluation
 
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipe
 import com.wolfyscript.customcrafting.core.recipe.RecipeReference
@@ -9,6 +9,17 @@ import com.wolfyscript.customcrafting.core.recipe.RecipeReference
  * Some types (like [RepairingRecipeData]) may expand it with type-specific data.
  */
 interface RecipeEvaluationResult<D: RecipeEvaluationResult.Data, T: CustomRecipe<*, *>> {
+
+    companion object {
+
+        fun <D: Data, T: CustomRecipe<*, *>> of(
+            recipe: RecipeReference<T>,
+            data: D
+        ): RecipeEvaluationResult<D, T> {
+            return RecipeEvaluationResultImpl(recipe, data)
+        }
+
+    }
 
     /**
      * The selected recipe

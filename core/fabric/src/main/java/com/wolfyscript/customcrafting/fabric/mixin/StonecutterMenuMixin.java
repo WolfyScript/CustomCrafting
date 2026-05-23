@@ -4,7 +4,7 @@ import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
-import com.wolfyscript.customcrafting.core.recipe.data.SingleSlotRecipeInputImpl;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.SingleSlotRecipeInputImpl;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;

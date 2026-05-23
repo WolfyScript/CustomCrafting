@@ -3,8 +3,8 @@ package com.wolfyscript.customcrafting.core.recipe
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableListMultimap
 import com.google.common.collect.ImmutableMap
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.resource.LoadedObject
 import com.wolfyscript.scafall.identifier.Key
 import java.util.*

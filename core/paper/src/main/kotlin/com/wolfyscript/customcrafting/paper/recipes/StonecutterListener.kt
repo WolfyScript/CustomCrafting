@@ -6,9 +6,8 @@ import com.wolfyscript.customcrafting.core.recipe.CustomRecipeStonecutting
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeReference
 import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.getRecipeTyped
 import com.wolfyscript.customcrafting.spigotlike.collectResultAndRunActions
 import com.wolfyscript.customcrafting.spigotlike.recipes.isPlaceholder
@@ -50,7 +49,7 @@ class StonecutterListener(val customCrafting: CustomCrafting) : Listener {
         val data = recipe.evaluate(RecipeInput.SingleSlotRecipeInput.of(source.wrap()), context)
 
         if (data != null) {
-            val evalResult = RecipeEvaluationResultImpl(RecipeReference.of(key, recipe), data)
+            val evalResult = RecipeEvaluationResult.of(RecipeReference.of(key, recipe), data)
             event.stonecutterInventory.result = recipe.result.compute(evalResult, context, Random).unwrapSpigot()
             recipeCache.put(event.player.uniqueId, evalResult)
         } else {

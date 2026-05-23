@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
 import com.fasterxml.jackson.databind.annotation.JsonTypeResolver
 import com.wolfyscript.customcrafting.core.recipe.condition.RecipeConditions
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")

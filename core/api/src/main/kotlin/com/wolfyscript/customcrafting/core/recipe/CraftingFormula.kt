@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")

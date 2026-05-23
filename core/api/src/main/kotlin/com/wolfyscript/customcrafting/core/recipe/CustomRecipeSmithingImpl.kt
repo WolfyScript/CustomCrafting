@@ -2,8 +2,12 @@ package com.wolfyscript.customcrafting.core.recipe
 
 import com.wolfyscript.customcrafting.core.recipe.condition.RecipeConditions
 import com.wolfyscript.customcrafting.core.recipe.condition.RecipeConditionsImpl
-import com.wolfyscript.customcrafting.core.recipe.data.*
+import com.wolfyscript.customcrafting.core.recipe.evaluation.DefaultDataImpl
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.wolfyscript.customcrafting.core.recipe.evaluation.IngredientData
+import com.wolfyscript.customcrafting.core.recipe.evaluation.IngredientDataImpl
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack

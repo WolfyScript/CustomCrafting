@@ -3,8 +3,8 @@ package com.wolfyscript.customcrafting.core.recipe.process
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.procedure.ProcedureRename
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import kotlin.random.Random

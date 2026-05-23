@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.core.recipe.modifier
 
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 /**

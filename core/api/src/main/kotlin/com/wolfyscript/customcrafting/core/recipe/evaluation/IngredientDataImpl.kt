@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.core.recipe.data
+package com.wolfyscript.customcrafting.core.recipe.evaluation
 
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 import com.wolfyscript.scafall.items.ItemStackRef

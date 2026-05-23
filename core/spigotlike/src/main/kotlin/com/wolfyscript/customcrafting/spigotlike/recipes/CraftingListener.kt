@@ -6,9 +6,9 @@ import com.wolfyscript.customcrafting.core.exceptions.CraftingRecipeException
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipe.data.CraftingMatrixData
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.CraftingMatrixData
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.spigotlike.RecipeSeeds
 import com.wolfyscript.customcrafting.spigotlike.collectResultAndRunActions
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal

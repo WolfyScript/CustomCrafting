@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeGrinding
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.procedure.ProcedureDamageCombine
 import com.wolfyscript.customcrafting.core.recipe.procedure.ProcedureEnchantRemoval
 import com.wolfyscript.customcrafting.core.recipe.procedure.ProcedureEnchanting

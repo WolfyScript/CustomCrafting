@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.modifier.RecipeItemModifier
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientConsumer.Consume
 import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientConsumer.Keep
 import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientConsumer.Replace

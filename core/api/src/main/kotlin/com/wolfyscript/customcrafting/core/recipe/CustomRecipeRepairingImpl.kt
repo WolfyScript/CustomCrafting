@@ -2,10 +2,10 @@ package com.wolfyscript.customcrafting.core.recipe
 
 import com.wolfyscript.customcrafting.core.recipe.condition.RecipeConditions
 import com.wolfyscript.customcrafting.core.recipe.condition.RecipeConditionsImpl
-import com.wolfyscript.customcrafting.core.recipe.data.IngredientDataImpl
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
-import com.wolfyscript.customcrafting.core.recipe.data.RepairingRecipeDataImpl
+import com.wolfyscript.customcrafting.core.recipe.evaluation.IngredientDataImpl
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RepairingRecipeDataImpl
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 import com.wolfyscript.customcrafting.core.recipe.process.ProcessRepairing

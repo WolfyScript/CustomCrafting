@@ -10,7 +10,7 @@ import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeReference
 import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
 import com.wolfyscript.customcrafting.core.recipe.SmithingUtils
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.getRecipeTyped
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState
 import com.wolfyscript.customcrafting.core.util.toMc
@@ -93,7 +93,7 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
         val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
         val result = recipe.evaluate(customInput, context) ?: return false
-        smithingRecipeInput.resultInfo = RecipeEvaluationResultImpl(customRecipe, result)
+        smithingRecipeInput.resultInfo = RecipeEvaluationResult.of(customRecipe, result)
         return true
     }
 

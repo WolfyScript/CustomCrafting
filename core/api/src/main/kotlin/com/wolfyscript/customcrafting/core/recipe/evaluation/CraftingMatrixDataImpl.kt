@@ -1,8 +1,6 @@
-package com.wolfyscript.customcrafting.core.recipe.data
+package com.wolfyscript.customcrafting.core.recipe.evaluation
 
-import com.wolfyscript.scafall.wrappers.minecraft.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
-import net.minecraft.world.item.crafting.CraftingInput
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -53,7 +51,7 @@ fun List<ScafallItemStack>.toCraftingMatrixData(): CraftingMatrixData {
 
 }
 
-private fun List<ScafallItemStack?>.gridSize(): Int {
+internal fun List<ScafallItemStack?>.gridSize(): Int {
     return when (size) {
         4 -> 2
         9 -> 3
@@ -65,7 +63,7 @@ private fun List<ScafallItemStack?>.gridSize(): Int {
     }
 }
 
-class CraftingMatrixDataImpl(
+internal class CraftingMatrixDataImpl(
     override val gridSize: Int,
     override val matrix: Array<ScafallItemStack>,
     override val width: Int,
@@ -99,28 +97,6 @@ class CraftingMatrixDataImpl(
         }
         itemIndices = indices
         flatItemIndices = flatIndices
-    }
-
-    companion object {
-
-        fun of(input: CraftingInput.Positioned, originalItems: List<ScafallItemStack>): CraftingMatrixData {
-            // Since Vanilla does the same as CustomCrafting would, use the vanilla data.
-            // No need to recalculate the trimmed matrix, just add the original ingredient list.
-            val craftingInput = input.input
-            val columnOffset = input.left
-            val rowOffset = input.top
-            val items = craftingInput.items()
-
-            return CraftingMatrixDataImpl(
-                originalItems.gridSize(),
-                matrix = Array(craftingInput.size()) { items[it].wrap() },
-                craftingInput.width(),
-                craftingInput.height(),
-                rowOffset,
-                columnOffset
-            )
-        }
-
     }
 
     override fun toString(): String {

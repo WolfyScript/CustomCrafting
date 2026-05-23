@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.core.recipe.CustomRecipeGrinding;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
 import com.wolfyscript.customcrafting.core.recipe.RecipeReference;
 import com.wolfyscript.customcrafting.core.recipe.RecipeTypes;
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput;
 import com.wolfyscript.customcrafting.core.recipe.process.ProcessGrinding;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;

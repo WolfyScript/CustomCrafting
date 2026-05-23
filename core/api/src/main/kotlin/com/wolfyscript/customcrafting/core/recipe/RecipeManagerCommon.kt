@@ -4,9 +4,8 @@ import com.wolfyscript.customcrafting.core.CustomCrafting
 import com.wolfyscript.customcrafting.core.resource.LoadedObject
 import com.wolfyscript.customcrafting.core.resource.ResourceLoader
 import com.wolfyscript.customcrafting.core.recipe.RecipeManager.Companion.LOG_PREFIX
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.resource.DataType
 import com.wolfyscript.customcrafting.core.resource.ResourceListener
@@ -154,7 +153,7 @@ internal class RecipeManagerCommon(val customCrafting: CustomCrafting) : RecipeM
                 continue
             }
             val data = recipe.value?.evaluate(input, context) ?: continue
-            return RecipeEvaluationResultImpl(recipe, data)
+            return RecipeEvaluationResult.of(recipe, data)
         }
         return null
     }

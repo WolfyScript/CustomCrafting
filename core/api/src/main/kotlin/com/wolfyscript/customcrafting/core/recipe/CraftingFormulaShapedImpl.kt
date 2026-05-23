@@ -1,12 +1,12 @@
 package com.wolfyscript.customcrafting.core.recipe
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.wolfyscript.customcrafting.core.recipe.data.CraftingMatrixData
-import com.wolfyscript.customcrafting.core.recipe.data.DefaultDataImpl
-import com.wolfyscript.customcrafting.core.recipe.data.IngredientData
-import com.wolfyscript.customcrafting.core.recipe.data.IngredientDataImpl
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.CraftingMatrixData
+import com.wolfyscript.customcrafting.core.recipe.evaluation.DefaultDataImpl
+import com.wolfyscript.customcrafting.core.recipe.evaluation.IngredientData
+import com.wolfyscript.customcrafting.core.recipe.evaluation.IngredientDataImpl
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 import org.apache.commons.lang3.ArrayUtils
 import kotlin.math.max

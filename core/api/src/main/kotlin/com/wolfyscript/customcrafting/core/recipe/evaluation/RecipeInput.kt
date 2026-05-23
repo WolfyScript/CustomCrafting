@@ -1,4 +1,4 @@
-package com.wolfyscript.customcrafting.core.recipe.data
+package com.wolfyscript.customcrafting.core.recipe.evaluation
 
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 

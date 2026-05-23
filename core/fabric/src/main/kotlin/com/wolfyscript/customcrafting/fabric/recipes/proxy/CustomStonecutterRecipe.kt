@@ -7,7 +7,7 @@ import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeStonecutting
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeReference
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState
 import com.wolfyscript.customcrafting.core.util.toMc
 import com.wolfyscript.customcrafting.core.util.toMcDisplay
@@ -34,7 +34,7 @@ fun RecipeReference<CustomRecipeStonecutting>.matches(input: SingleRecipeInput, 
     val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
     val result = recipe.evaluate(data, context) ?: return false
-    input.resultInfo = RecipeEvaluationResultImpl(this, result)
+    input.resultInfo = RecipeEvaluationResult.of(this, result)
     return true
 }
 

@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 import com.wolfyscript.customcrafting.fabric.inject.GrindstoneResultSlotsExt;
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeGrinding;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult;
 import com.wolfyscript.customcrafting.core.recipe.process.ProcessGrinding;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;

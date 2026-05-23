@@ -7,8 +7,8 @@ import com.wolfyscript.customcrafting.core.CustomCrafting
 import com.wolfyscript.customcrafting.core.recipe.*
 import com.wolfyscript.customcrafting.core.recipe.condition.RecipeConditions
 import com.wolfyscript.customcrafting.core.recipe.condition.RecipeConditionsImpl
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResultImpl
 import com.wolfyscript.customcrafting.core.recipe.process.ProcessGrindingDefaultImpl
 import com.wolfyscript.customcrafting.core.recipe.procedure.ProcedureEnchantRemovalIngredientImpl
 import com.wolfyscript.customcrafting.core.recipe.procedure.ProcedureEnchantRemovalImpl

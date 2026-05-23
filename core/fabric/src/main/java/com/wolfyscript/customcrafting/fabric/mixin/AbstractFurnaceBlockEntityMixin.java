@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCooking;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultCacheExt;

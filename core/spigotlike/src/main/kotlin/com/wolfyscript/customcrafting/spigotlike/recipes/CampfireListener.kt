@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.spigotlike.recipes
 import com.wolfyscript.customcrafting.core.CustomCrafting
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toBlockPos
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toPreciseGlobal
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot

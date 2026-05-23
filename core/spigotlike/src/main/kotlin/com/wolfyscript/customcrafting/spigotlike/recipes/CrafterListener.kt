@@ -3,9 +3,9 @@ package com.wolfyscript.customcrafting.spigotlike.recipes
 import com.wolfyscript.customcrafting.core.CustomCrafting
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeTypes
-import com.wolfyscript.customcrafting.core.recipe.data.CraftingMatrixData
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeInput
+import com.wolfyscript.customcrafting.core.recipe.evaluation.CraftingMatrixData
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.getRecipeTyped
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.toBlockPos
@@ -58,7 +58,7 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCrafting) : 
         }
 
         val data = if (previousRecipe != null) {
-            previousRecipe.value?.evaluate(input, context)?.let { RecipeEvaluationResultImpl(previousRecipe, it) }
+            previousRecipe.value?.evaluate(input, context)?.let { RecipeEvaluationResult.of(previousRecipe, it) }
         } else {
             customCrafting.server!!.recipeManager.evaluateRecipesOfType(
                 RecipeTypes.crafting.resolveOrThrow(),

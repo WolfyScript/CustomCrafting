@@ -1,9 +1,9 @@
-package com.wolfyscript.customcrafting.core.recipe.data
+package com.wolfyscript.customcrafting.core.recipe.evaluation
 
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipe
 import com.wolfyscript.customcrafting.core.recipe.RecipeReference
 
-class RecipeEvaluationResultImpl<D: RecipeEvaluationResult.Data, T: CustomRecipe<*, *>>(
+internal class RecipeEvaluationResultImpl<D: RecipeEvaluationResult.Data, T: CustomRecipe<*, *>>(
     override val recipe: RecipeReference<T>,
     override val data: D
 ) : RecipeEvaluationResult<D, T> {
@@ -25,7 +25,7 @@ class RecipeEvaluationResultImpl<D: RecipeEvaluationResult.Data, T: CustomRecipe
     }
 }
 
-open class DefaultDataImpl(val ingredients: Array<IngredientData?>) : RecipeEvaluationResult.Data {
+internal open class DefaultDataImpl(val ingredients: Array<IngredientData?>) : RecipeEvaluationResult.Data {
 
     override val nonNullIngredients: List<IngredientData> by lazy { ingredients.filterNotNull() }
 
@@ -36,12 +36,12 @@ open class DefaultDataImpl(val ingredients: Array<IngredientData?>) : RecipeEval
 
 }
 
-class RepairingRecipeDataImpl(
+internal class RepairingRecipeDataImpl(
     override var itemRepairCost: Int?,
     ingredients: Array<IngredientData?>
 ) : DefaultDataImpl(ingredients), RecipeEvaluationResult.RepairingRecipeData
 
-class GrindingRecipeDataImpl(
+internal class GrindingRecipeDataImpl(
     ingredients: Array<IngredientData?>,
     override var penalty: Int = 0,
     override var yield: Int = 0,

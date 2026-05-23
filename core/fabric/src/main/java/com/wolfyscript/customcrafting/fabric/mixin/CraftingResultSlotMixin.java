@@ -6,7 +6,7 @@ import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.PlayerWrappersKt;
 import com.wolfyscript.scafall.wrappers.minecraft.PositionWrappersKt;

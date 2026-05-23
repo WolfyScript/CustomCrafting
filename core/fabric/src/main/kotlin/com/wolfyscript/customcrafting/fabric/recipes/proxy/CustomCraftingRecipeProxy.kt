@@ -8,7 +8,7 @@ import com.wolfyscript.customcrafting.core.recipe.CraftingFormula
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeReference
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResultImpl
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.ingredient.toShapedRecipePattern
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState
 import com.wolfyscript.customcrafting.core.util.toTemplate
@@ -27,7 +27,7 @@ private fun RecipeReference<CustomRecipeCrafting>.matches(recipeInput: CraftingI
     val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
     val result = recipe.evaluate(data, context) ?: return false
-    recipeInput.resultInfo = RecipeEvaluationResultImpl(this, result)
+    recipeInput.resultInfo = RecipeEvaluationResult.of(this, result)
     return true
 }
 

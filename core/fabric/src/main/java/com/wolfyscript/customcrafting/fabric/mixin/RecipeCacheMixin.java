@@ -3,7 +3,7 @@ package com.wolfyscript.customcrafting.fabric.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting;
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult;
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;

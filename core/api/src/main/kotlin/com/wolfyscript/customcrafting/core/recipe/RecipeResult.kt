@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.core.recipe
 
 import com.wolfyscript.customcrafting.core.recipe.action.ResultAction
-import com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.modifier.RecipeItemModifier
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
@@ -60,7 +60,7 @@ interface RecipeResult {
     val bulkActions: List<ResultAction>
 
     /**
-     * Computes the result of the recipe based on the cached [com.wolfyscript.customcrafting.core.recipe.data.RecipeEvaluationResult] and [com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext]
+     * Computes the result of the recipe based on the cached [RecipeEvaluationResult] and [com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext]
      *
      * The [random] may be used to create consistent output based on the given seed (stored on player or tile-entity).
      * A new seed is picked whenever the result is successfully collected/produced (e.g. stored in furnace result slot, picked up from inventory).
