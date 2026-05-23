@@ -1,6 +1,8 @@
 package com.wolfyscript.customcrafting.core.sentry
 
 import com.wolfyscript.customcrafting.core.util.CustomCraftingProperties
+import com.wolfyscript.scafall.platform.PlatformType
+import io.sentry.ScopeCallback
 import io.sentry.Sentry
 import io.sentry.SentryOptions
 import io.sentry.SystemOutLogger
@@ -8,13 +10,27 @@ import io.sentry.log4j2.SentryAppender
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.core.LoggerContext
 
+fun setupSentry(
+    minecraftVersion: String,
+    platformType: PlatformType,
+    additionalScopeConfig: ScopeCallback? = null
+) {
+    initSentry()
+
+    Sentry.configureScope { scope ->
+        scope.setTag("minecraft.version", minecraftVersion)
+        scope.setTag("platform.type", platformType.name)
+        additionalScopeConfig?.run(scope)
+    }
+}
+
 /**
  * Initiates the Sentry SDK and inserts the [SentryAppender] into the Log4J logger.
  *
  * The Log4J Appender is necessary to catch errors that are not caught with try-catch or other means.
  * This way we can catch errors very early on in the plugin/mod lifecycle.
  */
-fun initSentry() {
+private fun initSentry() {
     val sentryAppender = SentryAppender.createAppender(
         "customcrafting:sentry",
         null,

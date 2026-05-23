@@ -1,9 +1,9 @@
 package com.wolfyscript.customcrafting.spigot
 
 import com.wolfyscript.customcrafting.CustomCraftingBoostrap
-import com.wolfyscript.customcrafting.core.sentry.initSentry
+import com.wolfyscript.customcrafting.core.sentry.setupSentry
 import com.wolfyscript.scafall.loader.ScafallLoader
-import io.sentry.Sentry
+import com.wolfyscript.scafall.platform.PlatformType
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.LoggerFactory
@@ -20,9 +20,10 @@ class SpigotLoaderPlugin : JavaPlugin() {
     }
 
     init {
-        initSentry()
-
-        Sentry.configureScope { scope ->
+        setupSentry(
+            Bukkit.getMinecraftVersion(),
+            PlatformType.PAPER
+        ) { scope ->
             scope.setTag("bukkit.version", Bukkit.getVersion())
         }
     }

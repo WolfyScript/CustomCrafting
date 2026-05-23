@@ -2,11 +2,11 @@ package com.wolfyscript.customcrafting.fabric
 
 import com.wolfyscript.customcrafting.CustomCraftingBoostrap
 import com.wolfyscript.customcrafting.core.commands.CCCommands
-import com.wolfyscript.customcrafting.core.sentry.initSentry
+import com.wolfyscript.customcrafting.core.sentry.setupSentry
 import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.loader.ScafallLoader
-import io.sentry.Sentry
+import com.wolfyscript.scafall.platform.PlatformType
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
@@ -24,11 +24,10 @@ class CustomCraftingFabricMod : ModInitializer {
     private lateinit var customCrafting: CustomCraftingFabric
 
     init {
-        initSentry()
-
-        Sentry.configureScope {
-            it.setTag("minecraft.version", FabricLoader.getInstance().rawGameVersion)
-        }
+        setupSentry(
+            FabricLoader.getInstance().rawGameVersion,
+            PlatformType.FABRIC
+        )
 
         ScafallProvider.whenReady { // Load order isn't deterministic, so need to make sure scafall is available!
             customCrafting = boostrap.loadModule { CustomCraftingFabric(logger) }
