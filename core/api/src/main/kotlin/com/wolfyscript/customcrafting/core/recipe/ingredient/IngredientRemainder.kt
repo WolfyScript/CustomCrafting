@@ -78,8 +78,8 @@ interface IngredientRemainder {
 
 }
 
-fun IngredientRemainder.Default.Companion.of(ignore: RemainsIgnoreOptions) =
+fun IngredientRemainder.Default.Companion.of(ignore: RemainsIgnoreOptions): IngredientRemainder.Default =
     IngredientRemainderDefaultImpl(ignore)
 
-fun IngredientRemainder.Custom.Companion.of(ignore: RemainsIgnoreOptions, remainder: ItemStackRef) =
+fun IngredientRemainder.Custom.Companion.of(ignore: RemainsIgnoreOptions, remainder: ItemStackRef): IngredientRemainder.Custom =
     IngredientRemainderCustomImpl(ignore, remainder)

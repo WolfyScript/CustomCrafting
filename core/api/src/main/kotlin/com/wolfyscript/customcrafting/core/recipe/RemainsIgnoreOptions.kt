@@ -6,7 +6,7 @@ interface RemainsIgnoreOptions {
 
     companion object {
 
-        fun of(vanilla: Boolean = false, others: Boolean = false) =
+        fun of(vanilla: Boolean = false, others: Boolean = false): RemainsIgnoreOptions =
             RemainsIgnoreOptionsImpl(vanilla, others)
 
     }
