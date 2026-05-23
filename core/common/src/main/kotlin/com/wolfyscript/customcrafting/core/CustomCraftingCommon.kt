@@ -17,6 +17,7 @@ abstract class CustomCraftingCommon : BasicModule<CustomCraftingServer, Client>(
 
     init {
         initSentry()
+        registries.initRegistries()
     }
 
     protected fun initSentry() {

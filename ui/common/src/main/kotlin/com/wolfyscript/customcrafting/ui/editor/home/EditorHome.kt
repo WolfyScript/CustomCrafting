@@ -7,6 +7,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.wolfyscript.customcrafting.ui.editor.Paths
 import com.wolfyscript.customcrafting.core.util.customCrafting
 import com.wolfyscript.scafall.identifier.Key
+import com.wolfyscript.scafall.wrappers.minecraft.snapshot
 import com.wolfyscript.viewportl.gui.compose.layout.Alignment.CenterVertically
 import com.wolfyscript.viewportl.gui.compose.layout.Arrangement
 import com.wolfyscript.viewportl.gui.compose.layout.slots
@@ -18,6 +19,7 @@ import com.wolfyscript.viewportl.gui.elements.Icon
 import com.wolfyscript.viewportl.gui.elements.NavKey
 import com.wolfyscript.viewportl.gui.elements.Row
 import com.wolfyscript.viewportl.gui.model.store
+import net.minecraft.world.item.ItemStack
 
 @Composable
 internal fun EditorHome(backstack: SnapshotStateList<NavKey>) {
@@ -34,7 +36,7 @@ internal fun EditorHome(backstack: SnapshotStateList<NavKey>) {
                 editorStore.selectRecipeType(recipeType)
                 backstack.add(Paths.RecipeEditor(recipeType))
             }) {
-                Icon(stack = recipeType.icon)
+                Icon(stack = ItemStack(recipeType.icon).snapshot())
             }
         }
     }
