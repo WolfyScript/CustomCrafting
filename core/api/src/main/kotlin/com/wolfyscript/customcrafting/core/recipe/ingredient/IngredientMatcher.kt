@@ -42,7 +42,18 @@ interface IngredientMatcher {
      * Checks if the item type and the components match.
      */
     interface Exact : IngredientMatcher {
-        companion object
+
+        companion object {
+
+            /**
+             * Creates a new instance of the exact [IngredientMatcher].
+             *
+             * @return a new [Exact] [IngredientMatcher] instance.
+             */
+            fun of(): Exact = IngredientMatcherExactImpl()
+
+        }
+
     }
 
     /**
@@ -50,7 +61,23 @@ interface IngredientMatcher {
      * Additionally, checks if the item contains the specified components [mustContain].
      */
     interface Item : IngredientMatcher {
-        companion object
+
+        companion object {
+
+            /**
+             * Creates a new instance of the item [IngredientMatcher].
+             *
+             * @param mustContain a set of keys that the item must contain in its components.
+             * @param mustNotContain a set of keys that the item must not contain in its components.
+             *
+             * @return a new [Item] [IngredientMatcher] instance.
+             */
+            fun of(
+                mustContain: Set<Key>,
+                mustNotContain: Set<Key>,
+            ) : Item = IngredientMatcherItemImpl(mustContain, mustNotContain)
+
+        }
 
         /**
          * The components the stack must contain to pass the check.
@@ -69,10 +96,3 @@ interface IngredientMatcher {
     }
 
 }
-
-fun IngredientMatcher.Exact.Companion.of() : IngredientMatcher.Exact = IngredientMatcherExactImpl()
-
-fun IngredientMatcher.Item.Companion.of(
-    mustContain: Set<Key>,
-    mustNotContain: Set<Key>,
-) : IngredientMatcher.Item = IngredientMatcherItemImpl(mustContain, mustNotContain)

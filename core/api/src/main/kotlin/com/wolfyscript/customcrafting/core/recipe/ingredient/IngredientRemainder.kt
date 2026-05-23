@@ -44,7 +44,12 @@ interface IngredientRemainder {
      * Uses the vanilla remainders or modded/plugin remainders, if available and not ignored.
      */
     interface Default : IngredientRemainder {
-        companion object
+
+        companion object {
+
+            fun of(ignore: RemainsIgnoreOptions): Default = IngredientRemainderDefaultImpl(ignore)
+
+        }
 
         /**
          * Specifies which remainders should be ignored.
@@ -59,7 +64,12 @@ interface IngredientRemainder {
      * Uses a custom remainder and replaces the existing remainders, if not ignored.
      */
     interface Custom : IngredientRemainder {
-        companion object
+
+        companion object {
+
+            fun of(ignore: RemainsIgnoreOptions, remainder: ItemStackRef): Custom = IngredientRemainderCustomImpl(ignore, remainder)
+
+        }
 
         /**
          * Specifies which remainders should be ignored.
@@ -77,9 +87,3 @@ interface IngredientRemainder {
     }
 
 }
-
-fun IngredientRemainder.Default.Companion.of(ignore: RemainsIgnoreOptions): IngredientRemainder.Default =
-    IngredientRemainderDefaultImpl(ignore)
-
-fun IngredientRemainder.Custom.Companion.of(ignore: RemainsIgnoreOptions, remainder: ItemStackRef): IngredientRemainder.Custom =
-    IngredientRemainderCustomImpl(ignore, remainder)
