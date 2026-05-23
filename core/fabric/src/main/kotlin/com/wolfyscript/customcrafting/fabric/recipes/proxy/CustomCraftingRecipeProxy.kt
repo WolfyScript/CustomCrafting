@@ -11,7 +11,7 @@ import com.wolfyscript.customcrafting.core.recipe.RecipeReference
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.ingredient.toShapedRecipePattern
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState
-import com.wolfyscript.customcrafting.core.util.toTemplate
+import com.wolfyscript.scafall.items.toTemplate
 import com.wolfyscript.scafall.wrappers.minecraft.unwrap
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
