@@ -17,7 +17,7 @@ minecraftDockerRun {
     // By default the container is removed when stopped.
     // That makes it impossible to know why a container may fail to start.
     // In that case disable it to debug and delete container manually.
-//    clean.set(false)
+    clean.set(false)
     env.putAll(
         mapOf(
             // Limit each container memory
@@ -35,7 +35,8 @@ minecraftDockerRun {
         "2",
         // allow console interactivity (docker attach)
         "-it",
-        "--userns=keep-id"
+        "--userns=keep-id",
+        "--replace"
     )
     ports.set(listOf(debugPortMapping))
 }
