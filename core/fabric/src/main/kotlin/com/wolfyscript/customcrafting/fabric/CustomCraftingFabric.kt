@@ -1,9 +1,8 @@
-package com.wolfyscript.customcrafting.fabric.api
+package com.wolfyscript.customcrafting.fabric
 
 import com.wolfyscript.customcrafting.core.CustomCraftingCommon
 import com.wolfyscript.customcrafting.core.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.core.configuration.ConfigurationManagerImpl
-import com.wolfyscript.customcrafting.fabric.CustomCraftingServerFabric
 import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.identifier.Key
 import net.fabricmc.loader.api.FabricLoader
@@ -25,7 +24,6 @@ class CustomCraftingFabric(
 
     fun initServer(minecraftServer: MinecraftServer) {
         server = CustomCraftingServerFabric(this, minecraftServer)
-        registries.initRegistries()
     }
 
     override fun onInit() {

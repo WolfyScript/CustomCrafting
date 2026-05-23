@@ -1,7 +1,7 @@
 package com.wolfyscript.customcrafting.fabric.inject
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.fabric.api.CustomCraftingFabric
+import com.wolfyscript.customcrafting.fabric.CustomCraftingFabric
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomBlastingRecipeProxy
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomCampfireRecipeProxy
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomRecipeShapedProxy
