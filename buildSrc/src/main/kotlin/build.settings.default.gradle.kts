@@ -46,7 +46,7 @@ tasks {
 }
 
 dependencies {
-    api(libs.scafall.api)
+    api(libs.scafall.core)
     implementation(sharedLibs.bundles.jetbrains)
 
     compileOnly(sharedLibs.inject.guice)

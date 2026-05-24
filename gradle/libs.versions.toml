@@ -16,8 +16,9 @@ bstats = "3.0.0"
 [libraries]
 viewportl = { module = "com.wolfyscript.viewportl:viewportl-api", version.ref = "viewportl" }
 
-scafall-api = { module = "com.wolfyscript.scafall:api", version.ref = "scafall" }
-scafall-spigot = { module = "com.wolfyscript.scafall.spigot:spigot-api", version.ref = "scafall" }
+scafall-core = { module = "com.wolfyscript.scafall.core:core", version.ref = "scafall" }
+scafall-wrappers-spigot = { module = "com.wolfyscript.scafall.wrappers:wrappers-spigot", version.ref = "scafall" }
+
 scafall-sponge-impl = { module = "com.wolfyscript.scafall.sponge:sponge", version.ref = "scafall" }
 
 adventure-platform-bukkit = { module = "net.kyori:adventure-platform-bukkit", version.ref = "adventure-platform-api" }
