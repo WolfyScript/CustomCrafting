@@ -4,6 +4,7 @@ import com.wolfyscript.customcrafting.core.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.core.factories.Factories
 import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistries
 import com.wolfyscript.customcrafting.core.server.CustomCraftingServer
+import com.wolfyscript.scafall.core.ModIdentifier
 import com.wolfyscript.scafall.loader.module.Client
 import com.wolfyscript.scafall.loader.module.Module
 import org.slf4j.Logger
@@ -27,5 +28,7 @@ interface CustomCrafting : Module<CustomCraftingServer, Client> {
     val factories: Factories
 
     val logger: Logger
+
+    val identifier: ModIdentifier
 
 }

@@ -69,7 +69,7 @@ object RecipesCommand {
     }
 
     private fun reload(customCrafting: CustomCrafting): Int {
-        ScafallProvider.get().scheduler.async(ScafallProvider.get().modInfo) {
+        ScafallProvider.get().scheduler.async(customCrafting.identifier) {
             customCrafting.server!!.resourceManager.resourceLoader.loadResources()
         }
         return SUCCESS_RESULT

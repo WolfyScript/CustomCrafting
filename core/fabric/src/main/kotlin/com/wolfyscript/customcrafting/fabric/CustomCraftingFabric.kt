@@ -4,6 +4,7 @@ import com.wolfyscript.customcrafting.core.CustomCraftingCommon
 import com.wolfyscript.customcrafting.core.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.core.configuration.ConfigurationManagerImpl
 import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.scafall.core.ModIdentifier
 import com.wolfyscript.scafall.identifier.Key
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.server.MinecraftServer
@@ -12,6 +13,7 @@ import java.io.File
 
 class CustomCraftingFabric(
     override val logger: Logger,
+    override val identifier: ModIdentifier,
 ) : CustomCraftingCommon() {
 
     override val configurationManager: ConfigurationManager
