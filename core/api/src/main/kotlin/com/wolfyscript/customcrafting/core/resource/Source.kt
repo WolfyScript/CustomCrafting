@@ -30,8 +30,16 @@ interface Source {
      */
     fun delete(type: DataType<Any>, key: Key): Result<Boolean>
 
+    /**
+     * Filters out resource keys that should not be loaded or saved.
+     */
     interface Filter {
 
+        /**
+         * Checks if the key should be accepted.
+         *
+         * @return True if the key should be accepted; false otherwise.
+         */
         fun accepts(key: Key) : Boolean
 
     }

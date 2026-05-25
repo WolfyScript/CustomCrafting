@@ -9,6 +9,11 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.permissions.LevelBasedPermissionSet
 import net.minecraft.world.phys.Vec2
 
+/**
+ * Represents a result action that executes a list of commands.
+ *
+ * @property commands The list of commands to be executed.
+ */
 internal class CommandResultAction(
     val commands: List<String>,
 ) : ResultAction {
