@@ -14,6 +14,16 @@ interface RecipeResult {
 
     companion object {
 
+        /**
+         * Creates a new [RecipeResult] instance with the specified choices, modifiers, and actions.
+         *
+         * @param choices The set of available choices for the recipe result.
+         * @param modifier The modifier to apply to the resulting item.
+         * @param actions The list of actions to perform when the result is collected.
+         * @param bulkActions The list of actions to perform when the result is collected in bulk.
+         * @param alwaysKeepPrevious Whether to keep the previous result.
+         * @return A new [RecipeResult] instance.
+         */
         fun of(
             choices: RecipeChoices,
             modifier: RecipeItemModifier,
@@ -50,7 +60,7 @@ interface RecipeResult {
     val modifier: RecipeItemModifier
 
     /**
-     * The actions, to perform after the recipe is completed.
+     * A list of actions to be performed when the recipe result is collected.
      */
     val actions: List<ResultAction>
 

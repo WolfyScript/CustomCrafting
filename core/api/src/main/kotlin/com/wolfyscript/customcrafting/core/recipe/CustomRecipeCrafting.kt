@@ -16,8 +16,23 @@ interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, R
 
     companion object {
 
+        /**
+         * Creates a new [CustomRecipeCrafting] instance.
+         *
+         * @param group The group name for the recipe.
+         * @param priority The priority of the recipe.
+         * @param priority The priority of the recipe.
+         * @param conditions The conditions that must be required for the recipe to be evaluated.
+         * @param formula The formula used to evaluate the recipe.
+         * @param result The result of the recipe evaluation.
+         * @return A new [CustomRecipeCrafting] instance.
+         */
         fun of(
-            group: String, priority: Int, conditions: RecipeConditions, formula: CraftingFormula, result: RecipeResult,
+            group: String,
+            priority: Int,
+            conditions: RecipeConditions,
+            formula: CraftingFormula,
+            result: RecipeResult,
         ): CustomRecipeCrafting {
             return CustomRecipeCraftingImpl(priority, conditions, formula, result)
         }

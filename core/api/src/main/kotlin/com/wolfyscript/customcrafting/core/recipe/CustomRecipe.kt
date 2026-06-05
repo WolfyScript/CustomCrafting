@@ -5,15 +5,20 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
 import com.fasterxml.jackson.databind.annotation.JsonTypeResolver
 import com.wolfyscript.customcrafting.core.recipe.condition.RecipeConditions
+import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
-import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+/**
+ * Represents a custom recipe that can be evaluated and executed within the CustomCrafting system.
+ *
+ * @param I The type of input required for this recipe
+ * @param D The type of data that will be produced upon successful evaluation
+ */
 @JsonTypeResolver(RecipeTypeResolver::class)
 @JsonTypeIdResolver(RecipeTypeIdResolver::class)
 @JsonPropertyOrder("type")
-interface CustomRecipe<I: RecipeInput, D: RecipeEvaluationResult.Data> {
+interface CustomRecipe<I : RecipeInput, D : RecipeEvaluationResult.Data> {
 
     /**
      * The type of the recipe.
@@ -31,6 +36,10 @@ interface CustomRecipe<I: RecipeInput, D: RecipeEvaluationResult.Data> {
      */
     val conditions: RecipeConditions
 
+    /**
+     * The group of the recipe.
+     * Recipes with the same group are considered to be variants of each other.
+     */
     val group: String
 
     /**

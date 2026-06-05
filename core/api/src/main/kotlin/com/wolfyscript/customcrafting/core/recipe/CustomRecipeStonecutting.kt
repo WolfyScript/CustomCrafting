@@ -9,8 +9,14 @@ interface CustomRecipeStonecutting : CustomRecipe<RecipeInput.SingleSlotRecipeIn
     override val type: RecipeType<CustomRecipeStonecutting>
         get() = RecipeTypes.stonecutting.resolveOrThrow()
 
+    /**
+     * The input ingredient required for this stonecutting recipe.
+     */
     val source: Ingredient
 
+    /**
+     * The result produced by this stonecutting recipe, encompassing output choices, modifiers, and actions.
+     */
     val result: RecipeResult
 
     /**

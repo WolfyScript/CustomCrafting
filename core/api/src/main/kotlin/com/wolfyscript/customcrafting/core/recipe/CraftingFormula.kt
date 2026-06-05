@@ -1,11 +1,6 @@
 package com.wolfyscript.customcrafting.core.recipe
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonPropertyOrder
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.fasterxml.jackson.annotation.JsonTypeName
+import com.fasterxml.jackson.annotation.*
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
@@ -19,6 +14,13 @@ import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 @JsonPropertyOrder(value = ["type"])
 interface CraftingFormula {
 
+    /**
+     * Evaluates the crafting formula based on the given input and recipe crafting.
+     *
+     * @param input The input for the recipe evaluation.
+     * @param recipeCrafting The custom recipe to be used for evaluation.
+     * @return The data containing the result of the recipe evaluation, or null if the evaluation fails.
+     */
     fun evaluate(
         input: RecipeInput.CraftingRecipeInput,
         recipeCrafting: CustomRecipeCrafting,
@@ -37,6 +39,10 @@ interface CraftingFormula {
 
         }
 
+        /**
+         * A list of ingredients required for the crafting formula.
+         * The order of ingredients does not matter.
+         */
         val ingredients: List<Ingredient>
 
     }
@@ -62,8 +68,14 @@ interface CraftingFormula {
 
         }
 
+        /**
+         * A list of ingredients in the crafting formula in order of their appearance in the shape.
+         */
         val ingredients: List<Ingredient>
 
+        /**
+         * The shape of this crafting formula.
+         */
         val shape: Shape
 
         /**

@@ -26,6 +26,9 @@ interface CustomRecipeSmithing : CustomRecipe<RecipeInput.SmithingRecipeInput, R
      */
     val addition: Ingredient?
 
+    /**
+     * The result of the smithing recipe, including the modifiers to apply and actions to be performed.
+     */
     val result: RecipeResult
 
     /**
