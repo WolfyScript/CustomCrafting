@@ -7,6 +7,7 @@ import com.wolfyscript.customcrafting.core.recipe.CustomRecipeGrinding
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.procedure.ProcedureDamageCombine
 import com.wolfyscript.customcrafting.core.recipe.procedure.ProcedureEnchantRemoval
@@ -50,6 +51,7 @@ sealed interface ProcessGrinding {
     }
 
     @JsonTypeName("default")
+    @JsonDeserialize(`as` = ProcessGrindingDefaultImpl::class)
     interface DefaultProcessGrinding : ProcessGrinding{
 
         /**

@@ -2,8 +2,10 @@ package com.wolfyscript.customcrafting.core.recipe
 
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 
+@JsonDeserialize(`as` = CustomRecipeStonecuttingImpl::class)
 interface CustomRecipeStonecutting : CustomRecipe<RecipeInput.SingleSlotRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeStonecutting>

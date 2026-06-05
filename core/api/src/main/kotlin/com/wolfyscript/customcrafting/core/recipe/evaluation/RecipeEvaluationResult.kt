@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.core.recipe.evaluation
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipe
 import com.wolfyscript.customcrafting.core.recipe.RecipeReference
 
@@ -8,6 +9,7 @@ import com.wolfyscript.customcrafting.core.recipe.RecipeReference
  *
  * Some types (like [RepairingRecipeData]) may expand it with type-specific data.
  */
+@JsonDeserialize(`as` = RecipeEvaluationResultImpl::class)
 interface RecipeEvaluationResult<D: RecipeEvaluationResult.Data, T: CustomRecipe<*, *>> {
 
     companion object {

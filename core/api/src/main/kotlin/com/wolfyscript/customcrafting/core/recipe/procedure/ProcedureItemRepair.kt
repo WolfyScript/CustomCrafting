@@ -1,8 +1,11 @@
 package com.wolfyscript.customcrafting.core.recipe.procedure
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+
 /**
  * Specifies how a base damageable item is repaired using non-damageable stackable addition items.
  */
+@JsonDeserialize(`as` = ProcedureItemRepairImpl::class)
 interface ProcedureItemRepair {
 
     /**

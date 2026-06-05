@@ -1,8 +1,11 @@
 package com.wolfyscript.customcrafting.core.recipe.procedure
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+
 /**
  * Specifies how the name from the Anvil menu is applied to a result item.
  */
+@JsonDeserialize(`as` = ProcedureRenameImpl::class)
 interface ProcedureRename {
 
     /**

@@ -1,8 +1,11 @@
 package com.wolfyscript.customcrafting.core.recipe.procedure
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+
 /**
  * Specifies how the repair cost is applied to a result item.
  */
+@JsonDeserialize(`as` = ProcedureRepairCostImpl::class)
 interface ProcedureRepairCost {
 
     /**

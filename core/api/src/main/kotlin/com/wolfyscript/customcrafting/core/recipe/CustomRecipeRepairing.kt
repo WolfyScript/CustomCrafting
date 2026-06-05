@@ -3,12 +3,14 @@ package com.wolfyscript.customcrafting.core.recipe
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 import com.wolfyscript.customcrafting.core.recipe.process.ProcessRepairing
 
 /**
  * Recipe used to repair items in the Anvil
  */
+@JsonDeserialize(`as` = CustomRecipeRepairingImpl::class)
 interface CustomRecipeRepairing : CustomRecipe<RecipeInput.RepairingRecipeInput, RecipeEvaluationResult.RepairingRecipeData> {
 
     override val type: RecipeType<CustomRecipeRepairing>

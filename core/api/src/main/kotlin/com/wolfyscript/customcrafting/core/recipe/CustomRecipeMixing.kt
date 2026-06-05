@@ -2,11 +2,13 @@ package com.wolfyscript.customcrafting.core.recipe
 
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 
 /**
  * Recipe used to mix items in the Cauldron
  */
+@JsonDeserialize(`as` = CustomRecipeMixingImpl::class)
 interface CustomRecipeMixing : CustomRecipe<RecipeInput.MixingRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeMixing>
@@ -24,6 +26,7 @@ interface CustomRecipeMixing : CustomRecipe<RecipeInput.MixingRecipeInput, Recip
 
     val campfireRequirement: CampfireRequirement?
 
+    @JsonDeserialize(`as` = CustomRecipeMixingImpl.FluidRequirementImpl::class)
     interface FluidRequirement {
 
         val lava: Boolean
@@ -34,6 +37,7 @@ interface CustomRecipeMixing : CustomRecipe<RecipeInput.MixingRecipeInput, Recip
 
     }
 
+    @JsonDeserialize(`as` = CustomRecipeMixingImpl.CampfireRequirementImpl::class)
     interface CampfireRequirement {
 
         val soulCampfire: Boolean

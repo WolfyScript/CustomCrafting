@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.scafall.config.jackson.RegistryKeyTypeIdResolver
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
@@ -12,6 +13,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 /**
  * Modifies the result using the data from the specified ingredients in the recipe.
  */
+@JsonDeserialize(`as` = TransformationImpl::class)
 interface Transformation {
 
     companion object {

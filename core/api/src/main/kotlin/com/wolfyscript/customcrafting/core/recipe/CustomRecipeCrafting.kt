@@ -3,6 +3,7 @@ package com.wolfyscript.customcrafting.core.recipe
 import com.wolfyscript.customcrafting.core.recipe.condition.RecipeConditions
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
@@ -12,6 +13,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
  * The [formula] defines how the recipe is evaluated. (Shapeless or Shaped)
  *
  */
+@JsonDeserialize(`as` = CustomRecipeCraftingImpl::class)
 interface CustomRecipeCrafting : CustomRecipe<RecipeInput.CraftingRecipeInput, RecipeEvaluationResult.Data> {
 
     companion object {

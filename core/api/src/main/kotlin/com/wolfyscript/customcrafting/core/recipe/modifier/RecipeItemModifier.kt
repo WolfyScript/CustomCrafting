@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.core.recipe.modifier
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
@@ -7,6 +8,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 /**
  * Modifies a target item with transformations using information about the recipe ingredients.
  */
+@JsonDeserialize(`as` = RecipeItemModifierImpl::class)
 interface RecipeItemModifier {
 
     companion object {

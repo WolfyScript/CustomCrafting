@@ -1,12 +1,14 @@
 package com.wolfyscript.customcrafting.core.recipe.procedure
 
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
 /**
  * Controls how the durability of two items is combined and applied to the resulting stack.
  *
  * If the addition is not a damageable item see [ProcedureItemRepair]
  */
+@JsonDeserialize(`as` = ProcedureDamageCombineImpl::class)
 interface ProcedureDamageCombine {
 
     /**

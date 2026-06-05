@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.core.recipe.ingredient
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeChoices
 import com.wolfyscript.customcrafting.core.recipe.RemainsIgnoreOptions
@@ -7,6 +8,7 @@ import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationRes
 import com.wolfyscript.scafall.items.ItemStackRef
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
+@JsonDeserialize(`as` = IngredientImpl::class)
 interface Ingredient {
 
     companion object {

@@ -7,6 +7,7 @@ import com.wolfyscript.customcrafting.core.recipe.CustomRecipeRepairing
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.RecipeResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.procedure.ProcedureDamageCombine
 import com.wolfyscript.customcrafting.core.recipe.procedure.ProcedureEnchanting
@@ -41,6 +42,7 @@ sealed interface ProcessRepairing {
      * Always uses the specified result and computes the resulting stack based on the data and context.
      */
     @JsonTypeName("fixed_result")
+    @JsonDeserialize(`as` = ProcessRepairingFixedResultImpl::class)
     interface FixedResult : ProcessRepairing {
 
         /**
@@ -60,6 +62,7 @@ sealed interface ProcessRepairing {
      * Tries to mirror the vanilla logic of the anvil as much as possible, while providing lots of customization options.
      */
     @JsonTypeName("custom")
+    @JsonDeserialize(`as` = ProcessRepairingCustomImpl::class)
     interface CustomProcessRepairing : ProcessRepairing {
 
         /**

@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.core.recipe
 
 import com.fasterxml.jackson.annotation.JsonValue
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistryTypes
 import net.minecraft.world.item.Item
 
@@ -9,6 +10,7 @@ import net.minecraft.world.item.Item
  *
  * @param T the type of custom recipe this type represents.
  */
+@JsonDeserialize(`as` = RecipeTypeImpl::class)
 interface RecipeType<T: CustomRecipe<*,*>> {
 
     /**

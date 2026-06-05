@@ -2,7 +2,9 @@ package com.wolfyscript.customcrafting.core.recipe.procedure
 
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
+@JsonDeserialize(`as` = ProcedureEnchantRemovalImpl::class)
 interface ProcedureEnchantRemoval {
 
     /**
@@ -19,6 +21,7 @@ interface ProcedureEnchantRemoval {
      */
     val additionEnchants: IngredientEnchantRemovalProcedure
 
+    @JsonDeserialize(`as` = ProcedureEnchantRemovalIngredientImpl::class)
     interface IngredientEnchantRemovalProcedure {
 
         /**

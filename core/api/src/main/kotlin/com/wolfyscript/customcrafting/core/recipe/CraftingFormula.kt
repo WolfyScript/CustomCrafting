@@ -2,6 +2,7 @@ package com.wolfyscript.customcrafting.core.recipe
 
 import com.fasterxml.jackson.annotation.*
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 
@@ -30,6 +31,7 @@ interface CraftingFormula {
      * A crafting formula with a list of ingredients that can be arranged in any order
      */
     @JsonTypeName("shapeless")
+    @JsonDeserialize(`as` = CraftingFormulaShapelessImpl::class)
     interface Shapeless : CraftingFormula {
 
         companion object {
@@ -53,6 +55,7 @@ interface CraftingFormula {
      * The shape may allow ingredients to be arranged mirrored (see [ShapeSymmetry]).
      */
     @JsonTypeName("shaped")
+    @JsonDeserialize(`as` = CraftingFormulaShapedImpl::class)
     interface Shaped : CraftingFormula {
 
         companion object {
@@ -81,6 +84,7 @@ interface CraftingFormula {
         /**
          * Defines how the shape of the crafting grid may be mirrored.
          */
+        @JsonDeserialize(`as` = CraftingFormulaShapedImpl.ShapeSymmetryImpl::class)
         interface ShapeSymmetry {
 
             companion object {
@@ -118,6 +122,7 @@ interface CraftingFormula {
          *
          * Pre-calculates the [variations] of the shape based on the [symmetry] upon initialization.
          */
+        @JsonDeserialize(`as` = CraftingFormulaShapedImpl.ShapeImpl::class)
         interface Shape {
 
             companion object {

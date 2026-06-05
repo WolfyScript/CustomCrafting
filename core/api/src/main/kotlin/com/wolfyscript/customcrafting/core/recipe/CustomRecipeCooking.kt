@@ -3,6 +3,7 @@ package com.wolfyscript.customcrafting.core.recipe
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
@@ -14,6 +15,7 @@ import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
  * This interface defines the contract for recipes that involve cooking items,
  * such as furnace recipes that transform inputs into outputs over time.
  */
+@JsonDeserialize(`as` = CustomRecipeCookingImpl::class)
 interface CustomRecipeCooking : CustomRecipe<RecipeInput.SingleSlotRecipeInput, RecipeEvaluationResult.Data> {
 
     /**
@@ -72,15 +74,19 @@ interface CustomRecipeCooking : CustomRecipe<RecipeInput.SingleSlotRecipeInput, 
         fun evaluate(input: RecipeInput.SingleSlotRecipeInput, recipe: CustomRecipeCooking, context: EvaluationContext): RecipeEvaluationResult.Data?
 
         @JsonTypeName("blasting")
+        @JsonDeserialize(`as` = CustomRecipeCookingImpl.WorkstationProcessingBlasting::class)
         interface Blasting : WorkstationProcessing
 
         @JsonTypeName("smoking")
+        @JsonDeserialize(`as` = CustomRecipeCookingImpl.WorkstationProcessingSmoking::class)
         interface Smoking : WorkstationProcessing
 
         @JsonTypeName("smelting")
+        @JsonDeserialize(`as` = CustomRecipeCookingImpl.WorkstationProcessingSmelting::class)
         interface Smelting : WorkstationProcessing
 
         @JsonTypeName("campfire")
+        @JsonDeserialize(`as` = CustomRecipeCookingImpl.WorkstationProcessingCampfire::class)
         interface Campfire : WorkstationProcessing {
 
             /**

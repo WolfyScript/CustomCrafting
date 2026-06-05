@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.core.recipe.procedure
 
 import com.wolfyscript.scafall.wrappers.world.entity.ScafallPlayer
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 
 /**
@@ -14,6 +15,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
  * - addition is a non-damageable item and contains enchantments (all options apply)
  *
  */
+@JsonDeserialize(`as` = ProcedureEnchantingImpl::class)
 interface ProcedureEnchanting {
 
     /**

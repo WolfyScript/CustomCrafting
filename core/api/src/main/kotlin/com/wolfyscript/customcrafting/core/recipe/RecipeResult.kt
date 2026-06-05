@@ -1,5 +1,6 @@
 package com.wolfyscript.customcrafting.core.recipe
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.action.ResultAction
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
@@ -10,6 +11,7 @@ import kotlin.random.Random
 /**
  * The result of a recipe with modifiers and actions.
  */
+@JsonDeserialize(`as` = RecipeResultImpl::class)
 interface RecipeResult {
 
     companion object {

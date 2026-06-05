@@ -2,11 +2,13 @@ package com.wolfyscript.customcrafting.core.recipe
 
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.scafall.identifier.Key
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.scafall.items.ItemStackRef
 
 /**
  * A list of ItemStacks and/or Tags that an [com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient] accepts or a [RecipeResult] can choose from.
  */
+@JsonDeserialize(`as` = RecipeChoicesImpl::class)
 interface RecipeChoices {
 
     companion object {

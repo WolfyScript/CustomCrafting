@@ -2,9 +2,11 @@ package com.wolfyscript.customcrafting.core.recipe
 
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 import com.wolfyscript.scafall.identifier.Key
 
+@JsonDeserialize(`as` = CustomRecipeSmithingImpl::class)
 interface CustomRecipeSmithing : CustomRecipe<RecipeInput.SmithingRecipeInput, RecipeEvaluationResult.Data> {
 
     override val type: RecipeType<CustomRecipeSmithing>
@@ -38,6 +40,7 @@ interface CustomRecipeSmithing : CustomRecipe<RecipeInput.SmithingRecipeInput, R
      */
     val copyOptions: CopyOptions?
 
+    @JsonDeserialize(`as` = CustomRecipeSmithingImpl.CopyOptionsImpl::class)
     interface CopyOptions {
 
         /**

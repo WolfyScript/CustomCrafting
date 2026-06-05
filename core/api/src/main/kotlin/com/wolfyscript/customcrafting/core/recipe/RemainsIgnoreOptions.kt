@@ -1,7 +1,9 @@
 package com.wolfyscript.customcrafting.core.recipe
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.wolfyscript.customcrafting.core.recipe.ingredient.RemainsIgnoreOptionsImpl
 
+@JsonDeserialize(`as` = RemainsIgnoreOptionsImpl::class)
 interface RemainsIgnoreOptions {
 
     companion object {
