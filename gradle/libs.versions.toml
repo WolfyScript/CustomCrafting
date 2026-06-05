@@ -1,7 +1,7 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-scafall = "1.0-alpha.0.5-SNAPSHOT"
+scafall = "1.0-alpha.0.5"
 viewportl = "alpha0.1.0.0-SNAPSHOT"
 adventure-platform-api = "4.1.0"
 
