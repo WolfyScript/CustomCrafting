@@ -50,14 +50,14 @@ internal class DirectorySource(
         accept: (value: LoadedObject<T>) -> Unit,
     ) {
         assureDir()
-        readFiles(directory) { relative: Path, file: Path, attrs: BasicFileAttributes ->
+        readFiles(type.resourceSubDir(directory)) { relative: Path, file: Path, attrs: BasicFileAttributes ->
             val injectableValues = InjectableValues.Std().apply {
                 addValue("customCrafting", customCrafting)
                 addValue(CustomCrafting::class.java, customCrafting)
             }
 
             val key = relative.toKey(Key.CUSTOMCRAFTING_NAMESPACE)
-            customCrafting.logger.info("Loading recipe: $key")
+            customCrafting.logger.info("Loading ${type.id}: $key")
             try {
                 val value = customCrafting.server!!.resourceManager.jacksonObjectMapper
                     .reader(injectableValues)
@@ -65,7 +65,7 @@ internal class DirectorySource(
 
                 accept(ResourceLoaderImpl.LoadedObjectImpl(key, value))
             } catch (e: Exception) {
-                customCrafting.logger.error("  Error loading $key from ${type.id}: ", e)
+                customCrafting.logger.error("Error loading $key from ${type.id}: ", e)
             }
             return@readFiles FileVisitResult.CONTINUE
         }
@@ -73,7 +73,7 @@ internal class DirectorySource(
 
     override fun <T : Any> save(type: DataType<T>, key: Key, value: T): Result<Boolean> {
         assureDir()
-        val destFile = File(directory, "${type.id}/${key.value}.conf")
+        val destFile = File(type.resourceSubDir(directory), "${key.value}.conf")
 
         if (destFile.getParentFile().exists() || destFile.getParentFile().mkdirs()) {
             try {
@@ -90,14 +90,13 @@ internal class DirectorySource(
     }
 
     override fun delete(type: DataType<Any>, key: Key): Result<Boolean> {
-        val destFile = File(directory, "${type.id}/${key.value}.conf")
+        val destFile = File(type.resourceSubDir(directory), "${key.value}.conf")
 
         return try {
             Result.success(destFile.delete())
         } catch (e: Exception) {
             Result.failure(Exception("Could not delete file $directory to delete recipe $key!", e))
         }
-
     }
 
     private fun readFiles(rootDir: File, visitor: NamespaceFileVisitor.CustomFileVisitor) {
@@ -132,6 +131,10 @@ internal class DirectorySource(
             pathString = pathString.replace(File.separatorChar, '/')
         }
         return Key.key(namespace, pathString.take(pathString.lastIndexOf('.')))
+    }
+
+    private fun DataType<*>.resourceSubDir(dir: File): File {
+        return File(dir, this.id)
     }
 
 }
