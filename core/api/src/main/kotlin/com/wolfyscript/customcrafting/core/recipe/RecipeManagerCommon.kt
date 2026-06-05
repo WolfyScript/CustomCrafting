@@ -9,6 +9,7 @@ import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.resource.DataType
 import com.wolfyscript.customcrafting.core.resource.ResourceListener
+import com.wolfyscript.customcrafting.core.util.resourceSubDir
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.verification.VerificationResult
@@ -62,13 +63,13 @@ internal class RecipeManagerCommon(val customCrafting: CustomCrafting) : RecipeM
 
     private fun exportDefaults(resourceLoader: ResourceLoader) {
         customCrafting.logger.info("${LOG_PREFIX}Exporting default recipes...")
-        val dir = "com/wolfyscript/customcrafting/recipes/default"
+        val dir = "com/wolfyscript/customcrafting/resources/default/recipes"
         val resource = javaClass.classLoader.getResource(dir)?.toURI()
         if (resource == null) {
             customCrafting.logger.error("${LOG_PREFIX}Could not find default recipes!")
             return
         }
-        val target = File(resourceLoader.directory, "default")
+        val target = DataType.Recipes.resourceSubDir(File(resourceLoader.directory, "default"))
         target.mkdirs()
         copyToFromFileSystem(resource, dir, target.toPath())
         customCrafting.logger.info("${LOG_PREFIX}Default recipes exported to $target")

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.InjectableValues
 import com.wolfyscript.customcrafting.core.CustomCrafting
 import com.wolfyscript.customcrafting.core.configuration.resources.SourceSettings
 import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.customcrafting.core.util.resourceSubDir
 import com.wolfyscript.scafall.identifier.Key
 import java.io.File
 import java.io.IOException
@@ -133,8 +134,5 @@ internal class DirectorySource(
         return Key.key(namespace, pathString.take(pathString.lastIndexOf('.')))
     }
 
-    private fun DataType<*>.resourceSubDir(dir: File): File {
-        return File(dir, this.id)
-    }
 
 }

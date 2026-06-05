@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.core.util
 
 import com.wolfyscript.customcrafting.core.CustomCrafting
+import com.wolfyscript.customcrafting.core.resource.DataType
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -28,4 +29,8 @@ fun exportResource(pathToResource: String, outDest: File) {
         }
     }
 
+}
+
+fun DataType<*>.resourceSubDir(dir: File): File {
+    return File(dir, this.id)
 }
