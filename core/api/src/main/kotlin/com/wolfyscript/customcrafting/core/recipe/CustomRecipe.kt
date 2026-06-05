@@ -18,6 +18,7 @@ import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput
 @JsonTypeResolver(RecipeTypeResolver::class)
 @JsonTypeIdResolver(RecipeTypeIdResolver::class)
 @JsonPropertyOrder("type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 interface CustomRecipe<I : RecipeInput, D : RecipeEvaluationResult.Data> {
 
     /**
