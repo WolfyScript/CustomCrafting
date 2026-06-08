@@ -53,8 +53,10 @@ For any questions join the [Discord](https://discord.gg/qGhDTSr).
   * `.data` - data that is cached and used internally by CC
   * `config` - CC configuration
   * `resources` - default location for resources
-    * `defaults` - the default recipes shipped with CC
-    * `*/**` - directories created by users from which to load recipes
+    * `defaults` - the default resources shipped with CC
+    * `<dir>` - any custom directory from which to load resources
+      * `recipes` - recipe config files
+      * `ingredients` - ingredient config files
 
 ## Check out my partner!
 <a href="https://billing.kinetichosting.net/aff.php?aff=345">
