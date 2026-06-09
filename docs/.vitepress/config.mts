@@ -1,0 +1,86 @@
+import {defineConfig} from 'vitepress'
+
+// https://vitepress.dev/reference/site-config
+export default async () => {
+
+    let hoconGrammarFile = Bun.file("lang_grammar/hocon.json")
+    let hoconGrammar = JSON.parse(await hoconGrammarFile.text())
+
+    return defineConfig({
+        title: "CustomCrafting",
+        description: "Documentation for CustomCrafting",
+        themeConfig: {
+            // https://vitepress.dev/reference/default-theme-config
+            nav: [
+                {text: 'Home', link: '/'},
+                {text: 'Configuration', link: '/configuration/configuration'},
+            ],
+
+            sidebar: [
+                {
+                    text: 'Getting Started', link: '/getting-started',
+                },
+                {
+                    text: 'Configuration',
+                    items: [
+                        {
+                            text: 'Resources',
+                            link: '/configuration/resources/resources',
+                            items: [
+                                {
+                                    text: 'Destinations',
+                                    link: '/configuration/resources/destinations',
+                                    items: [
+                                        {text: 'Directory', link: '/directory'},
+                                        {text: 'SQL', link: '/sql'},
+                                    ]
+                                },
+                                {
+                                    text: 'Backup',
+                                    link: '/configuration/resources/backup'
+                                }
+                            ]
+                        },
+                        {
+                            text: 'Mechanics',
+                        }
+                    ]
+                },
+                {
+                    text: 'Recipes',
+                    items: [
+                        {text: 'Ingredients', link: '/recipes/ingredients'},
+                        {text: 'Results', link: '/recipes/results'},
+                        {
+                            text: 'Types',
+                            items: [
+                                {text: 'Crafting', link: '/recipes/crafting'},
+                                {text: 'Cooking', link: '/recipes/cooking'},
+                                {text: 'Grinding', link: '/recipes/grinding'},
+                                {text: 'Mixing', link: '/recipes/mixing'},
+                                {text: 'Repairing', link: '/recipes/repairing'},
+                                {text: 'Smithing', link: '/recipes/smithing'},
+                                {text: 'Stonecutting', link: '/recipes/stonecutting'},
+                            ]
+                        }
+                    ]
+                }
+            ],
+
+            socialLinks: [
+                {icon: 'github', link: 'https://github.com/WolfyScript/CustomCrafting'}
+            ]
+        },
+        markdown: {
+            languages: [
+                {
+                    aliases: [ "hocon", "crap" ],
+                    ...hoconGrammar
+                }
+            ],
+            languageAlias: {
+
+            }
+        }
+    })
+}
