@@ -1,90 +1,124 @@
+---
+outline: [2, 4]
+---
+
 # Ingredients
+
 Ingredients define what items are required to satisfy a recipe.
 
-## Choices
-The `choices` property defines what items or tags can be used to satisfy the ingredient.
+The `choices` is the only required property. They define what items or tags can be used to satisfy the ingredient.
+
+```hocon
+choices = [
+  {
+    identifier {
+      stack = "{id:'minecraft:iron_nugget'}"
+    }
+  },
+  //...
+]
+```
+
+Ingredients support additional properties to customize the matching and consumption behaviour.
 
 ## Matching
+
 The `matching` property defines how the system checks if an item in the inventory matches the ingredient.
+
 - **Exact**: The item must match the choices exactly.
 - **Item**: The item must match the type and optionally contain or not contain certain components.
 
+```hocon
+matching {
+  type = "item"
+}
+```
+
 ## Consumption
-The `consumption` property defines how the ingredient is removed from the inventory.
 
-### Consume
-The item is removed from the inventory.
+The `consumption` property defines how the ingredient is removed from the inventory.  
+There are multiple types with different behaviours that are set via the `type` property.
 
-- `type = "consume"`
-- `remainder`: Optional. Defines what happens to the remaining amount of the item.
+### Consume 
+> `type = "consume"`  
+
+Removes the item from the inventory.
+If the remains cannot be stored in the ingredient slot, then it either stores remains in the inventory or drops them on the ground.
+
+`remainder`: Optional. Defines what happens to the remaining amount of the item.
+
+```hocon
+consumption {
+  type = "consume"
+  remainder {
+    // See types below    
+  }
+}
+```
 
 #### Default Remainder
-Uses standard vanilla/modded remainders.
+> `type = "default"`
 
-- `type = "default"`
-- `ignore`: Optional. Specifies which remainders to ignore (`vanilla` and `others` booleans).
+Uses the vanilla remainders or modded/plugin remainders, if available and not ignored.
 
-```HOCON
-// Consumption with Default Remainder and Ignoring Others
-{
-  consumption {
-    type = "consume"
-    remainder {
-      type = "default"
-      ignore = { vanilla = true, others = false }
-    }
+`ignore`: Specifies which remainders should be ignored.
+
+```hocon
+remainder {
+  type = "custom"
+  ignore = {
+    vanilla = true
+    others = true
   }
 }
 ```
 
 #### Custom Remainder
-Replaces remainders with a specific item.
+> `type = "custom"`
 
-- `type = "custom"`
-- `remainder`: The item stack to use as a remainder.
+Uses a custom remainder and replaces the existing remainders, if not ignored.
+
+`ignore`: Specifies which remainders should be ignored. The custom remainder will replace those that are **not** ignored.  
+`remainder`: The item stack to use as a remainder.
 
 ```hocon
-// Consumption with Custom Remainder
-{
-  consumption {
-    type = "consume"
-    remainder {
-      type = "custom"
-      remainder = "{id:'minecraft:iron_nugget'}"
-    }
+remainder {
+  type = "custom"
+  remainder = "{id:'minecraft:iron_nugget'}"
+  ignore {
+    vanilla = true
+    others = true
   }
 }
 ```
 
 ### Keep
+> `type = "keep"`
 
 The item is not removed.
 
-- `type = "keep"`
-- `modifier`: Optional. Modifies the source item while it remains in the inventory. For now, this uses an empty list of transformations.
+`modifier`: Optional. Modifies the source item while it remains in the inventory. For now, this uses an empty list of
+  transformations.
 
 ```hocon
-// Keep with Modifier
-{
-  consumption {
-    type = "keep"
-    modifier = { transformations = [] }
+consumption {
+  type = "keep"
+  modifier = {
+    transformations = []
   }
 }
 ```
 
 ### Replace
+> `type = "replace"`
+
 Replaces the source item with a specific item regardless of the amount.
 
-- `type = "replace"`
-- `replacement`: The item stack to replace the source with.
+`replacement`: The item stack to replace the source with.
 
 ```hocon
-// Replace
-{
-  consumption {
-    type = "replace"
-    replacement = "{id:'minecraft:diamond'}"
-  }
+consumption {
+  type = "replace"
+  replacement = "{id:'minecraft:diamond'}"
 }
 ```
