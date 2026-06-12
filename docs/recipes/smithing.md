@@ -1,51 +1,49 @@
-# Smithing
+---
+outline: [2, 4]
+---
 
-Smithing recipes are used for upgrading items using a smithing table.
+# Smithing Recipes
 
-## Components
+Smithing recipes are used to upgrade the `base` item with the `addition` item using a `template`.
 
-- **Template**: The template required to upgrade the base (e.g., a netherite upgrade template).
-- **Base**: The item to be upgraded.
-- **Addition**: The item used to upgrade the base.
-- **Result**: The result of the smithing process.
-- **Copy Options**: Optional settings for which components of the base item should be copied to the result.
-    - **Preserve Components**: A list of components to keep.
-    - **Exclude Components**: A list of components to remove.
+## Core Properties
 
-## Example Structure
+- `template`: The template required to upgrade the `base`. See [ingredients.md](#).
+- `base`: The base item to upgrade with the `addition`.
+- `addition`: The addition with which to upgrade the `base`.
+- `result`: The result of the smithing recipe, including the modifiers to apply and actions to be performed. See [results.md](#).
+- `copyOptions`: Optional options specifying how ItemStack components are copied from the base into the result.
+
+## Copy Options
+
+Defines which components are preserved or excluded when copying from the base to the result.
 
 ```hocon
-type = smithing
-
-template = null
-
-base {
-  choices {
-    stacks = [
-      { identifier { type = vanilla, stack = "{id:'minecraft:diamond_sword'}" } }
-    ]
-  }
-}
-
-addition {
-  choices {
-    stacks = [
-      { identifier { type = vanilla, stack = "{id:'minecraft:netherite_ingot'}" } }
-    ]
-  }
-}
-
 copyOptions {
-  preserveComponents = ["minecraft:damage"]
-  excludeComponents = ["minecraft:enchantments"]
+  preserveComponents = ["minecraft:custom_data"]
+  excludeComponents = ["minecraft:display_name"]
 }
+```
 
+## Example
+
+```hocon
+template { identifier { stack = "{id:'minecraft:netherite_upgrade_smithing_template'}" } }
+base { identifier { stack = "{id:'minecraft:netherite_scabbard'}" } }
+addition { identifier { stack = "{id:'minecraft:netherite_ingot'}" } }
 result {
-  modifier {}
   choices {
     stacks = [
-      { identifier { type = vanilla, stack = "{id:'minecraft:netherite_sword'}" } }
+      { identifier { stack = "{id:'minecraft:netherite_sword'}" } }
     ]
   }
+  alwaysKeepPrevious = true
+  modifier {}
+  actions = []
+  bulkActions = []
+}
+copyOptions {
+  preserveComponents = ["minecraft:custom_data"]
+  excludeComponents = ["minecraft:display_name"]
 }
 ```

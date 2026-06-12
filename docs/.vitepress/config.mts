@@ -28,12 +28,8 @@ export default async () => {
                             link: '/configuration/resources/resources',
                             items: [
                                 {
-                                    text: 'Destinations',
-                                    link: '/configuration/resources/destinations',
-                                    items: [
-                                        {text: 'Directory', link: '/directory'},
-                                        {text: 'SQL', link: '/sql'},
-                                    ]
+                                    text: 'Sources',
+                                    link: '/configuration/resources/sources'
                                 },
                                 {
                                     text: 'Backup',

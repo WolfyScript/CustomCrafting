@@ -1,53 +1,90 @@
-# Repairing
+---
+outline: [2, 4]
+---
 
-Repairing recipes are used for repairing or enchanting items in an anvil.
+# Repairing Recipes
 
-## Inputs
+Repairing recipes are used to repair items in the Anvil.
 
-- **Base**: The item to be repaired or enchanted (the first slot in the anvil).
-- **Addition**: The item sacrificed for the repair or enchantment (the second slot in the anvil).
+## Core Properties
+
+- `base`: The base ingredient, the first slot in the Anvil menu (the item to repair/enchant).
+- `addition`: The addition ingredient, the second slot in the Anvil menu (the item to sacrifice for repair/enchanting).
+- `process`: The process to produce the result in the Anvil menu.
 
 ## Process
 
-The `process` property defines how the result is produced. There are two types:
+The `process` property defines how the repairing process is handled.
 
 ### Fixed Result
-Always produces a specific result.
-- **Rename**: Optional renaming of the result.
-- **Result**: The resulting item.
-- **Cost**: The repair cost.
-
-### Custom Process
-Mirrors vanilla anvil logic with customization:
-- **Rename**: Optional renaming of the result.
-- **Damage Combine**: How the durability of the base is repaired when both items are damageable.
-- **Item Repair**: How the base is repaired when the addition is a non-damageable item.
-- **Enchanting**: How the enchantments from both items are combined.
-
-## Example Structure (Custom Process)
+Always uses the specified `result` and computes the resulting stack based on the data and context.
 
 ```hocon
-type = repairing
-
-base {
-  choices {
-    stacks = [
-      { identifier { type = vanilla, stack = "{id:'minecraft:iron_sword'}" } }
-    ]
+process {
+  type = "fixed_result"
+  rename = {
+    // See ProcedureRename documentation
+    type = "..."
   }
-}
-
-addition {
-  choices {
-    stacks = [
-      { identifier { type = vanilla, stack = "{id:'minecraft:iron_ingot'}" } }
-    ]
+  result {
+    choices {
+      stacks = [
+        { identifier { stack = "{id:'minecraft:diamond_sword'}" } }
+      ]
+    }
+    alwaysKeepPrevious = true
+    modifier {}
+    actions = []
+    bulkActions = []
   }
+  cost = 1
 }
+```
 
+### Custom Process
+Tries to mirror the vanilla logic of the anvil as much as possible, while providing lots of customization options.
+
+```hocon
 process {
   type = "custom"
-  damageCombine { type = "combine_durability" }
-  enchanting { type = "merge_all" }
+  rename = {
+    // See ProcedureRename documentation
+    type = "..."
+  }
+  damageCombine = {
+    // See ProcedureDamageCombine documentation
+    type = "..."
+  }
+  itemRepair = {
+    // See ProcedureItemRepair documentation
+    type = "..."
+  }
+  enchanting = {
+    // See ProcedureEnchanting documentation
+    type = "..."
+  }
+}
+```
+
+## Example
+
+```hocon
+base { identifier { stack = "{id:'minecraft:diamond_sword'}" } }
+addition { identifier { stack = "{id:'minecraft:diamond'}" } }
+process {
+  type = "fixed_result"
+  rename = {}
+  result {
+    choices {
+      stacks = [
+        { identifier { stack = "{id:'minecraft:diamond_sword'}" } }
+      ]
+    }
+    alwaysKeepPrevious = true
+    modifier {}
+    actions = []
+    bulkActions = []
+  }
+  cost = 1
 }
 ```

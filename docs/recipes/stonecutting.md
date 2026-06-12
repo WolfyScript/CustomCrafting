@@ -1,34 +1,31 @@
-# Stonecutting
+---
+outline: [2, 4]
+---
 
-Stonecutting recipes are used for the stonecutter block.
+# Stonecutting Recipes
 
-## Components
+Stonecutting recipes are used to process a `source` ingredient into a result.
 
-- **Source**: The input ingredient required for the stonecutting recipe.
-- **Result**: The result produced by the recipe.
-- **Flatten Result**: If true, the system creates a separate button for each result item (vanilla behavior). If false, it groups them.
+## Core Properties
 
-## Example Structure
+- `source`: The input ingredient required for this stonecutting recipe.
+- `result`: The result produced by this stonecutting recipe, encompassing output choices, modifiers, and actions. See [results.md](#).
+- `flattenResult`: Creates a proxy recipe (vanilla recipe) for each result item. Actions and other result settings apply to all of those recipes.
+
+## Example
 
 ```hocon
-type = stonecutting
-
-source {
-  choices {
-    stacks = [
-      { identifier { type = vanilla, stack = "{id:'minecraft:stone'}" } }
-    ]
-  }
-}
-
+source { identifier { stack = "{id:'minecraft:stone'}" } }
 result {
-  modifier {}
   choices {
     stacks = [
-      { identifier { type = vanilla, stack = "{id:'minecraft:cobblestone'}" } }
+      { identifier { stack = "{id:'minecraft:stone_axe'}" } }
     ]
   }
+  alwaysKeepPrevious = true
+  modifier {}
+  actions = []
+  bulkActions = []
 }
-
 flattenResult = true
 ```

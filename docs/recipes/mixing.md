@@ -1,50 +1,73 @@
-# Mixing
+---
+outline: [2, 4]
+---
 
-Mixing recipes are used for mixing items in a cauldron.
+# Mixing Recipes
 
-## Requirements
+Mixing recipes are used to mix items in the Cauldron.
 
-- **Processing Time**: How long it takes to mix.
-- **XP**: Experience awarded.
-- **Results**: A list of possible results.
-- **Ingredients**: A list of ingredients required.
-- **Fluid Requirement**: Optional requirement for a fluid (e.g., water or lava).
-    - **Lava**: Whether lava is required.
-    - **Water**: Whether water is required.
-    - **Level**: The required fluid level.
-- **Campfire Requirement**: Optional requirement for a campfire.
-    - **SoulCampfire**: Whether a soul campfire is required.
-    - **NormalCampfire**: Whether a normal campfire is required.
-    - **SignalFire**: Whether a signal fire is required.
+## Core Properties
 
-## Example Structure
+- `processingTime`: The time required to complete the mixing process.
+- `xp`: The experience points (XP) awarded when this recipe is completed.
+- `results`: A list of possible results produced by the mixing process. See [results.md](#).
+- `ingredients`: A list of ingredients required for the mixing process. See [ingredients.md](#).
+- `fluidRequirement`: Optional fluid requirements for the mixing process.
+- `campfireRequirement`: Optional campfire requirements for the mixing process.
+
+## Fluid Requirement
+
+Defines the fluid requirements for the mixing process.
 
 ```hocon
-type = mixing
-
-processingTime = 100
-xp = 1
-results = [
-    {
-      choices {
-        stacks = [
-          { identifier { type = vanilla, stack = "{id:'minecraft:potion'}" } }
-        ]
-      }
-    }
-]
-ingredients = [
-    {
-      choices {
-        stacks = [
-          { identifier { type = vanilla, stack = "{id:'minecraft:nether_wart'}" } }
-        ]
-      }
-    }
-]
 fluidRequirement {
+  lava = false
   water = true
-  level = 1
+  level = 10
 }
 ```
 
+## Campfire Requirement
+
+Defines the campfire requirements for the mixing process.
+
+```hocon
+campfireRequirement {
+  soulCampfire = false
+  normalCampfire = false
+  signalFire = true
+}
+```
+
+## Example
+
+```hocon
+processingTime = 600
+xp = 5.0
+results = [
+  {
+    choices {
+      stacks = [
+        { identifier { stack = "{id:'minecraft:potion'}" } }
+      ]
+    }
+    alwaysKeepPrevious = true
+    modifier {}
+    actions = []
+    bulkActions = []
+  }
+]
+ingredients = [
+  { identifier { stack = "{id:'minecraft:water_bottle'}" } }
+]
+fluidRequirement {
+  lava = false
+  water = true
+  level = 10
+}
+campfireRequirement {
+  soulCampfire = false
+  normalCampfire = false
+  signalFire = true
+}
+```
