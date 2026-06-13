@@ -31,6 +31,30 @@ Optional options specifying how ItemStack components are copied from the base in
 
 :::
 
+```hocon
+type = smithing
+
+template {
+  // Ingredient settings
+}
+
+base {
+  // Ingredient settings
+}
+
+addition {
+  // Ingredient settings
+}
+
+result {
+  // Result settings
+}
+
+copyOptions {
+  // See Copy Options
+}
+```
+
 ## Copy Options <Badge type="info" text="CopyOptions" />
 
 Defines which components are preserved or excluded when copying from the base to the result.
@@ -49,29 +73,6 @@ The components to exclude from the base item.
 :::
 
 ```hocon
-copyOptions {
-  preserveComponents = ["minecraft:custom_data"]
-  excludeComponents = ["minecraft:display_name"]
-}
-```
-
-## Example
-
-```hocon
-template { identifier { stack = "{id:'minecraft:netherite_upgrade_smithing_template'}" } }
-base { identifier { stack = "{id:'minecraft:netherite_scabbard'}" } }
-addition { identifier { stack = "{id:'minecraft:netherite_ingot'}" } }
-result {
-  choices {
-    stacks = [
-      { identifier { stack = "{id:'minecraft:netherite_sword'}" } }
-    ]
-  }
-  alwaysKeepPrevious = true
-  modifier {}
-  actions = []
-  bulkActions = []
-}
 copyOptions {
   preserveComponents = ["minecraft:custom_data"]
   excludeComponents = ["minecraft:display_name"]

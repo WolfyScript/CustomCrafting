@@ -17,11 +17,27 @@ The base ingredient, the first slot in the Anvil menu (the item to repair/enchan
 
 The addition ingredient, the second slot in the Anvil menu (the item to sacrifice for repair/enchanting).
 
-##### `process` <Badge type="info" text="Process" />
+##### `process` [<Badge type="info" text="Process" />](#process-1)
 
 The process to produce the result in the Anvil menu.
 
 :::
+
+```hocon
+type = repairing
+
+base {
+  // Ingredient settings
+}
+
+addition {
+  // Ingredient settings
+}
+
+process {
+  // Process settings
+}
+```
 
 ## Process <Badge type="info" text="Process" />
 
@@ -49,24 +65,14 @@ The experience cost for the repair.
 :::
 
 ```hocon
-process {
-  type = "fixed_result"
-  rename = {
-    // See ProcedureRename documentation
-    type = "..."
-  }
-  result {
-    choices {
-      stacks = [
-        { identifier { stack = "{id:'minecraft:diamond_sword'}" } }
-      ]
-    }
-    alwaysKeepPrevious = true
-    modifier {}
-    actions = []
-    bulkActions = []
-  }
-  cost = 1
+type = "fixed_result"
+cost = 1
+rename = {
+  // See ProcedureRename documentation
+  type = "..."
+}
+result {
+  // Result settings
 }
 ```
 
@@ -114,28 +120,5 @@ process {
     // See ProcedureEnchanting documentation
     type = "..."
   }
-}
-```
-
-## Example
-
-```hocon
-base { identifier { stack = "{id:'minecraft:diamond_sword'}" } }
-addition { identifier { stack = "{id:'minecraft:diamond'}" } }
-process {
-  type = "fixed_result"
-  rename = {}
-  result {
-    choices {
-      stacks = [
-        { identifier { stack = "{id:'minecraft:diamond_sword'}" } }
-      ]
-    }
-    alwaysKeepPrevious = true
-    modifier {}
-    actions = []
-    bulkActions = []
-  }
-  cost = 1
 }
 ```

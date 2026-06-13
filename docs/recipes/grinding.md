@@ -4,7 +4,8 @@ outline: [ 2, 4 ]
 
 # Grinding Recipes
 
-Grinding recipes involve using a grinding tool (like a grindstone) to process a `base` item, optionally with an `addition`.
+Grinding recipes involve using a grinding tool (like a grindstone) to process a `base` item, optionally with an
+`addition`.
 
 ::: info Properties
 ----
@@ -23,6 +24,27 @@ The grinding process for this recipe.
 
 :::
 
+```hocon
+type = cooking
+priority = 10
+group = "group_name"
+conditions {
+  // Condition settings
+}
+
+base {
+  // Ingredient settings
+}
+
+addition {
+  // Ingredient settings
+}
+
+process {
+  // Process settings
+}
+```
+
 ## Process <Badge type="info" text="Process" />
 
 The `process` property defines how the grinding process is computed.
@@ -34,7 +56,7 @@ A process that always returns the specified `result` and `xp`.
 ::: info Properties
 ----
 
-##### `result` <Badge type="info" text="Result" />
+##### `result` [<Badge type="info" text="Result" />](results)
 
 The result of the grinding process.
 
@@ -45,21 +67,11 @@ The experience points (XP) awarded when this recipe is completed.
 :::
 
 ```hocon
-process {
-  type = "fixed_result"
-  result {
-    choices {
-      stacks = [
-        { identifier { stack = "{id:'minecraft:flint'}" } }
-      ]
-    }
-    alwaysKeepPrevious = true
-    modifier {}
-    actions = []
-    bulkActions = []
-  }
-  xp = 1
+type = fixed_result
+result {
+  // Result settings
 }
+xp = 1
 ```
 
 ### Default Process <Badge type="info" text="default" />
@@ -92,46 +104,22 @@ Defines how repair cost is computed.
 :::
 
 ```hocon
-process {
-  type = "default"
-  extraXp = 2
-  removeEnchants {
-    // See ProcedureEnchantRemoval documentation
-    type = "..."
-  }
-  mergeEnchants {
-    // See ProcedureEnchanting documentation
-    type = "..."
-  }
-  damageCombine {
-    // See ProcedureDamageCombine documentation
-    type = "..."
-  }
-  repairCost {
-    // See ProcedureRepairCost documentation
-    type = "..."
-  }
+type = default
+extraXp = 2
+removeEnchants {
+  // See ProcedureEnchantRemoval documentation
+  type = "..."
 }
-```
-
-## Example
-
-```hocon
-base { identifier { stack = "{id:'minecraft:flint'}" } }
-addition { identifier { stack = "{id:'minecraft:stick'}" } }
-process {
-  type = "fixed_result"
-  result {
-    choices {
-      stacks = [
-        { identifier { stack = "{id:'minecraft:flint'}" } }
-      ]
-    }
-    alwaysKeepPrevious = true
-    modifier {}
-    actions = []
-    bulkActions = []
-  }
-  xp = 1
+mergeEnchants {
+  // See ProcedureEnchanting documentation
+  type = "..."
+}
+damageCombine {
+  // See ProcedureDamageCombine documentation
+  type = "..."
+}
+repairCost {
+  // See ProcedureRepairCost documentation
+  type = "..."
 }
 ```

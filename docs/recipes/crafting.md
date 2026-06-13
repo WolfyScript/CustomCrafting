@@ -66,7 +66,7 @@ Ingredients are mapped to characters in the shape.
 
 ##### `mappedIngredients` <Badge type="info" text="Map<char, Ingredient>" />
 
-A map of character identifiers to ingredients. See [Ingredient](ingredients)
+A map of character identifiers to [Ingredients](ingredients)
 
 ##### `shape` [<Badge type="info" text="Shape" />](#shape-1)
 
@@ -143,7 +143,9 @@ Whether vertical symmetry is applied.
 
 ##### `rotate` <Badge type="tip" text="optional" />
 
-Whether rotation symmetry is applied.
+Whether rotation symmetry is applied.  
+This allows the recipe to be rotated within the grid i.e. `horizontal` **and** `vertical` symmetry combined, equals rotated.  
+When disable it must either be `horizontal` **or** `vertical` symmetry. 
 
 :::
 

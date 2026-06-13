@@ -21,9 +21,9 @@ The experience points (XP) awarded when this recipe is completed.
 
 A list of possible results produced by the mixing process.
 
-##### `ingredients` [<Badge type="info" text="list<Ingredient>" />](#ingredients)
+##### `ingredients` [<Badge type="info" text="list<Ingredient>" />](ingredients)
 
-A list of ingredients required for the mixing process.
+A list of ingredients required for the mixing process. See [Ingredient](ingredients) settings.
 
 ##### `fluidRequirement` <Badge type="info" text="FluidRequirement" /> <Badge type="tip" text="optional" />
 
@@ -36,7 +36,9 @@ Optional campfire requirements for the mixing process.
 :::
 
 ```hocon
+type = mixing
 xp = 2
+processingTime = 400
 
 ingredients = [
   {
@@ -112,34 +114,3 @@ signalFire = true
 ```
 
 ## Example
-
-```hocon
-processingTime = 600
-xp = 5.0
-results = [
-  {
-    choices {
-      stacks = [
-        {identifier {stack = "{id:'minecraft:potion'}"}}
-      ]
-    }
-    alwaysKeepPrevious = true
-    modifier {}
-    actions = []
-    bulkActions = []
-  }
-]
-ingredients = [
-  {identifier {stack = "{id:'minecraft:water_bottle'}"}}
-]
-fluidRequirement {
-  lava = false
-  water = true
-  level = 10
-}
-campfireRequirement {
-  soulCampfire = false
-  normalCampfire = false
-  signalFire = true
-}
-```

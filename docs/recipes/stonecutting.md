@@ -23,20 +23,16 @@ Creates a proxy recipe (vanilla recipe) for each result item. Actions and other 
 
 :::
 
-## Example
-
 ```hocon
-source { identifier { stack = "{id:'minecraft:stone'}" } }
-result {
-  choices {
-    stacks = [
-      { identifier { stack = "{id:'minecraft:stone_axe'}" } }
-    ]
-  }
-  alwaysKeepPrevious = true
-  modifier {}
-  actions = []
-  bulkActions = []
+type = stonecutting
+
+source {
+  // Ingredient settings
 }
+
+result {
+  // Result settings
+}
+
 flattenResult = true
 ```

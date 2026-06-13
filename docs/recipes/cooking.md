@@ -11,7 +11,8 @@ Cooking recipes are used for cooking operations, such as furnace recipes that tr
 
 ##### `processing` <Badge type="info" text="Processing" />
 
-The processing configuration for this recipe. Defines how the recipe is processed, including time, cost, and other operational aspects of the cooking process.
+The processing configuration for this recipe. Defines how the recipe is processed, including time, cost, and other
+operational aspects of the cooking process.
 
 ##### `result` <Badge type="info" text="Result" />
 
@@ -23,6 +24,25 @@ See [results](results).
 The experience points (XP) awarded when this recipe is completed.
 
 :::
+
+```hocon
+type = cooking
+priority = 10
+group = "group_name"
+conditions {
+  // Condition settings
+}
+
+processing {
+  // Processing settings
+}
+
+result { 
+  // Result settings
+}
+
+xp = 1
+```
 
 ## Processing <Badge type="info" text="Processing" />
 
@@ -39,18 +59,18 @@ Configures processing in blast furnaces.
 
 The time in ticks that the processing takes.
 
-##### `source` <Badge type="info" text="object" />
+##### `source` [<Badge type="info" text="Ingredient" />](ingredients)
 
 The source item [ingredient](ingredients) required for the recipe.
 
 :::
 
 ```hocon
-processing {
-  type = "blasting"
-  source {identifier {stack = "{id:'minecraft:coal'}"}}
-  processingTime = 200
+type = blasting
+source {
+  // Ingredient settings
 }
+processingTime = 200
 ```
 
 ### Smoking
@@ -64,18 +84,18 @@ Configures processing for smokers.
 
 The time in ticks that the processing takes.
 
-##### `source` <Badge type="info" text="object" />
+##### `source` [<Badge type="info" text="object" />](ingredients)
 
 The source item [ingredient](ingredients) required for the recipe.
 
 :::
 
 ```hocon
-processing {
-  type = "smoking"
-  source {identifier {stack = "{id:'minecraft:raw_meat'}"}}
-  processingTime = 300
+type = smoking
+source {
+  // Ingredient settings
 }
+processingTime = 300
 ```
 
 ### Smelting
@@ -89,18 +109,18 @@ Configures processing for furnaces.
 
 The time in ticks that the processing takes.
 
-##### `source` <Badge type="info" text="Ingredient" />
+##### `source` [<Badge type="info" text="Ingredient" />](ingredients)
 
 The source item [ingredient](ingredients) required for the recipe.
 
 :::
 
 ```hocon
-processing {
-  type = "smelting"
-  source {identifier {stack = "{id:'minecraft:iron_ore'}"}}
-  processingTime = 200
+type = "smelting"
+source {
+  // Ingredient settings
 }
+processingTime = 200
 ```
 
 ### Campfire
@@ -114,7 +134,7 @@ Configures processing for both normal and soul campfires.
 
 The time in ticks that the processing takes.
 
-##### `source` <Badge type="info" text="Ingredient" />
+##### `source` [<Badge type="Ingredient" text="Ingredient" />](ingredients)
 
 The source item [ingredient](ingredients) required for the recipe.
 
@@ -129,33 +149,11 @@ Specifies whether the processing works for normal campfires.
 :::
 
 ```hocon
-processing {
-  type = "campfire"
-  source {identifier {stack = "{id:'minecraft:stick'}"}}
-  processingTime = 600
-  soulCampfire = true
-  normalCampfire = false
+type = campfire
+source {
+  // Ingredient settings
 }
-```
-
-## Example
-
-```hocon
-processing {
-  type = "smelting"
-  source {identifier {stack = "{id:'minecraft:iron_ore'}"}}
-  processingTime = 200
-}
-result {
-  choices {
-    stacks = [
-      {identifier {stack = "{id:'minecraft:iron_ingot'}"}}
-    ]
-  }
-  alwaysKeepPrevious = true
-  modifier {}
-  actions = []
-  bulkActions = []
-}
-xp = 10.0
+processingTime = 600
+soulCampfire = true
+normalCampfire = false
 ```
