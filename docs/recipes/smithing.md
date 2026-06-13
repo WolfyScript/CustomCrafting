@@ -1,22 +1,52 @@
 ---
-outline: [2, 4]
+outline: [ 2, 3 ]
 ---
 
 # Smithing Recipes
 
 Smithing recipes are used to upgrade the `base` item with the `addition` item using a `template`.
 
-## Core Properties
+::: info Properties
+----
 
-- `template`: The template required to upgrade the `base`. See [ingredients.md](#).
-- `base`: The base item to upgrade with the `addition`.
-- `addition`: The addition with which to upgrade the `base`.
-- `result`: The result of the smithing recipe, including the modifiers to apply and actions to be performed. See [results.md](#).
-- `copyOptions`: Optional options specifying how ItemStack components are copied from the base into the result.
+##### `template` [<Badge type="info" text="Ingredient" />](ingredients)
 
-## Copy Options
+The template required to upgrade the `base`.
+
+##### `base` [<Badge type="info" text="Ingredient" />](ingredients)
+
+The base item to upgrade with the `addition`.
+
+##### `addition` [<Badge type="info" text="Ingredient" />](ingredients)
+
+The addition with which to upgrade the `base`.
+
+##### `result` [<Badge type="info" text="Result" />](results)
+
+The result of the smithing recipe, including the modifiers to apply and actions to be performed.
+
+##### `copyOptions` [<Badge type="info" text="CopyOptions" />](#copy-options) <Badge type="tip" text="optional" />
+
+Optional options specifying how ItemStack components are copied from the base into the result.
+
+:::
+
+## Copy Options <Badge type="info" text="CopyOptions" />
 
 Defines which components are preserved or excluded when copying from the base to the result.
+
+::: info Properties
+----
+
+##### `preserveComponents` <Badge type="info" text="list<Key>" />
+
+The components to preserve from the base item.
+
+##### `excludeComponents` <Badge type="info" text="list<Key>" />
+
+The components to exclude from the base item.
+
+:::
 
 ```hocon
 copyOptions {

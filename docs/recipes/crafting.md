@@ -5,18 +5,6 @@ Crafting recipes are used for the player inventory crafting grid, crafting table
 ::: info Properties
 ----
 
-##### `priority` <Badge type="info" text="int" /> <Badge type="tip" text="optional" />
-
-The priority of the recipe. Recipes of higher priority are checked before recipes of lower priority.
-
-##### `group` <Badge type="info" text="String" /> <Badge type="tip" text="optional" />
-
-The group of the recipe. Recipes with the same group are considered to be variants of each other.
-
-##### `conditions` <Badge type="info" text="Conditions" /> <Badge type="tip" text="optional" />
-
-The conditions that must be met for the recipe to work.
-
 ##### `result` [<Badge type="info" text="Result" />](results)
 
 Defines the resulting item that this recipe produces.
@@ -54,7 +42,7 @@ A crafting formula with a list of ingredients that can be arranged in any order.
 
 ##### `ingredients` <Badge type="info" text="list<Ingredient>" />
 
-A list of ingredients required for the recipe.
+A list of ingredients required for the recipe. See [Ingredient](ingredients) documentation.
 
 :::
 
@@ -62,13 +50,7 @@ A list of ingredients required for the recipe.
 type = shapeless
 ingredients = [
   {
-    choices = [
-      {
-        identifier {
-          stack = "{id:'minecraft:iron_ingot'}"
-        }
-      }
-    ]
+    // Ingredient settings
   },
   // ...
 ]

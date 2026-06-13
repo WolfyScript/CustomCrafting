@@ -1,42 +1,114 @@
 ---
-outline: [2, 4]
+outline: [ 2, 3 ]
 ---
 
 # Mixing Recipes
 
 Mixing recipes are used to mix items in the Cauldron.
 
-## Core Properties
+::: info Properties
+----
 
-- `processingTime`: The time required to complete the mixing process.
-- `xp`: The experience points (XP) awarded when this recipe is completed.
-- `results`: A list of possible results produced by the mixing process. See [results.md](#).
-- `ingredients`: A list of ingredients required for the mixing process. See [ingredients.md](#).
-- `fluidRequirement`: Optional fluid requirements for the mixing process.
-- `campfireRequirement`: Optional campfire requirements for the mixing process.
+##### `processingTime` <Badge type="info" text="int" />
 
-## Fluid Requirement
+The time required to complete the mixing process.
+
+##### `xp` <Badge type="info" text="float" />
+
+The experience points (XP) awarded when this recipe is completed.
+
+##### `results` [<Badge type="info" text="list<Result>" />](results)
+
+A list of possible results produced by the mixing process.
+
+##### `ingredients` [<Badge type="info" text="list<Ingredient>" />](#ingredients)
+
+A list of ingredients required for the mixing process.
+
+##### `fluidRequirement` <Badge type="info" text="FluidRequirement" /> <Badge type="tip" text="optional" />
+
+Optional fluid requirements for the mixing process.
+
+##### `campfireRequirement` <Badge type="info" text="CampfireRequirement" /> <Badge type="tip" text="optional" />
+
+Optional campfire requirements for the mixing process.
+
+:::
+
+```hocon
+xp = 2
+
+ingredients = [
+  {
+    // Ingredient settings
+  },
+  // ... more ingredients ...
+]
+
+results = [
+  {
+    // Result settings
+  },
+  // ... more results ...
+]
+
+fluidRequirement { }
+
+campfireRequirement { }
+```
+
+## Fluid Requirement <Badge type="info" text="FluidRequirement" />
 
 Defines the fluid requirements for the mixing process.
 
+::: info Properties
+----
+
+##### `lava` <Badge type="info" text="boolean" /> <Badge type="tip" text="optional" />
+
+Whether lava is required.
+
+##### `water` <Badge type="info" text="boolean" /> <Badge type="tip" text="optional" />
+
+Whether water is required.
+
+##### `level` <Badge type="info" text="int" /> <Badge type="tip" text="optional" />
+
+The required fluid level.
+
+:::
+
 ```hocon
-fluidRequirement {
-  lava = false
-  water = true
-  level = 10
-}
+lava = false
+water = true
+level = 10
 ```
 
-## Campfire Requirement
+## Campfire Requirement <Badge type="info" text="CampfireRequirement" />
 
 Defines the campfire requirements for the mixing process.
 
+::: info Properties
+----
+
+##### `soulCampfire` <Badge type="info" text="boolean" /> <Badge type="tip" text="optional" />
+
+Whether a soul campfire is required.
+
+##### `normalCampfire` <Badge type="info" text="boolean" /> <Badge type="tip" text="optional" />
+
+Whether a normal campfire is required.
+
+##### `signalFire` <Badge type="info" text="boolean" /> <Badge type="tip" text="optional" />
+
+Whether a signal fire is required.
+
+:::
+
 ```hocon
-campfireRequirement {
-  soulCampfire = false
-  normalCampfire = false
-  signalFire = true
-}
+soulCampfire = false
+normalCampfire = false
+signalFire = true
 ```
 
 ## Example
@@ -48,7 +120,7 @@ results = [
   {
     choices {
       stacks = [
-        { identifier { stack = "{id:'minecraft:potion'}" } }
+        {identifier {stack = "{id:'minecraft:potion'}"}}
       ]
     }
     alwaysKeepPrevious = true
@@ -58,7 +130,7 @@ results = [
   }
 ]
 ingredients = [
-  { identifier { stack = "{id:'minecraft:water_bottle'}" } }
+  {identifier {stack = "{id:'minecraft:water_bottle'}"}}
 ]
 fluidRequirement {
   lava = false
