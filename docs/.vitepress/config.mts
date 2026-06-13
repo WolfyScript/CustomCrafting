@@ -28,6 +28,10 @@ export default async () => {
                     text: 'Configuration',
                     items: [
                         {
+                            text: 'Introduction',
+                            link: '/configuration/configuration'
+                        },
+                        {
                             text: 'Resources',
                             link: '/configuration/resources/resources',
                             items: [
@@ -49,10 +53,9 @@ export default async () => {
                 {
                     text: 'Recipes',
                     items: [
-                        {text: 'Ingredients', link: '/recipes/ingredients'},
-                        {text: 'Results', link: '/recipes/results'},
+                        {text: 'Overview', link: '/recipes/index'},
                         {
-                            text: 'Types',
+                            text: 'Recipe Types',
                             items: [
                                 {text: 'Crafting', link: '/recipes/crafting'},
                                 {text: 'Cooking', link: '/recipes/cooking'},
@@ -62,7 +65,9 @@ export default async () => {
                                 {text: 'Smithing', link: '/recipes/smithing'},
                                 {text: 'Stonecutting', link: '/recipes/stonecutting'},
                             ]
-                        }
+                        },
+                        {text: 'Ingredients', link: '/recipes/ingredients'},
+                        {text: 'Results', link: '/recipes/results'},
                     ]
                 }
             ],
@@ -74,7 +79,7 @@ export default async () => {
         markdown: {
             languages: [
                 {
-                    aliases: [ "hocon", "crap" ],
+                    aliases: [ "hocon" ],
                     ...hoconGrammar
                 }
             ],
