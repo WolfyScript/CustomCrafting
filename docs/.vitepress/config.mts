@@ -10,6 +10,10 @@ export default async () => {
         title: "CustomCrafting",
         description: "Documentation for CustomCrafting",
         themeConfig: {
+            search: {
+                provider: "local"
+            },
+
             // https://vitepress.dev/reference/default-theme-config
             nav: [
                 {text: 'Home', link: '/'},
