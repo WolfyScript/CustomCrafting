@@ -12,9 +12,12 @@ hero:
     - theme: alt
       text: Configuration
       link: /configuration/configuration
+    - theme: alt
+      text: GitHub
+      link: https://github.com/WolfyScript/CustomCrafting
 
 features:
-  - title: Customizable 
+  - title: Customizable
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
   - title: Composable Recipes
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
