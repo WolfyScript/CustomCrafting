@@ -5,6 +5,8 @@ outline: [2, 4]
 # Resource Settings
 
 Configuration that determines how CustomCrafting loads and saves its resources.
+It declares the sources from which resources (recipes, ingredients) are loaded from.
+Additionally, the backup settings allow configuring custom backup destinations.
 
 ## Properties
 

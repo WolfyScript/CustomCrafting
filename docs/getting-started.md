@@ -8,12 +8,17 @@ Welcome to the CustomCrafting documentation!
 This guide will help you get started configuring CC on your server.
 
 ## Overview
-CustomCrafting allows you to define custom recipes for almost any operation in Minecraft, from simple crafting to complex cooking and smithing.
+CustomCrafting allows defining custom recipes for almost any workstation that is not highly specific (like the cartography table). 
+There are many configuration options to allow for very detailed customisation of both the input and output of recipes.
+Due to the complexity, there are some recommended steps to get started.
 
-## Key Steps
-1. **Understand the config format & structure**: Read the [Configuration](configuration/configuration) page.
-2. **Configure the Resources**: Read the [Resources](configuration/resources/resources) page and its subpages.
-3. **Explore Recipe Types**: Look into [Recipe Overview](recipes/index).
-4. **Define your Recipes**: You can define your recipes in HOCON or JSON format.
-5. **Test and Refine**: Use the editor and the system's logging to test your recipes.
+## Steps
+1. **Understand the config format & structure**:  
+    Read the [Configuration](configuration/configuration) page.
+2. **Configure the Resources**:   
+    Read the [Resources](configuration/resources/resources) page and configure where to load resources from.
+3. **Explore Recipe Types**:   
+    Read the [Recipe Overview](recipes/index).
+4. **Define your Recipes**:   
+    Define your recipes in HOCON or JSON format.
 

@@ -44,9 +44,6 @@ export default async () => {
                                     link: '/configuration/resources/backup'
                                 }
                             ]
-                        },
-                        {
-                            text: 'Mechanics',
                         }
                     ]
                 },
