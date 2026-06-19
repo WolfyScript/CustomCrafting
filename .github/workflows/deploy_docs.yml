@@ -36,17 +36,17 @@ jobs:
       #   with:
       #     version: 9 # Not needed if you've set "packageManager" in package.json
       - uses: oven-sh/setup-bun@v2 # Uncomment this if you're using Bun
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: npm # or pnpm / yarn
+      #- name: Setup Node
+      #  uses: actions/setup-node@v6
+      #  with:
+      #    node-version: 24
+      #    cache: npm # or pnpm / yarn
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Install dependencies
-        run: npm ci # or pnpm install / yarn install / bun install
+        run: bun install
       - name: Build with VitePress
-        run: npm run docs:build # or pnpm docs:build / yarn docs:build / bun run docs:build
+        run: bun --bun run docs:build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
