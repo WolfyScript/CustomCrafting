@@ -9,6 +9,7 @@ export default async () => {
     return defineConfig({
         title: "CustomCrafting",
         description: "Documentation for CustomCrafting",
+        base: '/CustomCrafting/',
         themeConfig: {
             search: {
                 provider: "local"
