@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.level.block.CrafterBlock;
 import net.minecraft.world.level.block.entity.CrafterBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,7 +31,7 @@ public class CrafterMixin {
         method = "dispenseFrom"
     )
     private void enterEvalContext(BlockState state, ServerLevel level, BlockPos pos, CallbackInfo ci) {
-        var wrappedPosition = PositionWrappersKt.wrap(pos.getCenter(), Key.fromMc(level.dimension().identifier()));
+        var wrappedPosition = PositionWrappersKt.wrap(Vec3.atCenterOf(pos), Key.fromMc(level.dimension().identifier()));
         EvaluationContextState.INSTANCE.enter(EvaluationContext.of(null, wrappedPosition));
     }
 
