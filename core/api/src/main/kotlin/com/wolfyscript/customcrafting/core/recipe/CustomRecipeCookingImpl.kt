@@ -10,7 +10,7 @@ import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
 import com.wolfyscript.customcrafting.core.recipe.ingredient.Ingredient
 import com.wolfyscript.scafall.wrappers.minecraft.unwrap
 import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.entity.BlockEntityType
+import net.minecraft.world.level.block.entity.BlockEntityTypes
 
 internal class CustomRecipeCookingImpl(
     override val processing: CustomRecipeCooking.WorkstationProcessing,
@@ -44,7 +44,7 @@ internal class CustomRecipeCookingImpl(
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeEvaluationResult.Data? {
-            if (context.blockEntity?.unwrap()?.type != BlockEntityType.FURNACE) {
+            if (context.blockEntity?.unwrap()?.type != BlockEntityTypes.FURNACE) {
                 return null
             }
 
@@ -67,7 +67,7 @@ internal class CustomRecipeCookingImpl(
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeEvaluationResult.Data? {
-            if (context.blockEntity?.unwrap()?.type != BlockEntityType.BLAST_FURNACE) {
+            if (context.blockEntity?.unwrap()?.type != BlockEntityTypes.BLAST_FURNACE) {
                 return null
             }
 
@@ -90,7 +90,7 @@ internal class CustomRecipeCookingImpl(
             recipe: CustomRecipeCooking,
             context: EvaluationContext,
         ): RecipeEvaluationResult.Data? {
-            if (context.blockEntity?.unwrap()?.type != BlockEntityType.SMOKER) {
+            if (context.blockEntity?.unwrap()?.type != BlockEntityTypes.SMOKER) {
                 return null
             }
 

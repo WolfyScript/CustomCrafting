@@ -9,6 +9,7 @@ import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.phys.Vec3
 import kotlin.random.Random
 
 internal class IngredientConsumerConsumeImpl(override val remains: IngredientRemainder) : IngredientConsumer.Consume {
@@ -51,7 +52,7 @@ internal class IngredientConsumerConsumeImpl(override val remains: IngredientRem
             if (blockEntity != null) {
                 items.forEach {
                     val level = blockEntity.level ?: return@forEach
-                    val pos = blockEntity.blockPos.center
+                    val pos = Vec3.atCenterOf(blockEntity.blockPos)
                     val itemEntity = ItemEntity(level, pos.x, pos.y, pos.z, it.unwrap())
                     itemEntity.setPickUpDelay(40)
                     val f: Double = Random.nextFloat() * 0.5

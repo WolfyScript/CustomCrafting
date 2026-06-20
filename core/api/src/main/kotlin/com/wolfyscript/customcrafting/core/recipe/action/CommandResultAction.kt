@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.permissions.LevelBasedPermissionSet
 import net.minecraft.world.phys.Vec2
+import net.minecraft.world.phys.Vec3
 
 /**
  * Represents a result action that executes a list of commands.
@@ -36,7 +37,13 @@ internal class CommandResultAction(
     override fun run(context: EvaluationContext, bulk: Boolean) {
         val player = context.player?.unwrap()
         val blockEntity = context.blockEntity?.unwrap()
-        val pos = player?.position() ?: context.blockPos?.unwrap()?.center ?: return
+
+        val pos = if (player != null) {
+            player.position()
+        } else if (context.blockPos != null) {
+            Vec3.atCenterOf(context.blockPos!!.unwrap())
+        } else return
+
         val level = player?.level() ?: blockEntity?.level ?: return
 
         if (level !is ServerLevel) {
