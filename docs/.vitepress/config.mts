@@ -10,6 +10,9 @@ export default async () => {
         title: "CustomCrafting",
         description: "Documentation for CustomCrafting",
         base: '/CustomCrafting/',
+        head: [
+            ['link', { rel: 'icon', href: '/CustomCrafting/favicon.svg' }]
+        ],
         themeConfig: {
             search: {
                 provider: "local"
