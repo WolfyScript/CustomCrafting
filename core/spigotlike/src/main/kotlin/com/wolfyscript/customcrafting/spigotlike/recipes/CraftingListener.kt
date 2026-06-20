@@ -99,7 +99,7 @@ class CraftingListener(val plugin: Plugin, val customCrafting: CustomCrafting) :
     fun onPreCraft(e: PrepareItemCraftEvent) {
         val player = e.view.player as Player
         try {
-            val matrix = CraftingMatrixData.of(e.inventory.matrix.map { it?.wrap() }.toList())
+            val matrix = CraftingMatrixData.of(e.inventory.matrix.map { it?.wrap() ?: ItemStack(Material.AIR).wrap() }.toList())
             val input = RecipeInput.CraftingRecipeInput.of(matrix)
             matrixDataCache.put(player.uniqueId, matrix)
 

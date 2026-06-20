@@ -14,6 +14,7 @@ import com.wolfyscript.scafall.spigot.api.wrappers.utils.toScafall
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.unwrapSpigot
 import com.wolfyscript.scafall.spigot.api.wrappers.utils.wrap
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Crafter
 import org.bukkit.event.EventHandler
@@ -21,6 +22,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.CrafterCraftEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.CrafterInventory
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.Plugin
 import kotlin.random.Random
@@ -39,7 +41,7 @@ class CrafterListener(val plugin: Plugin, val customCrafting: CustomCrafting) : 
         val inventory = state.inventory
 
         val context = EvaluationContext.of(null, block.location.toPreciseGlobal(), block.location.toBlockPos(), state.wrap())
-        val matrix = CraftingMatrixData.of(inventory.contents.map { it?.wrap() })
+        val matrix = CraftingMatrixData.of(inventory.contents.map { it?.wrap() ?: ItemStack(Material.AIR).wrap() })
         val input = RecipeInput.CraftingRecipeInput.of(matrix)
 
         val previousRecipeKey =

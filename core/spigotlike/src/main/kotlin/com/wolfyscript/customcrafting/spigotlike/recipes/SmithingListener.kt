@@ -177,7 +177,7 @@ class SmithingListener(val plugin: Plugin, val customCrafting: CustomCrafting) :
     private fun shrinkIngredient(
         inventory: SmithingInventory,
         index: Int,
-        context: EvaluationContextImpl,
+        context: EvaluationContext,
         data: RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeSmithing>,
     ): ItemStack {
         return data.data.bySlot(index)?.let { ingredientData ->
