@@ -4,17 +4,17 @@ layout: home
 
 hero:
   name: "CustomCrafting"
-  text: "Docs"
+  text: ""
   actions:
     - theme: brand
       text: Getting Started
       link: /getting-started
     - theme: alt
-      text: Configuration
-      link: /configuration/configuration
-    - theme: alt
       text: GitHub
       link: https://github.com/WolfyScript/CustomCrafting
+    - theme: alt
+      text: Modrinth
+      link: https://modrinth.com/plugin/customcrafting
 
 features:
   - title: Fully Customizable Recipes

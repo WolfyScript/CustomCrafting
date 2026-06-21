@@ -14,6 +14,8 @@ export default async () => {
             ['link', { rel: 'icon', href: '/CustomCrafting/favicon.svg' }]
         ],
         themeConfig: {
+            logo: '/favicon.svg',
+
             search: {
                 provider: "local"
             },
@@ -74,7 +76,8 @@ export default async () => {
             ],
 
             socialLinks: [
-                {icon: 'github', link: 'https://github.com/WolfyScript/CustomCrafting'}
+                {icon: 'github', link: 'https://github.com/WolfyScript/CustomCrafting'},
+                {icon: 'modrinth', link: 'https://modrinth.com/plugin/customcrafting'}
             ]
         },
         markdown: {
