@@ -4,15 +4,18 @@ Configuration in CustomCrafting is done using HOCON files with the `.conf` file 
 
 ::: warning
 
-CustomCrafting is still in alpha, so the properties and structure of configuration files
+**CustomCrafting v5 is still in alpha**! Properties and the structure of configuration files
 may change at any point without backwards compatibility until CustomCrafting is stable.
+
+Guides to update configs will be added to this wiki whenever a breaking change occurs. 
+However, it will involve manually editing the configs on your end!
 
 :::
 
 ## What is HOCON?
 
 HOCON (Human-Optimized Config Object Notation) is a human-friendly configuration format.  
-It is a superset of JSON, meaning any valid JSON is also valid HOCON, but HOCON provides additional features such as:
+It is a superset of JSON, meaning any valid JSON is also valid HOCON, but provides additional features such as:
 
 - **Comments**: Use `//` or `#` to add comments.
 - **Omitting Quotes**: Keys and string values often don't require quotes.
@@ -25,7 +28,7 @@ If JSON is still the preferred choice, it can be used as it is fully compatible 
 
 For more detailed information and syntax guides, visit the [official HOCON website](https://github.com/lightbend/config/tree/main#using-hocon-the-json-superset).
 
-::: warning HOCON `include` statement
+::: tip HOCON `include` statement
 CustomCrafting does **not** support the HOCON `include` statement!
 While that is more of a technical limitation at this time, it also is a valid security concern, so
 implementing it in the future is **not a priority** and would require thorough research if ever reconsidered.
