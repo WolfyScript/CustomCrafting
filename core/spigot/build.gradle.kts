@@ -55,8 +55,6 @@ tasks {
             include(project(project.projects.core.coreCommon))
             include(project(project.projects.core.coreSpigotlike))
             include(project(project.projects.core.coreSpigot))
-            include(project(project.projects.editor.editorCommon))
-            include(project(project.projects.ui.uiCommon))
             sharedLibs.bundles.sentry.get().forEach {
                 include(dependency(it))
             }
