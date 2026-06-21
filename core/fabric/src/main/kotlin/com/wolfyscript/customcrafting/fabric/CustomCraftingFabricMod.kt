@@ -5,7 +5,6 @@ import com.wolfyscript.customcrafting.core.commands.CCCommands
 import com.wolfyscript.customcrafting.core.sentry.setupSentry
 import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
-import com.wolfyscript.scafall.core.ModIdentifier
 import com.wolfyscript.scafall.loader.ScafallLoader
 import com.wolfyscript.scafall.platform.PlatformType
 import net.fabricmc.api.ModInitializer
@@ -32,9 +31,7 @@ class CustomCraftingFabricMod : ModInitializer {
 
         ScafallProvider.whenReady { // Load order isn't deterministic, so need to make sure scafall is available!
             customCrafting = boostrap.loadModule {
-                CustomCraftingFabric(logger, object : ModIdentifier {
-                    override val id: String = "customcrafting"
-                })
+                CustomCraftingFabric(logger)
             }
         }
     }

@@ -171,13 +171,13 @@ private fun SelectMatcherType(
                     onPageChange(page)
                 }
             }) {
-                Icon(stack = ItemStack(Items.CYAN_CONCRETE).snapshot())
+                Icon(stack = ItemStack(Items.CONCRETE.cyan).snapshot())
             }
             Button(onClick = {
                 page++
                 onPageChange(page)
             }) {
-                Icon(stack = ItemStack(Items.CYAN_CONCRETE).snapshot())
+                Icon(stack = ItemStack(Items.CONCRETE.cyan).snapshot())
             }
         }
     }
@@ -190,7 +190,7 @@ private fun SelectMatcherTypePage(
 ) {
     if (matchers.loading) {
         Box(Modifier.width(5.slots).height(4.slots), contentAlignment = Alignment.Center) {
-            Icon(stack = ItemStack(Items.CYAN_CONCRETE).snapshot())
+            Icon(stack = ItemStack(Items.CONCRETE.cyan).snapshot())
         }
     } else {
         Column(Modifier.width(5.slots).height(4.slots)) {

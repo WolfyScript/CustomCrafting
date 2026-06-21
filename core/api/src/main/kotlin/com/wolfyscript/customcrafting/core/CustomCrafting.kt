@@ -4,9 +4,9 @@ import com.wolfyscript.customcrafting.core.configuration.ConfigurationManager
 import com.wolfyscript.customcrafting.core.factories.Factories
 import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistries
 import com.wolfyscript.customcrafting.core.server.CustomCraftingServer
-import com.wolfyscript.scafall.core.ModIdentifier
 import com.wolfyscript.scafall.loader.module.Client
 import com.wolfyscript.scafall.loader.module.Module
+import com.wolfyscript.scafall.scheduler.TaskOwner
 import org.slf4j.Logger
 
 /**
@@ -16,7 +16,7 @@ import org.slf4j.Logger
  * * [server] The part of the API only available on the Server (Integrated or Dedicated)
  * * [client] The part of the API only available on the Client
  */
-interface CustomCrafting : Module<CustomCraftingServer, Client> {
+interface CustomCrafting : Module<CustomCraftingServer, Client>, TaskOwner {
 
     val registries: CustomCraftingRegistries
 
@@ -28,7 +28,5 @@ interface CustomCrafting : Module<CustomCraftingServer, Client> {
     val factories: Factories
 
     val logger: Logger
-
-    val identifier: ModIdentifier
 
 }

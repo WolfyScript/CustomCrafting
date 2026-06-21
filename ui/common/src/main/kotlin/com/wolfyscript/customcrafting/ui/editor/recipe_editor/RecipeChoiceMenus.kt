@@ -44,7 +44,7 @@ fun StackChoicesMenu(
                     Slot(
                         value = { choices().getOrNull(index)?.create()?.snapshot() ?: ItemStack.EMPTY.snapshot() },
                         onValueChange = {
-                            val stackRef = ItemStackRef.parse(it.createStack())
+                            val stackRef = ItemStackRef.parse(it.create())
                             if (it.isEmpty || stackRef == null) {
                                 onRemove(index)
                                 return@Slot
@@ -61,7 +61,7 @@ fun StackChoicesMenu(
         }
         Row {
             repeat(9) {
-                Icon(stack = ItemStack(Items.GRAY_STAINED_GLASS_PANE).snapshot())
+                Icon(stack = ItemStack(Items.STAINED_GLASS_PANE.gray).snapshot())
             }
         }
     }
@@ -242,7 +242,7 @@ private fun TagSelectPage(
 
 private object Defaults {
 
-    val LoadingTagsIcon = ItemStack(Items.BLUE_CONCRETE).apply {
+    val LoadingTagsIcon = ItemStack(Items.CONCRETE.blue).apply {
         set(DataComponents.ITEM_NAME, "<light_blue>Loading Tags...".deser().vanilla())
     }.snapshot()
 
