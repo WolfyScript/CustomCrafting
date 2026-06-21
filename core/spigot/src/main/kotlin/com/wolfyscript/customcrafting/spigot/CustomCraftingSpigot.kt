@@ -2,11 +2,8 @@ package com.wolfyscript.customcrafting.spigot
 
 import com.wolfyscript.customcrafting.core.CustomCraftingCommon
 import com.wolfyscript.customcrafting.core.configuration.ConfigurationManagerImpl
-import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.customcrafting.spigotlike.CustomCraftingServerSpigotLike
-import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.core.ModIdentifier
-import com.wolfyscript.scafall.identifier.Key
 import io.sentry.Sentry
 import org.bukkit.Bukkit
 import org.bukkit.Server
@@ -15,9 +12,10 @@ import org.slf4j.Logger
 
 class CustomCraftingSpigot(val plugin: Plugin, override val logger: Logger) : CustomCraftingCommon() {
 
-    override val identifier: ModIdentifier = ScafallProvider.get().getModIdentifier(Key.CUSTOMCRAFTING_NAMESPACE)!!
-
     override val configurationManager = ConfigurationManagerImpl(this, plugin.dataFolder)
+    override val identifier: ModIdentifier = object : ModIdentifier {
+        override val id: String = "customcrafting"
+    }
 
     override fun onInit() {
         Sentry.configureScope { scope ->
