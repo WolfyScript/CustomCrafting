@@ -23,7 +23,7 @@ export default async () => {
             // https://vitepress.dev/reference/default-theme-config
             nav: [
                 {text: 'Home', link: '/'},
-                {text: 'Configuration', link: '/configuration/configuration'},
+                {text: 'Configuration', link: '/configuration/'},
             ],
 
             sidebar: [
@@ -32,14 +32,11 @@ export default async () => {
                 },
                 {
                     text: 'Configuration',
+                    link: '/configuration/index',
                     items: [
                         {
-                            text: 'Introduction',
-                            link: '/configuration/configuration'
-                        },
-                        {
                             text: 'Resources',
-                            link: '/configuration/resources/resources',
+                            link: '/configuration/resources/index',
                             items: [
                                 {
                                     text: 'Sources',
@@ -55,8 +52,8 @@ export default async () => {
                 },
                 {
                     text: 'Recipes',
+                    link: '/recipes/index',
                     items: [
-                        {text: 'Overview', link: '/recipes/index'},
                         {
                             text: 'Recipe Types',
                             items: [

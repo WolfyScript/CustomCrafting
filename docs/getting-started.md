@@ -14,9 +14,9 @@ Due to the complexity, there are some recommended steps to get started.
 
 ## Steps
 1. **Understand the config format & structure**:  
-    Read the [Configuration](configuration/configuration) page.
+    Read the [Configuration](configuration/index) page.
 2. **Configure the Resources**:   
-    Read the [Resources](configuration/resources/resources) page and configure where to load resources from.
+    Read the [Resources](configuration/resources/index) page and configure where to load resources from.
 3. **Explore Recipe Types**:   
     Read the [Recipe Overview](recipes/index).
 4. **Define your Recipes**:   

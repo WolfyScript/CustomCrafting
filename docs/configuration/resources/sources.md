@@ -38,8 +38,12 @@ A source that loads the resources from the defined directory.
 ##### `path` <Badge type="info" text="string" />
 
 The path to the directory that contains the resources.
-Note that this directory will contain the resource type specific directories, that then contain the resources
-themselves.
+This path may be a relative or absolute path.
+* **relative**: A path within the `<cc_root>/resources` directory
+* **absolute**: A full path starting with the system root e.g. `/`
+
+The specified directory will contain the resource type-specific directories such as `recipes`.   
+So the final path for recipes would be `<source_path>/recipes/*/**/<recipe>.conf`
 
 :::
 
@@ -47,8 +51,13 @@ themselves.
 
 ```hocon
 type = "directory"
-path = "path/to/resources"
 overwriteExisting = true
+
+// relative path in `<cc_root>/resources`
+path = "path/to/resources"
+
+// absolute path; Make sure CustomCrafting has read/write access!
+path = "/home/user/path/to/resources"
 ```
 
 ## SQL Source

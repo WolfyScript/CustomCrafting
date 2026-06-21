@@ -33,7 +33,7 @@ implementing it in the future is **not a priority** and would require thorough r
 
 ## Configuration Structure
 
-* `<root>` - The root dir. Actual location depends on the platform.  
+* `<cc_root>` - The root dir. Actual location depends on the platform.  
    **Spigot/Paper**: `plugins/customcrafting`   
    **Fabric**: `config/customcrafting`
 
@@ -41,13 +41,14 @@ implementing it in the future is **not a priority** and would require thorough r
 
     * `config` - Customisable configuration files
   
-      * `resources` - Configuration files for resources
+      * `resources` - Configuration files for [resources](/configuration/resources/)
     
     * `resources` - Default location for resources
   
         * `defaults` - Includes the default recipes shipped with CC
       
-        * `*/**` - Any directories created the user from which to load custom recipes
+        * `*/**` - Any custom directories from which to load resources.  
+          (relative source paths; see [sources](/configuration/resources/sources))
       
           * `recipes` - A resource type directory containing recipe config files
           * `ingredients` - A resource type directory containing ingredient config files

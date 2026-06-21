@@ -1,6 +1,6 @@
 # Recipes
 Recipe configuration files are stored in the directory:   
-`<root>/resources/*/**/recipes` 
+`<root>/resources/<souce_dir>/recipes/[<sub_dir>]` 
 
 Each recipe consists of the common properties:
 
