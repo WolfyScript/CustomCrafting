@@ -69,6 +69,10 @@ export default async () => {
                         {text: 'Ingredients', link: '/recipes/ingredients'},
                         {text: 'Results', link: '/recipes/results'},
                     ]
+                },
+                {
+                    text: 'Bugs & Errors',
+                    link: '/bugs_and_errors'
                 }
             ],
 
