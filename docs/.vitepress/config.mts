@@ -14,7 +14,7 @@ export default async () => {
             ['link', { rel: 'icon', href: '/CustomCrafting/favicon.svg' }]
         ],
         themeConfig: {
-            logo: '/favicon.svg',
+            logo: '/logo.svg',
 
             search: {
                 provider: "local"
