@@ -1,13 +1,17 @@
 package com.wolfyscript.customcrafting.spigot
 
 import com.wolfyscript.customcrafting.CustomCraftingBoostrap
+import com.wolfyscript.customcrafting.core.data.DataManager
 import com.wolfyscript.customcrafting.core.sentry.setupSentry
+import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.loader.ScafallLoader
 import com.wolfyscript.scafall.platform.PlatformType
 import net.minecraft.server.MinecraftServer
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.LoggerFactory
+import java.io.File
 
 class SpigotLoaderPlugin : JavaPlugin() {
 
@@ -23,7 +27,8 @@ class SpigotLoaderPlugin : JavaPlugin() {
     init {
         setupSentry(
             MinecraftServer.getServer().serverVersion,
-            PlatformType.PAPER
+            PlatformType.PAPER,
+            File(dataFolder, "${Key.CUSTOMCRAFTING_NAMESPACE}/${DataManager.DATA_PATH}")
         ) { scope ->
             scope.setTag("bukkit.version", Bukkit.getVersion())
         }

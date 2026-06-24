@@ -2,9 +2,11 @@ package com.wolfyscript.customcrafting.fabric
 
 import com.wolfyscript.customcrafting.CustomCraftingBoostrap
 import com.wolfyscript.customcrafting.core.commands.CCCommands
+import com.wolfyscript.customcrafting.core.data.DataManager
 import com.wolfyscript.customcrafting.core.sentry.setupSentry
 import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
 import com.wolfyscript.scafall.ScafallProvider
+import com.wolfyscript.scafall.identifier.Key
 import com.wolfyscript.scafall.loader.ScafallLoader
 import com.wolfyscript.scafall.platform.PlatformType
 import net.fabricmc.api.ModInitializer
@@ -12,6 +14,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import org.slf4j.LoggerFactory
+import java.io.File
 
 class CustomCraftingFabricMod : ModInitializer {
 
@@ -26,7 +29,8 @@ class CustomCraftingFabricMod : ModInitializer {
     init {
         setupSentry(
             FabricLoader.getInstance().rawGameVersion,
-            PlatformType.FABRIC
+            PlatformType.FABRIC,
+            File(FabricLoader.getInstance().configDir.toFile(), "${Key.CUSTOMCRAFTING_NAMESPACE}/${DataManager.DATA_PATH}"),
         )
 
         ScafallProvider.whenReady { // Load order isn't deterministic, so need to make sure scafall is available!

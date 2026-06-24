@@ -1,6 +1,7 @@
 package com.wolfyscript.customcrafting.core
 
 import com.wolfyscript.customcrafting.core.configuration.ConfigurationManager
+import com.wolfyscript.customcrafting.core.data.DataManager
 import com.wolfyscript.customcrafting.core.factories.Factories
 import com.wolfyscript.customcrafting.core.registry.CustomCraftingRegistries
 import com.wolfyscript.customcrafting.core.server.CustomCraftingServer
@@ -21,6 +22,8 @@ interface CustomCrafting : Module<CustomCraftingServer, Client>, TaskOwner {
     val registries: CustomCraftingRegistries
 
     val configurationManager: ConfigurationManager
+
+    val dataManager: DataManager
 
     /**
      * The factories to instantiate objects with platform specific implementations.
