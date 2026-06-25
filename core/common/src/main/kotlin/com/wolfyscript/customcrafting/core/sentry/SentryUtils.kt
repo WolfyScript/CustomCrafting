@@ -5,7 +5,6 @@ import com.wolfyscript.scafall.platform.PlatformType
 import io.sentry.ScopeCallback
 import io.sentry.Sentry
 import io.sentry.SentryOptions
-import io.sentry.SystemOutLogger
 import io.sentry.log4j2.SentryAppender
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.core.LoggerContext
@@ -95,14 +94,14 @@ private fun initSentry(dataDir: File) {
         it.isEnableUncaughtExceptionHandler = true
 
         // just some debug stuff, should be disabled in production!
-        it.isDebug = false
-        it.setLogger(SystemOutLogger())
+//        it.isDebug = false
+//        it.setLogger(SystemOutLogger())
 
         it.beforeSend = SentryOptions.BeforeSendCallback({ event, hint ->
             // In case the error originates in an external logger we need to filter out unrelated errors
             // e.i. errors from other mods/plugins, vanilla minecraft errors, etc.
-            val externalLogger = event.logger?.startsWith("com.wolfyscript")?.not() ?: false
-            if (externalLogger) {
+            val inAppLogger = event.logger?.startsWith("com.wolfyscript") ?: false
+            if (!inAppLogger) {
                 // Filter out errors that do not contain the com.wolfyscript package
                 // or the ones without any exceptions
                 val inApp = event.exceptions?.any { exception ->
