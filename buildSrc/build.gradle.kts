@@ -27,6 +27,7 @@ dependencies {
     implementation(sharedLibs.plugins.paperweight.userdev.depNotation())
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${sharedLibs.versions.kotlin.get()}")
     implementation(sharedLibs.plugins.fabric.loom.depNotation())
+    implementation(libs.plugins.git.changelog.depNotation())
 }
 
 kotlin {

@@ -32,6 +32,7 @@ plugins {
     id("build.settings.default")
     id("build.spigotlike")
     id("build.docker.run")
+    id("build.docs.changelog")
 }
 
 dependencies {
@@ -63,6 +64,10 @@ tasks {
 
         relocate("org.bstats", "com.wolfyscript.customcrafting.spigot.bstats")
         relocate("io.sentry", "com.wolfyscript.customcrafting.core.sentry")
+    }
+    gitChangelog {
+        file.set(File(".changelog/core-spigot.md"))
+        settingsFile.set("${rootProject.rootDir.absolutePath}/.changelog/settings-core-spigot.json")
     }
 }
 

@@ -10,6 +10,7 @@ plugins {
     id("build.settings.default")
     id("build.spigotlike")
     id("build.docker.run")
+    id("build.docs.changelog")
 }
 
 dependencies {
@@ -46,6 +47,10 @@ tasks {
         relocate("org.bstats", "com.wolfyscript.customcrafting.bukkit.metrics")
         relocate("io.sentry", "com.wolfyscript.customcrafting.core.sentry")
 //        relocate("com.fasterxml.jackson", "com.wolfyscript.scafall.lib.jackson")
+    }
+    gitChangelog {
+        file.set(File(".changelog/core-paper.md"))
+        settingsFile.set("${rootProject.rootDir.absolutePath}/.changelog/settings-core-paper.json")
     }
 }
 

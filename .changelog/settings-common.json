@@ -1,0 +1,6 @@
+{
+  "pathFilters": [
+    "core/common",
+    "core/api"
+  ]
+}

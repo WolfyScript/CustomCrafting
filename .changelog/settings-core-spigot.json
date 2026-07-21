@@ -1,0 +1,8 @@
+{
+  "pathFilters": [
+    "core/common",
+    "core/api",
+    "core/spigot",
+    "core/spigotlike"
+  ]
+}

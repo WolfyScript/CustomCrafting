@@ -1,0 +1,36 @@
+{{#ifContainsType commits type='feat'}}
+
+### Features
+  {{#commits}}
+    {{#ifCommitType . type='feat'}}
+  - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}))
+    {{/ifCommitType}}
+  {{/commits}}
+{{/ifContainsType}}
+{{#ifContainsType commits type='fix'}}
+
+### Bug Fixes
+  {{#commits}}
+    {{#ifCommitType . type='fix'}}
+  - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}))
+    {{/ifCommitType}}
+  {{/commits}}
+{{/ifContainsType}}
+{{#ifContainsType commits type='refactor'}}
+
+### Refactoring
+  {{#commits}}
+    {{#ifCommitType . type='refactor'}}
+      - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}))
+    {{/ifCommitType}}
+  {{/commits}}
+{{/ifContainsType}}
+{{#ifContainsType commits type='docs'}}
+
+### Documentation
+  {{#commits}}
+    {{#ifCommitType . type='docs'}}
+      - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}))
+    {{/ifCommitType}}
+  {{/commits}}
+{{/ifContainsType}}

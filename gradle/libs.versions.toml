@@ -13,6 +13,8 @@ oraxen = "1.211.0"
 protocollib = "5.3.0"
 bstats = "3.0.0"
 
+git-changelog = "3.+"
+
 [libraries]
 viewportl = { module = "com.wolfyscript.viewportl:viewportl-api", version.ref = "viewportl" }
 
@@ -28,3 +30,6 @@ mythic-dist = { module = "io.lumine:Mythic-Dist", version.ref = "mythic" }
 placeholderapi = { module = "me.clip:placeholderapi", version.ref = "placeholderapi" }
 oraxen = { module = "io.th0rgal:oraxen", version.ref = "oraxen"}
 protocollib = { module = "com.comphenix.protocol:ProtocolLib", version.ref = "protocollib" }
+
+[plugins]
+git-changelog = { id = "se.bjurr.gitchangelog.git-changelog-gradle-plugin", version.ref = "git-changelog"}

@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.invoke
 import utils.archiveName
 
 plugins {
@@ -8,6 +9,7 @@ plugins {
     id("build.settings.default")
     id("build.settings.fabric-loom")
     id("build.docker.run")
+    id("build.docs.changelog")
 }
 
 loom {
@@ -68,6 +70,10 @@ tasks {
     }
     java {
 //        withSourcesJar()
+    }
+    gitChangelog {
+        file.set(File(".changelog/core-fabric.md"))
+        settingsFile.set("${rootProject.rootDir.absolutePath}/.changelog/settings-core-fabric.json")
     }
 }
 

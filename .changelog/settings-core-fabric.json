@@ -1,0 +1,7 @@
+{
+  "pathFilters": [
+    "core/common",
+    "core/api",
+    "core/fabric"
+  ]
+}

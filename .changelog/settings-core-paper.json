@@ -1,0 +1,8 @@
+{
+  "pathFilters": [
+    "core/common",
+    "core/api",
+    "core/paper",
+    "core/spigotlike"
+  ]
+}

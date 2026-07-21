@@ -1,0 +1,9 @@
+{{#ifContainsBreaking commits}}
+
+### Breaking changes
+  {{#commits}}
+    {{#ifCommitBreaking .}}
+  - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}))
+    {{/ifCommitBreaking}}
+  {{/commits}}
+{{/ifContainsBreaking}}
