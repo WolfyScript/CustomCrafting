@@ -21,7 +21,7 @@
 ### Refactoring
   {{#commits}}
     {{#ifCommitType . type='refactor'}}
-      - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}))
+  - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}))
     {{/ifCommitType}}
   {{/commits}}
 {{/ifContainsType}}
@@ -30,7 +30,7 @@
 ### Documentation
   {{#commits}}
     {{#ifCommitType . type='docs'}}
-      - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}))
+  - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}))
     {{/ifCommitType}}
   {{/commits}}
 {{/ifContainsType}}

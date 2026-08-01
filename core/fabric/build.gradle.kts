@@ -10,6 +10,7 @@ plugins {
     id("build.settings.fabric-loom")
     id("build.docker.run")
     id("build.docs.changelog")
+    id("build.publish.modrinth")
 }
 
 loom {
@@ -90,5 +91,11 @@ minecraftServers {
             extraEnv.put("MODRINTH_PROJECTS", "fabric-api, fabric-language-kotlin")
             extraEnv.put("FABRIC_LOADER_VERSION", sharedLibs.versions.fabric.loader.get())
         }
+    }
+}
+
+modrinth {
+    dependencies {
+        required.project("fabric-api")
     }
 }

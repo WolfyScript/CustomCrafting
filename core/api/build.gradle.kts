@@ -3,6 +3,7 @@ plugins {
     `maven-publish`
     id("build.settings.default")
     id("build.settings.fabric-loom")
+    id("build.publish.artifact")
 }
 
 dependencies {
@@ -13,7 +14,7 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("lib") {
+        create<MavenPublication>("maven") {
             from(components.getByName("java"))
             groupId = "com.wolfyscript.customcrafting.core"
             artifactId = "api"

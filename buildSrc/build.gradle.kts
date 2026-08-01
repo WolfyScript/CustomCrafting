@@ -25,6 +25,8 @@ dependencies {
     implementation(sharedLibs.plugins.devtools.docker.run.depNotation())
     implementation(sharedLibs.plugins.devtools.docker.minecraft.depNotation())
     implementation(sharedLibs.plugins.paperweight.userdev.depNotation())
+    implementation(sharedLibs.plugins.artifactory.depNotation())
+    implementation(sharedLibs.plugins.modrinth.minotaur.depNotation())
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${sharedLibs.versions.kotlin.get()}")
     implementation(sharedLibs.plugins.fabric.loom.depNotation())
     implementation(libs.plugins.git.changelog.depNotation())

@@ -4,13 +4,13 @@ plugins {
     kotlin("jvm")
     `java-library`
     `maven-publish`
-    alias(sharedLibs.plugins.artifactory)
     alias(sharedLibs.plugins.shadow)
     alias(sharedLibs.plugins.resource.factory.bukkit)
     id("build.settings.default")
     id("build.spigotlike")
     id("build.docker.run")
     id("build.docs.changelog")
+    id("build.publish.modrinth")
 }
 
 dependencies {
@@ -93,4 +93,8 @@ minecraftServers {
             ports.add("25570:25565")
         }
     }
+}
+
+modrinth {
+    loaders.addAll("paper", "purpur")
 }

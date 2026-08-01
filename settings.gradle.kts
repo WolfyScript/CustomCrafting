@@ -31,7 +31,16 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 dependencyResolutionManagement {
     repositories {
-//        mavenLocal()
+        mavenLocal()
+        maven (url = "https://repo.codemc.io/repository/maven-public/")
+        maven(url = "https://repo.papermc.io/repository/maven-public/")
+        maven(url = "https://artifacts.wolfyscript.com/artifactory/gradle-dev")
+        maven(url = "https://repo.dmulloy2.net/repository/public/")
+        maven(url = "https://repo.maven.apache.org/maven2/")
+        maven(url = "https://mvn.lumine.io/repository/maven-public/")
+        maven(url = "https://repo.oraxen.com/releases")
+        google()
+        maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://artifacts.wolfyscript.com/artifactory/gradle-dev")
     }
 
