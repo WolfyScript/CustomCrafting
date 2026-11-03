@@ -46,7 +46,7 @@ dependencies {
     compileOnly(libs.mythic.dist)
     compileOnly(libs.placeholderapi)
     compileOnly(libs.oraxen)
-    compileOnly(libs.nbtapi)
+    compileOnly(sharedLibs.item.nbt.api)
 
     paperweight.paperDevBundle(sharedLibs.versions.papermc.get())
 }

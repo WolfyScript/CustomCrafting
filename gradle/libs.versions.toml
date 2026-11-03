@@ -1,12 +1,11 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-scafall = "1.0-alpha.2.0"
+scafall = "1.0-alpha.3.0-SNAPSHOT"
 viewportl = "alpha0.1.0.0-SNAPSHOT"
 adventure-platform-api = "4.1.0"
 
 # Spigot/Paper/Folia
-item-nbt-api = "2.11.3"
 mythic = "5.3.5"
 placeholderapi = "2.11.6"
 oraxen = "1.211.0"
@@ -25,7 +24,6 @@ scafall-sponge-impl = { module = "com.wolfyscript.scafall.sponge:sponge", versio
 
 adventure-platform-bukkit = { module = "net.kyori:adventure-platform-bukkit", version.ref = "adventure-platform-api" }
 bstats = { module = "org.bstats:bstats-bukkit", version.ref = "bstats" }
-nbtapi = { module = "de.tr7zw:item-nbt-api-plugin", version.ref = "item-nbt-api"}
 mythic-dist = { module = "io.lumine:Mythic-Dist", version.ref = "mythic" }
 placeholderapi = { module = "me.clip:placeholderapi", version.ref = "placeholderapi" }
 oraxen = { module = "io.th0rgal:oraxen", version.ref = "oraxen"}

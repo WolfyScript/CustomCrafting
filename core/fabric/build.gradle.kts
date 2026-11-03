@@ -59,8 +59,8 @@ tasks {
         finalizedBy("fabric_copy")
 
         dependencies {
-            include(project(project.projects.core.coreApi))
-            include(project(project.projects.core.coreCommon))
+            include(project(rootProject.projects.core.coreApi))
+            include(project(rootProject.projects.core.coreCommon))
 
             sharedLibs.bundles.sentry.get().forEach {
                 include(dependency(it))

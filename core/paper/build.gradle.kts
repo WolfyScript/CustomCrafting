@@ -32,10 +32,10 @@ tasks {
         archiveFileName.set("${customArchiveName}.jar")
         metaInf.duplicatesStrategy = DuplicatesStrategy.FAIL
         dependencies {
-            include(project(project.projects.core.coreApi))
-            include(project(project.projects.core.coreCommon))
-            include(project(project.projects.core.coreSpigotlike))
-            include(project(project.projects.core.corePaper))
+            include(project(rootProject.projects.core.coreApi))
+            include(project(rootProject.projects.core.coreCommon))
+            include(project(rootProject.projects.core.coreSpigotlike))
+            include(project(rootProject.projects.core.corePaper))
 
             sharedLibs.bundles.sentry.get().forEach {
                 include(dependency(it))

@@ -52,10 +52,10 @@ tasks {
         finalizedBy("spigot_copy")
 
         dependencies {
-            include(project(project.projects.core.coreApi))
-            include(project(project.projects.core.coreCommon))
-            include(project(project.projects.core.coreSpigotlike))
-            include(project(project.projects.core.coreSpigot))
+            include(project(rootProject.projects.core.coreApi))
+            include(project(rootProject.projects.core.coreCommon))
+            include(project(rootProject.projects.core.coreSpigotlike))
+            include(project(rootProject.projects.core.coreSpigot))
             sharedLibs.bundles.sentry.get().forEach {
                 include(dependency(it))
             }
