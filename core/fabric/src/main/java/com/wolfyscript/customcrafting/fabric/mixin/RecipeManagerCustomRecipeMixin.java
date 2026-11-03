@@ -8,10 +8,15 @@ import com.wolfyscript.customcrafting.fabric.inject.RecipeManagerCustomRecipesEx
 import com.wolfyscript.customcrafting.fabric.inject.RecipeRegistrationUtils;
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomRecipeProxyMap;
 import com.wolfyscript.scafall.ScafallProvider;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
+import net.minecraft.world.item.crafting.display.RecipeDisplayId;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jspecify.annotations.Nullable;
@@ -100,9 +105,50 @@ public abstract class RecipeManagerCustomRecipeMixin implements RecipeManagerCus
                     target = "Lnet/minecraft/world/item/crafting/RecipeManager;unpackRecipeInfo(Ljava/lang/Iterable;Lnet/minecraft/world/flag/FeatureFlagSet;)Ljava/util/List;"
             ))
     private List<RecipeManager.ServerDisplayInfo> extractProxyRecipeDisplays(List<RecipeManager.ServerDisplayInfo> original, FeatureFlagSet enabledFlags) {
-        var customInfo = unpackRecipeInfo(customRecipeProxies.values(), enabledFlags);
-        customInfo.addAll(original);
-        return customInfo;
+        var customInfo = extractCustomRecipeDisplays(original.size(), enabledFlags);
+        var merged = new ArrayList<RecipeManager.ServerDisplayInfo>(customInfo.size() + original.size());
+        merged.addAll(original);
+        merged.addAll(customInfo);
+        return merged;
+    }
+
+    /**
+     * Modified version of the vanilla display recipe extraction with a custom start index to create correct display ids.
+     * @param startIndex The next index to start the custom recipe displays.
+     * @param enabledFeatures Minecraft's enabled features
+     * @return The custom recipe displays
+     */
+    @Unique
+    private List<RecipeManager.ServerDisplayInfo> extractCustomRecipeDisplays(int startIndex, FeatureFlagSet enabledFeatures) {
+        List<RecipeManager.ServerDisplayInfo> result = new ArrayList<>();
+        Object2IntMap<String> recipeGroups = new Object2IntOpenHashMap<>();
+
+        for(RecipeHolder<?> recipeHolder : customRecipeProxies.values()) {
+            Recipe<?> recipe = recipeHolder.value();
+            OptionalInt groupId;
+            if (recipe.group().isEmpty()) {
+                groupId = OptionalInt.empty();
+            } else {
+                groupId = OptionalInt.of(recipeGroups.computeIfAbsent(recipe.group(), (idx) -> recipeGroups.size()));
+            }
+
+            Optional<List<Ingredient>> placementCheck;
+            if (recipe.isSpecial()) {
+                placementCheck = Optional.empty();
+            } else {
+                placementCheck = Optional.of(recipe.placementInfo().ingredients());
+            }
+
+            for(RecipeDisplay recipeDisplay : recipe.display()) {
+                if (recipeDisplay.isEnabled(enabledFeatures)) {
+                    int nextDisplayId = startIndex + result.size();
+                    RecipeDisplayId id = new RecipeDisplayId(nextDisplayId);
+                    RecipeDisplayEntry entry = new RecipeDisplayEntry(id, recipeDisplay, groupId, recipe.recipeBookCategory(), placementCheck);
+                    result.add(new RecipeManager.ServerDisplayInfo(entry, recipeHolder));
+                }
+            }
+        }
+        return result;
     }
 
     @ModifyReturnValue(method = "getRecipeFor(Lnet/minecraft/world/item/crafting/RecipeType;Lnet/minecraft/world/item/crafting/RecipeInput;Lnet/minecraft/world/level/Level;)Ljava/util/Optional;", at = @At("RETURN"))
