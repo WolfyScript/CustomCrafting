@@ -1,0 +1,3 @@
+classTweaker  v1  official
+
+inject-interface  net/minecraft/world/item/crafting/SmithingRecipeInput com/wolfyscript/customcrafting/fabric/inject/RecipeInputSmithingCustomExt

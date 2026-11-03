@@ -16,6 +16,9 @@ plugins {
 loom {
     serverOnlyMinecraftJar()
 
+    accessWidenerPath = file("src/main/resources/customcrafting.classtweaker")
+    enableTransitiveAccessWideners = true
+
     mods {
         create("customcrafting") {
             sourceSet(sourceSets.main.get())

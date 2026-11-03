@@ -23,6 +23,7 @@
   "mixins": [
     "customcrafting.mixins.json"
   ],
+  "accessWidener": "customcrafting.classtweaker",
   "depends": {
     "scafall": "${scafallVersion}",
     "fabricloader": ">=${fabricLoaderVersion}",
