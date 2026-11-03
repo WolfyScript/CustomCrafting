@@ -19,8 +19,7 @@ fun RecipeReference<CustomRecipeCooking>.matches(input: SingleRecipeInput, level
         return false
     }
     val recipe = value ?: return false
-    if (input !is RecipeInputSingleSlotCustomExt) return false
-    val data = input.customInput ?: return false
+    val data = (input as RecipeInputSingleSlotCustomExt).customInput ?: return false
     val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
     val result = recipe.evaluate(data, context) ?: return false
@@ -35,8 +34,8 @@ fun RecipeReference<CustomRecipeCooking>.assemble(
         return ItemStack.EMPTY
     }
     val recipe = value ?: return null
-    if (input !is RecipeInputSingleSlotCustomExt) return null
-    val resultInfo = input.resultInfo ?: return null
+//    if (input !is RecipeInputSingleSlotCustomExt) return null
+    val resultInfo = (input as RecipeInputSingleSlotCustomExt).resultInfo ?: return null
     val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
     return recipe.result.compute(resultInfo, context, Random).unwrap()

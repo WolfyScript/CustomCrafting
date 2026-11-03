@@ -7,6 +7,7 @@ import com.wolfyscript.scafall.wrappers.minecraft.unwrap
 import com.wolfyscript.scafall.wrappers.minecraft.wrap
 import com.wolfyscript.scafall.wrappers.world.items.ScafallItemStack
 import net.minecraft.util.Mth
+import net.minecraft.util.Prediction
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.phys.Vec3
@@ -43,7 +44,7 @@ internal class IngredientConsumerConsumeImpl(override val remains: IngredientRem
                     player.inventory.add(it.unwrap())
                 }
                 items.forEach {
-                    player.drop(it.unwrap(), true, false)
+                    player.drop(it.unwrap(), true, Prediction.SERVER_ONLY)
                 }
                 return finalStack
             }

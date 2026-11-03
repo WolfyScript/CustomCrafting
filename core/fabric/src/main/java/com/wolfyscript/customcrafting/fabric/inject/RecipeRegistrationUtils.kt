@@ -1,21 +1,9 @@
 package com.wolfyscript.customcrafting.fabric.inject
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
+import com.wolfyscript.customcrafting.core.recipe.*
 import com.wolfyscript.customcrafting.fabric.CustomCraftingFabric
-import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomBlastingRecipeProxy
-import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomCampfireRecipeProxy
-import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomRecipeShapedProxy
-import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomRecipeShapelessProxy
-import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomSmeltingRecipeProxy
-import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomSmithingRecipeProxy
-import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomSmokingRecipeProxy
-import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomStonecutterRecipeProxy
-import com.wolfyscript.customcrafting.core.recipe.CraftingFormula
-import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCooking
-import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting
-import com.wolfyscript.customcrafting.core.recipe.CustomRecipeSmithing
-import com.wolfyscript.customcrafting.core.recipe.CustomRecipeStonecutting
-import com.wolfyscript.customcrafting.core.recipe.RecipeReference
+import com.wolfyscript.customcrafting.fabric.recipes.proxy.*
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
@@ -23,22 +11,16 @@ import net.minecraft.world.item.crafting.RecipeHolder
 
 object RecipeRegistrationUtils {
 
-    fun registerProxyRecipes(): Collection<RecipeHolder<*>> {
-        val list = mutableListOf<RecipeHolder<*>>()
+    fun collectProxyRecipes(): Collection<RecipeHolder<*>> {
         val customCrafting = CustomCraftingProvider.get() as CustomCraftingFabric
-        customCrafting.logger.info("  proxy recipes:")
-        customCrafting.server?.recipeManager?.recipes()?.forEach {
-            customCrafting.logger.info("  -> ${it.key}")
-            val proxyRecipe = it.toVanillaProxyRecipe()
-            proxyRecipe.forEach { recipe ->
-                customCrafting.logger.info("  proxy: ${recipe.id().identifier()}")
-                list.add(recipe)
-            }
-        }
-        return list
+        return customCrafting.server?.recipeManager?.recipes()?.flatMap {
+            val proxyRecipes = it.toVanillaProxyRecipe()
+            customCrafting.logger.debug("  [{}] proxies: {}", it.key, proxyRecipes)
+            proxyRecipes
+        } ?: emptyList()
     }
 
-    fun removeExistingProxyRecipes(recipes: Collection<RecipeHolder<*>>) : MutableCollection<RecipeHolder<*>> {
+    fun removeExistingProxyRecipes(recipes: Collection<RecipeHolder<*>>): MutableCollection<RecipeHolder<*>> {
         val mutableRecipes = recipes.toMutableList()
         mutableRecipes.removeAll { it.value is ProxyRecipe }
         return mutableRecipes
@@ -56,6 +38,7 @@ object RecipeRegistrationUtils {
                     else -> null
                 }
             }
+
             is CustomRecipeCooking -> {
                 this as RecipeReference<CustomRecipeCooking>
                 val processing = recipe.processing
@@ -66,23 +49,29 @@ object RecipeRegistrationUtils {
                     is CustomRecipeCooking.WorkstationProcessing.Campfire -> CustomCampfireRecipeProxy(this)
                 }
             }
+
             is CustomRecipeSmithing -> {
                 this as RecipeReference<CustomRecipeSmithing>
                 CustomSmithingRecipeProxy(this)
             }
+
             is CustomRecipeStonecutting -> {
                 this as RecipeReference<CustomRecipeStonecutting>
                 recipe as CustomRecipeStonecutting
 
                 if (recipe.flattenResult) {
                     return recipe.result.choices.all().mapIndexed { index, result ->
-                        val key = ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(key.namespace, "${key.value}_$index"))
+                        val key = ResourceKey.create(
+                            Registries.RECIPE,
+                            Identifier.fromNamespaceAndPath(key.namespace, "${key.value}_$index")
+                        )
                         RecipeHolder(key, CustomStonecutterRecipeProxy(this, result.create().unwrap()))
                     }.toList()
                 }
 
                 CustomStonecutterRecipeProxy(this)
             }
+
             else -> null
         }
         if (proxy != null) {

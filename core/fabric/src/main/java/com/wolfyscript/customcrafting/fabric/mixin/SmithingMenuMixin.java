@@ -45,7 +45,7 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         ),
         method = "createResult"
     )
-    private void addCustomInput(CallbackInfo ci, @Local SmithingRecipeInput smithingRecipeInput) {
+    private void addCustomInput(CallbackInfo ci, @Local(name = "input") SmithingRecipeInput smithingRecipeInput) {
         RecipeInput.SmithingRecipeInput customInput = RecipeInput.SmithingRecipeInput.Companion.of(
             ItemStackWrappersKt.wrap(getItems().get(0)),
             ItemStackWrappersKt.wrap(getItems().get(1)),
@@ -62,7 +62,7 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         ),
         method = "createResult"
     )
-    private void addRecipeEvalResult(CallbackInfo ci, @Local SmithingRecipeInput smithingRecipeInput) {
+    private void addRecipeEvalResult(CallbackInfo ci, @Local(name = "input") SmithingRecipeInput smithingRecipeInput) {
         var result = ((RecipeInputSmithingCustomExt)(Object) smithingRecipeInput).getResultInfo();
         if (!(resultSlots instanceof CCResultContainerExt resultSlotsExt)) return;
         resultSlotsExt.setResultInfo(result);
@@ -93,7 +93,7 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         ),
         cancellable = true
     )
-    private void shrinkCustomRecipe(Player player, ItemStack stack, CallbackInfo ci) {
+    private void shrinkCustomRecipe(Player player, ItemStack carried, CallbackInfo ci) {
         var resultInfo = ((CCResultContainerExt) resultSlots).getResultInfo();
         if (resultInfo == null || resultInfo.getRecipe().getValue() == null) return;
         ci.cancel(); // Return before vanilla logic

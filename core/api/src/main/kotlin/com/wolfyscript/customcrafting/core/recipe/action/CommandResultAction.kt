@@ -57,10 +57,8 @@ internal class CommandResultAction(
             Vec2(0.0f, 0.0f),
             level,
             LevelBasedPermissionSet.GAMEMASTER,
-            defaultName,
             defaultCompName,
-            server,
-            player
+            server
         )
 
         for (command in commands) {

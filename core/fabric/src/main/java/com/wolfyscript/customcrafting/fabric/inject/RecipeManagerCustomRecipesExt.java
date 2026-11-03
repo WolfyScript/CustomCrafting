@@ -7,6 +7,6 @@ public interface RecipeManagerCustomRecipesExt {
      * This includes recipe types that have a vanilla counterpart.
      * Others like Grindstone recipes are not registered as proxy recipes.
      */
-    void registerProxyRecipes();
+    void customCrafting_registerProxyRecipes();
 
 }

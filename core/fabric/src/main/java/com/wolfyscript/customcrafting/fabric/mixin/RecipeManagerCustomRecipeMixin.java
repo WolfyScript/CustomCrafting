@@ -1,63 +1,159 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.wolfyscript.customcrafting.CustomCraftingProvider;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeManagerCustomRecipesExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeRegistrationUtils;
+import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomRecipeProxyMap;
 import com.wolfyscript.scafall.ScafallProvider;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeMap;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.Level;
+import org.apache.commons.lang3.NotImplementedException;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+/**
+ * Integrates vanilla recipes that defer to custom recipes into the vanilla RecipeManager without modifying the original RecipeMap.
+ */
 @Mixin(RecipeManager.class)
 public abstract class RecipeManagerCustomRecipeMixin implements RecipeManagerCustomRecipesExt {
 
-    @Shadow
-    private RecipeMap recipes;
+    @Unique
+    private CustomRecipeProxyMap customRecipeProxies = CustomRecipeProxyMap.Companion.getEMPTY();
+
+    @Unique
+    private Collection<RecipeHolder<?>> customLearnableRecipes = List.of();
 
     @Shadow
-    public abstract void finalizeRecipeLoading(FeatureFlagSet enabledFeatures);
+    public abstract void finalizeRecipeLoading(FeatureFlagSet enabledFlags);
 
     @Shadow
     @Final
     private static Logger LOGGER;
 
-    @Inject(method = "prepare(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)Lnet/minecraft/world/item/crafting/RecipeMap;", at = @At("RETURN"), cancellable = true)
-    private void registerCustomRecipeProxies(ResourceManager resourceManager, ProfilerFiller profilerFiller, @NotNull CallbackInfoReturnable<RecipeMap> cir) {
-        var current = cir.getReturnValue();
-        LOGGER.info("Registering Vanilla Recipes");
+    @Shadow
+    private static boolean isIngredientEnabled(final FeatureFlagSet enabledFlags, final Ingredient ingredient) {
+        throw new NotImplementedException();
+    }
 
-        // Reload the custom recipes when the vanilla resources are reloaded.
-        // Not called on initial startup, since CustomCrafting is not loaded yet.
+    @Shadow
+    private static List<RecipeManager.ServerDisplayInfo> unpackRecipeInfo(final Iterable<RecipeHolder<?>> recipes, final FeatureFlagSet enabledFeatures) {
+        throw new NotImplementedException();
+    }
+
+    @Inject(method = "<init>", at = @At("TAIL"))
+    private void init(HolderLookup.Provider registries, CallbackInfo ci) {
         if (CustomCraftingProvider.Companion.registered()) {
-            CustomCraftingProvider.Companion.get().getLogger().info("Registering Proxy Recipes");
-            List<RecipeHolder<?>> newList = new ArrayList<>(current.values());
-            newList.addAll(RecipeRegistrationUtils.INSTANCE.registerProxyRecipes());
-
-            cir.setReturnValue(RecipeMap.create(newList));
+            initProxyRecipes();
+            return;
         }
+        customRecipeProxies = CustomRecipeProxyMap.Companion.getEMPTY();
+        customLearnableRecipes = List.of();
+    }
+
+    @Inject(method = "finalizeRecipeLoading", at = @At(value = "INVOKE", target = "Ljava/util/Collection;forEach(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
+    private void finalizeProxyRecipes(
+            FeatureFlagSet enabledFlags,
+            CallbackInfo ci,
+            @Local(name = "propertySetCollectors") List<RecipeManager.IngredientCollector> propertySetCollectors,
+            @Local(name = "stonecutterRecipes") List<SelectableRecipe.SingleInputEntry<StonecutterRecipe>> stonecutterRecipes
+    ) {
+        this.customRecipeProxies.values().forEach((recipeHolder) -> {
+            Recipe<?> recipe = recipeHolder.value();
+            if (!recipe.isSpecial() && recipe.placementInfo().isImpossibleToPlace()) {
+                LOGGER.warn("Recipe {} can't be placed due to empty ingredients and will be ignored", recipeHolder.id().identifier());
+            } else {
+                propertySetCollectors.forEach((c) -> c.accept(recipe));
+                if (recipe instanceof StonecutterRecipe stonecutterRecipe) {
+                    if (isIngredientEnabled(enabledFlags, stonecutterRecipe.input()) && stonecutterRecipe.resultDisplay().isEnabled(enabledFlags)) {
+                        stonecutterRecipes.add(new SelectableRecipe.SingleInputEntry(
+                                        stonecutterRecipe.input(),
+                                        new SelectableRecipe(stonecutterRecipe.resultDisplay(),
+                                                Optional.of(recipeHolder)
+                                        )
+                                )
+                        );
+                    }
+                }
+            }
+        });
+    }
+
+    @ModifyExpressionValue(
+            method = "finalizeRecipeLoading",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/crafting/RecipeManager;unpackRecipeInfo(Ljava/lang/Iterable;Lnet/minecraft/world/flag/FeatureFlagSet;)Ljava/util/List;"
+            ))
+    private List<RecipeManager.ServerDisplayInfo> extractProxyRecipeDisplays(List<RecipeManager.ServerDisplayInfo> original, FeatureFlagSet enabledFlags) {
+        var customInfo = unpackRecipeInfo(customRecipeProxies.values(), enabledFlags);
+        customInfo.addAll(original);
+        return customInfo;
+    }
+
+    @ModifyReturnValue(method = "getRecipeFor(Lnet/minecraft/world/item/crafting/RecipeType;Lnet/minecraft/world/item/crafting/RecipeInput;Lnet/minecraft/world/level/Level;)Ljava/util/Optional;", at = @At("RETURN"))
+    public <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getRecipeFor(Optional<RecipeHolder<T>> original, final RecipeType<T> type, final I input, final Level level) {
+        // Check custom recipes first to take precedence over vanilla recipes
+        return customRecipeProxies.getRecipesFor(type, input, level).findFirst().or(() -> original);
+    }
+
+    @ModifyReturnValue(method = "byKey", at = @At("RETURN"))
+    public Optional<RecipeHolder<?>> byKeyIncludingCustomRecipes(Optional<RecipeHolder<?>> original, final ResourceKey<Recipe<?>> recipeId) {
+        return original.or(() -> Optional.ofNullable(this.customRecipeProxies.byKey(recipeId)));
+    }
+
+    @ModifyReturnValue(method = "byKeyTyped", at = @At("RETURN"))
+    private <T extends Recipe<?>> @Nullable RecipeHolder<T> byKeyTypedIncludingCustomRecipes(RecipeHolder<T> original, final RecipeType<T> type, final ResourceKey<Recipe<?>> recipeId) {
+        if (original != null) {
+            return original;
+        }
+        RecipeHolder<?> recipe = this.customRecipeProxies.byKey(recipeId);
+        return recipe != null && recipe.value().getType().equals(type) ? (RecipeHolder<T>) recipe : null;
+    }
+
+    @ModifyReturnValue(method = "getRecipes", at = @At("RETURN"))
+    public Collection<RecipeHolder<?>> getCustomRecipes(Collection<RecipeHolder<?>> original) {
+        var customRecipes = customRecipeProxies.values();
+        Collection<RecipeHolder<?>> merged = new ArrayList<>(original.size() + customRecipes.size());
+        merged.addAll(customRecipes);
+        merged.addAll(original);
+        return Collections.unmodifiableCollection(merged);
+    }
+
+    @ModifyReturnValue(method = "getLearnableRecipes", at = @At("RETURN"))
+    public Collection<RecipeHolder<?>> getCustomLearnableRecipes(Collection<RecipeHolder<?>> original) {
+        Collection<RecipeHolder<?>> merged = new ArrayList<>(original.size() + customLearnableRecipes.size());
+        merged.addAll(customLearnableRecipes);
+        merged.addAll(original);
+        return Collections.unmodifiableCollection(merged);
     }
 
     @Override
-    public void registerProxyRecipes() {
-        CustomCraftingProvider.Companion.get().getLogger().info("Registering Proxy Recipes");
-        var filteredRecipes = RecipeRegistrationUtils.INSTANCE.removeExistingProxyRecipes(this.recipes.values());
-        filteredRecipes.addAll(RecipeRegistrationUtils.INSTANCE.registerProxyRecipes());
+    public void customCrafting_registerProxyRecipes() {
+        initProxyRecipes();
 
-        this.recipes = RecipeMap.create(filteredRecipes);
         finalizeRecipeLoading(ScafallProvider.Companion.get().getServer().getMinecraftServer().getWorldData().enabledFeatures());
     }
+
+    @Unique
+    private void initProxyRecipes() {
+        CustomCraftingProvider.Companion.get().getLogger().info("Registering Proxy Recipes");
+        customRecipeProxies = CustomRecipeProxyMap.Companion.create(RecipeRegistrationUtils.INSTANCE.collectProxyRecipes());
+        customLearnableRecipes = customRecipeProxies.values().stream().filter((r) -> !r.value().isSpecial()).toList();
+    }
+
 }

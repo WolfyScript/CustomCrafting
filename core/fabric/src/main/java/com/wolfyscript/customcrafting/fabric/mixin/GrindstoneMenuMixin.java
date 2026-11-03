@@ -36,7 +36,7 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu {
 
     @Shadow
     @Final
-    Container repairSlots;
+    private Container repairSlots;
 
     @Shadow
     @Final

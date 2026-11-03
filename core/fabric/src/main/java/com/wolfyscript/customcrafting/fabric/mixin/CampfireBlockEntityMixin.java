@@ -97,7 +97,7 @@ public abstract class CampfireBlockEntityMixin extends BlockEntity {
     }
 
 
-    @ModifyVariable(method = "cookTick", at = @At(value = "STORE"))
+    @ModifyVariable(method = "cookTick", at = @At(value = "STORE"), name = "input")
     private static SingleRecipeInput injectCustomDataIntoSingleRecipeInput(
         SingleRecipeInput input,
         ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity entity, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> check

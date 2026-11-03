@@ -1,10 +1,10 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
+import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput;
 import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
-import com.wolfyscript.customcrafting.core.recipe.evaluation.SingleSlotRecipeInputImpl;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState;
 import com.wolfyscript.scafall.identifier.Key;
 import com.wolfyscript.scafall.wrappers.minecraft.ItemStackWrappersKt;
@@ -43,7 +43,7 @@ public class StonecutterMenuMixin {
 
     @Shadow
     @Final
-    Slot resultSlot;
+    private Slot resultSlot;
 
     @Shadow
     @Final
@@ -76,7 +76,7 @@ public class StonecutterMenuMixin {
             var stack = container.getItem(0);
             var input = new SingleRecipeInput(stack);
             ((RecipeInputSingleSlotCustomExt) (Object) input).setCustomInput(
-                new SingleSlotRecipeInputImpl(ItemStackWrappersKt.wrap(stack))
+                    RecipeInput.SingleSlotRecipeInput.Companion.of(ItemStackWrappersKt.wrap(stack))
             );
             if (recipeVal.matches(input, level)) {
                 ((CCResultContainerExt) resultContainer).setResultInfo(

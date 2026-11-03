@@ -2,18 +2,18 @@ package com.wolfyscript.customcrafting.fabric
 
 import com.wolfyscript.customcrafting.core.CustomCrafting
 import com.wolfyscript.customcrafting.core.recipe.RecipeManager
-import com.wolfyscript.customcrafting.fabric.inject.RecipeManagerCustomRecipesExt
 import com.wolfyscript.customcrafting.core.recipe.ingredient.IngredientManager
 import com.wolfyscript.customcrafting.core.resource.ResourceManager
 import com.wolfyscript.customcrafting.core.server.CustomCraftingServer
 import com.wolfyscript.customcrafting.core.util.CUSTOMCRAFTING_NAMESPACE
+import com.wolfyscript.customcrafting.fabric.inject.RecipeManagerCustomRecipesExt
 import com.wolfyscript.scafall.ScafallProvider
 import com.wolfyscript.scafall.identifier.Key
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.server.MinecraftServer
 import java.io.File
 
-class CustomCraftingServerFabric(customCrafting: CustomCrafting, val minecraftServer: MinecraftServer) :
+class CustomCraftingServerFabric(val customCrafting: CustomCrafting, val minecraftServer: MinecraftServer) :
     CustomCraftingServer {
 
     override val resourceManager: ResourceManager = ResourceManager.createNewForDir(
@@ -32,7 +32,7 @@ class CustomCraftingServerFabric(customCrafting: CustomCrafting, val minecraftSe
             resourceManager.loadResources()
         }
 
-        (minecraftServer.recipeManager as RecipeManagerCustomRecipesExt).registerProxyRecipes()
+        (minecraftServer.recipeManager as RecipeManagerCustomRecipesExt).customCrafting_registerProxyRecipes()
     }
 
     override fun onUnload() {

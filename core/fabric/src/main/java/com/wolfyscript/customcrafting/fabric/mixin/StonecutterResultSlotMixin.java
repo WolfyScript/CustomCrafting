@@ -38,7 +38,7 @@ public abstract class StonecutterResultSlotMixin extends Slot {
     }
 
     @Redirect(method = "onTake", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;remove(I)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack onCustomTake(Slot instance, int amount, Player player, ItemStack stack) {
+    private ItemStack onCustomTake(Slot instance, int amount, Player player, ItemStack carried) {
         var resultContainer = ((StonecutterMenuAccessor) stonecutterMenu).getResultContainer();
         var resultInfo = ((CCResultContainerExt) resultContainer).getResultInfo();
         if (resultInfo == null || resultInfo.getRecipe().getValue() == null) {
