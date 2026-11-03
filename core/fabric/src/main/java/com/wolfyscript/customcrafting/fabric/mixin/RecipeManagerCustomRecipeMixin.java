@@ -8,6 +8,7 @@ import com.wolfyscript.customcrafting.fabric.inject.RecipeManagerCustomRecipesEx
 import com.wolfyscript.customcrafting.fabric.inject.RecipeRegistrationUtils;
 import com.wolfyscript.customcrafting.fabric.recipes.proxy.CustomRecipeProxyMap;
 import com.wolfyscript.scafall.ScafallProvider;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.HolderLookup;
@@ -42,6 +43,12 @@ public abstract class RecipeManagerCustomRecipeMixin implements RecipeManagerCus
 
     @Unique
     private Collection<RecipeHolder<?>> customLearnableRecipes = List.of();
+
+    @Unique
+    private Pair<Integer, Collection<RecipeHolder<?>>> mergedRecipes;
+
+    @Unique
+    private Pair<Integer, Collection<RecipeHolder<?>>> mergedLearnableRecipes;
 
     @Shadow
     public abstract void finalizeRecipeLoading(FeatureFlagSet enabledFlags);
@@ -173,19 +180,25 @@ public abstract class RecipeManagerCustomRecipeMixin implements RecipeManagerCus
 
     @ModifyReturnValue(method = "getRecipes", at = @At("RETURN"))
     public Collection<RecipeHolder<?>> getCustomRecipes(Collection<RecipeHolder<?>> original) {
-        var customRecipes = customRecipeProxies.values();
-        Collection<RecipeHolder<?>> merged = new ArrayList<>(original.size() + customRecipes.size());
-        merged.addAll(customRecipes);
-        merged.addAll(original);
-        return Collections.unmodifiableCollection(merged);
+        if (mergedRecipes == null || mergedRecipes.first() != original.size()) {
+            var customRecipes = customRecipeProxies.values();
+            Collection<RecipeHolder<?>> merged = new ArrayList<>(original.size() + customRecipes.size());
+            merged.addAll(customRecipes);
+            merged.addAll(original);
+            mergedRecipes = Pair.of(original.size(), Collections.unmodifiableCollection(merged));
+        }
+        return mergedRecipes.second();
     }
 
     @ModifyReturnValue(method = "getLearnableRecipes", at = @At("RETURN"))
     public Collection<RecipeHolder<?>> getCustomLearnableRecipes(Collection<RecipeHolder<?>> original) {
-        Collection<RecipeHolder<?>> merged = new ArrayList<>(original.size() + customLearnableRecipes.size());
-        merged.addAll(customLearnableRecipes);
-        merged.addAll(original);
-        return Collections.unmodifiableCollection(merged);
+        if (mergedLearnableRecipes == null || mergedLearnableRecipes.first() != original.size()) {
+            Collection<RecipeHolder<?>> merged = new ArrayList<>(original.size() + customLearnableRecipes.size());
+            merged.addAll(customLearnableRecipes);
+            merged.addAll(original);
+            mergedLearnableRecipes = Pair.of(original.size(), Collections.unmodifiableCollection(merged));
+        }
+        return mergedLearnableRecipes.second();
     }
 
     @Override
@@ -200,6 +213,8 @@ public abstract class RecipeManagerCustomRecipeMixin implements RecipeManagerCus
         CustomCraftingProvider.Companion.get().getLogger().info("Registering Proxy Recipes");
         customRecipeProxies = CustomRecipeProxyMap.Companion.create(RecipeRegistrationUtils.INSTANCE.collectProxyRecipes());
         customLearnableRecipes = customRecipeProxies.values().stream().filter((r) -> !r.value().isSpecial()).toList();
+        mergedRecipes = Pair.of(-1, List.of());
+        mergedLearnableRecipes = Pair.of(-1, List.of());
     }
 
 }
