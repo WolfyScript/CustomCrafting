@@ -72,7 +72,7 @@ tasks {
 }
 
 artifacts {
-    archives(tasks.reobfJar)
+    archives(tasks.shadowJar)
 }
 
 bukkitPluginYaml {
@@ -114,5 +114,6 @@ minecraftServers {
 }
 
 modrinth {
+    this.file.set(layout.buildDirectory.dir("libs").get().file("${customArchiveName}.jar"))
     loaders.addAll("bukkit", "spigot")
 }
