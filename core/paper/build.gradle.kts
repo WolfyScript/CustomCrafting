@@ -96,5 +96,7 @@ minecraftServers {
 }
 
 modrinth {
+    this.file.set(layout.buildDirectory.dir("libs").get().file("${customArchiveName}.jar"))
+
     loaders.addAll("paper", "purpur")
 }

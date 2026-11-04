@@ -98,6 +98,8 @@ minecraftServers {
 }
 
 modrinth {
+    this.file.set(layout.buildDirectory.dir("libs").get().file("${customArchiveName}.jar"))
+
     dependencies {
         required.project("fabric-api")
     }
