@@ -7,6 +7,15 @@
     {{/ifCommitType}}
   {{/commits}}
 {{/ifContainsType}}
+{{#ifContainsType commits type='perf'}}
+
+### Performance
+  {{#commits}}
+    {{#ifCommitType . type='perf'}}
+  - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}))
+    {{/ifCommitType}}
+  {{/commits}}
+{{/ifContainsType}}
 {{#ifContainsType commits type='fix'}}
 
 ### Bug Fixes
