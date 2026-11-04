@@ -29,7 +29,7 @@ modrinth {
     projectId.set("customcrafting")
     versionNumber.set(project.version.toString()) // Will fail if Modrinth has this version already
     versionType.set(determineVersionType().toString().lowercase(Locale.ROOT))
-    changelog.set(file("$rootDir/.changelog/${project.name}.md").readText())
+    changelog.set(file("$rootDir/.changelog/custom-notes.md").readText() + file("$rootDir/.changelog/${project.name}.md").readText())
     gameVersions.addAll(sharedLibs.versions.minecraft.get())
 
     dependencies {
