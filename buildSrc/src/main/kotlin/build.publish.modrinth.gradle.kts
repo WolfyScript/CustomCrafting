@@ -25,7 +25,7 @@ private fun determineVersionType(): ProjectVersion.VersionType {
 }
 
 modrinth {
-    token.set(System.getenv("MODRINTH_TOKEN")) // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
+    token.set(findProperty("modrinthPublishToken")?.toString() ?: System.getenv("MODRINTH_TOKEN")) // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
     projectId.set("customcrafting")
     versionNumber.set(project.version.toString()) // Will fail if Modrinth has this version already
     versionType.set(determineVersionType().toString().lowercase(Locale.ROOT))
