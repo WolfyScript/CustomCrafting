@@ -17,6 +17,7 @@ modrinth {
     versionNumber.set(project.version.toString()) // Will fail if Modrinth has this version already
     versionType.set("alpha") // TODO: Automatically determine this from the version
     changelog.set(System.getenv("CHANGELOG")) // TODO: Load generated changelog
+    changelog.set(file("$rootDir/.changelog/${project.name}.md").readText())
     gameVersions.addAll(sharedLibs.versions.minecraft.get())
 
     dependencies {
