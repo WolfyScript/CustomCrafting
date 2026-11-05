@@ -20,22 +20,22 @@ public class SingleRecipeInputMixin implements RecipeInputSingleSlotCustomExt {
     private RecipeEvaluationResult<RecipeEvaluationResult.Data, ? extends CustomRecipe<RecipeInput.SingleSlotRecipeInput,?>> resultInfo;
 
     @Override
-    public RecipeInput.SingleSlotRecipeInput getCustomInput() {
+    public RecipeInput.SingleSlotRecipeInput customcrafting_getCustomInput() {
         return customInput;
     }
 
     @Override
-    public void setCustomInput(RecipeInput.@Nullable SingleSlotRecipeInput customInput) {
+    public void customcrafting_setCustomInput(RecipeInput.@Nullable SingleSlotRecipeInput customInput) {
         this.customInput = customInput;
     }
 
     @Override
-    public @Nullable RecipeEvaluationResult<RecipeEvaluationResult.Data, ? extends CustomRecipe<RecipeInput.SingleSlotRecipeInput,?>> getResultInfo() {
+    public @Nullable RecipeEvaluationResult<RecipeEvaluationResult.Data, ? extends CustomRecipe<RecipeInput.SingleSlotRecipeInput,?>> customcrafting_getResultInfo() {
         return resultInfo;
     }
 
     @Override
-    public void setResultInfo(@Nullable RecipeEvaluationResult<RecipeEvaluationResult.Data, ? extends CustomRecipe<RecipeInput.SingleSlotRecipeInput,?>> resultInfo) {
+    public void customcrafting_setResultInfo(@Nullable RecipeEvaluationResult<RecipeEvaluationResult.Data, ? extends CustomRecipe<RecipeInput.SingleSlotRecipeInput,?>> resultInfo) {
         this.resultInfo = resultInfo;
     }
 }

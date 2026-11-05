@@ -1,7 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult;
 import net.minecraft.server.level.ServerLevel;
@@ -25,8 +24,8 @@ public class RecipeCacheMixin {
     private RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting>[] previousResults;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void initPreviousResults(int size, CallbackInfo ci) {
-        previousResults = new RecipeEvaluationResult[size];
+    private void initPreviousResults(int capacity, CallbackInfo ci) {
+        previousResults = new RecipeEvaluationResult[capacity];
     }
 
     @Inject(method = "get",
@@ -36,9 +35,9 @@ public class RecipeCacheMixin {
             shift = At.Shift.AFTER
         )
     )
-    private void applyPreviousResultOnGet(ServerLevel level, CraftingInput craftingInput, CallbackInfoReturnable<Optional<RecipeHolder<CraftingRecipe>>> cir, @Local int i) {
-        if (craftingInput instanceof RecipeInputCraftingCustomExt) {
-            ((RecipeInputCraftingCustomExt) craftingInput).setResultInfo(previousResults[i]);
+    private void applyPreviousResultOnGet(ServerLevel level, CraftingInput input, CallbackInfoReturnable<Optional<RecipeHolder<CraftingRecipe>>> cir, @Local(name = "i") int i) {
+        if (input != null) {
+            input.customcrafting_setResultInfo(previousResults[i]);
         }
     }
 
@@ -55,8 +54,8 @@ public class RecipeCacheMixin {
     private void insertResult(CraftingInput input, RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci) {
         // Always need to insert something and shift the previous results to keep it aligned with the vanilla entry indices.
         System.arraycopy(previousResults, 0, previousResults, 1, previousResults.length - 1);
-        if (input instanceof RecipeInputCraftingCustomExt) {
-            previousResults[0] = ((RecipeInputCraftingCustomExt) input).getResultInfo();
+        if (input != null) {
+            previousResults[0] = input.customcrafting_getResultInfo();
         } else {
             previousResults[0] = null;
         }

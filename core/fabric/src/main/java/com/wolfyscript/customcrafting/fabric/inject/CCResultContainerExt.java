@@ -9,12 +9,16 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface CCResultContainerExt {
 
-    @Nullable RecipeEvaluationResult<?,?> getResultInfo();
+    default @Nullable RecipeEvaluationResult<?,?> customCrafting_getResultInfo() {
+        throw new AssertionError("Implemented in Mixin");
+    }
 
-    void setResultInfo(@Nullable RecipeEvaluationResult<?,?> resultInfo);
+    default void customcrafting_setResultInfo(@Nullable RecipeEvaluationResult<?,?> resultInfo) {
+        throw new AssertionError("Implemented in Mixin");
+    }
 
     default boolean hasResultInfo() {
-        return getResultInfo() != null;
+        return customCrafting_getResultInfo() != null;
     }
 
 }

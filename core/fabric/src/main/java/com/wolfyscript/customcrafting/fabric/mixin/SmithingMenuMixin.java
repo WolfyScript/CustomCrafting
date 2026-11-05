@@ -1,8 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSmithingCustomExt;
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeSmithing;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult;
@@ -51,7 +49,7 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
             ItemStackWrappersKt.wrap(getItems().get(1)),
             ItemStackWrappersKt.wrap(getItems().get(2))
         );
-        ((RecipeInputSmithingCustomExt)(Object) smithingRecipeInput).setCustomInput(customInput);
+        smithingRecipeInput.customcrafting_setCustomInput(customInput);
     }
 
     @Inject(
@@ -63,9 +61,8 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         method = "createResult"
     )
     private void addRecipeEvalResult(CallbackInfo ci, @Local(name = "input") SmithingRecipeInput smithingRecipeInput) {
-        var result = ((RecipeInputSmithingCustomExt)(Object) smithingRecipeInput).getResultInfo();
-        if (!(resultSlots instanceof CCResultContainerExt resultSlotsExt)) return;
-        resultSlotsExt.setResultInfo(result);
+        var result = smithingRecipeInput.customcrafting_getResultInfo();
+        resultSlots.customcrafting_setResultInfo(result);
     }
 
     @Inject(
@@ -94,7 +91,7 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         cancellable = true
     )
     private void shrinkCustomRecipe(Player player, ItemStack carried, CallbackInfo ci) {
-        var resultInfo = ((CCResultContainerExt) resultSlots).getResultInfo();
+        var resultInfo = resultSlots.customCrafting_getResultInfo();
         if (resultInfo == null || resultInfo.getRecipe().getValue() == null) return;
         ci.cancel(); // Return before vanilla logic
 

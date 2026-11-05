@@ -58,7 +58,6 @@ internal class DirectorySource(
             }
 
             val key = relative.toKey(Key.CUSTOMCRAFTING_NAMESPACE)
-            customCrafting.logger.info("Loading ${type.id}: $key")
             try {
                 val value = customCrafting.server!!.resourceManager.jacksonObjectMapper
                     .reader(injectableValues)

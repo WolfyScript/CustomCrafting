@@ -7,7 +7,6 @@ import com.wolfyscript.customcrafting.core.recipe.RecipeReference
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeEvaluationResult
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt
 import com.wolfyscript.scafall.items.toTemplate
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.*
@@ -19,11 +18,11 @@ fun RecipeReference<CustomRecipeCooking>.matches(input: SingleRecipeInput, level
         return false
     }
     val recipe = value ?: return false
-    val data = (input as RecipeInputSingleSlotCustomExt).customInput ?: return false
+    val data = input.customcrafting_getCustomInput() ?: return false
     val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
     val result = recipe.evaluate(data, context) ?: return false
-    input.resultInfo = RecipeEvaluationResult.of(this, result)
+    input.customcrafting_setResultInfo(RecipeEvaluationResult.of(this, result))
     return true
 }
 
@@ -34,8 +33,7 @@ fun RecipeReference<CustomRecipeCooking>.assemble(
         return ItemStack.EMPTY
     }
     val recipe = value ?: return null
-//    if (input !is RecipeInputSingleSlotCustomExt) return null
-    val resultInfo = (input as RecipeInputSingleSlotCustomExt).resultInfo ?: return null
+    val resultInfo = input.customcrafting_getResultInfo() ?: return null
     val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
     return recipe.result.compute(resultInfo, context, Random).unwrap()

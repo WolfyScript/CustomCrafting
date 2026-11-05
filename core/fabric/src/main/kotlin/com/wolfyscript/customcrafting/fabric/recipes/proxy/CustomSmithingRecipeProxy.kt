@@ -3,7 +3,6 @@ package com.wolfyscript.customcrafting.fabric.recipes.proxy
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSmithingCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeSmithing
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
@@ -88,12 +87,11 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
     override fun matches(smithingRecipeInput: SmithingRecipeInput, level: Level): Boolean {
         if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(customRecipe.key)) { return false }
         val recipe = customRecipe.value ?: return false
-        if (smithingRecipeInput !is RecipeInputSmithingCustomExt) return false
-        val customInput = smithingRecipeInput.customInput ?: return false
+        val customInput = smithingRecipeInput.customcrafting_getCustomInput() ?: return false
         val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
         val result = recipe.evaluate(customInput, context) ?: return false
-        smithingRecipeInput.resultInfo = RecipeEvaluationResult.of(customRecipe, result)
+        smithingRecipeInput.customcrafting_setResultInfo(RecipeEvaluationResult.of(customRecipe, result))
         return true
     }
 
@@ -102,9 +100,8 @@ class CustomSmithingRecipeProxy(override val customRecipe: RecipeReference<Custo
     ): ItemStack {
         if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(customRecipe.key)) { return ItemStack.EMPTY }
         val recipe = customRecipe.value ?: return ItemStack.EMPTY
-        if (input !is RecipeInputSmithingCustomExt) return ItemStack.EMPTY
-        val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
-        val baseStack = input.customInput?.base ?: return ItemStack.EMPTY
+        val resultInfo = input.customcrafting_getResultInfo() ?: return ItemStack.EMPTY
+        val baseStack = input.customcrafting_getCustomInput()?.base ?: return ItemStack.EMPTY
         val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
         val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeResultCachedRandom(customRecipe.key, recipe.result.alwaysKeepPrevious) ?: return ItemStack.EMPTY
 

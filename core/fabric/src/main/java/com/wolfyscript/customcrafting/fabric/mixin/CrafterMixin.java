@@ -1,7 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState;
 import com.wolfyscript.scafall.identifier.Key;
@@ -55,10 +54,9 @@ public class CrafterMixin {
     ) {
         var context = EvaluationContextState.INSTANCE.getCurrent();
         if (context == null) return;
-        if (!(craftInput instanceof RecipeInputCraftingCustomExt customInputExt)) return;
-        var resultInfo = customInputExt.getResultInfo();
+        var resultInfo = craftInput.customcrafting_getResultInfo();
         if (resultInfo == null) return;
-        var customInput = customInputExt.getCustomInput();
+        var customInput = craftInput.customcrafting_getCustomInput();
         if (customInput == null) return;
         var recipe = resultInfo.getRecipe().getValue();
         if (recipe == null) return; // Recipe was removed in the meantime

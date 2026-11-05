@@ -1,6 +1,5 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
-import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeStonecutting;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
@@ -40,7 +39,7 @@ public abstract class StonecutterResultSlotMixin extends Slot {
     @Redirect(method = "onTake", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;remove(I)Lnet/minecraft/world/item/ItemStack;"))
     private ItemStack onCustomTake(Slot instance, int amount, Player player, ItemStack carried) {
         var resultContainer = ((StonecutterMenuAccessor) stonecutterMenu).getResultContainer();
-        var resultInfo = ((CCResultContainerExt) resultContainer).getResultInfo();
+        var resultInfo = resultContainer.customCrafting_getResultInfo();
         if (resultInfo == null || resultInfo.getRecipe().getValue() == null) {
             return instance.remove(amount);
         }

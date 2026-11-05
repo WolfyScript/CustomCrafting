@@ -1,3 +1,6 @@
 classTweaker  v1  official
 
-inject-interface  net/minecraft/world/item/crafting/SmithingRecipeInput com/wolfyscript/customcrafting/fabric/inject/RecipeInputSmithingCustomExt
+inject-interface net/minecraft/world/item/crafting/SmithingRecipeInput com/wolfyscript/customcrafting/fabric/inject/RecipeInputSmithingCustomExt
+inject-interface net/minecraft/world/item/crafting/CraftingInput com/wolfyscript/customcrafting/fabric/inject/RecipeInputCraftingCustomExt
+inject-interface net/minecraft/world/item/crafting/SingleRecipeInput com/wolfyscript/customcrafting/fabric/inject/RecipeInputSingleSlotCustomExt
+inject-interface net/minecraft/world/inventory/ResultContainer com/wolfyscript/customcrafting/fabric/inject/CCResultContainerExt

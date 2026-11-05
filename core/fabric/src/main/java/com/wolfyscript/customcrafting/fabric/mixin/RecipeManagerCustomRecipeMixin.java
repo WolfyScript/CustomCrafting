@@ -62,11 +62,6 @@ public abstract class RecipeManagerCustomRecipeMixin implements RecipeManagerCus
         throw new NotImplementedException();
     }
 
-    @Shadow
-    private static List<RecipeManager.ServerDisplayInfo> unpackRecipeInfo(final Iterable<RecipeHolder<?>> recipes, final FeatureFlagSet enabledFeatures) {
-        throw new NotImplementedException();
-    }
-
     @Inject(method = "<init>", at = @At("TAIL"))
     private void init(HolderLookup.Provider registries, CallbackInfo ci) {
         if (CustomCraftingProvider.Companion.registered()) {

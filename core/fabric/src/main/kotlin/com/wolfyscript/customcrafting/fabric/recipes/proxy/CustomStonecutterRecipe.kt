@@ -2,7 +2,6 @@ package com.wolfyscript.customcrafting.fabric.recipes.proxy
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeStonecutting
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext
@@ -29,12 +28,11 @@ import net.minecraft.world.level.Level
 fun RecipeReference<CustomRecipeStonecutting>.matches(input: SingleRecipeInput, level: Level): Boolean {
     if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(key)) { return false }
     val recipe = value ?: return false
-    input as RecipeInputSingleSlotCustomExt
-    val data = input.customInput ?: return false
+    val data = input.customcrafting_getCustomInput() ?: return false
     val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
     val result = recipe.evaluate(data, context) ?: return false
-    input.resultInfo = RecipeEvaluationResult.of(this, result)
+    input.customcrafting_setResultInfo(RecipeEvaluationResult.of(this, result))
     return true
 }
 
@@ -43,8 +41,7 @@ fun RecipeReference<CustomRecipeStonecutting>.assemble(
 ): ItemStack {
     if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(key)) { return ItemStack.EMPTY }
     val recipe = value ?: return ItemStack.EMPTY
-    input as RecipeInputSingleSlotCustomExt
-    val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
+    val resultInfo = input.customcrafting_getResultInfo() ?: return ItemStack.EMPTY
     val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
     val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeResultCachedRandom(key, recipe.result.alwaysKeepPrevious) ?: return ItemStack.EMPTY
 
@@ -98,8 +95,7 @@ class CustomStonecutterRecipeProxy : StonecutterRecipe, ProxyRecipe {
     override fun assemble(input: SingleRecipeInput): ItemStack {
         if (split) {
             val recipeVal = customRecipe.value ?: return ItemStack.EMPTY
-            input as RecipeInputSingleSlotCustomExt
-            val resultInfo = input.resultInfo ?: return ItemStack.EMPTY
+            val resultInfo = input.customcrafting_getResultInfo() ?: return ItemStack.EMPTY
             val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
             val stack = result().create().wrap()
             recipeVal.result.modifier.modify(stack, resultInfo, context)

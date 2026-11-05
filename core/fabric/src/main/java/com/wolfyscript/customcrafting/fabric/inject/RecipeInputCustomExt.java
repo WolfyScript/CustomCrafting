@@ -6,19 +6,19 @@ import org.jetbrains.annotations.Nullable;
 
 public interface RecipeInputCustomExt<I extends RecipeInput, R extends RecipeEvaluationResult<?,?>> {
 
-    default @Nullable I getCustomInput() {
+    default @Nullable I customcrafting_getCustomInput() {
         throw new AssertionError("Implemented in Mixin");
     }
 
-    default void setCustomInput(@Nullable I customInput) {
+    default void customcrafting_setCustomInput(@Nullable I customInput) {
         throw new AssertionError("Implemented in Mixin");
     }
 
-    default @Nullable R getResultInfo() {
+    default @Nullable R customcrafting_getResultInfo() {
         throw new AssertionError("Implemented in Mixin");
     }
 
-    default void setResultInfo(@Nullable R resultInfo) {
+    default void customcrafting_setResultInfo(@Nullable R resultInfo) {
         throw new AssertionError("Implemented in Mixin");
     }
 

@@ -17,7 +17,6 @@
     "GrindstoneResultSlotsMixin",
     "RecipeCacheMixin",
     "RecipeManagerCustomRecipeMixin",
-    "RecipeMapMixin",
     "RecipeSerializerMixin",
     "ResultContainerMixin",
     "ServerPlayerMixin",

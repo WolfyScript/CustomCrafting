@@ -92,7 +92,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
 
 
     @Inject(at = @At("HEAD"), method = "onTake", cancellable = true)
-    private void onTakeCustomRecipeOutput(Player player, ItemStack stack, CallbackInfo ci) {
+    private void onTakeCustomRecipeOutput(Player player, ItemStack carried, CallbackInfo ci) {
         if (resultInfo == null) {
             return;
         }

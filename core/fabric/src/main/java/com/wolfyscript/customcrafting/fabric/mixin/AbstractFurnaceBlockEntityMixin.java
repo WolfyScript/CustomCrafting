@@ -7,7 +7,6 @@ import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCooking;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.RecipeInput;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContextState;
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputSingleSlotCustomExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultCacheExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateCache;
 import com.wolfyscript.scafall.wrappers.minecraft.EntityWrappersKt;
@@ -51,7 +50,7 @@ public abstract class AbstractFurnaceBlockEntityMixin implements RecipeResultCac
     @ModifyVariable(method = "serverTick", at = @At(value = "STORE"), name = "input")
     private static SingleRecipeInput injectCustomDataIntoSingleRecipeInput(SingleRecipeInput input, ServerLevel level, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity entity) {
         var source = ItemStackWrappersKt.wrap(entity.getItem(0));
-        ((RecipeInputSingleSlotCustomExt) (Object) input).setCustomInput(RecipeInput.SingleSlotRecipeInput.Companion.of(source));
+        input.customcrafting_setCustomInput(RecipeInput.SingleSlotRecipeInput.Companion.of(source));
         return input;
     }
 
@@ -67,7 +66,7 @@ public abstract class AbstractFurnaceBlockEntityMixin implements RecipeResultCac
         ServerLevel level, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity entity,
         @Local(name = "input") SingleRecipeInput input
     ) {
-        var resultInfo = ((RecipeInputSingleSlotCustomExt) (Object) input).getResultInfo();
+        var resultInfo = input.customcrafting_getResultInfo();
         if (resultInfo == null || !(resultInfo.getRecipe().getValue() instanceof CustomRecipeCooking cookingRecipe)) {
             // Not a custom recipe, use vanilla logic
             original.call(items, inputItemStack, result);

@@ -1,8 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.wolfyscript.customcrafting.fabric.inject.CCResultContainerExt;
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt;
 import com.wolfyscript.customcrafting.fabric.inject.RecipeResultStateKt;
 import com.wolfyscript.customcrafting.core.recipe.CustomRecipeCrafting;
 import com.wolfyscript.customcrafting.core.recipe.evaluation.EvaluationContext;
@@ -15,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -46,9 +45,9 @@ public abstract class CraftingResultSlotMixin extends Slot {
         cancellable = true
     )
     private void shrinkCustomRecipeMatrix(Player player, ItemStack carried, CallbackInfo ci, @Local(name = "input") CraftingInput input) {
-        if (!(this.container instanceof CCResultContainerExt resultContainer) || !resultContainer.hasResultInfo()) return;
-        var resultInfo = resultContainer.getResultInfo(); assert resultInfo != null;
-        var customInput = ((RecipeInputCraftingCustomExt) input).getCustomInput();
+        if (!(this.container instanceof ResultContainer resultContainer) || !resultContainer.hasResultInfo()) return;
+        var resultInfo = resultContainer.customCrafting_getResultInfo(); assert resultInfo != null;
+        var customInput = input.customcrafting_getCustomInput();
         if (customInput == null || !(resultInfo.getRecipe().getValue() instanceof CustomRecipeCrafting craftingRecipe)) return;
         ci.cancel(); // Return before vanilla logic
 

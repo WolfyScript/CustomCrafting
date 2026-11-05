@@ -28,22 +28,22 @@ public class CraftingInputMixin implements RecipeInputCraftingCustomExt {
     private RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting> resultInfo = null;
 
     @Override
-    public @Nullable RecipeInput.CraftingRecipeInput getCustomInput() {
+    public @Nullable RecipeInput.CraftingRecipeInput customcrafting_getCustomInput() {
         return customInput;
     }
 
     @Override
-    public void setCustomInput(@Nullable RecipeInput.CraftingRecipeInput customInput) {
+    public void customcrafting_setCustomInput(@Nullable RecipeInput.CraftingRecipeInput customInput) {
         this.customInput = customInput;
     }
 
     @Override
-    public @Nullable RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting> getResultInfo() {
+    public @Nullable RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting> customcrafting_getResultInfo() {
         return resultInfo;
     }
 
     @Override
-    public void setResultInfo(@Nullable RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting> resultInfo) {
+    public void customcrafting_setResultInfo(@Nullable RecipeEvaluationResult<RecipeEvaluationResult.Data, CustomRecipeCrafting> resultInfo) {
         this.resultInfo = resultInfo;
     }
 
@@ -57,7 +57,7 @@ public class CraftingInputMixin implements RecipeInputCraftingCustomExt {
                 .map(ItemStackWrappersKt::wrap)
                 .toList()
         );
-        ((RecipeInputCraftingCustomExt) input).setCustomInput(RecipeInput.CraftingRecipeInput.Companion.of(matrixData));
+        input.customcrafting_setCustomInput(RecipeInput.CraftingRecipeInput.Companion.of(matrixData));
     }
 
 }

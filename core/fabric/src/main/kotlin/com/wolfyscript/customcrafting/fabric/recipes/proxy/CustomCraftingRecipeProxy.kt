@@ -1,7 +1,6 @@
 package com.wolfyscript.customcrafting.fabric.recipes.proxy
 
 import com.wolfyscript.customcrafting.CustomCraftingProvider
-import com.wolfyscript.customcrafting.fabric.inject.RecipeInputCraftingCustomExt
 import com.wolfyscript.customcrafting.fabric.inject.ProxyRecipe
 import com.wolfyscript.customcrafting.fabric.inject.getRecipeResultCachedRandom
 import com.wolfyscript.customcrafting.core.recipe.CraftingFormula
@@ -22,20 +21,18 @@ import kotlin.random.Random
 private fun RecipeReference<CustomRecipeCrafting>.matches(recipeInput: CraftingInput, level: Level): Boolean {
     if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(key)) { return false }
     val recipe = value ?: return false
-    if (recipeInput !is RecipeInputCraftingCustomExt) { return false }
-    val data = recipeInput.customInput ?: return false
+    val data = recipeInput.customcrafting_getCustomInput() ?: return false
     val context = EvaluationContextState.current ?: EvaluationContext.of(null, null)
 
     val result = recipe.evaluate(data, context) ?: return false
-    recipeInput.resultInfo = RecipeEvaluationResult.of(this, result)
+    recipeInput.customcrafting_setResultInfo(RecipeEvaluationResult.of(this, result))
     return true
 }
 
 private fun RecipeReference<CustomRecipeCrafting>.assemble(recipeInput: CraftingInput): ItemStack {
     if (CustomCraftingProvider.get().server!!.recipeManager.isRecipeDisabled(key)) { return ItemStack.EMPTY }
     val recipe = value ?: return ItemStack.EMPTY
-    if (recipeInput !is RecipeInputCraftingCustomExt) { return ItemStack.EMPTY }
-    val resultInfo = recipeInput.resultInfo ?: return ItemStack.EMPTY
+    val resultInfo = recipeInput.customcrafting_getResultInfo() ?: return ItemStack.EMPTY
     val context = EvaluationContextState.current ?: return ItemStack.EMPTY
     val random = (context.player?.unwrap() as? ServerPlayer)?.getRecipeResultCachedRandom(key, recipe.result.alwaysKeepPrevious) ?: Random
 

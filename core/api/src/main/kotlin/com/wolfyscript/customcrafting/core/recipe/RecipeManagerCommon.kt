@@ -102,7 +102,7 @@ internal class RecipeManagerCommon(val customCrafting: CustomCrafting) : RecipeM
     override fun onInitialLoad(resourceLoader: ResourceLoader) {
         resourceLoader.sources.forEach { dest ->
             dest.load(DataType.Recipes) {
-                customCrafting.logger.info("${LOG_PREFIX}loaded: ${it.key} -> ${it.value}")
+                customCrafting.logger.info("${LOG_PREFIX}loaded: ${it.key}")
                 awaitingVerificationRecipes.add(it)
             }
         }

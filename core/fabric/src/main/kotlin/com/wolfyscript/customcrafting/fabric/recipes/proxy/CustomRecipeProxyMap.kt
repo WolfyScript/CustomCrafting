@@ -4,13 +4,17 @@ import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableMultimap
 import com.google.common.collect.Multimap
 import net.minecraft.resources.ResourceKey
-import net.minecraft.world.item.crafting.*
+import net.minecraft.world.item.crafting.Recipe
+import net.minecraft.world.item.crafting.RecipeHolder
+import net.minecraft.world.item.crafting.RecipeInput
+import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.level.Level
 import java.util.stream.Stream
+import kotlin.math.max
 
 class CustomRecipeProxyMap(
     private val byType: Multimap<RecipeType<*>, RecipeHolder<*>>,
-    private val byKey: MutableMap<ResourceKey<Recipe<*>>, RecipeHolder<*>>
+    private val byKey: MutableMap<ResourceKey<Recipe<*>>, RecipeHolder<*>>,
 ) {
 
     companion object {
@@ -22,7 +26,8 @@ class CustomRecipeProxyMap(
             val byKey = ImmutableMap.builder<ResourceKey<Recipe<*>>, RecipeHolder<*>>()
 
             recipes.forEach { legacyRecipeHolder ->
-                byType.put(legacyRecipeHolder.value.getType(), legacyRecipeHolder)
+//                CustomCraftingProvider.get().logger.info(" ::>> (${legacyRecipeHolder.value.type})${" ".repeat(max(0, 22 - legacyRecipeHolder.value.type.toString().length))}${legacyRecipeHolder.id.identifier()}")
+                byType.put(legacyRecipeHolder.value.type, legacyRecipeHolder)
                 byKey.put(legacyRecipeHolder.id, legacyRecipeHolder)
             }
             return CustomRecipeProxyMap(byType.build(), byKey.build())
@@ -47,9 +52,12 @@ class CustomRecipeProxyMap(
         container: I,
         level: Level,
     ): Stream<RecipeHolder<T>> {
-        return if (container.isEmpty) Stream.empty<RecipeHolder<T>>() else this.byType(type).stream()
-            .filter { r: RecipeHolder<T> -> r.value().matches(container, level) }
+        return if (container.isEmpty) {
+            Stream.empty<RecipeHolder<T>>()
+        } else {
+            this.byType(type).stream()
+                .filter { r: RecipeHolder<T> -> r.value().matches(container, level) }
+        }
     }
-
 
 }

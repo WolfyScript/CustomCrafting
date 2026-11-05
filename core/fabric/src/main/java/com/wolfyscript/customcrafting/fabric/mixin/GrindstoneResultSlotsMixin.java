@@ -52,7 +52,7 @@ public class GrindstoneResultSlotsMixin implements GrindstoneResultSlotsExt {
     }
 
     @Inject(at = @At("HEAD"), method = "onTake", cancellable = true)
-    private void takeCustomRecipeOutput(Player player, ItemStack stack, CallbackInfo ci) {
+    private void takeCustomRecipeOutput(Player player, ItemStack carried, CallbackInfo ci) {
         if (resultInfo == null || resultInfo.getRecipe().getValue() == null) {
             return;
         }

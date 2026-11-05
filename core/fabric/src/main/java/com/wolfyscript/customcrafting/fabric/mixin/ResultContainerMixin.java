@@ -14,12 +14,12 @@ public abstract class ResultContainerMixin implements CCResultContainerExt {
     private RecipeEvaluationResult<?, ?> resultInfo = null;
 
     @Override
-    public @Nullable RecipeEvaluationResult<?, ?> getResultInfo() {
+    public @Nullable RecipeEvaluationResult<?, ?> customCrafting_getResultInfo() {
         return resultInfo;
     }
 
     @Override
-    public void setResultInfo(@Nullable RecipeEvaluationResult<?, ?> resultInfo) {
+    public void customcrafting_setResultInfo(@Nullable RecipeEvaluationResult<?, ?> resultInfo) {
         this.resultInfo = resultInfo;
     }
 
