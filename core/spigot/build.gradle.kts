@@ -114,6 +114,12 @@ minecraftServers {
 }
 
 modrinth {
-    this.file.set(layout.buildDirectory.dir("libs").get().file("${customArchiveName}.jar"))
+    uploadFile.set(tasks.shadowJar)
+    versionNumber.set("${project.version}+spigot")
+
     loaders.addAll("bukkit", "spigot")
+
+    dependencies {
+        required.version("scafall", "${libs.versions.scafall.get()}+spigot")
+    }
 }
