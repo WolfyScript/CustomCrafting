@@ -5,7 +5,6 @@ val Project.sharedLibs
 
 plugins {
     `java-library`
-    `maven-publish`
     kotlin("jvm")
     id("net.fabricmc.fabric-loom")
 }

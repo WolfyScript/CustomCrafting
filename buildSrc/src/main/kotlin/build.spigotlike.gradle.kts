@@ -10,7 +10,6 @@ plugins {
     kotlin("jvm")
     id("io.papermc.paperweight.userdev")
     `java-library`
-    `maven-publish`
 }
 
 repositories {
@@ -52,10 +51,3 @@ dependencies {
 }
 
 fun archiveName() = "${project.rootProject.name}-${project.version}-spigot-${sharedLibs.versions.minecraft.get()}"
-
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-        artifact(file("$rootDir/gradle.properties"))
-    }
-}

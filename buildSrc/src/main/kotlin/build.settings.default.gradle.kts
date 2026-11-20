@@ -5,7 +5,6 @@ val Project.libs
 
 plugins {
     `java-library`
-    `maven-publish`
     kotlin("jvm")
 }
 

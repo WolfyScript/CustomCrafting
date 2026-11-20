@@ -5,25 +5,25 @@ plugins {
     `java-library`
     `maven-publish`
     kotlin("jvm")
-    id("com.jfrog.artifactory")
 }
 
 val Project.sharedLibs
     get() = extensions.getByType(LibrariesForSharedLibs::class)
 
-artifactory {
-    publish {
-        contextUrl = "https://artifacts.wolfyscript.com/artifactory"
-        repository {
-            repoKey = "gradle-dev-local"
-            username = System.getenv("ARTIFACTORY_USERNAME")
-            password = System.getenv("ARTIFACTORY_TOKEN")
-        }
-        defaults {
-            publications("maven")
-            setPublishArtifacts(true)
-            setPublishPom(true)
-            isPublishBuildInfo = false
+val wolfyReleasesUrl = providers.gradleProperty("wolfyReleasesUrl").get()
+val wolfySnapshotsUrl = providers.gradleProperty("wolfySnapshotsUrl").get()
+
+publishing {
+    repositories {
+        maven {
+            val isSnapshot = version.toString().endsWith("-SNAPSHOT")
+            val repoName = if (isSnapshot) "snapshots" else "releases"
+            name = repoName
+            url = uri(if (isSnapshot) wolfySnapshotsUrl else wolfyReleasesUrl)
+            credentials {
+                username = findProperty("wolfy-repo-publishing-token")?.toString() ?: ""
+                password = findProperty("wolfy-repo-publishing-secret")?.toString() ?: ""
+            }
         }
     }
 }
