@@ -148,7 +148,7 @@ private fun ResultInput(
                     onModify(it)
                     return@Slot
                 }
-                val stackRef = ItemStackRef.parse(it.createStack())
+                val stackRef = ItemStackRef.parse(it.create())
                 if (stackRef != null) {
                     if (value.icon.isEmpty) {
                         onAdd(stackRef)

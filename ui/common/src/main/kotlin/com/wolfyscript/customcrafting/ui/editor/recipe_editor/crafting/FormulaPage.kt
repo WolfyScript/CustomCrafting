@@ -12,10 +12,10 @@ import com.wolfyscript.customcrafting.core.recipe.CraftingFormula
 import com.wolfyscript.customcrafting.ui.editor.recipe_editor.state.UIIngredientPreview
 import com.wolfyscript.customcrafting.ui.editor.recipe_editor.state.toPreview
 import com.wolfyscript.customcrafting.core.util.customCrafting
-import com.wolfyscript.customcrafting.core.util.toTemplate
 import com.wolfyscript.scafall.adventure.deser
 import com.wolfyscript.scafall.adventure.vanilla
 import com.wolfyscript.scafall.identifier.Key
+import com.wolfyscript.scafall.items.toTemplate
 import com.wolfyscript.scafall.wrappers.minecraft.snapshot
 import com.wolfyscript.viewportl.gui.compose.layout.Alignment
 import com.wolfyscript.viewportl.gui.compose.layout.Arrangement
@@ -223,7 +223,7 @@ fun FormulaPageAdvanced() {
                             }, icon = formulaState.getIngredient(index).let { ingredientPreview ->
                                 val stack = ingredientPreview?.icon?.unwrap()
                                 ItemStack(
-                                    Items.RED_BUNDLE,
+                                    Items.DYED_BUNDLE.red,
                                     stack?.count ?: 1
                                 ).apply {
                                     if (stack != null) {

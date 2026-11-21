@@ -135,7 +135,7 @@ fun AddIngredientsPage() {
         } else {
             Row(Modifier.fillMaxWidth()) {
                 repeat(9) {
-                    Icon(stack = ItemStack(Items.GRAY_STAINED_GLASS_PANE).snapshot())
+                    Icon(stack = ItemStack(Items.STAINED_GLASS_PANE.gray).snapshot())
                 }
             }
 
@@ -188,7 +188,7 @@ private fun CustomIngredientSelector(
                 ingredient.icon
             },
             onValueChange = {
-                val stackRef = ItemStackRef.parse(it.createStack())
+                val stackRef = ItemStackRef.parse(it.create())
                 if (it.isEmpty || stackRef == null) {
                     onRemove()
                     return@Slot
@@ -215,7 +215,7 @@ private fun CustomIngredientSelector(
 
 private object AddIngredientDefaults {
 
-    val AddNewIngredientIcon = ItemStack(Items.GREEN_CONCRETE).apply {
+    val AddNewIngredientIcon = ItemStack(Items.CONCRETE.green).apply {
         set(DataComponents.ITEM_NAME, "Add Ingredient".deser().vanilla())
     }.snapshot()
 

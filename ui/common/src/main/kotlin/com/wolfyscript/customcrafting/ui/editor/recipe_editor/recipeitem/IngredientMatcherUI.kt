@@ -41,7 +41,7 @@ class ExactIngredientMatcherUIProvider : IngredientMatcherCustomUIProvider<Ingre
     @Composable
     override fun IngredientMatcherContext<IngredientMatcherExactModel>.render(model: IngredientMatcherExactModel) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-            Icon(stack = ItemStack(Items.CYAN_CONCRETE).apply {
+            Icon(stack = ItemStack(Items.CONCRETE.cyan).apply {
                 set(DataComponents.ITEM_NAME, "This matcher requires no configuration!".deser().vanilla())
             }.snapshot())
         }
@@ -305,17 +305,17 @@ private object Defaults {
         set(DataComponents.ITEM_NAME, "<red>Done".deser().vanilla())
     }.snapshot()
 
-    val MustContainIcon = ItemStack(Items.GREEN_BUNDLE).apply {
+    val MustContainIcon = ItemStack(Items.DYED_BUNDLE.green).apply {
         set(DataComponents.ITEM_NAME, "<green>Must Contain".deser().vanilla())
         remove(DataComponents.BUNDLE_CONTENTS)
     }.snapshot()
 
-    val MustNotContainIcon = ItemStack(Items.RED_BUNDLE).apply {
+    val MustNotContainIcon = ItemStack(Items.DYED_BUNDLE.red).apply {
         set(DataComponents.ITEM_NAME, "<red>Must Not Contain".deser().vanilla())
         remove(DataComponents.BUNDLE_CONTENTS)
     }.snapshot()
 
-    val LoadingIcon = ItemStack(Items.BLUE_CONCRETE).apply {
+    val LoadingIcon = ItemStack(Items.CONCRETE.blue).apply {
         set(DataComponents.ITEM_NAME, "<light_blue>Loading Components...".deser().vanilla())
     }.snapshot()
 
@@ -332,7 +332,7 @@ object DataComponentIcons {
     init {
         associate(DataComponents.ATTACK_RANGE, Items.COPPER_SPEAR)
         associate(DataComponents.ATTRIBUTE_MODIFIERS, Items.CHAIN_COMMAND_BLOCK)
-        associate(DataComponents.BANNER_PATTERNS, Items.WHITE_BANNER)
+        associate(DataComponents.BANNER_PATTERNS, Items.BANNER.white)
         associate(DataComponents.BASE_COLOR, Items.SHIELD)
         associate(DataComponents.BEES, Items.BEE_NEST)
         associate(DataComponents.BLOCK_ENTITY_DATA, Items.SPAWNER)
@@ -375,7 +375,7 @@ object DataComponentIcons {
         associate(DataComponents.LOCK, Items.TRIPWIRE_HOOK)
         associate(DataComponents.LODESTONE_TRACKER, Items.COMPASS)
         associate(DataComponents.LORE, Items.PAPER)
-        associate(DataComponents.MAP_COLOR, Items.MAP)
+        associate(DataComponents.MAP_DECORATIONS, Items.MAP)
         associate(DataComponents.MAP_DECORATIONS, Items.MAP)
         associate(DataComponents.MAP_ID, Items.MAP)
         associate(DataComponents.MAX_DAMAGE, Items.DIAMOND_AXE)
@@ -396,7 +396,7 @@ object DataComponentIcons {
         associate(DataComponents.REPAIRABLE, Items.ANVIL)
         associate(DataComponents.STORED_ENCHANTMENTS, Items.ENCHANTED_BOOK)
         associate(DataComponents.SUSPICIOUS_STEW_EFFECTS, Items.SUSPICIOUS_STEW)
-        associate(DataComponents.SWING_ANIMATION, Items.NETHERITE_SPEAR)
+        associate(DataComponents.ATTACK_ANIMATION, Items.NETHERITE_SPEAR)
         associate(DataComponents.TOOL, Items.DIAMOND_SHOVEL)
         associate(DataComponents.TOOLTIP_DISPLAY, Items.ITEM_FRAME)
         associate(DataComponents.TOOLTIP_STYLE, Items.PAINTING)
