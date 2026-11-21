@@ -93,8 +93,7 @@ bukkitPluginYaml {
 
         addAll(
             sharedLibs.typesafe.config.get().toString(),
-            sharedLibs.caffeine.get().toString(),
-            libs.bstats.get().toString(),
+            sharedLibs.caffeine.get().toString()
         )
     }
 }

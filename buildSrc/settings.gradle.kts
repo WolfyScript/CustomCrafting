@@ -3,7 +3,16 @@ rootProject.name = "buildSrc" // fix gradle warning with type-safe project acces
 dependencyResolutionManagement {
     repositories {
 //        mavenLocal()
-        maven("https://artifacts.wolfyscript.com/artifactory/gradle-dev")
+        maven {
+            url = uri(providers.gradleProperty("wolfyReleasesUrl").get())
+            mavenContent { releasesOnly() }
+        }
+        maven {
+            url = uri(providers.gradleProperty("wolfySnapshotsUrl").get())
+            mavenContent { snapshotsOnly() }
+        }
+        mavenLocal()
+        mavenCentral()
     }
 
     versionCatalogs {

@@ -4,10 +4,14 @@ plugins {
 
 repositories {
     // Use the plugin portal to apply community plugins in convention plugins.
-    gradlePluginPortal()
-    mavenCentral()
-    mavenLocal()
-    maven("https://artifacts.wolfyscript.com/artifactory/gradle-dev")
+    maven {
+        url = uri(providers.gradleProperty("wolfyReleasesUrl").get())
+        mavenContent { releasesOnly() }
+    }
+    maven {
+        url = uri(providers.gradleProperty("wolfySnapshotsUrl").get())
+        mavenContent { snapshotsOnly() }
+    }
     maven {
         name = "Fabric"
         url = uri("https://maven.fabricmc.net")
@@ -16,6 +20,9 @@ repositories {
             includeGroup("fabric-loom")
         }
     }
+    gradlePluginPortal()
+    mavenLocal()
+    mavenCentral()
 }
 
 dependencies {

@@ -13,24 +13,29 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
-    mavenLocal()
-    maven(url = "https://repo.codemc.io/repository/maven-public/")
+    maven {
+        url = uri(providers.gradleProperty("wolfyReleasesUrl").get())
+        mavenContent { releasesOnly() }
+    }
+    maven {
+        url = uri(providers.gradleProperty("wolfySnapshotsUrl").get())
+        mavenContent { snapshotsOnly() }
+    }
+    maven(url = "https://repo.codemc.io/repository/maven-public/") {
+        content { includeGroup("de.tr7zw") }
+    }
+
     maven(url = "https://repo.papermc.io/repository/maven-public/")
-    maven(url = "https://artifacts.wolfyscript.com/artifactory/gradle-dev")
-    maven(url = "https://repo.dmulloy2.net/repository/public/")
     maven(url = "https://repo.maven.apache.org/maven2/")
-    maven(url = "https://mvn.lumine.io/repository/maven-public/")
-    maven(url = "https://repo.oraxen.com/releases")
-    maven(url = "https://repo.extendedclip.com/releases/")
-    maven(url = "https://repo.dmulloy2.net/repository/public/")
+    mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
     implementation(project(":core:core-api"))
     implementation(project(":core:core-common"))
     implementation(kotlin("reflect"))
-    api(libs.scafall.wrappers.spigot)
+    implementation(libs.scafall.wrappers.spigot)
     implementation(sharedLibs.jackson.kotlin)
     implementation(sharedLibs.caffeine)
     compileOnly(sharedLibs.papermc.paper)
@@ -40,11 +45,6 @@ dependencies {
     compileOnly(sharedLibs.bundles.exposed)
     compileOnly(sharedLibs.bundles.database.drivers)
 
-    api(libs.protocollib)
-    api(libs.bstats)
-    compileOnly(libs.mythic.dist)
-    compileOnly(libs.placeholderapi)
-    compileOnly(libs.oraxen)
     compileOnly(sharedLibs.item.nbt.api)
 
     paperweight.paperDevBundle(sharedLibs.versions.papermc.get())

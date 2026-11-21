@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     api(libs.viewportl)
+    implementation(libs.bundles.scafall)
     implementation(projects.core.coreApi)
     implementation(projects.editor.editorCommon)
 

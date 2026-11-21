@@ -27,10 +27,22 @@ plugins {
     alias(sharedLibs.plugins.shadow)
 }
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation(kotlin("test"))
+}
+
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
 tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
+}
+
+kotlin {
+    jvmToolchain(Integer.parseInt(sharedLibs.versions.jdk.get()))
 }

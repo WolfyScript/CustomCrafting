@@ -31,17 +31,19 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 dependencyResolutionManagement {
     repositories {
-        mavenLocal()
-        maven (url = "https://repo.codemc.io/repository/maven-public/")
-        maven(url = "https://repo.papermc.io/repository/maven-public/")
-        maven(url = "https://artifacts.wolfyscript.com/artifactory/gradle-dev")
-        maven(url = "https://repo.dmulloy2.net/repository/public/")
-        maven(url = "https://repo.maven.apache.org/maven2/")
-        maven(url = "https://mvn.lumine.io/repository/maven-public/")
-        maven(url = "https://repo.oraxen.com/releases")
+//        mavenLocal()
+        maven {
+            url = uri(providers.gradleProperty("wolfyReleasesUrl").get())
+            mavenContent { releasesOnly() }
+        }
+        maven {
+            url = uri(providers.gradleProperty("wolfySnapshotsUrl").get())
+            mavenContent { snapshotsOnly() }
+        }
         google()
         maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://artifacts.wolfyscript.com/artifactory/gradle-dev")
+        maven(url = "https://repo.maven.apache.org/maven2/")
+        mavenCentral()
     }
 
     versionCatalogs {
@@ -78,7 +80,14 @@ pluginManagement {
                 includeGroupAndSubgroups("net.minecraftforge")
             }
         }
-        maven("https://artifacts.wolfyscript.com/artifactory/gradle-dev")
+        maven {
+            url = uri(providers.gradleProperty("wolfyReleasesUrl").get())
+            mavenContent { releasesOnly() }
+        }
+        maven {
+            url = uri(providers.gradleProperty("wolfySnapshotsUrl").get())
+            mavenContent { snapshotsOnly() }
+        }
         maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
         google()
     }

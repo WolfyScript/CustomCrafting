@@ -9,12 +9,19 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
-    maven(url = "https://artifacts.wolfyscript.com/artifactory/gradle-dev")
+    maven {
+        url = uri(providers.gradleProperty("wolfyReleasesUrl").get())
+        mavenContent { releasesOnly() }
+    }
+    maven {
+        url = uri(providers.gradleProperty("wolfySnapshotsUrl").get())
+        mavenContent { snapshotsOnly() }
+    }
     maven(url = "https://libraries.minecraft.net/")
     maven(url = "https://jitpack.io")
     maven(url = "https://repo.maven.apache.org/maven2/")
     mavenLocal()
+    mavenCentral()
 }
 
 kotlin {
@@ -45,7 +52,7 @@ tasks {
 }
 
 dependencies {
-    api(libs.scafall.core)
+    implementation(libs.bundles.scafall)
     implementation(sharedLibs.bundles.jetbrains)
 
     compileOnly(sharedLibs.inject.guice)
